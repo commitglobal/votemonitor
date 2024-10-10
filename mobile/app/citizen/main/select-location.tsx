@@ -36,15 +36,16 @@ export default function CitizenSelectLocation() {
   if (!formId || !questionId) {
     return <Typography>CitizenSelectLocation - Incorrect page params</Typography>;
   }
+  const { selectedElectionRound } = useCitizenUserData();
 
-  console.log("👀 [CitizenSelectLocation] formId", formId);
+  if (!selectedElectionRound) {
+    return <Typography>There is no selected election round</Typography>;
+  }
 
   const { t } = useTranslation(["add_polling_station", "common"]); // TODO: change to citizen
 
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-
-  const { selectedElectionRound } = useCitizenUserData();
 
   const [steps, setSteps] = useState<LocationSelectionStep[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");

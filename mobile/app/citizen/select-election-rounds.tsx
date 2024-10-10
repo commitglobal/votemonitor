@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
@@ -8,7 +8,7 @@ import { ScrollView, Spinner, XStack, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
 import { Selector } from "../../components/Selector";
-import { useGetCitizenElectionEvents } from "../../services/queries/citizen.query";
+import { useGetCitizenElectionRounds } from "../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../contexts/citizen-user/CitizenUserContext.provider";
 import { router } from "expo-router";
 
@@ -56,7 +56,11 @@ const Footer = ({
 
 const SelectElectionEvent = () => {
   const { t } = useTranslation("select_election_event");
+
   const { selectedElectionRound, setSelectedElectionRound } = useCitizenUserData();
+  const [selectedElectionRoundLocal, setSelectedElectionRoundLocal] = useState<string | null>(
+    selectedElectionRound,
+  );
 
   const {
     data: electionEvents,
@@ -64,7 +68,7 @@ const SelectElectionEvent = () => {
     isError: isErrorElectionEvents,
     refetch: refetchElectionEvents,
     isRefetching: isRefetchingElectionEvents,
-  } = useGetCitizenElectionEvents();
+  } = useGetCitizenElectionRounds();
 
   const handleGoBack = () => {
     router.push("select-app-mode");
@@ -125,7 +129,7 @@ const SelectElectionEvent = () => {
   }
 
   //   empty state
-  if (!isLoadingElectionEvents && (!electionEvents || electionEvents.electionRounds.length === 0)) {
+  if (!isLoadingElectionEvents && (!electionEvents || electionEvents.length === 0)) {
     return (
       <Screen
         preset="fixed"
@@ -189,13 +193,13 @@ const SelectElectionEvent = () => {
             <>
               <Typography color="$gray8">{t("description")}</Typography>
 
-              {electionEvents?.electionRounds.map((event) => (
+              {electionEvents?.map((event) => (
                 <Selector
                   key={event.id}
                   description={event.title}
                   displayMode="light"
-                  selected={selectedElectionRound === event.id}
-                  onPress={() => setSelectedElectionRound(event.id)}
+                  selected={selectedElectionRoundLocal === event.id}
+                  onPress={() => setSelectedElectionRoundLocal(event.id)}
                 />
               ))}
             </>
@@ -205,9 +209,15 @@ const SelectElectionEvent = () => {
 
       <Footer
         primaryActionLabel={t("continue")}
-        isPrimaryButtonDisabled={!selectedElectionRound}
+        isPrimaryButtonDisabled={!selectedElectionRoundLocal}
         primaryAction={() => {
-          router.push("citizen/main");
+          if (selectedElectionRoundLocal) {
+            setSelectedElectionRound(selectedElectionRoundLocal, {
+              onSuccess: () => {
+                router.push("citizen/main");
+              },
+            });
+          }
         }}
         handleGoBack={handleGoBack}
       />

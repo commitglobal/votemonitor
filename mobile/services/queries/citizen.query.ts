@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { getCitizenElectionEvents } from "../api/citizen/get-citizen-election-rounds";
+import { getCitizenElectionRounds } from "../api/citizen/get-citizen-election-rounds";
 import { getCitizenReportingForms } from "../api/citizen/get-citizen-reporting-forms";
 import { getCitizenElectionRoundLocations } from "../api/citizen/get-election-round-locations";
 import * as CitizenLocationsDB from "../../database/DAO/CitizenLocationsDAO";
@@ -20,10 +20,10 @@ export const citizenQueryKeys = {
 };
 
 // Gets election rounds which can be monitored by citizens
-export const useGetCitizenElectionEvents = () => {
+export const useGetCitizenElectionRounds = () => {
   return useQuery({
     queryKey: citizenQueryKeys.electionRounds(),
-    queryFn: getCitizenElectionEvents,
+    queryFn: getCitizenElectionRounds,
   });
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
-import { ScrollView, Spinner, useTheme, XStack, YStack } from "tamagui";
+import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,7 +13,7 @@ import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
-import { useGetCitizenElectionEvents } from "../../../../services/queries/citizen.query";
+
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
   backgroundColor: string;
@@ -23,9 +23,8 @@ export const DrawerContent = (props: DrawerContentProps) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  const { setSelectedElectionRound, selectedElectionRound } = useCitizenUserData();
-  const { data: electionEvents, isLoading: isLoadingElectionEvents } =
-    useGetCitizenElectionEvents();
+  const { setSelectedElectionRound, selectedElectionRound, citizenElectionRounds } =
+    useCitizenUserData();
 
   const handleSelectElectionRound = (electionRoundId: string) => {
     setSelectedElectionRound(electionRoundId);
@@ -45,31 +44,25 @@ export const DrawerContent = (props: DrawerContentProps) => {
           </XStack>
 
           <YStack marginTop="$lg">
-            {isLoadingElectionEvents ? (
-              <Spinner size="large" color="$purple5" marginTop="$xl" />
-            ) : (
-              <>
-                {electionEvents?.electionRounds.map((electionEvent, index) => (
-                  <XStack
-                    key={index}
-                    paddingVertical="$md"
-                    paddingHorizontal="$lg"
-                    pressStyle={{ opacity: 0.5 }}
-                    onPress={() => handleSelectElectionRound(electionEvent.id)}
-                    backgroundColor={
-                      selectedElectionRound === electionEvent.id ? "$purple5" : "transparent"
-                    }
-                  >
-                    <Typography
-                      preset="body2"
-                      color={selectedElectionRound === electionEvent.id ? "white" : "$purple5"}
-                    >
-                      {electionEvent.title}
-                    </Typography>
-                  </XStack>
-                ))}
-              </>
-            )}
+            {citizenElectionRounds?.map((electionEvent, index) => (
+              <XStack
+                key={index}
+                paddingVertical="$md"
+                paddingHorizontal="$lg"
+                pressStyle={{ opacity: 0.5 }}
+                onPress={() => handleSelectElectionRound(electionEvent.id)}
+                backgroundColor={
+                  selectedElectionRound === electionEvent.id ? "$purple5" : "transparent"
+                }
+              >
+                <Typography
+                  preset="body2"
+                  color={selectedElectionRound === electionEvent.id ? "white" : "$purple5"}
+                >
+                  {electionEvent.title}
+                </Typography>
+              </XStack>
+            ))}
           </YStack>
         </ScrollView>
       </YStack>
