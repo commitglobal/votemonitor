@@ -30,7 +30,7 @@ import {
   FunnelIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { PlusIcon, X } from 'lucide-react';
@@ -369,7 +369,7 @@ export default function FormsDashboard(): ReactElement {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
-    onSuccess: (_data, {electionRoundId}) => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form obsoleted',
@@ -392,7 +392,7 @@ export default function FormsDashboard(): ReactElement {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
     },
 
-    onSuccess: (_data, {electionRoundId}) => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form duplicated',
@@ -414,7 +414,7 @@ export default function FormsDashboard(): ReactElement {
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}`);
     },
-    onSuccess: async (_data, {electionRoundId}) => {
+    onSuccess: async (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form deleted',
@@ -459,10 +459,12 @@ export default function FormsDashboard(): ReactElement {
         <CardTitle className='flex flex-row items-center justify-between px-6'>
           <div className='text-xl'>{i18n.t('electionEvent.observerForms.cardTitle')}</div>
           <div>
-            <Button title='Create form' variant='default' onClick={() => navigate({ to: '/election-event/new-form' })}>
-              <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
-              <span>Create form</span>
-            </Button>
+            <Link to='/forms/new'>
+              <Button title='Create form' variant='default'>
+                <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
+                <span>Create form</span>
+              </Button>
+            </Link>
           </div>
         </CardTitle>
         <Separator />
