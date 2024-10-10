@@ -29,4 +29,7 @@ public class QuickReportOverviewModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; set; }
+    
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
+    public IncidentCategory IncidentCategory { get; set; } 
 }
