@@ -119,7 +119,7 @@ export default function CitizenSelectLocation() {
     const selectedLocationId = citizenLocations.find(
       (location) => location.id === selectedOption?.id,
     )?.locationId;
-    router.push(
+    router.replace(
       `citizen/main/form/?formId=${formId}&selectedLocationId=${selectedLocationId}&questionId=${questionId}`,
     );
   };

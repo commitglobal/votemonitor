@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useGetCitizenReportingFormById } from "../../../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import { Keyboard, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
@@ -33,6 +33,14 @@ const CitizenForm = () => {
   const textareaRef = useRef(null);
 
   const { selectedElectionRound } = useCitizenUserData();
+
+  if (!selectedElectionRound) {
+    return (
+      <Typography>
+        [CitizenForm] There is no selected election round - Incorrect page params
+      </Typography>
+    );
+  }
 
   const {
     formId,
@@ -181,7 +189,7 @@ const CitizenForm = () => {
                 console.log(
                   "🔵 [CitizenForm] form submitted successfully, redirect to success page",
                 );
-                router.push("/citizen/main/form/success");
+                router.replace("/citizen/main/form/success");
               },
               onError: (error) => {
                 console.log("🔴 [CitizenForm] error submitting form", error);
@@ -229,31 +237,6 @@ const CitizenForm = () => {
             current={activeQuestion?.indexInDisplayedQuestions + 1}
             total={displayedQuestions?.length || 0}
           />
-
-          <XStack
-            justifyContent="flex-end"
-            alignSelf="flex-end"
-            paddingLeft="$md"
-            paddingBottom="$md"
-            pressStyle={{ opacity: 0.5 }}
-            onPress={() => {
-              Keyboard.dismiss();
-              // setDeletingAnswer(true);
-            }}
-          >
-            <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
-          </XStack>
-          {/* delete answer button */}
-          {/* {deletingAnswer && (
-            <WarningDialog
-              title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
-              description={t("warning_modal.question.description")}
-              actionBtnText={t("warning_modal.question.actions.clear")}
-              cancelBtnText={t("warning_modal.question.actions.cancel")}
-              action={onClearForm}
-              onCancel={() => setDeletingAnswer(false)}
-            />
-          )} */}
         </YStack>
 
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>

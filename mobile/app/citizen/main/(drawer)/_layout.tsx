@@ -13,6 +13,7 @@ import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
+import Constants from "expo-constants";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -22,6 +23,8 @@ type DrawerContentProps = ScrollViewProps & {
 export const DrawerContent = (props: DrawerContentProps) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
+  const appVersion = Constants.expoConfig?.version;
 
   const { setSelectedElectionRound, selectedElectionRound, citizenElectionRounds } =
     useCitizenUserData();
@@ -72,6 +75,15 @@ export const DrawerContent = (props: DrawerContentProps) => {
         paddingBottom={insets.bottom + 16}
         color="$purple5"
       />
+
+      <XStack marginTop={0} gap="$xxs" paddingBottom={insets.bottom} paddingLeft="$md">
+        <Typography>
+          {`v${appVersion}`} ({Constants.expoConfig?.extra?.updateVersion})
+          {process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
+            ? process.env.EXPO_PUBLIC_ENVIRONMENT
+            : ""}
+        </Typography>
+      </XStack>
     </YStack>
   );
 };

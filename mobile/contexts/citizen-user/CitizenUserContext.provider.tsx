@@ -39,8 +39,8 @@ const useMutationAsyncStorageCitizenElectionRound = () => {
         );
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["citizen:selectedElectionRound"] });
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["citizen:selectedElectionRound"] });
     },
   });
 };
