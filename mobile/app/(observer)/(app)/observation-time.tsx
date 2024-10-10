@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { router } from "expo-router";
 import { Icon } from "../../../components/Icon";
-import { View, YStack } from "tamagui";
+import { View, XStack, YStack } from "tamagui";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
 import WizzardControls from "../../../components/WizzardControls";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Button from "../../../components/Button";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import {
@@ -22,6 +22,7 @@ import { ScrollView } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import OptionsSheet from "../../../components/OptionsSheet";
 import { Typography } from "../../../components/Typography";
+import { Dialog } from "../../../components/Dialog";
 
 const ObservationTime = () => {
   const { t } = useTranslation("observation");
@@ -31,6 +32,7 @@ const ObservationTime = () => {
   const [isSaveChangesModalOpen, setIsSaveChangesModalOpen] = useState(false);
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isClearingForm, setIsClearingForm] = useState(false);
+  const [isUnableToSaveObservationTime, setIsUnableToSaveObservationTime] = useState(false);
 
   const { selectedPollingStation, activeElectionRound } = useUserData();
   const queryClient = useQueryClient();
@@ -53,17 +55,17 @@ const ObservationTime = () => {
     setValue,
     getValues,
     reset,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm({
     defaultValues: {
-      arrivalTime: psiData?.arrivalTime ? new Date(psiData.arrivalTime) : undefined,
-      departureTime: psiData?.departureTime ? new Date(psiData.departureTime) : undefined,
+      arrivalTime: psiData?.arrivalTime ? new Date(psiData.arrivalTime) : null,
+      departureTime: psiData?.departureTime ? new Date(psiData.departureTime) : null,
       breaks: psiData?.breaks
         ? psiData.breaks
             .map((b) => ({
               ...b,
-              start: b.start ? new Date(b.start) : undefined,
-              end: b.end ? new Date(b.end) : undefined,
+              start: b.start ? new Date(b.start) : null,
+              end: b.end ? new Date(b.end) : null,
             }))
             .sort((date1, date2) => {
               if (date1.start && date2.start) {
@@ -75,6 +77,57 @@ const ObservationTime = () => {
     },
   });
 
+  const {
+    fields: breaks,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "breaks",
+    rules: {
+      validate: {
+        breakValid: (breaks) => {
+          return breaks.every((breakItem) => {
+            if (!breakItem.start || !breakItem.end) return true;
+            return breakItem.start <= breakItem.end;
+          });
+        },
+        breakStartAfterArrivalTime: (breaks) => {
+          const { arrivalTime } = getValues();
+          if (!arrivalTime) return true;
+          return breaks.every((breakItem) => {
+            if (!breakItem.start) return true;
+            return breakItem.start >= arrivalTime;
+          });
+        },
+        breakStartBeforeDepartureTime: (breaks) => {
+          const { departureTime } = getValues();
+          if (!departureTime) return true;
+          return breaks.every((breakItem) => {
+            if (!breakItem.start) return true;
+            return breakItem.start <= departureTime;
+          });
+        },
+        breakEndAfterArrivalTime: (breaks) => {
+          const { arrivalTime } = getValues();
+          if (!arrivalTime) return true;
+          return breaks.every((breakItem) => {
+            if (!breakItem.end) return true;
+            return breakItem.end >= arrivalTime;
+          });
+        },
+        breakEndBeforeDepartureTime: (breaks) => {
+          const { departureTime } = getValues();
+          if (!departureTime) return true;
+          return breaks.every((breakItem) => {
+            if (!breakItem.end) return true;
+            return breakItem.end <= departureTime;
+          });
+        },
+      },
+    },
+  });
+
   // reset form data every time the psiData changes, so that the form is no longer dirty after submitting it
   useEffect(() => {
     if (psiData) {
@@ -82,7 +135,13 @@ const ObservationTime = () => {
     }
   }, [psiData, getValues, reset]);
 
-  const breaks = watch("breaks");
+  // if there are breaks errors, display modal
+  useEffect(() => {
+    console.log("errors ⛔️", errors);
+    if (Object.keys(errors).includes("breaks")) {
+      setIsUnableToSaveObservationTime(true);
+    }
+  }, [errors.breaks]);
 
   const handleGoBack = () => {
     if (isDirty) {
@@ -94,12 +153,11 @@ const ObservationTime = () => {
 
   const handleAddBreak = () => {
     const newBreak = {
-      start: undefined,
-      end: undefined,
+      start: null,
+      end: null,
     };
 
-    setValue("breaks", [...breaks, newBreak], { shouldDirty: true });
-
+    append(newBreak);
     // scroll to the bottom in order to see the newly added break
     setTimeout(() => {
       if (scrollViewRef.current) {
@@ -109,16 +167,13 @@ const ObservationTime = () => {
   };
 
   const handleDeleteBreak = (index: number) => {
-    const updatedBreaks = breaks.filter((_, i) => i !== index);
-    setValue("breaks", [...updatedBreaks], { shouldDirty: true });
+    remove(index);
     // close modal
     setBreakToDelete(null);
   };
 
   const onSubmit = (formData: any) => {
-    const definedBreaks = formData.breaks.filter(
-      (breakItem: Break) => breakItem.start !== undefined,
-    );
+    const definedBreaks = formData.breaks.filter((breakItem: Break) => breakItem.start !== null);
     setValue("breaks", [...definedBreaks]);
 
     mutate(
@@ -149,6 +204,8 @@ const ObservationTime = () => {
       departureTime: null,
       breaks: [],
     });
+    handleSubmit(onSubmit)();
+    setIsClearingForm(false);
   };
 
   return (
@@ -205,6 +262,7 @@ const ObservationTime = () => {
                   onChange={onChange}
                   value={value}
                   disabled={isPending}
+                  minimumDate={getValues("arrivalTime")}
                 />
               )}
             />
@@ -227,13 +285,13 @@ const ObservationTime = () => {
             {breaks.map((b, index) => {
               return (
                 <BreakItem
-                  key={index}
-                  control={control}
+                  key={b.id}
                   index={index}
-                  onDelete={handleDeleteBreak}
+                  control={control}
                   watch={watch}
                   isPending={isPending}
                   setBreakToDelete={setBreakToDelete}
+                  onDelete={handleDeleteBreak}
                 />
               );
             })}
@@ -317,10 +375,48 @@ const ObservationTime = () => {
             "polling_stations_information.observation_time.confirmation_modals.clear.actions.cancel",
           )}
           onCancel={() => setIsClearingForm(false)}
-          action={() => {
-            setIsClearingForm(false);
-            handleClearForm();
-          }}
+          action={handleClearForm}
+        />
+      )}
+      {isUnableToSaveObservationTime && (
+        <Dialog
+          open
+          content={
+            <YStack maxHeight="85%" gap="$md">
+              <ScrollView
+                contentContainerStyle={{ gap: 16, flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+              >
+                <Typography preset="heading">
+                  {t(
+                    "polling_stations_information.observation_time.confirmation_modals.unable_to_save.title",
+                  )}
+                </Typography>
+
+                <Typography color="$gray6">
+                  {t(
+                    "polling_stations_information.observation_time.confirmation_modals.unable_to_save.p1",
+                  )}
+                </Typography>
+
+                <Typography color="$gray6">
+                  {t(
+                    "polling_stations_information.observation_time.confirmation_modals.unable_to_save.p2",
+                  )}
+                </Typography>
+              </ScrollView>
+            </YStack>
+          }
+          footer={
+            <XStack justifyContent="center">
+              <Button preset="chromeless" onPress={() => setIsUnableToSaveObservationTime(false)}>
+                {t(
+                  "polling_stations_information.observation_time.confirmation_modals.unable_to_save.ok",
+                )}
+              </Button>
+            </XStack>
+          }
         />
       )}
     </Screen>

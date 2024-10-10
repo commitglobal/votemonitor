@@ -13,10 +13,10 @@ import { useTranslation } from "react-i18next";
 import useAnimatedKeyboardPadding from "../../hooks/useAnimatedKeyboardPadding";
 
 export interface DateInputProps extends XStackProps {
-  value: Date | undefined;
+  value: Date | null;
   onChange: (...event: any[]) => void;
-  minimumDate?: Date;
-  maximumDate?: Date;
+  minimumDate?: Date | null;
+  maximumDate?: Date | null;
   placeholder?: string;
 }
 
@@ -124,8 +124,8 @@ export const DateInput: React.FC<DateInputProps> = ({
                 display="spinner"
                 value={tempDate}
                 onChange={onDateChange}
-                minimumDate={minimumDate}
-                maximumDate={maximumDate}
+                minimumDate={minimumDate || undefined}
+                maximumDate={maximumDate || undefined}
                 locale={localParams.language as string}
               />
             </XStack>

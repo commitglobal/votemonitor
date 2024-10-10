@@ -113,8 +113,8 @@ export type PollingStationInformationAPIPayload = {
 };
 
 export type Break = {
-  start?: Date;
-  end?: Date;
+  start?: Date | null;
+  end?: Date | null;
   duration?: number;
 };
 

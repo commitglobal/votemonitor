@@ -15,11 +15,11 @@ export const BreakItem = ({
 }: {
   control: Control<
     {
-      arrivalTime: Date | undefined;
-      departureTime: Date | undefined;
+      arrivalTime: Date | null;
+      departureTime: Date | null;
       breaks: {
-        start: Date | undefined;
-        end: Date | undefined;
+        start: Date | null;
+        end: Date | null;
         duration?: number;
       }[];
     },
@@ -29,11 +29,11 @@ export const BreakItem = ({
   isPending: boolean;
   onDelete: (index: number) => void;
   watch: UseFormWatch<{
-    arrivalTime: Date | undefined;
-    departureTime: Date | undefined;
+    arrivalTime: Date | null;
+    departureTime: Date | null;
     breaks: {
-      start: Date | undefined;
-      end: Date | undefined;
+      start: Date | null;
+      end: Date | null;
       duration?: number;
     }[];
   }>;
@@ -67,9 +67,11 @@ export const BreakItem = ({
             <DateFormInput
               title={t("polling_stations_information.observation_time.start_time")}
               placeholder={t("polling_stations_information.observation_time.select_start_time")}
-              onChange={onChange}
               value={value}
+              onChange={onChange}
               disabled={isPending}
+              minimumDate={watch("arrivalTime")}
+              maximumDate={watch("departureTime")}
             />
           )}
         />
@@ -80,9 +82,11 @@ export const BreakItem = ({
             <DateFormInput
               title={t("polling_stations_information.observation_time.end_time")}
               placeholder={t("polling_stations_information.observation_time.select_end_time")}
-              onChange={onChange}
               value={value}
+              onChange={onChange}
               disabled={!watch(`breaks.${index}.start`) || isPending}
+              minimumDate={watch(`breaks.${index}.start`)}
+              maximumDate={watch("departureTime")}
             />
           )}
         />
