@@ -1,9 +1,12 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { getCitizenElectionEvents } from "../api/citizen/get-citizen-election-rounds";
+import { getCitizenElectionRounds } from "../api/citizen/get-citizen-election-rounds";
 import { getCitizenReportingForms } from "../api/citizen/get-citizen-reporting-forms";
 import { getCitizenElectionRoundLocations } from "../api/citizen/get-election-round-locations";
 import * as CitizenLocationsDB from "../../database/DAO/CitizenLocationsDAO";
 import * as Sentry from "@sentry/react-native";
+import { CitizenLocationVM } from "../../common/models/citizen-locations.model";
+import { ElectionRoundsAllFormsAPIResponse } from "../definitions.api";
+import { useCallback } from "react";
 
 export const citizenQueryKeys = {
   all: ["citizen"] as const,
@@ -12,22 +15,41 @@ export const citizenQueryKeys = {
     [...citizenQueryKeys.all, "reporting-forms", electionRoundId] as const,
   locations: (electionRoundId: string) =>
     [...citizenQueryKeys.all, "locations", electionRoundId] as const,
+  locationsByParentId: (parentId: number, electionRoundId: string) =>
+    [...citizenQueryKeys.all, "locations", electionRoundId, parentId] as const,
 };
 
 // Gets election rounds which can be monitored by citizens
-export const useGetCitizenElectionEvents = () => {
+export const useGetCitizenElectionRounds = () => {
   return useQuery({
     queryKey: citizenQueryKeys.electionRounds(),
-    queryFn: getCitizenElectionEvents,
+    queryFn: getCitizenElectionRounds,
   });
 };
 
 // Gets all published citizen reporting forms for a given election round
-export const useGetCitizenReportingForms = (electionRoundId: string) => {
+export const useGetCitizenReportingForms = <TResult = ElectionRoundsAllFormsAPIResponse>(
+  electionRoundId: string,
+  select?: (data: ElectionRoundsAllFormsAPIResponse) => TResult,
+) => {
   return useQuery({
     queryKey: citizenQueryKeys.reportingForms(electionRoundId),
     queryFn: electionRoundId ? () => getCitizenReportingForms(electionRoundId) : skipToken,
+    select,
   });
+};
+
+export const useGetCitizenReportingFormById = (electionRoundId: string, formId: string) => {
+  return useGetCitizenReportingForms(
+    electionRoundId,
+    useCallback(
+      (data: ElectionRoundsAllFormsAPIResponse) => {
+        const selectedForm = data?.forms?.find((form) => form.id === formId);
+        return selectedForm;
+      },
+      [electionRoundId, formId],
+    ),
+  );
 };
 
 export const useGetCitizenLocations = (electionRoundId: string) => {
@@ -58,6 +80,32 @@ export const useGetCitizenLocations = (electionRoundId: string) => {
         }
       : skipToken,
     retry: 0,
+    staleTime: 0,
+    networkMode: "always",
+  });
+};
+
+export const useGetCitizenLocationsByParentId = (parentId: number, electionRoundId: string) => {
+  return useQuery({
+    queryKey: citizenQueryKeys.locationsByParentId(parentId, electionRoundId),
+    queryFn:
+      parentId && electionRoundId
+        ? async () => {
+            const data = await CitizenLocationsDB.getCitizenLocationsByParentId(
+              parentId,
+              electionRoundId,
+            );
+            const toReturn: CitizenLocationVM[] = data.map((location) => ({
+              id: location._id,
+              name: location.name,
+              parentId: location.parentId,
+              electionRoundId: location.electionRoundId,
+              locationId: location.locationId,
+            }));
+            return toReturn;
+          }
+        : skipToken,
+    initialData: [],
     staleTime: 0,
     networkMode: "always",
   });

@@ -258,6 +258,7 @@
     "form": {
       "min": "Câmpul trebuie să aibă cel puțin {{value}} caractere",
       "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
+      "required": "Acest câmp este obligatoriu",
       "date_placeholder": "Te rugăm să introduci data",
       "text_placeholder": "Te rugăm să introduci un text"
     },

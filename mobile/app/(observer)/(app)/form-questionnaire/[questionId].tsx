@@ -485,6 +485,7 @@ const FormQuestionnaire = () => {
             activeQuestion={activeQuestion}
             handleFocus={handleFocus}
             ref={textareaRef}
+            language={language}
           />
 
           {/* notes section */}

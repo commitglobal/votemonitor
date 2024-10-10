@@ -14,13 +14,49 @@ import { Icon } from "../../../../../components/Icon";
 import Header from "../../../../../components/Header";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { useRouter } from "expo-router";
+
+const LoadingScreen = ({ children }: { children: React.ReactNode }) => (
+  <Screen
+    preset="fixed"
+    contentContainerStyle={{
+      flex: 1,
+    }}
+  >
+    {children}
+    <YStack flex={1} paddingVertical="$lg" justifyContent="center" alignItems="center">
+      <Spinner color="$purple5" />
+    </YStack>
+  </Screen>
+);
 
 export default function CitizenReportIssue() {
   const { t } = useTranslation("citizen_report_issue");
   const navigation = useNavigation();
-  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
+  const router = useRouter();
 
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const { selectedElectionRound } = useCitizenUserData();
+
+  const PageHeader = () => (
+    <Header
+      title={t("header_title")}
+      leftIcon={<Icon icon="menuAlt2" color="white" />}
+      onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+      rightIcon={<Icon icon="infoCircle" color="white" />}
+      onRightPress={handleOpenInfoModal}
+      barStyle="light-content"
+      backgroundColor="$purple5"
+    ></Header>
+  );
+
+  if (!selectedElectionRound) {
+    return (
+      <LoadingScreen>
+        <PageHeader />
+      </LoadingScreen>
+    );
+  }
 
   const {
     data: citizenReportingForms,
@@ -29,6 +65,8 @@ export default function CitizenReportIssue() {
     refetch: refetchCitizenReportingForms,
     isRefetching: isRefetchingCitizenReportingForms,
   } = useGetCitizenReportingForms(selectedElectionRound);
+
+  // console.log("👀 citizenReportingForms", JSON.stringify(citizenReportingForms, null, 2));
 
   const {
     isLoading: isLoadingCitizenLocations,
@@ -45,34 +83,12 @@ export default function CitizenReportIssue() {
     setIsOpenInfoModal(false);
   };
 
-  const renderHeader = () => {
-    return (
-      <Header
-        title={t("header_title")}
-        leftIcon={<Icon icon="menuAlt2" color="white" />}
-        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-        rightIcon={<Icon icon="infoCircle" color="white" />}
-        onRightPress={handleOpenInfoModal}
-        barStyle="light-content"
-        backgroundColor="$purple5"
-      ></Header>
-    );
-  };
-
   // loading state
-  if (isLoadingCitizenReportingForms || isLoadingCitizenLocations) {
+  if (isLoadingCitizenReportingForms || isLoadingCitizenLocations || !selectedElectionRound) {
     return (
-      <Screen
-        preset="fixed"
-        contentContainerStyle={{
-          flex: 1,
-        }}
-      >
-        {renderHeader()}
-        <YStack flex={1} paddingVertical="$lg" justifyContent="center" alignItems="center">
-          <Spinner color="$purple5" />
-        </YStack>
-      </Screen>
+      <LoadingScreen>
+        <PageHeader />
+      </LoadingScreen>
     );
   }
 
@@ -85,7 +101,7 @@ export default function CitizenReportIssue() {
           flex: 1,
         }}
       >
-        {renderHeader()}
+        <PageHeader />
         <YStack flex={1} paddingVertical="$lg" paddingHorizontal="$lg" gap="$lg">
           <XStack gap="$md">
             {isRefetchingCitizenReportingForms || isRefetchingCitizenLocations ? (
@@ -118,7 +134,7 @@ export default function CitizenReportIssue() {
         flex: 1,
       }}
     >
-      {renderHeader()}
+      <PageHeader />
 
       <YStack flex={1} paddingVertical="$lg">
         <ScrollView
@@ -147,7 +163,9 @@ export default function CitizenReportIssue() {
                   key={form.id}
                   form={form}
                   onClick={() => {
-                    console.log("todo");
+                    router.push(
+                      `/citizen/main/select-location?formId=${form.id}&questionId=${form.questions[0].id}`,
+                    );
                   }}
                 />
               ))}

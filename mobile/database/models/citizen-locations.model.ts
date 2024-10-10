@@ -16,7 +16,7 @@ export class CitizenLocation extends Model {
   // @ts-ignore
   @field("display_order") displayOrder?: number;
   // @ts-ignore
-  @field("parent_id") parentId?: number;
+  @field("parent_id") parentId: number;
   // @ts-ignore
   @field("location_id") locationId?: string;
 }

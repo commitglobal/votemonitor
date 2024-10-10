@@ -16,9 +16,6 @@ export const AppModeContext = createContext<AppModeContextType | null>(null);
 
 const AppModeContextProvider = ({ children }: React.PropsWithChildren) => {
   const [appMode, setAppMode] = useState<AppMode | null>(null);
-  console.log("AppModeContextProvider", appMode);
-
-  // SecureStore.deleteItemAsync(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
 
   useEffect(() => {
     const appMode = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
