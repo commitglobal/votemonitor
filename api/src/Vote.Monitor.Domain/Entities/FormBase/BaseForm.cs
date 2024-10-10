@@ -144,7 +144,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         {
             return submission;
         }
-        
+
         if (!answers.Any())
         {
             clearAnswers(submission);
@@ -191,19 +191,37 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
         DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
     {
-        return BaseFillIn(
+        var pollingStationInformation = BaseFillIn(
             psiSubmission,
             answers,
-            submission =>
-            {
-                submission.ClearAnswers();
-                submission.UpdateTimesOfStay(submission.ArrivalTime, submission.DepartureTime, submission.Breaks);
-            },
+            submission => submission.ClearAnswers(),
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
                 submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
                     departureTime, breaks)
         );
+
+        pollingStationInformation.UpdateTimesOfStay(arrivalTime, departureTime, breaks);
+
+        return pollingStationInformation;
     }
+    
+    public PollingStationInformation FillInV2(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+    {
+        var pollingStationInformation = BaseFillIn(
+            psiSubmission,
+            answers,
+            submission => submission.ClearAnswers(),
+            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
+                submission.UpdateAnswersV2(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
+                    departureTime, breaks)
+        );
+
+        pollingStationInformation.UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
+
+        return pollingStationInformation;
+    }
+
 
     public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers)
     {

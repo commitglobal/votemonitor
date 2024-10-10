@@ -1,7 +1,6 @@
 ﻿using Vote.Monitor.Answer.Module.Validators;
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
-namespace Feature.PollingStation.Information.Upsert;
+namespace Feature.PollingStation.Information.UpsertV2;
 
 public class Validator : Validator<Request>
 {

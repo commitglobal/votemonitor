@@ -17,7 +17,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
-import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
+import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
@@ -39,7 +39,7 @@ export default function QuickReportDetails(): FunctionComponent {
       });
     },
 
-    onSuccess: (_data, {electionRoundId}) => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Follow-up status updated',
@@ -183,6 +183,11 @@ export default function QuickReportDetails(): FunctionComponent {
           </CardHeader>
 
           <CardContent className='text-[#374151] flex flex-col gap-6'>
+            <div>
+              <p className='font-bold'>Incident category</p>
+              <p>{mapIncidentCategory(quickReport.incidentCategory)}</p>
+            </div>
+
             <div>
               <p className='font-bold'>Issue title</p>
               <p>{quickReport.title}</p>

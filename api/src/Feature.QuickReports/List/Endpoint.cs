@@ -36,6 +36,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND MN."NgoId" = @ngoId
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
+            AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -63,6 +64,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS  "Timestamp",
             QR."Title",
             QR."Description",
+            QR."IncidentCategory",
             QR."FollowUpStatus",
             COUNT(QRA."Id") FILTER(WHERE QRA."IsDeleted" = FALSE AND QRA."IsCompleted" = TRUE) AS "NumberOfAttachments",
             O."FirstName" || ' ' ||O."LastName" "ObserverName",
@@ -89,6 +91,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND MN."NgoId" = @ngoId
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
+            AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -134,8 +137,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             level3 = req.Level3Filter,
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
-            followUpStatus = req.FollowUpStatus?.ToString(),
+            followUpStatus = req.QuickReportFollowUpStatus?.ToString(),
             quickReportLocationType = req.QuickReportLocationType?.ToString(),
+            incidentCategory = req.IncidentCategory?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

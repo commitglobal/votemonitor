@@ -8,7 +8,9 @@ export type FormSubmissionsViewBy = 'byEntry' | 'byObserver' | 'byForm';
 export type CitizenReportsViewBy = 'byEntry' | 'byForm';
 export type IncidentReportsViewBy = 'byEntry' | 'byObserver' | 'byForm';
 
-export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
+type TableColumnVisibilityState<T> = Record<keyof T, boolean>;
+
+export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<FormSubmissionByEntry> = {
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
@@ -34,7 +36,7 @@ export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   pollingStationId: false,
 };
 
-export const formSubmissionsByObserverDefaultColumns: VisibilityState = {
+export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState<FormSubmissionByObserver> = {
   observerName: true,
   phoneNumber: true,
   tags: true,
@@ -47,7 +49,7 @@ export const formSubmissionsByObserverDefaultColumns: VisibilityState = {
   monitoringObserverId: false,
 };
 
-export const formSubmissionsByFormDefaultColumns: VisibilityState = {
+export const formSubmissionsByFormDefaultColumns: TableColumnVisibilityState<FormSubmissionByForm> = {
   formCode: true,
   formType: true,
   numberOfFlaggedAnswers: true,
@@ -58,7 +60,7 @@ export const formSubmissionsByFormDefaultColumns: VisibilityState = {
   numberOfSubmissions: false,
 };
 
-export const observerFormSubmissionsDefaultColumns: VisibilityState = {
+export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<FormSubmissionByEntry> = {
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
@@ -145,6 +147,8 @@ export const formSubmissionsColumnVisibilityOptions: Record<
 export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = [
   { id: 'timestamp', label: 'Time submitted', enableHiding: true },
   { id: 'quickReportLocationType', label: 'Location type', enableHiding: true },
+  { id: 'incidentCategory', label: 'Incident category', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
   { id: 'numberOfAttachments', label: 'Media files', enableHiding: true },
@@ -156,12 +160,12 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'pollingStationDetails', label: 'Polling station details', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
-  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const quickReportsDefaultColumns: VisibilityState = {
+export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport> = {
   timestamp: true,
   quickReportLocationType: true,
+  incidentCategory: true,
   title: true,
   description: true,
   numberOfAttachments: true,
@@ -176,17 +180,17 @@ export const quickReportsDefaultColumns: VisibilityState = {
   email: false,
   followUpStatus: true,
   address: false,
-  // delete
+
   attachments: false,
   id: false,
   monitoringObserverId: false,
-  phoneNumber: false,
   pollingStationId: false,
 };
 
-export const observerQuickReportsColumns: VisibilityState = {
+export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport> = {
   timestamp: true,
   quickReportLocationType: true,
+  incidentCategory: true,
   title: true,
   description: true,
   numberOfAttachments: true,
@@ -199,11 +203,11 @@ export const observerQuickReportsColumns: VisibilityState = {
   pollingStationDetails: false,
   followUpStatus: true,
   address: false,
+
   // delete
   attachments: false,
   id: false,
   monitoringObserverId: false,
-  phoneNumber: false,
   pollingStationId: false,
   email: false,
   observerName: false,
@@ -219,7 +223,7 @@ export const citizenReportsColumnVisibilityOptions: ColumnOption<CitizenReportBy
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const citizenReportsDefaultColumns: VisibilityState = {
+export const citizenReportsDefaultColumns: TableColumnVisibilityState<CitizenReportByEntry> = {
   citizenReportId: false,
   timeSubmitted: true,
   formCode: true,
@@ -273,7 +277,9 @@ const incidentReportsByFormColumnVisibilityOptions: ColumnOption<IncidentReportB
 
 export const incidentReportsColumnVisibilityOptions: Record<
   IncidentReportsViewBy,
-  ColumnOption<IncidentReportByEntry>[] | ColumnOption<IncidentReportByObserver>[] | ColumnOption<IncidentReportByForm>[]
+  | ColumnOption<IncidentReportByEntry>[]
+  | ColumnOption<IncidentReportByObserver>[]
+  | ColumnOption<IncidentReportByForm>[]
 > = {
   byEntry: incidentReportsByEntryColumnVisibilityOptions,
   byObserver: incidentReportsByObserverColumnVisibilityOptions,
@@ -315,7 +321,33 @@ export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<Incid
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const incidentReportsByObserverDefaultColumns: VisibilityState = {
+export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<FormSubmissionByEntry> = {
+  submissionId: false,
+  timeSubmitted: true,
+  formCode: true,
+  formType: true,
+  number: true,
+  level1: false,
+  level2: false,
+  level3: false,
+  level4: false,
+  level5: false,
+  observerName: false,
+  tags: false,
+  numberOfQuestionsAnswered: true,
+  numberOfFlaggedAnswers: true,
+  notesCount: false,
+  mediaFilesCount: false,
+  followUpStatus: true,
+  // delete ?
+  defaultLanguage: false,
+  email: false,
+  monitoringObserverId: false,
+  phoneNumber: false,
+  pollingStationId: false,
+};
+
+export const incidentReportsByObserverDefaultColumns: TableColumnVisibilityState<IncidentReportByObserver> = {
   observerName: true,
   phoneNumber: true,
   tags: true,
@@ -323,11 +355,10 @@ export const incidentReportsByObserverDefaultColumns: VisibilityState = {
   followUpStatus: true,
   numberOfIncidentsSubmitted: true,
   // delete ?
-  email: false,
   monitoringObserverId: false,
 };
 
-export const incidentReportsByFormDefaultColumns: VisibilityState = {
+export const incidentReportsByFormDefaultColumns: TableColumnVisibilityState<IncidentReportByForm> = {
   formCode: true,
   formName: true,
   numberOfFlaggedAnswers: true,
@@ -339,7 +370,7 @@ export const incidentReportsByFormDefaultColumns: VisibilityState = {
   formDefaultLanguage: false,
 };
 
-export const observerIncidentReportsColumns: VisibilityState = {
+export const observerIncidentReportsColumns: TableColumnVisibilityState<IncidentReportByEntry> = {
   incidentReportId: false,
   timeSubmitted: true,
   formCode: true,
@@ -367,7 +398,7 @@ export const observerIncidentReportsColumns: VisibilityState = {
 };
 
 export const incidentReportsDefaultColumns: Record<IncidentReportsViewBy, VisibilityState> = {
-  byEntry: formSubmissionsByEntryDefaultColumns,
-  byObserver: formSubmissionsByObserverDefaultColumns,
-  byForm: formSubmissionsByFormDefaultColumns,
+  byEntry: incidentReportsByEntryDefaultColumns,
+  byObserver: incidentReportsByObserverDefaultColumns,
+  byForm: incidentReportsByFormDefaultColumns,
 };

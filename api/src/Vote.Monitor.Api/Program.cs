@@ -217,6 +217,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -242,6 +243,7 @@ SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValue
 SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandler<IncidentCategory, string>());
 
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
