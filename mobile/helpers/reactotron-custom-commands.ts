@@ -1,5 +1,6 @@
 import Reactotron from "reactotron-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 import { calculateSizes, clearStorage } from "./calculateAsyncStorageSize";
 import {
@@ -7,6 +8,7 @@ import {
   getPollingStationNomenclatorNodes,
   deleteEverything,
 } from "../database/DAO/PollingStationsNomenclatorDAO";
+import { SECURE_STORAGE_KEYS } from "../common/constants";
 
 Reactotron.onCustomCommand({
   title: "AsyncStorage",
@@ -14,6 +16,15 @@ Reactotron.onCustomCommand({
   handler: async () => {
     console.log(await AsyncStorage.getAllKeys());
     calculateSizes();
+  },
+});
+
+Reactotron.onCustomCommand({
+  title: "Reset ONBOARDING_COMPLETED",
+  command: "resetOnboardingCompleted",
+  handler: async () => {
+    console.log(await AsyncStorage.getItem("ONBOARDING_COMPLETED"));
+    await SecureStore.deleteItemAsync(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
   },
 });
 
