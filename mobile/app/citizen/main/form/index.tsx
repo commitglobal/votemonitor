@@ -23,9 +23,11 @@ import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import WizzardControls from "../../../../components/WizzardControls";
 import { usePostCitizenFormMutation } from "../../../../services/mutations/citizen/post-citizen-form.mutation";
 import * as Crypto from "expo-crypto";
+import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
+import Toast from "react-native-toast-message";
 
 const CitizenForm = () => {
-  const { t } = useTranslation(["polling_station_form_wizard", "common"]); // TODO: change with citizen
+  const { t } = useTranslation(["polling_station_form_wizard", "common", "network_banner"]); // TODO: change with citizen
 
   const language = "EN"; // TODO: remove this later
   const router = useRouter();
@@ -33,6 +35,7 @@ const CitizenForm = () => {
   const textareaRef = useRef(null);
 
   const { selectedElectionRound } = useCitizenUserData();
+  const { isOnline } = useNetInfoContext();
 
   if (!selectedElectionRound) {
     return (
@@ -175,6 +178,14 @@ const CitizenForm = () => {
         goToNextQuestion(nextQuestion);
       } else {
         console.log("🔵 [CitizenForm] submit form", updatedAnswers);
+        if (!isOnline) {
+          return Toast.show({
+            type: "error",
+            text2: t("offline_citizen", { ns: "network_banner" }),
+            visibilityTime: 5000,
+            text2Style: { textAlign: "center" },
+          });
+        }
         if (currentForm) {
           postCitizenForm(
             {

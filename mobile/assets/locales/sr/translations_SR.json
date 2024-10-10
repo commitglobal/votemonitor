@@ -538,8 +538,10 @@
   "network_banner": {
     "online": "Povezani ste sa internetom. Svi odgovori su poslati na server.",
     "offline": "Režim rada van mreže. Odgovori se čuvaju lokalno.",
+    "offline_citizen": "TODO: Režim rada van mreže. Potrebna vam je internet veza da biste izvršili ovu radnju.",
     "more_details": "Više detalja",
-    "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije."
+    "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije.",
+    "offline_warning_citizen": "TODO: Trenutno niste povezani na internet. Potrebna vam je internet veza da biste izvršili ovu radnju."
   },
   "sync": {
     "sync_data": "Sinhronizovanje oflajn podataka...",
