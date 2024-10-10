@@ -347,8 +347,13 @@ const ObservationTime = () => {
           }}
           action={() => {
             handleSubmit(onSubmit)();
-            setIsSaveChangesModalOpen(false);
-            router.back();
+            // if no errors occured, go back
+            // otherwise, close this modal and the unable to save one will be displayed from the useEffect
+            if (!setIsUnableToSaveObservationTime) {
+              router.back();
+            } else {
+              setIsSaveChangesModalOpen(false);
+            }
           }}
         />
       )}

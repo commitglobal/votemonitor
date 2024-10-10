@@ -139,6 +139,8 @@ export const DateInput: React.FC<DateInputProps> = ({
           value: value || new Date(),
           onChange: onDateChange,
           is24Hour: true,
+          minimumDate: minimumDate || undefined,
+          maximumDate: maximumDate || undefined,
         })
       )}
     </XStack>
