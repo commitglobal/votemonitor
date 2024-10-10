@@ -538,8 +538,10 @@
   "network_banner": {
     "online": "Aplicația este online. Toate răspunsurile au fost trimise către server.",
     "offline": "Fără conexiune la internet. Răspunsurile se vor salva local.",
+    "offline_citizen": "Fără conexiune la internet. Trebuie să ai conexiune la internet pentru a trimite formulare.",
     "more_details": "Mai multe detalii",
-    "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări."
+    "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări.",
+    "offline_warning_citizen": "TODO: Se pare că nu ai conexiune la internet în acest moment. Pentru a completa formularul, trebuie să ai conexiune la internet."
   },
   "sync": {
     "sync_data": "Se sincronizează datele offline...",

@@ -652,8 +652,10 @@
   "network_banner": {
     "online": "App online. All answers sent to server.",
     "offline": "Offline mode. Saving answers locally.",
+    "offline_citizen": "Offline mode. You need internet to submit the form.",
     "more_details": "More Details",
-    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports."
+    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports.",
+    "offline_warning_citizen": "TODO: It looks like you're currently offline. In order to submit the form, you need to be online."
   },
   "sync": {
     "sync_data": "Synchronizing offline data...",

@@ -538,8 +538,10 @@
   "network_banner": {
     "online": "Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.",
     "offline": "Tryb offline. Dane zachowane lokalnie.",
+    "offline_citizen": "TODO: Tryb offline. Potrzebujesz internetu, aby wypełnić formularz.",
     "more_details": "Więcej szczegółów",
-    "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
+    "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty.",
+    "offline_warning_citizen": "TODO: Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu."
   },
   "sync": {
     "sync_data": "Synchronizowanie danych offline...",

@@ -15,7 +15,7 @@ const CitizenFormSuccess = () => {
     >
       <YStack gap="$xxs" padding="$md" flex={1} justifyContent="center" alignItems="center">
         <Typography>Submitted successfully</Typography>
-        <Button onPress={() => router.replace("/citizen/main")}>Go back</Button>
+        <Button onPress={() => router.back()}>Go back</Button>
       </YStack>
     </Screen>
   );

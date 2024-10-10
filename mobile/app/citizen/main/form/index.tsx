@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useGetCitizenReportingFormById } from "../../../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import { Keyboard, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
@@ -23,9 +23,11 @@ import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import WizzardControls from "../../../../components/WizzardControls";
 import { usePostCitizenFormMutation } from "../../../../services/mutations/citizen/post-citizen-form.mutation";
 import * as Crypto from "expo-crypto";
+import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
+import Toast from "react-native-toast-message";
 
 const CitizenForm = () => {
-  const { t } = useTranslation(["polling_station_form_wizard", "common"]); // TODO: change with citizen
+  const { t } = useTranslation(["polling_station_form_wizard", "common", "network_banner"]); // TODO: change with citizen
 
   const language = "EN"; // TODO: remove this later
   const router = useRouter();
@@ -33,6 +35,15 @@ const CitizenForm = () => {
   const textareaRef = useRef(null);
 
   const { selectedElectionRound } = useCitizenUserData();
+  const { isOnline } = useNetInfoContext();
+
+  if (!selectedElectionRound) {
+    return (
+      <Typography>
+        [CitizenForm] There is no selected election round - Incorrect page params
+      </Typography>
+    );
+  }
 
   const {
     formId,
@@ -167,6 +178,14 @@ const CitizenForm = () => {
         goToNextQuestion(nextQuestion);
       } else {
         console.log("🔵 [CitizenForm] submit form", updatedAnswers);
+        if (!isOnline) {
+          return Toast.show({
+            type: "error",
+            text2: t("offline_citizen", { ns: "network_banner" }),
+            visibilityTime: 5000,
+            text2Style: { textAlign: "center" },
+          });
+        }
         if (currentForm) {
           postCitizenForm(
             {
@@ -181,7 +200,7 @@ const CitizenForm = () => {
                 console.log(
                   "🔵 [CitizenForm] form submitted successfully, redirect to success page",
                 );
-                router.push("/citizen/main/form/success");
+                router.replace("/citizen/main/form/success");
               },
               onError: (error) => {
                 console.log("🔴 [CitizenForm] error submitting form", error);
@@ -229,31 +248,6 @@ const CitizenForm = () => {
             current={activeQuestion?.indexInDisplayedQuestions + 1}
             total={displayedQuestions?.length || 0}
           />
-
-          <XStack
-            justifyContent="flex-end"
-            alignSelf="flex-end"
-            paddingLeft="$md"
-            paddingBottom="$md"
-            pressStyle={{ opacity: 0.5 }}
-            onPress={() => {
-              Keyboard.dismiss();
-              // setDeletingAnswer(true);
-            }}
-          >
-            <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
-          </XStack>
-          {/* delete answer button */}
-          {/* {deletingAnswer && (
-            <WarningDialog
-              title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
-              description={t("warning_modal.question.description")}
-              actionBtnText={t("warning_modal.question.actions.clear")}
-              cancelBtnText={t("warning_modal.question.actions.cancel")}
-              action={onClearForm}
-              onCancel={() => setDeletingAnswer(false)}
-            />
-          )} */}
         </YStack>
 
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>

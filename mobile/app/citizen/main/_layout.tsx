@@ -14,6 +14,7 @@ export default function MainLayout() {
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="select-location" options={{ headerShown: false }} />
       <Stack.Screen name="form" options={{ headerShown: false }} />
+      <Stack.Screen name="about-votemonitor" options={{ headerShown: false }} />
     </Stack>
   );
 }
