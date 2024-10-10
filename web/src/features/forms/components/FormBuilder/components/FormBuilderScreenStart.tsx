@@ -1,5 +1,5 @@
-import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ClipboardDocumentListIcon, DocumentPlusIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
@@ -67,11 +67,7 @@ export const FormBuilderScreenStart: FC = () => {
     <Layout
       title={t('title')}
       subtitle={t('subtitle')}
-      backButton={
-        <Link title='Go back' to='/election-event/$tab' params={{ tab: 'observer-forms' }}>
-          <BackButtonIcon />
-        </Link>
-      }>
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
         <FormBuilderChoice type='scratch' />
         <FormBuilderChoice type='template' />

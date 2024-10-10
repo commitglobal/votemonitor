@@ -1,4 +1,4 @@
-import { FormBuilderScreenReuse } from '@/features/election-event/components/FormBuilder/components/FormBuilderScreenReuse';
+import { FormBuilderScreenReuse } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenReuse';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 

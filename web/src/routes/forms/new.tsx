@@ -1,4 +1,4 @@
-import { FormBuilderScreenStart } from '@/features/election-event/components/FormBuilder/components/FormBuilderScreenStart';
+import { FormBuilderScreenStart } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenStart';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
