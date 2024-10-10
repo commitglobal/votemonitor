@@ -42,7 +42,7 @@ const PollingStationCard = (props: PollingStationCardProps) => {
             justifyContent="center"
             alignItems="center"
           >
-            <Icon icon="bin" color="transparent" />
+            <Icon icon="bin" color="$red10" />
           </YStack>
         </XStack>
 

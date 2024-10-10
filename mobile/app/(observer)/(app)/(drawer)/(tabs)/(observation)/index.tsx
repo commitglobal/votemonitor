@@ -81,12 +81,7 @@ const Index = () => {
           <FormList
             ListHeaderComponent={
               <YStack>
-                <PollingStationGeneral
-                  electionRoundId={activeElectionRound.id}
-                  pollingStationId={selectedPollingStation.pollingStationId}
-                  psiData={psiData}
-                  psiFormQuestions={psiFormQuestions}
-                />
+                <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
                 <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
                   {t("forms.heading")}
                 </Typography>
