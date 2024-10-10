@@ -138,10 +138,10 @@ const ObservationTime = () => {
   // if there are breaks errors, display modal
   useEffect(() => {
     console.log("errors ⛔️", errors);
-    if (Object.keys(errors).includes("breaks")) {
+    if (Object.keys(errors).includes("breaks") || Object.keys(errors).includes("departureTime")) {
       setIsUnableToSaveObservationTime(true);
     }
-  }, [errors.breaks]);
+  }, [errors.breaks, errors.departureTime]);
 
   const handleGoBack = () => {
     if (isDirty) {
@@ -253,6 +253,16 @@ const ObservationTime = () => {
             <Controller
               name="departureTime"
               control={control}
+              rules={{
+                validate: {
+                  departureTimeAfterArrivalTime: (value) => {
+                    if (!value) return true;
+                    const { arrivalTime } = getValues();
+                    if (!arrivalTime) return true;
+                    return value >= arrivalTime;
+                  },
+                },
+              }}
               render={({ field: { onChange, value } }) => (
                 <DateFormInput
                   title={t("polling_stations_information.observation_time.departure_time")}
