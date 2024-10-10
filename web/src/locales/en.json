@@ -272,5 +272,74 @@
       "goToNextPage": "Go to next page",
       "goToLastPage": "Go to last page"
     }
+  },
+  "formSubmissions": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "incidentReports": {
+    "locationType": {
+      "PollingStation": "Polling station",
+      "OtherLocation": "Other locations"
+    },
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "citizenReports": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "quickReports": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    },
+    "locationType": {
+      "NotRelatedToAPollingStation": "Not Related To A Polling Station",
+      "OtherPollingStation": "Other Polling Station",
+      "VisitedPollingStation": "Visited Polling Station"
+    },
+    "incidentCategory": {
+      "PhysicalViolenceIntimidationPressure": "Physical violence/intimidation/pressure",
+      "CampaigningAtPollingStation": "Campaigning at the polling station",
+      "RestrictionOfObserversRights": "Restriction of observer's (representative's/media) rights",
+      "UnauthorizedPersonsAtPollingStation": "Unauthorized person(s) at the polling station",
+      "ViolationDuringVoterVerificationProcess": "Violation during voter verification process",
+      "VotingWithImproperDocumentation": "Voting with improper documentation",
+      "IllegalRestrictionOfVotersRightToVote": "Illegal restriction of voter's right to vote",
+      "DamagingOrSeizingElectionMaterials": "Damaging of/seizing election materials",
+      "ImproperFilingOrHandlingOfElectionDocumentation": "Improper filing/handling of election documentation",
+      "BallotStuffing": "Ballot stuffing",
+      "ViolationsRelatedToControlPaper": "Violations related to the control paper",
+      "NotCheckingVoterIdentificationSafeguardMeasures": "Not checking the voter identification safeguard measures",
+      "VotingWithoutVoterIdentificationSafeguardMeasures": "Voting without voter identification safeguard measures",
+      "BreachOfSecrecyOfVote": "Breach of secrecy of vote",
+      "ViolationsRelatedToMobileBallotBox": "Violations related to the mobile ballot box",
+      "NumberOfBallotsExceedsNumberOfVoters": "Number of ballots exceed the number of voters",
+      "ImproperInvalidationOrValidationOfBallots": "Improper invalidation / validation of ballots",
+      "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsification / improper correction of the final protocol",
+      "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Refusal to issue a copy of the final protocol/issuing an improper copy",
+      "ImproperFillingInOfFinalProtocol": "Improper filling in of the final protocol",
+      "ViolationOfSealingProceduresOfElectionMaterials": "Violation of the sealing procedures of the election materials",
+      "ViolationsRelatedToVoterLists": "Violations related to the voter lists",
+      "Other": "Other"
+    }
+  },
+  "enums": {
+    "questionsAnswered": {
+      "None": "None",
+      "Some": "Some",
+      "All": "All"
+    }
   }
 }

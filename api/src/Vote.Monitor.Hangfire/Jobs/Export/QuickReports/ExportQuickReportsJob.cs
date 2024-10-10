@@ -90,6 +90,7 @@ public class ExportQuickReportsJob(VoteMonitorContext context,
         SELECT
             QR."Id",
             QR."QuickReportLocationType",
+            QR."IncidentCategory",
             QR."MonitoringObserverId",
             COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS "Timestamp",
             QR."Title",
