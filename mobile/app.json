@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Offline check on citizen",
+      "message": "More screen",
       "updateCritical": 48,
-      "updateVersion": 50
+      "updateVersion": 51
     },
     "owner": "commit-global",
     "runtimeVersion": {
