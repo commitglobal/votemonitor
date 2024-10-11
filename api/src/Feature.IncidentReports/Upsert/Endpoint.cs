@@ -23,7 +23,8 @@ public class Endpoint(
         Summary(s => { s.Summary = "Upserts incident report"; });
     }
 
-    public override async Task<Results<Ok<IncidentReportModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<IncidentReportModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
@@ -63,16 +64,17 @@ public class Endpoint(
 
         return incidentReport is null
             ? await AddIncidentReportAsync(req, form, answers, ct)
-            : await UpdateIncidentReportAsync(form, incidentReport, answers, ct);
+            : await UpdateIncidentReportAsync(form, incidentReport, answers, req.IsCompleted, ct);
     }
 
     private async Task<Results<Ok<IncidentReportModel>, NotFound>> UpdateIncidentReportAsync(
         FormAggregate form,
         IncidentReport incidentReport,
         List<BaseAnswer>? answers,
+        bool isCompleted,
         CancellationToken ct)
     {
-        incidentReport = form.FillIn(incidentReport, answers);
+        incidentReport = form.FillIn(incidentReport, answers, isCompleted);
         await repository.UpdateAsync(incidentReport, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
@@ -105,7 +107,7 @@ public class Endpoint(
         }
 
         var incidentReport = form.CreateIncidentReport(req.Id, monitoringObserver, req.LocationType,
-            req.LocationDescription, req.PollingStationId, answers);
+            req.LocationDescription, req.PollingStationId, answers, req.IsCompleted);
         await repository.AddAsync(incidentReport, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));

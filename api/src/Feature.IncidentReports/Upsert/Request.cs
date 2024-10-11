@@ -16,4 +16,5 @@ public class Request
     public Guid? PollingStationId { get; set; }
     public string? LocationDescription { get; set; }
     public List<BaseAnswerRequest>? Answers { get; set; }
+    public bool IsCompleted { get; set; }
 }

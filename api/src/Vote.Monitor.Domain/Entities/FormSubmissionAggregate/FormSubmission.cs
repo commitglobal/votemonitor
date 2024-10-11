@@ -17,6 +17,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
+    public bool IsCompleted { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private FormSubmission(
@@ -26,7 +27,8 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) : base(Guid.NewGuid())
+        int numberOfFlaggedAnswers,
+        bool isCompleted) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -40,6 +42,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
+        IsCompleted = isCompleted;
     }
 
     internal static FormSubmission Create(
@@ -49,16 +52,26 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
-        int numberOfFlaggedAnswers) =>
-        new(electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered,
-            numberOfFlaggedAnswers);
+        int numberOfFlaggedAnswers,
+        bool isCompleted) =>
+        new(electionRound,
+            pollingStation,
+            monitoringObserver,
+            form,
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers,
+            isCompleted);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, 
+        int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers,
+        bool isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        isCompleted = isCompleted;
     }
 
     public void ClearAnswers()

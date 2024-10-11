@@ -166,14 +166,14 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         return submission;
     }
 
-    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers)
+    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool isCompleted)
     {
         return BaseFillIn(
             formSubmission,
             answers,
             submission => submission.ClearAnswers(),
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
+                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted)
         );
     }
 
@@ -189,7 +189,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks, bool isCompleted)
     {
         var pollingStationInformation = BaseFillIn(
             psiSubmission,
@@ -197,16 +197,16 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
             submission => submission.ClearAnswers(),
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
                 submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
-                    departureTime, breaks)
+                    departureTime, breaks, isCompleted)
         );
 
         pollingStationInformation.UpdateTimesOfStay(arrivalTime, departureTime, breaks);
 
         return pollingStationInformation;
     }
-    
+
     public PollingStationInformation FillInV2(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks, bool isCompleted)
     {
         var pollingStationInformation = BaseFillIn(
             psiSubmission,
@@ -214,7 +214,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
             submission => submission.ClearAnswers(),
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
                 submission.UpdateAnswersV2(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
-                    departureTime, breaks)
+                    departureTime, breaks, isCompleted)
         );
 
         pollingStationInformation.UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
@@ -223,14 +223,14 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
 
-    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers)
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool isCompleted)
     {
         return BaseFillIn(
             incidentReport,
             answers,
             report => report.ClearAnswers(),
             (report, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                report.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
+                report.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted)
         );
     }
 

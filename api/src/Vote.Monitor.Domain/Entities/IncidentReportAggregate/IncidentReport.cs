@@ -30,6 +30,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
     private readonly List<IncidentReportAttachment> _attachments = new();
     public virtual IReadOnlyList<IncidentReportAttachment> Attachments => _attachments.ToList().AsReadOnly();
 
+    public bool IsCompleted { get; private set; }
+
     private IncidentReport(
         Guid incidentReportId,
         Guid electionRoundId,
@@ -40,7 +42,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         Guid formId,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) : base(incidentReportId)
+        int numberOfFlaggedAnswers,
+        bool isCompleted) : base(incidentReportId)
     {
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
@@ -52,6 +55,7 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         LocationType = locationType;
         LocationDescription = locationDescription;
         FollowUpStatus = IncidentReportFollowUpStatus.NotApplicable;
+        IsCompleted = isCompleted;
     }
 
     internal static IncidentReport Create(
@@ -64,7 +68,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         Guid formId,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
-        int numberOfFlaggedAnswers)
+        int numberOfFlaggedAnswers,
+        bool isCompleted)
     {
         if (locationType == IncidentReportLocationType.PollingStation)
         {
@@ -74,11 +79,17 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
                     "PollingStation is mandatory when location type is PollingStation");
             }
 
-            return new(incidentReportId, electionRoundId, monitoringObserver.Id, IncidentReportLocationType.PollingStation,
-                pollingStationId, null,
+            return new(incidentReportId,
+                electionRoundId,
+                monitoringObserver.Id,
+                IncidentReportLocationType.PollingStation,
+                pollingStationId,
+                null,
                 formId,
-                answers, numberOfQuestionAnswered,
-                numberOfFlaggedAnswers);
+                answers,
+                numberOfQuestionAnswered,
+                numberOfFlaggedAnswers,
+                isCompleted);
         }
 
         if (locationType == IncidentReportLocationType.OtherLocation)
@@ -89,24 +100,32 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
                     "LocationDescription is mandatory when location type is OtherLocation");
             }
 
-            return new(incidentReportId, electionRoundId, monitoringObserver.Id, IncidentReportLocationType.OtherLocation,
+            return new(incidentReportId,
+                electionRoundId,
+                monitoringObserver.Id,
+                IncidentReportLocationType.OtherLocation,
                 null,
                 locationDescription,
                 formId,
-                answers, numberOfQuestionAnswered,
-                numberOfFlaggedAnswers);
+                answers,
+                numberOfQuestionAnswered,
+                numberOfFlaggedAnswers,
+                isCompleted);
         }
 
         throw new ArgumentNullException(nameof(locationType),
             $"Unknown location type '{locationType}");
     }
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers,
+        int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers,
+        bool isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        IsCompleted = isCompleted;
     }
 
     public void ClearAnswers()

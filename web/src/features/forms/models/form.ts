@@ -6,6 +6,12 @@ export enum FormStatus {
     Obsolete = 'Obsolete',
 }
 
+export const FormStatusList: FormStatus[] = [
+    FormStatus.Drafted,
+    FormStatus.Published,
+    FormStatus.Obsolete
+]
+
 export interface FormBase {
     id: string;
     formType: FormType;
@@ -15,8 +21,8 @@ export interface FormBase {
     description?: TranslatedString;
     status: FormStatus;
     languages: string[];
-    createdOn: string;
-    lastModifiedOn: string | null;
+    lastModifiedOn: string;
+    lastModifiedBy: string;
     numberOfQuestions: number;
     languagesTranslationStatus: LanguagesTranslationStatus;
 }

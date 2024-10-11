@@ -2,18 +2,21 @@ import { useSetPrevSearch } from '@/common/prev-search-store';
 import { CitizenReportFollowUpStatus, FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function CitizenReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();
+  const { filteringIsActive } = useFilteringContainer();
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
@@ -41,8 +44,6 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
     },
     [navigateHandler]
   );
-
-  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -90,11 +91,11 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
       </Select>
 
       <ResetFiltersButton
-        disabled={!isFiltered}
+        disabled={!isFiltering}
         params={{ [FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'citizen-reports' }}
       />
 
-      {isFiltered && (
+      {isFiltering && (
         <div className='flex flex-wrap gap-2 col-span-full'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />

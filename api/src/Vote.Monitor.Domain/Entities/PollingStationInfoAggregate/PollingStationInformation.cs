@@ -23,6 +23,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
     public IReadOnlyList<ObservationBreak> Breaks { get; private set; } = new List<ObservationBreak>().AsReadOnly();
+    public bool IsCompleted { get; private set; }
 
     private PollingStationInformation(
         ElectionRound electionRound,
@@ -35,6 +36,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak> breaks,
+        bool isCompleted,
         int version = 1) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
@@ -49,7 +51,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-
+        IsCompleted = isCompleted;
+        
         if (version == 1)
         {
             UpdateTimesOfStay(arrivalTime, departureTime, breaks);
@@ -71,9 +74,10 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) =>
+        List<ObservationBreak> breaks,
+        bool isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
 
     internal static PollingStationInformation CreateV2(
         ElectionRound electionRound,
@@ -85,9 +89,10 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) =>
+        List<ObservationBreak> breaks,
+        bool isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, 2);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted, 2);
 
     [Obsolete("Will be removed after 27.10.2024")]
     internal void UpdateAnswers(IEnumerable<BaseAnswer> answers,
@@ -95,12 +100,14 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak> breaks,
+        bool isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-
+        IsCompleted = isCompleted;
+        
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
@@ -109,12 +116,14 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak> breaks,
+        bool isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-
+        IsCompleted = isCompleted;
+        
         UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
     }
 
@@ -165,8 +174,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     {
         FollowUpStatus = followUpStatus;
     }
-
-
+    
 #pragma warning disable CS8618 // Required by Entity Framework
 
     private PollingStationInformation()

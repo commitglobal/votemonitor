@@ -23,7 +23,8 @@ public class IncidentReportModel
 
     public NoteModel[] Notes { get; init; } = [];
     public AttachmentModel[] Attachments { get; init; } = [];
-    public DateTime Timestamp { get; set; }
+    public DateTime Timestamp { get; init; }
+    public bool IsCompleted { get; init; }
 
     public static IncidentReportModel FromEntity(IncidentReport entity) => new()
     {
@@ -36,6 +37,7 @@ public class IncidentReportModel
         PollingStationId = entity.PollingStationId,
         LocationDescription = entity.LocationDescription,
         LocationType = entity.LocationType,
-        Timestamp = entity.LastModifiedOn ?? entity.CreatedOn
+        Timestamp = entity.LastModifiedOn ?? entity.CreatedOn,
+        IsCompleted = entity.IsCompleted
     };
 }

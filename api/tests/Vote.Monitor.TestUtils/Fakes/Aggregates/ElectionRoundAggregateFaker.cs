@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.CountryAggregate;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
@@ -21,12 +20,10 @@ public sealed class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggr
     {
         UsePrivateConstructor();
 
-        var currentUtcTimeProvider = new CurrentUtcTimeProvider();
-
         var country = countryId.HasValue
             ? CountriesList.Get(countryId.Value)!.ToEntity()
-            : new Country("Test country", "Fake test country", "FC", "FTC", "999");
-
+            : CountriesList.AD.ToEntity();
+        
         RuleFor(f => f.Status, f => status ?? f.PickRandom(_statuses));
         RuleFor(f => f.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
         RuleFor(f => f.LastModifiedOn, _baseModifiedDate.AddHours(index ?? 0));

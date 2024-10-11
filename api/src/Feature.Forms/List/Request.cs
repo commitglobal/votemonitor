@@ -7,19 +7,18 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.Forms.List;
 
-public class Request: BaseSortPaginatedRequest
+public class Request : BaseSortPaginatedRequest
 {
     public Guid ElectionRoundId { get; set; }
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    [QueryParam]
-    public string? CodeFilter { get; set; }
+    [QueryParam] public string? SearchText { get; set; }
 
-    [QueryParam]
-    public string? LanguageCode { get; set; }
+    [QueryParam] public string? LanguageCode { get; set; }
 
-    [QueryParam]
-    public FormStatus? Status { get; set; }
+    [QueryParam] public FormStatus? FormStatusFilter { get; set; }
+
+    [QueryParam] public FormType? TypeFilter { get; set; }
 }

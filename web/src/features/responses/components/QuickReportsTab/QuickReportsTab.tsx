@@ -15,12 +15,11 @@ import {
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useQuickReports } from '../../hooks/quick-reports';
 import { ExportedDataType } from '../../models/data-export';
 import { IncidentCategoryList, QuickReportLocationType } from '../../models/quick-report';
@@ -41,12 +40,9 @@ export function QuickReportsTab(): FunctionComponent {
 
   const columnsVisibility = useQuickReportsColumnsVisibility();
   const toggleColumns = useQuickReportsToggleColumn();
+  const { filteringIsActive } = useFilteringContainer();
 
-  const { t } = useTranslation();
-
-  const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
-  );
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -83,8 +79,6 @@ export function QuickReportsTab(): FunctionComponent {
     },
     [navigate, setPrevSearch]
   );
-
-  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {
@@ -205,9 +199,9 @@ export function QuickReportsTab(): FunctionComponent {
             </Select>
 
             <PollingStationsFilters />
-            <ResetFiltersButton disabled={!isFiltered} params={{ tag: 'quick-reports' }} />
+            <ResetFiltersButton disabled={!isFiltering} params={{ tag: 'quick-reports' }} />
 
-            {isFiltered && (
+            {isFiltering && (
               <div className='flex flex-wrap gap-2 col-span-full'>
                 {search.quickReportFollowUpStatus && (
                   <FilterBadge

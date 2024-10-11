@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { IncidentReportLocationType } from '../../models/incident-report';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import {
@@ -15,11 +15,14 @@ import {
   mapQuestionsAnswered,
 } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
 export function IncidentReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();
+  const { filteringIsActive } = useFilteringContainer();
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
@@ -47,8 +50,6 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
     },
     [navigateHandler]
   );
-
-  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -181,11 +182,11 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
       <PollingStationsFilters />
 
       <ResetFiltersButton
-        disabled={!isFiltered}
+        disabled={!isFiltering}
         params={{ [FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'incident-reports' }}
       />
 
-      {isFiltered && (
+      {isFiltering && (
         <div className='flex flex-wrap gap-2 col-span-full'>
           {search.incidentReportLocationType && (
             <FilterBadge

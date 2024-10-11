@@ -59,6 +59,7 @@ public class Endpoint(
                 LocationDescription = incidentReport.LocationDescription,
 
                 PollingStation = incidentReport.PollingStation,
+                IsCompleted = incidentReport.IsCompleted,
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -111,6 +112,7 @@ public class Endpoint(
             PollingStationLevel4 = incidentReport.PollingStation?.Level4,
             PollingStationLevel5 = incidentReport.PollingStation?.Level5,
             PollingStationNumber = incidentReport.PollingStation?.Number,
+            IsCompleted = incidentReport.IsCompleted
         };
 
         return TypedResults.Ok(response);
