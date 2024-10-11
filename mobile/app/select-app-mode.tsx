@@ -14,21 +14,21 @@ import { useRouter } from "expo-router";
 export default function SelectAppMode() {
   const { t } = useTranslation("select_app_mode");
   const insets = useSafeAreaInsets();
-  const [appMode, setAppMode] = useState<AppMode>(AppMode.CITIZEN);
-  const { setAppMode: setAppModeContext } = useAppMode();
+  const { appMode, setAppMode: setAppModeContext } = useAppMode();
+  const [appModeLocal, setAppModeLocal] = useState<AppMode>(appMode || AppMode.CITIZEN);
   const router = useRouter();
 
   const setAppModeToCitizen = () => {
-    setAppMode(AppMode.CITIZEN);
+    setAppModeLocal(AppMode.CITIZEN);
   };
 
   const setAppModeToAccreditedObserver = () => {
-    setAppMode(AppMode.OBSERVER);
+    setAppModeLocal(AppMode.OBSERVER);
   };
 
   const handleSetAppModeContext = () => {
-    setAppModeContext(appMode);
-    router.replace(appMode === AppMode.CITIZEN ? "citizen" : "(observer)/(app)");
+    setAppModeContext(appModeLocal);
+    router.replace(appModeLocal === AppMode.CITIZEN ? "citizen" : "(observer)/(app)");
   };
 
   return (
@@ -68,13 +68,13 @@ export default function SelectAppMode() {
             <Selector
               title={t("accredited_observer.title")}
               description={t("accredited_observer.description")}
-              selected={appMode === AppMode.OBSERVER}
+              selected={appModeLocal === AppMode.OBSERVER}
               onPress={setAppModeToAccreditedObserver}
             />
             <Selector
               title={t("citizen.title")}
               description={t("citizen.description")}
-              selected={appMode === AppMode.CITIZEN}
+              selected={appModeLocal === AppMode.CITIZEN}
               onPress={setAppModeToCitizen}
             />
           </YStack>

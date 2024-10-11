@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { YStack, XStack } from "tamagui";
 import { Typography } from "./Typography";
 import Card from "./Card";
@@ -7,8 +7,18 @@ import { FormAPIModel } from "../services/definitions.api";
 import i18n from "../common/config/i18n";
 
 export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () => void }) => {
-  const currentLanguage =
-    i18n.language.toLocaleUpperCase() || form.name[Object.keys(form?.name)[0]];
+  const currentLanguage = useMemo(
+    () => i18n.language.toLocaleUpperCase() || Object.keys(form?.name)[0],
+    [form],
+  );
+
+  const formName = useMemo(() => {
+    return form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]];
+  }, [form, currentLanguage]);
+
+  const formDescription = useMemo(() => {
+    return form.description[currentLanguage] || form.description[Object.keys(form?.description)[0]];
+  }, [form, currentLanguage]);
 
   return (
     <Card onPress={onClick}>
@@ -29,13 +39,13 @@ export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () 
         {/* text */}
         <YStack flex={1} gap="$xxs" justifyContent="space-between">
           <Typography preset="body2" color="$gray9">
-            {form.name[currentLanguage]}
+            {formName}
           </Typography>
 
           {/* footer */}
           <XStack flex={1}>
             <Typography preset="helper" color="$gray5" fontWeight="400" flex={1} numberOfLines={2}>
-              {form.description.currentLanguage}
+              {formDescription}
             </Typography>
 
             <Icon
