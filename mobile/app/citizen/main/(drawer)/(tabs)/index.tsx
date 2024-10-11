@@ -66,8 +66,6 @@ export default function CitizenReportIssue() {
     isRefetching: isRefetchingCitizenReportingForms,
   } = useGetCitizenReportingForms(selectedElectionRound);
 
-  // console.log("👀 citizenReportingForms", JSON.stringify(citizenReportingForms, null, 2));
-
   const {
     isLoading: isLoadingCitizenLocations,
     isError: isErrorCitizenLocations,
