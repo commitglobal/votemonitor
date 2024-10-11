@@ -2,15 +2,21 @@ import Header from "../../../../../components/Header";
 import { Screen } from "../../../../../components/Screen";
 import { Icon } from "../../../../../components/Icon";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { Typography } from "../../../../../components/Typography";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import InfoModal from "../../../../../components/InfoModal";
+import { useCitizenUpdates } from "../../../../../services/queries/notifications.query";
+import NewsList from "../../../../../components/NewsList";
+import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
 
 const Updates = () => {
   const { t } = useTranslation("updates");
   const [isOpenInfoModal, setIsOpenInfoModal] = useState<boolean>(false);
   const navigation = useNavigation();
+  const { selectedElectionRound } = useCitizenUserData();
+  const { data, isLoading, isRefetching, refetch } = useCitizenUpdates(
+    selectedElectionRound || undefined,
+  );
 
   const handleOpenInfoModal = () => {
     setIsOpenInfoModal(true);
@@ -21,7 +27,7 @@ const Updates = () => {
   };
 
   return (
-    <Screen preset="fixed">
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={t("title")}
         titleColor="white"
@@ -31,7 +37,13 @@ const Updates = () => {
         rightIcon={<Icon icon="infoCircle" color="white" width={24} height={24} />}
         onRightPress={handleOpenInfoModal}
       />
-      <Typography>Updates</Typography>
+      <NewsList
+        isLoading={isLoading}
+        news={data?.notifications || []}
+        isRefetching={isRefetching}
+        refetch={refetch}
+        translationKey="updates"
+      />
       {isOpenInfoModal && (
         <InfoModal
           paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}

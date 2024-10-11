@@ -20,12 +20,11 @@ import InfoModal from "../../../../../components/InfoModal";
 
 const InboxList = () => {
   const queryClient = useQueryClient();
-  const { i18n } = useTranslation("inbox");
-  const [sliceNumber, setSliceNumber] = useState(10);
   const { activeElectionRound } = useUserData();
   const { data, isLoading, isRefetching, refetch } = useNotifications(activeElectionRound?.id);
 
   const notifications = useMemo(() => data?.notifications || [], [data]);
+
   const unreadNotificationIds = useMemo(
     () =>
       notifications
@@ -61,15 +60,6 @@ const InboxList = () => {
     }, [unreadNotificationIds, activeElectionRound, readNotifications, queryClient]),
   );
 
-  const loadMore = () => {
-    setSliceNumber((sliceNum) => sliceNum + 10);
-  };
-
-  const displayedNotifications = useMemo(
-    () => notifications?.slice(0, sliceNumber) || [],
-    [notifications, sliceNumber, i18n.language],
-  );
-
   useAppState((activating: boolean) => {
     if (activating) {
       queryClient.invalidateQueries({
@@ -81,8 +71,7 @@ const InboxList = () => {
   return (
     <NewsList
       isLoading={isLoading}
-      news={displayedNotifications}
-      loadMore={loadMore}
+      news={notifications}
       isRefetching={isRefetching}
       refetch={refetch}
       translationKey="inbox"
