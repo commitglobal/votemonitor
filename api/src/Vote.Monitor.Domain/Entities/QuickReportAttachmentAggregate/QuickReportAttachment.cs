@@ -24,7 +24,7 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool isCompleted) : base(id)
+        bool? isCompleted) : base(id)
     {
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
@@ -33,7 +33,10 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         MimeType = mimeType;
         FilePath = filePath;
         IsDeleted = false;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
 
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";

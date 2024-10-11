@@ -71,7 +71,7 @@ public class Endpoint(
         FormAggregate form,
         IncidentReport incidentReport,
         List<BaseAnswer>? answers,
-        bool isCompleted,
+        bool? isCompleted,
         CancellationToken ct)
     {
         incidentReport = form.FillIn(incidentReport, answers, isCompleted);

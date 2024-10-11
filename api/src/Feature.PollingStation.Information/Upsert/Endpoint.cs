@@ -70,7 +70,7 @@ public class Endpoint(
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
 
         pollingStationInformation = form.FillIn(pollingStationInformation, answers, req.ArrivalTime, req.DepartureTime,
             observationBreaks, req.IsCompleted);
@@ -102,10 +102,11 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
         var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver,
             req.ArrivalTime, req.DepartureTime, answers,
             observationBreaks, req.IsCompleted);
+        
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

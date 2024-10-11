@@ -43,7 +43,7 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted) : base(incidentReportId)
+        bool? isCompleted) : base(incidentReportId)
     {
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
@@ -55,7 +55,10 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         LocationType = locationType;
         LocationDescription = locationDescription;
         FollowUpStatus = IncidentReportFollowUpStatus.NotApplicable;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
     }
 
     internal static IncidentReport Create(
@@ -69,7 +72,7 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted)
+        bool? isCompleted)
     {
         if (locationType == IncidentReportLocationType.PollingStation)
         {
@@ -120,12 +123,15 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
     internal void UpdateAnswers(IEnumerable<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted)
+        bool? isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
     }
 
     public void ClearAnswers()
