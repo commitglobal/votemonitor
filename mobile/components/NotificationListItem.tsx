@@ -56,7 +56,7 @@ const NotificationListItem = ({ notification }: { notification: Notification }) 
 
 export default NotificationListItem;
 
-const tagsStyles = {
+export const tagsStyles = {
   body: {
     color: "hsl(240, 5%, 34%)",
   },

@@ -2,32 +2,32 @@ import React, { useState, useMemo } from "react";
 import { Icon } from "../../../../../components/Icon";
 import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-// import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { useCitizenGuides } from "../../../../../services/queries/guides.query";
 import ResourcesGuidesList from "../../../../../components/ResourcesList";
 import InfoModal from "../../../../../components/InfoModal";
 import { YStack } from "tamagui";
 import SearchInput from "../../../../../components/SearchInput";
-import { guideType } from "../../../../../services/api/get-guides.api";
+import { Guide, guideType } from "../../../../../services/api/get-guides.api";
 
 export default function Resources() {
   const navigation = useNavigation();
+  const router = useRouter();
   const { t } = useTranslation(["resources", "common"]);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // const { selectedElectionRound } = useCitizenUserData();
+  const { selectedElectionRound } = useCitizenUserData();
 
   const {
     data: resources,
     isLoading,
     refetch,
     isRefetching,
-    // } = useCitizenGuides(selectedElectionRound);
-  } = useCitizenGuides("43b91c74-6d05-4fd1-bd93-dfe203c83c53");
+  } = useCitizenGuides(selectedElectionRound);
 
   const filteredResources = useMemo(() => {
     return resources?.filter(
@@ -49,6 +49,12 @@ export default function Resources() {
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
+  };
+
+  const handleResourcePress = (resource: Guide) => {
+    if (resource.guideType === guideType.TEXT) {
+      router.push(`/citizen/main/resource/${resource.id}`);
+    }
   };
 
   return (
@@ -74,6 +80,7 @@ export default function Resources() {
         refetch={refetch}
         translationKey="resources"
         emptyContainerMarginTop="30%"
+        onResourcePress={handleResourcePress}
       />
       {isOpenInfoModal && (
         <InfoModal paragraphs={[t("info")]} handleCloseInfoModal={handleCloseInfoModal} />

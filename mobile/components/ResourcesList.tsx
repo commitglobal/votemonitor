@@ -61,6 +61,7 @@ interface ResourcesListProps {
   header?: JSX.Element;
   translationKey?: string;
   emptyContainerMarginTop?: string;
+  onResourcePress?: (resource: Guide) => void;
 }
 
 const ResourcesGuidesList = ({
@@ -71,6 +72,7 @@ const ResourcesGuidesList = ({
   header,
   translationKey = "guides",
   emptyContainerMarginTop,
+  onResourcePress,
 }: ResourcesListProps) => {
   const { width } = useWindowDimensions();
 
@@ -94,7 +96,14 @@ const ResourcesGuidesList = ({
         }
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
         estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-        renderItem={({ item, index }) => <GuideCard key={index} guide={item} marginBottom="$md" />}
+        renderItem={({ item, index }) => (
+          <GuideCard
+            key={index}
+            guide={item}
+            marginBottom="$md"
+            onPress={() => onResourcePress && onResourcePress(item)}
+          />
+        )}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       />
     </YStack>
