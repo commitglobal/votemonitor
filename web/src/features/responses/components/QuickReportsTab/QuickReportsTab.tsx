@@ -15,20 +15,22 @@ import {
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuickReports } from '../../hooks/quick-reports';
 import { ExportedDataType } from '../../models/data-export';
+import { IncidentCategoryList, QuickReportLocationType } from '../../models/quick-report';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '../../store/column-visibility';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions } from '../../utils/column-visibility-options';
-import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
+import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -39,6 +41,8 @@ export function QuickReportsTab(): FunctionComponent {
 
   const columnsVisibility = useQuickReportsColumnsVisibility();
   const toggleColumns = useQuickReportsToggleColumn();
+
+  const { t } = useTranslation();
 
   const [isFiltering, setIsFiltering] = useState(() =>
     Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
@@ -55,6 +59,7 @@ export function QuickReportsTab(): FunctionComponent {
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['quickReportFollowUpStatus', debouncedSearch.quickReportFollowUpStatus],
       ['quickReportLocationType', debouncedSearch.quickReportLocationType],
+      ['incidentCategory', debouncedSearch.incidentCategory],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as QuickReportsSearchParams;
@@ -144,44 +149,63 @@ export function QuickReportsTab(): FunctionComponent {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value='NotRelatedToAPollingStation'>Not related to a pollingStation</SelectItem>
-                  <SelectItem value='OtherPollingStation'>Other polling station</SelectItem>
-                  <SelectItem value='VisitedPollingStation'>Visited pollingStation</SelectItem>
+                  <SelectItem value={QuickReportLocationType.NotRelatedToAPollingStation}>
+                    {mapQuickReportLocationType(QuickReportLocationType.NotRelatedToAPollingStation)}
+                  </SelectItem>
+                  <SelectItem value={QuickReportLocationType.OtherPollingStation}>
+                    {mapQuickReportLocationType(QuickReportLocationType.OtherPollingStation)}
+                  </SelectItem>
+                  <SelectItem value={QuickReportLocationType.VisitedPollingStation}>
+                    {mapQuickReportLocationType(QuickReportLocationType.VisitedPollingStation)}
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
 
             <Select
               onValueChange={(value) => {
-                void navigate({ search: (prev) => ({ ...prev, followUpStatus: value }) });
+                void navigate({ search: (prev) => ({ ...prev, quickReportFollowUpStatus: value }) });
               }}
               value={search.quickReportFollowUpStatus ?? ''}>
               <SelectTrigger>
                 <SelectValue placeholder='Follow up status' />
               </SelectTrigger>
               <SelectContent>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      key={QuickReportFollowUpStatus.NotApplicable}
-                      value={QuickReportFollowUpStatus.NotApplicable}>
-                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NotApplicable)}
+                <SelectGroup>
+                  <SelectItem value={QuickReportFollowUpStatus.NotApplicable}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NotApplicable)}
+                  </SelectItem>
+                  <SelectItem value={QuickReportFollowUpStatus.NeedsFollowUp}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NeedsFollowUp)}
+                  </SelectItem>
+                  <SelectItem value={QuickReportFollowUpStatus.Resolved}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.Resolved)}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <Select
+              onValueChange={(value) => {
+                void navigate({ search: (prev) => ({ ...prev, incidentCategory: value }) });
+              }}
+              value={search.incidentCategory ?? ''}>
+              <SelectTrigger>
+                <SelectValue placeholder='Incident category' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {IncidentCategoryList.map((incidentCategory) => (
+                    <SelectItem key={incidentCategory} value={incidentCategory}>
+                      {mapIncidentCategory(incidentCategory)}
                     </SelectItem>
-                    <SelectItem
-                      key={QuickReportFollowUpStatus.NeedsFollowUp}
-                      value={QuickReportFollowUpStatus.NeedsFollowUp}>
-                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NeedsFollowUp)}
-                    </SelectItem>
-                    <SelectItem key={QuickReportFollowUpStatus.Resolved} value={QuickReportFollowUpStatus.Resolved}>
-                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.Resolved)}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
 
             <PollingStationsFilters />
-            <ResetFiltersButton disabled={!isFiltered} params={{tag: 'quick-reports'}} />
+            <ResetFiltersButton disabled={!isFiltered} params={{ tag: 'quick-reports' }} />
 
             {isFiltered && (
               <div className='flex flex-wrap gap-2 col-span-full'>
@@ -195,6 +219,12 @@ export function QuickReportsTab(): FunctionComponent {
                   <FilterBadge
                     label={`Location Type: ${mapQuickReportLocationType(search.quickReportLocationType)}`}
                     onClear={onClearFilter(['quickReportLocationType'])}
+                  />
+                )}
+                {search.incidentCategory && (
+                  <FilterBadge
+                    label={`Location Type: ${mapIncidentCategory(search.incidentCategory)}`}
+                    onClear={onClearFilter(['incidentCategory'])}
                   />
                 )}
                 {search.level1Filter && (

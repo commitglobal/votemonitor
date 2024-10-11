@@ -23,7 +23,7 @@ import {
 import { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver } from '../models/incident-report';
 import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
-import { mapIncidentReportLocationType, mapQuickReportLocationType } from './helpers';
+import { mapIncidentCategory, mapIncidentReportLocationType, mapQuickReportLocationType } from './helpers';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -598,6 +598,16 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{mapQuickReportLocationType(row.original.quickReportLocationType)}</div>,
   },
+
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Incident category' column={column} />,
+    accessorFn: (row) => row.incidentCategory,
+    id: 'incidentCategory',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{mapIncidentCategory(row.original.incidentCategory)}</div>,
+  },
+
   {
     header: ({ column }) => <DataTableColumnHeader title='Issue title' column={column} />,
     accessorFn: (row) => row.title,

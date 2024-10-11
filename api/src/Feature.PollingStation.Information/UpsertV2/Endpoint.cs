@@ -8,9 +8,8 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
-namespace Feature.PollingStation.Information.Upsert;
+namespace Feature.PollingStation.Information.UpsertV2;
 
-[Obsolete("Will be removed after 27.10.2024")]
 public class Endpoint(
     IRepository<PollingStationInformation> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
@@ -21,7 +20,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information");
+        Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/informationV2");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information", "mobile"));
         Summary(s => { s.Summary = "Upserts polling station information for a polling station"; });
@@ -68,10 +67,11 @@ public class Endpoint(
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
-        
-        pollingStationInformation = form.FillIn(pollingStationInformation, answers, req.ArrivalTime, req.DepartureTime,
-            observationBreaks);
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+
+        pollingStationInformation = form.FillInV2(pollingStationInformation, answers, req.ArrivalTime,
+            req.DepartureTime,
+            observationBreaks ?? []);
 
         await repository.UpdateAsync(pollingStationInformation, ct);
 
@@ -100,10 +100,10 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
-        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver,
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        var pollingStationInformation = form.CreatePollingStationInformationV2(pollingStation, monitoringObserver,
             req.ArrivalTime, req.DepartureTime, answers,
-            observationBreaks);
+            observationBreaks ?? []);
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

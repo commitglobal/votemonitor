@@ -7,7 +7,7 @@ import {
   QuickReportFollowUpStatus,
 } from '@/common/types';
 import { z } from 'zod';
-import { QuickReportLocationType } from './quick-report';
+import { IncidentCategory, QuickReportLocationType } from './quick-report';
 import { IncidentReportLocationType } from './incident-report';
 
 export const ResponsesPageSearchParamsSchema = z.object({
@@ -32,7 +32,10 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
     citizenReportFollowUpStatus: z.nativeEnum(CitizenReportFollowUpStatus).optional(),
     incidentReportFollowUpStatus: z.nativeEnum(IncidentReportFollowUpStatus).optional(),
+
     quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
+    incidentCategory: z.nativeEnum(IncidentCategory).optional(),
+
     incidentReportLocationType: z.nativeEnum(IncidentReportLocationType).optional(),
     questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
     hasNotes: z.string().catch('').optional(),
@@ -51,6 +54,7 @@ export const QuickReportsSearchParamsSchema = z.object({
   pollingStationNumberFilter: z.string().catch('').optional(),
   quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
   quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
+  incidentCategory: z.nativeEnum(IncidentCategory).optional(),
 });
 
 export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>;
