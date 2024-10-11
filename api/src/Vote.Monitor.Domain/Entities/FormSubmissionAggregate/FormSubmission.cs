@@ -71,7 +71,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        isCompleted = isCompleted;
+        IsCompleted = isCompleted;
     }
 
     public void ClearAnswers()
