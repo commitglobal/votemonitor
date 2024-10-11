@@ -119,15 +119,27 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         throw new ArgumentNullException(nameof(locationType),
             $"Unknown location type '{locationType}");
     }
-
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers,
-        int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
+    
+    internal void Update(IEnumerable<BaseAnswer>? answers,
+        int? numberOfQuestionsAnswered,
+        int? numberOfFlaggedAnswers,
         bool? isCompleted)
     {
-        Answers = answers.ToList().AsReadOnly();
-        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        if (answers is not null)
+        {
+            Answers = answers.ToList().AsReadOnly();
+        }
+
+        if (numberOfFlaggedAnswers is not null)
+        {
+            NumberOfFlaggedAnswers = numberOfFlaggedAnswers.Value;
+        }
+
+        if (numberOfQuestionsAnswered is not null)
+        {
+            NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
+        
         if(isCompleted.HasValue)
         {
             IsCompleted = isCompleted.Value;

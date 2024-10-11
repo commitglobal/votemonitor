@@ -42,7 +42,6 @@ public class PollingStationInformationForm : BaseForm
         IEnumerable<BaseQuestion> questions) =>
         new(electionRound, defaultLanguage, languages, questions);
 
-    [Obsolete("Will be removed after 27.10.2024")]
     public PollingStationInformation CreatePollingStationInformation(
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -52,11 +51,7 @@ public class PollingStationInformationForm : BaseForm
         List<ObservationBreak>? breaks,
         bool? isCompleted)
     {
-        if (answers == null)
-        {
-            return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0, breaks, isCompleted);
-        }
+        answers ??= [];
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
 
@@ -69,35 +64,6 @@ public class PollingStationInformationForm : BaseForm
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
-    }
-
-    public PollingStationInformation CreatePollingStationInformationV2(
-        PollingStation pollingStation,
-        MonitoringObserver monitoringObserver,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
-        List<BaseAnswer>? answers,
-        List<ObservationBreak>? breaks,
-        bool? isCompleted)
-    {
-        if (answers == null)
-        {
-            return PollingStationInformation.CreateV2(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0, breaks, isCompleted);
-        }
-
-        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
-
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
-        var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
-        var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
-
-        return PollingStationInformation.CreateV2(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
 
