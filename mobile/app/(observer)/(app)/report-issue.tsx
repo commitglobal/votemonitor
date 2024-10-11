@@ -19,19 +19,29 @@ import { Typography } from "../../../components/Typography";
 import { useAddQuickReport } from "../../../services/mutations/quick-report/add-quick-report.mutation";
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { addAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
+import { useUploadAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
 import { QuickReportLocationType } from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../../components/Card";
 import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
-import { AddAttachmentQuickReportAPIPayload } from "../../../services/api/quick-report/add-attachment-quick-report.api";
+import {
+  addAttachmentQuickReportMultipartAbort,
+  addAttachmentQuickReportMultipartComplete,
+  AddAttachmentQuickReportStartAPIPayload,
+} from "../../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import MediaLoading from "../../../components/MediaLoading";
 import Toast from "react-native-toast-message";
+import { uploadS3Chunk } from "../../../services/api/add-attachment.api";
+// import { t } from "i18next";
+import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
+import * as FileSystem from "expo-file-system";
+import { Buffer } from "buffer";
+import MediaLoading from "../../../components/MediaLoading";
+import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -71,8 +81,11 @@ const ReportIssue = () => {
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
-  const [isPreparingFile, setIsPreparingFile] = useState(false);
   const { t } = useTranslation("report_new_issue");
+  const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
+  const [isPreparingFile, setIsPreparingFile] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+  const { isOnline } = useNetInfoContext();
 
   const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
     [],
@@ -83,11 +96,9 @@ const ReportIssue = () => {
     isPending: isPendingAddQuickReport,
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
-  const {
-    mutateAsync: addAttachmentQReport,
-    isPending: isLoadingAddAttachment,
-    isPaused,
-  } = addAttachmentQuickReportMutation();
+
+  const { mutateAsync: addAttachmentQReport } =
+    useUploadAttachmentQuickReportMutation(`Quick_Report_${activeElectionRound?.id}}`);
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -121,12 +132,18 @@ const ReportIssue = () => {
 
   const { uploadCameraOrMedia } = useCamera();
 
+  const onCompressionProgress = (progress: number) => {
+    setUploadProgress(`${t("upload.compressing")} ${Math.ceil(progress * 100)}%`);
+  };
+
   const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
     setIsPreparingFile(true);
-    const cameraResult = await uploadCameraOrMedia(type);
+    setUploadProgress(t("upload.preparing"));
+
+    const cameraResult = await uploadCameraOrMedia(type, onCompressionProgress);
 
     if (!cameraResult || !activeElectionRound) {
-      setIsPreparingFile(false);
+      setUploadProgress("");
       return;
     }
 
@@ -140,6 +157,7 @@ const ReportIssue = () => {
 
   const handleUploadAudio = async () => {
     setIsPreparingFile(true);
+    setUploadProgress(t("upload.preparing"));
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
@@ -152,15 +170,67 @@ const ReportIssue = () => {
         name: file.name,
         type: file.mimeType || "audio/mpeg",
         uri: file.uri,
+        size: file.size || 0,
       };
 
       setOptionsSheetOpen(false);
       setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID() }]);
+      setIsPreparingFile(false);
     } else {
       // Cancelled
     }
 
     setIsPreparingFile(false);
+  };
+
+  const handleChunkUpload = async (
+    filePath: string,
+    uploadUrls: Record<string, string>,
+    uploadId: string,
+    attachmentId: string,
+    quickReportId: string,
+  ) => {
+    try {
+      let etags: Record<number, string> = {};
+      const urls = Object.values(uploadUrls);
+      for (const [index, url] of urls.entries()) {
+        const chunk = await FileSystem.readAsStringAsync(filePath, {
+          length: MULTIPART_FILE_UPLOAD_SIZE,
+          position: index * MULTIPART_FILE_UPLOAD_SIZE,
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        const buffer = Buffer.from(chunk, "base64");
+        const data = await uploadS3Chunk(url, buffer);
+        etags = { ...etags, [index + 1]: data.ETag };
+      }
+
+      if (activeElectionRound?.id) {
+        await addAttachmentQuickReportMultipartComplete({
+          uploadId,
+          etags,
+          electionRoundId: activeElectionRound?.id,
+          id: attachmentId,
+          quickReportId,
+        });
+      }
+    } catch (err) {
+      Sentry.captureException(err, { data: activeElectionRound })
+      if (activeElectionRound?.id) {
+        setUploadProgress(t("upload.aborted"));
+        await addAttachmentQuickReportMultipartAbort({
+          id: attachmentId,
+          uploadId,
+          electionRoundId: activeElectionRound.id,
+          quickReportId,
+        });
+      }
+    } finally {
+      if (activeElectionRound?.id) {
+        queryClient.invalidateQueries({
+          queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
+        });
+      }
+    }
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
@@ -184,51 +254,45 @@ const ReportIssue = () => {
     const uuid = Crypto.randomUUID();
 
     // Use the attachments to optimistically update the UI
-    const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
+    const optimisticAttachments: AddAttachmentQuickReportStartAPIPayload[] = [];
+
     if (attachments.length > 0) {
-      setIsPreparingFile(true);
       setOptionsSheetOpen(true);
-      const attachmentsMutations = attachments.map(
-        ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
-          const payload: AddAttachmentQuickReportAPIPayload = {
-            id,
-            fileMetadata,
+      setIsLoadingAttachment(true);
+      try {
+        // Upload each attachment
+        setUploadProgress(`${t("upload.starting")}`);
+        for (const [index, attachment] of attachments.entries()) {
+          const payload: AddAttachmentQuickReportStartAPIPayload = {
+            id: attachment.id,
+            fileName: attachment.fileMetadata.name,
+            filePath: attachment.fileMetadata.uri,
+            contentType: attachment.fileMetadata.type,
+            numberOfUploadParts: Math.ceil(
+              attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE,
+            ),
             electionRoundId: activeElectionRound.id,
             quickReportId: uuid,
           };
+          setUploadProgress(
+            `${t("upload.progress")} ${index + 1}/${attachments.length}`,
+          );
+          const data = await addAttachmentQReport(payload);
+          await handleChunkUpload(
+            attachment.fileMetadata.uri,
+            data.uploadUrls,
+            data.uploadId,
+            attachment.id,
+            uuid,
+          );
           optimisticAttachments.push(payload);
-          return addAttachmentQReport(payload);
-        },
-      );
-      try {
-        if (!onlineManager.isOnline()) {
-          // No internet
-          setIsPreparingFile(false);
-          setOptionsSheetOpen(false);
-          Promise.all(attachmentsMutations);
-        } else {
-          // Internet
-          await Promise.all(attachmentsMutations).then(() => {
-            queryClient.invalidateQueries({
-              queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
-            });
-          });
         }
+        setUploadProgress(t("upload.completed"));
       } catch (err) {
-        Sentry.captureMessage("Failed to upload some attachments");
         Sentry.captureException(err);
-
-        setIsPreparingFile(false);
-        setOptionsSheetOpen(false);
-        Toast.show({
-          type: "error",
-          text2: t("media.error"),
-        });
-
-        // Stop the flow right here.
-        return;
       }
     }
+
     mutate(
       {
         id: uuid,
@@ -262,6 +326,19 @@ const ReportIssue = () => {
 
   const removeAttachmentLocal = (id: string): void => {
     setAttachments((attachments) => attachments.filter((attachment) => attachment.id !== id));
+  };
+
+  const handleOnShowAttachementSheet = () => {
+    if (isOnline) {
+      setOptionsSheetOpen(true);
+    } else {
+      Toast.show({
+        type: "error",
+        text2: t("upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+    }
   };
 
   return (
@@ -431,51 +508,45 @@ const ReportIssue = () => {
                 label={t("media.add")}
                 onPress={() => {
                   Keyboard.dismiss();
-                  setOptionsSheetOpen(true);
+                  handleOnShowAttachementSheet()
                 }}
               />
             </YStack>
           </YStack>
         </KeyboardAwareScrollView>
 
-        {optionsSheetOpen && (
-          <OptionsSheet
-            open
-            setOpen={setOptionsSheetOpen}
-            isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}
-          >
-            {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
-              <MediaLoading />
-            ) : (
-              <YStack paddingHorizontal="$sm">
-                <Typography
-                  onPress={handleCameraUpload.bind(null, "library")}
-                  preset="body1"
-                  paddingVertical="$md"
-                  pressStyle={{ color: "$purple5" }}
-                >
-                  {t("media.menu.load")}
-                </Typography>
-                <Typography
-                  onPress={handleCameraUpload.bind(null, "cameraPhoto")}
-                  preset="body1"
-                  paddingVertical="$md"
-                  pressStyle={{ color: "$purple5" }}
-                >
-                  {t("media.menu.take_picture")}
-                </Typography>
-                <Typography
-                  onPress={handleUploadAudio.bind(null)}
-                  preset="body1"
-                  paddingVertical="$md"
-                  pressStyle={{ color: "$purple5" }}
-                >
-                  {t("media.menu.upload_audio")}
-                </Typography>
-              </YStack>
-            )}
-          </OptionsSheet>
-        )}
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+          {isLoadingAttachment || isPreparingFile ? (
+            <MediaLoading progress={uploadProgress} />
+          ) : (
+            <YStack paddingHorizontal="$sm">
+              <Typography
+                onPress={handleCameraUpload.bind(null, "library")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.load")}
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.take_picture")}
+              </Typography>
+              <Typography
+                onPress={handleUploadAudio.bind(null)}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.upload_audio")}
+              </Typography>
+            </YStack>
+          )}
+        </OptionsSheet>
       </Screen>
 
       <XStack

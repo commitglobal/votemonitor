@@ -418,12 +418,33 @@
       "attachment_one": "{{count}} attachment file",
       "attachment_other": "{{count}} attachment files"
     },
+    "attachments": {
+      "heading": "Uploaded media",
+      "loading": "Adding attachment... ",
+      "upload": {
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted."
+      },
+      "error": "Error while sending the attachment!"
+    },
     "options_menu": {
       "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "report_new_issue": {
     "title": "Report new issue",
+    "upload": {
+      "compressing": "Compressing attachment: ",
+      "preparing": "Preparing attachment...",
+      "starting": "Starting the upload...",
+      "progress": "Uploading attachment:",
+      "completed": "Upload completed.",
+      "aborted": "Upload aborted.",
+      "offline": "You need an internet connection in order to perform this action."
+    },
     "media": {
       "heading": "Uploaded media",
       "add": "Add media",
