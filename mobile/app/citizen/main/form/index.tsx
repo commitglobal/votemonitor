@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useGetCitizenReportingFormById } from "../../../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import { ViewStyle } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
@@ -25,6 +25,7 @@ import { usePostCitizenFormMutation } from "../../../../services/mutations/citiz
 import * as Crypto from "expo-crypto";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
+import ReviewCitizenFormSheet from "../../../../components/ReviewCitizenFormSheet";
 
 const CitizenForm = () => {
   const { t } = useTranslation(["polling_station_form_wizard", "common", "network_banner"]); // TODO: change with citizen
@@ -65,6 +66,7 @@ const CitizenForm = () => {
 
   const [answers, setAnswers] = useState<Record<string, ApiFormAnswer | undefined> | undefined>();
   const [questionId, setQuestionId] = useState<string>(initialQuestionId);
+  const [isReviewSheetOpen, setIsReviewSheetOpen] = useState(false);
 
   const {
     data: currentForm,
@@ -72,7 +74,8 @@ const CitizenForm = () => {
     error: currentFormError,
   } = useGetCitizenReportingFormById(selectedElectionRound, formId);
 
-  const { mutate: postCitizenForm } = usePostCitizenFormMutation();
+  const { mutate: postCitizenForm, isPending: isPendingPostCitizenForm } =
+    usePostCitizenFormMutation();
 
   const displayedQuestions: ApiFormQuestion[] = useMemo(
     () => currentForm?.questions?.filter((q) => shouldDisplayQuestion(q, answers)) || [],
@@ -186,27 +189,35 @@ const CitizenForm = () => {
             text2Style: { textAlign: "center" },
           });
         }
+
         if (currentForm) {
-          postCitizenForm(
-            {
-              electionRoundId: selectedElectionRound,
-              citizenReportId: Crypto.randomUUID(),
-              formId: currentForm.id,
-              locationId: selectedLocationId,
-              answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
-            },
-            {
-              onSuccess: () => {
-                console.log(
-                  "🔵 [CitizenForm] form submitted successfully, redirect to success page",
-                );
-                router.replace("/citizen/main/form/success");
+          // open review sheet if not already open
+          if (!isReviewSheetOpen) {
+            setAnswers(updatedAnswers);
+            Keyboard.dismiss();
+            setIsReviewSheetOpen(true);
+          } else {
+            postCitizenForm(
+              {
+                electionRoundId: selectedElectionRound,
+                citizenReportId: Crypto.randomUUID(),
+                formId: currentForm.id,
+                locationId: selectedLocationId,
+                answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
               },
-              onError: (error) => {
-                console.log("🔴 [CitizenForm] error submitting form", error);
+              {
+                onSuccess: () => {
+                  console.log(
+                    "🔵 [CitizenForm] form submitted successfully, redirect to success page",
+                  );
+                  router.replace("/citizen/main/form/success");
+                },
+                onError: (error) => {
+                  console.log("🔴 [CitizenForm] error submitting form", error);
+                },
               },
-            },
-          );
+            );
+          }
         }
       }
     }
@@ -294,6 +305,19 @@ const CitizenForm = () => {
           goToPrevQuestion();
         }}
       />
+
+      {isReviewSheetOpen && (
+        <ReviewCitizenFormSheet
+          currentForm={currentForm}
+          answers={answers}
+          questions={currentForm?.questions}
+          setIsReviewSheetOpen={setIsReviewSheetOpen}
+          onSubmit={handleSubmit(async (formValues) => {
+            onSubmitAnswer(formValues);
+          })}
+          isPending={isPendingPostCitizenForm}
+        />
+      )}
     </Screen>
   );
 };
