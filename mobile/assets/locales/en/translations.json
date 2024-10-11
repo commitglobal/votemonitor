@@ -6,7 +6,8 @@
     "status": {
       "completed": "Done",
       "in_progress": "In progress",
-      "not_started": "Not started"
+      "not_started": "Not started",
+      "marked_as_completed": "Marked as done"
     },
     "cancel": "Cancel",
     "save": "Save",

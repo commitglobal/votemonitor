@@ -50,6 +50,7 @@ const PollingStationQuestionnaire = () => {
     refetch: refetchFormStructure,
     isRefetching: isRefetchingFormStructure,
   } = usePollingStationInformationForm(activeElectionRound?.id);
+
   const {
     data: formData,
     refetch: refetchFormData,
@@ -95,6 +96,17 @@ const PollingStationQuestionnaire = () => {
     pollingStationId: selectedPollingStation?.pollingStationId,
     scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_answers`,
   });
+
+  const onSetCompletion = (completion: boolean) => {
+    if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
+      mutate({
+        electionRoundId: activeElectionRound?.id,
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        isCompleted: completion,
+      });
+      router.back();
+    }
+  };
 
   const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
     const answers: ApiFormAnswer[] = Object.keys(formData)
@@ -161,7 +173,6 @@ const PollingStationQuestionnaire = () => {
       .filter(Boolean) as ApiFormAnswer[];
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
-      // TODO: How we get rid of so many undefined validations? If we press the button and we don't have the data, is equaly bad
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
@@ -529,6 +540,7 @@ const PollingStationQuestionnaire = () => {
                 setOpenContextualMenu(false);
                 setClearingForm(true);
               }}
+              onSetCompletion={onSetCompletion}
             />
           </OptionsSheet>
         )}
@@ -576,11 +588,28 @@ const PollingStationQuestionnaire = () => {
   );
 };
 
-const OptionSheetContent = ({ onClear }: { onClear: () => void }) => {
+const OptionSheetContent = ({
+  onClear,
+  onSetCompletion,
+}: {
+  onClear: () => void;
+  onSetCompletion: (completion: boolean) => void;
+}) => {
   const { t } = useTranslation("polling_station_information_form");
 
   return (
-    <View paddingVertical="$xxs" paddingHorizontal="$sm">
+    <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$lg">
+      <Typography
+        preset="body1"
+        color="$gray7"
+        lineHeight={24}
+        onPress={() => {
+          onSetCompletion(true);
+          router.back();
+        }}
+      >
+        Mark form as done
+      </Typography>
       <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
         {t("menu.clear")}
       </Typography>

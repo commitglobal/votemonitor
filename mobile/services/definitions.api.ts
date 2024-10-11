@@ -109,6 +109,7 @@ export type PollingStationInformationAPIPayload = {
   arrivalTime?: string | null; // ISO String  "2024-04-01T12:58:06.670Z";
   departureTime?: string | null;
   answers?: ApiFormAnswer[];
+  isCompleted?: boolean;
 };
 
 export type PollingStationInformationAPIResponse = {
@@ -117,6 +118,7 @@ export type PollingStationInformationAPIResponse = {
   arrivalTime: string;
   departureTime: string;
   answers: ApiFormAnswer[];
+  isCompleted: boolean;
 };
 
 export const upsertPollingStationGeneralInformation = ({
@@ -270,6 +272,7 @@ export type FormSubmission = {
   formId: string;
   pollingStationId: string;
   answers: ApiFormAnswer[];
+  isCompleted: boolean;
 };
 
 export type FormSubmissionsApiResponse = {
@@ -300,7 +303,9 @@ export const getFormSubmissions = (
     @returns {FormSubmission} updated data 
 
 */
-export type FormSubmissionAPIPayload = Omit<FormSubmission, "id"> & { electionRoundId: string };
+export type FormSubmissionAPIPayload = Omit<FormSubmission, "id" | "isCompleted"> & {
+  electionRoundId: string;
+};
 
 export const upsertFormSubmission = ({
   electionRoundId,

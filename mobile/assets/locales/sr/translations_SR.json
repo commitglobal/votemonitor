@@ -6,7 +6,8 @@
     "status": {
       "completed": "Završeno",
       "in_progress": "U realizaciji",
-      "not_started": "Nije započeto"
+      "not_started": "Nije započeto",
+      "marked_as_completed": "TODO: Označeno kao završeno"
     },
     "cancel": "Otkaži",
     "save": "Sačuvaj",

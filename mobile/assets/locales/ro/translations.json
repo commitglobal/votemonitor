@@ -6,7 +6,8 @@
     "status": {
       "completed": "Completat",
       "in_progress": "În desfășurare",
-      "not_started": "Neînceput"
+      "not_started": "Neînceput",
+      "marked_as_completed": "Marcat ca finalizat"
     },
     "cancel": "Renunță",
     "save": "Salvează",

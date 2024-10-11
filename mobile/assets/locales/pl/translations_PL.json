@@ -6,7 +6,8 @@
     "status": {
       "completed": "Ukończono",
       "in_progress": "W toku",
-      "not_started": "Nie rozpoczęto"
+      "not_started": "Nie rozpoczęto",
+      "marked_as_completed": "TODO: Oznaczono jako ukończone"
     },
     "cancel": "Anuluj",
     "save": "Zapisz",
