@@ -8,12 +8,22 @@ import { useTranslation } from "react-i18next";
 interface EmptyContentProps {
   translationKey: string;
   illustrationIconKey?: string;
+  emptyContainerMarginTop?: string;
 }
 
-export const EmptyContent = ({ translationKey, illustrationIconKey }: EmptyContentProps) => {
+export const EmptyContent = ({
+  translationKey,
+  illustrationIconKey,
+  emptyContainerMarginTop = "40%",
+}: EmptyContentProps) => {
   const { t } = useTranslation(translationKey);
   return (
-    <YStack alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
+    <YStack
+      alignItems="center"
+      justifyContent="center"
+      gap="$md"
+      marginTop={emptyContainerMarginTop}
+    >
       {illustrationIconKey && <Icon icon={illustrationIconKey} size={190} />}
 
       <YStack gap="$xxxs" paddingHorizontal="ld">

@@ -9,8 +9,9 @@ import { useGuides } from "../../../../../services/queries/guides.query";
 import ResourcesGuidesList from "../../../../../components/ResourcesList";
 import { Typography } from "../../../../../components/Typography";
 
-const GuidesList = () => {
+const Guides = () => {
   const { t } = useTranslation("guides");
+  const navigation = useNavigation();
   const { activeElectionRound } = useUserData();
 
   const {
@@ -19,27 +20,6 @@ const GuidesList = () => {
     refetch: refetchGuides,
     isRefetching: isRefetchingGuides,
   } = useGuides(activeElectionRound?.id);
-
-  return (
-    <ResourcesGuidesList
-      isLoading={isLoadingGuides}
-      isRefetching={isRefetchingGuides}
-      resources={guides || []}
-      refetch={refetchGuides}
-      header={
-        guides && guides?.length > 0 ? (
-          <Typography preset="body1" fontWeight="700" marginBottom="$xs">
-            {t("list.heading")}
-          </Typography>
-        ) : undefined
-      }
-    />
-  );
-};
-
-const Guides = () => {
-  const { t } = useTranslation("guides");
-  const navigation = useNavigation();
 
   return (
     <Screen
@@ -55,7 +35,19 @@ const Guides = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
-      <GuidesList />
+      <ResourcesGuidesList
+        isLoading={isLoadingGuides}
+        isRefetching={isRefetchingGuides}
+        resources={guides || []}
+        refetch={refetchGuides}
+        header={
+          guides && guides?.length > 0 ? (
+            <Typography preset="body1" fontWeight="700" marginBottom="$xs">
+              {t("list.heading")}
+            </Typography>
+          ) : undefined
+        }
+      />
     </Screen>
   );
 };

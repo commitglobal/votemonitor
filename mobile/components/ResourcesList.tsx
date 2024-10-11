@@ -60,6 +60,7 @@ interface ResourcesListProps {
   refetch: () => void;
   header?: JSX.Element;
   translationKey?: string;
+  emptyContainerMarginTop?: string;
 }
 
 const ResourcesGuidesList = ({
@@ -69,6 +70,7 @@ const ResourcesGuidesList = ({
   refetch,
   header,
   translationKey = "guides",
+  emptyContainerMarginTop,
 }: ResourcesListProps) => {
   const { width } = useWindowDimensions();
 
@@ -84,7 +86,11 @@ const ResourcesGuidesList = ({
         bounces={true}
         ListHeaderComponent={header}
         ListEmptyComponent={
-          <EmptyContent translationKey={translationKey} illustrationIconKey="undrawReading" />
+          <EmptyContent
+            translationKey={translationKey}
+            illustrationIconKey="undrawReading"
+            emptyContainerMarginTop={emptyContainerMarginTop}
+          />
         }
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
         estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}

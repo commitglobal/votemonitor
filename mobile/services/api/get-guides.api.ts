@@ -17,6 +17,7 @@ export type Guide = {
   guideType: guideType;
   createdOn: Date;
   createdBy: string;
+  text?: string;
 };
 
 export const getGuides = ({ electionRoundId }: { electionRoundId: string }): Promise<Guide[]> => {
