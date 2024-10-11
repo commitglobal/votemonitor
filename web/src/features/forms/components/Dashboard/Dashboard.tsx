@@ -301,7 +301,7 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const navigateToEdit = (formId: string) => {
-    navigate({ to: '/forms/$formId/edit', params: { formId } });
+    navigate({ to: '/forms/$formId/edit/$tab', params: { formId, tab: 'form-details' } });
   };
 
   const navigateToEditTranslation = (formId: string, languageCode: string) => {
