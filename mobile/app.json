@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix 304",
+      "message": "Allow return from login to select app mode",
       "updateCritical": 48,
-      "updateVersion": 52
+      "updateVersion": 53
     },
     "owner": "commit-global",
     "runtimeVersion": {
