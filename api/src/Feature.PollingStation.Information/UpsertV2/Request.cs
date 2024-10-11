@@ -12,7 +12,7 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
-    public bool IsCompleted { get; set; }
+    public bool? IsCompleted { get; set; }
 
     public DateTime? ArrivalTime { get; set; }
     public DateTime? DepartureTime { get; set; }

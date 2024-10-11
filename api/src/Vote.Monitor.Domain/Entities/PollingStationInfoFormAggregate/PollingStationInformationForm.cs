@@ -49,8 +49,8 @@ public class PollingStationInformationForm : BaseForm
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer>? answers,
-        List<ObservationBreak> breaks,
-        bool isCompleted)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
         if (answers == null)
         {
@@ -78,8 +78,8 @@ public class PollingStationInformationForm : BaseForm
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer>? answers,
-        List<ObservationBreak> breaks,
-        bool isCompleted)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
         if (answers == null)
         {

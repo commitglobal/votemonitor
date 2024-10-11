@@ -12,13 +12,13 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
-    public bool IsCompleted { get; set; }
+    public bool? IsCompleted { get; set; }
     public DateTime? ArrivalTime { get; set; }
     public DateTime? DepartureTime { get; set; }
 
     public List<BaseAnswerRequest>? Answers { get; set; }
 
-    public List<BreakRequest> Breaks { get; set; } = [];
+    public List<BreakRequest>? Breaks { get; set; }
 
 
     public class BreakRequest

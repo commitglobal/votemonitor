@@ -35,8 +35,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks,
-        bool isCompleted,
+        List<ObservationBreak>? breaks,
+        bool? isCompleted,
         int version = 1) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
@@ -51,8 +51,11 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-        IsCompleted = isCompleted;
-        
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
+
         if (version == 1)
         {
             UpdateTimesOfStay(arrivalTime, departureTime, breaks);
@@ -74,8 +77,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks,
-        bool isCompleted) =>
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
 
@@ -89,8 +92,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks,
-        bool isCompleted) =>
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted, 2);
 
@@ -100,14 +103,17 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<ObservationBreak> breaks,
-        bool isCompleted)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-        IsCompleted = isCompleted;
-        
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
+
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
@@ -116,19 +122,22 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<ObservationBreak> breaks,
-        bool isCompleted)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-        IsCompleted = isCompleted;
-        
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
+
         UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
     }
 
     [Obsolete("Will be removed after 27.10.2024")]
-    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak> breaks)
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak>? breaks)
     {
         if (arrivalTime.HasValue)
         {
@@ -145,12 +154,15 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
             MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
         }
 
-        Breaks = breaks.ToList().AsReadOnly();
+        if (breaks is not null)
+        {
+            Breaks = breaks.ToList().AsReadOnly();
+        }
     }
 
     public void UpdateTimesOfStayV2(DateTime? arrivalTime,
         DateTime? departureTime,
-        IEnumerable<ObservationBreak> breaks)
+        IEnumerable<ObservationBreak>? breaks)
     {
         ArrivalTime = arrivalTime;
         DepartureTime = departureTime;
@@ -174,7 +186,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     {
         FollowUpStatus = followUpStatus;
     }
-    
+
 #pragma warning disable CS8618 // Required by Entity Framework
 
     private PollingStationInformation()

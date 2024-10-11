@@ -166,7 +166,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         return submission;
     }
 
-    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool isCompleted)
+    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool? isCompleted)
     {
         return BaseFillIn(
             formSubmission,
@@ -189,7 +189,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks, bool isCompleted)
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak>? breaks, bool? isCompleted)
     {
         var pollingStationInformation = BaseFillIn(
             psiSubmission,
@@ -206,7 +206,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation FillInV2(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks, bool isCompleted)
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak>? breaks, bool? isCompleted)
     {
         var pollingStationInformation = BaseFillIn(
             psiSubmission,
@@ -223,7 +223,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
 
-    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool isCompleted)
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool? isCompleted)
     {
         return BaseFillIn(
             incidentReport,

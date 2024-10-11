@@ -28,7 +28,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted) : base(Guid.NewGuid())
+        bool? isCompleted) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -42,7 +42,10 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
     }
 
     internal static FormSubmission Create(
@@ -53,7 +56,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted) =>
+        bool? isCompleted) =>
         new(electionRound,
             pollingStation,
             monitoringObserver,
@@ -66,12 +69,15 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, 
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool isCompleted)
+        bool? isCompleted)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
     }
 
     public void ClearAnswers()

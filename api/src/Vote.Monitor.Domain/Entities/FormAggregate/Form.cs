@@ -106,7 +106,7 @@ public class Form : BaseForm
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         List<BaseAnswer>? answers,
-        bool isCompleted)
+        bool? isCompleted)
     {
         if (answers == null)
         {
@@ -156,7 +156,7 @@ public class Form : BaseForm
         string? locationDescription,
         Guid? pollingStationId,
         List<BaseAnswer>? answers,
-        bool isCompleted)
+        bool? isCompleted)
     {
         if (answers == null)
         {
