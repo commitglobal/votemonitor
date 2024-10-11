@@ -522,8 +522,18 @@
     },
     "info_modal": {
       "p1": "In this Inbox expect to receive live updates and messages from the NGO that accredited you as an observer.",
-      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity.",
-      "ok": "OK"
+      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity."
+    }
+  },
+  "updates": {
+    "title": "Updates",
+    "empty": {
+      "heading": "No updates received yet",
+      "paragraph": "Updates about electoral period will appear here."
+    },
+    "info_modal": {
+      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
+      "p2": "Check back periodically to see if you have received any new information."
     }
   },
   "more": {

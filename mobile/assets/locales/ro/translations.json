@@ -464,6 +464,17 @@
       "manage_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
+  "updates": {
+    "title": "Updates",
+    "empty": {
+      "heading": "No updates received yet",
+      "paragraph": "Updates about electoral period will appear here."
+    },
+    "info_modal": {
+      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
+      "p2": "Check back periodically to see if you have received any new information."
+    }
+  },
   "more": {
     "title": "Altele",
     "change-language": "Schimbă limba aplicației",

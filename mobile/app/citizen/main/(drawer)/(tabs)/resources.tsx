@@ -5,40 +5,10 @@ import Header from "../../../../../components/Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { Dialog } from "../../../../../components/Dialog";
-import Button from "../../../../../components/Button";
-import { Typography } from "../../../../../components/Typography";
-import { XStack, YStack, ScrollView } from "tamagui";
 import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { useCitizenGuides } from "../../../../../services/queries/guides.query";
 import ResourcesGuidesList from "../../../../../components/ResourcesList";
-
-const InfoDialog = ({ handleCloseInfoModal }: { handleCloseInfoModal: () => void }) => {
-  const { t } = useTranslation(["resources", "common"]);
-  return (
-    <Dialog
-      open
-      content={
-        <YStack maxHeight="85%" gap="$md">
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-          >
-            <Typography color="$gray6">{t("info")}</Typography>
-          </ScrollView>
-        </YStack>
-      }
-      footer={
-        <XStack justifyContent="center">
-          <Button preset="chromeless" onPress={handleCloseInfoModal}>
-            {t("ok", { ns: "common" })}
-          </Button>
-        </XStack>
-      }
-    />
-  );
-};
+import InfoModal from "../../../../../components/InfoModal";
 
 const ResourcesList = () => {
   const { selectedElectionRound } = useCitizenUserData();
@@ -88,7 +58,9 @@ export default function Resources() {
       />
 
       <ResourcesList />
-      {isOpenInfoModal && <InfoDialog handleCloseInfoModal={handleCloseInfoModal} />}
+      {isOpenInfoModal && (
+        <InfoModal paragraphs={[t("info")]} handleCloseInfoModal={handleCloseInfoModal} />
+      )}
     </Screen>
   );
 }
