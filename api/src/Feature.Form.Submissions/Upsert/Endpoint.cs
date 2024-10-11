@@ -59,16 +59,17 @@ public class Endpoint(IRepository<FormSubmission> repository,
 
         return formSubmission is null
             ? await AddFormSubmissionAsync(req, form, answers, ct)
-            : await UpdateFormSubmissionAsync(form, formSubmission, answers, ct);
+            : await UpdateFormSubmissionAsync(form, formSubmission, answers,req.IsCompleted, ct);
     }
 
     private async Task<Results<Ok<FormSubmissionModel>, NotFound>> UpdateFormSubmissionAsync(
         FormAggregate form,
         FormSubmission submission,
         List<BaseAnswer>? answers,
+        bool isCompleted,
         CancellationToken ct)
     {
-        submission = form.FillIn(submission, answers);
+        submission = form.FillIn(submission, answers, isCompleted);
         await repository.UpdateAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
@@ -93,7 +94,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
             return TypedResults.NotFound();
         }
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

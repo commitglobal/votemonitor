@@ -16,10 +16,11 @@ import { ExportedDataType } from '../../models/data-export';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 
 import { FunctionComponent } from '@/common/types';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { CitizenReportsAggregatedByFormTable } from '../CitizenReportsAggregatedByFormTable/CitizenReportsAggregatedByFormTable';
 import { CitizenReportsByEntryTable } from '../CitizenReportsByEntryTable/CitizenReportsByEntryTable';
 import { CitizenReportsFiltersByEntry } from '../CitizenReportsFiltersByEntry/CitizenReportsFiltersByEntry';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -31,12 +32,11 @@ const viewBy: Record<string, string> = {
 export function CitizenReportsTab(): FunctionComponent {
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
+  const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
 
-  const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
-  );
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const setPrevSearch = useSetPrevSearch();
   useEffect(() => {

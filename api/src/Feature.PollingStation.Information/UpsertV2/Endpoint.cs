@@ -71,7 +71,8 @@ public class Endpoint(
 
         pollingStationInformation = form.FillInV2(pollingStationInformation, answers, req.ArrivalTime,
             req.DepartureTime,
-            observationBreaks ?? []);
+            observationBreaks ?? [],
+            req.IsCompleted);
 
         await repository.UpdateAsync(pollingStationInformation, ct);
 
@@ -103,7 +104,8 @@ public class Endpoint(
         var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
         var pollingStationInformation = form.CreatePollingStationInformationV2(pollingStation, monitoringObserver,
             req.ArrivalTime, req.DepartureTime, answers,
-            observationBreaks ?? []);
+            observationBreaks ?? [],
+            req.IsCompleted);
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

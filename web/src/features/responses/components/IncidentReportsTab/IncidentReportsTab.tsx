@@ -19,13 +19,14 @@ import type { IncidentReportsViewBy } from '../../utils/column-visibility-option
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 
 import { FunctionComponent } from '@/common/types';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { IncidentReportsAggregatedByFormTable } from '../IncidentReportsAggregatedByFormTable/IncidentReportsAggregatedByFormTable';
 import { IncidentReportsByEntryTable } from '../IncidentReportsByEntryTable/IncidentReportsByEntryTable';
 import { IncidentReportsByObserverTable } from '../IncidentReportsByObserverTable/IncidentReportsByObserverTable';
 import { IncidentReportsColumnsVisibilitySelector } from '../IncidentReportsColumnsVisibilitySelector/IncidentReportsColumnsVisibilitySelector';
 import { IncidentReportsFiltersByEntry } from '../IncidentReportsFiltersByEntry/IncidentReportsFiltersByEntry';
 import { IncidentReportsFiltersByObserver } from '../IncidentReportsFiltersByObserver/IncidentReportsFiltersByObserver';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -38,12 +39,11 @@ const viewBy: Record<IncidentReportsViewBy, string> = {
 export default function IncidentReportsTab(): FunctionComponent {
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
+  const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
 
-  const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
-  );
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);

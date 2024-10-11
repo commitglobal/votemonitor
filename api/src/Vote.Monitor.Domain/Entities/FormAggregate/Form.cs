@@ -105,11 +105,13 @@ public class Form : BaseForm
     public FormSubmission CreateFormSubmission(
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        List<BaseAnswer>? answers)
+        List<BaseAnswer>? answers,
+        bool isCompleted)
     {
         if (answers == null)
         {
-            return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0);
+            return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0,
+                isCompleted);
         }
 
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
@@ -123,7 +125,7 @@ public class Form : BaseForm
         }
 
         return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers,
-            numberOfQuestionAnswered, numberOfFlaggedAnswers);
+            numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
     }
 
     public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers)
@@ -153,13 +155,14 @@ public class Form : BaseForm
         IncidentReportLocationType locationType,
         string? locationDescription,
         Guid? pollingStationId,
-        List<BaseAnswer>? answers)
+        List<BaseAnswer>? answers,
+        bool isCompleted)
     {
         if (answers == null)
         {
             return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
                 pollingStationId,
-                locationDescription, Id, [], 0, 0);
+                locationDescription, Id, [], 0, 0, isCompleted);
         }
 
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
@@ -172,9 +175,10 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType, pollingStationId,
+        return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
+            pollingStationId,
             locationDescription, Id, answers,
-            numberOfQuestionAnswered, numberOfFlaggedAnswers);
+            numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
     }
 
 

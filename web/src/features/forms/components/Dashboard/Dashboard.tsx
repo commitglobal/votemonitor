@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZFormType, ZTranslationStatus } from '@/common/types';
+import { ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -15,38 +15,51 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useLanguages } from '@/hooks/languages';
+import i18n from '@/i18n';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Cog8ToothIcon,
-  EllipsisVerticalIcon,
-  FunnelIcon,
-} from '@heroicons/react/24/outline';
+import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
+import { ChevronDownIcon, ChevronUpIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
+import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { X } from 'lucide-react';
-import { useState, type ReactElement } from 'react';
+import { useMemo, useState, type ReactElement } from 'react';
 import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
-import i18n from '@/i18n';
-import { useLanguages } from '@/hooks/languages';
+import { FormFilters } from './FormFilters/FormFilters';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
 export default function FormsDashboard(): ReactElement {
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const debouncedSearch = useDebounce(search, 300);
+  const [searchText, setSearchText] = useState('');
+  const { filteringIsActive } = useFilteringContainer();
+
+  const queryParams = useMemo(() => {
+    const params = [
+      ['searchText', searchText],
+      ['typeFilter', debouncedSearch.formTypeFilter],
+      ['statusFilter', debouncedSearch.formStatusFilter],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params) as FormsSearchParams;
+  }, [searchText, debouncedSearch]);
+
   const addTranslationsDialog = useAddTranslationsDialog();
   const confirm = useConfirm();
+
   const { data: languages } = useLanguages();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
 
   const formColDefs: ColumnDef<FormBase>[] = [
     {
@@ -92,7 +105,7 @@ export default function FormsDashboard(): ReactElement {
     {
       accessorKey: 'formType',
       accessorFn: (row, _) => mapFormType(row.formType),
-      enableSorting: false,
+      enableSorting: true,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formType')} column={column} />
@@ -109,7 +122,7 @@ export default function FormsDashboard(): ReactElement {
     },
     {
       accessorKey: 'numberOfQuestions',
-      enableSorting: false,
+      enableSorting: true,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.questions')} column={column} />
@@ -118,7 +131,7 @@ export default function FormsDashboard(): ReactElement {
     },
     {
       accessorKey: 'status',
-      enableSorting: false,
+      enableSorting: true,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.status')} column={column} />
@@ -154,21 +167,27 @@ export default function FormsDashboard(): ReactElement {
       },
     },
     {
-      accessorKey: 'lastUpdatedOn',
-      enableSorting: false,
+      accessorKey: 'LastModifiedOn',
+      enableSorting: true,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.updatedOn')} column={column} />
       ),
       cell: ({ row }) =>
         row.depth === 0 ? (
-          <div>
-            <p>
-              {row.original.lastModifiedOn
-                ? format(row.original.lastModifiedOn, DateTimeFormat)
-                : format(row.original.createdOn, DateTimeFormat)}{' '}
-            </p>
-          </div>
+          <TooltipProvider delayDuration={100}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                  {' '}
+                  {format(row.original.lastModifiedOn, DateTimeFormat)}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{row.original.lastModifiedBy}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ) : (
           <></>
         ),
@@ -278,10 +297,8 @@ export default function FormsDashboard(): ReactElement {
     },
   ];
 
-  const [searchText, setSearchText] = useState('');
-  const [isFiltering, setFiltering] = useState(false);
-  const [formTypeFilter, setFormType] = useState('');
-  const navigate = useNavigate();
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
   };
@@ -371,7 +388,7 @@ export default function FormsDashboard(): ReactElement {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
-    onSuccess: (_data, {electionRoundId}) => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form obsoleted',
@@ -394,7 +411,7 @@ export default function FormsDashboard(): ReactElement {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
     },
 
-    onSuccess: (_data, {electionRoundId}) => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form duplicated',
@@ -416,7 +433,7 @@ export default function FormsDashboard(): ReactElement {
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}`);
     },
-    onSuccess: async (_data, {electionRoundId}) => {
+    onSuccess: async (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form deleted',
@@ -424,20 +441,6 @@ export default function FormsDashboard(): ReactElement {
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
   });
-
-  const changeIsFiltering = () => {
-    setFiltering((prev) => {
-      return !prev;
-    });
-  };
-
-  const handleFormTypeFilter = (status: string) => {
-    setFormType(status);
-  };
-
-  const resetFilters = () => {
-    setFormType('');
-  };
 
   const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
@@ -467,68 +470,29 @@ export default function FormsDashboard(): ReactElement {
           </div>
         </CardTitle>
         <Separator />
-        <div className='flex flex-row justify-end gap-4 px-6 filters'>
-          <div className='w-[400px]'>
-            <Input onChange={handleSearchInput} placeholder='Search' />
-          </div>
-          <FunnelIcon
-            onClick={changeIsFiltering}
-            className='w-[20px] text-purple-900 cursor-pointer'
-            fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-          />
-          <Cog8ToothIcon className='w-[20px] text-purple-900' />
+
+        <div className='flex justify-end gap-4 px-6'>
+          <>
+            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+            <FunnelIcon
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              onClick={() => {
+                setIsFiltering((prev) => !prev);
+              }}
+            />
+          </>
         </div>
+
         <Separator />
-        {isFiltering ? (
-          <div className='flex flex-row items-center gap-4 table-filters'>
-            <Select value={formTypeFilter} onValueChange={handleFormTypeFilter}>
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='Form type' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
-                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
-                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>
-                    {mapFormType(ZFormType.Values.ClosingAndCounting)}
-                  </SelectItem>
-                  {isMonitoringNgoForCitizenReporting && (
-                    <SelectItem value={ZFormType.Values.CitizenReporting}>
-                      {mapFormType(ZFormType.Values.CitizenReporting)}
-                    </SelectItem>
-                  )}
-                  <SelectItem value={ZFormType.Values.IncidentReporting}>
-                    {mapFormType(ZFormType.Values.IncidentReporting)}
-                  </SelectItem>
-                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Button variant='ghost-primary'>
-              <span onClick={resetFilters} className='text-base text-purple-900'>
-                {i18n.t('electionEvent.observerForms.resetFilters')}
-              </span>
-            </Button>
-            <div className='flex flex-row flex-wrap gap-2'>
-              {formTypeFilter && (
-                <span
-                  onClick={() => handleFormTypeFilter('')}
-                  className='flex items-center gap-2 px-4 py-1 text-sm font-medium text-purple-900 bg-purple-100 rounded-full cursor-pointer'>
-                  Observer status: {formTypeFilter}
-                  <X size={14} />
-                </span>
-              )}
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
+        {isFiltering && <FormFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
           columns={formColDefs}
           useQuery={(params) => useForms(currentElectionRoundId, params)}
           getSubrows={getSubrows}
+          queryParams={queryParams}
           getRowClassName={getRowClassName}
         />
         <AddTranslationsDialog />

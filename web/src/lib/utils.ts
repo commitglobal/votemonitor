@@ -1,4 +1,5 @@
 import { FormType, RatingScaleType, TranslatedString, UserPayload, ZFormType } from '@/common/types';
+import { FormStatus } from '@/features/forms/models/form';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
 import { type ClassValue, clsx } from 'clsx';
@@ -290,19 +291,34 @@ export function takewhile<T>(arr: T[], predicate: (value: T) => boolean): T[] {
 export function mapFormType(formType: FormType): string {
   switch (formType) {
     case ZFormType.Values.Opening:
-      return i18n.t('formType.opening');
+      return i18n.t('form.type.opening');
     case ZFormType.Values.Voting:
-      return i18n.t('formType.voting');
+      return i18n.t('form.type.voting');
     case ZFormType.Values.ClosingAndCounting:
-      return i18n.t('formType.closingAndCounting');
+      return i18n.t('form.type.closingAndCounting');
     case ZFormType.Values.CitizenReporting:
-      return i18n.t('formType.citizenReporting');
+      return i18n.t('form.type.citizenReporting');
     case ZFormType.Values.IncidentReporting:
-        return i18n.t('formType.incidentReporting');
+        return i18n.t('form.type.incidentReporting');
     case ZFormType.Values.PSI:
-      return i18n.t('formType.psi');
+      return i18n.t('form.type.psi');
     case ZFormType.Values.Other:
-      return i18n.t('formType.other');
+      return i18n.t('form.type.other');
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export function mapFormStatus(formStatus: FormStatus): string {
+  switch (formStatus) {
+    case FormStatus.Drafted:
+      return i18n.t('form.status.drafted');
+    case FormStatus.Published:
+      return i18n.t('form.status.published');
+    case FormStatus.Obsolete:
+      return i18n.t('form.status.obsolete');
+
     default:
       return 'Unknown';
   }

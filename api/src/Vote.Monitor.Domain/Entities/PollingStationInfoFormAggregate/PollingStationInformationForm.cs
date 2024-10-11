@@ -49,12 +49,13 @@ public class PollingStationInformationForm : BaseForm
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer>? answers,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak> breaks,
+        bool isCompleted)
     {
         if (answers == null)
         {
             return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0, breaks);
+                arrivalTime, departureTime, [], 0, 0, breaks, isCompleted);
         }
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -68,7 +69,7 @@ public class PollingStationInformationForm : BaseForm
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
 
     public PollingStationInformation CreatePollingStationInformationV2(
@@ -77,12 +78,13 @@ public class PollingStationInformationForm : BaseForm
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer>? answers,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak> breaks,
+        bool isCompleted)
     {
         if (answers == null)
         {
             return PollingStationInformation.CreateV2(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0, breaks);
+                arrivalTime, departureTime, [], 0, 0, breaks, isCompleted);
         }
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -96,7 +98,7 @@ public class PollingStationInformationForm : BaseForm
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.CreateV2(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
