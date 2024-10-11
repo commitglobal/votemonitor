@@ -108,12 +108,7 @@ public class Form : BaseForm
         List<BaseAnswer>? answers,
         bool? isCompleted)
     {
-        if (answers == null)
-        {
-            return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0,
-                isCompleted);
-        }
-
+        answers ??= [];
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
@@ -130,10 +125,7 @@ public class Form : BaseForm
 
     public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers)
     {
-        if (answers == null)
-        {
-            return CitizenReport.Create(citizenReportId, ElectionRound, this, location, [], 0, 0);
-        }
+        answers ??= [];
 
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
@@ -158,13 +150,8 @@ public class Form : BaseForm
         List<BaseAnswer>? answers,
         bool? isCompleted)
     {
-        if (answers == null)
-        {
-            return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
-                pollingStationId,
-                locationDescription, Id, [], 0, 0, isCompleted);
-        }
-
+        answers ??= [];
+        
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 

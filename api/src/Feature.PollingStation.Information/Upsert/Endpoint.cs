@@ -11,7 +11,6 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.PollingStation.Information.Upsert;
 
-[Obsolete("Will be removed after 27.10.2024")]
 public class Endpoint(
     IRepository<PollingStationInformation> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
