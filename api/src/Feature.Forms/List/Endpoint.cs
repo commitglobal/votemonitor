@@ -44,7 +44,9 @@ public class Endpoint(
                           OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
                       )
                     AND (@type IS NULL OR F."FormType" = @type)
-                    AND (@status IS NULL OR F."Status" = @status);
+                    AND (@status IS NULL OR F."Status" = @status)
+                    AND F."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId;
                   
                   SELECT F."Id",
                          F."Code",
@@ -56,7 +58,7 @@ public class Endpoint(
                          F."FormType",
                          F."NumberOfQuestions",
                          F."LanguagesTranslationStatus",
-              
+                  
                          F."LastModifiedOn",
                          F."LastModifiedBy"
                   FROM (SELECT F."Id",
@@ -69,12 +71,15 @@ public class Endpoint(
                                F."FormType",
                                F."NumberOfQuestions",
                                F."LanguagesTranslationStatus",
-                               COALESCE(F."LastModifiedOn", F."CreatedOn") as "LastModifiedOn",
-                               COALESCE(UPDATER."FirstName" || ' ' || UPDATER."LastName" ,CREATOR."FirstName" || ' ' || CREATOR."LastName") AS "LastModifiedBy"
+                               COALESCE(F."LastModifiedOn", F."CreatedOn")                as "LastModifiedOn",
+                               COALESCE(UPDATER."FirstName" || ' ' || UPDATER."LastName",
+                                        CREATOR."FirstName" || ' ' || CREATOR."LastName") AS "LastModifiedBy"
                         FROM "Forms" F
                                  INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
                                  INNER JOIN PUBLIC."AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
-                                 LEFT JOIN PUBLIC."AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id") F
+                                 LEFT JOIN PUBLIC."AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
+                        Where F."ElectionRoundId" = @electionRoundId
+                          AND MN."NgoId" = @ngoId) F
                   WHERE (
                       @searchText IS NULL
                           OR @searchText = ''
@@ -84,8 +89,8 @@ public class Endpoint(
                       )
                     AND (@type IS NULL OR F."FormType" = @type)
                     AND (@status IS NULL OR F."Status" = @status)
-                  ORDER BY 
-                           CASE
+                  
+                  ORDER BY CASE
                                WHEN @sortExpression = 'Code ASC' THEN "Code"
                                END ASC,
                            CASE
