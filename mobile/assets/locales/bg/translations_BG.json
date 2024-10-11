@@ -12,7 +12,8 @@
     "save": "Запази",
     "no_data": "Няма намерени данни.",
     "select": "Изберете",
-    "done": "Приключен"
+    "done": "Приключен",
+    "ok": "Добре"
   },
   "languages": {
     "ro": "румънски",
@@ -439,16 +440,16 @@
     }
   },
   "resources": {
-    "title": "Resources",
-    "info": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.",
+    "title": "TODO:Ресурси",
+    "info": "TODO:В този раздел ще намерите ключова информация и ресурси, предназначени да ви помогнат да наблюдавате изборните процеси и да докладвате за всякакви изборни проблеми или нередности, с които се сблъсквате като гражданин.",
     "empty": {
-      "heading": "No guides to read yet",
-      "paragraph": "Guides and resources about observing electoral processes and reporting issues as a citizen at your hands."
+      "heading": "TODO:Все още няма ръководства за четене",
+      "paragraph": "TODO:Ръководства и ресурси за наблюдение на изборните процеси и докладване на проблеми като гражданин на ваше разположение."
     },
     "types": {
-      "Document": "Filetype PDF",
-      "Website": "External URL",
-      "Text": "In app guide"
+      "Document": "TODO:Тип файл PDF",
+      "Website": "TODO:Външен URL адрес",
+      "Text": "TODO:Ръководство в приложението"
     }
   },
   "inbox": {
@@ -465,14 +466,14 @@
     }
   },
   "updates": {
-    "title": "Updates",
+    "title": "TODO:Актуализации",
     "empty": {
-      "heading": "No updates received yet",
-      "paragraph": "Updates about electoral period will appear here."
+      "heading": "TODO:Все още няма получени актуализации",
+      "paragraph": "TODO:Тук ще се появят актуализации относно изборния период."
     },
     "info_modal": {
-      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
-      "p2": "Check back periodically to see if you have received any new information."
+      "p1": "TODO:В този раздел очаквайте да получавате актуални новини от екипа на Vote Monitor относно изборния период, които са от значение за вас като гражданин, интересуващ се от гражданска активност.",
+      "p2": "TODO:Проверявайте периодично, за да видите дали сте получили нова информация."
     }
   },
   "more": {

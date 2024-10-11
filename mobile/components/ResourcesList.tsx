@@ -12,9 +12,10 @@ import CardFooter from "./CardFooter";
 
 interface GuideCardProps extends CardProps {
   guide: Guide;
+  onResourcePress?: (guide: Guide) => void;
 }
 
-const GuideCard = ({ guide, ...rest }: GuideCardProps) => {
+const GuideCard = ({ guide, onResourcePress, ...rest }: GuideCardProps) => {
   const { t } = useTranslation(["guides", "resources"]);
   const createdOn = new Date(guide.createdOn);
 
@@ -28,7 +29,7 @@ const GuideCard = ({ guide, ...rest }: GuideCardProps) => {
     }
 
     if (guide.guideType === guideType.TEXT) {
-      console.log("here i need to redirect to a new screen");
+      onResourcePress && onResourcePress(guide);
     }
   };
 
@@ -101,7 +102,7 @@ const ResourcesGuidesList = ({
             key={index}
             guide={item}
             marginBottom="$md"
-            onPress={() => onResourcePress && onResourcePress(item)}
+            onResourcePress={onResourcePress}
           />
         )}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}

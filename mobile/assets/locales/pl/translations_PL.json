@@ -12,7 +12,8 @@
     "save": "Zapisz",
     "no_data": "Nie znaleziono danych.",
     "select": "Wybierz",
-    "done": "Zrobione"
+    "done": "Zrobione",
+    "ok": "Dobry"
   },
   "languages": {
     "ro": "rumuński",
@@ -439,16 +440,16 @@
     }
   },
   "resources": {
-    "title": "Resources",
-    "info": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.",
+    "title": "TODO:Zasoby",
+    "info": "TODO:W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel.",
     "empty": {
-      "heading": "No guides to read yet",
-      "paragraph": "Guides and resources about observing electoral processes and reporting issues as a citizen at your hands."
+      "heading": "TODO:Brak jeszcze przewodników do przeczytania",
+      "paragraph": "TODO:Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako obywatel są na wyciągnięcie ręki."
     },
     "types": {
-      "Document": "Filetype PDF",
-      "Website": "External URL",
-      "Text": "In app guide"
+      "Document": "TODO:Typ pliku PDF",
+      "Website": "TODO:Zewnętrzny adres URL",
+      "Text": "TODO:Przewodnik w aplikacji"
     }
   },
   "inbox": {
@@ -465,14 +466,14 @@
     }
   },
   "updates": {
-    "title": "Updates",
+    "title": "TODO:Aktualizacje",
     "empty": {
-      "heading": "No updates received yet",
-      "paragraph": "Updates about electoral period will appear here."
+      "heading": "TODO:Nie otrzymano jeszcze żadnych aktualizacji",
+      "paragraph": "TODO:Tutaj pojawią się aktualizacje dotyczące okresu wyborczego."
     },
     "info_modal": {
-      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
-      "p2": "Check back periodically to see if you have received any new information."
+      "p1": "TODO:W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące okresu wyborczego, istotne dla Ciebie jako obywatela zainteresowanego zaangażowaniem obywatelskim.",
+      "p2": "TODO:Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
     }
   },
   "more": {

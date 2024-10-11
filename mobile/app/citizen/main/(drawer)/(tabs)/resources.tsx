@@ -12,6 +12,7 @@ import InfoModal from "../../../../../components/InfoModal";
 import { YStack } from "tamagui";
 import SearchInput from "../../../../../components/SearchInput";
 import { Guide, guideType } from "../../../../../services/api/get-guides.api";
+import { filterResources } from "../../../../../helpers/resources";
 
 export default function Resources() {
   const navigation = useNavigation();
@@ -30,13 +31,7 @@ export default function Resources() {
   } = useCitizenGuides(selectedElectionRound);
 
   const filteredResources = useMemo(() => {
-    return resources?.filter(
-      (resource) =>
-        resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        resource.fileName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (resource.guideType === guideType.TEXT &&
-          resource.text?.toLowerCase().includes(searchTerm.toLowerCase())),
-    );
+    return filterResources(resources || [], searchTerm);
   }, [resources, searchTerm]);
 
   const handleOpenInfoModal = () => {

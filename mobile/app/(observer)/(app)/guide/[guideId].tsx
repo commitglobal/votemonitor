@@ -2,16 +2,16 @@ import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Icon } from "../../../../components/Icon";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
-import { useResource } from "../../../../services/queries/guides.query";
+import { useGuide } from "../../../../services/queries/guides.query";
 import ResourceScreen from "../../../../components/ResourceScreen";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
-const Resource = () => {
+const GuideScreen = () => {
   const router = useRouter();
-  const { resourceId } = useLocalSearchParams();
-  const { selectedElectionRound } = useCitizenUserData();
+  const { guideId } = useLocalSearchParams();
+  const { activeElectionRound } = useUserData();
 
-  const { data: guide } = useResource(resourceId as string, selectedElectionRound || undefined);
+  const { data: guide } = useGuide(guideId as string, activeElectionRound?.id);
 
   const handleLeftPress = () => {
     router.back();
@@ -24,10 +24,9 @@ const Resource = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={handleLeftPress}
       />
-
       {guide && <ResourceScreen resource={guide} />}
     </Screen>
   );
 };
 
-export default Resource;
+export default GuideScreen;

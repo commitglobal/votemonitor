@@ -12,7 +12,8 @@
     "save": "Sačuvaj",
     "no_data": "Nema podataka.",
     "select": "Izaberi",
-    "done": "Završeno"
+    "done": "Završeno",
+    "ok": "Dobro"
   },
   "languages": {
     "ro": "rumunski",
@@ -439,16 +440,16 @@
     }
   },
   "resources": {
-    "title": "Resources",
-    "info": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.",
+    "title": "TODO: Resursi",
+    "info": "TODO: U ovom odeljku očekujte ključne informacije i resurse dizajnirane da vam pomognu da posmatrate izborne procese i prijavite bilo kakve izborne probleme ili nepravilnosti na koje naiđete kao građanin.",
     "empty": {
-      "heading": "No guides to read yet",
-      "paragraph": "Guides and resources about observing electoral processes and reporting issues as a citizen at your hands."
+      "heading": "TODO: Još nema vodiča za čitanje",
+      "paragraph": "TODO: Vodiči i resursi o posmatranju izbornih procesa i prijavljivanju problema kao građanin su vam na dohvat ruke."
     },
     "types": {
-      "Document": "Filetype PDF",
-      "Website": "External URL",
-      "Text": "In app guide"
+      "Document": "TODO: Tip fajla PDF",
+      "Website": "TODO: Spoljni URL",
+      "Text": "TODO: Vodič u aplikaciji"
     }
   },
   "inbox": {
@@ -465,14 +466,14 @@
     }
   },
   "updates": {
-    "title": "Updates",
+    "title": "TODO: Ažuriranja",
     "empty": {
-      "heading": "No updates received yet",
-      "paragraph": "Updates about electoral period will appear here."
+      "heading": "TODO: Još nema primljenih ažuriranja",
+      "paragraph": "TODO: Ažuriranja o izbornom periodu će se pojaviti ovde."
     },
     "info_modal": {
-      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
-      "p2": "Check back periodically to see if you have received any new information."
+      "p1": "TODO: U ovom odeljku očekujte da ćete primati ažuriranja uživo od tima Vote Monitor-a u vezi sa izbornim periodom koji je relevantan za vas kao građanina zainteresovanog za građanski angažman.",
+      "p2": "TODO: Proveravajte periodično da li ste primili nove informacije."
     }
   },
   "more": {
