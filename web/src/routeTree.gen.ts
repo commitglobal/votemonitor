@@ -29,9 +29,9 @@ import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
+import { Route as FormsNewImport } from './routes/forms/new'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
-import { Route as ElectionEventNewFormImport } from './routes/election-event/new-form'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
@@ -44,7 +44,9 @@ import { Route as ObserverGuidesViewGuideIdImport } from './routes/observer-guid
 import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guides/edit.$guideId'
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
-import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
+import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
+import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
+import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
@@ -52,6 +54,7 @@ import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './route
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
+import { Route as FormsFormIdEditTabImport } from './routes/forms_.$formId.edit.$tab'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 
 // Create/Update Routes
@@ -147,6 +150,11 @@ const MonitoringObserversTabRoute = MonitoringObserversTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormsNewRoute = FormsNewImport.update({
+  path: '/forms/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormsFormIdRoute = FormsFormIdImport.update({
   path: '/forms/$formId',
   getParentRoute: () => rootRoute,
@@ -157,11 +165,6 @@ const ElectionRoundsElectionRoundIdRoute =
     path: '/election-rounds/$electionRoundId',
     getParentRoute: () => rootRoute,
   } as any)
-
-const ElectionEventNewFormRoute = ElectionEventNewFormImport.update({
-  path: '/election-event/new-form',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const ElectionEventTabRoute = ElectionEventTabImport.update({
   path: '/election-event/$tab',
@@ -228,8 +231,18 @@ const MonitoringObserversEditMonitoringObserverIdRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
-const FormsFormIdEditRoute = FormsFormIdEditImport.update({
-  path: '/forms/$formId/edit',
+const FormsNewTemplateRoute = FormsNewTemplateImport.update({
+  path: '/forms/new/template',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsNewScratchRoute = FormsNewScratchImport.update({
+  path: '/forms/new/scratch',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsNewReuseRoute = FormsNewReuseImport.update({
+  path: '/forms/new/reuse',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -272,6 +285,11 @@ const MonitoringObserversPushMessagesIdViewRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormsFormIdEditTabRoute = FormsFormIdEditTabImport.update({
+  path: '/forms/$formId/edit/$tab',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormsFormIdEditTranslationLanguageCodeRoute =
   FormsFormIdEditTranslationLanguageCodeImport.update({
     path: '/forms/$formId/edit-translation/$languageCode',
@@ -298,16 +316,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionEventTabImport
       parentRoute: typeof rootRoute
     }
-    '/election-event/new-form': {
-      preLoaderRoute: typeof ElectionEventNewFormImport
-      parentRoute: typeof rootRoute
-    }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId': {
       preLoaderRoute: typeof FormsFormIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/new': {
+      preLoaderRoute: typeof FormsNewImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/$tab': {
@@ -390,8 +408,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdLanguageCodeImport
       parentRoute: typeof rootRoute
     }
-    '/forms/$formId/edit': {
-      preLoaderRoute: typeof FormsFormIdEditImport
+    '/forms/new/reuse': {
+      preLoaderRoute: typeof FormsNewReuseImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/new/scratch': {
+      preLoaderRoute: typeof FormsNewScratchImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/new/template': {
+      preLoaderRoute: typeof FormsNewTemplateImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/edit/$monitoringObserverId': {
@@ -434,6 +460,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
     }
+    '/forms/$formId/edit/$tab': {
+      preLoaderRoute: typeof FormsFormIdEditTabImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/push-messages/$id/view': {
       preLoaderRoute: typeof MonitoringObserversPushMessagesIdViewImport
       parentRoute: typeof rootRoute
@@ -460,9 +490,9 @@ export const routeTree = rootRoute.addChildren([
   AcceptInviteSuccessRoute,
   CitizenGuidesNewRoute,
   ElectionEventTabRoute,
-  ElectionEventNewFormRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,
+  FormsNewRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
@@ -483,7 +513,9 @@ export const routeTree = rootRoute.addChildren([
   CitizenGuidesEditGuideIdRoute,
   CitizenGuidesViewGuideIdRoute,
   FormsFormIdLanguageCodeRoute,
-  FormsFormIdEditRoute,
+  FormsNewReuseRoute,
+  FormsNewScratchRoute,
+  FormsNewTemplateRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
   MonitoringObserversPushMessagesIdRoute,
   ObserverGuidesEditGuideIdRoute,
@@ -494,6 +526,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
+  FormsFormIdEditTabRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute,

@@ -26,7 +26,7 @@ import { queryClient } from '@/main';
 import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
 import { ChevronDownIcon, ChevronUpIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -321,7 +321,7 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const navigateToEdit = (formId: string) => {
-    navigate({ to: '/forms/$formId/edit', params: { formId } });
+    navigate({ to: '/forms/$formId/edit/$tab', params: { formId, tab: 'form-details' } });
   };
 
   const navigateToEditTranslation = (formId: string, languageCode: string) => {
@@ -465,10 +465,12 @@ export default function FormsDashboard(): ReactElement {
         <CardTitle className='flex flex-row items-center justify-between px-6'>
           <div className='text-xl'>{i18n.t('electionEvent.observerForms.cardTitle')}</div>
           <div>
-            <Button title='Create form' variant='default' onClick={() => navigate({ to: '/election-event/new-form' })}>
-              <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
-              <span>Create form</span>
-            </Button>
+            <Link to='/forms/new'>
+              <Button title='Create form' variant='default'>
+                <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
+                <span>Create form</span>
+              </Button>
+            </Link>
           </div>
         </CardTitle>
         <Separator />
