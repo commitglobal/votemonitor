@@ -541,6 +541,8 @@ const PollingStationQuestionnaire = () => {
                 setClearingForm(true);
               }}
               onSetCompletion={onSetCompletion}
+              isFullyAnswered={Object.values(answers).length === Object.values(questions).length}
+              isCompleted={formData?.isCompleted || false}
             />
           </OptionsSheet>
         )}
@@ -591,24 +593,34 @@ const PollingStationQuestionnaire = () => {
 const OptionSheetContent = ({
   onClear,
   onSetCompletion,
+  isCompleted,
+  isFullyAnswered,
 }: {
   onClear: () => void;
   onSetCompletion: (completion: boolean) => void;
+  isCompleted: boolean;
+  isFullyAnswered: boolean;
 }) => {
   const { t } = useTranslation("polling_station_information_form");
+
+  const disableMarkAsDone = useMemo(
+    () => isFullyAnswered && !isCompleted,
+    [isFullyAnswered, isCompleted],
+  );
 
   return (
     <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$lg">
       <Typography
         preset="body1"
-        color="$gray7"
+        color={disableMarkAsDone ? "$gray3" : "$gray7"}
         lineHeight={24}
         onPress={() => {
-          onSetCompletion(true);
+          onSetCompletion(!isCompleted);
           router.back();
         }}
+        disabled={disableMarkAsDone}
       >
-        Mark form as done
+        {!isCompleted ? t("mark_as_done") : t("mark_as_in_progress")}
       </Typography>
       <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
         {t("menu.clear")}
