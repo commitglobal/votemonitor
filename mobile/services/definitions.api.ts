@@ -316,6 +316,32 @@ export const upsertFormSubmission = ({
   );
 };
 
+/**
+ * ========================================================================
+ * ================= POST markFormSubmissionAsDone ====================
+ * ========================================================================
+ * @param {string} electionRoundId
+ * @param {string} formSubmissionId
+ * @returns {FormSubmission}
+ */
+
+export type MarkFormSubmissionCompletionStatusAPIPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+  formId: string;
+  isCompleted: boolean;
+};
+
+export const markFormSubmissionCompletionStatus = ({
+  electionRoundId,
+  ...payload
+}: MarkFormSubmissionCompletionStatusAPIPayload) => {
+  return API.put(
+    `/election-rounds/${electionRoundId}/form-submissions/:setCompletion`,
+    payload,
+  ).then((res) => res.data);
+};
+
 /** ========================================================================
     ================= POST addNote ====================
     ========================================================================

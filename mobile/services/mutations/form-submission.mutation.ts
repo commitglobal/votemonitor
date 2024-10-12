@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   FormSubmissionAPIPayload,
   FormSubmissionsApiResponse,
+  markFormSubmissionCompletionStatus,
+  MarkFormSubmissionCompletionStatusAPIPayload,
   upsertFormSubmission,
 } from "../definitions.api";
 import { useMemo } from "react";
@@ -62,6 +64,7 @@ export const useFormSubmissionMutation = ({
           {
             ...payload,
             id: updatedSubmission?.id || Crypto.randomUUID(),
+            isCompleted: updatedSubmission?.isCompleted || false,
           },
         ],
       });
@@ -112,13 +115,66 @@ export const useFormSubmissionMutation = ({
       // FYI: these 2 queries actually make the same call, but use different query keys, therefore both need invalidation (used different keys for Pull To Refresh feature)
       // todo: maybe use the same call for the future if possible
       queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
-      queryClient.invalidateQueries({
-        queryKey: pollingStationsKeys.formSubmissions(
-          electionRoundId,
-          pollingStationId,
-          variables.formId,
-        ),
+    },
+  });
+};
+
+export const useMarkFormSubmissionCompletionStatusMutation = ({
+  electionRoundId,
+  pollingStationId,
+  scopeId,
+}: {
+  electionRoundId: string | undefined;
+  pollingStationId: string | undefined;
+  scopeId: string;
+}) => {
+  const queryClient = useQueryClient();
+
+  const formSubmissionsQK = useMemo(
+    () => pollingStationsKeys.allFormSubmissions(electionRoundId, pollingStationId),
+    [electionRoundId, pollingStationId],
+  );
+
+  return useMutation({
+    mutationKey: pollingStationsKeys.markFormSubmissionCompletionStatus(),
+    scope: {
+      id: scopeId,
+    },
+    mutationFn: async (payload: MarkFormSubmissionCompletionStatusAPIPayload) => {
+      return markFormSubmissionCompletionStatus(payload);
+    },
+    onMutate: async (payload: MarkFormSubmissionCompletionStatusAPIPayload) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: formSubmissionsQK });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData<FormSubmissionsApiResponse>(formSubmissionsQK);
+
+      // 1. SUBMISSIONS: Optimistically update the submissions with the new completion status
+      const updatedSubmission = previousData?.submissions?.find((s) => s.formId === payload.formId);
+
+      queryClient.setQueryData<FormSubmissionsApiResponse>(formSubmissionsQK, {
+        submissions: [
+          ...(previousData?.submissions?.filter((s) => s.formId !== payload.formId) || []),
+          {
+            ...updatedSubmission,
+            id: updatedSubmission?.id || Crypto.randomUUID(),
+            formId: updatedSubmission?.formId || payload.formId,
+            pollingStationId: updatedSubmission?.pollingStationId || payload.pollingStationId,
+            answers: updatedSubmission?.answers || [],
+            isCompleted: payload.isCompleted, // new value
+          },
+        ],
       });
+
+      return { previousData };
+    },
+    onError: (err, variables, context) => {
+      console.log(err);
+      queryClient.setQueryData(formSubmissionsQK, context?.previousData);
+    },
+    onSettled: (_, _err, _variables) => {
+      queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
     },
   });
 };

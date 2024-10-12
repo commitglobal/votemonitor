@@ -9,6 +9,10 @@
       "not_started": "Nie rozpoczęto",
       "marked_as_completed": "TODO: Oznaczono jako ukończone"
     },
+    "forms": {
+      "mark_as_done": "TODO: Zaznacz formularz jako zakończony",
+      "mark_as_in_progress": "TODO: Zaznacz formularz jako w trakcie"
+    },
     "cancel": "Anuluj",
     "save": "Zapisz",
     "no_data": "Nie znaleziono danych.",
@@ -198,8 +202,6 @@
   "polling_station_information_form": {
     "title": "Informacje dotyczące komisji wyborczej",
     "submit": "Zatwierdź odpowiedzi",
-    "mark_as_done": "TODO: Zaznacz formularz jako zakończony",
-    "mark_as_in_progress": "TODO: Zaznacz formularz jako w trakcie",
     "form": {
       "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków",
       "placeholder": "Proszę wpisać tekst..."

@@ -9,6 +9,10 @@
       "not_started": "Neînceput",
       "marked_as_completed": "Marcat ca finalizat"
     },
+    "forms": {
+      "mark_as_done": "TODO: Marchează formularul ca finalizat",
+      "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\""
+    },
     "cancel": "Renunță",
     "save": "Salvează",
     "no_data": "Nu s-au găsit date.",
@@ -198,8 +202,6 @@
   "polling_station_information_form": {
     "title": "Informații despre secția de votare",
     "submit": "Trimite răspunsuri",
-    "mark_as_done": "TODO: Marchează formularul ca finalizat",
-    "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\"",
     "form": {
       "max": "Câmpul nu poate depăși {{value}} caractere",
       "placeholder": "Te rugăm să introduci un text..."

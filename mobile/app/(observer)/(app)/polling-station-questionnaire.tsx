@@ -601,7 +601,7 @@ const OptionSheetContent = ({
   isCompleted: boolean;
   isFullyAnswered: boolean;
 }) => {
-  const { t } = useTranslation("polling_station_information_form");
+  const { t } = useTranslation(["polling_station_information_form", "common"]);
 
   const disableMarkAsDone = useMemo(
     () => isFullyAnswered && !isCompleted,
@@ -620,7 +620,9 @@ const OptionSheetContent = ({
         }}
         disabled={disableMarkAsDone}
       >
-        {!isCompleted ? t("mark_as_done") : t("mark_as_in_progress")}
+        {!isCompleted
+          ? t("forms.mark_as_done", { ns: "common" })
+          : t("forms.mark_as_in_progress", { ns: "common" })}
       </Typography>
       <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
         {t("menu.clear")}
