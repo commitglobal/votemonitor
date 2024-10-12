@@ -61,7 +61,7 @@ export const CreateFormPage: FC = () => {
 
     onSuccess: ({ data: form }) => {
       queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
-      navigate({ to: `/forms/$formId/edit/$tab`, params: { formId: form.id, tab: 'questions' } });
+      navigate({ to: `/forms/$formId/edit`, params: { formId: form.id }, search: { tab: 'questions' } });
     },
   });
 

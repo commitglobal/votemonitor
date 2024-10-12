@@ -44,6 +44,7 @@ import { Route as ObserverGuidesViewGuideIdImport } from './routes/observer-guid
 import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guides/edit.$guideId'
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
+import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
 import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
 import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
@@ -54,7 +55,6 @@ import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './route
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
-import { Route as FormsFormIdEditTabImport } from './routes/forms_.$formId.edit.$tab'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 
 // Create/Update Routes
@@ -231,6 +231,11 @@ const MonitoringObserversEditMonitoringObserverIdRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormsFormIdEditRoute = FormsFormIdEditImport.update({
+  path: '/forms/$formId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormsNewTemplateRoute = FormsNewTemplateImport.update({
   path: '/forms/new/template',
   getParentRoute: () => rootRoute,
@@ -284,11 +289,6 @@ const MonitoringObserversPushMessagesIdViewRoute =
     path: '/monitoring-observers/push-messages/$id/view',
     getParentRoute: () => rootRoute,
   } as any)
-
-const FormsFormIdEditTabRoute = FormsFormIdEditTabImport.update({
-  path: '/forms/$formId/edit/$tab',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const FormsFormIdEditTranslationLanguageCodeRoute =
   FormsFormIdEditTranslationLanguageCodeImport.update({
@@ -420,6 +420,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsNewTemplateImport
       parentRoute: typeof rootRoute
     }
+    '/forms/$formId/edit': {
+      preLoaderRoute: typeof FormsFormIdEditImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/edit/$monitoringObserverId': {
       preLoaderRoute: typeof MonitoringObserversEditMonitoringObserverIdImport
       parentRoute: typeof rootRoute
@@ -458,10 +462,6 @@ declare module '@tanstack/react-router' {
     }
     '/forms/$formId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/$formId/edit/$tab': {
-      preLoaderRoute: typeof FormsFormIdEditTabImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/push-messages/$id/view': {
@@ -516,6 +516,7 @@ export const routeTree = rootRoute.addChildren([
   FormsNewReuseRoute,
   FormsNewScratchRoute,
   FormsNewTemplateRoute,
+  FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
   MonitoringObserversPushMessagesIdRoute,
   ObserverGuidesEditGuideIdRoute,
@@ -526,7 +527,6 @@ export const routeTree = rootRoute.addChildren([
   ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
-  FormsFormIdEditTabRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute,

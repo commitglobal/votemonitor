@@ -27,7 +27,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/forms_.$formId.edit.$tab';
+import { Route } from '@/routes/forms_.$formId.edit';
 import { useMutation } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { FC, useEffect, useState } from 'react';
@@ -477,7 +477,11 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       title={`${code} - ${name[languageCode]}`}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(saveForm)} className='flex flex-col flex-1'>
-          <Tabs value={activeTab} className='flex flex-col flex-1' defaultValue='form-details'>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className='flex flex-col flex-1'
+            defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger
                 value='form-details'
