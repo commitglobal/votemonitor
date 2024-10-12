@@ -23,6 +23,7 @@ const AppLayout = () => {
           <Stack.Screen name="report-issue" options={{ headerShown: false }} />
           <Stack.Screen name="change-password" options={{ headerShown: false }} />
           <Stack.Screen name="about-votemonitor" options={{ headerShown: false }} />
+          <Stack.Screen name="guide/[guideId]" options={{ headerShown: false }} />
         </Stack>
       </NotificationContextProvider>
     </UserContextProvider>

@@ -17,7 +17,8 @@
     "save": "Sačuvaj",
     "no_data": "Nema podataka.",
     "select": "Izaberi",
-    "done": "Završeno"
+    "done": "Završeno",
+    "ok": "Dobro"
   },
   "languages": {
     "ro": "rumunski",
@@ -443,6 +444,19 @@
       "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
+  "resources": {
+    "title": "TODO: Resursi",
+    "info": "TODO: U ovom odeljku očekujte ključne informacije i resurse dizajnirane da vam pomognu da posmatrate izborne procese i prijavite bilo kakve izborne probleme ili nepravilnosti na koje naiđete kao građanin.",
+    "empty": {
+      "heading": "TODO: Još nema vodiča za čitanje",
+      "paragraph": "TODO: Vodiči i resursi o posmatranju izbornih procesa i prijavljivanju problema kao građanin su vam na dohvat ruke."
+    },
+    "types": {
+      "Document": "TODO: Tip fajla PDF",
+      "Website": "TODO: Spoljni URL",
+      "Text": "TODO: Vodič u aplikaciji"
+    }
+  },
   "inbox": {
     "title": "",
     "empty": {
@@ -454,6 +468,17 @@
     "your_organization": "vaša organizacija",
     "menu": {
       "manage_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "updates": {
+    "title": "TODO: Ažuriranja",
+    "empty": {
+      "heading": "TODO: Još nema primljenih ažuriranja",
+      "paragraph": "TODO: Ažuriranja o izbornom periodu će se pojaviti ovde."
+    },
+    "info_modal": {
+      "p1": "TODO: U ovom odeljku očekujte da ćete primati ažuriranja uživo od tima Vote Monitor-a u vezi sa izbornim periodom koji je relevantan za vas kao građanina zainteresovanog za građanski angažman.",
+      "p2": "TODO: Proveravajte periodično da li ste primili nove informacije."
     }
   },
   "more": {

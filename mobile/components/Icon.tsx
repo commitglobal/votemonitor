@@ -63,6 +63,7 @@ import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
 import Warning from "../assets/icons/warning.svg";
 import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
 import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
+import Updates from "../assets/icons/updates.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -173,6 +174,7 @@ export const defaultIcon = React.forwardRef(
       warning: <Warning stroke={color} width={size} height={size} />,
       publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
       appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
+      updates: <Updates fill={color} width={size} height={size} />,
     };
 
     return (
