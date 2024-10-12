@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.PollingStation.Information.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Answer.Module.Mappers;
@@ -24,6 +25,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information", "mobile"));
         Summary(s => { s.Summary = "Upserts polling station information for a polling station"; });
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req,
@@ -67,10 +69,10 @@ public class Endpoint(
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
-        
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+
         pollingStationInformation = form.FillIn(pollingStationInformation, answers, req.ArrivalTime, req.DepartureTime,
-            observationBreaks);
+            observationBreaks, req.IsCompleted);
 
         await repository.UpdateAsync(pollingStationInformation, ct);
 
@@ -99,10 +101,11 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        var observationBreaks = req.Breaks?.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
         var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver,
             req.ArrivalTime, req.DepartureTime, answers,
-            observationBreaks);
+            observationBreaks, req.IsCompleted);
+        
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

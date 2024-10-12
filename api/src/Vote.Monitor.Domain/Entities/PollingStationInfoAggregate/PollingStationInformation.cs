@@ -23,7 +23,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
     public IReadOnlyList<ObservationBreak> Breaks { get; private set; } = new List<ObservationBreak>().AsReadOnly();
-    
+    public bool IsCompleted { get; private set; }
+
     private PollingStationInformation(
         ElectionRound electionRound,
         PollingStation pollingStation,
@@ -34,7 +35,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) : base(Guid.NewGuid())
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -44,11 +46,18 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         MonitoringObserverId = monitoringObserver.Id;
         PollingStationInformationForm = pollingStationInformationForm;
         PollingStationInformationFormId = pollingStationInformationForm.Id;
-        Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-        
+
+        Answers = answers.ToList().AsReadOnly();
+
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
+
+
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
@@ -62,24 +71,44 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, 
-        int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
-        DateTime? arrivalTime, 
+    internal void Update(IEnumerable<BaseAnswer>? answers,
+        int? numberOfQuestionsAnswered,
+        int? numberOfFlaggedAnswers,
+        DateTime? arrivalTime,
         DateTime? departureTime,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
-        Answers = answers.ToList().AsReadOnly();
-        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
+        if (answers is not null)
+        {
+            Answers = answers.ToList().AsReadOnly();
+        }
+
+        if (numberOfFlaggedAnswers is not null)
+        {
+            NumberOfFlaggedAnswers = numberOfFlaggedAnswers.Value;
+        }
+
+        if (numberOfQuestionsAnswered is not null)
+        {
+            NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
+
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
 
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak> breaks)
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak>? breaks)
+
     {
         if (arrivalTime.HasValue)
         {
@@ -96,13 +125,17 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
             MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
         }
 
-        Breaks = breaks.ToList().AsReadOnly();
+        if (breaks is not null)
+        {
+            Breaks = breaks.ToList().AsReadOnly();
+        }
     }
 
     public void ClearAnswers()
     {
         Answers = [];
         NumberOfQuestionsAnswered = 0;
+        NumberOfFlaggedAnswers = 0;
     }
 
     public void UpdateFollowUpStatus(SubmissionFollowUpStatus followUpStatus)
@@ -110,12 +143,10 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         FollowUpStatus = followUpStatus;
     }
 
-
 #pragma warning disable CS8618 // Required by Entity Framework
 
     private PollingStationInformation()
     {
-
     }
 #pragma warning restore CS8618
 }

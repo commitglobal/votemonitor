@@ -15,7 +15,15 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy, FILTER_KEY.Tab];
+export const HIDDEN_FILTERS = [
+  FILTER_KEY.PageSize,
+  FILTER_KEY.PageNumber,
+  FILTER_KEY.ViewBy,
+  FILTER_KEY.Tab,
+  FILTER_KEY.SortOrder,
+  FILTER_KEY.SortColumnName,
+];
+
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
@@ -33,6 +41,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
+  [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -72,6 +81,7 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         const isArray = Array.isArray(value);
 
         if (HIDDEN_FILTERS.includes(filterId)) return;
+
         if (filterId === FILTER_KEY.FormId) {
           key = `active-filter-${filterId}`;
           const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);

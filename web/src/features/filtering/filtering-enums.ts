@@ -4,6 +4,7 @@ export const enum FILTER_KEY {
   MonitoringObserverStatus = 'monitoringObserverStatus',
   MonitoringObserverTags = 'tags',
   FormTypeFilter = 'formTypeFilter',
+  FormStatusFilter = 'formStatusFilter',
   HasFlaggedAnswers = 'hasFlaggedAnswers',
   FormSubmissionFollowUpStatus = 'followUpStatus',
   HasNotes = 'hasNotes',
@@ -19,6 +20,8 @@ export const enum FILTER_KEY {
   ViewBy = 'viewBy',
   Tab = 'tab',
   FormId = 'formId',
+  SortOrder ='sortOrder',
+  SortColumnName ='sortColumnName'
 }
 
 export const enum FILTER_LABEL {
@@ -37,5 +40,6 @@ export const enum FILTER_LABEL {
   PollingStationNumber = 'Polling station number',
   FormSubmissionsMonitoringObserverTags = 'Observer tags',
   MediaFiles = 'Has attachments',
-  FormId = 'Form'
+  FormId = 'Form',
+  FormStatus = 'Form status',
 }

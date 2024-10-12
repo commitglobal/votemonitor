@@ -18,7 +18,6 @@ export enum IncidentReportLocationType {
 
 export interface IncidentReportByEntry {
   incidentReportId: string;
-  email: string;
   observerName: string;
   formCode: string;
   formName: TranslatedString;

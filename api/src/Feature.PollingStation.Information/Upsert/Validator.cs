@@ -21,8 +21,7 @@ public class Validator : Validator<Request>
                 v.Add(new NumberAnswerRequestValidator());
                 v.Add(new TextAnswerRequestValidator());
             });
-
-
+        
         RuleForEach(x => x.Breaks)
             .Must(observationBreak =>
                 !observationBreak.End.HasValue || observationBreak.Start <= observationBreak.End);

@@ -27,8 +27,11 @@ public class Request : BaseSortPaginatedRequest
     public string? Level5Filter { get; set; }
 
     [QueryParam]
-    public QuickReportFollowUpStatus? FollowUpStatus { get; set; }
+    public QuickReportFollowUpStatus? QuickReportFollowUpStatus { get; set; }
 
     [QueryParam]
     public QuickReportLocationType? QuickReportLocationType { get; set; }
+    
+    [QueryParam]
+    public IncidentCategory? IncidentCategory { get; set; }
 }
