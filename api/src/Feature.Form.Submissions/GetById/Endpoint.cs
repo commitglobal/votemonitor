@@ -46,7 +46,8 @@ public class Endpoint(
                       COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
                       psi."ArrivalTime",
                       psi."DepartureTime",
-                      psi."Breaks"
+                      psi."Breaks",
+                      psi."IsCompleted"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
                       INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
@@ -84,7 +85,8 @@ public class Endpoint(
                           COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted",
                           NULL AS "ArrivalTime",
                           NULL AS "DepartureTime",
-                          '[]'::jsonb AS "Breaks"
+                          '[]'::jsonb AS "Breaks",
+                          fs."IsCompleted",
                   FROM "FormSubmissions" fs
                   INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
                   INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
@@ -116,7 +118,8 @@ public class Endpoint(
                          s."FollowUpStatus",
                          s."ArrivalTime",
                          s."DepartureTime",
-                         s."Breaks"
+                         s."Breaks",
+                         s."IsCompleted"
                   FROM submissions s
                   INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
                   INNER JOIN "MonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"

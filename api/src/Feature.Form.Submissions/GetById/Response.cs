@@ -41,4 +41,5 @@ public class Response
     public DateTime? ArrivalTime { get; init; }
     public DateTime? DepartureTime { get; init; }
     public ObservationBreakModel[] Breaks { get; init; } = [];
+    public bool IsCompleted { get; set; }
 }

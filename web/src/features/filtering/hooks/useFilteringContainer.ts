@@ -3,23 +3,20 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { FILTER_KEY } from '../filtering-enums';
 import { ResponsesPageSearchParamsSchema } from '@/features/responses/models/search-params';
+import { HIDDEN_FILTERS } from '../components/ActiveFilters';
+
+function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Partial<T> {
+  return Object.fromEntries(Object.entries(obj).filter(([key]) => keysToRemove.includes(key))) as Partial<T>;
+}
 
 export function useFilteringContainer() {
   const navigate = useNavigate();
   const queryParams = useSearch({ strict: false });
 
-  const result = ResponsesPageSearchParamsSchema.safeParse(queryParams);
-  let pageSearchParams: Record<string, string> = {
-    [FILTER_KEY.Tab]: 'form-answers',
-    [FILTER_KEY.ViewBy]: 'byEntry',
-  };
-
-  if (result.success) {
-    pageSearchParams = result.data;
-  }
-
   const setPrevSearch = useSetPrevSearch();
-  const filteringIsActive = Object.keys(queryParams).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
+  const filteringIsActive = Object.keys(queryParams)
+    .filter((key) => !HIDDEN_FILTERS.includes(key))
+    .some((key) => !!key);
 
   const navigateHandler = useCallback(
     (search: Record<string, any | undefined>) => {
@@ -39,11 +36,10 @@ export function useFilteringContainer() {
   );
 
   const resetFilters = () => {
-    debugger;
     navigate({
-      search: pageSearchParams,
+      search: filterObject(queryParams, HIDDEN_FILTERS),
     });
-    setPrevSearch(pageSearchParams);
+    setPrevSearch(filterObject(queryParams, HIDDEN_FILTERS));
   };
 
   return { queryParams, filteringIsActive, navigate, navigateHandler, resetFilters };

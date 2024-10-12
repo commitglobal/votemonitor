@@ -4,7 +4,6 @@ namespace Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 public record ObservationBreak
 {
-
     public DateTime Start { get; }
     public DateTime? End { get; }
 

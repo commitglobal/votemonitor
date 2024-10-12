@@ -176,10 +176,10 @@ export default function ObserversDashboard(): ReactElement {
         </TabsList>
         <TabsContent value='account'>
           <Card className='w-full pt-0'>
-            <CardHeader className='flex flex-column gap-2'>
-              <div className='flex flex-row justify-between items-center px-6'>
+            <CardHeader className='flex gap-2 flex-column'>
+              <div className='flex flex-row items-center justify-between px-6'>
                 <CardTitle className='text-xl'>Observers list</CardTitle>
-                <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
+                <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
                   <Dialog>
                     <DialogTrigger>
                       <Button className='bg-purple-900 hover:bg-purple-600'>
@@ -217,15 +217,15 @@ export default function ObserversDashboard(): ReactElement {
                         <p className='text-sm text-gray-700'>
                           Download template <span className='text-red-500'>*</span>
                         </p>
-                        <div className='px-3 py-1 bg-purple-50 rounded-lg cursor-pointer'>
-                          <div className='text-sm text-purple-900 flex flex-row gap-1'>
+                        <div className='px-3 py-1 rounded-lg cursor-pointer bg-purple-50'>
+                          <div className='flex flex-row gap-1 text-sm text-purple-900'>
                             {' '}
                             <ArrowDownTrayIcon className='w-[15px]' />
                             Observers_template.csv
                           </div>
                           <div className='text-xs text-purple-900'>28kb</div>
                         </div>
-                        <div className='text-sm text-gray-500 font-normal'>
+                        <div className='text-sm font-normal text-gray-500'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
                         <input
@@ -235,7 +235,7 @@ export default function ObserversDashboard(): ReactElement {
                           style={{ display: 'none' }} // NOTICE!
                         />
                         <Button onClick={handleClick} variant='outline'>
-                          <span className='text-gray-500 font-normal'>
+                          <span className='font-normal text-gray-500'>
                             {fileName || (
                               <div>
                                 Drag & drop your files or <span className='underline'>Browse</span>
@@ -249,14 +249,14 @@ export default function ObserversDashboard(): ReactElement {
                         <Separator />
                       </div>
                       <DialogFooter>
-                        <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
+                        <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                           Cancel
                         </Button>
                         <Button className='bg-purple-900 hover:bg-purple-600'>Import list</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                  <Button className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'>
+                  <Button className='text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'>
                     <svg
                       className='mr-1.5'
                       xmlns='http://www.w3.org/2000/svg'
@@ -276,7 +276,7 @@ export default function ObserversDashboard(): ReactElement {
                 </div>
               </div>
               <Separator />
-              <div className='filters px-6 flex flex-row justify-end gap-4'>
+              <div className='flex flex-row justify-end gap-4 px-6 filters'>
                 <Input onChange={handleSearchInput} className='w-[400px]' placeholder='Search' />
                 <FunnelIcon
                   onClick={changeIsFiltering}
@@ -287,7 +287,7 @@ export default function ObserversDashboard(): ReactElement {
               </div>
               <Separator />
               {isFiltering ? (
-                <div className='table-filters flex flex-row gap-4'>
+                <div className='flex flex-row gap-4 table-filters'>
                   <Select value={statusFilter} onValueChange={handleStatusFilter}>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Observer status' />
@@ -299,6 +299,7 @@ export default function ObserversDashboard(): ReactElement {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+
                   <Select>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Tags' />
