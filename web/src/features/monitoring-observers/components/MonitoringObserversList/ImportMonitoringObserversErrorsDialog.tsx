@@ -62,17 +62,17 @@ function ImportMonitoringObserversErrorsDialog({
                 </DialogHeader>
                 <div className='flex flex-col gap-3'>
                     <p className='text-sm text-gray-700'>
-                        Download error template
+                        Download error response
                     </p>
                     <div
                         onClick={downloadImportErrorsFile}
-                        className='px-3 py-1 bg-red-50 rounded-lg cursor-pointer'>
-                        <div className='text-sm text-red-500 flex flex-row gap-1'>
+                        className='px-3 py-1 rounded-lg cursor-pointer bg-red-50'>
+                        <div className='flex flex-row gap-1 text-sm text-red-500'>
                             <ArrowDownTrayIcon className='w-[15px]' />
                             import-errors.csv
                         </div>
                     </div>
-                    <div className='text-sm text-slate-700 font-normal'>
+                    <div className='text-sm font-normal text-slate-700'>
                         If you require any further assistance or have questions, please do not hesitate to reach out to our support team
                     </div>
                     <Separator />

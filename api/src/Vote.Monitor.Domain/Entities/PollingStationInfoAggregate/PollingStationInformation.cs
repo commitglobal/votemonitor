@@ -23,6 +23,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
     public IReadOnlyList<ObservationBreak> Breaks { get; private set; } = new List<ObservationBreak>().AsReadOnly();
+    public bool IsCompleted { get; private set; }
 
     private PollingStationInformation(
         ElectionRound electionRound,
@@ -34,8 +35,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks,
-        int version = 1) : base(Guid.NewGuid())
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -45,22 +46,21 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         MonitoringObserverId = monitoringObserver.Id;
         PollingStationInformationForm = pollingStationInformationForm;
         PollingStationInformationFormId = pollingStationInformationForm.Id;
-        Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
 
-        if (version == 1)
+        Answers = answers.ToList().AsReadOnly();
+
+        if (isCompleted.HasValue)
         {
-            UpdateTimesOfStay(arrivalTime, departureTime, breaks);
+            IsCompleted = isCompleted.Value;
         }
-        else
-        {
-            UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
-        }
+
+
+        UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    [Obsolete("Will be removed after 27.10.2024")]
     internal static PollingStationInformation Create(
         ElectionRound electionRound,
         PollingStation pollingStation,
@@ -71,55 +71,44 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) =>
+        List<ObservationBreak>? breaks,
+        bool? isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
 
-    internal static PollingStationInformation CreateV2(
-        ElectionRound electionRound,
-        PollingStation pollingStation,
-        MonitoringObserver monitoringObserver,
-        PollingStationInformationForm pollingStationInformationForm,
+    internal void Update(IEnumerable<BaseAnswer>? answers,
+        int? numberOfQuestionsAnswered,
+        int? numberOfFlaggedAnswers,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer> answers,
-        int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
-        List<ObservationBreak> breaks) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, 2);
-
-    [Obsolete("Will be removed after 27.10.2024")]
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers,
-        int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak>? breaks,
+        bool? isCompleted)
     {
-        Answers = answers.ToList().AsReadOnly();
-        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
+        if (answers is not null)
+        {
+            Answers = answers.ToList().AsReadOnly();
+        }
+
+        if (numberOfFlaggedAnswers is not null)
+        {
+            NumberOfFlaggedAnswers = numberOfFlaggedAnswers.Value;
+        }
+
+        if (numberOfQuestionsAnswered is not null)
+        {
+            NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
+
+        if (isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
 
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    internal void UpdateAnswersV2(IEnumerable<BaseAnswer> answers,
-        int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
-        List<ObservationBreak> breaks)
-    {
-        Answers = answers.ToList().AsReadOnly();
-        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak>? breaks)
 
-        UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
-    }
-
-    [Obsolete("Will be removed after 27.10.2024")]
-    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak> breaks)
     {
         if (arrivalTime.HasValue)
         {
@@ -136,22 +125,10 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
             MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
         }
 
-        Breaks = breaks.ToList().AsReadOnly();
-    }
-
-    public void UpdateTimesOfStayV2(DateTime? arrivalTime,
-        DateTime? departureTime,
-        IEnumerable<ObservationBreak> breaks)
-    {
-        ArrivalTime = arrivalTime;
-        DepartureTime = departureTime;
-
-        if (departureTime.HasValue && arrivalTime.HasValue && departureTime >= arrivalTime)
+        if (breaks is not null)
         {
-            MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
+            Breaks = breaks.ToList().AsReadOnly();
         }
-
-        Breaks = breaks.ToList().AsReadOnly();
     }
 
     public void ClearAnswers()
@@ -165,7 +142,6 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     {
         FollowUpStatus = followUpStatus;
     }
-
 
 #pragma warning disable CS8618 // Required by Entity Framework
 

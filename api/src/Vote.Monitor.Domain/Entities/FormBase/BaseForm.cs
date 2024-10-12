@@ -1,6 +1,5 @@
 using FluentValidation;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -137,101 +136,70 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
-    private T BaseFillIn<T>(T submission, List<BaseAnswer>? answers, Action<T> clearAnswers,
-        Action<T, List<BaseAnswer>, int, int> updateAnswers) where T : class
+    private void ValidateAnswers(List<BaseAnswer>? answers)
     {
-        if (answers == null)
-        {
-            return submission;
-        }
-
-        if (!answers.Any())
-        {
-            clearAnswers(submission);
-            return submission;
-        }
-
-        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+        var validationResult = AnswersValidator.GetValidationResults(answers ?? [], Questions);
 
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors);
         }
+    }
+
+    private (int? numberOfQuestionsAnswered, int? numberOfFlaggedAnswers) CalculateAnswerMetrics(
+        List<BaseAnswer>? answers)
+    {
+        if (answers is null)
+        {
+            return (null, null);
+        }
 
         var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        updateAnswers(submission, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
-
-        return submission;
+        return (numberOfQuestionsAnswered, numberOfFlaggedAnswers);
     }
 
-    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers)
+    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool? isCompleted)
     {
-        return BaseFillIn(
-            formSubmission,
-            answers,
-            submission => submission.ClearAnswers(),
-            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
-        );
+        ValidateAnswers(answers);
+        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+
+        formSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted);
+
+        return formSubmission;
     }
 
     public CitizenReport FillIn(CitizenReport citizenReport, List<BaseAnswer>? answers)
     {
-        return BaseFillIn(
-            citizenReport,
-            answers,
-            report => report.ClearAnswers(),
-            (report, numberOfQuestionsAnswered, numberOfFlaggedAnswers, ans) =>
-                report.UpdateAnswers(numberOfQuestionsAnswered, numberOfFlaggedAnswers, ans)
-        );
+        ValidateAnswers(answers);
+        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+
+        citizenReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
+
+        return citizenReport;
     }
 
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak>? breaks, bool? isCompleted)
     {
-        var pollingStationInformation = BaseFillIn(
-            psiSubmission,
-            answers,
-            submission => submission.ClearAnswers(),
-            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
-                    departureTime, breaks)
-        );
+        ValidateAnswers(answers);
+        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        pollingStationInformation.UpdateTimesOfStay(arrivalTime, departureTime, breaks);
+        psiSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
+            departureTime, breaks, isCompleted);
 
-        return pollingStationInformation;
+        return psiSubmission;
     }
     
-    public PollingStationInformation FillInV2(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool? isCompleted)
     {
-        var pollingStationInformation = BaseFillIn(
-            psiSubmission,
-            answers,
-            submission => submission.ClearAnswers(),
-            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                submission.UpdateAnswersV2(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
-                    departureTime, breaks)
-        );
+        ValidateAnswers(answers);
+        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        pollingStationInformation.UpdateTimesOfStayV2(arrivalTime, departureTime, breaks);
+        incidentReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted);
 
-        return pollingStationInformation;
-    }
-
-
-    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers)
-    {
-        return BaseFillIn(
-            incidentReport,
-            answers,
-            report => report.ClearAnswers(),
-            (report, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                report.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
-        );
+        return incidentReport;
     }
 
     public void AddTranslations(string[] languageCodes)
