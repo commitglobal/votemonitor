@@ -4,11 +4,16 @@ on:
   push:
     paths:
       - api/**
+      - .github/workflows/**
     branches:
       - main
   pull_request:
     branches:
       - main
+    paths:
+      - api/**
+      - .github/workflows/**
+
 jobs:
   build:
 
