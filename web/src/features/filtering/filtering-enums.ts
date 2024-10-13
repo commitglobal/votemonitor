@@ -20,8 +20,10 @@ export const enum FILTER_KEY {
   ViewBy = 'viewBy',
   Tab = 'tab',
   FormId = 'formId',
-  SortOrder ='sortOrder',
-  SortColumnName ='sortColumnName'
+  SortOrder = 'sortOrder',
+  SortColumnName = 'sortColumnName',
+  FromDate = 'submissionsFromDate',
+  ToDate = 'submissionsToDate',
 }
 
 export const enum FILTER_LABEL {
@@ -42,4 +44,6 @@ export const enum FILTER_LABEL {
   MediaFiles = 'Has attachments',
   FormId = 'Form',
   FormStatus = 'Form status',
+  FromDate = 'From date',
+  ToDate = 'ToDate',
 }
