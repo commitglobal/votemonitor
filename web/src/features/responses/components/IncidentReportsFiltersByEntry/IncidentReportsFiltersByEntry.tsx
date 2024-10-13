@@ -29,7 +29,7 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
       void navigate({
         // @ts-ignore
         search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number> = {
+          const newSearch: Record<string, string | undefined | string[] | number| Date> = {
             ...prev,
             ...search,
           };
