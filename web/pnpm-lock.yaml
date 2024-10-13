@@ -192,7 +192,7 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(chart.js@4.4.2)(react@18.2.0)
       react-day-picker:
-        specifier: 9.0.8
+        specifier: ^9.0.8
         version: 9.0.8(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
