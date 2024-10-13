@@ -2,6 +2,8 @@ name: Build and push votemonitor image to registry
 
 on:
   push:
+    paths:
+      - api/**
     branches:
       - main
     tags:
