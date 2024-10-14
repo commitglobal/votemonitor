@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useLanguages } from '@/hooks/languages';
@@ -152,7 +153,7 @@ export default function FormsDashboard(): ReactElement {
       },
     },
     {
-      accessorKey: 'lastUpdatedOn',
+      accessorKey: 'LastModifiedOn',
       enableSorting: false,
       enableResizing: false,
       header: ({ column }) => (
@@ -160,17 +161,24 @@ export default function FormsDashboard(): ReactElement {
       ),
       cell: ({ row }) =>
         row.depth === 0 ? (
-          <div>
-            <p>
-              {row.original.lastModifiedOn
-                ? format(row.original.lastModifiedOn, DateTimeFormat)
-                : format(row.original.createdOn, DateTimeFormat)}{' '}
-            </p>
-          </div>
+          <TooltipProvider delayDuration={100}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                  {' '}
+                  {format(row.original.lastModifiedOn, DateTimeFormat)}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{row.original.lastModifiedBy}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ) : (
           <></>
         ),
     },
+
     {
       header: '',
       accessorKey: 'action',
