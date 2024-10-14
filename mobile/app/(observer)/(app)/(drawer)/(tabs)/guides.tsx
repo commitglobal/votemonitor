@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { useGuides } from "../../../../../services/queries/guides.query";
 import ResourcesGuidesList from "../../../../../components/ResourcesList";
-import { Typography } from "../../../../../components/Typography";
 import { YStack } from "tamagui";
 import SearchInput from "../../../../../components/SearchInput";
 import { useState, useMemo } from "react";
@@ -64,13 +63,6 @@ const Guides = () => {
         isRefetching={isRefetchingGuides}
         resources={filteredGuides || []}
         refetch={refetchGuides}
-        header={
-          filteredGuides?.length > 0 ? (
-            <Typography preset="body1" fontWeight="700" marginBottom="$xs">
-              {t("list.heading")}
-            </Typography>
-          ) : undefined
-        }
         emptyContainerMarginTop="30%"
         onResourcePress={handleResourcePress}
       />
