@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Screen } from "../../../components/Screen";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
@@ -23,6 +23,7 @@ import WarningDialog from "../../../components/WarningDialog";
 import OptionsSheet from "../../../components/OptionsSheet";
 import { Typography } from "../../../components/Typography";
 import { Dialog } from "../../../components/Dialog";
+import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 
 const ObservationTime = () => {
   const { t } = useTranslation("observation");
@@ -47,6 +48,9 @@ const ObservationTime = () => {
     pollingStationId: selectedPollingStation?.pollingStationId,
     scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_dates`,
   });
+
+  const { isOnline } = useNetInfoContext();
+  const isLoading = useMemo(() => isPending && isOnline, [isPending, isOnline]);
 
   const {
     control,
@@ -245,7 +249,7 @@ const ObservationTime = () => {
                   )}
                   onChange={onChange}
                   value={value}
-                  disabled={isPending}
+                  disabled={isLoading}
                 />
               )}
             />
@@ -271,7 +275,7 @@ const ObservationTime = () => {
                   )}
                   onChange={onChange}
                   value={value}
-                  disabled={isPending}
+                  disabled={isLoading}
                   minimumDate={getValues("arrivalTime")}
                 />
               )}
@@ -283,7 +287,7 @@ const ObservationTime = () => {
               paddingRight="$lg"
               icon={<Icon icon="coffeeBreak" color="$purple5" size={24} />}
               alignSelf="flex-start"
-              disabled={!watch("arrivalTime") || isPending}
+              disabled={!watch("arrivalTime") || isLoading}
               onPress={handleAddBreak}
             >
               {t("polling_stations_information.observation_time.add_break")}
@@ -299,7 +303,7 @@ const ObservationTime = () => {
                   index={index}
                   control={control}
                   watch={watch}
-                  isPending={isPending}
+                  isPending={isLoading}
                   setBreakToDelete={setBreakToDelete}
                   onDelete={handleDeleteBreak}
                 />
@@ -314,7 +318,7 @@ const ObservationTime = () => {
         onActionButtonPress={handleSubmit(onSubmit)}
         actionBtnLabel={t("polling_stations_information.observation_time.save")}
         marginTop="auto"
-        isNextDisabled={isPending}
+        isNextDisabled={isLoading}
       />
 
       {breakToDelete !== null && (
