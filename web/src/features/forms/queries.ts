@@ -1,8 +1,8 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
+import { buildURLSearchParams } from '@/lib/utils';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { FormBase, FormFull } from './models/form';
-import { buildURLSearchParams } from '@/lib/utils';
 
 export const formsKeys = {
   all: (electionRoundId: string) => ['forms', electionRoundId] as const,
@@ -51,7 +51,7 @@ export function useForms(
       const searchParams = buildURLSearchParams(params);
 
       const response = await authApi.get<PageResponse<FormBase>>(`/election-rounds/${electionRoundId}/forms`, {
-        params: searchParams
+        params: searchParams,
       });
 
       if (response.status !== 200) {
@@ -61,5 +61,20 @@ export function useForms(
       return response.data;
     },
     enabled: !!electionRoundId,
+  });
+}
+
+export function useFormTemplates(): UseQueryResult<PageResponse<any>, Error> {
+  return useQuery({
+    queryKey: ['form-templates'],
+    queryFn: async () => {
+      const response = await authApi.get<PageResponse<any>>(`/form-templates`);
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch form tem');
+      }
+
+      return response.data;
+    },
   });
 }
