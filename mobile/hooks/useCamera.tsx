@@ -96,7 +96,7 @@ export const useCamera = () => {
         if (file.type === "image") {
           resultCompression = await Image.compress(file.uri);
         } else if (file.type === "video") {
-          resultCompression = await Video.compress(file.uri, {}, onCompressionProgressCallback);
+          resultCompression = await Video.compress(file.uri, { progressDivider: 10, }, onCompressionProgressCallback);
         }
       } catch (err) {
         Sentry.captureException(err);
