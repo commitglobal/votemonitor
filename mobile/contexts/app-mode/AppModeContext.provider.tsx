@@ -25,7 +25,6 @@ const AppModeContextProvider = ({ children }: React.PropsWithChildren) => {
   }, []);
 
   const handleSetAppMode = (appMode: AppMode) => {
-    console.log("handleSetAppMode", appMode);
     setAppMode(appMode);
     SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, appMode);
   };

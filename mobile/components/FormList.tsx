@@ -52,6 +52,7 @@ interface IFormListProps {
 
 const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
+
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
 

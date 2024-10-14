@@ -60,7 +60,6 @@ Sentry.init({
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
-  console.log("🔵 1. RootLayout");
   const [loaded] = useFonts({
     Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),

@@ -11,14 +11,17 @@ import OptionsSheet from "../../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../../common/language.preferences";
 import { useFormById } from "../../../../../../../services/queries/forms.query";
-import { useFormAnswers } from "../../../../../../../services/queries/form-submissions.query";
+import { useFormSubmissionByFormId } from "../../../../../../../services/queries/form-submissions.query";
 import FormQuestionListItem, {
   FormQuestionListItemProps,
   QuestionStatus,
 } from "../../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
-import { useFormSubmissionMutation } from "../../../../../../../services/mutations/form-submission.mutation";
+import {
+  useFormSubmissionMutation,
+  useMarkFormSubmissionCompletionStatusMutation,
+} from "../../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
 import WarningDialog from "../../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../../services/queries/attachments.query";
@@ -53,6 +56,14 @@ const FormDetails = () => {
     scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
   });
 
+  const { mutate: setFormSubmissionCompletionStatus } =
+    useMarkFormSubmissionCompletionStatusMutation({
+      electionRoundId: activeElectionRound?.id,
+      pollingStationId: selectedPollingStation?.pollingStationId,
+      // BR: Both updateSubmission and setFormSubmissionCompletionStatus use the same scopeId because you can't markCompletionStatus without an existing submissionId
+      scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
+    });
+
   const {
     data: currentForm,
     isLoading: isLoadingCurrentForm,
@@ -62,12 +73,22 @@ const FormDetails = () => {
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: answers,
+    data: currentFormSubmission,
     isLoading: isLoadingAnswers,
     error: answersError,
     refetch: refetchAnswers,
     isRefetching: isRefetchingAnswers,
-  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+  } = useFormSubmissionByFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const answers = useMemo(() => currentFormSubmission?.answers, [currentFormSubmission]);
+  const isCompleted = useMemo(
+    () => currentFormSubmission?.isCompleted || false,
+    [currentFormSubmission],
+  );
 
   const {
     data: attachments,
@@ -170,6 +191,11 @@ const FormDetails = () => {
       languages: currentForm?.languages,
     };
   }, [currentForm, questions]);
+
+  const disableMarkAsDone = useMemo(() => {
+    const answersLength = Object.keys(answers || {}).length;
+    return (answersLength === 0 || answersLength === numberOfQuestions) && !isCompleted;
+  }, [answers, numberOfQuestions, isCompleted]);
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -282,6 +308,7 @@ const FormDetails = () => {
                 completedAnswers={Object.keys(answers || {}).length}
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
+                isCompleted={isCompleted}
               />
               <Typography preset="body1" fontWeight="700" gap="$xxs">
                 {t("questions.title")}
@@ -337,6 +364,27 @@ const FormDetails = () => {
       {optionSheetOpen && (
         <OptionsSheet open setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
+            <Typography
+              preset="body1"
+              color={disableMarkAsDone ? "$gray3" : "$gray7"}
+              lineHeight={24}
+              onPress={() => {
+                if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
+                  setFormSubmissionCompletionStatus({
+                    electionRoundId: activeElectionRound?.id,
+                    pollingStationId: selectedPollingStation?.pollingStationId,
+                    formId: currentForm?.id as string,
+                    isCompleted: !isCompleted,
+                  });
+                  setOptionSheetOpen(false);
+                }
+              }}
+              disabled={disableMarkAsDone}
+            >
+              {!isCompleted
+                ? t("forms.mark_as_done", { ns: "common" })
+                : t("forms.mark_as_in_progress", { ns: "common" })}
+            </Typography>
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
               {t("menu.change_language")}
             </Typography>
