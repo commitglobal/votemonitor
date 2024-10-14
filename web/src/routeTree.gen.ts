@@ -32,6 +32,7 @@ import { Route as MonitoringObserversTabImport } from './routes/monitoring-obser
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
+import { Route as CitizenNotificationsNewImport } from './routes/citizen-notifications/new'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
@@ -45,6 +46,7 @@ import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monit
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
+import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
 import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
 import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
@@ -162,6 +164,11 @@ const ElectionEventTabRoute = ElectionEventTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CitizenNotificationsNewRoute = CitizenNotificationsNewImport.update({
+  path: '/citizen-notifications/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CitizenGuidesNewRoute = CitizenGuidesNewImport.update({
   path: '/citizen-guides/new',
   getParentRoute: () => rootRoute,
@@ -232,6 +239,12 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CitizenNotificationsViewNotificationIdRoute =
+  CitizenNotificationsViewNotificationIdImport.update({
+    path: '/citizen-notifications/view/$notificationId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const CitizenGuidesViewGuideIdRoute = CitizenGuidesViewGuideIdImport.update({
   path: '/citizen-guides/view/$guideId',
   getParentRoute: () => rootRoute,
@@ -286,6 +299,10 @@ declare module '@tanstack/react-router' {
     }
     '/citizen-guides/new': {
       preLoaderRoute: typeof CitizenGuidesNewImport
+      parentRoute: typeof rootRoute
+    }
+    '/citizen-notifications/new': {
+      preLoaderRoute: typeof CitizenNotificationsNewImport
       parentRoute: typeof rootRoute
     }
     '/election-event/$tab': {
@@ -376,6 +393,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CitizenGuidesViewGuideIdImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-notifications/view/$notificationId': {
+      preLoaderRoute: typeof CitizenNotificationsViewNotificationIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/$languageCode': {
       preLoaderRoute: typeof FormsFormIdLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -449,6 +470,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AcceptInviteSuccessRoute,
   CitizenGuidesNewRoute,
+  CitizenNotificationsNewRoute,
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,
@@ -471,6 +493,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesIndexRoute,
   CitizenGuidesEditGuideIdRoute,
   CitizenGuidesViewGuideIdRoute,
+  CitizenNotificationsViewNotificationIdRoute,
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,

@@ -1,6 +1,4 @@
-﻿using Feature.IncidentReports.Specifications;
-
-namespace Feature.IncidentReports.ListMy;
+﻿namespace Feature.IncidentReports.ListMy;
 
 public class Endpoint(
     IAuthorizationService authorizationService,

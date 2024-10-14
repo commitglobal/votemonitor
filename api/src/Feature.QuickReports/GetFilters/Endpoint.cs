@@ -2,7 +2,6 @@
 using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.QuickReports.GetFilters;
@@ -34,8 +33,8 @@ public class Endpoint(
                   SELECT MIN(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "FirstSubmissionTimestamp",
                          MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LastSubmissionTimestamp"
                   FROM "QuickReports" QR
-                           INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-                           INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE QR."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId;
                   """;

@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Answer.Module.Validators;
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.Upsert;
 

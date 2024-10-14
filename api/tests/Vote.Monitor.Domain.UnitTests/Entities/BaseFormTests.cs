@@ -24,9 +24,12 @@ public class BaseFormTests
         PollingStationInformationForm.Create(ElectionRound, "RO", Languages, Questions);
 
     [Theory]
-    [MemberData(nameof(EmptyStringsTestCases))]
-    public void CreatePollingStationInformation_ShouldUpdateTimeOfStays_Correctly(DateTime? arrivalTime,
-        DateTime? departureTime, List<BaseAnswer>? answers, List<ObservationBreak> breaks)
+    [MemberData(nameof(TestCases))]
+    public void CreatePollingStationInformation_ShouldUpdateTimeOfStays_Correctly(
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
+        List<BaseAnswer>? answers,
+        List<ObservationBreak> breaks)
     {
         // Act
         var submission = _form.CreatePollingStationInformation(_pollingStation,
@@ -35,29 +38,65 @@ public class BaseFormTests
             departureTime,
             answers,
             breaks,
-            false);
+            ValueOrUndefined<bool>.Some(true));
 
         // Assert
-        submission.ArrivalTime.Should().Be(arrivalTime);
-        submission.DepartureTime.Should().Be(departureTime);
+        submission.ArrivalTime.Should().Be(arrivalTime.Value);
+        submission.DepartureTime.Should().Be(departureTime.Value);
         submission.Breaks.Should().BeEquivalentTo(breaks);
     }
-
-    public static IEnumerable<object[]> EmptyStringsTestCases =>
+    
+    public static IEnumerable<object[]> TestCases =>
         new List<object[]>
         {
-            new object[] { null, null, null as List<BaseAnswer>, new List<ObservationBreak>() },
-            new object[] { DateTime.Now, null, null as List<BaseAnswer>, new List<ObservationBreak>() },
             new object[]
-                { DateTime.Now, DateTime.Now.AddDays(3), null as List<BaseAnswer>, new List<ObservationBreak>() },
-
-            new object[] { null, null, new List<BaseAnswer>(), new List<ObservationBreak>() },
-            new object[] { DateTime.Now, null, new List<BaseAnswer>(), new List<ObservationBreak>() },
+            {
+                ValueOrUndefined<DateTime?>.Some(null), ValueOrUndefined<DateTime?>.Some(null),
+                null as List<BaseAnswer>, new List<ObservationBreak>()
+            },
             new object[]
-                { DateTime.Now, DateTime.Now.AddDays(3), new List<BaseAnswer>(), new List<ObservationBreak>() },
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(null),
+                null as List<BaseAnswer>, new List<ObservationBreak>()
+            },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now),
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now.AddDays(3)), null as List<BaseAnswer>,
+                new List<ObservationBreak>()
+            },
 
-            new object[] { null, null, Answers, new List<ObservationBreak>() },
-            new object[] { DateTime.Now, null, Answers, new List<ObservationBreak>() },
-            new object[] { DateTime.Now, DateTime.Now.AddDays(3), Answers, new List<ObservationBreak>() },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(null), ValueOrUndefined<DateTime?>.Some(null), new List<BaseAnswer>(),
+                new List<ObservationBreak>()
+            },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(null),
+                new List<BaseAnswer>(), new List<ObservationBreak>()
+            },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now),
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now.AddDays(3)), new List<BaseAnswer>(),
+                new List<ObservationBreak>()
+            },
+
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(null), ValueOrUndefined<DateTime?>.Some(null), Answers,
+                new List<ObservationBreak>()
+            },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(null), Answers,
+                new List<ObservationBreak>()
+            },
+            new object[]
+            {
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now),
+                ValueOrUndefined<DateTime?>.Some(DateTime.Now.AddDays(3)), Answers, new List<ObservationBreak>()
+            },
         };
 }

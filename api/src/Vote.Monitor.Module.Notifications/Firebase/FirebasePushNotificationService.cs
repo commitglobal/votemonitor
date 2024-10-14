@@ -29,7 +29,6 @@ public class FirebasePushNotificationService : IPushNotificationService
                     Notification = new Notification
                     {
                         Title = title,
-                        Body = body
                     },
                     Token = identifier
                 }).Chunk(_options.BatchSize);
