@@ -9,6 +9,7 @@ export enum Status {
   COMPLETED = "completed",
   NOT_ANSWERED = "not answered",
   ANSWERED = "answered",
+  MARKED_AS_COMPLETED = "markedAsCompleted",
 }
 
 enum Presets {
@@ -59,7 +60,9 @@ const Badge = (props: BadgeProps): JSX.Element => {
 
   const presetType = useMemo(
     () =>
-      status === Status.COMPLETED || status === Status.ANSWERED
+      status === Status.COMPLETED ||
+      status === Status.ANSWERED ||
+      status === Status.MARKED_AS_COMPLETED
         ? Presets.SUCCESS
         : status === Status.IN_PROGRESS
           ? Presets.WARNING

@@ -180,7 +180,6 @@ const CitizenForm = () => {
         setAnswers(updatedAnswers);
         goToNextQuestion(nextQuestion);
       } else {
-        console.log("🔵 [CitizenForm] submit form", updatedAnswers);
         if (!isOnline) {
           return Toast.show({
             type: "error",
