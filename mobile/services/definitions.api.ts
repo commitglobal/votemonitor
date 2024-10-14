@@ -337,7 +337,7 @@ export const markFormSubmissionCompletionStatus = ({
   ...payload
 }: MarkFormSubmissionCompletionStatusAPIPayload) => {
   return API.put(
-    `/election-rounds/${electionRoundId}/form-submissions/:setCompletion`,
+    `/election-rounds/${electionRoundId}/form-submissions:setCompletion`,
     payload,
   ).then((res) => res.data);
 };
