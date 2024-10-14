@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 type PrevSearchStore = {
-  search: Record<string, string | undefined | string[] | number>;
-  setSearch: (prevSearch: Record<string, string | undefined | string[] | number>) => void;
+  search: Record<string, string | undefined | string[] | number | Date>;
+  setSearch: (prevSearch: Record<string, string | undefined | string[] | number | Date>) => void;
 };
 
 const usePrevSearchStore = create(
