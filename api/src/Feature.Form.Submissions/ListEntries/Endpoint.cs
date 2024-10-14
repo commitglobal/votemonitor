@@ -57,8 +57,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
                            AND (@hasNotes is NULL OR (TRUE AND @hasNotes = false) OR (FALSE AND @hasNotes = true))
                            AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
-                           AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
-                           AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
                        UNION ALL SELECT count(*) AS count
                        FROM "FormSubmissions" fs
                        INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -93,8 +91,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            AND (@hasNotes is NULL 
                                 OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") = 0 AND @hasNotes = false) 
                                 OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
-                           AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
-                           AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
                   ) c;
 
                   WITH polling_station_submissions AS (
@@ -118,8 +114,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                         AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                         AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
-                        AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
-                        AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND psif."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND psif."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered")
@@ -159,8 +153,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                         AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                         AND (@formId IS NULL OR fs."FormId" = @formId)
-                        AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
-                        AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
@@ -247,6 +239,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."FirstName" || ' ' || u."LastName" END DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
+
                   """;
 
         var queryArgs = new
@@ -272,10 +265,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
-            fromDate = req.FromDateFilter?.ToString("O"),
-            toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            
         };
 
         int totalRowCount;

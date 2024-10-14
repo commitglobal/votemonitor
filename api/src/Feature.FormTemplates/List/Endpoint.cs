@@ -1,42 +1,22 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.FormTemplates.Specifications;
-using Microsoft.AspNetCore.Authorization;
+﻿using Feature.FormTemplates.Specifications;
 using Vote.Monitor.Core.Models;
-using Vote.Monitor.Core.Services.Security;
 
 namespace Feature.FormTemplates.List;
 
-public class Endpoint(
-    IReadRepository<FormTemplateAggregate> repository,
-    ICurrentUserRoleProvider userRoleProvider,
-    IAuthorizationService authorizationService)
-    : Endpoint<Request, Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>
+public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<Ok<PagedResponse<FormTemplateSlimModel>>, ProblemDetails>>
 {
     public override void Configure()
     {
         Get("/api/form-templates");
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>> ExecuteAsync(Request req,
-        CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<FormTemplateSlimModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var isNgoAdmin = userRoleProvider.IsNgoAdmin();
-        if (isNgoAdmin)
-        {
-            var result = await authorizationService.AuthorizeAsync(User, new NgoAdminRequirement());
-
-            if (!result.Succeeded)
-            {
-                return TypedResults.NotFound();
-            }
-        }
-
-        var specification = new ListFormTemplatesSpecification(req, isNgoAdmin);
+        var specification = new ListFormTemplatesSpecification(req);
         var formTemplates = await repository.ListAsync(specification, ct);
         var formTemplateCount = await repository.CountAsync(specification, ct);
 
-        return TypedResults.Ok(new PagedResponse<FormTemplateSlimModel>(formTemplates, formTemplateCount,
-            req.PageNumber, req.PageSize));
+        return TypedResults.Ok(new PagedResponse<FormTemplateSlimModel>(formTemplates, formTemplateCount, req.PageNumber, req.PageSize));
     }
 }

@@ -173,7 +173,7 @@ const CreateElectionRoundForm = (): ReactNode => {
                         form.setValue("startDate", formatISO(day!, { representation: 'date' }))
                       }}
                       disabled={(date) => date < new Date()}
-                      autoFocus
+                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>

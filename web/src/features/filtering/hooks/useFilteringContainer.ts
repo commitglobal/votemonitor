@@ -23,7 +23,7 @@ export function useFilteringContainer() {
       void navigate({
         // @ts-ignore
         search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number | Date> = {
+          const newSearch: Record<string, string | undefined | string[] | number> = {
             ...prev,
             ...search,
           };

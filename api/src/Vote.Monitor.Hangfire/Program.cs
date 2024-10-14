@@ -88,7 +88,6 @@ SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueT
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
-SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandler<IncidentCategory, string>());
 
 #endregion
 

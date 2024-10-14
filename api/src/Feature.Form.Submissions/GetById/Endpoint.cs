@@ -86,7 +86,7 @@ public class Endpoint(
                           NULL AS "ArrivalTime",
                           NULL AS "DepartureTime",
                           '[]'::jsonb AS "Breaks",
-                          fs."IsCompleted"
+                          fs."IsCompleted",
                   FROM "FormSubmissions" fs
                   INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
                   INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"

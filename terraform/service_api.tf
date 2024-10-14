@@ -8,7 +8,7 @@ module "ecs_api" {
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
   min_capacity = 1
-  max_capacity = 1
+  max_capacity = 2
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag

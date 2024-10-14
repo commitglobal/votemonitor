@@ -2,9 +2,6 @@ name: Build and push votemonitor-hangfire image to registry
 
 on:
   push:
-    paths:
-      - api/**
-      - .github/workflows/**
     branches:
       - main
     tags:

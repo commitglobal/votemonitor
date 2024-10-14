@@ -18,8 +18,8 @@ public class ListFormTemplatesSpecificationTests
 
         var testCollection = Enumerable.Range(1, 100)
             .Select(idx => new FormTemplateAggregateFaker(index: idx, status: DefaultStatus).Generate())
-            .Union(new[] { formTemplate1, formTemplate2 })
-            .ToList();
+        .Union(new[] { formTemplate1, formTemplate2 })
+        .ToList();
 
         var request = new Request
         {
@@ -27,7 +27,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -42,13 +42,11 @@ public class ListFormTemplatesSpecificationTests
     public void ListFormTemplatesSpecification_AppliesCorrectFilters_WhenNameFilterApplied()
     {
         // Arrange
-        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, code: DefaultCode, status: DefaultStatus)
-            .Generate();
-        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, code: DefaultCode, status: DefaultStatus)
-            .Generate();
+        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, code: DefaultCode, status: DefaultStatus).Generate();
+        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, code: DefaultCode, status: DefaultStatus).Generate();
 
         var testCollection = Enumerable
-            .Range(1, 100)
+        .Range(1, 100)
             .Select(index => new FormTemplateAggregateFaker(index: index, status: DefaultStatus).Generate())
             .Union(new[] { formTemplate1, formTemplate2 })
             .ToList();
@@ -58,7 +56,7 @@ public class ListFormTemplatesSpecificationTests
             CodeFilter = DefaultCode
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -73,17 +71,12 @@ public class ListFormTemplatesSpecificationTests
     public void ListFormTemplatesSpecification_AppliesCorrectFilters_WhenStatusFilterApplied()
     {
         // Arrange
-        var formTemplate1 =
-            new FormTemplateAggregateFaker(index: 101, code: DefaultCode, status: FormTemplateStatus.Published)
-                .Generate();
-        var formTemplate2 =
-            new FormTemplateAggregateFaker(index: 102, code: DefaultCode, status: FormTemplateStatus.Published)
-                .Generate();
+        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, code: DefaultCode, status: FormTemplateStatus.Published).Generate();
+        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, code: DefaultCode, status: FormTemplateStatus.Published).Generate();
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(index =>
-                new FormTemplateAggregateFaker(index: index, status: FormTemplateStatus.Drafted).Generate())
+            .Select(index => new FormTemplateAggregateFaker(index: index, status: FormTemplateStatus.Drafted).Generate())
             .Union(new[] { formTemplate1, formTemplate2 })
             .ToList();
 
@@ -92,7 +85,7 @@ public class ListFormTemplatesSpecificationTests
             Status = FormTemplateStatus.Published
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -109,15 +102,12 @@ public class ListFormTemplatesSpecificationTests
     public void ListFormTemplatesSpecification_AppliesCorrectFilters_WhenPartialFilterApplied(string searchString)
     {
         // Arrange
-        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, code: searchString, status: DefaultStatus)
-            .Generate();
-        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, code: searchString, status: DefaultStatus)
-            .Generate();
+        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, code: searchString, status: DefaultStatus).Generate();
+        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, code: searchString, status: DefaultStatus).Generate();
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(idx =>
-                new FormTemplateAggregateFaker(index: idx, code: searchString, status: DefaultStatus).Generate())
+            .Select(idx => new FormTemplateAggregateFaker(index: idx, code: searchString, status: DefaultStatus).Generate())
             .Union(new[] { formTemplate1, formTemplate2 })
             .ToList();
 
@@ -128,7 +118,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -160,7 +150,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -194,35 +184,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
-
-        // Act
-        var result = spec.Evaluate(testCollection).ToList();
-
-        // Assert
-        result.Should().HaveCount(2);
-        result.Should().ContainEquivalentOf(formTemplate1, cfg => cfg.ExcludingMissingMembers());
-        result.Should().ContainEquivalentOf(formTemplate2, cfg => cfg.ExcludingMissingMembers());
-    }
-
-    [Fact]
-    public void ListFormTemplatesSpecification_ShouldReturnOnlyPublishedForms_WhenUserIsNgoAdmin()
-    {
-        // Arrange
-        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, status: FormTemplateStatus.Published).Generate();
-        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, status: FormTemplateStatus.Published).Generate();
-
-        var testCollection = Enumerable.Range(1, 100)
-            .Select(idx => new FormTemplateAggregateFaker(index: idx, status: DefaultStatus).Generate())
-            .Union(new[] { formTemplate1, formTemplate2 })
-            .ToList();
-
-        var request = new Request
-        {
-            Status = FormTemplateStatus.Drafted
-        };
-
-        var spec = new ListFormTemplatesSpecification(request, true);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -255,7 +217,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -265,7 +227,6 @@ public class ListFormTemplatesSpecificationTests
         result.Should().ContainEquivalentOf(formTemplate1, cfg => cfg.ExcludingMissingMembers());
         result.Should().ContainEquivalentOf(formTemplate2, cfg => cfg.ExcludingMissingMembers());
     }
-
     public static IEnumerable<object[]> NameSortingTestCases =>
         new List<object[]>
         {

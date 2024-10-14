@@ -8,7 +8,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 {
     public override void Configure()
     {
-        Put("/api/election-rounds/{electionRoundId}/form-submissions:setCompletion");
+        Put("/api/election-rounds/{electionRoundId}/form-submissions/:setCompletion");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Updates completion status status for a submission"; });
