@@ -6,7 +6,12 @@
     "status": {
       "completed": "Completat",
       "in_progress": "În desfășurare",
-      "not_started": "Neînceput"
+      "not_started": "Neînceput",
+      "marked_as_completed": "Marcat ca finalizat"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Marchează formularul ca finalizat",
+      "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\""
     },
     "cancel": "Renunță",
     "save": "Salvează",

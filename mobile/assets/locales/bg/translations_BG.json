@@ -6,7 +6,12 @@
     "status": {
       "completed": "Завършен",
       "in_progress": "В процес",
-      "not_started": "Не е започнат"
+      "not_started": "Не е започнат",
+      "marked_as_completed": "TODO: Отбележено като завършено"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Маркирайте формуляра като завършен",
+      "mark_as_in_progress": "TODO:Маркирайте формуляра като в процес"
     },
     "cancel": "Откажи",
     "save": "Запази",
@@ -197,7 +202,7 @@
   },
   "polling_station_information_form": {
     "title": "Информация за изборната секция",
-    "submit": "SИзпратете отговори",
+    "submit": "Изпратете отговори",
     "form": {
       "max": "Въведеното не може да надвишава {{value}} знака",
       "placeholder": "Моля, въведете текст..."

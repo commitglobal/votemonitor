@@ -103,6 +103,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
+  queryClient.setMutationDefaults(pollingStationsKeys.markFormSubmissionCompletionStatus(), {
+    mutationFn: (payload: API.MarkFormSubmissionCompletionStatusAPIPayload) => {
+      return API.markFormSubmissionCompletionStatus(payload);
+    },
+  });
+
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
       return addAttachment(payload);

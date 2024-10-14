@@ -6,7 +6,12 @@
     "status": {
       "completed": "Ukończono",
       "in_progress": "W toku",
-      "not_started": "Nie rozpoczęto"
+      "not_started": "Nie rozpoczęto",
+      "marked_as_completed": "TODO: Oznaczono jako ukończone"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Zaznacz formularz jako zakończony",
+      "mark_as_in_progress": "TODO: Zaznacz formularz jako w trakcie"
     },
     "cancel": "Anuluj",
     "save": "Zapisz",
