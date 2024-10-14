@@ -1,9 +1,11 @@
+import { DateTimeFormat } from '@/common/formats';
 import { FilterBadge } from '@/components/ui/badge';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
 import { useNavigate } from '@tanstack/react-router';
+import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -42,6 +44,8 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
   [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
+  [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
+  [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -69,6 +73,11 @@ interface ActiveFiltersProps {
   queryParams: any;
 }
 
+function isDateType(value: any): boolean {
+  return value instanceof Date && !isNaN(value.getTime());
+}
+
+
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: formSubmissionsFilters } = useFormSubmissionsFilters(currentElectionRoundId);
@@ -79,6 +88,7 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         let key = '';
         const value = queryParams[filterId];
         const isArray = Array.isArray(value);
+        const isDate = isDateType(value);
 
         if (HIDDEN_FILTERS.includes(filterId)) return;
 
@@ -91,11 +101,17 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
           }
         }
 
-        if (!isArray) {
+        if (!isArray && !isDate) {
           key = `active-filter-${filterId}`;
           return <ActiveFilter key={key} filterId={filterId} value={value} />;
         }
-        return value.map((item) => {
+
+        if (isDate) {
+          key = `active-filter-${filterId}`;
+          return <ActiveFilter key={key} filterId={filterId} value={format(value, DateTimeFormat)} />;
+        }
+
+        return value.map((item: any) => {
           key = `active-filter-${filterId}-${item}`;
 
           return <ActiveFilter key={key} filterId={filterId} value={item as string} isArray />;
