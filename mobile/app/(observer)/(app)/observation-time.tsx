@@ -142,10 +142,10 @@ const ObservationTime = () => {
   // if there are breaks errors, display modal
   useEffect(() => {
     console.log("errors ⛔️", errors);
-    if (Object.keys(errors).includes("breaks") || Object.keys(errors).includes("departureTime")) {
+    if (Object.keys(errors).includes("breaks")) {
       setIsUnableToSaveObservationTime(true);
     }
-  }, [errors.breaks, errors.departureTime]);
+  }, [errors.breaks]);
 
   const handleGoBack = () => {
     if (isDirty) {
@@ -276,6 +276,11 @@ const ObservationTime = () => {
                   onChange={onChange}
                   value={value}
                   disabled={isLoading}
+                  error={
+                    errors.departureTime?.type === "departureTimeAfterArrivalTime"
+                      ? t("polling_stations_information.observation_time.departure_after_arrival")
+                      : ""
+                  }
                   minimumDate={getValues("arrivalTime")}
                 />
               )}

@@ -18,6 +18,7 @@ export interface DateInputProps extends XStackProps {
   minimumDate?: Date | null;
   maximumDate?: Date | null;
   placeholder?: string;
+  error?: string;
 }
 
 export const DateInput: React.FC<DateInputProps> = ({
@@ -27,6 +28,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   maximumDate,
   placeholder,
   disabled,
+  error,
   ...rest
 }) => {
   const localParams = useLocalSearchParams();
@@ -87,7 +89,7 @@ export const DateInput: React.FC<DateInputProps> = ({
       paddingHorizontal={14}
       paddingVertical="$xs"
       borderWidth={1}
-      borderColor="$gray3"
+      borderColor={error ? "$red5" : "$gray3"}
       borderRadius={8}
       gap="$xs"
       {...rest}

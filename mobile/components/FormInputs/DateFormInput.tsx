@@ -9,10 +9,10 @@ interface FormInputProps extends DateInputProps {
   placeholder?: string;
 }
 
-const DateFormInput: React.FC<FormInputProps> = ({ title, placeholder = "", ...rest }) => {
+const DateFormInput: React.FC<FormInputProps> = ({ title, placeholder = "", error, ...rest }) => {
   return (
-    <FormElement title={title}>
-      <DateInput placeholder={placeholder} {...rest} />
+    <FormElement title={title} error={error}>
+      <DateInput placeholder={placeholder} error={error} {...rest} />
     </FormElement>
   );
 };

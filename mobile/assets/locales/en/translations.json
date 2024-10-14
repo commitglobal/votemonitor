@@ -216,6 +216,7 @@
         "arrival_and_departure": "Arrival and departure time",
         "arrival_time": "Arrival time",
         "departure_time": "Departure time",
+        "departure_after_arrival": "The departure time must be after the arrival time",
         "select_arrival_time": "Select arrival time",
         "select_departure_time": "Select departure time",
         "add_break": "Add new break in observation",
