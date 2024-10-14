@@ -5,54 +5,11 @@ import { Icon } from "../../components/Icon";
 import { Typography } from "../../components/Typography";
 import { useTranslation } from "react-i18next";
 import { ScrollView, Spinner, XStack, YStack } from "tamagui";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Button from "../../components/Button";
 import { Selector } from "../../components/Selector";
 import { useGetCitizenElectionRounds } from "../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../contexts/citizen-user/CitizenUserContext.provider";
 import { router } from "expo-router";
-
-const Footer = ({
-  primaryAction,
-  primaryActionLabel,
-  isPrimaryButtonDisabled,
-  handleGoBack,
-}: {
-  primaryAction?: () => void;
-  primaryActionLabel: string;
-  isPrimaryButtonDisabled?: boolean;
-  handleGoBack: () => void;
-}) => {
-  const insets = useSafeAreaInsets();
-
-  return (
-    <XStack
-      marginBottom={insets.bottom + 32}
-      justifyContent="center"
-      alignItems="center"
-      paddingRight="$xl"
-    >
-      <XStack
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-        flex={0.2}
-        pressStyle={{ opacity: 0.5 }}
-        paddingLeft="$xl"
-        onPress={handleGoBack}
-      >
-        <Icon icon="chevronLeft" size={24} color="$purple5" />
-      </XStack>
-      <Button
-        flex={0.8}
-        disabled={isPrimaryButtonDisabled || !primaryAction}
-        onPress={primaryAction}
-      >
-        {primaryActionLabel}
-      </Button>
-    </XStack>
-  );
-};
+import { FooterButtons } from "../../components/FooterButtons";
 
 const SelectElectionEvent = () => {
   const { t } = useTranslation("select_election_event");
@@ -118,7 +75,7 @@ const SelectElectionEvent = () => {
           </ScrollView>
         </YStack>
 
-        <Footer
+        <FooterButtons
           primaryAction={refetchElectionEvents}
           primaryActionLabel={t("retry")}
           isPrimaryButtonDisabled={isRefetchingElectionEvents}
@@ -160,7 +117,7 @@ const SelectElectionEvent = () => {
         </YStack>
 
         {/* //todo: continue */}
-        <Footer primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
+        <FooterButtons primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
       </Screen>
     );
   }
@@ -207,7 +164,7 @@ const SelectElectionEvent = () => {
         </ScrollView>
       </YStack>
 
-      <Footer
+      <FooterButtons
         primaryActionLabel={t("continue")}
         isPrimaryButtonDisabled={!selectedElectionRoundLocal}
         primaryAction={() => {

@@ -27,7 +27,7 @@ export default function Onboarding() {
 
   const onOnboardingComplete = () => {
     SecureStore.setItemAsync(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, "true");
-    router.push("select-app-mode");
+    router.replace("select-app-mode");
   };
 
   const onNextButtonPress = () => {

@@ -7,7 +7,6 @@ import {
 import { Screen } from "../../../../../components/Screen";
 import { ScrollView, Spinner, XStack, YStack } from "tamagui";
 import { IssueCard } from "../../../../../components/IssueCard";
-import { Dialog } from "../../../../../components/Dialog";
 import Button from "../../../../../components/Button";
 import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
@@ -15,6 +14,7 @@ import Header from "../../../../../components/Header";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { useRouter } from "expo-router";
+import InfoModal from "../../../../../components/InfoModal";
 
 const LoadingScreen = ({ children }: { children: React.ReactNode }) => (
   <Screen
@@ -65,8 +65,6 @@ export default function CitizenReportIssue() {
     refetch: refetchCitizenReportingForms,
     isRefetching: isRefetchingCitizenReportingForms,
   } = useGetCitizenReportingForms(selectedElectionRound);
-
-  // console.log("👀 citizenReportingForms", JSON.stringify(citizenReportingForms, null, 2));
 
   const {
     isLoading: isLoadingCitizenLocations,
@@ -173,30 +171,10 @@ export default function CitizenReportIssue() {
           )}
         </ScrollView>
       </YStack>
-
       {isOpenInfoModal && (
-        <Dialog
-          open
-          content={
-            <YStack maxHeight="85%" gap="$md">
-              <ScrollView
-                contentContainerStyle={{ gap: 16, flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-              >
-                <Typography color="$gray6">{t("info_modal.p1")}</Typography>
-
-                <Typography color="$gray6">{t("info_modal.p2")}</Typography>
-              </ScrollView>
-            </YStack>
-          }
-          footer={
-            <XStack justifyContent="center">
-              <Button preset="chromeless" onPress={handleCloseInfoModal}>
-                {t("info_modal.ok")}
-              </Button>
-            </XStack>
-          }
+        <InfoModal
+          paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}
+          handleCloseInfoModal={handleCloseInfoModal}
         />
       )}
     </Screen>

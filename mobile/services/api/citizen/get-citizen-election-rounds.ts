@@ -10,6 +10,5 @@ export interface ICitizenElectionRound {
 }
 
 export const getCitizenElectionRounds = (): Promise<ICitizenElectionRound[]> => {
-  console.log("👀 getCitizenElectionRounds");
   return API.get("/election-rounds:citizen-report").then((res) => res.data.electionRounds);
 };
