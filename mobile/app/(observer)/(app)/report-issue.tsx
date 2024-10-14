@@ -97,8 +97,9 @@ const ReportIssue = () => {
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
 
-  const { mutateAsync: addAttachmentQReport } =
-    useUploadAttachmentQuickReportMutation(`Quick_Report_${activeElectionRound?.id}}`);
+  const { mutateAsync: addAttachmentQReport } = useUploadAttachmentQuickReportMutation(
+    `Quick_Report_${activeElectionRound?.id}}`,
+  );
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -189,6 +190,8 @@ const ReportIssue = () => {
     uploadId: string,
     attachmentId: string,
     quickReportId: string,
+    uploadedPartsNo: number,
+    totalParts: number,
   ) => {
     try {
       let etags: Record<number, string> = {};
@@ -201,6 +204,9 @@ const ReportIssue = () => {
         });
         const buffer = Buffer.from(chunk, "base64");
         const data = await uploadS3Chunk(url, buffer);
+        setUploadProgress(
+          `${t("upload.progress")} ${Math.ceil((uploadedPartsNo + index) / totalParts * 100)}%`,
+        );
         etags = { ...etags, [index + 1]: data.ETag };
       }
 
@@ -214,7 +220,7 @@ const ReportIssue = () => {
         });
       }
     } catch (err) {
-      Sentry.captureException(err, { data: activeElectionRound })
+      Sentry.captureException(err, { data: activeElectionRound });
       if (activeElectionRound?.id) {
         setUploadProgress(t("upload.aborted"));
         await addAttachmentQuickReportMultipartAbort({
@@ -260,9 +266,13 @@ const ReportIssue = () => {
       setOptionsSheetOpen(true);
       setIsLoadingAttachment(true);
       try {
+        const totalParts = attachments.reduce((acc, attachment) => {
+          return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
+        }, 0);
+        let uploadedPartsNo = 0;
         // Upload each attachment
         setUploadProgress(`${t("upload.starting")}`);
-        for (const [index, attachment] of attachments.entries()) {
+        for (const [, attachment] of attachments.entries()) {
           const payload: AddAttachmentQuickReportStartAPIPayload = {
             id: attachment.id,
             fileName: attachment.fileMetadata.name,
@@ -274,9 +284,7 @@ const ReportIssue = () => {
             electionRoundId: activeElectionRound.id,
             quickReportId: uuid,
           };
-          setUploadProgress(
-            `${t("upload.progress")} ${index + 1}/${attachments.length}`,
-          );
+
           const data = await addAttachmentQReport(payload);
           await handleChunkUpload(
             attachment.fileMetadata.uri,
@@ -284,7 +292,10 @@ const ReportIssue = () => {
             data.uploadId,
             attachment.id,
             uuid,
+            uploadedPartsNo,
+            totalParts,
           );
+          uploadedPartsNo += payload.numberOfUploadParts;
           optimisticAttachments.push(payload);
         }
         setUploadProgress(t("upload.completed"));
@@ -508,14 +519,14 @@ const ReportIssue = () => {
                 label={t("media.add")}
                 onPress={() => {
                   Keyboard.dismiss();
-                  handleOnShowAttachementSheet()
+                  handleOnShowAttachementSheet();
                 }}
               />
             </YStack>
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} isLoading={isLoadingAttachment || isPreparingFile}>
           {isLoadingAttachment || isPreparingFile ? (
             <MediaLoading progress={uploadProgress} />
           ) : (

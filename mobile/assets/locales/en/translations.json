@@ -440,7 +440,7 @@
       "compressing": "Compressing attachment: ",
       "preparing": "Preparing attachment...",
       "starting": "Starting the upload...",
-      "progress": "Uploading attachment:",
+      "progress": "Uploading attachments: ",
       "completed": "Upload completed.",
       "aborted": "Upload aborted.",
       "offline": "You need an internet connection in order to perform this action."
