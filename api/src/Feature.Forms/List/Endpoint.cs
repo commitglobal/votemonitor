@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Dapper;
-using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -75,9 +74,9 @@ public class Endpoint(
                                COALESCE(UPDATER."FirstName" || ' ' || UPDATER."LastName",
                                         CREATOR."FirstName" || ' ' || CREATOR."LastName") AS "LastModifiedBy"
                         FROM "Forms" F
-                                 INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
-                                 INNER JOIN PUBLIC."AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
-                                 LEFT JOIN PUBLIC."AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
+                                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
+                                 INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
+                                 LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                         Where F."ElectionRoundId" = @electionRoundId
                           AND MN."NgoId" = @ngoId) F
                   WHERE (
@@ -114,7 +113,8 @@ public class Endpoint(
                            CASE
                                WHEN @sortExpression = 'Status DESC' THEN "Status"
                                END DESC
-                  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
+                  OFFSET @offset ROWS 
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new

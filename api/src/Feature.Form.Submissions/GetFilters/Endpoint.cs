@@ -32,8 +32,8 @@ public class Endpoint(
                       SELECT MIN(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "FirstSubmissionTimestamp",
                              MAX(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "LastSubmissionTimestamp"
                       FROM "FormSubmissions" FS
-                               INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                               INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                       WHERE FS."ElectionRoundId" = @electionRoundId
                         AND MN."NgoId" = @ngoId
                       UNION ALL
@@ -41,8 +41,8 @@ public class Endpoint(
                       SELECT MIN(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "FirstSubmissionTimestamp",
                              MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LastSubmissionTimestamp"
                       FROM "PollingStationInformation" PSI
-                               INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                               INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
+                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                       WHERE PSI."ElectionRoundId" = @electionRoundId
                         AND MN."NgoId" = @ngoId)
                         
@@ -57,9 +57,9 @@ public class Endpoint(
                                   F."Name" ->> F."DefaultLanguage" "FormName",
                                   F."Code"                        "FormCode"
                   FROM "FormSubmissions" FS
-                           INNER JOIN PUBLIC."Forms" F ON F."Id" = FS."FormId"
-                           INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                           INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                           INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE FS."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId
                   UNION ALL
@@ -67,9 +67,9 @@ public class Endpoint(
                                   F."Name" ->> F."DefaultLanguage" "FormName",
                                   F."Code"                        "FormCode"
                   FROM "PollingStationInformation" PSI
-                           INNER JOIN PUBLIC."PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId"
-                           INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                           INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                           INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId"
+                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE PSI."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId
                   """;

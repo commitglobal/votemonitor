@@ -443,6 +443,48 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("CitizenGuides");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenNotificationAggregate.CitizenNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("CitizenNotifications");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenReportAggregate.CitizenReport", b =>
                 {
                     b.Property<Guid>("Id")
@@ -6131,6 +6173,25 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("ElectionRound");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenNotificationAggregate.CitizenNotification", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.NgoAdminAggregate.NgoAdmin", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenReportAggregate.CitizenReport", b =>

@@ -1,5 +1,3 @@
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
-
 namespace Feature.Form.Submissions.Models;
 
 public class ObservationBreakModel

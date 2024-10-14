@@ -181,7 +181,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak>? breaks, bool? isCompleted)
+        ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime, List<ObservationBreak>? breaks, ValueOrUndefined<bool> isCompleted)
     {
         ValidateAnswers(answers);
         var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);

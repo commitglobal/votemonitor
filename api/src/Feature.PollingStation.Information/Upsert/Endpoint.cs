@@ -26,6 +26,7 @@ public class Endpoint(
         Options(x => x.WithTags("polling-station-information", "mobile"));
         Summary(s => { s.Summary = "Upserts polling station information for a polling station"; });
         Policies(PolicyNames.ObserversOnly);
+        RequestBinder(new RequestModelBinder());
     }
 
     public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req,

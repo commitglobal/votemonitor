@@ -483,8 +483,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                      SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(CR."LastModifiedOn", CR."CreatedOn")))::TIMESTAMPTZ "Bucket",
                             COUNT(1) "Value"
                      FROM "CitizenReports" CR
-                              INNER JOIN PUBLIC."ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                              INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
+                              INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
+                              INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
                      WHERE CR."ElectionRoundId" = '5e55767e-6d9f-45e5-951f-1643f2153400'
                        AND MN."NgoId" = @ngoId
                      GROUP BY 1;
