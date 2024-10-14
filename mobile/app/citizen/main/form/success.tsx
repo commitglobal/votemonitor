@@ -2,7 +2,7 @@ import { Screen } from "../../../../components/Screen";
 import { YStack } from "tamagui";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../../../../components/Icon";
@@ -12,6 +12,7 @@ import { EmailCopySheet } from "../../../../components/EmailCopySheet";
 const CitizenFormSuccess = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("citizen_form");
+  const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
 
   const [isEmailSheetOpen, setIsEmailSheetOpen] = useState(false);
   const [copySent, setCopySent] = useState(false);
@@ -45,7 +46,11 @@ const CitizenFormSuccess = () => {
       </YStack>
 
       {isEmailSheetOpen && (
-        <EmailCopySheet setIsEmailSheetOpen={setIsEmailSheetOpen} setCopySent={setCopySent} />
+        <EmailCopySheet
+          submissionId={submissionId}
+          setIsEmailSheetOpen={setIsEmailSheetOpen}
+          setCopySent={setCopySent}
+        />
       )}
     </Screen>
   );

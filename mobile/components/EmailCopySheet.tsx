@@ -9,14 +9,19 @@ import FormInput from "./FormInputs/FormInput";
 import Button from "./Button";
 
 export const EmailCopySheet = ({
+  submissionId,
   setIsEmailSheetOpen,
   setCopySent,
 }: {
+  submissionId: string;
   setIsEmailSheetOpen: Dispatch<SetStateAction<boolean>>;
   setCopySent: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation("citizen_form");
   const insets = useSafeAreaInsets();
+
+  // todo: delete this once we use the submissionId somewhere
+  console.log("submissionId", submissionId);
 
   const {
     control,

@@ -54,15 +54,6 @@ export default function CitizenSelectLocation() {
 
   const activeStep = useMemo(() => [...steps].pop(), [steps]);
 
-  const locations = useMemo(
-    () =>
-      [...steps, selectedOption]
-        .filter((step) => step !== undefined)
-        .map((step) => step.name)
-        .join(", "),
-    [steps, selectedOption],
-  );
-
   const {
     data: citizenLocations,
     isFetching: isFetchingCitizenLocations,
@@ -155,12 +146,6 @@ export default function CitizenSelectLocation() {
         onLeftPress={router.back}
       />
       <YStack paddingHorizontal="$md" gap={"$1"}>
-        {locations && (
-          <YStack paddingTop={"$sm"} minHeight="$xl">
-            <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
-          </YStack>
-        )}
-
         <XStack backgroundColor="$purple1" marginTop={"$sm"} borderRadius={8} alignItems="center">
           <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
           <SearchInput

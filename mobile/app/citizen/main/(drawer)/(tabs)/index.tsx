@@ -134,7 +134,7 @@ export default function CitizenReportIssue() {
     >
       <PageHeader />
 
-      <YStack flex={1} paddingVertical="$lg">
+      <YStack flex={1} paddingTop="$lg">
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -142,6 +142,7 @@ export default function CitizenReportIssue() {
             flexDirection: "column",
             gap: 16,
             paddingHorizontal: 24,
+            paddingBottom: 24,
           }}
         >
           <Typography>{t("description")}</Typography>

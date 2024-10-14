@@ -13,6 +13,12 @@ import { Sheet, Spinner, YStack } from "tamagui";
 import { getAnswerDisplay } from "../common/utils/answers";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
 import { useTranslation } from "react-i18next";
+import i18n from "../common/config/i18n";
+import * as Crypto from "expo-crypto";
+import { usePostCitizenFormMutation } from "../services/mutations/citizen/post-citizen-form.mutation";
+import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.provider";
+import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -32,19 +38,28 @@ export default function ReviewCitizenFormSheet({
   answers,
   questions,
   setIsReviewSheetOpen,
-  onSubmit,
-  isPending,
+  selectedLocationId,
 }: {
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
-  onSubmit: () => void;
-  isPending: boolean;
+  selectedLocationId: string;
 }) {
   const { t } = useTranslation("citizen_form");
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
+  const { mutate: postCitizenForm, isPending } = usePostCitizenFormMutation();
+  const { selectedElectionRound } = useCitizenUserData();
+  const currentLanguage = useMemo(
+    () =>
+      i18n.language.toLocaleUpperCase() ||
+      currentForm?.defaultLanguage ||
+      currentForm?.languages[0] ||
+      i18n.languages[0],
+    [currentForm],
+  );
   const mappedAnswers = useMemo(() => {
     if (!answers || !questions) return {};
 
@@ -61,9 +76,9 @@ export default function ReviewCitizenFormSheet({
           question.$questionType === "singleSelectQuestion"
         ) {
           const selectedOptionId = answer.selection.optionId;
-          // todo: add language support
-          const selectedOptionText = question.options.find((o) => o.id === selectedOptionId)?.text
-            .EN;
+          const selectedOptionText = question.options.find((o) => o.id === selectedOptionId)?.text[
+            currentLanguage
+          ];
 
           mappedAnswer = {
             ...mappedAnswer,
@@ -77,9 +92,19 @@ export default function ReviewCitizenFormSheet({
           question.$questionType === "multiSelectQuestion"
         ) {
           const selectedOptionIds = answer.selection.map((selection) => selection.optionId);
-          const selectedOptionsTexts = question.options
-            .filter((o) => selectedOptionIds.includes(o.id))
-            .map((o) => o.text.EN);
+          const selectedOptionsTexts: string[] = [];
+          for (const option of question.options) {
+            if (selectedOptionIds.includes(option.id)) {
+              const selectedOption = answer.selection.find(
+                (selection) => selection.optionId === option.id,
+              );
+              const optionText = option.text.EN || "";
+              const userText = selectedOption?.text || "";
+              selectedOptionsTexts.push(
+                userText ? `${optionText} (${userText.trim()})` : optionText,
+              );
+            }
+          }
 
           mappedAnswer = {
             ...mappedAnswer,
@@ -94,13 +119,45 @@ export default function ReviewCitizenFormSheet({
       {} as Record<string, ApiFormAnswer>,
     );
   }, [answers, questions]);
-
   //   only display the questions that have an answer to them (because in case of skip logic we would have multiple questions that were not shown to the user)
   const displayedQuestions = useMemo(() => {
     if (!currentForm?.questions || !mappedAnswers) return [];
 
     return currentForm.questions.filter((question) => mappedAnswers[question.id]);
   }, [currentForm?.questions, mappedAnswers]);
+
+  const handleSubmit = () => {
+    if (!currentForm || !selectedElectionRound || !answers) {
+      console.log("⛔️ Missing data for sending review citizen form. ⛔️");
+      return;
+    }
+
+    postCitizenForm(
+      {
+        electionRoundId: selectedElectionRound,
+        citizenReportId: Crypto.randomUUID(),
+        formId: currentForm.id,
+        locationId: selectedLocationId,
+        answers: Object.values(answers).filter(Boolean) as ApiFormAnswer[],
+      },
+      {
+        onSuccess: (response) => {
+          console.log("🔵 [CitizenForm] form submitted successfully, redirect to success page");
+          router.replace(`/citizen/main/form/success?submissionId=${response.id}`);
+        },
+        onError: (error) => {
+          console.log("🔴 [CitizenForm] error submitting form", error);
+          // close review modal and display error toast
+          setIsReviewSheetOpen(false);
+          return Toast.show({
+            type: "error",
+            text2: t("error"),
+            text2Style: { textAlign: "center" },
+          });
+        },
+      },
+    );
+  };
 
   return (
     <Sheet
@@ -133,7 +190,7 @@ export default function ReviewCitizenFormSheet({
                   <Typography fontWeight="500">{question.text.EN}</Typography>
                   {mappedAnswers && mappedAnswers[question.id] && (
                     <Typography marginTop="$xs" color="$gray5">
-                      {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer)}
+                      {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
                     </Typography>
                   )}
                 </YStack>
@@ -142,7 +199,7 @@ export default function ReviewCitizenFormSheet({
           )}
 
           <YStack paddingHorizontal="$lg" paddingTop="$md">
-            <Button onPress={onSubmit} disabled={isPending}>
+            <Button onPress={handleSubmit} disabled={isPending}>
               {t("review.send")}
             </Button>
           </YStack>
