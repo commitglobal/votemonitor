@@ -89,7 +89,6 @@ const PollingStationQuestionnaire = () => {
     () => mapAPIAnswersToFormAnswers(formData?.answers),
     [formData],
   );
-  const breaks = useMemo(() => formData?.breaks || [], [formData]);
 
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
@@ -166,7 +165,6 @@ const PollingStationQuestionnaire = () => {
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
-        breaks,
         answers,
       });
       router.back();
