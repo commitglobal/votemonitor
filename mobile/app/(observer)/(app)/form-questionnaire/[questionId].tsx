@@ -5,10 +5,10 @@ import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
 import { ScrollView, XStack, YStack } from "tamagui";
 import LinearProgress from "../../../../components/LinearProgress";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../../components/WizzardControls";
-import { Keyboard, ViewStyle } from "react-native";
+import { BackHandler, Keyboard, ViewStyle } from "react-native";
 import { useForm } from "react-hook-form";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
@@ -265,6 +265,15 @@ const FormQuestionnaire = () => {
     }
     router.back();
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      handleLeaveFormWizard();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   const onClearForm = () => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {

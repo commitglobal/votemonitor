@@ -18,7 +18,7 @@ import { BreakItem } from "../../../components/BreakItem";
 import { Break } from "../../../services/definitions.api";
 import { useMutatePollingStationGeneralData } from "../../../services/mutations/psi-general.mutation";
 import { useQueryClient } from "@tanstack/react-query";
-import { ScrollView } from "react-native";
+import { BackHandler, ScrollView } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import OptionsSheet from "../../../components/OptionsSheet";
 import { Typography } from "../../../components/Typography";
@@ -154,6 +154,15 @@ const ObservationTime = () => {
       router.back();
     }
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      handleGoBack();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   const handleAddBreak = () => {
     const newBreak = {

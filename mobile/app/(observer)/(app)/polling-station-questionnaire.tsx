@@ -13,7 +13,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../../services/interfaces/answer.type";
-import { createRef, useMemo, useRef, useState } from "react";
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
 import FormInput from "../../../components/FormInputs/FormInput";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -31,7 +31,7 @@ import Button from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
-import { Keyboard, RefreshControl } from "react-native";
+import { BackHandler, Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 
@@ -273,6 +273,15 @@ const PollingStationQuestionnaire = () => {
       router.back();
     }
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      onBackPress();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   return (
     <>

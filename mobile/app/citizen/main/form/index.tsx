@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, XStack, YStack } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useGetCitizenReportingFormById } from "../../../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import { Keyboard, ViewStyle } from "react-native";
+import { BackHandler, Keyboard, ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
@@ -114,11 +114,21 @@ const CitizenForm = () => {
 
   const handleGoBack = () => {
     if (isDirty) {
+      Keyboard.dismiss();
       setShowWarningDialog(true);
     } else {
       router.back();
     }
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      handleGoBack();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   const findNextQuestion = (
     index: number,
