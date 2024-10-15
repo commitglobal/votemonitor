@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using System.Security.Claims;
-using System.Text;
 using FastEndpoints;
 using Feature.ObserverGuide.Create;
 using Feature.ObserverGuide.Specifications;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;

@@ -45,11 +45,11 @@ public class PollingStationInformationForm : BaseForm
     public PollingStationInformation CreatePollingStationInformation(
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer>? answers,
         List<ObservationBreak>? breaks,
-        bool? isCompleted)
+        ValueOrUndefined<bool> isCompleted)
     {
         answers ??= [];
 

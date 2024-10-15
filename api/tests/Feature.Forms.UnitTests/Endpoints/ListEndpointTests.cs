@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
 

@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		..\docker-compose.yaml = ..\docker-compose.yaml
 		..\README.md = ..\README.md
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Domain", "src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj", "{1B98DBBD-72CC-4D23-BAEB-996D22E431A1}"
@@ -165,6 +166,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Notes.UnitTests", "tests\Feature.IncidentReports.Notes.UnitTests\Feature.IncidentReports.Notes.UnitTests.csproj", "{0567FED6-2464-462D-BE59-3A4FA50BF438}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Attachments.UnitTests", "tests\Feature.IncidentReports.Attachments.UnitTests\Feature.IncidentReports.Attachments.UnitTests.csproj", "{DF354318-6856-4925-96A0-0C458E530091}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Notifications", "src\Feature.Citizen.Notifications\Feature.Citizen.Notifications.csproj", "{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -476,6 +479,10 @@ Global
 		{DF354318-6856-4925-96A0-0C458E530091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF354318-6856-4925-96A0-0C458E530091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF354318-6856-4925-96A0-0C458E530091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -557,6 +564,7 @@ Global
 		{91AB90F5-2627-4E67-A300-8FAF4F8F3019} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{0567FED6-2464-462D-BE59-3A4FA50BF438} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{DF354318-6856-4925-96A0-0C458E530091} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

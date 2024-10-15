@@ -221,6 +221,10 @@
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
       "citizenGuidesCardTitle": "Citizen guides",
+
+      "citizenNotificationsTabTitle": "Citizen Notifications",
+      "citizenNotificationsCardTitle": "Citizen notifications",
+
       "observerGuidesTabTitle": "Observer Guides",
       "observerGuidesCardTitle": "Observer guides",
       "headers": {

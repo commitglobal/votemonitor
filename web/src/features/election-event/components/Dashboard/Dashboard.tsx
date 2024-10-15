@@ -12,6 +12,7 @@ import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import GuidesDashboard from '../Guides/GuidesDashboard';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import { GuidePageType } from '../../models/guide';
+import CitizenNotificationsDashboard from '@/features/CitizenNotifications/CitizenNotificationsDashboard/CitizenNotificationsDashboard';
 
 const routeApi = getRouteApi('/election-event/$tab');
 
@@ -39,8 +40,8 @@ export default function ElectionEventDashboard(): ReactElement {
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList
-          className={cn('grid grid-cols-4 bg-gray-200 w-[800px]', {
-            'grid-cols-6 w-[1200px]': isMonitoringNgoForCitizenReporting,
+          className={cn('grid grid-cols-4 bg-gray-200', {
+            'grid-cols-7': isMonitoringNgoForCitizenReporting,
           })}>
           <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
           <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
@@ -49,7 +50,12 @@ export default function ElectionEventDashboard(): ReactElement {
           )}
           <TabsTrigger value='observer-guides'>{t('electionEvent.guides.observerGuidesTabTitle')}</TabsTrigger>
           {isMonitoringNgoForCitizenReporting && (
-            <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
+            <>
+              <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
+              <TabsTrigger value='citizen-notifications'>
+                {t('electionEvent.guides.citizenNotificationsTabTitle')}
+              </TabsTrigger>
+            </>
           )}
           <TabsTrigger value='observer-forms'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
         </TabsList>
@@ -73,9 +79,15 @@ export default function ElectionEventDashboard(): ReactElement {
         </TabsContent>
 
         {isMonitoringNgoForCitizenReporting && (
-          <TabsContent value='citizen-guides'>
-            <GuidesDashboard guidePageType={GuidePageType.Citizen} />
-          </TabsContent>
+          <>
+            <TabsContent value='citizen-guides'>
+              <GuidesDashboard guidePageType={GuidePageType.Citizen} />
+            </TabsContent>
+
+            <TabsContent value='citizen-notifications'>
+              <CitizenNotificationsDashboard />
+            </TabsContent>
+          </>
         )}
 
         <TabsContent value='observer-forms'>
