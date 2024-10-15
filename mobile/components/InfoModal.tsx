@@ -3,6 +3,8 @@ import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "./Dialog";
 import Button from "./Button";
+import { useEffect } from "react";
+import { BackHandler } from "react-native";
 
 interface InfoModalProps {
   handleCloseInfoModal: () => void;
@@ -11,6 +13,19 @@ interface InfoModalProps {
 
 const InfoModal = ({ handleCloseInfoModal, paragraphs }: InfoModalProps) => {
   const { t } = useTranslation("common");
+
+  // close the modal when pressing the back button
+  useEffect(() => {
+    const backAction = () => {
+      handleCloseInfoModal();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => backHandler.remove();
+  }, [handleCloseInfoModal]);
+
   return (
     <Dialog
       open

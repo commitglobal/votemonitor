@@ -85,7 +85,7 @@ const Login = () => {
       }}
     >
       <Header barStyle="light-content">
-        <Icon icon="loginLogo" paddingBottom="$md" />
+        <Icon icon="vmObserverLogo" width={294} height={83} paddingBottom="$md" />
       </Header>
 
       <ScrollView>

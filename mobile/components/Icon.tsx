@@ -65,6 +65,7 @@ import PublicResourcesProblems from "../assets/icons/public-resources-problems.s
 import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
 import CoffeeBreak from "../assets/icons/coffee-break.svg";
 import Updates from "../assets/icons/updates.svg";
+import VMObserverLogo from "../assets/icons/VMObserverLogo.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -177,6 +178,7 @@ export const defaultIcon = React.forwardRef(
       appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
       coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
       updates: <Updates fill={color} width={size} height={size} />,
+      vmObserverLogo: <VMObserverLogo fill={color} width={width} height={height} />,
     };
 
     return (

@@ -25,16 +25,10 @@ import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoC
 import Toast from "react-native-toast-message";
 import ReviewCitizenFormSheet from "../../../../components/ReviewCitizenFormSheet";
 import WarningDialog from "../../../../components/WarningDialog";
+import i18n from "../../../../common/config/i18n";
 
 const CitizenForm = () => {
-  const { t } = useTranslation([
-    "polling_station_form_wizard",
-    "common",
-    "network_banner",
-    "citizen_form",
-  ]); // TODO: change with citizen
-
-  const language = "EN"; // TODO: remove this later
+  const { t } = useTranslation(["citizen_form", "network_banner"]);
   const router = useRouter();
   const scrollViewRef = useRef(null);
   const textareaRef = useRef(null);
@@ -78,6 +72,16 @@ const CitizenForm = () => {
     isLoading: isLoadingCurrentForm,
     error: currentFormError,
   } = useGetCitizenReportingFormById(selectedElectionRound, formId);
+
+  const language = useMemo(() => {
+    if (!currentForm) return i18n.language;
+    // if the language of the app can be found in the form, use it, otherwise use the form default language or the first language found in the languages array coming from the form
+    if (currentForm?.languages.includes(i18n.language)) {
+      return i18n.language;
+    }
+
+    return currentForm?.defaultLanguage || currentForm?.languages[0];
+  }, [currentForm]);
 
   const displayedQuestions: ApiFormQuestion[] = useMemo(
     () => currentForm?.questions?.filter((q) => shouldDisplayQuestion(q, answers)) || [],
@@ -240,7 +244,7 @@ const CitizenForm = () => {
       >
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
-            <Typography>{t("progress_bar.label")}</Typography>
+            <Typography>{t("progress_bar_label")}</Typography>
             <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
           </XStack>
           <LinearProgress
@@ -296,6 +300,7 @@ const CitizenForm = () => {
 
       {isReviewSheetOpen && (
         <ReviewCitizenFormSheet
+          language={language}
           currentForm={currentForm}
           answers={answers}
           questions={currentForm?.questions}
@@ -307,8 +312,8 @@ const CitizenForm = () => {
       {showWarningDialog && (
         <WarningDialog
           theme="info"
-          title={t("unsaved_changes_dialog.title", { ns: "citizen_form" })}
-          description={t("unsaved_changes_dialog.description", { ns: "citizen_form" })}
+          title={t("unsaved_changes_dialog.title")}
+          description={t("unsaved_changes_dialog.description")}
           action={() => {
             // close dialog and remain on this page
             setShowWarningDialog(false);
@@ -318,8 +323,8 @@ const CitizenForm = () => {
             setShowWarningDialog(false);
             router.back();
           }}
-          actionBtnText={t("unsaved_changes_dialog.actions.save", { ns: "citizen_form" })}
-          cancelBtnText={t("unsaved_changes_dialog.actions.discard", { ns: "citizen_form" })}
+          actionBtnText={t("unsaved_changes_dialog.actions.save")}
+          cancelBtnText={t("unsaved_changes_dialog.actions.discard")}
         />
       )}
     </Screen>
