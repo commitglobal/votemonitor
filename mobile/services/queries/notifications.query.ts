@@ -1,12 +1,13 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getNotifications } from "../api/notifications/notifications-get.api";
 import { getCitizenUpdates } from "../api/citizen/get-citizen-updates";
+import { citizenQueryKeys } from "./citizen.query";
 
 export const NotificationsKeys = {
   notifications: (electionRoundId: string | undefined) =>
     ["notifications", "electionRoundId", electionRoundId] as const,
   citizenUpdates: (electionRoundId: string | undefined) =>
-    ["citizenUpdates", "electionRoundId", electionRoundId] as const,
+    [...citizenQueryKeys.all, "updates", "electionRoundId", electionRoundId] as const,
 };
 
 export const useNotifications = (electionRoundId: string | undefined) => {

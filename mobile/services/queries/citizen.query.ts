@@ -17,6 +17,7 @@ export const citizenQueryKeys = {
     [...citizenQueryKeys.all, "locations", electionRoundId] as const,
   locationsByParentId: (parentId: number, electionRoundId: string) =>
     [...citizenQueryKeys.all, "locations", electionRoundId, parentId] as const,
+  selectedElectionRound: () => [...citizenQueryKeys.all, "selected-election-round"] as const,
 };
 
 // Gets election rounds which can be monitored by citizens

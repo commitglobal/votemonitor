@@ -1,7 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UseMutateFunction, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useMemo } from "react";
-import { useGetCitizenElectionRounds } from "../../services/queries/citizen.query";
+import {
+  citizenQueryKeys,
+  useGetCitizenElectionRounds,
+} from "../../services/queries/citizen.query";
 import { ICitizenElectionRound } from "../../services/api/citizen/get-citizen-election-rounds";
 import LoadingScreen from "../../components/LoadingScreen";
 
@@ -18,7 +21,7 @@ const CITIZEN_USER_STORAGE_KEYS = {
 
 const useAsyncStorageCitizenElectionRound = () => {
   return useQuery({
-    queryKey: ["citizen:selectedElectionRound"],
+    queryKey: citizenQueryKeys.selectedElectionRound(),
     queryFn: () => AsyncStorage.getItem(CITIZEN_USER_STORAGE_KEYS.SELECTED_ELECTION_ROUND),
     staleTime: 0,
     networkMode: "always",
@@ -40,7 +43,7 @@ const useMutationAsyncStorageCitizenElectionRound = () => {
       }
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["citizen:selectedElectionRound"] });
+      await queryClient.invalidateQueries({ queryKey: citizenQueryKeys.all });
     },
   });
 };

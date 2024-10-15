@@ -25,7 +25,7 @@ export const GuidesKeys = {
   guides: (electionRoundId: string | undefined) =>
     ["guides", "electionRoundId", electionRoundId] as const,
   citizenGuides: (electionRoundId: string | undefined) =>
-    ["citizenGuides", "electionRoundId", electionRoundId] as const,
+    ["citizen", "guides", "electionRoundId", electionRoundId] as const,
 };
 
 // TODO: make generic fn
