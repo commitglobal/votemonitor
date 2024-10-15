@@ -39,6 +39,10 @@ const Index = () => {
     return <NoElectionRounds />;
   }
 
+  if (!isLoading && activeElectionRound?.status === "NotStarted") {
+    return <NoElectionRounds />;
+  }
+
   if (!isLoading && visits && !visits.length) {
     return <NoVisitsExist activeElectionRound={activeElectionRound} />;
   }

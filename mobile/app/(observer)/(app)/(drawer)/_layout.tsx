@@ -16,7 +16,7 @@ type DrawerContentProps = ScrollViewProps & {
 };
 
 export const DrawerContent = (props: DrawerContentProps) => {
-  const { electionRounds } = useUserData();
+  const { electionRounds, setActiveElectionRound } = useUserData();
 
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -31,7 +31,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
           key={index}
           label={`${round.status} - ${round.title}`}
           inactiveTintColor={theme.yellow6?.val}
-          onPress={() => console.log("")}
+          onPress={() => setActiveElectionRound(round)}
           allowFontScaling={false}
         />
       ))}

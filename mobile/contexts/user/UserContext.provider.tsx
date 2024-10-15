@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   electionRoundsKeys,
   pollingStationInformationQueryFn,
@@ -34,12 +34,14 @@ type UserContextType = {
 
   error: Error | null;
   setSelectedPollingStationId: (pollingStationId: string | null) => void;
+  setActiveElectionRound: (electionRound: ElectionRoundVM) => void;
 };
 
 export const UserContext = createContext<UserContextType | null>(null);
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const [selectedPollingStationId, setSelectedPollingStationId] = useState<string | null>();
+  const [activeElectionRound, setActiveElectionRound] = useState<ElectionRoundVM>();
 
   const {
     data: rounds,
@@ -47,10 +49,13 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     error: ElectionRoundsError,
   } = useElectionRoundsQuery();
 
-  const activeElectionRound = useMemo(
-    () => rounds?.find((round) => round.status === "Started"),
-    [rounds],
-  );
+  console.log("Rounds ", rounds);
+
+  useEffect(() => {
+    if (rounds) {
+      setActiveElectionRound(rounds?.find((round) => round.status === "Started"));
+    }
+  }, [rounds]);
 
   const {
     data: visits,
@@ -145,6 +150,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
       activeElectionRound,
       selectedPollingStation: lastVisitedPollingStation,
       setSelectedPollingStationId,
+      setActiveElectionRound,
     };
   }, [error, isLoading, visits, rounds, activeElectionRound, lastVisitedPollingStation]);
 
