@@ -17,8 +17,9 @@ export const AttachmentsKeys = {
       "formId",
       formId,
     ] as const,
-  addAttachmentMutation: () => [...AttachmentsKeys.all, "add"] as const,
+  addAttachmentMutation: () => [...AttachmentsKeys.all, "add", "mutation"] as const,
   deleteAttachment: () => [...AttachmentsKeys.all, "delete"] as const,
+  addAttachments: () => [...AttachmentsKeys.all, "progress"] as const,
 };
 
 export const GuidesKeys = {

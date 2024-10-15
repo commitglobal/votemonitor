@@ -20,7 +20,7 @@ import { useFormSubmissionMutation } from "../../../../services/mutations/form-s
 import OptionsSheet from "../../../../components/OptionsSheet";
 import AddAttachment from "../../../../components/AddAttachment";
 import { FileMetadata, useCamera } from "../../../../hooks/useCamera";
-import { addAttachmentMutation } from "../../../../services/mutations/attachments/add-attachment.mutation";
+// import { addAttachmentMutation } from "../../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../../components/QuestionAttachments";
 import QuestionNotes from "../../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
@@ -317,108 +317,108 @@ const FormQuestionnaire = () => {
   }
   const { uploadCameraOrMedia } = useCamera();
 
-  const {
-    mutate: addAttachment,
-    isPending: isLoadingAddAttachmentt,
-    isPaused,
-  } = addAttachmentMutation(
-    `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
-  );
+  // const {
+  //   mutate: addAttachment,
+  //   isPending: isLoadingAddAttachmentt,
+  //   isPaused,
+  // } = addAttachmentMutation(
+  //   `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
+  // );
 
-  const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
-    setIsPreparingFile(true);
-    const cameraResult = await uploadCameraOrMedia(type);
+  // const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+  //   setIsPreparingFile(true);
+  //   const cameraResult = await uploadCameraOrMedia(type);
 
-    if (!cameraResult) {
-      setIsPreparingFile(false);
-      return;
-    }
+  //   if (!cameraResult) {
+  //     setIsPreparingFile(false);
+  //     return;
+  //   }
 
-    if (
-      activeElectionRound &&
-      selectedPollingStation?.pollingStationId &&
-      formId &&
-      activeQuestion.question.id
-    ) {
-      addAttachment(
-        {
-          id: Crypto.randomUUID(),
-          electionRoundId: activeElectionRound.id,
-          pollingStationId: selectedPollingStation.pollingStationId,
-          formId,
-          questionId: activeQuestion.question.id,
-          fileMetadata: cameraResult,
-        },
-        {
-          onSettled: () => setIsOptionsSheetOpen(false),
-          onError: (err) => {
-            Sentry.captureException(err);
-            Toast.show({
-              type: "error",
-              text2: t("attachments.error"),
-            });
-          },
-        },
-      );
+  //   if (
+  //     activeElectionRound &&
+  //     selectedPollingStation?.pollingStationId &&
+  //     formId &&
+  //     activeQuestion.question.id
+  //   ) {
+  //     addAttachment(
+  //       {
+  //         id: Crypto.randomUUID(),
+  //         electionRoundId: activeElectionRound.id,
+  //         pollingStationId: selectedPollingStation.pollingStationId,
+  //         formId,
+  //         questionId: activeQuestion.question.id,
+  //         fileMetadata: cameraResult,
+  //       },
+  //       {
+  //         onSettled: () => setIsOptionsSheetOpen(false),
+  //         onError: (err) => {
+  //           Sentry.captureException(err);
+  //           Toast.show({
+  //             type: "error",
+  //             text2: t("attachments.error"),
+  //           });
+  //         },
+  //       },
+  //     );
 
-      setIsPreparingFile(false);
+  //     setIsPreparingFile(false);
 
-      if (!onlineManager.isOnline()) {
-        setIsOptionsSheetOpen(false);
-      }
-    }
-  };
+  //     if (!onlineManager.isOnline()) {
+  //       setIsOptionsSheetOpen(false);
+  //     }
+  //   }
+  // };
 
-  const handleUploadAudio = async () => {
-    const doc = await DocumentPicker.getDocumentAsync({
-      type: "audio/*",
-      multiple: false,
-    });
+  // const handleUploadAudio = async () => {
+  //   const doc = await DocumentPicker.getDocumentAsync({
+  //     type: "audio/*",
+  //     multiple: false,
+  //   });
 
-    if (doc?.assets?.[0]) {
-      const file = doc?.assets?.[0];
+  //   if (doc?.assets?.[0]) {
+  //     const file = doc?.assets?.[0];
 
-      const fileMetadata: FileMetadata = {
-        name: file.name,
-        type: file.mimeType || "audio/mpeg",
-        uri: file.uri,
-      };
+  //     const fileMetadata: FileMetadata = {
+  //       name: file.name,
+  //       type: file.mimeType || "audio/mpeg",
+  //       uri: file.uri,
+  //     };
 
-      if (
-        activeElectionRound &&
-        selectedPollingStation?.pollingStationId &&
-        formId &&
-        activeQuestion.question.id
-      ) {
-        addAttachment(
-          {
-            id: Crypto.randomUUID(),
-            electionRoundId: activeElectionRound.id,
-            pollingStationId: selectedPollingStation.pollingStationId,
-            formId,
-            questionId: activeQuestion.question.id,
-            fileMetadata,
-          },
-          {
-            onSettled: () => setIsOptionsSheetOpen(false),
-            onError: (err) => {
-              Sentry.captureException(err);
-              Toast.show({
-                type: "error",
-                text2: t("attachments.error"),
-              });
-            },
-          },
-        );
+  //     if (
+  //       activeElectionRound &&
+  //       selectedPollingStation?.pollingStationId &&
+  //       formId &&
+  //       activeQuestion.question.id
+  //     ) {
+  //       addAttachment(
+  //         {
+  //           id: Crypto.randomUUID(),
+  //           electionRoundId: activeElectionRound.id,
+  //           pollingStationId: selectedPollingStation.pollingStationId,
+  //           formId,
+  //           questionId: activeQuestion.question.id,
+  //           fileMetadata,
+  //         },
+  //         {
+  //           onSettled: () => setIsOptionsSheetOpen(false),
+  //           onError: (err) => {
+  //             Sentry.captureException(err);
+  //             Toast.show({
+  //               type: "error",
+  //               text2: t("attachments.error"),
+  //             });
+  //           },
+  //         },
+  //       );
 
-        if (!onlineManager.isOnline()) {
-          setIsOptionsSheetOpen(false);
-        }
-      }
-    } else {
-      // Cancelled
-    }
-  };
+  //       if (!onlineManager.isOnline()) {
+  //         setIsOptionsSheetOpen(false);
+  //       }
+  //     }
+  //   } else {
+  //     // Cancelled
+  //   }
+  // };
 
   // scroll view ref
   const scrollViewRef = useRef(null);
@@ -544,7 +544,7 @@ const FormQuestionnaire = () => {
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
-      {isOptionsSheetOpen && (
+      {/* {isOptionsSheetOpen && (
         <OptionsSheet
           open
           setOpen={(open) => {
@@ -618,7 +618,7 @@ const FormQuestionnaire = () => {
           actionBtnText={t("warning_modal.unsaved_answer.actions.save")}
           cancelBtnText={t("warning_modal.unsaved_answer.actions.cancel")}
         />
-      )}
+      )} */}
     </Screen>
   );
 };
