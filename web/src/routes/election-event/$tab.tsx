@@ -12,6 +12,7 @@ const coerceTabSlug = (slug: string) => {
   if (slug?.toLowerCase()?.trim() === 'observer-forms') return 'observer-forms';
   if (slug?.toLowerCase()?.trim() === 'locations') return 'locations';
   if (slug?.toLowerCase()?.trim() === 'citizen-guides') return 'citizen-guides';
+  if (slug?.toLowerCase()?.trim() === 'citizen-notifications') return 'citizen-notifications';
 
   return 'event-details';
 };
@@ -25,7 +26,7 @@ export type FormsSearchParams = z.infer<typeof FormsSearchParamsSchema>;
 export const ElectionEventPageSearchParamsSchema = FormsSearchParamsSchema.merge(
   z.object({
     tab: z
-      .enum(['event-details', 'polling-stations', 'observer-guides', 'observer-forms', 'locations', 'citizen-guides'])
+      .enum(['event-details', 'polling-stations', 'observer-guides', 'observer-forms', 'locations', 'citizen-guides', 'citizen-notifications'])
       .catch('event-details')
       .optional(),
   })

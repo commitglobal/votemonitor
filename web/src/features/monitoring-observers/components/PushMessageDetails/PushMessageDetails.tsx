@@ -46,18 +46,18 @@ export default function PushMessageDetails(): FunctionComponent {
             <div className='flex flex-col gap-1 h-36'>
               <p className='font-bold text-gray-700'>Total targeted observers {pushMessage?.receivers?.length ?? 0}</p>
               {pushMessage?.receivers?.map((receiver) => (
-                <div className='flex gap-1'>
-                  <p className='font-normal text-gray-900' key={receiver.id}>
+                <div className='flex gap-1' key={receiver.id}>
+                  <p className='font-normal text-gray-900'>
                     {receiver.name}
                   </p>
                   {receiver.hasReadNotification && (
-                    <CheckIcon title='Notification read' className='h-4 w-4 self-center' color='#147638' />
+                    <CheckIcon title='Notification read' className='self-center w-4 h-4' color='#147638' />
                   )}
                 </div>
               ))}
             </div>
           </div>
-          <div className='flex flex-col gap-2 col-span-2 mt-8'>
+          <div className='flex flex-col col-span-2 gap-2 mt-8'>
             <p className='font-bold text-gray-700'>Body</p>
             <div
               dangerouslySetInnerHTML={{ __html: pushMessage.body }}

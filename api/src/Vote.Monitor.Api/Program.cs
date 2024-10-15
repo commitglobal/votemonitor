@@ -35,6 +35,7 @@ using Dapper;
 using Feature.CitizenReports;
 using Feature.CitizenReports.Attachments;
 using Feature.Citizen.Guides;
+using Feature.Citizen.Notifications;
 using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
@@ -166,6 +167,7 @@ builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsF
 builder.Services.AddIncidentReportsFeature();
 builder.Services.AddIncidentReportsNotesFeature();
 builder.Services.AddIncidentReportAttachmentsFeature();
+builder.Services.AddCitizenNotificationsFeature();
 
 builder.Services.AddAuthorization();
 
