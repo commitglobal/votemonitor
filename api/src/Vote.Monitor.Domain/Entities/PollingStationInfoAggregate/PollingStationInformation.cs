@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
@@ -30,13 +31,13 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
-        bool? isCompleted) : base(Guid.NewGuid())
+        ValueOrUndefined<bool> isCompleted) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -52,11 +53,10 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
 
         Answers = answers.ToList().AsReadOnly();
 
-        if (isCompleted.HasValue)
+        if (!isCompleted.IsUndefined)
         {
             IsCompleted = isCompleted.Value;
         }
-
 
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
@@ -66,23 +66,23 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
-        bool? isCompleted) =>
+        ValueOrUndefined<bool> isCompleted) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
         int? numberOfFlaggedAnswers,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
         List<ObservationBreak>? breaks,
-        bool? isCompleted)
+        ValueOrUndefined<bool> isCompleted)
     {
         if (answers is not null)
         {
@@ -99,7 +99,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
             NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
         }
 
-        if (isCompleted.HasValue)
+        if (!isCompleted.IsUndefined)
         {
             IsCompleted = isCompleted.Value;
         }
@@ -107,22 +107,23 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak>? breaks)
+    private void UpdateTimesOfStay(ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime,
+        IEnumerable<ObservationBreak>? breaks)
 
     {
-        if (arrivalTime.HasValue)
+        if (!arrivalTime.IsUndefined)
         {
-            ArrivalTime = arrivalTime;
+            ArrivalTime = arrivalTime.Value;
         }
 
-        if (departureTime.HasValue)
+        if (!departureTime.IsUndefined)
         {
-            DepartureTime = departureTime;
+            DepartureTime = departureTime.Value;
         }
 
-        if (departureTime.HasValue && arrivalTime.HasValue && departureTime >= arrivalTime)
+        if (ArrivalTime.HasValue && DepartureTime.HasValue && DepartureTime >= ArrivalTime)
         {
-            MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
+            MinutesMonitoring = (DepartureTime.Value - ArrivalTime.Value).TotalMinutes;
         }
 
         if (breaks is not null)

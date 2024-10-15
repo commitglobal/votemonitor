@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using NPOI.SS.Formula;
 using Vote.Monitor.Core.Extensions;
 
 namespace Feature.Locations.FetchAll;

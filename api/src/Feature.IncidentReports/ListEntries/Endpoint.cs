@@ -228,7 +228,7 @@ public class Endpoint(
                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."FirstName" || ' ' || U."LastName" END ASC,
                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."FirstName" || ' ' || U."LastName" END DESC
                   OFFSET @offset ROWS
-                      FETCH NEXT @pageSize ROWS ONLY;
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new

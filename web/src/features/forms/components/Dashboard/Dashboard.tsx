@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
@@ -34,7 +35,6 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { useMemo, useState, type ReactElement } from 'react';
 import { FormBase, FormStatus } from '../../models/form';
@@ -43,27 +43,11 @@ import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslatio
 import { FormFilters } from './FormFilters/FormFilters';
 
 export default function FormsDashboard(): ReactElement {
-  const navigate = useNavigate();
-  const search = Route.useSearch();
-  const debouncedSearch = useDebounce(search, 300);
-  const [searchText, setSearchText] = useState('');
-  const { filteringIsActive } = useFilteringContainer();
-
-  const queryParams = useMemo(() => {
-    const params = [
-      ['searchText', searchText],
-      ['typeFilter', debouncedSearch.formTypeFilter],
-      ['statusFilter', debouncedSearch.formStatusFilter],
-    ].filter(([_, value]) => value);
-
-    return Object.fromEntries(params) as FormsSearchParams;
-  }, [searchText, debouncedSearch]);
-
   const addTranslationsDialog = useAddTranslationsDialog();
   const confirm = useConfirm();
-
   const { data: languages } = useLanguages();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
 
   const formColDefs: ColumnDef<FormBase>[] = [
     {
@@ -109,7 +93,7 @@ export default function FormsDashboard(): ReactElement {
     {
       accessorKey: 'formType',
       accessorFn: (row, _) => mapFormType(row.formType),
-      enableSorting: true,
+      enableSorting: false,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formType')} column={column} />
@@ -126,7 +110,7 @@ export default function FormsDashboard(): ReactElement {
     },
     {
       accessorKey: 'numberOfQuestions',
-      enableSorting: true,
+      enableSorting: false,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.questions')} column={column} />
@@ -135,7 +119,7 @@ export default function FormsDashboard(): ReactElement {
     },
     {
       accessorKey: 'status',
-      enableSorting: true,
+      enableSorting: false,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.status')} column={column} />
@@ -172,7 +156,7 @@ export default function FormsDashboard(): ReactElement {
     },
     {
       accessorKey: 'LastModifiedOn',
-      enableSorting: true,
+      enableSorting: false,
       enableResizing: false,
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.updatedOn')} column={column} />
@@ -196,6 +180,7 @@ export default function FormsDashboard(): ReactElement {
           <></>
         ),
     },
+
     {
       header: '',
       accessorKey: 'action',
@@ -301,8 +286,10 @@ export default function FormsDashboard(): ReactElement {
     },
   ];
 
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
-
+  const [searchText, setSearchText] = useState('');
+  const [isFiltering, setFiltering] = useState(false);
+  const [formTypeFilter, setFormType] = useState('');
+  const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
   };
@@ -446,6 +433,20 @@ export default function FormsDashboard(): ReactElement {
     },
   });
 
+  const changeIsFiltering = () => {
+    setFiltering((prev) => {
+      return !prev;
+    });
+  };
+
+  const handleFormTypeFilter = (status: string) => {
+    setFormType(status);
+  };
+
+  const resetFilters = () => {
+    setFormType('');
+  };
+
   const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
@@ -477,29 +478,68 @@ export default function FormsDashboard(): ReactElement {
           </div>
         </CardTitle>
         <Separator />
-
-        <div className='flex justify-end gap-4 px-6'>
-          <>
-            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
-            <FunnelIcon
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-              onClick={() => {
-                setIsFiltering((prev) => !prev);
-              }}
-            />
-          </>
+        <div className='flex flex-row justify-end gap-4 px-6 filters'>
+          <div className='w-[400px]'>
+            <Input onChange={handleSearchInput} placeholder='Search' />
+          </div>
+          <FunnelIcon
+            onClick={changeIsFiltering}
+            className='w-[20px] text-purple-900 cursor-pointer'
+            fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+          />
+          <Cog8ToothIcon className='w-[20px] text-purple-900' />
         </div>
-
         <Separator />
-        {isFiltering && <FormFilters />}
+        {isFiltering ? (
+          <div className='flex flex-row items-center gap-4 table-filters'>
+            <Select value={formTypeFilter} onValueChange={handleFormTypeFilter}>
+              <SelectTrigger className='w-[180px]'>
+                <SelectValue placeholder='Form type' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>
+                    {mapFormType(ZFormType.Values.ClosingAndCounting)}
+                  </SelectItem>
+                  {isMonitoringNgoForCitizenReporting && (
+                    <SelectItem value={ZFormType.Values.CitizenReporting}>
+                      {mapFormType(ZFormType.Values.CitizenReporting)}
+                    </SelectItem>
+                  )}
+                  <SelectItem value={ZFormType.Values.IncidentReporting}>
+                    {mapFormType(ZFormType.Values.IncidentReporting)}
+                  </SelectItem>
+                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button variant='ghost-primary'>
+              <span onClick={resetFilters} className='text-base text-purple-900'>
+                {i18n.t('electionEvent.observerForms.resetFilters')}
+              </span>
+            </Button>
+            <div className='flex flex-row flex-wrap gap-2'>
+              {formTypeFilter && (
+                <span
+                  onClick={() => handleFormTypeFilter('')}
+                  className='flex items-center gap-2 px-4 py-1 text-sm font-medium text-purple-900 bg-purple-100 rounded-full cursor-pointer'>
+                  Observer status: {formTypeFilter}
+                  <X size={14} />
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
           columns={formColDefs}
           useQuery={(params) => useForms(currentElectionRoundId, params)}
           getSubrows={getSubrows}
-          queryParams={queryParams}
           getRowClassName={getRowClassName}
         />
         <AddTranslationsDialog />

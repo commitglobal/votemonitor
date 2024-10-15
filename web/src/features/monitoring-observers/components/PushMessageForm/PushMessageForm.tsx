@@ -192,7 +192,6 @@ function PushMessageForm(): FunctionComponent {
                       <FormControl>
                         <RichTextEditor {...field} onValueChange={field.onChange} />
                       </FormControl>
-                      <FormDescription>1000 characters</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
