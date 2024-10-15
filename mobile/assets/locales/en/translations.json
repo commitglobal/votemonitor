@@ -526,6 +526,10 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": {
+      "p1": "From this section, you can quickly report any electoral irregularities you observe at polling stations or nearby areas.",
+      "p2": "This feature allows you to alert the organization instantly, outside the regular observation forms, ensuring urgent issues are addressed promptly."
     }
   },
   "report_new_issue": {
@@ -583,7 +587,7 @@
     "error": "Error while loading the report"
   },
   "guides": {
-    "title": "Guides",
+    "title": "Resources",
     "empty": {
       "heading": "No guides to read yet",
       "paragraph": "Guides and resources from your organization at your hands."
@@ -597,7 +601,8 @@
     },
     "options_sheet": {
       "manage_my_polling_stations": "Manage my polling stations"
-    }
+    },
+    "info_modal": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as an independent observer."
   },
   "resources": {
     "title": "Resources",
