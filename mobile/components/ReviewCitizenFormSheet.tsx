@@ -13,7 +13,6 @@ import { Sheet, Spinner, YStack } from "tamagui";
 import { getAnswerDisplay } from "../common/utils/answers";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
 import { useTranslation } from "react-i18next";
-import i18n from "../common/config/i18n";
 import * as Crypto from "expo-crypto";
 import { usePostCitizenFormMutation } from "../services/mutations/citizen/post-citizen-form.mutation";
 import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.provider";
@@ -39,12 +38,14 @@ export default function ReviewCitizenFormSheet({
   questions,
   setIsReviewSheetOpen,
   selectedLocationId,
+  language,
 }: {
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
+  language: string;
 }) {
   const { t } = useTranslation("citizen_form");
   const insets = useSafeAreaInsets();
@@ -52,14 +53,7 @@ export default function ReviewCitizenFormSheet({
 
   const { mutate: postCitizenForm, isPending } = usePostCitizenFormMutation();
   const { selectedElectionRound } = useCitizenUserData();
-  const currentLanguage = useMemo(
-    () =>
-      i18n.language.toLocaleUpperCase() ||
-      currentForm?.defaultLanguage ||
-      currentForm?.languages[0] ||
-      i18n.languages[0],
-    [currentForm],
-  );
+
   const mappedAnswers = useMemo(() => {
     if (!answers || !questions) return {};
 
@@ -76,8 +70,9 @@ export default function ReviewCitizenFormSheet({
           question.$questionType === "singleSelectQuestion"
         ) {
           const selectedOptionId = answer.selection.optionId;
+
           const selectedOptionText = question.options.find((o) => o.id === selectedOptionId)?.text[
-            currentLanguage
+            language
           ];
 
           mappedAnswer = {
@@ -98,7 +93,7 @@ export default function ReviewCitizenFormSheet({
               const selectedOption = answer.selection.find(
                 (selection) => selection.optionId === option.id,
               );
-              const optionText = option.text.EN || "";
+              const optionText = option.text[language] || "";
               const userText = selectedOption?.text || "";
               selectedOptionsTexts.push(
                 userText ? `${optionText} (${userText.trim()})` : optionText,
@@ -187,7 +182,7 @@ export default function ReviewCitizenFormSheet({
               <Typography preset="heading">{t("review.heading")}</Typography>
               {displayedQuestions.map((question) => (
                 <YStack key={question.id} marginTop="$md">
-                  <Typography fontWeight="500">{question.text.EN}</Typography>
+                  <Typography fontWeight="500">{question.text[language]}</Typography>
                   {mappedAnswers && mappedAnswers[question.id] && (
                     <Typography marginTop="$xs" color="$gray5">
                       {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}

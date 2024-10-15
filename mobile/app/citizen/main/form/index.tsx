@@ -74,12 +74,13 @@ const CitizenForm = () => {
   } = useGetCitizenReportingFormById(selectedElectionRound, formId);
 
   const language = useMemo(() => {
-    return (
-      i18n.language.toLocaleUpperCase() ||
-      currentForm?.defaultLanguage ||
-      currentForm?.languages[0] ||
-      i18n.languages[0]
-    );
+    if (!currentForm) return i18n.language;
+    // if the language of the app can be found in the form, use it, otherwise use the form default language or the first language found in the languages array coming from the form
+    if (currentForm?.languages.includes(i18n.language)) {
+      return i18n.language;
+    }
+
+    return currentForm?.defaultLanguage || currentForm?.languages[0];
   }, [currentForm]);
 
   const displayedQuestions: ApiFormQuestion[] = useMemo(
@@ -299,6 +300,7 @@ const CitizenForm = () => {
 
       {isReviewSheetOpen && (
         <ReviewCitizenFormSheet
+          language={language}
           currentForm={currentForm}
           answers={answers}
           questions={currentForm?.questions}
