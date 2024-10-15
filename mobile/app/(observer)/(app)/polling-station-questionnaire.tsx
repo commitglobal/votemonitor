@@ -618,11 +618,12 @@ const OptionSheetContent = ({
   );
 
   return (
-    <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$lg">
+    <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
       <Typography
         preset="body1"
         color={disableMarkAsDone ? "$gray3" : "$gray7"}
         lineHeight={24}
+        paddingVertical="$xs"
         onPress={() => {
           onSetCompletion(!isCompleted);
           router.back();
@@ -633,7 +634,13 @@ const OptionSheetContent = ({
           ? t("forms.mark_as_done", { ns: "common" })
           : t("forms.mark_as_in_progress", { ns: "common" })}
       </Typography>
-      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
+      <Typography
+        preset="body1"
+        color="$gray7"
+        lineHeight={24}
+        paddingVertical="$xs"
+        onPress={onClear}
+      >
         {t("menu.clear")}
       </Typography>
     </View>

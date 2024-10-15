@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Sheet, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,6 +19,8 @@ export const EmailCopySheet = ({
 }) => {
   const { t } = useTranslation("citizen_form");
   const insets = useSafeAreaInsets();
+
+  const [isSheetDraggable, setIsSheetDraggable] = useState(true);
 
   // todo: delete this once we use the submissionId somewhere
   console.log("submissionId", submissionId);
@@ -51,6 +53,7 @@ export const EmailCopySheet = ({
           setIsEmailSheetOpen(false);
         }
       }}
+      disableDrag={!isSheetDraggable}
     >
       <Sheet.Overlay />
       <Sheet.Frame>
@@ -86,6 +89,8 @@ export const EmailCopySheet = ({
                   onChangeText={onChange}
                   placeholder={t("email_copy.placeholder")}
                   error={errors.email?.message as string | undefined}
+                  onFocus={() => setIsSheetDraggable(false)}
+                  onBlur={() => setIsSheetDraggable(true)}
                 />
               )}
             />

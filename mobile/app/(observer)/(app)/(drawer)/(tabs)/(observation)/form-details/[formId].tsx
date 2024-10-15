@@ -367,6 +367,7 @@ const FormDetails = () => {
             <Typography
               preset="body1"
               color={disableMarkAsDone ? "$gray3" : "$gray7"}
+              paddingVertical="$xs"
               lineHeight={24}
               onPress={() => {
                 if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
@@ -385,10 +386,10 @@ const FormDetails = () => {
                 ? t("forms.mark_as_done", { ns: "common" })
                 : t("forms.mark_as_in_progress", { ns: "common" })}
             </Typography>
-            <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
+            <Typography preset="body1" paddingVertical="$xs" onPress={onChangeLanguagePress}>
               {t("menu.change_language")}
             </Typography>
-            <Typography preset="body1" paddingVertical="$md" onPress={onClearFormPress}>
+            <Typography preset="body1" paddingVertical="$xs" onPress={onClearFormPress}>
               {t("menu.clear")}
             </Typography>
           </YStack>

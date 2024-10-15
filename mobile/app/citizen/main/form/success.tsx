@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "../../../../components/Icon";
 import { useState } from "react";
 import { EmailCopySheet } from "../../../../components/EmailCopySheet";
+import { StatusBar } from "react-native";
 
 const CitizenFormSuccess = () => {
   const insets = useSafeAreaInsets();
@@ -19,6 +20,8 @@ const CitizenFormSuccess = () => {
 
   return (
     <Screen preset="fixed" backgroundColor="white" contentContainerStyle={{ flexGrow: 1 }}>
+      <StatusBar barStyle="dark-content" />
+
       <YStack flex={1} marginBottom={insets.bottom + 16}>
         <YStack
           gap="$lg"
