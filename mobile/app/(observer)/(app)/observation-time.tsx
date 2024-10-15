@@ -184,7 +184,6 @@ const ObservationTime = () => {
       {
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
-        answers: psiData?.answers || [], // we need to send the answers in the request body, otherwise the API will ignore the new changes
         ...formData,
         breaks: definedBreaks,
       },
@@ -320,7 +319,14 @@ const ObservationTime = () => {
 
       <WizzardControls
         isFirstElement
-        onActionButtonPress={handleSubmit(onSubmit)}
+        onActionButtonPress={() => {
+          handleSubmit(async (data) => {
+            await onSubmit(data);
+            if (!isUnableToSaveObservationTime) {
+              router.back();
+            }
+          })();
+        }}
         actionBtnLabel={t("polling_stations_information.observation_time.save")}
         marginTop="auto"
         isNextDisabled={isLoading}
@@ -368,7 +374,7 @@ const ObservationTime = () => {
             handleSubmit(onSubmit)();
             // if no errors occured, go back
             // otherwise, close this modal and the unable to save one will be displayed from the useEffect
-            if (!setIsUnableToSaveObservationTime) {
+            if (!isUnableToSaveObservationTime) {
               router.back();
             } else {
               setIsSaveChangesModalOpen(false);
