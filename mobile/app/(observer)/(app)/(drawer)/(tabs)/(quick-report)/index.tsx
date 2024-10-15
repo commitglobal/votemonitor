@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Typography } from "../../../../../../components/Typography";
 import { Spinner, YStack } from "tamagui";
 import { Icon } from "../../../../../../components/Icon";
@@ -15,13 +15,24 @@ import { RefreshControl, useWindowDimensions, ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 import { useTranslation } from "react-i18next";
 import { ElectionRoundVM } from "../../../../../../common/models/election-round.model";
+import InfoModal from "../../../../../../components/InfoModal";
 
 const QuickReport = () => {
   const { t } = useTranslation("quick_report");
   const navigation = useNavigation();
 
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
+
   const { activeElectionRound } = useUserData();
   const { data: quickReports, isLoading, error } = useQuickReports(activeElectionRound?.id);
+
+  const handleOpenInfoModal = () => {
+    setIsOpenInfoModal(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setIsOpenInfoModal(false);
+  };
 
   return (
     <>
@@ -32,6 +43,8 @@ const QuickReport = () => {
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+          rightIcon={<Icon icon="infoCircle" color="white" />}
+          onRightPress={handleOpenInfoModal}
         />
         {quickReports ? (
           <QuickReportContent
@@ -44,6 +57,7 @@ const QuickReport = () => {
           false
         )}
       </Screen>
+
       {quickReports?.length ? (
         <YStack width="100%" paddingHorizontal="$md" marginVertical="$xxs">
           <Button
@@ -56,6 +70,13 @@ const QuickReport = () => {
         </YStack>
       ) : (
         false
+      )}
+
+      {isOpenInfoModal && (
+        <InfoModal
+          paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}
+          handleCloseInfoModal={handleCloseInfoModal}
+        />
       )}
     </>
   );
@@ -98,21 +119,6 @@ const QuickReportContent = ({
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          quickReports.length > 0 ? (
-            <Typography
-              marginBottom="$xxs"
-              preset="body1"
-              textAlign="left"
-              color="$gray7"
-              fontWeight="700"
-            >
-              {t("list.heading")}
-            </Typography>
-          ) : (
-            <></>
-          )
-        }
         ListEmptyComponent={
           <YStack alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />

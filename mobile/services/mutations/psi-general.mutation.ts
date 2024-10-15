@@ -50,6 +50,8 @@ export const useMutatePollingStationGeneralData = ({
         arrivalTime: "",
         departureTime: "",
         answers: [],
+        breaks: [],
+        isCompleted: false,
       };
 
       // Optimistically update to the new value
@@ -58,6 +60,8 @@ export const useMutatePollingStationGeneralData = ({
         ...(payload?.answers ? { answers: payload?.answers } : {}),
         ...(payload?.arrivalTime ? { arrivalTime: payload?.arrivalTime } : {}),
         ...(payload?.departureTime ? { departureTime: payload?.departureTime } : {}),
+        ...(payload?.breaks ? { breaks: payload?.breaks } : {}),
+        ...(payload?.isCompleted ? { isCompleted: payload?.isCompleted } : {}),
       });
 
       // Update Visits query optimistic

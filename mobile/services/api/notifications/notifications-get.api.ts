@@ -1,6 +1,6 @@
 import API from "../../api";
 
-type GetNotificationsApiPayload = {
+export type GetNotificationsApiPayload = {
   electionRoundId: string;
 };
 

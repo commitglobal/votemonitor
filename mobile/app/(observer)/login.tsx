@@ -19,7 +19,7 @@ import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Header from "../../components/Header";
 import * as Clipboard from "expo-clipboard";
-import WizzardControls from "../../components/WizzardControls";
+import { FooterButtons } from "../../components/FooterButtons";
 
 interface FormData {
   email: string;
@@ -85,7 +85,7 @@ const Login = () => {
       }}
     >
       <Header barStyle="light-content">
-        <Icon icon="loginLogo" paddingBottom="$md" />
+        <Icon icon="vmObserverLogo" width={294} height={83} paddingBottom="$md" />
       </Header>
 
       <ScrollView>
@@ -119,14 +119,14 @@ const Login = () => {
         </YStack>
       </ScrollView>
 
-      <WizzardControls
-        isFirstElement
-        onActionButtonPress={() => {
+      <FooterButtons
+        primaryAction={() => {
           Keyboard.dismiss();
           handleSubmit(onLogin)();
         }}
-        actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
-        isNextDisabled={isLoading}
+        primaryActionLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+        isPrimaryButtonDisabled={isLoading}
+        handleGoBack={() => router.push("/select-app-mode")}
       />
     </Screen>
   );

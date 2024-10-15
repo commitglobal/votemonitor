@@ -49,7 +49,7 @@ const ForgotPassword = () => {
   };
 
   if (emailConfirmation) {
-    return <PasswordConfirmationScreen icon="emailSent" translationKey="forgot_password" />;
+    return <PasswordConfirmationScreen icon="successCheck" translationKey="forgot_password" />;
   }
 
   return (

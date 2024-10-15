@@ -5,11 +5,8 @@ import * as SecureStore from "expo-secure-store";
 import { SECURE_STORAGE_KEYS } from "../common/constants";
 
 function RootIndex() {
-  console.log("🔶 1. INDEX - AppModeWrapper");
-
   const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
   const { appMode } = useAppMode();
-  console.log("✅✅✅✅✅ appMode", appMode);
 
   if (!onboardingComplete) {
     return <Redirect href="/onboarding" />;

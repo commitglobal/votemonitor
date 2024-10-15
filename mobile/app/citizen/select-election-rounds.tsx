@@ -1,62 +1,23 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { Typography } from "../../components/Typography";
 import { useTranslation } from "react-i18next";
 import { ScrollView, Spinner, XStack, YStack } from "tamagui";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Button from "../../components/Button";
 import { Selector } from "../../components/Selector";
-import { useGetCitizenElectionEvents } from "../../services/queries/citizen.query";
+import { useGetCitizenElectionRounds } from "../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../contexts/citizen-user/CitizenUserContext.provider";
 import { router } from "expo-router";
-
-const Footer = ({
-  primaryAction,
-  primaryActionLabel,
-  isPrimaryButtonDisabled,
-  handleGoBack,
-}: {
-  primaryAction?: () => void;
-  primaryActionLabel: string;
-  isPrimaryButtonDisabled?: boolean;
-  handleGoBack: () => void;
-}) => {
-  const insets = useSafeAreaInsets();
-
-  return (
-    <XStack
-      marginBottom={insets.bottom + 32}
-      justifyContent="center"
-      alignItems="center"
-      paddingRight="$xl"
-    >
-      <XStack
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-        flex={0.2}
-        pressStyle={{ opacity: 0.5 }}
-        paddingLeft="$xl"
-        onPress={handleGoBack}
-      >
-        <Icon icon="chevronLeft" size={24} color="$purple5" />
-      </XStack>
-      <Button
-        flex={0.8}
-        disabled={isPrimaryButtonDisabled || !primaryAction}
-        onPress={primaryAction}
-      >
-        {primaryActionLabel}
-      </Button>
-    </XStack>
-  );
-};
+import { FooterButtons } from "../../components/FooterButtons";
 
 const SelectElectionEvent = () => {
   const { t } = useTranslation("select_election_event");
+
   const { selectedElectionRound, setSelectedElectionRound } = useCitizenUserData();
+  const [selectedElectionRoundLocal, setSelectedElectionRoundLocal] = useState<string | null>(
+    selectedElectionRound,
+  );
 
   const {
     data: electionEvents,
@@ -64,7 +25,7 @@ const SelectElectionEvent = () => {
     isError: isErrorElectionEvents,
     refetch: refetchElectionEvents,
     isRefetching: isRefetchingElectionEvents,
-  } = useGetCitizenElectionEvents();
+  } = useGetCitizenElectionRounds();
 
   const handleGoBack = () => {
     router.push("select-app-mode");
@@ -114,7 +75,7 @@ const SelectElectionEvent = () => {
           </ScrollView>
         </YStack>
 
-        <Footer
+        <FooterButtons
           primaryAction={refetchElectionEvents}
           primaryActionLabel={t("retry")}
           isPrimaryButtonDisabled={isRefetchingElectionEvents}
@@ -125,7 +86,7 @@ const SelectElectionEvent = () => {
   }
 
   //   empty state
-  if (!isLoadingElectionEvents && (!electionEvents || electionEvents.electionRounds.length === 0)) {
+  if (!isLoadingElectionEvents && (!electionEvents || electionEvents.length === 0)) {
     return (
       <Screen
         preset="fixed"
@@ -156,7 +117,7 @@ const SelectElectionEvent = () => {
         </YStack>
 
         {/* //todo: continue */}
-        <Footer primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
+        <FooterButtons primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
       </Screen>
     );
   }
@@ -189,13 +150,13 @@ const SelectElectionEvent = () => {
             <>
               <Typography color="$gray8">{t("description")}</Typography>
 
-              {electionEvents?.electionRounds.map((event) => (
+              {electionEvents?.map((event) => (
                 <Selector
                   key={event.id}
                   description={event.title}
                   displayMode="light"
-                  selected={selectedElectionRound === event.id}
-                  onPress={() => setSelectedElectionRound(event.id)}
+                  selected={selectedElectionRoundLocal === event.id}
+                  onPress={() => setSelectedElectionRoundLocal(event.id)}
                 />
               ))}
             </>
@@ -203,11 +164,17 @@ const SelectElectionEvent = () => {
         </ScrollView>
       </YStack>
 
-      <Footer
+      <FooterButtons
         primaryActionLabel={t("continue")}
-        isPrimaryButtonDisabled={!selectedElectionRound}
+        isPrimaryButtonDisabled={!selectedElectionRoundLocal}
         primaryAction={() => {
-          router.push("citizen/main");
+          if (selectedElectionRoundLocal) {
+            setSelectedElectionRound(selectedElectionRoundLocal, {
+              onSuccess: () => {
+                router.push("citizen/main");
+              },
+            });
+          }
         }}
         handleGoBack={handleGoBack}
       />

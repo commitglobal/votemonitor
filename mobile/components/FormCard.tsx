@@ -11,6 +11,7 @@ export const FormStateToTextMapper: Record<FormStatus, string> = {
   [FormStatus.NOT_STARTED]: "status.not_started",
   [FormStatus.IN_PROGRESS]: "status.in_progress",
   [FormStatus.COMPLETED]: "status.completed",
+  [FormStatus.MARKED_AS_COMPLETED]: "status.marked_as_completed",
 };
 
 export interface Form {

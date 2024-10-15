@@ -46,6 +46,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="updates"
+        options={{
+          title: "Updates",
+          tabBarIcon: ({ color }) => <Icon icon="updates" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="more"
         options={{
           title: t("more"),

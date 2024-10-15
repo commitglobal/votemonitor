@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "1.0.9",
+    "version": "2.0.3",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "65",
+      "buildNumber": "70",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -31,7 +31,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 65,
+      "versionCode": 70,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Remove KeyboardAware",
+      "message": "Invalidate citizen queries on election round change",
       "updateCritical": 48,
-      "updateVersion": 48
+      "updateVersion": 54
     },
     "owner": "commit-global",
     "runtimeVersion": {

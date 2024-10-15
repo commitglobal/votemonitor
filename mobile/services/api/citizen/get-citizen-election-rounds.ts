@@ -1,6 +1,6 @@
 import API from "../../api";
 
-export interface IElectionRound {
+export interface ICitizenElectionRound {
   id: string;
   countryCode: string;
   countryName: string;
@@ -9,10 +9,6 @@ export interface IElectionRound {
   title: string;
 }
 
-interface IElectionEventsResponse {
-  electionRounds: IElectionRound[];
-}
-
-export const getCitizenElectionEvents = (): Promise<IElectionEventsResponse> => {
-  return API.get("/election-rounds:citizen-report").then((res) => res.data);
+export const getCitizenElectionRounds = (): Promise<ICitizenElectionRound[]> => {
+  return API.get("/election-rounds:citizen-report").then((res) => res.data.electionRounds);
 };

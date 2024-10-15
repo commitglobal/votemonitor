@@ -31,15 +31,21 @@ const mapCitizenLocationsToSelectValues = (
 };
 
 export default function CitizenSelectLocation() {
-  const { formId } = useLocalSearchParams<{ formId: string }>();
-  console.log("👀 [CitizenSelectLocation] formId", formId);
+  const { formId, questionId } = useLocalSearchParams<{ formId: string; questionId: string }>();
+
+  if (!formId || !questionId) {
+    return <Typography>CitizenSelectLocation - Incorrect page params</Typography>;
+  }
+  const { selectedElectionRound } = useCitizenUserData();
+
+  if (!selectedElectionRound) {
+    return <Typography>There is no selected election round</Typography>;
+  }
 
   const { t } = useTranslation(["add_polling_station", "common"]); // TODO: change to citizen
 
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-
-  const { selectedElectionRound } = useCitizenUserData();
 
   const [steps, setSteps] = useState<LocationSelectionStep[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -47,15 +53,6 @@ export default function CitizenSelectLocation() {
   const [selectedOption, setSelectedOption] = useState<LocationSelectionStep>();
 
   const activeStep = useMemo(() => [...steps].pop(), [steps]);
-
-  const locations = useMemo(
-    () =>
-      [...steps, selectedOption]
-        .filter((step) => step !== undefined)
-        .map((step) => step.name)
-        .join(", "),
-    [steps, selectedOption],
-  );
 
   const {
     data: citizenLocations,
@@ -113,7 +110,9 @@ export default function CitizenSelectLocation() {
     const selectedLocationId = citizenLocations.find(
       (location) => location.id === selectedOption?.id,
     )?.locationId;
-    router.push(`citizen/main/form/${formId}?selectedLocationId=${selectedLocationId}`);
+    router.replace(
+      `citizen/main/form/?formId=${formId}&selectedLocationId=${selectedLocationId}&questionId=${questionId}`,
+    );
   };
 
   const SelectItem = useCallback(
@@ -147,12 +146,6 @@ export default function CitizenSelectLocation() {
         onLeftPress={router.back}
       />
       <YStack paddingHorizontal="$md" gap={"$1"}>
-        {locations && (
-          <YStack paddingTop={"$sm"} minHeight="$xl">
-            <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
-          </YStack>
-        )}
-
         <XStack backgroundColor="$purple1" marginTop={"$sm"} borderRadius={8} alignItems="center">
           <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
           <SearchInput

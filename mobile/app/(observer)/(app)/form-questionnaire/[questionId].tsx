@@ -5,10 +5,10 @@ import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
 import { ScrollView, XStack, YStack } from "tamagui";
 import LinearProgress from "../../../../components/LinearProgress";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../../components/WizzardControls";
-import { Keyboard, ViewStyle } from "react-native";
+import { BackHandler, Keyboard, ViewStyle } from "react-native";
 import { useForm } from "react-hook-form";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
@@ -25,7 +25,7 @@ import QuestionNotes from "../../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../../components/AddNoteSheetContent";
 import { useFormById } from "../../../../services/queries/forms.query";
-import { useFormAnswers } from "../../../../services/queries/form-submissions.query";
+import { useFormSubmissionByFormId } from "../../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
@@ -89,10 +89,16 @@ const FormQuestionnaire = () => {
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: answers,
+    data: currentFormSubmission,
     isLoading: isLoadingAnswers,
     error: answersError,
-  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+  } = useFormSubmissionByFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const answers = useMemo(() => currentFormSubmission?.answers, [currentFormSubmission]);
 
   const { data: notes, isLoading: isLoadingNotes } = useNotesForQuestionId(
     activeElectionRound?.id,
@@ -273,6 +279,15 @@ const FormQuestionnaire = () => {
     }
     router.back();
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      handleLeaveFormWizard();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   const onClearForm = () => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {
@@ -562,6 +577,7 @@ const FormQuestionnaire = () => {
             activeQuestion={activeQuestion}
             handleFocus={handleFocus}
             ref={textareaRef}
+            language={language}
           />
 
           {/* notes section */}

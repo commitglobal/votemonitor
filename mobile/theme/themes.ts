@@ -9,6 +9,7 @@ const colorTokens = {
       gray1: "	hsl(210, 20%, 98%)",
       gray2: "hsl(220, 14%, 96%)",
       gray3: "hsl(240, 5%, 84%)",
+      gray4: "hsl(240, 5%, 70%)",
       gray5: "hsl(240, 4%, 46%)",
       gray6: "hsl(240, 5%, 34%)",
       gray7: "hsl(240, 5%, 26%)",

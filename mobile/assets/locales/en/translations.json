@@ -6,13 +6,19 @@
     "status": {
       "completed": "Done",
       "in_progress": "In progress",
-      "not_started": "Not started"
+      "not_started": "Not started",
+      "marked_as_completed": "Marked as done"
+    },
+    "forms": {
+      "mark_as_done": "Mark form as done",
+      "mark_as_in_progress": "Mark form as in progress"
     },
     "cancel": "Cancel",
     "save": "Save",
     "no_data": "No data found.",
     "select": "Select",
-    "done": "Done"
+    "done": "Done",
+    "ok": "OK"
   },
   "languages": {
     "ro": "Romanian",
@@ -28,16 +34,16 @@
       "save": "Apply selection"
     },
     "polling_stations": {
-      "heading": "Monitor polling stations",
-      "description": "and document in real-time the entire election process, on forms which your accrediting NGO has set up"
+      "heading": "Monitor election processes",
+      "description": "and report campaign irregularities, polling station issues, and flag any problems with voting day procedures"
     },
     "forms": {
       "heading": "Fill in observation forms",
-      "description": "and track their progress during each monitoring stage"
+      "description": "and submit reports for each monitoring stage to help ensure a transparent and fair electoral process"
     },
     "media": {
       "heading": "Add notes or media files",
-      "description": "if you notice any problems to further support your answers",
+      "description": "to further support your observations and provide evidence for any irregularities",
       "save": "Go to app"
     }
   },
@@ -75,15 +81,51 @@
     "error_message": "Something went wrong while retrieving the reporting forms. Please retry.",
     "retry": "Retry",
     "info_modal": {
-      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your anonymous reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
+      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
       "p2": "Please note that submitting a report through this application does not constitute an official complaint filed with the institutions responsible for organising elections.",
       "ok": "OK"
     }
   },
+  "citizen_form": {
+    "review": {
+      "heading": "Review your report",
+      "send": "Send report",
+      "sending_report": "We're sending your report. Please wait..."
+    },
+    "progress_bar_label": "Form progress",
+    "success": {
+      "title": "Your report has been successfuly sent!",
+      "description": "Thank you for your civic involvement. You have the option to send a copy of your responses to your email, or you can return to the main page.",
+      "back_to_main": "Back to the main page",
+      "send_copy": "Send me a copy"
+    },
+    "error": "There was a problem while sending your review.",
+    "email_copy": {
+      "title": "Enter your email to receive a form copy",
+      "description": "To receive a copy of your form, please enter your email address below. This email address will be used only to send you the copy and will not be stored or used for any other purpose.",
+      "placeholder": "Enter your email",
+      "required": "The email is mandatory",
+      "invalid": "The email format is not valid",
+      "cancel": "Cancel",
+      "send": "Send"
+    },
+    "copy_sent": {
+      "title": "Your copy has been sent",
+      "description": "Your copy should arrive instantly, but in rare occasions it may take a few minutes to process. You can return to the main page in the meantime."
+    },
+    "unsaved_changes_dialog": {
+      "title": "You have unsaved changes",
+      "description": "Leaving this page will cause all your progress on the form to be lost. Are you sure you wish to go back?",
+      "actions": {
+        "discard": "Go back",
+        "save": "Stay here"
+      }
+    }
+  },
   "login": {
     "disclaimer": {
-      "paragraph1": "Please note that if you are not accredited as an independent observer by an organization that monitors election processes in your country, you cannot use the Vote Monitor app.",
-      "paragraph2": "Please refer to such organizations to learn what steps you need to take to become an electoral observer or contact us for further information at",
+      "paragraph1": "Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
+      "paragraph2": "If you are not an accredited observer, you may still report irregularities as a citizen for an ongoing election event, without needing an account.",
       "email": "info@commitglobal.org"
     },
     "heading": "Log in",
@@ -143,6 +185,7 @@
   },
   "about_app": {
     "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Observer",
     "general": "Vote Monitor is a dedicated digital tool for independent observers and international organizations engaged in election monitoring. Vote Monitor is developed and managed by Code for Romania/Commit Global.",
     "purpose": "The app assists independent observers in monitoring polling stations and documenting the polling process in real-time for a specific election round. All data collected through the mobile app is sent in real-time to accrediting organizations to identify potential red flags that may indicate fraud or other irregularities. Ultimately, our goal is to provide a clear, simple, and realistic snapshot of the polling process proceedings.",
     "app_provides": {
@@ -151,7 +194,16 @@
       "item2": "An efficient method to monitor the flow of the polling process through forms set up by accrediting organizations",
       "item3": "A means of quickly reporting other problematic issues outside the standard forms"
     },
-    "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania and Poland.",
+    "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania, Poland and Bulgaria.",
+    "version": "Vote Monitor version {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Citizen",
+    "p1": "Vote Monitor Citizen enables everyday citizens to actively participate in monitoring elections by reporting any irregularities they encounter during the electoral period, including campaign activities, polling station operations, and voting day procedures.",
+    "p2": "Vote Monitor Citizen is an extension of the Vote Monitor app, which was initially developed by Code for Romania/Commit Global for independent observers working alongside NGOs in election monitoring efforts.",
+    "p3": "Users can submit real-time reports that will be analysed by non-governmental organizations involved in the electoral process. These reports may contribute to detailed observation documents and, in some instances, could be forwarded to relevant institutions to improve future elections.",
+    "p4": "While citizen reports play a vital role in promoting transparency, please note that submitting a report through this app does not constitute an official complaint to the institutions responsible for organizing elections.",
     "version": "Vote Monitor version {{value}}"
   },
   "loading_screen": {
@@ -205,6 +257,60 @@
           "later_departure": "Please select a departure time that is at a later time than the arrival.",
           "earlier_arrival": "Please select an arrival time that is at an earlier time than the departure.",
           "server": "We couldn't send the information to the server."
+        }
+      },
+      "observation_time": {
+        "observation_time": "Observation time",
+        "not_defined": "Not defined",
+        "no_of_breaks": "{{value}} breaks",
+        "one_break": "{{value}} break",
+        "arrival_and_departure": "Arrival and departure time",
+        "arrival_time": "Arrival time",
+        "departure_time": "Departure time",
+        "departure_after_arrival": "The departure time must be after the arrival time",
+        "select_arrival_time": "Select arrival time",
+        "select_departure_time": "Select departure time",
+        "add_break": "Add new break in observation",
+        "break": "Break {{value}}",
+        "start_time": "Start time",
+        "select_start_time": "Select start time",
+        "end_time": "End time",
+        "select_end_time": "Select end time",
+        "undefined_date": "DD/MM/YYYY",
+        "undefined_time": "HH:MM",
+        "save": "Save observation time",
+        "clear": "Clear observation time",
+        "confirmation_modals": {
+          "clear": {
+            "title": "Clear observation time",
+            "description": "This action will delete your arrival and departure time, including all your breaks entered so far for this polling station. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "clear": "Clear observation time"
+            }
+          },
+          "delete": {
+            "title": "Delete break",
+            "description": "This action will delete your break. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "delete": "Delete break"
+            }
+          },
+          "unsaved_changes": {
+            "title": "Save changes to observation time",
+            "description": "You have unsaved changes related to the observation time you entered. Do you want to save your changes before leaving the page?",
+            "actions": {
+              "discard": "Discard",
+              "save": "Save changes"
+            }
+          },
+          "unable_to_save": {
+            "title": "Unable to Save Observation Time",
+            "p1": "The times you entered cannot be saved due to a conflict between the break periods and the arrival/departure times.",
+            "p2": "Please ensure that break periods do not exceed the time interval defined by the arrival and departure observation times. Please review and adjust the times accordingly.",
+            "ok": "OK"
+          }
         }
       },
       "polling_station_form": {
@@ -306,6 +412,7 @@
     "form": {
       "min": "The field must be at least {{value}} characters long",
       "max": "The field must have a maximum of {{value}} characters",
+      "required": "This field is required",
       "date_placeholder": "Please enter a date",
       "text_placeholder": "Please enter a text"
     },
@@ -441,6 +548,10 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": {
+      "p1": "From this section, you can quickly report any electoral irregularities you observe at polling stations or nearby areas.",
+      "p2": "This feature allows you to alert the organization instantly, outside the regular observation forms, ensuring urgent issues are addressed promptly."
     }
   },
   "report_new_issue": {
@@ -507,7 +618,7 @@
     "error": "Error while loading the report"
   },
   "guides": {
-    "title": "Guides",
+    "title": "Resources",
     "empty": {
       "heading": "No guides to read yet",
       "paragraph": "Guides and resources from your organization at your hands."
@@ -521,6 +632,20 @@
     },
     "options_sheet": {
       "manage_my_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as an independent observer."
+  },
+  "resources": {
+    "title": "Resources",
+    "info": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.",
+    "empty": {
+      "heading": "No guides to read yet",
+      "paragraph": "Guides and resources about observing electoral processes and reporting issues as a citizen at your hands."
+    },
+    "types": {
+      "Document": "Filetype PDF",
+      "Website": "External URL",
+      "Text": "In app guide"
     }
   },
   "inbox": {
@@ -537,8 +662,18 @@
     },
     "info_modal": {
       "p1": "In this Inbox expect to receive live updates and messages from the NGO that accredited you as an observer.",
-      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity.",
-      "ok": "OK"
+      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity."
+    }
+  },
+  "updates": {
+    "title": "Updates",
+    "empty": {
+      "heading": "No updates received yet",
+      "paragraph": "Updates about electoral period will appear here."
+    },
+    "info_modal": {
+      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
+      "p2": "Check back periodically to see if you have received any new information."
     }
   },
   "more": {
@@ -628,8 +763,10 @@
   "network_banner": {
     "online": "App online. All answers sent to server.",
     "offline": "Offline mode. Saving answers locally.",
+    "offline_citizen": "Offline mode. You need internet to submit the form.",
     "more_details": "More Details",
-    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports."
+    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports.",
+    "offline_warning_citizen": "It looks like you're currently offline. In order to submit the form, you need to be online."
   },
   "sync": {
     "sync_data": "Synchronizing offline data...",
