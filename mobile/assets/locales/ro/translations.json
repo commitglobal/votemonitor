@@ -92,6 +92,7 @@
       "send": "Trimite sesizarea",
       "sending_report": "Trimitem sesizarea ta. Te rugăm să aștepți..."
     },
+    "progress_bar_label": "Progresul formularului",
     "success": {
       "title": "Sesizarea ta a fost trimisă cu succes!",
       "description": "Îți mulțumim pentru implicarea civică. Ai opțiunea de a trimite o copie a răspunsurilor tale pe email sau poți reveni la pagina principală.",
@@ -182,16 +183,26 @@
     }
   },
   "about_app": {
-    "title": "Despre Vote Monitor pentru Observatori",
+    "title": "Despre Vote Monitor",
+    "title_observer": "Despre Vote Monitor pentru Observatori",
     "general": "Vote Monitor este un instrument digital dedicat observatorilor independenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltată și administrată de Code for Romania/Commit Global",
-    "purpose": "Aplicația asistă observatorii independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
+    "purpose": "Aplicația asistă observatorilor independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
     "app_provides": {
       "paragraph": "Aplicația oferă observatorilor:",
       "item1": "O modalitate de a gestiona mai multe secții de votare vizitate",
       "item2": "O metodă eficientă de monitorizare a proceselor electorale prin formulare create de organizații",
       "item3": "Un mijloc de raportare rapidă a altor situații sau incidente problematice în afara formularelor standard"
     },
-    "usage": "Aplicația Vote Monitor poate fi utilizată în orice tip de alegeri din orice țară din întreaga lume. Din 2016, a fost utilizată în mai multe tururi de alegeri în România și Polonia.",
+    "usage": "Aplicația Vote Monitor poate fi utilizată pentru orice tip de alegeri din orice țară din întreaga lume. Din 2016, a fost utilizată în mai multe tururi de alegeri în România, Polonia și Bulgaria.",
+    "version": "Vote Monitor versiunea {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "Despre Vote Monitor",
+    "title_observer": "Despre Vote Monitor pentru Cetățeni",
+    "p1": "Vote Monitor pentru Cetățeni permite cetățenilor să acționeze activ în monitorizarea alegerilor prin trimiterea de sesizări în timp real despre orice nereguli pe care le observă în timpul perioadei de campanie electorală sau în ziua alegerilor.",
+    "p2": "Vote Monitor pentru Cetățeni este o extensie a aplicației Vote Monitor, dezvoltată inițial de Code for Romania/Commit Global pentru observatorii independenți care sunt implicați alături de ONG-uri în monitorizarea proceselor electorale.",
+    "p3": "Utilizatorii pot trimite sesizări în timp real ce vor fi analizate de către ONG-uri implicate în monitorizarea proceselor electorale. Aceste sesizări pot contribui la crearea de documente de observare detaliate și, în unele cazuri, pot fi transmise instituțiilor responsabile de organizarea alegerilor pentru a îmbunătăți procesele electorale viitoare.",
+    "p4": "Deși sesizările de la cetățeni joacă un rol esențial în promovarea transparenței, te rugăm să reții că trimiterea unei sesizări prin această aplicație nu constituie o plângere oficială depusă la instituțiile responsabile pentru organizarea alegerilor.",
     "version": "Vote Monitor versiunea {{value}}"
   },
   "loading_screen": {
@@ -515,6 +526,10 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    },
+    "info_modal": {
+      "p1": "Din această secțiune poți raporta mai rapid organizației tale alte probleme sau nereguli care au sau nu legătură cu secțiile de votare vizitate.",
+      "p2": "Această funcție îți permite să alertezi imediat organizația, în afara formularelor obișnuite de observare, asigurându-te că problemele urgente sunt adresate rapid."
     }
   },
   "report_new_issue": {
@@ -586,11 +601,12 @@
     },
     "options_sheet": {
       "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
-    }
+    },
+    "info_modal": "În această secțiune vei găsi informații cheie și resurse concepute pentru a te ajuta să observi procesele electorale și să raportezi orice probleme sau nereguli electorale pe care le întâlnești ca observator independent."
   },
   "resources": {
     "title": "Resurse",
-    "info": "În această secțiune, vei găsi informații cheie și resurse concepute pentru a te ajuta să observi procesele electorale și să raportezi orice probleme sau nereguli electorale pe care le sesizezi ca cetățean.",
+    "info": "În această secțiune vei găsi informații cheie și resurse concepute pentru a te ajuta să observi procesele electorale și să raportezi orice probleme sau nereguli electorale pe care le sesizezi ca cetățean.",
     "empty": {
       "heading": "Încă nu există ghiduri de citit",
       "paragraph": "Aici vei găsi la îndemâna ta ghiduri și resurse despre observarea proceselor electorale și raportarea neregulilor din postura de cetățean."

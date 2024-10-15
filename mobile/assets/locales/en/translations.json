@@ -124,7 +124,7 @@
   },
   "login": {
     "disclaimer": {
-      "paragraph1": "Vote Monitor Observer can **only** be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
+      "paragraph1": "Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
       "paragraph2": "If you are not an accredited observer, you may still report irregularities as a citizen for an ongoing election event, without needing an account.",
       "email": "info@commitglobal.org"
     },
@@ -194,7 +194,7 @@
       "item2": "An efficient method to monitor the flow of the polling process through forms set up by accrediting organizations",
       "item3": "A means of quickly reporting other problematic issues outside the standard forms"
     },
-    "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania and Poland.",
+    "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania, Poland and Bulgaria.",
     "version": "Vote Monitor version {{value}}"
   },
   "about_app_citizen": {
