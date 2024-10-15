@@ -1,6 +1,7 @@
 ﻿using Feature.FormTemplates.Create;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Form.Module.Requests;
 
 namespace Feature.FormTemplates.UnitTests.ValidatorTests;
 
@@ -156,6 +157,54 @@ public class CreateValidatorTests
         // Assert
         validationResult
             .ShouldHaveValidationErrorFor(x => x.DefaultLanguage).WithErrorMessage("Languages should contain declared default language.");
+    }
+    
+    
+    [Fact]
+    public void Validation_ShouldFail_When_InvalidQuestion()
+    {
+        // Arrange
+        var request = new Request
+        {
+            Languages = [
+                LanguagesList.EN.Iso1,
+                LanguagesList.RO.Iso1
+            ],
+            Questions = [
+                new TextQuestionRequest
+                {
+                    Text = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
+                },
+                new TextQuestionRequest
+                {
+                    Text = TranslatedStringTestData.InvalidPartiallyTranslatedTestData.First()
+                }
+            ]
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor("Questions[1].Text[\"IT\"]");
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_EmptyQuestions()
+    {
+        // Arrange
+        var request = new Request
+        {
+            Questions = []
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldNotHaveValidationErrorFor(x => x.Questions);
     }
 
     [Fact]

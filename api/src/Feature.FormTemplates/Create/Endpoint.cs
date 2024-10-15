@@ -21,8 +21,12 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
             AddError(r => r.Code, "A form template with same parameters already exists");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
-
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages);
+        
+        var questions = req.Questions.Select(QuestionsMapper.ToEntity)
+            .ToList()
+            .AsReadOnly();
+        
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages, questions);
 
         await repository.AddAsync(formTemplate, ct);
 

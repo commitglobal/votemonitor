@@ -4,25 +4,37 @@ on:
   push:
     paths:
       - api/**
-    branches: [ main ]
+      - .github/workflows/**
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - api/**
+      - .github/workflows/**
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+
     - name: Build API
       run: dotnet build ./api/Vote.Monitor.sln --configuration Release
+
     - name: Test API
       run: dotnet test ./api/Vote.Monitor.sln --configuration Release
+
     - name: Build Hangfire
       run: dotnet build ./api/Vote.Monitor.Hangfire.sln --configuration Release
+
     - name: Test Hangfire
       run: dotnet test ./api/Vote.Monitor.Hangfire.sln --configuration Release

@@ -25,6 +25,9 @@ public record QuickReportDetailedModel
     public string? Number { get; init; }
     public string? Address { get; init; }
     public string? PollingStationDetails { get; init; }
+    
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
+    public IncidentCategory IncidentCategory { get; set; } 
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; set; }
@@ -52,7 +55,8 @@ public record QuickReportDetailedModel
             PollingStationDetails = quickReport.PollingStationDetails,
             Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
             Attachments = attachments.ToList(),
-            FollowUpStatus = quickReport.FollowUpStatus
+            FollowUpStatus = quickReport.FollowUpStatus,
+            IncidentCategory = quickReport.IncidentCategory
         };
     }
 

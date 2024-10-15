@@ -3,8 +3,13 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
+using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.Auditing;
+using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Domain.UnitTests.Interceptors;
 
@@ -63,7 +68,7 @@ public class AuditTrailInterceptorTests
         //Arrange
         var userId = Guid.NewGuid();
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        
+
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
 
@@ -130,10 +135,10 @@ public class AuditTrailInterceptorTests
         var anotherUserId = Guid.NewGuid();
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
-        
+
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
-        
+
         var ngoName = "my ngo";
         var testEntity = new Ngo(ngoName);
 
@@ -224,5 +229,60 @@ public class AuditTrailInterceptorTests
         auditTrail.Type.Should().Be(TrailType.Delete);
         auditTrail.PrimaryKey.Should().Contain(testEntity.Id.ToString());
         auditTrail.OldValues.Should().Contain(ngoName);
+    }
+
+    [Fact]
+    public async Task Interceptor_OnAddFormSubmission_ShouldNotTriggerAuditTrailForForm()
+    {
+        //Arrange
+        var userId = Guid.NewGuid();
+        var anotherUserId = Guid.NewGuid();
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+
+        _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
+
+
+        var electionRound = new ElectionRound(CountriesList.AD.Id, "ololo", "ololoo", new DateOnly(2020, 1, 1));
+        var pollingStation = new PollingStationFaker(electionRound: electionRound).Generate();
+        var ngo = new Ngo("ngo");
+        var monitoringNgo = new MonitoringNgoAggregateFaker(electionRound: electionRound, ngo: ngo).Generate();
+        var form = new FormAggregateFaker(electionRound: electionRound, monitoringNgo: monitoringNgo).Generate();
+        var applicationUser = ApplicationUser.CreateObserver("test", "test", "email", "222", "password");
+
+        var observer = Observer.Create(applicationUser);
+        var monitoringObserver = new MonitoringObserverFaker(electionRound: electionRound, monitoringNgo: monitoringNgo,
+                observer: observer)
+            .Generate();
+
+        await _context.Countries.AddAsync(CountriesList.AD.ToEntity());
+        await _context.ElectionRounds.AddAsync(electionRound);
+        await _context.PollingStations.AddAsync(pollingStation);
+        await _context.Ngos.AddAsync(ngo);
+        await _context.MonitoringNgos.AddAsync(monitoringNgo);
+        await _context.Users.AddAsync(applicationUser);
+        await _context.Observers.AddAsync(observer);
+        await _context.MonitoringObservers.AddAsync(monitoringObserver);
+        await _context.Forms.AddAsync(form);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+        var initialTrails = _context.AuditTrails.ToList();
+
+        //Act 
+        var formSubmission = form.CreateFormSubmission(pollingStation, monitoringObserver, [], false);
+        _context.FormSubmissions.Add(formSubmission);
+
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+        //Assert
+        var trailsAfterSubmissions = _context.AuditTrails.ToList();
+
+        var newTrails = trailsAfterSubmissions.Except(initialTrails).ToList();
+
+        newTrails.Should().ContainSingle();
+
+        newTrails.First().Type.Should().Be(TrailType.Create);
+        newTrails.First().TableName.Should().Be("FormSubmission");
     }
 }

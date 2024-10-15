@@ -51,8 +51,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   GROUP BY
                     N."Id", N."Title", N."Body", N."CreatedOn", U."FirstName", U."LastName"
                   ORDER BY N."CreatedOn" DESC
-                  FETCH NEXT
-                      @pageSize ROWS ONLY;
+                  OFFSET @offset ROWS
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
         var queryArgs = new
         {

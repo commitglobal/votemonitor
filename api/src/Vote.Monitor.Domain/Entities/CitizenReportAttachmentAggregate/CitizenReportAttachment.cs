@@ -30,7 +30,7 @@ public class CitizenReportAttachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool isCompleted) : base(id)
+        bool? isCompleted) : base(id)
     {
         ElectionRoundId = electionRoundId;
         CitizenReportId = citizenReportId;
@@ -40,7 +40,10 @@ public class CitizenReportAttachment : AuditableBaseEntity, IAggregateRoot
         FilePath = filePath;
         MimeType = mimeType;
         IsDeleted = false;
-        IsCompleted = isCompleted;
+        if(isCompleted.HasValue)
+        {
+            IsCompleted = isCompleted.Value;
+        }
 
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";

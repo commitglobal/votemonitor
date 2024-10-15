@@ -43,7 +43,7 @@ function PreviewDateQuestion({ code, questionId, text, helptext }: PreviewDateQu
                 const dateAnswer: DateAnswer = { $answerType: AnswerType.DateAnswerType, date: formatISO(date!, { representation: 'complete' }), questionId };
                 setAnswer(dateAnswer);
               }}
-              initialFocus
+              autoFocus
             />
           </PopoverContent>
         </Popover>

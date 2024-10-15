@@ -6,8 +6,20 @@ namespace Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
 
 public sealed class SingleSelectAnswerFaker : Faker<SingleSelectAnswer>
 {
-    public SingleSelectAnswerFaker(SingleSelectQuestion? question = null)
+    public SingleSelectAnswerFaker()
     {
-        CustomInstantiator(f => SingleSelectAnswer.Create(question?.Id ?? f.Random.Guid(), new SelectedOptionFaker(question?.Options).Generate()));
+        CustomInstantiator(f => SingleSelectAnswer.Create(f.Random.Guid(),
+            new SelectedOptionFaker().Generate()));
+    }
+
+    public SingleSelectAnswerFaker(SingleSelectQuestion question)
+    {
+        CustomInstantiator(f => SingleSelectAnswer.Create(question.Id,
+            new SelectedOptionFaker(question.Options).Generate()));
+    }
+
+    public SingleSelectAnswerFaker(Guid questionId, SelectedOption selectedOption)
+    {
+        CustomInstantiator(f => SingleSelectAnswer.Create(questionId, selectedOption));
     }
 }

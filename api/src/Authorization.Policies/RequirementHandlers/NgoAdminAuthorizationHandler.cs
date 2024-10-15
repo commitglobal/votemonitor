@@ -10,7 +10,7 @@ internal class NgoAdminAuthorizationHandler(ICurrentUserProvider currentUserProv
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, NgoAdminRequirement requirement)
     {
-        if (!currentUserRoleProvider.IsNgoAdmin())
+        if (!currentUserRoleProvider.IsNgoAdmin() || currentUserProvider.GetNgoId() == null)
         {
             context.Fail();
             return;

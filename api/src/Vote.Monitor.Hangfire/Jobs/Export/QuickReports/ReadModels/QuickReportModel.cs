@@ -10,6 +10,7 @@ public class QuickReportModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportLocationType, string>))]
     public QuickReportLocationType QuickReportLocationType { get; set; }
+
     public DateTime Timestamp { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
@@ -29,5 +30,9 @@ public class QuickReportModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; set; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
+    public IncidentCategory IncidentCategory { get; set; }
+
     public QuickReportAttachmentModel[] Attachments { get; init; }
 }

@@ -3,6 +3,7 @@ using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormTemplateAggregate;
+
 public partial class FormTemplateTests
 {
     [Fact]
@@ -14,7 +15,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -34,7 +35,8 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
+
         var formBefore = formTemplate.DeepClone();
 
         // Act
@@ -53,7 +55,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
 
         var formBefore = formTemplate.DeepClone();
 
@@ -73,7 +75,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -92,9 +94,7 @@ public partial class FormTemplateTests
         string[] languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1, LanguagesList.UK.Iso1];
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
-
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+        
         BaseQuestion[] questions =
         [
             new TextQuestionFaker(languages).Generate(),
@@ -105,7 +105,8 @@ public partial class FormTemplateTests
             new MultiSelectQuestionFaker(languageList: languages).Generate(),
         ];
 
-        formTemplate.UpdateDetails(formTemplate.Code, formTemplate.DefaultLanguage, formTemplate.Name, formTemplate.Description, formTemplate.FormTemplateType, formTemplate.Languages, questions);
+        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+            description, languages, questions);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -114,7 +115,8 @@ public partial class FormTemplateTests
 
         // Assert
         formTemplate.Questions.Should().AllSatisfy(q => q.Text.Should().Contain(LanguagesList.HU.Iso1, string.Empty));
-        formTemplate.Questions.Should().AllSatisfy(q => q.Helptext.Should().Contain(LanguagesList.HU.Iso1, string.Empty));
+        formTemplate.Questions.Should()
+            .AllSatisfy(q => q.Helptext.Should().Contain(LanguagesList.HU.Iso1, string.Empty));
 
         formTemplate
             .Questions
@@ -132,12 +134,14 @@ public partial class FormTemplateTests
             .Questions
             .OfType<SingleSelectQuestion>()
             .Should()
-            .AllSatisfy(q => q.Options.Should().AllSatisfy(o => o.Text.Should().Contain(LanguagesList.HU.Iso1, string.Empty)));
+            .AllSatisfy(q =>
+                q.Options.Should().AllSatisfy(o => o.Text.Should().Contain(LanguagesList.HU.Iso1, string.Empty)));
 
         formTemplate
             .Questions
             .OfType<MultiSelectQuestion>()
             .Should()
-            .AllSatisfy(q => q.Options.Should().AllSatisfy(o => o.Text.Should().Contain(LanguagesList.HU.Iso1, string.Empty)));
+            .AllSatisfy(q =>
+                q.Options.Should().AllSatisfy(o => o.Text.Should().Contain(LanguagesList.HU.Iso1, string.Empty)));
     }
 }

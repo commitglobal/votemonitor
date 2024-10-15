@@ -2,7 +2,8 @@ import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { getRouteApi } from '@tanstack/react-router';
+import { Route } from '@/routes/responses';
+import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByObserver } from '../../hooks/form-submissions-queries';
@@ -10,15 +11,13 @@ import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { useFormSubmissionsByObserverColumns } from '../../store/column-visibility';
 import { formSubmissionsByObserverColumnDefs } from '../../utils/column-defs';
 
-const routeApi = getRouteApi('/responses/');
-
 type FormSubmissionsByObserverTableProps = {
   searchText: string;
 };
 
 export function FormSubmissionsByObserverTable({ searchText }: FormSubmissionsByObserverTableProps): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const columnsVisibility = useFormSubmissionsByObserverColumns();

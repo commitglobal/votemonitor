@@ -3,6 +3,7 @@ using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Form.Module.Mappers;
 
 namespace Feature.Forms.Create;
 
@@ -28,10 +29,17 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        var monitoringNgo =
+            await monitoringNgoRepository.FirstOrDefaultAsync(
+                new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
         monitoringNgo!.UpdateFormVersion();
 
-        var form = FormAggregate.Create(req.ElectionRoundId, monitoringNgo.Id, req.FormType, req.Code, req.Name, req.Description, req.DefaultLanguage, req.Languages, []);
+        var questions = req.Questions.Select(QuestionsMapper.ToEntity)
+            .ToList()
+            .AsReadOnly();
+
+        var form = FormAggregate.Create(req.ElectionRoundId, monitoringNgo.Id, req.FormType, req.Code, req.Name,
+            req.Description, req.DefaultLanguage, req.Languages, questions);
 
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

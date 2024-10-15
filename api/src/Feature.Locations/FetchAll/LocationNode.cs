@@ -7,7 +7,6 @@ public record LocationNode
     public int Id { get; set; }
     public string Name { get; set; }
     public int Depth { get; set; }
-
     public int ParentId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -16,21 +15,23 @@ public record LocationNode
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? DisplayOrder { get; set; }
 
-
     [JsonIgnore] public List<LocationNode> Children { get; set; } = new(); // List of child nodes
 
-    public LocationNode(int id, string name, int depth, int parentId, int displayOrder)
+    public LocationNode(int id, Guid locationId, string name, int depth, int parentId, int displayOrder)
     {
         Id = id;
         Name = name;
         Depth = depth;
         ParentId = parentId;
         DisplayOrder = displayOrder;
+        LocationId = locationId;
     }
 
     // Helper method to add child nodes
     public void AddChild(LocationNode child)
     {
+        // this is a parent node so it should not have location id
+        LocationId = null;
         Children.Add(child);
     }
 }

@@ -101,15 +101,7 @@
     "closingAndCounting": "Closing And Counting",
     "other": "Other"
   },
-  "formType": {
-    "opening": "Opening",
-    "voting": "Voting",
-    "closingAndCounting": "Closing And Counting",
-    "psi": "PSI",
-    "other": "Other",
-    "citizenReporting": "Citizen reporting",
-    "incidentReporting": "Incident reporting"
-  },
+
   "form": {
     "field.code": "Form Code",
     "field.name": "Form Name",
@@ -123,33 +115,89 @@
     "placeholder.name": "Form name",
     "placeholder.description": "Form description",
     "placeholder.defaultLanguage": "Select a default language",
-    "placeholder.languages": "Select available languages"
+    "placeholder.languages": "Select available languages",
+    "type": {
+      "opening": "Opening",
+      "voting": "Voting",
+      "closingAndCounting": "Closing And Counting",
+      "psi": "PSI",
+      "other": "Other",
+      "citizenReporting": "Citizen reporting",
+      "incidentReporting": "Incident reporting"
+    },
+    "status": {
+      "drafted": "Drafted",
+      "published": "Published",
+      "obsolete": "Obsolete"
+    }
   },
   "ngoAdminDashboard": {
     "title": "Dashboard",
-    "subtitle": "Key indicators.",
-    "observersAccountsCardTitle": "Observers Accounts",
-    "observersAccountsIndicatorTitle": "Total accounts",
+    "subtitle": "Key indicators",
+
+    "observersAccounts": {
+      "cardTitle": "Observers Accounts",
+      "indicatorTitle": "Total accounts"
+    },
+
     "observersOnFieldCardTitle": "Observers on field",
-    "observersInPollingStationsIndicatorTitle": "Observers in polling stations",
-    "observersInPollingStationsIndicatorMetricLabel": "With at least one question answered",
+
+    "observersInPollingStations": {
+      "indicatorTitle": "Observers in polling stations",
+      "metricLabel": "With at least one question answered"
+    },
+
     "pollingStationCardTitle": "Polling stations",
-    "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Stations visited by at least one observer",
-    "stationsVisitedByAtLeastOneObserverMetricLabel": "coverage",
-    "timeSpentObservingCardTitle": "Time spent observing",
-    "timeSpentObservingIndicatorTitle": "Based on start-end times reported",
-    "startedFormsCardTitle": "Started forms",
-    "startedFormsIndicatorTitle": "forms started between {{interval}}",
-    "questionsAnsweredCardTitle": "Questions answered",
-    "questionsAnsweredIndicatorTitle": "questions answered between {{interval}}",
-    "flaggedAnswersCardTitle": "Flagged answers",
-    "flaggedAnswersIndicatorTitle": "answers were flagged through forms between {{interval}}",
-    "quickReportsCardTitle": "Quick reports",
-    "quickReportsIndicatorTitle": "quick reports were signalled between {{interval}}",
-    "citizenReportsCardTitle": "Citizen reports",
-    "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}",
-    "incidentReportsCardTitle": "Incident reports",
-    "incidentReportsIndicatorTitle": "incidents reports were signalled between {{interval}}"
+
+    "stationsVisitedByAtLeastOneObserver": {
+      "indicatorTitle": "Stations visited by at least one observer",
+      "metricLabel": "coverage"
+    },
+
+    "timeSpentObserving": {
+      "cardTitle": "Time spent observing",
+      "indicatorTitle": "Based on start-end times reported"
+    },
+
+    "startedForms": {
+      "cardTitle": "Started forms",
+      "indicatorTitle": "forms started between {{interval}}"
+    },
+
+    "questionsAnswered": {
+      "cardTitle": "Questions answered",
+      "indicatorTitle": "questions answered between {{interval}}"
+    },
+
+    "flaggedAnswers": {
+      "cardTitle": "Flagged answers",
+      "indicatorTitle": "answers were flagged through forms between {{interval}}"
+    },
+
+    "quickReports": {
+      "cardTitle": "Quick reports",
+      "indicatorTitle": "quick reports were signalled between {{interval}}"
+    },
+
+    "citizenReports": {
+      "cardTitle": "Citizen reports",
+      "indicatorTitle": "citizen reports were signalled between {{interval}}"
+    },
+
+    "incidentReports": {
+      "cardTitle": "Incident reports",
+      "indicatorTitle": "incidents reports were signalled between {{interval}}"
+    },
+    "pollingStationsLevelsCards": {
+      "onFieldObservers": "On field observers",
+      "questionsAnswered": "Questions answered",
+      "flaggedAnswers": "Flagged answers",
+      "visitedPollingStations": "Visited polling stations",
+      "pollingStationsCoverage": "Polling station coverage (%)",
+      "timeSpentObserving": "Time spent observing (hours)",
+      "quickReports": "Quick reports",
+      "incidentReports": "Incident reports"
+    }
   },
   "electionEvent": {
     "eventDetails": {
@@ -179,6 +227,11 @@
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
       "citizenGuidesCardTitle": "Citizen guides",
+
+      "citizenNotificationsTabTitle": "Citizen Notifications",
+      "citizenNotificationsCardTitle": "Citizen notifications",
+
+
       "observerGuidesTabTitle": "Observer Guides",
       "observerGuidesCardTitle": "Observer guides",
       "headers": {
@@ -229,6 +282,75 @@
       "goToPreviousPage": "Go to previous page",
       "goToNextPage": "Go to next page",
       "goToLastPage": "Go to last page"
+    }
+  },
+  "formSubmissions": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "incidentReports": {
+    "locationType": {
+      "PollingStation": "Polling station",
+      "OtherLocation": "Other locations"
+    },
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "citizenReports": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
+  "quickReports": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    },
+    "locationType": {
+      "NotRelatedToAPollingStation": "Not Related To A Polling Station",
+      "OtherPollingStation": "Other Polling Station",
+      "VisitedPollingStation": "Visited Polling Station"
+    },
+    "incidentCategory": {
+      "PhysicalViolenceIntimidationPressure": "Physical violence/intimidation/pressure",
+      "CampaigningAtPollingStation": "Campaigning at the polling station",
+      "RestrictionOfObserversRights": "Restriction of observer's (representative's/media) rights",
+      "UnauthorizedPersonsAtPollingStation": "Unauthorized person(s) at the polling station",
+      "ViolationDuringVoterVerificationProcess": "Violation during voter verification process",
+      "VotingWithImproperDocumentation": "Voting with improper documentation",
+      "IllegalRestrictionOfVotersRightToVote": "Illegal restriction of voter's right to vote",
+      "DamagingOrSeizingElectionMaterials": "Damaging of/seizing election materials",
+      "ImproperFilingOrHandlingOfElectionDocumentation": "Improper filing/handling of election documentation",
+      "BallotStuffing": "Ballot stuffing",
+      "ViolationsRelatedToControlPaper": "Violations related to the control paper",
+      "NotCheckingVoterIdentificationSafeguardMeasures": "Not checking the voter identification safeguard measures",
+      "VotingWithoutVoterIdentificationSafeguardMeasures": "Voting without voter identification safeguard measures",
+      "BreachOfSecrecyOfVote": "Breach of secrecy of vote",
+      "ViolationsRelatedToMobileBallotBox": "Violations related to the mobile ballot box",
+      "NumberOfBallotsExceedsNumberOfVoters": "Number of ballots exceed the number of voters",
+      "ImproperInvalidationOrValidationOfBallots": "Improper invalidation / validation of ballots",
+      "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsification / improper correction of the final protocol",
+      "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Refusal to issue a copy of the final protocol/issuing an improper copy",
+      "ImproperFillingInOfFinalProtocol": "Improper filling in of the final protocol",
+      "ViolationOfSealingProceduresOfElectionMaterials": "Violation of the sealing procedures of the election materials",
+      "ViolationsRelatedToVoterLists": "Violations related to the voter lists",
+      "Other": "Other"
+    }
+  },
+  "enums": {
+    "questionsAnswered": {
+      "None": "None",
+      "Some": "Some",
+      "All": "All"
     }
   }
 }

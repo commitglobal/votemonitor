@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Form.Module.Requests;
 
 namespace Feature.Forms.UnitTests.ValidatorTests;
 
@@ -53,14 +54,16 @@ public class CreateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_NameInvalid(TranslatedString invalidName)
     {
         // Arrange
         var request = new Create.Request
         {
             Name = invalidName,
-            Languages = [
+            Languages =
+            [
                 LanguagesList.EN.Iso1,
                 LanguagesList.RO.Iso1
             ]
@@ -75,14 +78,16 @@ public class CreateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_DescriptionInvalid(TranslatedString invalidDescription)
     {
         // Arrange
         var request = new Create.Request
         {
             Description = invalidDescription,
-            Languages = [
+            Languages =
+            [
                 LanguagesList.EN.Iso1,
                 LanguagesList.RO.Iso1
             ]
@@ -100,7 +105,7 @@ public class CreateValidatorTests
     public void Validation_ShouldFail_When_FormTypeEmpty()
     {
         // Arrange
-        var request = new Create.Request {};
+        var request = new Create.Request { };
 
         // Act
         var validationResult = _validator.TestValidate(request);
@@ -180,7 +185,58 @@ public class CreateValidatorTests
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage).WithErrorMessage("Languages should contain declared default language.");
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage)
+            .WithErrorMessage("Languages should contain declared default language.");
+    }
+
+
+    [Fact]
+    public void Validation_ShouldFail_When_InvalidQuestion()
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            Languages =
+            [
+                LanguagesList.EN.Iso1,
+                LanguagesList.RO.Iso1
+            ],
+            Questions =
+            [
+                new TextQuestionRequest
+                {
+                    Text = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
+                },
+                new TextQuestionRequest
+                {
+                    Text = TranslatedStringTestData.InvalidPartiallyTranslatedTestData.First()
+                }
+            ]
+        };
+
+        // Act
+        var validationResult = _validator.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor("Questions[1].Text[\"IT\"]");
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_EmptyQuestions()
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            Questions = []
+        };
+
+        // Act
+        var validationResult = _validator.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldNotHaveValidationErrorFor(x => x.Questions);
     }
 
     [Fact]

@@ -63,7 +63,7 @@ public class FormAggregateTests
             ]),
         ];
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, false);
 
         // Assert
         submission.NumberOfFlaggedAnswers.Should().Be(3);
@@ -118,7 +118,7 @@ public class FormAggregateTests
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, ""))
         ];
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);
 
         // Act
         List<BaseAnswer> updatedAnswers =
@@ -131,7 +131,7 @@ public class FormAggregateTests
             ]),
         ];
 
-        form.FillIn(submission, updatedAnswers);
+        form.FillIn(submission, updatedAnswers, false);
 
         // Assert
         submission.NumberOfFlaggedAnswers.Should().Be(3);
@@ -179,7 +179,7 @@ public class FormAggregateTests
         ];
 
         // Act
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, false);
 
         // Assert
         submission.NumberOfQuestionsAnswered.Should().Be(6);
@@ -221,7 +221,7 @@ public class FormAggregateTests
             new SingleSelectAnswerFaker(singleSelectQuestion)
         ];
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);
 
         // Act
         List<BaseAnswer> updatedAnswers =
@@ -234,7 +234,7 @@ public class FormAggregateTests
             new DateAnswerFaker(dateQuestion.Id),
         ];
 
-        form.FillIn(submission, updatedAnswers);
+        form.FillIn(submission, updatedAnswers, false);
 
         // Assert
         submission.NumberOfQuestionsAnswered.Should().Be(6);
@@ -281,10 +281,10 @@ public class FormAggregateTests
             new DateAnswerFaker(dateQuestion.Id),
         ];
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);
 
         // Act
-        form.FillIn(submission, []);
+        form.FillIn(submission, [], false);
 
         // Assert
         submission.NumberOfQuestionsAnswered.Should().Be(0);
@@ -332,10 +332,10 @@ public class FormAggregateTests
             new DateAnswerFaker(dateQuestion.Id),
         ];
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);
 
         // Act
-        form.FillIn(submission, null);
+        form.FillIn(submission, null, false);
 
         // Assert
         submission.Answers.Should().HaveCount(6);
@@ -359,7 +359,7 @@ public class FormAggregateTests
             languages, questions!);
 
         // Act
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, false);
 
         // Assert
         submission.NumberOfFlaggedAnswers.Should().Be(1);

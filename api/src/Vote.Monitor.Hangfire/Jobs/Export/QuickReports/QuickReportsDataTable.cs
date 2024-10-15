@@ -14,6 +14,7 @@ public class QuickReportsDataTable
             "QuickReportId",
             "TimeSubmitted",
             "FollowUpStatus",
+            "IncidentCategory",
             "MonitoringObserverId",
             "FirstName",
             "LastName",

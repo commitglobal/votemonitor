@@ -13,7 +13,6 @@ export interface EditGuideDialogProps {
 }
 
 function EditGuideDialog({ guide, guidePageType, open, onOpenChange }: EditGuideDialogProps) {
-  debugger;
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
       <DialogContent

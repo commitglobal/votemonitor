@@ -17,6 +17,7 @@ const buttonVariants = cva(
         'ghost-primary': 'text-primary-600 hover:bg-primary-100',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
+        select: 'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'
       },
       size: {
         default: 'h-10 px-4 py-2',

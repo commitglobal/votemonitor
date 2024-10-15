@@ -16,7 +16,8 @@ public class PollingStationInformationForm : BaseForm
         ElectionRound electionRound,
         string defaultLanguage,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions) : base(electionRound, FormType.PSI, "PSI", TranslatedString.New(languages, "PSI"),
+        IEnumerable<BaseQuestion> questions) : base(electionRound, FormType.PSI, "PSI",
+        TranslatedString.New(languages, "PSI"),
         TranslatedString.New(languages, ""), defaultLanguage, languages, questions)
     {
     }
@@ -38,23 +39,19 @@ public class PollingStationInformationForm : BaseForm
         ElectionRound electionRound,
         string defaultLanguage,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions) =>
+        IEnumerable<BaseQuestion> questions) =>
         new(electionRound, defaultLanguage, languages, questions);
-
 
     public PollingStationInformation CreatePollingStationInformation(
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer>? answers,
-        List<ObservationBreak> breaks)
+        List<ObservationBreak>? breaks,
+        ValueOrUndefined<bool> isCompleted)
     {
-        if (answers == null)
-        {
-            return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0, breaks);
-        }
+        answers ??= [];
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
 
@@ -67,11 +64,11 @@ public class PollingStationInformationForm : BaseForm
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
-    
+
 #pragma warning disable CS8618 // Required by Entity Framework
-    private PollingStationInformationForm(): base()
+    private PollingStationInformationForm() : base()
     {
     }
 #pragma warning restore CS8618

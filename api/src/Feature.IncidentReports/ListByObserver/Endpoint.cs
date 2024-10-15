@@ -99,7 +99,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted ASC' THEN "NumberOfIncidentsSubmitted" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted DESC' THEN "NumberOfIncidentsSubmitted" END DESC
                   
-                  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
+                  OFFSET @offset ROWS 
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new

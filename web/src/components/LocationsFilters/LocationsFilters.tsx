@@ -62,7 +62,7 @@ export function LocationsFilters(): FunctionComponent {
     (search: Record<string, string | undefined>) => {
       void navigate({
         search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number> = { ...prev, ...search };
+          const newSearch: Record<string, string | undefined | string[] | number | Date> = { ...prev, ...search };
           setPrevSearch(newSearch);
           return newSearch;
         },

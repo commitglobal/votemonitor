@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Requests;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 
 namespace Feature.PollingStation.Information.Upsert;
@@ -12,17 +13,18 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
-    public DateTime? ArrivalTime { get; set; }
-    public DateTime? DepartureTime { get; set; }
+    public ValueOrUndefined<bool> IsCompleted { get; set; }= ValueOrUndefined<bool>.Undefined();
+    public ValueOrUndefined<DateTime?> ArrivalTime { get; set; }= ValueOrUndefined<DateTime?>.Undefined();
+    public ValueOrUndefined<DateTime?> DepartureTime { get; set; } = ValueOrUndefined<DateTime?>.Undefined();
 
     public List<BaseAnswerRequest>? Answers { get; set; }
 
-    public List<BreakRequest> Breaks { get; set; } = [];
+    public List<BreakRequest>? Breaks { get; set; }
 
 
     public class BreakRequest
     {
         public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        public DateTime? End { get; set; }
     }
 }

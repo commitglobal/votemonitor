@@ -207,11 +207,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   
                   	CASE WHEN @sortExpression = 'Level5 ASC' THEN "Level5" END ASC,
                   	CASE WHEN @sortExpression = 'Level5 DESC' THEN "Level5" END DESC
-                  OFFSET
-                  	@offset
-                  	ROWS
-                  FETCH NEXT
-                  	@pageSize ROWS ONLY;
+                  OFFSET @offset ROWS
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new

@@ -14,15 +14,18 @@ import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { Route } from '@/routes/responses';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapIncidentReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
 export function IncidentReportsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { filteringIsActive } = useFilteringContainer();
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
@@ -54,8 +57,6 @@ export function IncidentReportsFiltersByObserver(): FunctionComponent {
     },
     [navigate]
   );
-
-  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -101,11 +102,11 @@ export function IncidentReportsFiltersByObserver(): FunctionComponent {
       </DropdownMenu>
 
       <ResetFiltersButton
-        disabled={!isFiltered}
+        disabled={!isFiltering}
         params={{ [FILTER_KEY.ViewBy]: 'byObserver', [FILTER_KEY.Tab]: 'incident-reports' }}
       />
 
-      {isFiltered && (
+      {isFiltering && (
         <div className='flex flex-wrap gap-2 col-span-full'>
           {search.incidentReportFollowUpStatus && (
             <FilterBadge

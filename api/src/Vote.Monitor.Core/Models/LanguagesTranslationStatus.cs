@@ -18,10 +18,10 @@ public class LanguagesTranslationStatus : Dictionary<string, TranslationStatus>
     // Override Equals method
     public override bool Equals(object obj)
     {
-        if (obj == null || !(obj is TranslatedString))
+        if (obj == null || !(obj is LanguagesTranslationStatus))
             return false;
 
-        var other = (TranslatedString)obj;
+        var other = (LanguagesTranslationStatus)obj;
 
         if (this.Count != other.Count)
             return false;

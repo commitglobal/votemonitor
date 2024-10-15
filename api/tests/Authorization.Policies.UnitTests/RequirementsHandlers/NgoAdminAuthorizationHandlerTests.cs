@@ -18,7 +18,7 @@ public class NgoAdminAuthorizationHandlerTests
 
     public NgoAdminAuthorizationHandlerTests()
     {
-        var requirement = new NgoAdminRequirement(_ngoId);
+        var requirement = new NgoAdminRequirement();
         _context = new AuthorizationHandlerContext([requirement], null!, null);
         _handler = new NgoAdminAuthorizationHandler(_currentUserProvider,
             _currentUserRoleProvider,

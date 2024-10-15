@@ -18,6 +18,10 @@ public class QuickReportConfiguration : IEntityTypeConfiguration<QuickReport>
         builder.Property(x => x.FollowUpStatus)
             .IsRequired()
             .HasDefaultValue(QuickReportFollowUpStatus.NotApplicable);
+        
+        builder.Property(x => x.IncidentCategory)
+            .IsRequired()
+            .HasDefaultValue(IncidentCategory.Other);
 
         builder
             .Property(e => e.PollingStationDetails)

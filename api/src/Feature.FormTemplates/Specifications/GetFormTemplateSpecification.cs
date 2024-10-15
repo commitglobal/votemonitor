@@ -2,7 +2,7 @@
 
 namespace Feature.FormTemplates.Specifications;
 
-public sealed class GetFormTemplateSpecification : Specification<FormTemplateAggregate>
+public sealed class GetFormTemplateSpecification : SingleResultSpecification<FormTemplateAggregate>
 {
     public GetFormTemplateSpecification(Guid id, string code, FormTemplateType formTemplateType)
     {
@@ -14,5 +14,12 @@ public sealed class GetFormTemplateSpecification : Specification<FormTemplateAgg
     {
         Query
             .Where(x => x.Code == code && x.FormTemplateType == formTemplateType);
+    }
+
+    public GetFormTemplateSpecification(Guid id, bool isNgoAdmin)
+    {
+        Query
+            .Where(x => x.Id == id)
+            .Where(x => x.Status == FormTemplateStatus.Published, isNgoAdmin);
     }
 }

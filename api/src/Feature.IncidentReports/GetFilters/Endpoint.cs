@@ -30,8 +30,8 @@ public class Endpoint(
                   SELECT MIN(COALESCE(IR."LastModifiedOn", IR."CreatedOn")) AS "FirstSubmissionTimestamp",
                          MAX(COALESCE(IR."LastModifiedOn", IR."CreatedOn")) AS "LastSubmissionTimestamp"
                   FROM "IncidentReports" IR
-                           INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                           INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE IR."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId;
 
@@ -41,9 +41,9 @@ public class Endpoint(
                                   F."Name" ->> F."DefaultLanguage" "FormName",
                                   F."Code"                        "FormCode"
                   FROM "IncidentReports" IR
-                           INNER JOIN PUBLIC."Forms" F ON F."Id" = IR."FormId"
-                           INNER JOIN PUBLIC."MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                           INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                           INNER JOIN "Forms" F ON F."Id" = IR."FormId"
+                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE IR."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId
                   """;

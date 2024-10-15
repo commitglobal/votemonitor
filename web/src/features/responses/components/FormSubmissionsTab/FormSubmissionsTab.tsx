@@ -27,6 +27,7 @@ import { FormSubmissionsByObserverTable } from '../FormSubmissionsByObserverTabl
 import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/FormSubmissionsFiltersByEntry';
 import { FormSubmissionsFiltersByForm } from '../FormSubmissionsFiltersByForm/FormSubmissionsFiltersByForm';
 import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -39,12 +40,11 @@ const viewBy: Record<FormSubmissionsViewBy, string> = {
 export default function FormSubmissionsTab(): FunctionComponent {
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
+  const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
 
-  const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
-  );
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);

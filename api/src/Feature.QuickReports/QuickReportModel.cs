@@ -11,6 +11,7 @@ public record QuickReportModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportLocationType, string>))]
     public QuickReportLocationType QuickReportLocationType { get; init; }
+
     public DateTime Timestamp { get; init; }
     public string Title { get; init; }
     public string Description { get; init; }
@@ -18,8 +19,10 @@ public record QuickReportModel
     public Guid? PollingStationId { get; init; }
     public string? PollingStationDetails { get; init; }
     public List<QuickReportAttachmentModel> Attachments { get; init; }
+    public IncidentCategory IncidentCategory { get; init; }
 
-    public static QuickReportModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
+    public static QuickReportModel FromEntity(QuickReport quickReport,
+        IEnumerable<QuickReportAttachmentModel> attachments)
     {
         return new QuickReportModel
         {
@@ -32,7 +35,8 @@ public record QuickReportModel
             PollingStationId = quickReport.PollingStationId,
             PollingStationDetails = quickReport.PollingStationDetails,
             Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
-            Attachments = attachments.ToList()
+            Attachments = attachments.ToList(),
+            IncidentCategory = quickReport.IncidentCategory
         };
     }
 }

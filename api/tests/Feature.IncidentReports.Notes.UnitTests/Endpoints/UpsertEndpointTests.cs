@@ -1,5 +1,4 @@
-﻿using Feature.IncidentReports.Notes;
-using Feature.IncidentReports.Notes.Specifications;
+﻿using Feature.IncidentReports.Notes.Specifications;
 using Feature.IncidentReports.Notes.Upsert;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 

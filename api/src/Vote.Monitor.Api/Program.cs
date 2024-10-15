@@ -35,6 +35,7 @@ using Dapper;
 using Feature.CitizenReports;
 using Feature.CitizenReports.Attachments;
 using Feature.Citizen.Guides;
+using Feature.Citizen.Notifications;
 using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
@@ -166,6 +167,7 @@ builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsF
 builder.Services.AddIncidentReportsFeature();
 builder.Services.AddIncidentReportsNotesFeature();
 builder.Services.AddIncidentReportAttachmentsFeature();
+builder.Services.AddCitizenNotificationsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -217,6 +219,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -234,6 +237,7 @@ SqlMapper.AddTypeHandler(typeof(MonitoringNgoStatus), new SmartEnumByValueTypeHa
 SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus), new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());
 SqlMapper.AddTypeHandler(typeof(RatingScale), new SmartEnumByValueTypeHandler<RatingScale, string>());
 SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormType, string>());
+SqlMapper.AddTypeHandler(typeof(FormStatus), new SmartEnumByValueTypeHandler<FormStatus, string>());
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
@@ -242,9 +246,11 @@ SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValue
 SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandler<IncidentCategory, string>());
 
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
+SqlMapper.AddTypeHandler(typeof(LanguagesTranslationStatus), new JsonToObjectConverter<LanguagesTranslationStatus>());
 
 #endregion
 

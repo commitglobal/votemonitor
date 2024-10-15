@@ -6,7 +6,8 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.Upsert;
 
-public class Endpoint(IRepository<FormSubmission> repository,
+public class Endpoint(
+    IRepository<FormSubmission> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<FormAggregate> formRepository,
@@ -20,17 +21,20 @@ public class Endpoint(IRepository<FormSubmission> repository,
         Summary(s =>
         {
             s.Summary = "Upserts form submission for a given polling station";
+            s.Description = "When updating a submission it will update only the properties that are not null";
         });
 
         Policies(PolicyNames.ObserversOnly);
     }
 
-    public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
-           return TypedResults.NotFound();
+            return TypedResults.NotFound();
         }
 
         var formSpecification = new GetFormSpecification(req.ElectionRoundId, req.FormId);
@@ -46,7 +50,8 @@ public class Endpoint(IRepository<FormSubmission> repository,
             ThrowIfAnyErrors();
         }
 
-        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
+        var specification =
+            new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -59,16 +64,17 @@ public class Endpoint(IRepository<FormSubmission> repository,
 
         return formSubmission is null
             ? await AddFormSubmissionAsync(req, form, answers, ct)
-            : await UpdateFormSubmissionAsync(form, formSubmission, answers, ct);
+            : await UpdateFormSubmissionAsync(form, formSubmission, answers, req.IsCompleted, ct);
     }
 
     private async Task<Results<Ok<FormSubmissionModel>, NotFound>> UpdateFormSubmissionAsync(
         FormAggregate form,
         FormSubmission submission,
         List<BaseAnswer>? answers,
+        bool? isCompleted,
         CancellationToken ct)
     {
-        submission = form.FillIn(submission, answers);
+        submission = form.FillIn(submission, answers, isCompleted);
         await repository.UpdateAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
@@ -86,14 +92,16 @@ public class Endpoint(IRepository<FormSubmission> repository,
             return TypedResults.NotFound();
         }
 
-        var monitoringObserverSpecification = new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
-        var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
+        var monitoringObserverSpecification =
+            new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
+        var monitoringObserver =
+            await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
         if (monitoringObserver is null)
         {
             return TypedResults.NotFound();
         }
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

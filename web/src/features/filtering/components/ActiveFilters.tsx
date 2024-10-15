@@ -1,9 +1,11 @@
+import { DateTimeFormat } from '@/common/formats';
 import { FilterBadge } from '@/components/ui/badge';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
 import { useNavigate } from '@tanstack/react-router';
+import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -15,7 +17,15 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy, FILTER_KEY.Tab];
+export const HIDDEN_FILTERS = [
+  FILTER_KEY.PageSize,
+  FILTER_KEY.PageNumber,
+  FILTER_KEY.ViewBy,
+  FILTER_KEY.Tab,
+  FILTER_KEY.SortOrder,
+  FILTER_KEY.SortColumnName,
+];
+
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
@@ -33,6 +43,9 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
+  [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
+  [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
+  [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -60,6 +73,11 @@ interface ActiveFiltersProps {
   queryParams: any;
 }
 
+function isDateType(value: any): boolean {
+  return value instanceof Date && !isNaN(value.getTime());
+}
+
+
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: formSubmissionsFilters } = useFormSubmissionsFilters(currentElectionRoundId);
@@ -70,8 +88,10 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         let key = '';
         const value = queryParams[filterId];
         const isArray = Array.isArray(value);
+        const isDate = isDateType(value);
 
         if (HIDDEN_FILTERS.includes(filterId)) return;
+
         if (filterId === FILTER_KEY.FormId) {
           key = `active-filter-${filterId}`;
           const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);
@@ -81,11 +101,17 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
           }
         }
 
-        if (!isArray) {
+        if (!isArray && !isDate) {
           key = `active-filter-${filterId}`;
           return <ActiveFilter key={key} filterId={filterId} value={value} />;
         }
-        return value.map((item) => {
+
+        if (isDate) {
+          key = `active-filter-${filterId}`;
+          return <ActiveFilter key={key} filterId={filterId} value={format(value, DateTimeFormat)} />;
+        }
+
+        return value.map((item: any) => {
           key = `active-filter-${filterId}-${item}`;
 
           return <ActiveFilter key={key} filterId={filterId} value={item as string} isArray />;

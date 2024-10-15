@@ -28,7 +28,7 @@ public class Endpoint(
 
         var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.Id);
         form = await repository.FirstOrDefaultAsync(specification, ct);
-        
+
         if (form is null)
         {
             return TypedResults.NotFound();

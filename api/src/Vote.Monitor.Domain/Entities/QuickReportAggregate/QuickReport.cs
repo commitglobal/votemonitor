@@ -16,6 +16,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     public string? PollingStationDetails { get; private set; }
     public QuickReportFollowUpStatus FollowUpStatus { get; private set; }
 
+    public IncidentCategory IncidentCategory { get; private set; }
+
     public static QuickReport Create(Guid id,
         Guid electionRoundId,
         Guid monitoringObserverId,
@@ -23,23 +25,26 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         string description,
         QuickReportLocationType locationType,
         Guid? pollingStationId,
-        string? pollingStationDetails)
+        string? pollingStationDetails,
+        IncidentCategory incidentCategory)
     {
         return new QuickReport(id, electionRoundId, monitoringObserverId, locationType, title,
-            description, pollingStationId, pollingStationDetails);
+            description, pollingStationId, pollingStationDetails, incidentCategory);
     }
 
     public void Update(string title,
         string description,
         QuickReportLocationType locationType,
         Guid? pollingStationId,
-        string? pollingStationDetails)
+        string? pollingStationDetails,
+        IncidentCategory incidentCategory)
     {
         Title = title;
         QuickReportLocationType = locationType;
         Description = description;
         PollingStationId = pollingStationId;
         PollingStationDetails = pollingStationDetails;
+        IncidentCategory = incidentCategory;
     }
 
     public void UpdateFollowUpStatus(QuickReportFollowUpStatus followUpStatus)
@@ -54,7 +59,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         string title,
         string description,
         Guid? pollingStationId,
-        string? pollingStationDetails) : base(id)
+        string? pollingStationDetails,
+        IncidentCategory incidentCategory) : base(id)
     {
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
@@ -64,6 +70,7 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         PollingStationId = pollingStationId;
         PollingStationDetails = pollingStationDetails;
         FollowUpStatus = QuickReportFollowUpStatus.NotApplicable;
+        IncidentCategory = incidentCategory;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

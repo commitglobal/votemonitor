@@ -36,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\FormAnswerBase\Validators\" />
     <Folder Include="ValueComparers\" />
   </ItemGroup>
 

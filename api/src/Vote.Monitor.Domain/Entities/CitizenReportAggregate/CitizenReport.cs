@@ -56,12 +56,23 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers) =>
         new(id, electionRound, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers)
+    internal void Update(IEnumerable<BaseAnswer>? answers, int? numberOfQuestionsAnswered,
+        int? numberOfFlaggedAnswers)
     {
-        Answers = answers.ToList().AsReadOnly();
-        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        if (answers is not null)
+        {
+            Answers = answers.ToList().AsReadOnly();
+        }
+
+        if (numberOfFlaggedAnswers is not null)
+        {
+            NumberOfFlaggedAnswers = numberOfFlaggedAnswers.Value;
+        }
+
+        if (numberOfQuestionsAnswered is not null)
+        {
+            NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
     }
 
     public void UpdateFollowUpStatus(CitizenReportFollowUpStatus followUpStatus)

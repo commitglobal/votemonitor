@@ -6,13 +6,6 @@ namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 public sealed partial class Fake
 {
-    private static readonly QuickReportFollowUpStatus[] _quickReportsFollowUpStatuses =
-    [
-        QuickReportFollowUpStatus.NeedsFollowUp,
-        QuickReportFollowUpStatus.NotApplicable,
-        QuickReportFollowUpStatus.Resolved
-    ];
-
     public static QuickReportModel QuickReport(Guid quickReportId, QuickReportLocationType locationType,
         QuickReportAttachmentModel[] attachments)
     {
@@ -27,7 +20,9 @@ public sealed partial class Fake
             .RuleFor(x => x.Attachments, attachments)
             .RuleFor(x => x.Title, f => f.Lorem.Sentence(10))
             .RuleFor(x => x.Description, f => f.Lorem.Sentence(100))
-            .RuleFor(x => x.FollowUpStatus, f => f.PickRandom(_quickReportsFollowUpStatuses))
+            .RuleFor(x => x.FollowUpStatus,
+                f => f.PickRandom<QuickReportFollowUpStatus>(QuickReportFollowUpStatus.List))
+            .RuleFor(x => x.IncidentCategory, f => f.PickRandom<IncidentCategory>(IncidentCategory.List))
             .Rules((f, x) =>
             {
                 x.QuickReportLocationType = locationType;

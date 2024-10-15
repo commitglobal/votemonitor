@@ -9,6 +9,8 @@ import { FormSubmissionsQuestionNotesSelect } from '../../filtering/FormSubmissi
 import { FormSubmissionsQuestionsAnsweredSelect } from '../../filtering/FormSubmissionsQuestionsAnsweredSelect';
 import { FormSubmissionsTypeSelect } from '../../filtering/FormSubmissionsTypeSelect';
 import { FormSubmissionsFormSelect } from '../../filtering/FormSubmissionsFormSelect';
+import { FormSubmissionsFromDateFilter } from '../../filtering/FormSubmissionsFromDateFilter';
+import { FormSubmissionsToDateFilter } from '../../filtering/FormSubmissionsToDateFilter';
 
 export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
@@ -22,6 +24,8 @@ export const FormSubmissionsFiltersByEntry: FC = () => {
       <FormSubmissionsMediaFilesSelect />
       <MonitoringObserverTagsSelect isFilteringFormSubmissions />
       <PollingStationsFilters />
+      <FormSubmissionsFromDateFilter />
+      <FormSubmissionsToDateFilter />
     </FilteringContainer>
   );
 };

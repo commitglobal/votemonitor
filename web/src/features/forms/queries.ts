@@ -2,6 +2,7 @@ import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { FormBase, FormFull } from './models/form';
+import { buildURLSearchParams } from '@/lib/utils';
 
 export const formsKeys = {
   all: (electionRoundId: string) => ['forms', electionRoundId] as const,
@@ -34,18 +35,23 @@ export function formDetails(electionRoundId: string, formId: string): UseQueryRe
 
 export function useForms(
   electionRoundId: string,
-  params: DataTableParameters
+  queryParams: DataTableParameters
 ): UseQueryResult<PageResponse<FormBase>, Error> {
   return useQuery({
-    queryKey: formsKeys.list(electionRoundId, params),
+    queryKey: formsKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
+      const params = {
+        ...queryParams.otherParams,
+        PageNumber: String(queryParams.pageNumber),
+        PageSize: String(queryParams.pageSize),
+        SortColumnName: queryParams.sortColumnName,
+        SortOrder: queryParams.sortOrder,
+      };
+
+      const searchParams = buildURLSearchParams(params);
+
       const response = await authApi.get<PageResponse<FormBase>>(`/election-rounds/${electionRoundId}/forms`, {
-        params: {
-          PageNumber: params.pageNumber,
-          PageSize: params.pageSize,
-          SortColumnName: params.sortColumnName,
-          SortOrder: params.sortOrder,
-        },
+        params: searchParams
       });
 
       if (response.status !== 200) {

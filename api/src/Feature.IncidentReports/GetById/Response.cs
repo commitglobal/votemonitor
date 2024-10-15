@@ -23,6 +23,8 @@ public class Response
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
     public IncidentReportLocationType LocationType { get; init; }
 
+    public bool IsCompleted { get; init; }
+
     public Guid? PollingStationId { get; init; }
     public string? PollingStationLevel1 { get; init; }
     public string? PollingStationLevel2 { get; init; }

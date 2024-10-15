@@ -5,7 +5,7 @@ using Vote.Monitor.Answer.Module.Models;
 
 namespace Feature.Form.Submissions;
 
-public record FormSubmissionModel 
+public record FormSubmissionModel
 {
     public required Guid Id { get; init; }
     public required Guid FormId { get; init; }
@@ -13,7 +13,9 @@ public record FormSubmissionModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
+
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
+    public bool IsCompleted { get; init; }
 
     public static FormSubmissionModel FromEntity(FormSubmission entity) => new()
     {
@@ -23,6 +25,7 @@ public record FormSubmissionModel
         Answers = entity.Answers
             .Select(AnswerMapper.ToModel)
             .ToList(),
-        FollowUpStatus = entity.FollowUpStatus
+        FollowUpStatus = entity.FollowUpStatus,
+        IsCompleted = entity.IsCompleted
     };
 }
