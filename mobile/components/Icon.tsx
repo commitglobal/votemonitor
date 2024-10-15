@@ -151,7 +151,7 @@ export const defaultIcon = React.forwardRef(
       search: <Search fill={color} width={size} height={size} />,
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle width={size} height={size} stroke={color} />,
-      emailSent: <EmailSent fill={color} width={size} height={size} />,
+      successCheck: <EmailSent fill={color} width={size} height={size} />,
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
       undrawReading: <UndrawReading fill={color} width={size} height={size} />,
       undrawFlag: <UndrawFlag fill={color} width={size | 187} height={170 | size} />,

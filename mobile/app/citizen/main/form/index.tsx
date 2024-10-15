@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useGetCitizenReportingFormById } from "../../../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import { ViewStyle } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
@@ -21,13 +21,18 @@ import QuestionForm from "../../../../components/QuestionForm";
 import { useForm } from "react-hook-form";
 import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import WizzardControls from "../../../../components/WizzardControls";
-import { usePostCitizenFormMutation } from "../../../../services/mutations/citizen/post-citizen-form.mutation";
-import * as Crypto from "expo-crypto";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
+import ReviewCitizenFormSheet from "../../../../components/ReviewCitizenFormSheet";
+import WarningDialog from "../../../../components/WarningDialog";
 
 const CitizenForm = () => {
-  const { t } = useTranslation(["polling_station_form_wizard", "common", "network_banner"]); // TODO: change with citizen
+  const { t } = useTranslation([
+    "polling_station_form_wizard",
+    "common",
+    "network_banner",
+    "citizen_form",
+  ]); // TODO: change with citizen
 
   const language = "EN"; // TODO: remove this later
   const router = useRouter();
@@ -65,14 +70,14 @@ const CitizenForm = () => {
 
   const [answers, setAnswers] = useState<Record<string, ApiFormAnswer | undefined> | undefined>();
   const [questionId, setQuestionId] = useState<string>(initialQuestionId);
+  const [isReviewSheetOpen, setIsReviewSheetOpen] = useState(false);
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
 
   const {
     data: currentForm,
     isLoading: isLoadingCurrentForm,
     error: currentFormError,
   } = useGetCitizenReportingFormById(selectedElectionRound, formId);
-
-  const { mutate: postCitizenForm } = usePostCitizenFormMutation();
 
   const displayedQuestions: ApiFormQuestion[] = useMemo(
     () => currentForm?.questions?.filter((q) => shouldDisplayQuestion(q, answers)) || [],
@@ -95,9 +100,21 @@ const CitizenForm = () => {
     return `${currentForm?.code} - ${currentForm?.name[language || currentForm.defaultLanguage]} (${language || currentForm?.defaultLanguage})`;
   }, [currentForm]);
 
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm({
     defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
+
+  const handleGoBack = () => {
+    if (isDirty) {
+      setShowWarningDialog(true);
+    } else {
+      router.back();
+    }
+  };
 
   const findNextQuestion = (
     index: number,
@@ -185,27 +202,12 @@ const CitizenForm = () => {
             text2Style: { textAlign: "center" },
           });
         }
+
         if (currentForm) {
-          postCitizenForm(
-            {
-              electionRoundId: selectedElectionRound,
-              citizenReportId: Crypto.randomUUID(),
-              formId: currentForm.id,
-              locationId: selectedLocationId,
-              answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
-            },
-            {
-              onSuccess: () => {
-                console.log(
-                  "🔵 [CitizenForm] form submitted successfully, redirect to success page",
-                );
-                router.replace("/citizen/main/form/success");
-              },
-              onError: (error) => {
-                console.log("🔴 [CitizenForm] error submitting form", error);
-              },
-            },
-          );
+          // open review sheet
+          setAnswers(updatedAnswers);
+          Keyboard.dismiss();
+          setIsReviewSheetOpen(true);
         }
       }
     }
@@ -229,9 +231,7 @@ const CitizenForm = () => {
       <Header
         title={formTitle}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
-        onLeftPress={() => {
-          router.back();
-        }}
+        onLeftPress={handleGoBack}
       />
       <ScrollView
         ref={scrollViewRef}
@@ -293,6 +293,35 @@ const CitizenForm = () => {
           goToPrevQuestion();
         }}
       />
+
+      {isReviewSheetOpen && (
+        <ReviewCitizenFormSheet
+          currentForm={currentForm}
+          answers={answers}
+          questions={currentForm?.questions}
+          setIsReviewSheetOpen={setIsReviewSheetOpen}
+          selectedLocationId={selectedLocationId}
+        />
+      )}
+
+      {showWarningDialog && (
+        <WarningDialog
+          theme="info"
+          title={t("unsaved_changes_dialog.title", { ns: "citizen_form" })}
+          description={t("unsaved_changes_dialog.description", { ns: "citizen_form" })}
+          action={() => {
+            // close dialog and remain on this page
+            setShowWarningDialog(false);
+          }}
+          onCancel={() => {
+            // close dialog and go back without saving changes
+            setShowWarningDialog(false);
+            router.back();
+          }}
+          actionBtnText={t("unsaved_changes_dialog.actions.save", { ns: "citizen_form" })}
+          cancelBtnText={t("unsaved_changes_dialog.actions.discard", { ns: "citizen_form" })}
+        />
+      )}
     </Screen>
   );
 };

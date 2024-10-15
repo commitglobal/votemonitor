@@ -86,6 +86,41 @@
       "ok": "OK"
     }
   },
+  "citizen_form": {
+    "review": {
+      "heading": "Review your report",
+      "send": "Send report",
+      "sending_report": "We're sending your report. Please wait..."
+    },
+    "success": {
+      "title": "Your report has been successfuly sent!",
+      "description": "Thank you for your civic involvement. You have the option to send a copy of your responses to your email, or you can return to the main page.",
+      "back_to_main": "Back to the main page",
+      "send_copy": "Send me a copy"
+    },
+    "error": "There was a problem while sending your review.",
+    "email_copy": {
+      "title": "Enter your email to receive a form copy",
+      "description": "To receive a copy of your form, please enter your email address below. This email address will be used only to send you the copy and will not be stored or used for any other purpose.",
+      "placeholder": "Enter your email",
+      "required": "The email is mandatory",
+      "invalid": "The email format is not valid",
+      "cancel": "Cancel",
+      "send": "Send"
+    },
+    "copy_sent": {
+      "title": "Your copy has been sent",
+      "description": "Your copy should arrive instantly, but in rare occasions it may take a few minutes to process. You can return to the main page in the meantime."
+    },
+    "unsaved_changes_dialog": {
+      "title": "You have unsaved changes",
+      "description": "Leaving this page will cause all your progress on the form to be lost. Are you sure you wish to go back?",
+      "actions": {
+        "discard": "Go back",
+        "save": "Stay here"
+      }
+    }
+  },
   "login": {
     "disclaimer": {
       "paragraph1": "Please note that if you are not accredited as an independent observer by an organization that monitors election processes in your country, you cannot use the Vote Monitor app.",
