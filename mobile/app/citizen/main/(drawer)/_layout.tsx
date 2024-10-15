@@ -3,9 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { ScrollView, useTheme, XStack, YStack } from "tamagui";
-
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
@@ -14,6 +12,7 @@ import { Typography } from "../../../../components/Typography";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
 import Constants from "expo-constants";
+import { DrawerItem } from "@react-navigation/drawer";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -23,6 +22,7 @@ type DrawerContentProps = ScrollViewProps & {
 export const DrawerContent = (props: DrawerContentProps) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const appVersion = Constants.expoConfig?.version;
 
@@ -40,6 +40,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
         <ScrollView
           {...props}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
+          bounces={false}
           stickyHeaderIndices={[0]}
         >
           <XStack backgroundColor="$purple25" paddingTop={16} paddingLeft="$md">
@@ -48,23 +49,23 @@ export const DrawerContent = (props: DrawerContentProps) => {
 
           <YStack marginTop="$lg">
             {citizenElectionRounds?.map((electionEvent, index) => (
-              <XStack
+              <DrawerItem
                 key={index}
-                paddingVertical="$md"
-                paddingHorizontal="$lg"
-                pressStyle={{ opacity: 0.5 }}
+                label={electionEvent.title}
+                focused={selectedElectionRound === electionEvent.id}
+                activeTintColor="white"
+                activeBackgroundColor={theme.purple5?.val}
+                inactiveTintColor={theme.purple5?.val}
                 onPress={() => handleSelectElectionRound(electionEvent.id)}
-                backgroundColor={
-                  selectedElectionRound === electionEvent.id ? "$purple5" : "transparent"
-                }
-              >
-                <Typography
-                  preset="body2"
-                  color={selectedElectionRound === electionEvent.id ? "white" : "$purple5"}
-                >
-                  {electionEvent.title}
-                </Typography>
-              </XStack>
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 16,
+                  marginVertical: 0,
+                  marginHorizontal: 0,
+                  borderRadius: 0,
+                }}
+                allowFontScaling={false}
+              />
             ))}
           </YStack>
         </ScrollView>

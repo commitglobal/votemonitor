@@ -184,6 +184,7 @@
   },
   "about_app": {
     "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Observer",
     "general": "Vote Monitor is a dedicated digital tool for independent observers and international organizations engaged in election monitoring. Vote Monitor is developed and managed by Code for Romania/Commit Global.",
     "purpose": "The app assists independent observers in monitoring polling stations and documenting the polling process in real-time for a specific election round. All data collected through the mobile app is sent in real-time to accrediting organizations to identify potential red flags that may indicate fraud or other irregularities. Ultimately, our goal is to provide a clear, simple, and realistic snapshot of the polling process proceedings.",
     "app_provides": {
@@ -193,6 +194,15 @@
       "item3": "A means of quickly reporting other problematic issues outside the standard forms"
     },
     "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania and Poland.",
+    "version": "Vote Monitor version {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Citizen",
+    "p1": "Vote Monitor Citizen enables everyday citizens to actively participate in monitoring elections by reporting any irregularities they encounter during the electoral period, including campaign activities, polling station operations, and voting day procedures.",
+    "p2": "Vote Monitor Citizen is an extension of the Vote Monitor app, which was initially developed by Code for Romania/Commit Global for independent observers working alongside NGOs in election monitoring efforts.",
+    "p3": "Users can submit real-time reports that will be analysed by non-governmental organizations involved in the electoral process. These reports may contribute to detailed observation documents and, in some instances, could be forwarded to relevant institutions to improve future elections.",
+    "p4": "While citizen reports play a vital role in promoting transparency, please note that submitting a report through this app does not constitute an official complaint to the institutions responsible for organizing elections.",
     "version": "Vote Monitor version {{value}}"
   },
   "loading_screen": {
