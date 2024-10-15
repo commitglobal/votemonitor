@@ -92,6 +92,7 @@
       "send": "Send report",
       "sending_report": "We're sending your report. Please wait..."
     },
+    "progress_bar_label": "Form progress",
     "success": {
       "title": "Your report has been successfuly sent!",
       "description": "Thank you for your civic involvement. You have the option to send a copy of your responses to your email, or you can return to the main page.",
