@@ -109,7 +109,14 @@ export type PollingStationInformationAPIPayload = {
   arrivalTime?: string | null; // ISO String  "2024-04-01T12:58:06.670Z";
   departureTime?: string | null;
   answers?: ApiFormAnswer[];
+  breaks?: Break[];
   isCompleted?: boolean;
+};
+
+export type Break = {
+  start?: Date | null;
+  end?: Date | null;
+  duration?: number;
 };
 
 export type PollingStationInformationAPIResponse = {
@@ -118,6 +125,7 @@ export type PollingStationInformationAPIResponse = {
   arrivalTime: string;
   departureTime: string;
   answers: ApiFormAnswer[];
+  breaks: Break[];
   isCompleted: boolean;
 };
 

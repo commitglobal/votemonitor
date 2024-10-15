@@ -63,6 +63,7 @@ import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
 import Warning from "../assets/icons/warning.svg";
 import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
 import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
+import CoffeeBreak from "../assets/icons/coffee-break.svg";
 import Updates from "../assets/icons/updates.svg";
 
 interface IconProps extends ViewProps {
@@ -131,7 +132,7 @@ export const defaultIcon = React.forwardRef(
       menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
       check: <Check fill={color} width={size} height={size} />,
-      calendar: <Calendar fill={color} width={size} height={size} />,
+      calendar: <Calendar stroke={color} width={size} height={size} />,
       peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
       loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
       missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
@@ -161,7 +162,7 @@ export const defaultIcon = React.forwardRef(
       monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
-      bin: <Bin fill={color} width={size} height={size} />,
+      bin: <Bin width={size} height={size} stroke={color} />,
       commitGlobal: <CommitGlobal fill={color} />,
       pollingStationPin: <PollingStationPin fill={color} />,
       note: <Note fill={color} />,
@@ -174,6 +175,7 @@ export const defaultIcon = React.forwardRef(
       warning: <Warning stroke={color} width={size} height={size} />,
       publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
       appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
+      coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
       updates: <Updates fill={color} width={size} height={size} />,
     };
 

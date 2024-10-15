@@ -50,6 +50,7 @@ export const useMutatePollingStationGeneralData = ({
         arrivalTime: "",
         departureTime: "",
         answers: [],
+        breaks: [],
         isCompleted: false,
       };
 
@@ -59,6 +60,7 @@ export const useMutatePollingStationGeneralData = ({
         ...(payload?.answers ? { answers: payload?.answers } : {}),
         ...(payload?.arrivalTime ? { arrivalTime: payload?.arrivalTime } : {}),
         ...(payload?.departureTime ? { departureTime: payload?.departureTime } : {}),
+        ...(payload?.breaks ? { breaks: payload?.breaks } : {}),
         ...(payload?.isCompleted ? { isCompleted: payload?.isCompleted } : {}),
       });
 

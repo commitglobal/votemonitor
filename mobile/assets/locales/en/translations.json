@@ -213,6 +213,60 @@
           "server": "We couldn't send the information to the server."
         }
       },
+      "observation_time": {
+        "observation_time": "Observation time",
+        "not_defined": "Not defined",
+        "no_of_breaks": "{{value}} breaks",
+        "one_break": "{{value}} break",
+        "arrival_and_departure": "Arrival and departure time",
+        "arrival_time": "Arrival time",
+        "departure_time": "Departure time",
+        "departure_after_arrival": "The departure time must be after the arrival time",
+        "select_arrival_time": "Select arrival time",
+        "select_departure_time": "Select departure time",
+        "add_break": "Add new break in observation",
+        "break": "Break {{value}}",
+        "start_time": "Start time",
+        "select_start_time": "Select start time",
+        "end_time": "End time",
+        "select_end_time": "Select end time",
+        "undefined_date": "DD/MM/YYYY",
+        "undefined_time": "HH:MM",
+        "save": "Save observation time",
+        "clear": "Clear observation time",
+        "confirmation_modals": {
+          "clear": {
+            "title": "Clear observation time",
+            "description": "This action will delete your arrival and departure time, including all your breaks entered so far for this polling station. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "clear": "Clear observation time"
+            }
+          },
+          "delete": {
+            "title": "Delete break",
+            "description": "This action will delete your break. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "delete": "Delete break"
+            }
+          },
+          "unsaved_changes": {
+            "title": "Save changes to observation time",
+            "description": "You have unsaved changes related to the observation time you entered. Do you want to save your changes before leaving the page?",
+            "actions": {
+              "discard": "Discard",
+              "save": "Save changes"
+            }
+          },
+          "unable_to_save": {
+            "title": "Unable to Save Observation Time",
+            "p1": "The times you entered cannot be saved due to a conflict between the break periods and the arrival/departure times.",
+            "p2": "Please ensure that break periods do not exceed the time interval defined by the arrival and departure observation times. Please review and adjust the times accordingly.",
+            "ok": "OK"
+          }
+        }
+      },
       "polling_station_form": {
         "paragraph": "Answer a few quick questions about the polling station.",
         "form_details_button_label": "Polling station questions",
