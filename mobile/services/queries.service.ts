@@ -65,6 +65,8 @@ export const pollingStationsKeys = {
     "hasFormSubmissions",
   ],
   upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
+  markFormSubmissionCompletionStatus: () =>
+    [...pollingStationsKeys.all, "markFormSubmissionCompletionStatus"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
   one: (id: string) => [...pollingStationsKeys.all, "DB.getOneById", id] as const,

@@ -28,25 +28,25 @@ export const useFormSubmissions = <TResult = FormSubmissionsApiResponse>(
   });
 };
 
-export const useFormAnswers = (
+export const useFormSubmissionByFormId = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string,
 ) => {
-  return useQuery({
-    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId, formId),
-    queryFn:
-      electionRoundId && pollingStationId
-        ? () => formSubmissionsQueryFn(electionRoundId, pollingStationId)
-        : skipToken,
-    select: useCallback(
+  return useFormSubmissions(
+    electionRoundId,
+    pollingStationId,
+    useCallback(
       (data: FormSubmissionsApiResponse) => {
         const formSubmission = data.submissions?.find((sub) => sub.formId === formId);
-        return arrayToKeyObject(formSubmission?.answers || [], "questionId");
+        return {
+          answers: arrayToKeyObject(formSubmission?.answers || [], "questionId"),
+          isCompleted: formSubmission?.isCompleted || false,
+        };
       },
       [electionRoundId, pollingStationId, formId],
     ),
-  });
+  );
 };
 
 export const usePSHasFormSubmissions = (electionRoundId?: string, pollingStationId?: string) => {

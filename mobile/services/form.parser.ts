@@ -219,12 +219,16 @@ export enum FormStatus {
   NOT_STARTED = "not started",
   IN_PROGRESS = "in progress",
   COMPLETED = "completed",
+  MARKED_AS_COMPLETED = "markedAsCompleted",
 }
 
 export const mapFormStateStatus = (
   numberOfAnswers: number,
   numberOfQuestions: number,
+  isCompleted: boolean,
 ): FormStatus => {
+  if (isCompleted) return FormStatus.MARKED_AS_COMPLETED;
+
   if (numberOfAnswers === 0) return FormStatus.NOT_STARTED;
   if (numberOfAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
   if (numberOfAnswers === numberOfQuestions) return FormStatus.COMPLETED;
@@ -250,7 +254,11 @@ export const mapFormToFormListItem = (
       numberOfCompletedQuestions: numberOfAnswers,
       numberOfQuestions: questions.length,
       options: `Available in ${Object.keys(form.name).join(", ")}`,
-      status: mapFormStateStatus(numberOfAnswers, questions.length),
+      status: mapFormStateStatus(
+        numberOfAnswers,
+        questions.length,
+        submissions[form.id]?.isCompleted || false,
+      ),
       languages: form.languages,
     };
   });

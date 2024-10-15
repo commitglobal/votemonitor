@@ -32,7 +32,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
       <PSITime psiData={psi} />
 
       <Card gap="$md" onPress={router.push.bind(null, "/polling-station-questionnaire")}>
-        {!psi?.answers?.length ? (
+        {!psi?.answers?.length && !psi?.isCompleted ? (
           <PollingStationInfoDefault
             onPress={router.push.bind(null, "/polling-station-questionnaire")}
           />
@@ -40,6 +40,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
           <PollingStationInfo
             nrOfAnswers={psi?.answers?.length}
             nrOfQuestions={psiFormQuestions?.questions?.length}
+            isMarkedAsCompleted={psi?.isCompleted}
           />
         )}
         <CardFooter

@@ -98,21 +98,6 @@ const QuickReportContent = ({
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          quickReports.length > 0 ? (
-            <Typography
-              marginBottom="$xxs"
-              preset="body1"
-              textAlign="left"
-              color="$gray7"
-              fontWeight="700"
-            >
-              {t("list.heading")}
-            </Typography>
-          ) : (
-            <></>
-          )
-        }
         ListEmptyComponent={
           <YStack alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />

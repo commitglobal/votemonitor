@@ -6,7 +6,6 @@ import NotificationContextProvider from "../../../contexts/notification/Notifica
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
-  console.log("AppLayout & isAuthenticated", isAuthenticated);
 
   if (!isAuthenticated) {
     return <Redirect href="/login" />;

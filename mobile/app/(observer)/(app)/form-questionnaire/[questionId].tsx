@@ -26,7 +26,7 @@ import QuestionNotes from "../../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../../components/AddNoteSheetContent";
 import { useFormById } from "../../../../services/queries/forms.query";
-import { useFormAnswers } from "../../../../services/queries/form-submissions.query";
+import { useFormSubmissionByFormId } from "../../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
@@ -75,10 +75,16 @@ const FormQuestionnaire = () => {
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: answers,
+    data: currentFormSubmission,
     isLoading: isLoadingAnswers,
     error: answersError,
-  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+  } = useFormSubmissionByFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const answers = useMemo(() => currentFormSubmission?.answers, [currentFormSubmission]);
 
   const { data: notes, isLoading: isLoadingNotes } = useNotesForQuestionId(
     activeElectionRound?.id,

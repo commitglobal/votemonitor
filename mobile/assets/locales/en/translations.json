@@ -6,7 +6,12 @@
     "status": {
       "completed": "Done",
       "in_progress": "In progress",
-      "not_started": "Not started"
+      "not_started": "Not started",
+      "marked_as_completed": "Marked as done"
+    },
+    "forms": {
+      "mark_as_done": "Mark form as done",
+      "mark_as_in_progress": "Mark form as in progress"
     },
     "cancel": "Cancel",
     "save": "Save",

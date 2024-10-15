@@ -6,7 +6,12 @@
     "status": {
       "completed": "Završeno",
       "in_progress": "U realizaciji",
-      "not_started": "Nije započeto"
+      "not_started": "Nije započeto",
+      "marked_as_completed": "TODO: Označeno kao završeno"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Markiraj obrazac kao završen",
+      "mark_as_in_progress": "TODO: Markiraj obrazac kao u toku"
     },
     "cancel": "Otkaži",
     "save": "Sačuvaj",

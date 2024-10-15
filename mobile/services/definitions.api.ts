@@ -110,6 +110,7 @@ export type PollingStationInformationAPIPayload = {
   departureTime?: string | null;
   answers?: ApiFormAnswer[];
   breaks?: Break[];
+  isCompleted?: boolean;
 };
 
 export type Break = {
@@ -125,6 +126,7 @@ export type PollingStationInformationAPIResponse = {
   departureTime: string;
   answers: ApiFormAnswer[];
   breaks: Break[];
+  isCompleted: boolean;
 };
 
 export const upsertPollingStationGeneralInformation = ({
@@ -278,6 +280,7 @@ export type FormSubmission = {
   formId: string;
   pollingStationId: string;
   answers: ApiFormAnswer[];
+  isCompleted: boolean;
 };
 
 export type FormSubmissionsApiResponse = {
@@ -308,7 +311,9 @@ export const getFormSubmissions = (
     @returns {FormSubmission} updated data 
 
 */
-export type FormSubmissionAPIPayload = Omit<FormSubmission, "id"> & { electionRoundId: string };
+export type FormSubmissionAPIPayload = Omit<FormSubmission, "id" | "isCompleted"> & {
+  electionRoundId: string;
+};
 
 export const upsertFormSubmission = ({
   electionRoundId,
@@ -317,6 +322,32 @@ export const upsertFormSubmission = ({
   return API.post(`election-rounds/${electionRoundId}/form-submissions`, payload).then(
     (res) => res.data,
   );
+};
+
+/**
+ * ========================================================================
+ * ================= POST markFormSubmissionAsDone ====================
+ * ========================================================================
+ * @param {string} electionRoundId
+ * @param {string} formSubmissionId
+ * @returns {FormSubmission}
+ */
+
+export type MarkFormSubmissionCompletionStatusAPIPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+  formId: string;
+  isCompleted: boolean;
+};
+
+export const markFormSubmissionCompletionStatus = ({
+  electionRoundId,
+  ...payload
+}: MarkFormSubmissionCompletionStatusAPIPayload) => {
+  return API.put(
+    `/election-rounds/${electionRoundId}/form-submissions:setCompletion`,
+    payload,
+  ).then((res) => res.data);
 };
 
 /** ========================================================================

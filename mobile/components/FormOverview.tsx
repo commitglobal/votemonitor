@@ -11,18 +11,21 @@ import Button from "./Button";
 interface FormOverviewProps {
   completedAnswers: number;
   numberOfQuestions: number;
+  isCompleted: boolean;
   onFormActionClick: () => void;
 }
 
 const FormOverview = ({
   completedAnswers,
   numberOfQuestions,
+  isCompleted,
   onFormActionClick,
 }: FormOverviewProps) => {
   const formStatus = useMemo(
-    () => mapFormStateStatus(completedAnswers, numberOfQuestions),
-    [completedAnswers, numberOfQuestions],
+    () => mapFormStateStatus(completedAnswers, numberOfQuestions, isCompleted),
+    [completedAnswers, numberOfQuestions, isCompleted],
   );
+
   const { t } = useTranslation(["form_overview", "common"]);
   const { width } = useWindowDimensions();
 
