@@ -41,6 +41,11 @@ export type AddAttachmentAPIResponse = {
   urlValidityInSeconds: number;
 };
 
+export type AddAttachmentMultipartStartAPIResponse = {
+  uploadId: string;
+  uploadUrls: Record<string, string>;
+};
+
 // Multipart Upload - Add Attachment - Question
 export const addAttachmentMultipartStart = ({
   electionRoundId,
@@ -51,10 +56,7 @@ export const addAttachmentMultipartStart = ({
   fileName,
   contentType,
   numberOfUploadParts,
-}: AddAttachmentStartAPIPayload): Promise<{
-  uploadId: string;
-  uploadUrls: Record<string, string>;
-}> => {
+}: AddAttachmentStartAPIPayload): Promise<AddAttachmentMultipartStartAPIResponse> => {
   return API.post(
     `election-rounds/${electionRoundId}/attachments:init`,
     {

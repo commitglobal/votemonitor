@@ -205,7 +205,7 @@ const ReportIssue = () => {
         const buffer = Buffer.from(chunk, "base64");
         const data = await uploadS3Chunk(url, buffer);
         setUploadProgress(
-          `${t("upload.progress")} ${Math.ceil((uploadedPartsNo + index) / totalParts * 100)}%`,
+          `${t("upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
         );
         etags = { ...etags, [index + 1]: data.ETag };
       }
@@ -526,7 +526,11 @@ const ReportIssue = () => {
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} isLoading={isLoadingAttachment || isPreparingFile}>
+        <OptionsSheet
+          open={optionsSheetOpen}
+          setOpen={setOptionsSheetOpen}
+          isLoading={isLoadingAttachment || isPreparingFile}
+        >
           {isLoadingAttachment || isPreparingFile ? (
             <MediaLoading progress={uploadProgress} />
           ) : (

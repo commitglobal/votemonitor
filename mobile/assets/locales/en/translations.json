@@ -320,6 +320,15 @@
         "take_picture": "Take a photo",
         "record_video": "Record a video",
         "upload_audio": "Upload audio file"
+      },
+      "upload": {
+        "compressing": "Compressing attachment: ",
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted.",
+        "offline": "You need an internet connection in order to perform this action."
       }
     },
     "notes": {
