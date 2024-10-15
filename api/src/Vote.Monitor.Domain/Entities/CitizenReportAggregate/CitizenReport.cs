@@ -27,15 +27,14 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
 
     private CitizenReport(
         Guid id,
-        ElectionRound electionRound,
+        Guid electionRoundId,
         Form form,
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers) : base(id)
     {
-        ElectionRound = electionRound;
-        ElectionRoundId = electionRound.Id;
+        ElectionRoundId = electionRoundId;
         Form = form;
         FormId = form.Id;
         Answers = answers.ToList().AsReadOnly();
@@ -48,13 +47,13 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
 
     internal static CitizenReport Create(
         Guid id,
-        ElectionRound electionRound,
+        Guid electionRoundId,
         Form form,
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers) =>
-        new(id, electionRound, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        new(id, electionRoundId, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void Update(IEnumerable<BaseAnswer>? answers, int? numberOfQuestionsAnswered,
         int? numberOfFlaggedAnswers)

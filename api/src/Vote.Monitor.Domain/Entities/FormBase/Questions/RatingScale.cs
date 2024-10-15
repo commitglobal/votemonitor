@@ -3,7 +3,8 @@
 [JsonConverter(typeof(SmartEnumValueConverter<RatingScale, string>))]
 public class RatingScale : SmartEnum<RatingScale, string>
 {
-    private readonly int _upperBound;
+    public int UpperBound { get; }
+    
     public static readonly RatingScale OneTo3 = new(nameof(OneTo3), nameof(OneTo3), 3);
     public static readonly RatingScale OneTo4 = new(nameof(OneTo4), nameof(OneTo4), 4);
     public static readonly RatingScale OneTo5 = new(nameof(OneTo5), nameof(OneTo5), 5);
@@ -29,11 +30,11 @@ public class RatingScale : SmartEnum<RatingScale, string>
 
     private RatingScale(string name, string value, int upperBound) : base(name, value)
     {
-        _upperBound = upperBound;
+        UpperBound = upperBound;
     }
 
     public int[] ToRange()
     {
-        return Enumerable.Range(1, _upperBound).ToArray();
+        return Enumerable.Range(1, UpperBound).ToArray();
     }
 }

@@ -136,7 +136,7 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return CitizenReport.Create(citizenReportId, ElectionRound, this, location, answers, numberOfQuestionAnswered,
+        return CitizenReport.Create(citizenReportId, ElectionRoundId, this, location, answers, numberOfQuestionAnswered,
             numberOfFlaggedAnswers);
     }
 

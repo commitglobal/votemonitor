@@ -9,7 +9,19 @@ internal static class EmailTemplateLoader
         { EmailTemplateType.ConfirmEmail, "confirm-email.html" },
         { EmailTemplateType.ResetPassword, "reset-password.html" },
         { EmailTemplateType.InvitationExistingUser, "invitation-existing-user.html" },
-        { EmailTemplateType.InvitationNewUser, "invitation-new-user.html" }
+        { EmailTemplateType.NewUserInvitation, "invitation-new-user.html" },
+        { EmailTemplateType.CitizenReport, "citizen-report.html" },
+
+
+        { EmailTemplateType.InputAnswerFragment, "Fragments/input-answer-fragment.html" },
+        
+        { EmailTemplateType.RatingAnswerFragment, "Fragments/rating-answer-fragment.html" },
+        { EmailTemplateType.RatingAnswerOptionOptionFragment, "Fragments/rating-answer-option-fragment.html" },
+        { EmailTemplateType.RatingAnswerOptionCheckedOptionFragment, "Fragments/rating-answer-option-selected-fragment.html" },
+        
+        { EmailTemplateType.SelectAnswerFragment, "Fragments/select-answer-fragment.html" },
+        { EmailTemplateType.SelectAnswerOptionFragment, "Fragments/select-answer-option-fragment.html" },
+        { EmailTemplateType.SelectAnswerCheckedOptionFragment, "Fragments/select-answer-option-selected-fragment.html" },
     };
 
     public static string GetTemplate(EmailTemplateType templateType)
