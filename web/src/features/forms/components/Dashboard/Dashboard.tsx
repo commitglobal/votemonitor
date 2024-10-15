@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZTranslationStatus } from '@/common/types';
+import { ZFormType, ZTranslationStatus } from '@/common/types';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -19,15 +19,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  Cog8ToothIcon,
   EllipsisVerticalIcon,
   FunnelIcon,
   PlusIcon,
@@ -36,11 +35,11 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { useMemo, useState, type ReactElement } from 'react';
+import { X } from 'lucide-react';
+import { useState, type ReactElement } from 'react';
 import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
-import { FormFilters } from './FormFilters/FormFilters';
 
 export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useAddTranslationsDialog();
