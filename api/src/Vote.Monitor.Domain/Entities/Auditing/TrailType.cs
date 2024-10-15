@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.Auditing;
 
-namespace Vote.Monitor.Domain.Entities.Auditing;
-
+[JsonConverter(typeof(SmartEnumValueConverter<TrailType, string>))]
 public sealed class TrailType : SmartEnum<TrailType, string>
 {
     public static readonly TrailType Create = new(nameof(Create), nameof(Create));

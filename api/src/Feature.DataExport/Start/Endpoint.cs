@@ -10,7 +10,7 @@ public class Endpoint(
     IJobService jobService,
     IAuthorizationService authorizationService,
     IRepository<ExportedData> repository,
-    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<JobDetails>, NotFound>>
+    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -23,7 +23,7 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<JobDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var result =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -32,7 +32,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var exportedData = ExportedData.Create(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
+        var exportedData = CreateExportedData(req);
 
         await repository.AddAsync(exportedData, ct);
 
@@ -43,7 +43,7 @@ public class Endpoint(
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
         {
-            jobService.EnqueueExportQuickReportsSubmissions(req.ElectionRoundId, req.NgoId, exportedData.Id);
+            jobService.EnqueueExportQuickReports(req.ElectionRoundId, req.NgoId, exportedData.Id);
         }
 
         if (req.ExportedDataType == ExportedDataType.PollingStations)
@@ -66,10 +66,39 @@ public class Endpoint(
             jobService.EnqueueExportIncidentReports(req.ElectionRoundId, req.NgoId, exportedData.Id);
         }
 
-        return TypedResults.Ok(new JobDetails
+        return TypedResults.Ok(new Response
         {
             ExportedDataId = exportedData.Id,
             EnqueuedAt = timeProvider.UtcNow
         });
+    }
+
+    private ExportedData CreateExportedData(Request req)
+    {
+        if (req.ExportedDataType == ExportedDataType.FormSubmissions)
+        {
+            return ExportedData.CreateForFormSubmissions(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+                req.FormSubmissionsFilters?.ToFilter());
+        }
+
+        if (req.ExportedDataType == ExportedDataType.QuickReports)
+        {
+            return ExportedData.CreateForQuickReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+                req.QuickReportsFilters?.ToFilter());
+        }
+
+        if (req.ExportedDataType == ExportedDataType.CitizenReports)
+        {
+            return ExportedData.CreateForCitizenReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+                req.CitizenReportsFilters?.ToFilter());
+        }
+        
+        if (req.ExportedDataType == ExportedDataType.IncidentReports)
+        {
+            return ExportedData.CreateForIncidentReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+                req.IncidentReportsFilters?.ToFilter());
+        }
+
+        return ExportedData.Create(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
     }
 }

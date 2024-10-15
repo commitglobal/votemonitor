@@ -1,7 +1,8 @@
 ﻿using Hangfire;
 using Job.Contracts;
+using Job.Contracts.Jobs;
 
-namespace Vote.Monitor.Core.Services.Hangfire;
+namespace Vote.Monitor.Api.Hangfire;
 
 public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJobService
 {
@@ -16,7 +17,7 @@ public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJob
             job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
     }
 
-    public void EnqueueExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    public void EnqueueExportQuickReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
         backgroundJobClient.Enqueue<IExportQuickReportsJob>(job =>
             job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));

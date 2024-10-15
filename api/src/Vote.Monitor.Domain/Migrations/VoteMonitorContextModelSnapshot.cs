@@ -3262,6 +3262,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("Base64EncodedData")
                         .HasColumnType("text");
 
+                    b.Property<string>("CitizenReportsFilers")
+                        .HasColumnType("jsonb");
+
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -3282,6 +3285,15 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("FileName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FormSubmissionsFilters")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("IncidentReportsFilters")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("QuickReportsFilters")
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");

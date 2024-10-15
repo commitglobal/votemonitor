@@ -15,9 +15,11 @@ export function useStartDataExport(
   {
     electionRoundId,
     exportedDataType,
+    filterParams
   }: {
     electionRoundId: string;
     exportedDataType: ExportedDataType;
+    filterParams: Record<string, string>;
   },
   options?: UseDataExportOptions
 ): UseMutationResult<DataExport, Error, void> {
@@ -25,6 +27,10 @@ export function useStartDataExport(
     mutationFn: async () => {
       const response = await authApi.post<DataExport>(`/election-rounds/${electionRoundId}/exported-data`, {
         exportedDataType,
+        formSubmissionsFilters: exportedDataType === ExportedDataType.FormSubmissions ? filterParams : undefined,
+        quickReportsFilters: exportedDataType === ExportedDataType.QuickReports ? filterParams : undefined,
+        citizenReportsFilters: exportedDataType === ExportedDataType.CitizenReports ? filterParams : undefined,
+        incidentReportsFilters: exportedDataType === ExportedDataType.IncidentReports ? filterParams : undefined,
       });
 
       return response.data;

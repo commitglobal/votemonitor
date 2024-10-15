@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
-
+[JsonConverter(typeof(SmartEnumValueConverter<RatingScale, string>))]
 public class RatingScale : SmartEnum<RatingScale, string>
 {
     private readonly int _upperBound;

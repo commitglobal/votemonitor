@@ -1,6 +1,6 @@
-namespace Vote.Monitor.Core.Services.Hangfire;
+﻿namespace Job.Contracts.Jobs;
 
-public interface IExportIncidentReportsJob
+public interface IExportQuickReportsJob
 {
     Task Run(Guid electionRoundId, Guid ngoId, Guid exportedDataId, CancellationToken ct);
 }

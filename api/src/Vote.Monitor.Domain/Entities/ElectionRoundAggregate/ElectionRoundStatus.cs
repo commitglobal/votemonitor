@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<ElectionRoundStatus, string>))]
 public sealed class ElectionRoundStatus : SmartEnum<ElectionRoundStatus, string>
 {
     public static readonly ElectionRoundStatus NotStarted = new(nameof(NotStarted), nameof(NotStarted));

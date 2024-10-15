@@ -1,5 +1,8 @@
 ﻿global using System.Reflection;
 global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using Ardalis.SmartEnum;
+global using Ardalis.SmartEnum.SystemTextJson;
 global using Ardalis.Specification;
 global using Microsoft.EntityFrameworkCore;
 global using SmartEnum.EFCore;

@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Core.Services.Hangfire;
+﻿namespace Job.Contracts.Jobs;
 
 public interface IExportPollingStationsJob
 {

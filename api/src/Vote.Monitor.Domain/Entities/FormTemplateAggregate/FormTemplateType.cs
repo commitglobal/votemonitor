@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<FormTemplateType, string>))]
 public sealed class FormTemplateType : SmartEnum<FormTemplateType, string>
 {
     public static readonly FormTemplateType Opening = new(nameof(Opening), nameof(Opening));
