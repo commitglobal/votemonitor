@@ -125,6 +125,19 @@
     "placeholder.defaultLanguage": "Select a default language",
     "placeholder.languages": "Select available languages"
   },
+  "observers": {
+    "addObserver": {
+      "title": "Add a new observer",
+      "description": "Fill in the following form",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone number",
+      "addBtnText": "Add observer",
+      "onSuccess": "Observer created",
+      "onError": "Error adding observer"
+    }
+  },
   "ngoAdminDashboard": {
     "title": "Dashboard",
     "subtitle": "Key indicators.",
