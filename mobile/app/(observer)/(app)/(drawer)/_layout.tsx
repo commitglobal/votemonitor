@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
@@ -19,6 +19,11 @@ type DrawerContentProps = ScrollViewProps & {
 export const DrawerContent = (props: DrawerContentProps) => {
   const { electionRounds, activeElectionRound } = useUserData();
 
+  const startedElectionRounds = useMemo(
+    () => electionRounds?.filter((electionRound) => electionRound.status === "Started"),
+    [electionRounds],
+  );
+
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -32,7 +37,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
       <XStack paddingTop={16} paddingLeft="$md" paddingBottom="$xl">
         <Icon icon="vmObserverLogo" width={211} height={65} />
       </XStack>
-      {electionRounds?.map((round, index) => {
+      {startedElectionRounds?.map((round, index) => {
         return (
           <DrawerItem
             key={index}
