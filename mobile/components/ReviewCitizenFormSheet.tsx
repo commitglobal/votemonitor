@@ -138,7 +138,9 @@ export default function ReviewCitizenFormSheet({
       {
         onSuccess: (response) => {
           console.log("🔵 [CitizenForm] form submitted successfully, redirect to success page");
-          router.replace(`/citizen/main/form/success?submissionId=${response.id}`);
+          router.replace(
+            `/citizen/main/form/success?formId=${currentForm.id}&submissionId=${response.id}`,
+          );
         },
         onError: (error) => {
           console.log("🔴 [CitizenForm] error submitting form", error);
