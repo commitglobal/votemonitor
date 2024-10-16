@@ -279,6 +279,15 @@
         "take_picture": "Zrób zdjęcie",
         "record_video": "Nagraj wideo",
         "upload_audio": "Wgraj nagranie"
+      },
+      "upload": {
+        "compressing": "Kompresowanie załącznika: ",
+        "preparing": "Przygotowanie załącznika...",
+        "starting": "Rozpoczynanie wysyłania...",
+        "progress": "Postęp wysyłania:",
+        "completed": "Wysyłanie zakończone.",
+        "aborted": "Wysyłanie przerwane.",
+        "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
       }
     },
     "notes": {
@@ -375,6 +384,15 @@
   },
   "report_new_issue": {
     "title": "Zgłoś nową sprawę",
+    "upload": {
+      "compressing": "Kompresowanie załącznika: ",
+      "preparing": "Przygotowanie załącznika...",
+      "starting": "Rozpoczynanie wysyłania...",
+      "progress": "Wysyłanie załączników: ",
+      "completed": "Wysyłanie zakończone.",
+      "aborted": "Wysyłanie przerwane.",
+      "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+    },
     "media": {
       "heading": "Wybrane media",
       "add": "Dodaj pliki multimedialne",
