@@ -5,22 +5,11 @@ import { FilmIcon, MusicalNoteIcon, PaperClipIcon, PhotoIcon } from '@heroicons/
 import { useMemo } from 'react';
 import ReactPlayer from 'react-player';
 import { Attachment } from '../../models/common';
+import { getFileCategory } from '@/lib/utils';
 
 export interface MediaFilesCellProps {
   attachment: Attachment;
 }
-
-const getFileCategory = (mimeType: string): 'image' | 'video' | 'audio' | 'unknown' => {
-  if (mimeType.startsWith('image/')) {
-    return 'image'
-  } else if (mimeType.startsWith('video/')) {
-    return 'video'
-  } else if (mimeType.startsWith('audio/')) {
-    return 'audio'
-  } else {
-    return 'unknown'
-  }
-};
 
 export function MediaFilesCell({ attachment }: MediaFilesCellProps): FunctionComponent {
   const attachmentType = useMemo(() => {
@@ -28,7 +17,7 @@ export function MediaFilesCell({ attachment }: MediaFilesCellProps): FunctionCom
   }, [attachment.mimeType]);
 
   return (
-    <div className='flex gap-2 flex-wrap'>
+    <div className='flex flex-wrap gap-2'>
       <Dialog>
         <DialogTrigger asChild>
           <Button type='button' variant='link' className='text-purple-900 hover:text-purple-600'>

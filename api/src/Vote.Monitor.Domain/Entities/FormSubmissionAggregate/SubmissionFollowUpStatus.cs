@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
-namespace Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<SubmissionFollowUpStatus, string>))]
 public sealed class SubmissionFollowUpStatus : SmartEnum<SubmissionFollowUpStatus, string>
 {
     public static readonly SubmissionFollowUpStatus NotApplicable = new(nameof(NotApplicable), nameof(NotApplicable));

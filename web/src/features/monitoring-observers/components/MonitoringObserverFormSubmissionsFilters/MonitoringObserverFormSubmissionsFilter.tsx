@@ -68,7 +68,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
         onValueChange={(value) => {
           void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
         }}
-        value={search.hasFlaggedAnswers ?? ''}>
+        value={search.hasFlaggedAnswers?.toString() ?? ''}>
         <SelectTrigger>
           <SelectValue placeholder='Flagged answers' />
         </SelectTrigger>

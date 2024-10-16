@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Hangfire;
+﻿using Job.Contracts.Jobs;
 using Vote.Monitor.Core.Services.Mailing.Contracts;
 
 namespace Vote.Monitor.Hangfire.Jobs;

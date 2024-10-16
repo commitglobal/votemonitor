@@ -3,13 +3,13 @@ using Vote.Monitor.Core.Services.EmailTemplating.Props;
 
 namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
-internal class ResetPasswordEmailGenerator : IEmailGenerator<ResetPasswordEmailProps>
+internal class ResetPasswordEmailGenerator
 {
-    public EmailModel Generate(ResetPasswordEmailProps props)
-    {
-        var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ResetPassword);
+    private static readonly string Template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ResetPassword);
 
-        var body = template
+    public static EmailModel Generate(ResetPasswordEmailProps props)
+    {
+        var body = Template
             .Replace("~$name$~", props.FullName)
             .Replace("~$resetPasswordUrl$~", props.ResetPasswordUrl)
             .Replace("~$cdnUrl$~", props.CdnUrl);

@@ -1,5 +1,4 @@
 using FluentValidation;
-using Newtonsoft.Json;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;

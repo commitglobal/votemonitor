@@ -10,19 +10,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 
 import { FunctionComponent } from '@/common/types';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import { Route } from '@/routes/responses';
 import { CitizenReportsAggregatedByFormTable } from '../CitizenReportsAggregatedByFormTable/CitizenReportsAggregatedByFormTable';
 import { CitizenReportsByEntryTable } from '../CitizenReportsByEntryTable/CitizenReportsByEntryTable';
 import { CitizenReportsFiltersByEntry } from '../CitizenReportsFiltersByEntry/CitizenReportsFiltersByEntry';
-
-const routeApi = getRouteApi('/responses/');
 
 const viewBy: Record<string, string> = {
   byEntry: 'View by entry',
@@ -30,8 +29,8 @@ const viewBy: Record<string, string> = {
 };
 
 export function CitizenReportsTab(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
@@ -46,6 +45,15 @@ export function CitizenReportsTab(): FunctionComponent {
     }
   }, [byFilter]);
 
+  const queryParams = useMemo(() => {
+    const params = [
+      ['followUpStatus', search.citizenReportFollowUpStatus],
+      ['hasFlaggedAnswers', search.hasFlaggedAnswers],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params);
+  }, [search]);
+
   return (
     <Card>
       <CardHeader>
@@ -53,7 +61,7 @@ export function CitizenReportsTab(): FunctionComponent {
           <CardTitle>Citizen reports</CardTitle>
 
           <div className='flex items-center gap-4'>
-            <ExportDataButton exportedDataType={ExportedDataType.CitizenReports} />
+            <ExportDataButton exportedDataType={ExportedDataType.CitizenReports} filterParams={queryParams}/>
 
             <DropdownMenu>
               <DropdownMenuTrigger>

@@ -2,6 +2,7 @@ using Ardalis.SmartEnum;
 
 namespace Vote.Monitor.Core.Models;
 
+[JsonConverter(typeof(SmartEnumValueConverter<QuestionsAnsweredFilter, string>))]
 public sealed class QuestionsAnsweredFilter : SmartEnum<QuestionsAnsweredFilter, string>
 {
     public static readonly QuestionsAnsweredFilter None = new(nameof(None), nameof(None));

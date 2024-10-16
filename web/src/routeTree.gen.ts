@@ -58,6 +58,7 @@ import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
+import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
 
 // Create/Update Routes
 
@@ -309,6 +310,14 @@ const FormsFormIdEditTranslationLanguageCodeRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
+  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport.update(
+    {
+      path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId',
+      getParentRoute: () => rootRoute,
+    } as any,
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -481,6 +490,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
+      preLoaderRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -549,6 +562,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesCitizenReportsCitizenReportIdRoute,
   ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
+  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,

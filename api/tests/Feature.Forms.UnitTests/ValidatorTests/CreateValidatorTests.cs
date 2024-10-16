@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Form.Module.Requests;
+using Vote.Monitor.TestUtils.Utils;
 
 namespace Feature.Forms.UnitTests.ValidatorTests;
 
@@ -77,9 +78,30 @@ public class CreateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Name);
     }
 
+    public static IEnumerable<object[]> InvalidPartiallyTranslatedFormDescriptionsTestCases =>
+        InvalidPartiallyTranslatedDescriptionTestData
+            .Select(x => new object[] { x })
+            .ToList();
+
+    private static IEnumerable<TranslatedString> InvalidPartiallyTranslatedDescriptionTestData =>
+    [
+        new()
+        {
+            [LanguagesList.IT.Iso1] = "an italian string"
+        },
+        new()
+        {
+            [LanguagesList.RO.Iso1] = "a long string",
+            [LanguagesList.EN.Iso1] = "a".Repeat(10_001)
+        },
+        new() { [""] = "an empty" },
+        new() { ["aaa"] = "an invalid iso" },
+        new() { ["a"] = "an invalid iso" },
+        new()
+    ];
+
     [Theory]
-    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases),
-        MemberType = typeof(TranslatedStringTestData))]
+    [MemberData(nameof(InvalidPartiallyTranslatedFormDescriptionsTestCases))]
     public void Validation_ShouldFail_When_DescriptionInvalid(TranslatedString invalidDescription)
     {
         // Arrange
@@ -105,7 +127,7 @@ public class CreateValidatorTests
     public void Validation_ShouldFail_When_FormTypeEmpty()
     {
         // Arrange
-        var request = new Create.Request { };
+        var request = new Create.Request();
 
         // Act
         var validationResult = _validator.TestValidate(request);

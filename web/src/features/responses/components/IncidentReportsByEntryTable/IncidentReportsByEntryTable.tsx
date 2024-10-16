@@ -33,8 +33,8 @@ export function IncidentReportsByEntryTable({ searchText }: FormsTableByEntryPro
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['incidentReportFollowUpStatus', debouncedSearch.incidentReportFollowUpStatus],
-      ['incidentReportLocationType', debouncedSearch.incidentReportLocationType],
+      ['followUpStatus', debouncedSearch.incidentReportFollowUpStatus],
+      ['locationType', debouncedSearch.incidentReportLocationType],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as IncidentReportsSearchParams;

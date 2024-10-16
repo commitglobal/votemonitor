@@ -1,6 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
+[JsonConverter(typeof(SmartEnumValueConverter<DisplayLogicCondition, string>))]
 
 public class DisplayLogicCondition : SmartEnum<DisplayLogicCondition, string>
 {
