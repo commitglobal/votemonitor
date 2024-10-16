@@ -47,7 +47,7 @@ const FormDetails = () => {
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const { width } = useWindowDimensions();
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
@@ -69,7 +69,6 @@ const FormDetails = () => {
     isLoading: isLoadingCurrentForm,
     error: currentFormError,
     refetch: refetchCurrentForm,
-    isRefetching: isRefetchingCurrentForm,
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
@@ -77,7 +76,6 @@ const FormDetails = () => {
     isLoading: isLoadingAnswers,
     error: answersError,
     refetch: refetchAnswers,
-    isRefetching: isRefetchingAnswers,
   } = useFormSubmissionByFormId(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
@@ -90,32 +88,28 @@ const FormDetails = () => {
     [currentFormSubmission],
   );
 
-  const {
-    data: attachments,
-    refetch: refetchAttachments,
-    isRefetching: isRefetchingAttachments,
-  } = useAttachments(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+  const { data: attachments, refetch: refetchAttachments } = useAttachments(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
 
-  const {
-    data: notes,
-    refetch: refetchNotes,
-    isRefetching: isRefetchingNotes,
-  } = useNotesForFormId(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
-
-  const isRefetching = useMemo(
-    () =>
-      isRefetchingCurrentForm ||
-      isRefetchingAnswers ||
-      isRefetchingAttachments ||
-      isRefetchingNotes,
-    [isRefetchingCurrentForm, isRefetchingAnswers, isRefetchingAttachments, isRefetchingNotes],
+  const { data: notes, refetch: refetchNotes } = useNotesForFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
   );
 
   const handleRefetch = () => {
-    refetchCurrentForm();
-    refetchAnswers();
-    refetchAttachments();
-    refetchNotes();
+    setIsRefreshing(true);
+    Promise.all([
+      refetchCurrentForm(),
+      refetchAnswers(),
+      refetchAttachments(),
+      refetchNotes(),
+    ]).then(() => {
+      setIsRefreshing(false);
+    });
   };
 
   const questions = useMemo(() => {
@@ -272,7 +266,7 @@ const FormDetails = () => {
           contentContainerStyle={{ flex: 1, alignItems: "center" }}
           paddingVertical="$xxl"
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
         >
           <Typography>{t("error")}</Typography>
         </ScrollView>
@@ -330,7 +324,7 @@ const FormDetails = () => {
           }}
           estimatedItemSize={ESTIMATED_ITEM_SIZE}
           estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
         />
       </YStack>
       {isChangeLanguageModalOpen && languages && (

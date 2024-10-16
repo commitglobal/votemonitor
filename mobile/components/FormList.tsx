@@ -25,7 +25,6 @@ import {
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../services/queries.service";
-import { RefreshControl } from "react-native";
 import FormListEmptyComponent from "./FormListEmptyComponent";
 
 const ESTIMATED_ITEM_SIZE = 100;
@@ -51,21 +50,20 @@ interface IFormListProps {
 }
 
 const FormList = ({ ListHeaderComponent }: IFormListProps) => {
-  const { activeElectionRound, selectedPollingStation } = useUserData();
-
-  const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
-
   const { width } = useWindowDimensions();
 
+  const { activeElectionRound, selectedPollingStation } = useUserData();
   const queryClient = useQueryClient();
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
 
   const {
     data: allForms,
     isLoading: isLoadingForms,
     error: formsError,
     refetch: refetchForms,
-    isRefetching: isRefetchingForms,
   } = useElectionRoundAllForms(activeElectionRound?.id);
 
   const {
@@ -73,34 +71,27 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     isLoading: isLoadingAnswers,
     error: answersError,
     refetch: refetchFormSubmissions,
-    isRefetching: isRefetchingFormSubmissions,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
 
-  const { refetch: refetchPSIData, isRefetching: isRefetchingPSIData } =
-    usePollingStationInformation(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+  const { refetch: refetchPSIData } = usePollingStationInformation(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+  );
 
-  const { refetch: refetchPSIFormQuestions, isRefetching: isRefetchingPSIFormQuestions } =
-    usePollingStationInformationForm(activeElectionRound?.id);
-
-  const isRefetching = useMemo(() => {
-    return (
-      isRefetchingPSIData ||
-      isRefetchingPSIFormQuestions ||
-      isRefetchingForms ||
-      isRefetchingFormSubmissions
-    );
-  }, [
-    isRefetchingPSIData,
-    isRefetchingPSIFormQuestions,
-    isRefetchingForms,
-    isRefetchingFormSubmissions,
-  ]);
+  const { refetch: refetchPSIFormQuestions } = usePollingStationInformationForm(
+    activeElectionRound?.id,
+  );
 
   const handleRefetch = () => {
-    refetchPSIData();
-    refetchPSIFormQuestions();
-    refetchForms();
-    refetchFormSubmissions();
+    setIsRefreshing(true);
+    Promise.all([
+      refetchPSIData(),
+      refetchPSIFormQuestions(),
+      refetchForms(),
+      refetchFormSubmissions(),
+    ]).then(() => {
+      setIsRefreshing(false);
+    });
   };
 
   const formList: FormListItem[] = useMemo(() => {
@@ -173,19 +164,18 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
         bounces={true}
         renderItem={({ item, index }) => {
           return (
-            <>
-              <FormCard
-                key={index}
-                form={item}
-                onPress={openForm.bind(null, item)}
-                marginBottom="$xxs"
-              />
-            </>
+            <FormCard
+              key={index}
+              form={item}
+              onPress={openForm.bind(null, item)}
+              marginBottom="$xxs"
+            />
           );
         }}
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
         estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
+        refreshing={isRefreshing}
+        onRefresh={handleRefetch}
       />
       {selectedForm && (
         <Controller
