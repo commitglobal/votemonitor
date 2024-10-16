@@ -131,6 +131,18 @@
       "obsolete": "Obsolete"
     }
   },
+  "observers": {
+    "addObserver": {
+      "title": "Add a new observer",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone number",
+      "addBtnText": "Add observer",
+      "onSuccess": "Observer created",
+      "onError": "Error adding observer"
+    }
+  },
   "ngoAdminDashboard": {
     "title": "Dashboard",
     "subtitle": "Key indicators",
