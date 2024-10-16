@@ -48,6 +48,7 @@ using Feature.Monitoring;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
+using Vote.Monitor.Api.Hangfire;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
@@ -181,6 +182,7 @@ builder.Services.AddResponseCompression(opts =>
     .Configure<BrotliCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest)
     .Configure<GzipCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest);
 
+builder.Services.AddHangfireBackgroundJobs(builder.Configuration);
 
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
@@ -220,6 +222,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
+        x.Serializer.Options.Converters.Add(new JsonBooleanStringConverter());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -253,6 +256,8 @@ SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<Tra
 SqlMapper.AddTypeHandler(typeof(LanguagesTranslationStatus), new JsonToObjectConverter<LanguagesTranslationStatus>());
 
 #endregion
+
+
 
 app.UseSwaggerGen(
     cfg =>

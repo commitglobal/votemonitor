@@ -98,7 +98,11 @@ public class Endpoint(
                     AND (@hasNotes IS NULL
                           OR (@hasNotes = FALSE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") = 0)
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
-                      ));
+                      ))
+                    AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
+                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp);
+                      
+                      
                   WITH
                       INCIDENT_REPORTS AS (
                           SELECT
@@ -131,17 +135,19 @@ public class Endpoint(
                                   INNER JOIN "MonitoringObservers" MO ON IR."MonitoringObserverId" = MO."Id"
                                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                           WHERE
-                              MN."ElectionRoundId" = @electionRoundId
+                            MN."ElectionRoundId" = @electionRoundId
                             AND MN."NgoId" = @ngoId
                             AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
                             AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
                             AND (@formId IS NULL OR IR."FormId" = @formId)
                             AND (@locationType IS NULL OR IR."LocationType" = @locationType)
                             AND (@questionsAnswered IS NULL
-                              OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
-                              OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
-                              OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
-                              )
+                                OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
+                            )
+                            AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
+                            AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -254,7 +260,8 @@ public class Endpoint(
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
-            
+            fromDate = req.FromDateFilter?.ToString("O"),
+            toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 

@@ -9,5 +9,11 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+
     public ExportedDataType ExportedDataType { get; set; }
+
+    public FormSubmissionsFilters? FormSubmissionsFilters { get; set; }
+    public QuickReportsFilters? QuickReportsFilters { get; set; }
+    public CitizenReportsFilters? CitizenReportsFilters { get; set; }
+    public IncidentReportsFilters? IncidentReportsFilters { get; set; }
 }

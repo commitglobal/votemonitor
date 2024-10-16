@@ -11,9 +11,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useState, type ChangeEvent } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { IncidentReportsViewBy } from '../../utils/column-visibility-options';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
@@ -27,8 +27,7 @@ import { IncidentReportsByObserverTable } from '../IncidentReportsByObserverTabl
 import { IncidentReportsColumnsVisibilitySelector } from '../IncidentReportsColumnsVisibilitySelector/IncidentReportsColumnsVisibilitySelector';
 import { IncidentReportsFiltersByEntry } from '../IncidentReportsFiltersByEntry/IncidentReportsFiltersByEntry';
 import { IncidentReportsFiltersByObserver } from '../IncidentReportsFiltersByObserver/IncidentReportsFiltersByObserver';
-
-const routeApi = getRouteApi('/responses/');
+import { Route } from '@/routes/responses';
 
 const viewBy: Record<IncidentReportsViewBy, string> = {
   byEntry: 'View by entry',
@@ -37,8 +36,8 @@ const viewBy: Record<IncidentReportsViewBy, string> = {
 };
 
 export default function IncidentReportsTab(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
@@ -53,6 +52,23 @@ export default function IncidentReportsTab(): FunctionComponent {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
+  const queryParams = useMemo(() => {
+    const params = [
+      ['searchText', searchText],
+      ['hasFlaggedAnswers', search.hasFlaggedAnswers],
+      ['level1Filter', search.level1Filter],
+      ['level2Filter', search.level2Filter],
+      ['level3Filter', search.level3Filter],
+      ['level4Filter', search.level4Filter],
+      ['level5Filter', search.level5Filter],
+      ['pollingStationNumberFilter', search.pollingStationNumberFilter],
+      ['followUpStatus', search.incidentReportFollowUpStatus],
+      ['locationType', search.incidentReportLocationType],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params);
+  }, [searchText, search]);
+
   return (
     <Card>
       <CardHeader>
@@ -60,7 +76,7 @@ export default function IncidentReportsTab(): FunctionComponent {
           <CardTitle>Incident reports submissions</CardTitle>
 
           <div className='flex items-center gap-4'>
-            <ExportDataButton exportedDataType={ExportedDataType.IncidentReports} />
+            <ExportDataButton exportedDataType={ExportedDataType.IncidentReports} filterParams={queryParams} />
 
             <DropdownMenu>
               <DropdownMenuTrigger>

@@ -1,6 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
+[JsonConverter(typeof(SmartEnumValueConverter<ImportType, string>))]
 public sealed class ImportType : SmartEnum<ImportType, string>
 {
     public static readonly ImportType PollingStation = new(nameof(PollingStation), nameof(PollingStation));
