@@ -279,6 +279,15 @@
         "take_picture": "Napravite fotografiju",
         "record_video": "Napravite video zapis",
         "upload_audio": "Učitaj audio snimak"
+      },
+      "upload": {
+        "compressing": "Kompresovanje medije: ",
+        "preparing": "Priprema medije...",
+        "starting": "Počinje slanje...",
+        "progress": "Napredak slanja:",
+        "completed": "Slanje završeno.",
+        "aborted": "Slanje prekinuto.",
+        "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
       }
     },
     "notes": {
@@ -375,6 +384,15 @@
   },
   "report_new_issue": {
     "title": "Prijavite novi incident",
+    "upload": {
+      "compressing": "Kompresovanje medije: ",
+      "preparing": "Priprema medije...",
+      "starting": "Počinje slanje...",
+      "progress": "Napredak slanja:",
+      "completed": "Slanje završeno.",
+      "aborted": "Slanje prekinuto.",
+      "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
+    },
     "media": {
       "heading": "Otpremljeni mediji",
       "add": "Dodaj medijske datoteke",

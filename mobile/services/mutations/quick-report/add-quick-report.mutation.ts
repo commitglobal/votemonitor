@@ -5,7 +5,7 @@ import {
   QuickReportsAPIResponse,
 } from "../../api/quick-report/get-quick-reports.api";
 import { AddQuickReportAPIPayload } from "../../api/quick-report/post-quick-report.api";
-import { AddAttachmentQuickReportAPIPayload } from "../../api/quick-report/add-attachment-quick-report.api";
+import { AddAttachmentQuickReportStartAPIPayload } from "../../api/quick-report/add-attachment-quick-report.api";
 
 export const useAddQuickReport = () => {
   const queryClient = useQueryClient();
@@ -15,7 +15,7 @@ export const useAddQuickReport = () => {
     onMutate: async ({
       attachments,
       ...payload
-    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] }) => {
+    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportStartAPIPayload[] }) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       const queryKey = QuickReportKeys.byElectionRound(payload.electionRoundId);
@@ -27,10 +27,10 @@ export const useAddQuickReport = () => {
       const attachmentsToUpdate: QuickReportAttachmentAPIResponse[] = attachments.map((attach) => {
         return {
           electionRoundId: attach.electionRoundId,
-          fileName: attach.fileMetadata.name,
+          fileName: attach.fileName,
           id: attach.id,
-          mimeType: attach.fileMetadata.type,
-          presignedUrl: attach.fileMetadata.uri,
+          mimeType: attach.contentType,
+          presignedUrl: attach.filePath,
           quickReportId: attach.quickReportId,
           urlValidityInSeconds: 0,
         };
@@ -60,7 +60,9 @@ export const useAddQuickReport = () => {
     onSettled: (
       _data,
       _err,
-      variables: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] },
+      variables: AddQuickReportAPIPayload & {
+        attachments: AddAttachmentQuickReportStartAPIPayload[];
+      },
     ) => {
       const queryKey = QuickReportKeys.byElectionRound(variables.electionRoundId);
       return queryClient.invalidateQueries({ queryKey });
