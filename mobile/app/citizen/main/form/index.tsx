@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { Card, ScrollView, XStack, YStack } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -26,6 +26,14 @@ import Toast from "react-native-toast-message";
 import ReviewCitizenFormSheet from "../../../../components/ReviewCitizenFormSheet";
 import WarningDialog from "../../../../components/WarningDialog";
 import i18n from "../../../../common/config/i18n";
+import AddAttachment from "../../../../components/AddAttachment";
+import OptionsSheet from "../../../../components/OptionsSheet";
+import MediaLoading from "../../../../components/MediaLoading";
+import { FileMetadata, useCamera } from "../../../../hooks/useCamera";
+import * as DocumentPicker from "expo-document-picker";
+import * as Crypto from "expo-crypto";
+// import { Buffer } from "buffer";
+// import * as FileSystem from "expo-file-system";
 
 const CitizenForm = () => {
   const { t } = useTranslation(["citizen_form", "network_banner"]);
@@ -35,6 +43,13 @@ const CitizenForm = () => {
 
   const { selectedElectionRound } = useCitizenUserData();
   const { isOnline } = useNetInfoContext();
+
+  const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
+  const [isPreparingFile, setIsPreparingFile] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+  const [attachments, setAttachments] = useState<Record<string, { fileMetadata: FileMetadata, id: string }[]>>({});
+
+  const { uploadCameraOrMedia } = useCamera();
 
   if (!selectedElectionRound) {
     return (
@@ -227,6 +242,66 @@ const CitizenForm = () => {
     }
   };
 
+  const onCompressionProgress = (progress: number) => {
+    setUploadProgress(`${t("attachments.upload.compressing")} ${Math.ceil(progress * 100)}%`);
+  };
+
+  const removeAttachmentLocal = (id: string): void => {
+    setAttachments((prevAttachments) => {
+      return {
+        ...prevAttachments,
+        [questionId]: prevAttachments[questionId].filter(attachment => attachment.id !== id)
+      };
+    });
+  };
+
+  const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    setIsPreparingFile(true);
+    setUploadProgress(t("attachments.upload.preparing"));
+    const cameraResult = await uploadCameraOrMedia(type, onCompressionProgress);
+
+    if (!cameraResult) {
+      setIsPreparingFile(false);
+      return;
+    }
+
+    setIsOptionsSheetOpen(false);
+    setAttachments((prevAttachments) => ({
+      ...prevAttachments,
+      [questionId]: prevAttachments[questionId] ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID() }] : [{ fileMetadata: cameraResult, id: Crypto.randomUUID() }],
+    }));
+    setIsPreparingFile(false);
+  };
+
+  const handleUploadAudio = async () => {
+    const doc = await DocumentPicker.getDocumentAsync({
+      type: "audio/*",
+      multiple: false,
+    });
+
+    if (doc?.assets?.[0]) {
+      const file = doc?.assets?.[0];
+
+      const fileMetadata: FileMetadata = {
+        name: file.name,
+        type: file.mimeType || "audio/mpeg",
+        uri: file.uri,
+        size: file.size || 0,
+      };
+
+      setIsOptionsSheetOpen(false);
+      setAttachments((prevAttachments) => ({
+        ...prevAttachments,
+        [questionId]: prevAttachments[questionId] ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID() }] : [{ fileMetadata, id: Crypto.randomUUID() }],
+      }));
+      setIsPreparingFile(false);
+    } else {
+      // Cancelled
+    }
+
+    setIsPreparingFile(false);
+  };
+
   if (isLoadingCurrentForm || !activeQuestion) {
     return <Typography>Loading...</Typography>;
   }
@@ -273,24 +348,47 @@ const CitizenForm = () => {
             required={true}
           />
 
-          {/* attachments */}
-          {/* {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
-            <QuestionAttachments
-              electionRoundId={activeElectionRound.id}
-              pollingStationId={selectedPollingStation.pollingStationId}
-              formId={formId}
-              questionId={questionId}
-            />
-          )} */}
+          {attachments[questionId]?.length ? (
+            <YStack gap="$xxs" paddingTop='$lg'>
+              <Typography fontWeight="500">{t("attachments.heading")}</Typography>
+              <YStack gap="$xxs">
+                {attachments[questionId].map((attachment) => {
+                  return (
+                    <Card
+                      padding="$0"
+                      paddingLeft="$md"
+                      key={attachment.id}
+                      flexDirection="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
+                        {attachment.fileMetadata.name}
+                      </Typography>
+                      <YStack
+                        padding="$md"
+                        onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                        pressStyle={{ opacity: 0.5 }}
+                      >
+                        <Icon icon="xCircle" size={24} color="$gray5" />
+                      </YStack>
+                    </Card>
+                  );
+                })}
+              </YStack>
+            </YStack>
+          ) : (
+            false
+          )}
 
-          {/* <AddAttachment
+          <AddAttachment
             label={t("attachments.add")}
             marginTop="$sm"
             onPress={() => {
               Keyboard.dismiss();
-              return setIsOptionsSheetOpen(true);
+              setIsOptionsSheetOpen(true);
             }}
-          /> */}
+          />
         </YStack>
       </ScrollView>
       <WizzardControls
@@ -314,9 +412,45 @@ const CitizenForm = () => {
           currentForm={currentForm}
           answers={answers}
           questions={currentForm?.questions}
+          attachments={attachments}
           setIsReviewSheetOpen={setIsReviewSheetOpen}
           selectedLocationId={selectedLocationId}
         />
+      )}
+
+      {isOptionsSheetOpen && (
+        <OptionsSheet setOpen={setIsOptionsSheetOpen} open isLoading={false || isPreparingFile}>
+          {false || isPreparingFile ? (
+            <MediaLoading progress={uploadProgress} />
+          ) : (
+            <YStack paddingHorizontal="$sm" gap="$xxs">
+              <Typography
+                onPress={handleCameraUpload.bind(null, "library")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("attachments.menu.load")}
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("attachments.menu.take_picture")}
+              </Typography>
+              <Typography
+                onPress={handleUploadAudio.bind(null)}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("attachments.menu.upload_audio")}
+              </Typography>
+            </YStack>
+          )}
+        </OptionsSheet>
       )}
 
       {showWarningDialog && (

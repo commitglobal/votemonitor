@@ -9,7 +9,7 @@ import {
   MultiSelectAnswer,
   SingleSelectAnswer,
 } from "../services/interfaces/answer.type";
-import { Sheet, Spinner, YStack } from "tamagui";
+import { Separator, Sheet, Spinner, YStack } from "tamagui";
 import { getAnswerDisplay } from "../common/utils/answers";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ import { usePostCitizenFormMutation } from "../services/mutations/citizen/post-c
 import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.provider";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
+import { FileMetadata } from "../hooks/useCamera";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -36,6 +37,7 @@ export default function ReviewCitizenFormSheet({
   currentForm,
   answers,
   questions,
+  attachments,
   setIsReviewSheetOpen,
   selectedLocationId,
   language,
@@ -43,6 +45,7 @@ export default function ReviewCitizenFormSheet({
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
+  attachments: Record<string, { fileMetadata: FileMetadata, id: string }[]> | undefined;
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
   language: string;
@@ -188,6 +191,14 @@ export default function ReviewCitizenFormSheet({
                       {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
                     </Typography>
                   )}
+                  {attachments && attachments[question.id] ? (
+                    <YStack gap="$xxs" paddingTop='$lg'>
+                      <Typography fontWeight="500">{t("attachments.heading")}: {attachments[question.id].length}</Typography>
+                    </YStack>
+                  ) : (
+                    false
+                  )}
+                  <Separator marginTop="$xs" />
                 </YStack>
               ))}
             </Sheet.ScrollView>

@@ -120,6 +120,27 @@
         "discard": "Go back",
         "save": "Stay here"
       }
+    },
+    "attachments": {
+      "heading": "Uploaded media",
+      "loading": "Adding attachment... ",
+      "error": "Error while sending the attachment!",
+      "add": "Add media files",
+      "menu": {
+        "load": "Load from gallery",
+        "take_picture": "Take a photo",
+        "record_video": "Record a video",
+        "upload_audio": "Upload audio file"
+      },
+      "upload": {
+        "compressing": "Compressing attachment: ",
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Uploading attachments: ",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted.",
+        "offline": "You need an internet connection in order to perform this action."
+      }
     }
   },
   "login": {
