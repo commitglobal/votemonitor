@@ -7,6 +7,11 @@ import bg from "../../assets/locales/bg/translations_BG.json";
 import sr from "../../assets/locales/sr/translations_SR.json";
 import pl from "../../assets/locales/pl/translations_PL.json";
 
+import ka from "../../assets/locales/ka/translations_KA.json";
+import hy from "../../assets/locales/hy/translations_HY.json";
+import ru from "../../assets/locales/ru/translations_RU.json";
+import az from "../../assets/locales/az/translations_AZ.json";
+
 import * as SecureStore from "expo-secure-store";
 import { I18N_LANGUAGE } from "../constants";
 
@@ -20,15 +25,19 @@ export const isRTL = language?.textDirection === "rtl";
 i18n.use(initReactI18next).init<ResourceLanguage>({
   // default language app is currently the system locale or english
   lng: systemLocale || "en",
-  fallbackLng: ["en", "ro", "pl", "bg", "sr"],
+  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
   compatibilityJSON: "v3",
-  supportedLngs: ["ro", "en", "pl", "bg", "sr"],
+  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
   resources: {
     en,
     ro,
     pl,
     bg,
     sr,
+    ka,
+    hy,
+    ru,
+    az
   },
   debug: true,
   interpolation: {
@@ -37,3 +46,4 @@ i18n.use(initReactI18next).init<ResourceLanguage>({
 });
 
 export default i18n;
+
