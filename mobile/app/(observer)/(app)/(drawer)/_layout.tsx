@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useTheme } from "tamagui";
+import { useTheme, XStack } from "tamagui";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
+
+import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
+import { Icon } from "../../../../components/Icon";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -12,20 +17,50 @@ type DrawerContentProps = ScrollViewProps & {
 };
 
 export const DrawerContent = (props: DrawerContentProps) => {
-  const { electionRounds } = useUserData();
+  const { electionRounds, activeElectionRound } = useUserData();
+
+  const startedElectionRounds = useMemo(
+    () => electionRounds?.filter((electionRound) => electionRound.status === "Started"),
+    [electionRounds],
+  );
 
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
+
   return (
-    <DrawerContentScrollView {...props}>
-      {electionRounds?.map((round, index) => (
-        <DrawerItem
-          key={index}
-          label={`${round.status} - ${round.title}`}
-          inactiveTintColor={theme.yellow6?.val}
-          onPress={() => console.log("")}
-          allowFontScaling={false}
-        />
-      ))}
+    <DrawerContentScrollView
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 32 }}
+      bounces={false}
+      stickyHeaderIndices={[0]}
+      {...props}
+    >
+      <XStack paddingTop={16} paddingLeft="$md" paddingBottom="$xl">
+        <Icon icon="vmObserverLogo" width={211} height={65} />
+      </XStack>
+      {startedElectionRounds?.map((round, index) => {
+        return (
+          <DrawerItem
+            key={index}
+            label={`${round.status} - ${round.title}`}
+            focused={activeElectionRound?.id === round.id}
+            activeTintColor={theme.purple5?.val}
+            activeBackgroundColor={theme.yellow5?.val}
+            inactiveTintColor="white"
+            onPress={() => console.log("")}
+            style={{
+              paddingVertical: 4,
+              paddingHorizontal: 16,
+              marginVertical: 0,
+              marginHorizontal: 0,
+              borderRadius: 0,
+            }}
+            allowFontScaling={false}
+          />
+        );
+      })}
+
+      {/* app mode switch */}
+      <AppModeSwitchButton switchToMode={AppMode.CITIZEN} />
     </DrawerContentScrollView>
   );
 };

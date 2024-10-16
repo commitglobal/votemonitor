@@ -1,4 +1,4 @@
-import { useIsMutating, useIsRestoring, useQueryClient } from "@tanstack/react-query";
+import { useIsMutating, useIsRestoring } from "@tanstack/react-query";
 import { SplashScreen } from "expo-router";
 import { useEffect, useState } from "react";
 import { YStack } from "tamagui";
@@ -11,28 +11,13 @@ import { AttachmentsKeys } from "../services/queries/attachments.query";
 
 export function PersistGate({ children }: React.PropsWithChildren) {
   const isRestoring = useIsRestoring();
-  const queryClient = useQueryClient();
 
-  const [pendingMutations, setPendingMutations] = useState<number>(0);
   const [totalMutations, setTotalMutations] = useState(0);
 
   const isMutating = useIsMutating();
 
   useEffect(() => {
-    return queryClient.getMutationCache().subscribe((event) => {
-      // You only get continue when resuming from a paused state + resumePausedMutations
-      if (event.type === "updated" && event.action.type === "continue") {
-        setPendingMutations(queryClient.isMutating());
-        setTotalMutations((p) => (p === 0 ? queryClient.isMutating() : p));
-      }
-    });
-  }, [queryClient]);
-
-  useEffect(() => {
-    if (isMutating === 0) {
-      setPendingMutations(0);
-      setTotalMutations(0);
-    }
+    if (isMutating === 0 || totalMutations === 0) setTotalMutations(isMutating);
   }, [isMutating]);
 
   useEffect(() => {
@@ -41,11 +26,7 @@ export function PersistGate({ children }: React.PropsWithChildren) {
     }, 500);
   }, []);
 
-  return isRestoring || pendingMutations ? (
-    <PersistGateLoadingScreen totalMutations={totalMutations} />
-  ) : (
-    children
-  );
+  return isRestoring ? <PersistGateLoadingScreen totalMutations={totalMutations} /> : children;
 }
 
 const PersistGateLoadingScreen = ({ totalMutations }: { totalMutations: number }) => {

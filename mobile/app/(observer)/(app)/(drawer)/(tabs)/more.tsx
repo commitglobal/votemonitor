@@ -29,7 +29,7 @@ interface MenuItemProps {
   onClick?: () => void;
 }
 
-const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
+export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
   <Card onPress={onClick} style={{ minHeight: 64, justifyContent: "center" }}>
     <XStack alignItems="center" justifyContent="space-between" gap="$xxxs">
       <XStack alignItems="center" gap="$xxs" maxWidth="80%">
@@ -97,29 +97,29 @@ const More = () => {
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
-        <MenuItem
+        <MoreMenuItem
           label={t("change-language")}
           icon="language"
           onClick={setIsLanguageSelectSheetOpen.bind(null, true)}
           helper={t(i18n.language, { ns: "languages" })}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("terms")}
           icon="termsConds"
           chevronRight={true}
           onClick={() => {
             Linking.openURL(URL);
           }}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("privacy_policy")}
           icon="privacyPolicy"
           chevronRight={true}
           onClick={() => {
             Linking.openURL(URL);
           }}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("about")}
           helper={`${t("app_version", { value: appVersion })} (${Constants.expoConfig?.extra?.updateVersion}) ${
             process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
@@ -129,29 +129,29 @@ const More = () => {
           icon="aboutVM"
           chevronRight={true}
           onClick={() => router.push("/about-votemonitor")}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("support")}
           icon="contactNGO"
           onClick={() => Linking.openURL(HOTLINE_URL)}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("change-password")}
           icon="changePassword"
           chevronRight={true}
           onClick={() => router.push("/change-password")}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("feedback")}
           icon="feedback"
           onClick={() => setFeedbackSheetOpen(true)}
-        ></MenuItem>
-        <MenuItem
+        ></MoreMenuItem>
+        <MoreMenuItem
           label={t("logout")}
           icon="logoutNoBackground"
           onClick={() => setShowWarningModal(true)}
           helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
-        ></MenuItem>
+        ></MoreMenuItem>
       </YStack>
       {feedbackSheetOpen && <FeedbackSheet open setOpen={setFeedbackSheetOpen} />}
       {/* 

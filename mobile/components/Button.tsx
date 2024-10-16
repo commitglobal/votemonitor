@@ -8,7 +8,7 @@ import {
 } from "tamagui";
 import { Typography } from "./Typography";
 
-type PresetType = "default" | "outlined" | "chromeless" | "red";
+type PresetType = "default" | "outlined" | "chromeless" | "red" | "yellow";
 export interface ButtonProps extends TamaguiButtonProps {
   children: string;
   /**
@@ -81,12 +81,25 @@ const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
             opacity: 0.8,
             borderColor: "transparent",
           },
+          disabledStyle: {
+            backgroundColor: "transparent",
+            opacity: 0.5,
+          },
         },
         red: {
           backgroundColor: "$red10",
           pressStyle: {
             backgroundColor: "$red10",
             opacity: 0.8,
+          },
+        },
+        yellow: {
+          backgroundColor: "$yellow5",
+          color: "$purple6",
+          pressStyle: {
+            backgroundColor: "$yellow5",
+            opacity: 0.8,
+            borderColor: "$yellow5",
           },
         },
       },

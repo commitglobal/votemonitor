@@ -3,11 +3,10 @@ import { router } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { ViewStyle } from "react-native";
+import { Typography } from "../../../components/Typography";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
-import { styled, View, XStack, YStack } from "tamagui";
-import { Typography } from "../../../components/Typography";
+import { ScrollView, styled, View, XStack, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 
@@ -17,15 +16,7 @@ const AboutVoteMonitor = () => {
   const appVersion = Constants.expoConfig?.version;
 
   return (
-    <Screen
-      preset="auto"
-      backgroundColor="white"
-      ScrollViewProps={{
-        bounces: false,
-      }}
-      contentContainerStyle={$containerStyle}
-    >
-      {/* header */}
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={t("title")}
         titleColor="white"
@@ -33,56 +24,50 @@ const AboutVoteMonitor = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       >
-        <Icon icon="loginLogo" paddingBottom="$md" />
+        <Icon icon="loginLogo" paddingVertical="$md" />
       </Header>
 
-      {/* main content */}
-      <YStack padding="$lg" gap="$lg" paddingBottom={insets.bottom}>
-        <YStack gap="$lg">
-          {/* title */}
-          <Typography preset="subheading" fontWeight="500">
-            {t("title")}
-          </Typography>
+      <YStack flex={1} paddingBottom={insets.bottom + 24}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+        >
+          <YStack gap="$lg">
+            <Typography preset="subheading" fontWeight="500" paddingTop="$lg">
+              {t("title_observer")}
+            </Typography>
 
-          {/* about */}
-          <Typography preset="body1">{t("general")}</Typography>
-          <Typography preset="body1">{t("purpose")}</Typography>
+            <Typography preset="body1">{t("general")}</Typography>
+            <Typography preset="body1">{t("purpose")}</Typography>
 
-          {/* bullet list */}
-          <Typography preset="body1">{t("app_provides.paragraph")}</Typography>
-          <YStack marginLeft="$xs" gap="$xxs">
-            <ListItem text={t("app_provides.item1")} />
-            <ListItem text={t("app_provides.item2")} />
-            <ListItem text={t("app_provides.item3")} />
+            <Typography preset="body1">{t("app_provides.paragraph")}</Typography>
+            <YStack marginLeft="$xs" gap="$xxs">
+              <ListItem text={t("app_provides.item1")} />
+              <ListItem text={t("app_provides.item2")} />
+              <ListItem text={t("app_provides.item3")} />
+            </YStack>
+
+            <Typography preset="body1">{t("usage")}</Typography>
+
+            <Typography preset="body1" color="$gray3">
+              {t("version", { value: appVersion })} ({Constants.expoConfig?.extra?.updateVersion})
+            </Typography>
           </YStack>
 
-          {/* usage */}
-          <Typography preset="body1">{t("usage")}</Typography>
-
-          {/* app version */}
-          <Typography preset="body1" color="$gray3">
-            {t("version", { value: appVersion })} ({Constants.expoConfig?.extra?.updateVersion})
-          </Typography>
-        </YStack>
-
-        {/* commit global logo */}
-        <XStack justifyContent="center" alignItems="center" minHeight={115} marginBottom="$lg">
-          <Image
-            source={require("../../../assets/images/commit-global-color.png")}
-            contentFit="contain"
-            style={{ width: "100%", height: "100%" }}
-          />
-        </XStack>
+          <XStack justifyContent="center" alignItems="center" minHeight={115} marginBottom="$lg">
+            <Image
+              source={require("../../../assets/images/commit-global-color.png")}
+              contentFit="contain"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </XStack>
+        </ScrollView>
       </YStack>
     </Screen>
   );
 };
 
 export default AboutVoteMonitor;
-
-const $containerStyle: ViewStyle = {
-  flexGrow: 1,
-};
 
 const Bullet = styled(View, {
   width: 5,

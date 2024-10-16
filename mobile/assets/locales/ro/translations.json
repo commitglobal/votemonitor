@@ -6,13 +6,19 @@
     "status": {
       "completed": "Completat",
       "in_progress": "În desfășurare",
-      "not_started": "Neînceput"
+      "not_started": "Neînceput",
+      "marked_as_completed": "Marcat ca finalizat"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Marchează formularul ca finalizat",
+      "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\""
     },
     "cancel": "Renunță",
     "save": "Salvează",
     "no_data": "Nu s-au găsit date.",
     "select": "Selectează",
-    "done": "Finalizare"
+    "done": "Finalizare",
+    "ok": "OK"
   },
   "languages": {
     "ro": "Română",
@@ -32,24 +38,98 @@
       "save": "Aplică selecția"
     },
     "polling_stations": {
-      "heading": "Monitorizează secții de votare",
-      "description": "și documentează în timp real întregul proces electoral, prin formulare configurate de organizația ta"
+      "heading": "Monitorizează procesele electorale",
+      "description": "și raportează nereguli în campanie sau la secțiile de votare și semnalează orice nereguli legate de procedurile din ziua votării"
     },
     "forms": {
       "heading": "Completează formulare",
-      "description": "și urmărește-le progresul în timpul fiecărei etape de observare"
+      "description": "și trimite sesizări pentru a ajuta la asigurarea unui proces electoral transparent și corect"
     },
     "media": {
       "heading": "Adaugă notițe sau fișiere media",
-      "description": "dacă observi nereguli, pentru a-ți susține răspunsurile",
+      "description": "pentru a susține în continuare observațiile tale și a furniza dovezi pentru orice nereguli",
       "save": "Mergi la aplicație"
+    }
+  },
+  "select_app_mode": {
+    "heading": "Selectează modul aplicației",
+    "description": "Poți monitoriza procesul electoral ca observator acreditat sau doar ca cetățean interesat să susțină desfășurarea unor alegeri corecte și democratice.",
+    "accredited_observer": {
+      "title": "Vote Monitor pentru Observatori Acreditați",
+      "description": "Sunt un observator independent acreditat, invitat de un ONG să observ procesul electoral. **"
+    },
+    "citizen": {
+      "title": "Vote Monitor pentru Cetățeni",
+      "description": "Sunt un cetățean și vreau să raportez nereguli electorale pe care le observ în timpul campaniei electorale sau în ziua alegerilor."
+    },
+    "helper": "**Ca observator acreditat vei putea trece în modul Cetățean oricând, din meniul aplicației.",
+    "continue": "Continuă"
+  },
+  "select_election_event": {
+    "heading": "Evenimente electorale disponibile",
+    "description": "Selectează evenimentul pentru care dorești să trimiți o sesizare:",
+    "continue": "Continuă",
+    "empty_description": "În acest moment nu există evenimente electorale active pentru care poți raporta incidente ca cetățean. Odată ce un eveniment va fi disponibil, îl vei vedea în această secțiune.",
+    "error_description": "Ceva nu a funcționat în timp ce se încărcau evenimentele electorale disponibile. Te rugăm să încerci din nou.",
+    "retry": "Încearcă din nou"
+  },
+  "drawer": {
+    "report_as": "Raportează ca {{value}}",
+    "citizen": "cetățean",
+    "accredited_observer": "observator acreditat"
+  },
+  "citizen_report_issue": {
+    "header_title": "Raportează o problemă",
+    "description": "Ca cetățean, poți raporta o problemă legată de alegeri completând un formular de raportare din lista de mai jos.",
+    "empty_forms": "Formularele de raportare vor apărea aici odată ce echipa Vote Monitor le va publica în sistem.",
+    "error_message": "Ceva nu a funcționat în timp ce se încărcau formularele de raportare. Te rugăm să încerci din nou.",
+    "retry": "Încearcă din nou",
+    "info_modal": {
+      "p1": "Rapoartele trimise prin Vote Monitor Citizen vor fi analizate de ONG-urile care monitorizează evenimentul electoral și pot fi incluse în rapoartele de observare electorală. În anumite cazuri, sesizările tale pot fi transmise instituțiilor responsabile cu organizarea alegerilor pentru a îmbunătăți procesele electorale viitoare.",
+      "p2": "Te rugăm să reții că trimiterea unei sesizări prin această aplicație nu constituie o plângere oficială depusă la instituțiile responsabile cu organizarea alegerilor.",
+      "ok": "OK"
+    }
+  },
+  "citizen_form": {
+    "review": {
+      "heading": "Revizuiește sesizarea ta",
+      "send": "Trimite sesizarea",
+      "sending_report": "Trimitem sesizarea ta. Te rugăm să aștepți..."
+    },
+    "progress_bar_label": "Progresul formularului",
+    "success": {
+      "title": "Sesizarea ta a fost trimisă cu succes!",
+      "description": "Îți mulțumim pentru implicarea civică. Ai opțiunea de a trimite o copie a răspunsurilor tale pe email sau poți reveni la pagina principală.",
+      "back_to_main": "Înapoi la pagina principală",
+      "send_copy": "Trimite-mi o copie"
+    },
+    "error": "A apărut o problemă la trimiterea sesizării tale.",
+    "email_copy": {
+      "title": "Introdu adresa de email pentru a primi o copie a formularului",
+      "description": "Pentru a primi o copie a formularului tău, te rugăm să introduci adresa ta de email mai jos. Această adresă de email va fi folosită doar pentru a-ți trimite copia și nu va fi stocată sau folosită în alte scopuri.",
+      "placeholder": "Introdu adresa ta de email",
+      "required": "Adresa de email este obligatorie",
+      "invalid": "Formatul adresei de email nu este valid",
+      "cancel": "Anulează",
+      "send": "Trimite"
+    },
+    "copy_sent": {
+      "title": "Copia ta a fost trimisă",
+      "description": "Copia ta ar trebui să ajungă instant, dar în cazuri rare poate dura câteva minute pentru a fi procesată. Poți reveni la pagina principală între timp."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Ai modificări nesalvate",
+      "description": "Părăsirea acestei pagini va duce la pierderea întregului tău progres în formular. Ești sigur că vrei să te întorci?",
+      "actions": {
+        "discard": "Întoarce-te",
+        "save": "Rămâi aici"
+      }
     }
   },
   "login": {
     "disclaimer": {
-      "paragraph1": "Te rugăm să reții că dacă nu ești acreditat/ă ca observator independent de către o organizație care monitorizează procesele electorale în țara ta, nu poți utiliza aplicația Vote Monitor.",
-      "paragraph2": "Te rugăm să consulți astfel de organizații pentru a afla ce pași trebuie să urmezi pentru a deveni observator electoral sau să ne contactezi pentru informații suplimentare la adresa",
-      "email": "info@commitglobal.org"
+      "paragraph1": "Vote Monitor pentru Observatori poate fi folosit doar de observatori independenți, acreditați de o organizație care monitorizează procesele electorale. Este necesar un email de invitație de la organizația ta, cu instrucțiuni pentru crearea unui cont.",
+      "paragraph2": "Dacă nu ești un observator acreditat, poți totuși să raportezi nereguli ca cetățean pentru un eveniment electoral în desfășurare, fără a avea nevoie de un cont."
     },
     "heading": "Conectează-te",
     "paragraph": "Te rugăm să folosești adresa de email cu care te-ai înregistrat ca observator.",
@@ -108,15 +188,25 @@
   },
   "about_app": {
     "title": "Despre Vote Monitor",
+    "title_observer": "Despre Vote Monitor pentru Observatori",
     "general": "Vote Monitor este un instrument digital dedicat observatorilor independenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltată și administrată de Code for Romania/Commit Global",
-    "purpose": "Aplicația asistă observatorii independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
+    "purpose": "Aplicația asistă observatorilor independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
     "app_provides": {
       "paragraph": "Aplicația oferă observatorilor:",
       "item1": "O modalitate de a gestiona mai multe secții de votare vizitate",
       "item2": "O metodă eficientă de monitorizare a proceselor electorale prin formulare create de organizații",
       "item3": "Un mijloc de raportare rapidă a altor situații sau incidente problematice în afara formularelor standard"
     },
-    "usage": "Aplicația Vote Monitor poate fi utilizată în orice tip de alegeri din orice țară din întreaga lume. Din 2016, a fost utilizată în mai multe tururi de alegeri în România și Polonia.",
+    "usage": "Aplicația Vote Monitor poate fi utilizată pentru orice tip de alegeri din orice țară din întreaga lume. Din 2016, a fost utilizată în mai multe tururi de alegeri în România, Polonia și Bulgaria.",
+    "version": "Vote Monitor versiunea {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "Despre Vote Monitor",
+    "title_observer": "Despre Vote Monitor pentru Cetățeni",
+    "p1": "Vote Monitor pentru Cetățeni permite cetățenilor să acționeze activ în monitorizarea alegerilor prin trimiterea de sesizări în timp real despre orice nereguli pe care le observă în timpul perioadei de campanie electorală sau în ziua alegerilor.",
+    "p2": "Vote Monitor pentru Cetățeni este o extensie a aplicației Vote Monitor, dezvoltată inițial de Code for Romania/Commit Global pentru observatorii independenți care sunt implicați alături de ONG-uri în monitorizarea proceselor electorale.",
+    "p3": "Utilizatorii pot trimite sesizări în timp real ce vor fi analizate de către ONG-uri implicate în monitorizarea proceselor electorale. Aceste sesizări pot contribui la crearea de documente de observare detaliate și, în unele cazuri, pot fi transmise instituțiilor responsabile de organizarea alegerilor pentru a îmbunătăți procesele electorale viitoare.",
+    "p4": "Deși sesizările de la cetățeni joacă un rol esențial în promovarea transparenței, te rugăm să reții că trimiterea unei sesizări prin această aplicație nu constituie o plângere oficială depusă la instituțiile responsabile pentru organizarea alegerilor.",
     "version": "Vote Monitor versiunea {{value}}"
   },
   "loading_screen": {
@@ -143,7 +233,7 @@
     "error": "Eroare la încărcarea secțiilor de votare!"
   },
   "observation": {
-    "title": "",
+    "title": "Observarea secției de votare",
     "no_election_round": {
       "heading": "Momentan nu ai niciun eveniment electoral de observat",
       "paragraph": "Vei putea folosi aplicația după ce organizația care te-a acreditat te alocă unui eveniment electoral."
@@ -159,6 +249,7 @@
       "add": "Adaugă o secție nouă de votare"
     },
     "polling_stations_information": {
+      "heading": "Informații despre secția de votare",
       "time_select": {
         "not_defined": "Nedefinită",
         "arrival_time": "Ora sosirii",
@@ -169,6 +260,60 @@
           "later_departure": "Te rugăm să selectezi o oră de plecare ulterioară orei de sosire.",
           "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare.",
           "server": "Nu am putut trimite informațiile către server."
+        }
+      },
+      "observation_time": {
+        "observation_time": "Perioada de observare",
+        "not_defined": "Nedefinită",
+        "no_of_breaks": "{{value}} pauze",
+        "one_break": "{{value}} pauză",
+        "arrival_and_departure": "Ora de sosire și plecare",
+        "arrival_time": "Ora sosirii",
+        "departure_time": "Ora plecării",
+        "departure_after_arrival": "Ora plecării trebuie să fie după ora sosirii",
+        "select_arrival_time": "Selectează ora sosirii",
+        "select_departure_time": "Selectează ora plecării",
+        "add_break": "Adaugă o nouă pauză în observare",
+        "break": "Pauza {{value}}",
+        "start_time": "Ora de început",
+        "select_start_time": "Selectează ora de început",
+        "end_time": "Ora de sfârșit",
+        "select_end_time": "Selectează ora de sfârșit",
+        "undefined_date": "ZZ/LL/AAAA",
+        "undefined_time": "HH:MM",
+        "save": "Salvează perioada de observare",
+        "clear": "Șterge perioada de observare",
+        "confirmation_modals": {
+          "clear": {
+            "title": "Șterge perioada de observare",
+            "description": "Această acțiune va șterge ora ta de sosire și plecare, inclusiv toate pauzele introduse până acum pentru această secție de votare. Pentru a evita pierderea neintenționată de informații, te rugăm să verifici orele înainte de a efectua această acțiune.",
+            "actions": {
+              "cancel": "Anulează",
+              "clear": "Șterge perioada de observare"
+            }
+          },
+          "delete": {
+            "title": "Șterge pauza",
+            "description": "Această acțiune va șterge pauza ta. Pentru a evita pierderea neintenționată de informații, te rugăm să verifici orele înainte de a efectua această acțiune.",
+            "actions": {
+              "cancel": "Anulează",
+              "delete": "Șterge pauza"
+            }
+          },
+          "unsaved_changes": {
+            "title": "Salvează modificările pentru perioada de observare",
+            "description": "Ai modificări nesalvate legate de perioada de observare pe care l-ai introdus. Vrei să salvează modificările înainte de a părăsi pagina?",
+            "actions": {
+              "discard": "Renunță",
+              "save": "Salvează modificările"
+            }
+          },
+          "unable_to_save": {
+            "title": "Nu se poate salva perioada de observare",
+            "p1": "Orele pe care le-ai introdus nu pot fi salvate din cauza unui conflict între perioadele de pauză și orele de sosire/plecare.",
+            "p2": "Te rugăm să te asiguri că perioadele de pauză nu depășesc intervalul de timp definit de orele de observare la sosire și plecare. Te rugăm să revizuiești și să ajustezi orele în consecință.",
+            "ok": "OK"
+          }
         }
       },
       "polling_station_form": {
@@ -213,7 +358,15 @@
       "description": "Această acțiune va șterge toate răspunsurile introduse până acum în acest formular. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici informațiile despre secția de votare înainte de a realiza această acțiune.",
       "actions": {
         "cancel": "Renunță",
-        "clear": "Golește formular"
+        "clear": "Golește formularul"
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Salvează modificările pe formular",
+      "description": "Ai modificări nesalvate pe acest formular. Vrei să salvezi modificările înainte de a părăsi pagina?",
+      "actions": {
+        "discard": "Renunță",
+        "save": "Salvează modificările"
       }
     }
   },
@@ -223,7 +376,7 @@
       "status": "Status formular",
       "answered_questions": "Întrebări cu răspuns",
       "resume": "Reia formularul",
-      "start_form": "Începe formular",
+      "start_form": "Începe formularul",
       "progress": "progres"
     },
     "questions": {
@@ -262,6 +415,7 @@
     "form": {
       "min": "Câmpul trebuie să aibă cel puțin {{value}} caractere",
       "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
+      "required": "Acest câmp este obligatoriu",
       "date_placeholder": "Te rugăm să introduci data",
       "text_placeholder": "Te rugăm să introduci un text"
     },
@@ -276,6 +430,15 @@
         "take_picture": "Fă o poză",
         "record_video": "Înregistrează un video",
         "upload_audio": "Încarcă un fișier audio"
+      },
+      "upload": {
+        "compressing": "Se comprimă atașamentul: ",
+        "preparing": "Se pregătește atașamentul...",
+        "starting": "Se începe încărcarea...",
+        "progress": "Progresul încărcării:",
+        "completed": "Încărcarea a fost finalizată.",
+        "aborted": "Încărcarea a fost anulată.",
+        "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
       }
     },
     "notes": {
@@ -319,6 +482,14 @@
           "cancel": "Renunță",
           "clear": "Șterge"
         }
+      },
+      "unsaved_answer": {
+        "title": "Salvează modificările pe întrebare",
+        "description": "Ai modificări nesalvate pe această întrebare. Vrei să salvezi modificările înainte de a părăsi pagina?",
+        "actions": {
+          "discard": "Renunță",
+          "save": "Salvează modificările"
+        }
       }
     },
     "error": "Eroare la încărcarea datelor întrebării!"
@@ -344,7 +515,7 @@
       "actions": {
         "cancel": "Renunță",
         "remove": "Șterge",
-        "loading": "Se încarcă"
+        "loading": "Se încarcă..."
       }
     },
     "removal_unallowed_dialog": {
@@ -368,6 +539,10 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    },
+    "info_modal": {
+      "p1": "Din această secțiune poți raporta mai rapid organizației tale alte probleme sau nereguli care au sau nu legătură cu secțiile de votare vizitate.",
+      "p2": "Această funcție îți permite să alertezi imediat organizația, în afara formularelor obișnuite de observare, asigurându-te că problemele urgente sunt adresate rapid."
     }
   },
   "report_new_issue": {
@@ -401,7 +576,7 @@
         "max": "Câmpul nu poate depăși {{value}} caractere"
       },
       "issue_title": {
-        "label": "Titlul problemei*",
+        "label": "Titlul problemei *",
         "placeholder": "Scrieți un titlu pentru această problemă...",
         "required": "Titlul este obligatoriu",
         "max": "Câmpul nu poate depăși {{value}} caractere"
@@ -425,10 +600,10 @@
     "error": "Eroare la încărcarea raportării"
   },
   "guides": {
-    "title": "",
+    "title": "Resurse",
     "empty": {
       "heading": "Momentan nu ai niciun ghid de citit ",
-      "paragraph": "Aici vei găsi la îndemână ghiduri și resurse din partea organizației tale. "
+      "paragraph": "Aici vei găsi la îndemâna ta ghiduri și resurse din partea organizației care te-a acreditat ca osbervator."
     },
     "list": {
       "heading": "Ghiduri",
@@ -439,10 +614,24 @@
     },
     "options_sheet": {
       "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    },
+    "info_modal": "În această secțiune vei găsi informații cheie și resurse concepute pentru a te ajuta să observi procesele electorale și să raportezi orice probleme sau nereguli electorale pe care le întâlnești ca observator independent."
+  },
+  "resources": {
+    "title": "Resurse",
+    "info": "În această secțiune vei găsi informații cheie și resurse concepute pentru a te ajuta să observi procesele electorale și să raportezi orice probleme sau nereguli electorale pe care le sesizezi ca cetățean.",
+    "empty": {
+      "heading": "Încă nu există ghiduri de citit",
+      "paragraph": "Aici vei găsi la îndemâna ta ghiduri și resurse despre observarea proceselor electorale și raportarea neregulilor din postura de cetățean."
+    },
+    "types": {
+      "Document": "PDF atașat",
+      "Website": "Link extern",
+      "Text": "Ghid integrat în aplicație"
     }
   },
   "inbox": {
-    "title": "",
+    "title": "Inbox",
     "empty": {
       "heading": "Momentan nu ai primit niciun mesaj",
       "paragraph": "Aici vor apărea mesaje și alerte din partea organizației tale."
@@ -452,6 +641,21 @@
     "your_organization": "organizația ta",
     "menu": {
       "manage_polling_stations": "Vezi secțiile de votare vizitate"
+    },
+    "info_modal": {
+      "p1": "În acest Inbox vei primi actualizări în timp real și mesaje de la ONG-ul care te-a acreditat ca observator.",
+      "p2": "Verifică periodic pentru a vedea dacă ai primit informații noi, relevante pentru activitatea ta de observare."
+    }
+  },
+  "updates": {
+    "title": "Actualizări",
+    "empty": {
+      "heading": "Nu ai primit încă actualizări",
+      "paragraph": "Actualizări sau informații noi despre perioada electorală vor apărea aici."
+    },
+    "info_modal": {
+      "p1": "În această secțiune vei primi actualizări în timp real de la echipa Vote Monitor cu privire la perioada electorală, relevante pentru dumneavoastră ca cetățean interesat de implicarea civică.",
+      "p2": "Verifică periodic pentru a vedea dacă ai primit informații noi."
     }
   },
   "more": {
@@ -512,13 +716,13 @@
         "label": "Parola nouă *",
         "placeholder": "Te rugăm să introduci parola nouă",
         "helper": "Parola trebuie să conțină cel puțin 8 caractere",
-        "required": "Parola este obligatorie"
+        "required": "Parola nouă este obligatorie"
       },
       "confirm_password": {
         "label": "Confirmă parola nouă *",
         "placeholder": "Confirmă parola nouă",
         "helper": "Parolele trebuie să coincidă",
-        "required": "Parola este obligatorie",
+        "required": "Parola nouă este obligatorie",
         "no_match": "Parolele nu coincid"
       },
       "save": "Salvează parola nouă"
@@ -541,8 +745,10 @@
   "network_banner": {
     "online": "Aplicația este online. Toate răspunsurile au fost trimise către server.",
     "offline": "Fără conexiune la internet. Răspunsurile se vor salva local.",
+    "offline_citizen": "Fără conexiune la internet. Trebuie să ai conexiune la internet pentru a trimite formulare.",
     "more_details": "Mai multe detalii",
-    "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări."
+    "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări.",
+    "offline_warning_citizen": "Se pare că nu ai conexiune la internet în acest moment. Pentru a completa formularul, trebuie să ai conexiune la internet."
   },
   "sync": {
     "sync_data": "Se sincronizează datele offline...",

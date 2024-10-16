@@ -65,6 +65,7 @@ const AddNoteSheetContent = ({
       marginHorizontal={12}
       contentContainerStyle={{ gap: 16 }}
       keyboardShouldPersistTaps="handled"
+      bounces={false}
     >
       <Typography preset="heading">{t("notes.add.heading")}</Typography>
 

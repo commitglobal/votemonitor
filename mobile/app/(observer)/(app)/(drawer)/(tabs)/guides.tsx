@@ -1,27 +1,26 @@
-import { ScrollView, Spinner, YStack } from "tamagui";
 import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
-import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { useGuides } from "../../../../../services/queries/guides.query";
-import { ListView } from "../../../../../components/ListView";
-import { Guide, guideType } from "../../../../../services/api/get-guides.api";
-import { useWindowDimensions } from "react-native";
-import GuideCard from "../../../../../components/GuideCard";
-import * as Linking from "expo-linking";
-import { RefreshControl } from "react-native-gesture-handler";
-
-const ESTIMATED_ITEM_SIZE = 115;
+import ResourcesGuidesList from "../../../../../components/ResourcesList";
+import { YStack } from "tamagui";
+import SearchInput from "../../../../../components/SearchInput";
+import { useState, useMemo } from "react";
+import { filterResources } from "../../../../../helpers/resources";
+import { Guide } from "../../../../../services/api/get-guides.api";
+import InfoModal from "../../../../../components/InfoModal";
 
 const Guides = () => {
   const { t } = useTranslation("guides");
+  const router = useRouter();
   const navigation = useNavigation();
 
-  const { width } = useWindowDimensions();
+  const [search, setSearch] = useState("");
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
 
   const { activeElectionRound } = useUserData();
   const {
@@ -31,22 +30,25 @@ const Guides = () => {
     isRefetching: isRefetchingGuides,
   } = useGuides(activeElectionRound?.id);
 
-  if (isLoadingGuides) {
-    return (
-      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
-        <Header
-          title={t("title")}
-          titleColor="white"
-          barStyle="light-content"
-          leftIcon={<Icon icon="menuAlt2" color="white" />}
-          onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-        />
-        <YStack flex={1} justifyContent="center" alignItems="center">
-          <Spinner size="large" color="$purple5" />
-        </YStack>
-      </Screen>
-    );
-  }
+  const filteredGuides = useMemo(() => {
+    return filterResources(guides || [], search);
+  }, [guides, search]);
+
+  const handleSearch = (text: string) => {
+    setSearch(text);
+  };
+
+  const handleResourcePress = (resource: Guide) => {
+    router.push(`/guide/${resource.id}`);
+  };
+
+  const handleOpenInfoModal = () => {
+    setIsOpenInfoModal(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setIsOpenInfoModal(false);
+  };
 
   return (
     <Screen
@@ -55,73 +57,31 @@ const Guides = () => {
         flexGrow: 1,
       }}
     >
-      <Header
-        title={t("title")}
-        titleColor="white"
-        barStyle="light-content"
-        leftIcon={<Icon icon="menuAlt2" color="white" />}
-        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-      />
-      {guides && guides.length !== 0 ? (
-        <YStack padding="$md" flex={1}>
-          <ListView<Guide>
-            data={guides}
-            showsVerticalScrollIndicator={false}
-            bounces={true}
-            ListHeaderComponent={
-              guides?.length > 0 ? (
-                <Typography preset="body1" fontWeight="700" marginBottom="$xs">
-                  {t("list.heading")}
-                </Typography>
-              ) : (
-                <></>
-              )
-            }
-            estimatedItemSize={ESTIMATED_ITEM_SIZE}
-            estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-            renderItem={({ item, index }) => {
-              return (
-                <GuideCard
-                  key={index}
-                  guide={item}
-                  marginBottom="$md"
-                  onPress={
-                    item.guideType === guideType.WEBSITE
-                      ? () => Linking.openURL(item.websiteUrl)
-                      : () => Linking.openURL(item.presignedUrl)
-                  }
-                />
-              );
-            }}
-            refreshControl={
-              <RefreshControl refreshing={isRefetchingGuides} onRefresh={refetchGuides} />
-            }
-          />
+      <YStack>
+        <Header
+          title={t("title")}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="menuAlt2" color="white" />}
+          onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+          rightIcon={<Icon icon="infoCircle" color="white" />}
+          onRightPress={handleOpenInfoModal}
+        />
+        <YStack backgroundColor="$purple5" padding="$md">
+          <SearchInput onSearch={handleSearch} />
         </YStack>
-      ) : (
-        <ScrollView
-          contentContainerStyle={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 16,
-          }}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={isRefetchingGuides} onRefresh={refetchGuides} />
-          }
-        >
-          <Icon icon="undrawReading" size={190} />
+      </YStack>
+      <ResourcesGuidesList
+        isLoading={isLoadingGuides}
+        isRefetching={isRefetchingGuides}
+        resources={filteredGuides || []}
+        refetch={refetchGuides}
+        emptyContainerMarginTop="30%"
+        onResourcePress={handleResourcePress}
+      />
 
-          <YStack gap="$xxxs" paddingHorizontal="$lg">
-            <Typography preset="subheading" textAlign="center">
-              {t("empty.heading")}
-            </Typography>
-            <Typography preset="body1" textAlign="center" color="$gray12">
-              {t("empty.paragraph")}
-            </Typography>
-          </YStack>
-        </ScrollView>
+      {isOpenInfoModal && (
+        <InfoModal paragraphs={[t("info_modal")]} handleCloseInfoModal={handleCloseInfoModal} />
       )}
     </Screen>
   );

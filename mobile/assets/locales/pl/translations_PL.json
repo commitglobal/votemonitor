@@ -6,13 +6,19 @@
     "status": {
       "completed": "Ukończono",
       "in_progress": "W toku",
-      "not_started": "Nie rozpoczęto"
+      "not_started": "Nie rozpoczęto",
+      "marked_as_completed": "TODO: Oznaczono jako ukończone"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Zaznacz formularz jako zakończony",
+      "mark_as_in_progress": "TODO: Zaznacz formularz jako w trakcie"
     },
     "cancel": "Anuluj",
     "save": "Zapisz",
     "no_data": "Nie znaleziono danych.",
     "select": "Wybierz",
-    "done": "Zrobione"
+    "done": "Zrobione",
+    "ok": "Dobry"
   },
   "languages": {
     "ro": "rumuński",
@@ -262,6 +268,7 @@
     "form": {
       "min": "Pole musi mieć długość co najmniej {{value}} znaków",
       "max": "Pole musi zawierać maksymalnie {{value}} znaków",
+      "required": "To pole jest wymagane",
       "date_placeholder": "Proszę wprowadzić datę",
       "text_placeholder": "Proszę wpisać tekst"
     },
@@ -276,6 +283,15 @@
         "take_picture": "Zrób zdjęcie",
         "record_video": "Nagraj wideo",
         "upload_audio": "Wgraj nagranie"
+      },
+      "upload": {
+        "compressing": "Kompresowanie załącznika: ",
+        "preparing": "Przygotowanie załącznika...",
+        "starting": "Rozpoczynanie wysyłania...",
+        "progress": "Postęp wysyłania:",
+        "completed": "Wysyłanie zakończone.",
+        "aborted": "Wysyłanie przerwane.",
+        "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
       }
     },
     "notes": {
@@ -372,6 +388,15 @@
   },
   "report_new_issue": {
     "title": "Zgłoś nową sprawę",
+    "upload": {
+      "compressing": "Kompresowanie załącznika: ",
+      "preparing": "Przygotowanie załącznika...",
+      "starting": "Rozpoczynanie wysyłania...",
+      "progress": "Wysyłanie załączników: ",
+      "completed": "Wysyłanie zakończone.",
+      "aborted": "Wysyłanie przerwane.",
+      "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+    },
     "media": {
       "heading": "Wybrane media",
       "add": "Dodaj pliki multimedialne",
@@ -441,6 +466,19 @@
       "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
     }
   },
+  "resources": {
+    "title": "TODO:Zasoby",
+    "info": "TODO:W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel.",
+    "empty": {
+      "heading": "TODO:Brak jeszcze przewodników do przeczytania",
+      "paragraph": "TODO:Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako obywatel są na wyciągnięcie ręki."
+    },
+    "types": {
+      "Document": "TODO:Typ pliku PDF",
+      "Website": "TODO:Zewnętrzny adres URL",
+      "Text": "TODO:Przewodnik w aplikacji"
+    }
+  },
   "inbox": {
     "title": "",
     "empty": {
@@ -452,6 +490,17 @@
     "your_organization": "twoja organizacja",
     "menu": {
       "manage_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
+    }
+  },
+  "updates": {
+    "title": "TODO:Aktualizacje",
+    "empty": {
+      "heading": "TODO:Nie otrzymano jeszcze żadnych aktualizacji",
+      "paragraph": "TODO:Tutaj pojawią się aktualizacje dotyczące okresu wyborczego."
+    },
+    "info_modal": {
+      "p1": "TODO:W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące okresu wyborczego, istotne dla Ciebie jako obywatela zainteresowanego zaangażowaniem obywatelskim.",
+      "p2": "TODO:Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
     }
   },
   "more": {
@@ -541,8 +590,10 @@
   "network_banner": {
     "online": "Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.",
     "offline": "Tryb offline. Dane zachowane lokalnie.",
+    "offline_citizen": "TODO: Tryb offline. Potrzebujesz internetu, aby wypełnić formularz.",
     "more_details": "Więcej szczegółów",
-    "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
+    "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty.",
+    "offline_warning_citizen": "TODO: Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu."
   },
   "sync": {
     "sync_data": "Synchronizowanie danych offline...",

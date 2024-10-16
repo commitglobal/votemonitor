@@ -135,9 +135,11 @@ const ChangePassword = () => {
           render={({ field: { onChange, value } }) => (
             <PasswordInput
               error={
-                errors.currentPassword?.message || reqError
+                reqError
                   ? t("form.current_password.credentials_error")
-                  : undefined
+                  : errors.currentPassword?.message
+                    ? errors.currentPassword?.message
+                    : undefined
               }
               key="currentPassword"
               type="password"

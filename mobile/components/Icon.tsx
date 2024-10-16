@@ -50,7 +50,7 @@ import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
 import CommitGlobal from "../assets/icons/commit-global.svg";
 import PollingStationPin from "../assets/icons/polling-station-pin.svg";
 import Form from "../assets/icons/form.svg";
-
+import CheckCircle from "../assets/icons/check-circle.svg";
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -59,6 +59,13 @@ import Note from "../assets/icons/questionCard/note.svg";
 import Photo from "../assets/icons/questionCard/photo.svg";
 import Video from "../assets/icons/questionCard/video.svg";
 import Audio from "../assets/icons/questionCard/audio.svg";
+import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
+import Warning from "../assets/icons/warning.svg";
+import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
+import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
+import CoffeeBreak from "../assets/icons/coffee-break.svg";
+import Updates from "../assets/icons/updates.svg";
+import VMObserverLogo from "../assets/icons/VMObserverLogo.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -75,6 +82,8 @@ interface IconProps extends ViewProps {
    * An optional size for the icon. If not provided, the icon will be sized to the icon's resolution.
    */
   size?: number;
+  width?: number;
+  height?: number;
 
   /**
    * Style overrides for the view container
@@ -96,7 +105,15 @@ type IconRegistry = {
 
 export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
-    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
+    const {
+      icon,
+      color = "black",
+      size = 24,
+      style: $viewStyleOverride,
+      width,
+      height,
+      ...tamaguiProps
+    } = props;
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -116,7 +133,7 @@ export const defaultIcon = React.forwardRef(
       menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
       check: <Check fill={color} width={size} height={size} />,
-      calendar: <Calendar fill={color} width={size} height={size} />,
+      calendar: <Calendar stroke={color} width={size} height={size} />,
       peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
       loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
       missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
@@ -135,7 +152,7 @@ export const defaultIcon = React.forwardRef(
       search: <Search fill={color} width={size} height={size} />,
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle width={size} height={size} stroke={color} />,
-      emailSent: <EmailSent fill={color} width={size} height={size} />,
+      successCheck: <EmailSent fill={color} width={size} height={size} />,
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
       undrawReading: <UndrawReading fill={color} width={size} height={size} />,
       undrawFlag: <UndrawFlag fill={color} width={size | 187} height={170 | size} />,
@@ -146,7 +163,7 @@ export const defaultIcon = React.forwardRef(
       monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
-      bin: <Bin fill={color} width={size} height={size} />,
+      bin: <Bin width={size} height={size} stroke={color} />,
       commitGlobal: <CommitGlobal fill={color} />,
       pollingStationPin: <PollingStationPin fill={color} />,
       note: <Note fill={color} />,
@@ -154,6 +171,14 @@ export const defaultIcon = React.forwardRef(
       video: <Video fill={color} />,
       audio: <Audio fill={color} />,
       form: <Form fill={color} />,
+      checkCircle: <CheckCircle fill={color} width={size} height={size} />,
+      vmCitizenLogo: <VMCitizenLogo fill={color} width={width} height={height} />,
+      warning: <Warning stroke={color} width={size} height={size} />,
+      publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
+      appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
+      coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
+      updates: <Updates fill={color} width={size} height={size} />,
+      vmObserverLogo: <VMObserverLogo fill={color} width={width} height={height} />,
     };
 
     return (

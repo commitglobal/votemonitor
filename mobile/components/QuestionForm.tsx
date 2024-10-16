@@ -8,15 +8,16 @@ import WizardFormElement from "./WizardFormInputs/WizardFormElement";
 import { YStack } from "tamagui";
 import CheckboxInput from "./Inputs/CheckboxInput";
 import WizardRatingFormInput from "./WizardFormInputs/WizardRatingFormInput";
-import { useLocalSearchParams } from "expo-router";
-import { SearchParamType } from "../app/(observer)/(app)/form-questionnaire/[questionId]";
-import { Typography } from "./Typography";
+
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
+import { Typography } from "./Typography";
 
 interface IQuestionFormProps {
   control: Control<any, any>;
   activeQuestion: IActiveQuestion;
+  language: string;
+  required?: boolean;
   handleFocus?: () => void;
 }
 
@@ -27,28 +28,30 @@ interface IActiveQuestion {
 }
 
 const QuestionForm = forwardRef(
-  ({ control, activeQuestion, handleFocus }: IQuestionFormProps, textareaRef) => {
-    const { questionId, language } = useLocalSearchParams<SearchParamType>();
+  (
+    { control, activeQuestion, handleFocus, language, required }: IQuestionFormProps,
+    textareaRef,
+  ) => {
     const { t } = useTranslation("polling_station_form_wizard");
 
-    if (!language || !questionId) {
-      return <Typography>Incorrect page params</Typography>;
-    }
+    let returnedComponent: React.ReactNode;
 
     return (
       <>
         <Controller
           key={activeQuestion?.question?.id}
           name={activeQuestion?.question?.id}
-          rules={{ required: false }}
+          rules={{
+            required: required ? { value: true, message: t("form.required") } : false,
+          }}
           control={control}
-          render={({ field: { value, onChange } }) => {
+          render={({ field: { value, onChange }, fieldState: { error } }) => {
             if (!activeQuestion) return <></>;
 
             const { question } = activeQuestion;
             switch (question.$questionType) {
               case "numberQuestion":
-                return (
+                returnedComponent = (
                   <WizardFormInput
                     type="numeric"
                     label={`${question.code}. ${question.text[language]}`}
@@ -62,8 +65,9 @@ const QuestionForm = forwardRef(
                     })}
                   />
                 );
+                break;
               case "textQuestion":
-                return (
+                returnedComponent = (
                   <WizardFormInput
                     type="textarea"
                     ref={textareaRef}
@@ -79,8 +83,9 @@ const QuestionForm = forwardRef(
                     value={value}
                   />
                 );
+                break;
               case "dateQuestion":
-                return (
+                returnedComponent = (
                   <WizardDateFormInput
                     label={`${question.code}. ${question.text[language]}`}
                     placeholder={t("form.date_placeholder")}
@@ -89,8 +94,9 @@ const QuestionForm = forwardRef(
                     value={value}
                   />
                 );
+                break;
               case "singleSelectQuestion":
-                return (
+                returnedComponent = (
                   <>
                     <WizardRadioFormInput
                       label={`${question.code}. ${question.text[language]}`}
@@ -103,10 +109,10 @@ const QuestionForm = forwardRef(
                       onValueChange={(radioValue) =>
                         onChange({ ...value, radioValue, textValue: null })
                       }
-                      value={value.radioValue || ""}
+                      value={value?.radioValue || ""}
                     />
                     {question.options.map((option) => {
-                      if (option.isFreeText && option.id === value.radioValue) {
+                      if (option.isFreeText && option.id === value?.radioValue) {
                         return (
                           <FormInput
                             type="textarea"
@@ -123,6 +129,7 @@ const QuestionForm = forwardRef(
                             helper={t("form.max", {
                               value: 1024,
                             })}
+                            error={error?.message}
                           />
                         );
                       }
@@ -130,8 +137,9 @@ const QuestionForm = forwardRef(
                     })}
                   </>
                 );
+                break;
               case "multiSelectQuestion":
-                return (
+                returnedComponent = (
                   <WizardFormElement
                     key={question.id}
                     label={`${question.code}. ${question.text[language]}`}
@@ -187,8 +195,9 @@ const QuestionForm = forwardRef(
                     })}
                   </WizardFormElement>
                 );
+                break;
               case "ratingQuestion":
-                return (
+                returnedComponent = (
                   <WizardRatingFormInput
                     type="single"
                     id={question.id}
@@ -199,7 +208,19 @@ const QuestionForm = forwardRef(
                     value={value}
                   />
                 );
+                break;
             }
+
+            return (
+              <YStack>
+                {returnedComponent}
+                {error && (
+                  <Typography color="$red10" marginTop="$md">
+                    {error.message}
+                  </Typography>
+                )}
+              </YStack>
+            );
           }}
         />
       </>

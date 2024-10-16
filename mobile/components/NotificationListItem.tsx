@@ -1,5 +1,5 @@
 import React from "react";
-import { Notification } from "../services/api/get-notifications.api";
+import { Notification } from "../services/api/notifications/notifications-get.api";
 import { useWindowDimensions, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";

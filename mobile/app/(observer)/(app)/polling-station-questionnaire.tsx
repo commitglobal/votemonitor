@@ -13,7 +13,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../../services/interfaces/answer.type";
-import { createRef, useMemo, useRef, useState } from "react";
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
 import FormInput from "../../../components/FormInputs/FormInput";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -31,7 +31,7 @@ import Button from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
-import { Keyboard, RefreshControl } from "react-native";
+import { BackHandler, Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 
@@ -50,6 +50,7 @@ const PollingStationQuestionnaire = () => {
     refetch: refetchFormStructure,
     isRefetching: isRefetchingFormStructure,
   } = usePollingStationInformationForm(activeElectionRound?.id);
+
   const {
     data: formData,
     refetch: refetchFormData,
@@ -95,6 +96,17 @@ const PollingStationQuestionnaire = () => {
     pollingStationId: selectedPollingStation?.pollingStationId,
     scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_answers`,
   });
+
+  const onSetCompletion = (completion: boolean) => {
+    if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
+      mutate({
+        electionRoundId: activeElectionRound?.id,
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        isCompleted: completion,
+      });
+      router.back();
+    }
+  };
 
   const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
     const answers: ApiFormAnswer[] = Object.keys(formData)
@@ -161,7 +173,6 @@ const PollingStationQuestionnaire = () => {
       .filter(Boolean) as ApiFormAnswer[];
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
-      // TODO: How we get rid of so many undefined validations? If we press the button and we don't have the data, is equaly bad
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
@@ -262,6 +273,15 @@ const PollingStationQuestionnaire = () => {
       router.back();
     }
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      onBackPress();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   return (
     <>
@@ -529,6 +549,9 @@ const PollingStationQuestionnaire = () => {
                 setOpenContextualMenu(false);
                 setClearingForm(true);
               }}
+              onSetCompletion={onSetCompletion}
+              isFullyAnswered={Object.values(answers).length === Object.values(questions).length}
+              isCompleted={formData?.isCompleted || false}
             />
           </OptionsSheet>
         )}
@@ -576,12 +599,48 @@ const PollingStationQuestionnaire = () => {
   );
 };
 
-const OptionSheetContent = ({ onClear }: { onClear: () => void }) => {
-  const { t } = useTranslation("polling_station_information_form");
+const OptionSheetContent = ({
+  onClear,
+  onSetCompletion,
+  isCompleted,
+  isFullyAnswered,
+}: {
+  onClear: () => void;
+  onSetCompletion: (completion: boolean) => void;
+  isCompleted: boolean;
+  isFullyAnswered: boolean;
+}) => {
+  const { t } = useTranslation(["polling_station_information_form", "common"]);
+
+  const disableMarkAsDone = useMemo(
+    () => isFullyAnswered && !isCompleted,
+    [isFullyAnswered, isCompleted],
+  );
 
   return (
-    <View paddingVertical="$xxs" paddingHorizontal="$sm">
-      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
+    <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
+      <Typography
+        preset="body1"
+        color={disableMarkAsDone ? "$gray3" : "$gray7"}
+        lineHeight={24}
+        paddingVertical="$xs"
+        onPress={() => {
+          onSetCompletion(!isCompleted);
+          router.back();
+        }}
+        disabled={disableMarkAsDone}
+      >
+        {!isCompleted
+          ? t("forms.mark_as_done", { ns: "common" })
+          : t("forms.mark_as_in_progress", { ns: "common" })}
+      </Typography>
+      <Typography
+        preset="body1"
+        color="$gray7"
+        lineHeight={24}
+        paddingVertical="$xs"
+        onPress={onClear}
+      >
         {t("menu.clear")}
       </Typography>
     </View>

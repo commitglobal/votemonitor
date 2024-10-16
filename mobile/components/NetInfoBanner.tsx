@@ -6,9 +6,11 @@ import { Dialog } from "./Dialog";
 import Button from "./Button";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import { useTranslation } from "react-i18next";
+import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
 
 const NetInfoBanner = () => {
   const { isOnline, shouldDisplayBanner } = useNetInfoContext();
+  const { appMode } = useAppMode();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation(["network_banner", "common"]);
 
@@ -45,7 +47,7 @@ const NetInfoBanner = () => {
         >
           <YStack paddingLeft="$md" maxWidth="65%" paddingVertical="$xxs">
             <Typography fontWeight="500" color="white" numberOfLines={2}>
-              {t("offline")}
+              {appMode === AppMode.CITIZEN ? t("offline_citizen") : t("offline")}
             </Typography>
           </YStack>
 
@@ -73,7 +75,9 @@ const NetInfoBanner = () => {
               <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                 <XStack gap="$sm" justifyContent="center">
                   <Typography preset="body1" color="$gray7" lineHeight={24}>
-                    {t("offline_warning")}
+                    {appMode === AppMode.CITIZEN
+                      ? t("offline_warning_citizen")
+                      : t("offline_warning")}
                   </Typography>
                 </XStack>
               </ScrollView>

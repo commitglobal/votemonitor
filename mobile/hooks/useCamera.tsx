@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
-import { Video, Image } from "react-native-compressor";
+import { Video, Image, getFileSize } from "react-native-compressor";
 import * as Sentry from "@sentry/react-native";
 
 /**
@@ -41,6 +41,7 @@ export type FileMetadata = {
   uri: string;
   name: string;
   type: string;
+  size: number;
 };
 
 export const useCamera = () => {
@@ -48,6 +49,7 @@ export const useCamera = () => {
 
   const uploadCameraOrMedia = async (
     type: "library" | "cameraPhoto" | "cameraVideo",
+    onCompressionProgressCallback?: (progress: number) => void,
   ): Promise<FileMetadata | undefined | void> => {
     if (!status?.granted) {
       const requestedPermisison = await requestPermission();
@@ -94,20 +96,20 @@ export const useCamera = () => {
         if (file.type === "image") {
           resultCompression = await Image.compress(file.uri);
         } else if (file.type === "video") {
-          resultCompression = await Video.compress(file.uri, {}, (progress) => {
-            console.log("Compression Progress: ", progress);
-          });
+          resultCompression = await Video.compress(file.uri, { progressDivider: 10, }, onCompressionProgressCallback);
         }
       } catch (err) {
         Sentry.captureException(err);
       }
 
       const filename = resultCompression.split("/").pop() || "";
+      const fileSize = await getFileSize(resultCompression);
 
       const toReturn = {
         uri: resultCompression,
         name: filename,
         type: file.mimeType || "",
+        size: +fileSize,
       };
       return toReturn;
     }

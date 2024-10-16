@@ -1,44 +1,36 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { Typography } from "../../components/Typography";
 import { SECURE_STORAGE_KEYS } from "../../common/constants";
 import * as SecureStore from "expo-secure-store";
 
-type AppModeContextType = {
-  appMode: "citizen" | "observer" | "onboarding";
-  setAppMode: (appMode: "citizen" | "observer" | "onboarding") => void;
+export enum AppMode {
+  CITIZEN = "citizen",
+  OBSERVER = "observer",
+}
 
-  onboardingComplete: boolean;
-  setOnboardingComplete: (onboardingComplete: boolean) => void;
+type AppModeContextType = {
+  appMode: AppMode | null;
+  setAppMode: (appMode: AppMode) => void;
 };
 
 export const AppModeContext = createContext<AppModeContextType | null>(null);
 
 const AppModeContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [appMode, setAppMode] = useState<"citizen" | "observer" | "onboarding">();
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean>(false);
-  console.log("AppModeContextProvider", appMode);
+  const [appMode, setAppMode] = useState<AppMode | null>(null);
 
   useEffect(() => {
-    const storedAppMode = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
-    // if no appMode has been set it should be onboarding to avoid flickering
-    const appMode = storedAppMode ? (storedAppMode as "citizen" | "observer") : "onboarding";
-    setAppMode(appMode);
+    const appMode = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
+    if (appMode) {
+      setAppMode(appMode as AppMode);
+    }
   }, []);
 
-  const handleSetAppMode = (appMode: "citizen" | "observer" | "onboarding") => {
-    console.log("handleSetAppMode", appMode);
+  const handleSetAppMode = (appMode: AppMode) => {
     setAppMode(appMode);
     SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, appMode);
   };
 
-  if (!appMode) {
-    return <Typography>Loading...</Typography>;
-  }
-
   return (
-    <AppModeContext.Provider
-      value={{ appMode, setAppMode: handleSetAppMode, onboardingComplete, setOnboardingComplete }}
-    >
+    <AppModeContext.Provider value={{ appMode, setAppMode: handleSetAppMode }}>
       {children}
     </AppModeContext.Provider>
   );

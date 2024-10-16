@@ -14,7 +14,7 @@ import { ApiFormAnswer } from "../../services/interfaces/answer.type";
  * @return {string} The display string for the given ApiFormAnswer object.
  */
 
-export const getAnswerDisplay = (answer: ApiFormAnswer) => {
+export const getAnswerDisplay = (answer: ApiFormAnswer, displaySingleSelectOtherText?: boolean) => {
   if (!answer) return "";
 
   switch (answer.$answerType) {
@@ -31,7 +31,9 @@ export const getAnswerDisplay = (answer: ApiFormAnswer) => {
     case "textAnswer":
       return answer.text;
     case "singleSelectAnswer":
-      return answer.selection.value;
+      return displaySingleSelectOtherText && answer.selection.text
+        ? `${answer.selection.value} (${answer.selection.text.trim()})`
+        : answer.selection.value;
     case "multiSelectAnswer":
       return answer.selectionValues?.join("; ") || "";
     case "numberAnswer":
