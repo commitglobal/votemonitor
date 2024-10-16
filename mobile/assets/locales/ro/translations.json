@@ -703,13 +703,13 @@
         "label": "Parola nouă *",
         "placeholder": "Te rugăm să introduci parola nouă",
         "helper": "Parola trebuie să conțină cel puțin 8 caractere",
-        "required": "Parola este obligatorie"
+        "required": "Parola nouă este obligatorie"
       },
       "confirm_password": {
         "label": "Confirmă parola nouă *",
         "placeholder": "Confirmă parola nouă",
         "helper": "Parolele trebuie să coincidă",
-        "required": "Parola este obligatorie",
+        "required": "Parola nouă este obligatorie",
         "no_match": "Parolele nu coincid"
       },
       "save": "Salvează parola nouă"

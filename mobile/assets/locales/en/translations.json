@@ -704,13 +704,13 @@
         "label": "New password *",
         "placeholder": "Insert new password",
         "helper": "Must be at least 8 characters",
-        "required": "Password is mandatory"
+        "required": "The new password is mandatory"
       },
       "confirm_password": {
         "label": "Confirm new password *",
         "placeholder": "Confirm password",
         "helper": "Both passwords must match.",
-        "required": "Password is mandatory",
+        "required": "The new password is mandatory",
         "no_match": "Passwords do not match"
       },
       "save": "Save new password"
