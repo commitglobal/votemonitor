@@ -360,7 +360,7 @@ const FormDetails = () => {
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography
               preset="body1"
-              color={disableMarkAsDone ? "$gray3" : "$gray7"}
+              color={disableMarkAsDone ? "$gray3" : "$gray9"}
               paddingVertical="$xs"
               lineHeight={24}
               onPress={() => {

@@ -11,7 +11,7 @@
     },
     "forms": {
       "mark_as_done": "TODO: Marchează formularul ca finalizat",
-      "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\""
+      "mark_as_in_progress": "Marchează formularul ca fiind în desfășurare"
     },
     "cancel": "Renunță",
     "save": "Salvează",
