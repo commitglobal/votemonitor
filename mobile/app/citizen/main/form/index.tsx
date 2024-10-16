@@ -300,12 +300,10 @@ const CitizenForm = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
-        onActionButtonPress={handleSubmit(async (formValues) => {
-          onSubmitAnswer(formValues);
-        })}
-        onPreviousButtonPress={() => {
-          goToPrevQuestion();
+        onActionButtonPress={() => {
+          handleSubmit(onSubmitAnswer)();
         }}
+        onPreviousButtonPress={goToPrevQuestion}
       />
 
       {isReviewSheetOpen && (
