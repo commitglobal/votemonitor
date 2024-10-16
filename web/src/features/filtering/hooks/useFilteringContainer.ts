@@ -1,9 +1,8 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { FILTER_KEY } from '../filtering-enums';
-import { ResponsesPageSearchParamsSchema } from '@/features/responses/models/search-params';
 import { HIDDEN_FILTERS } from '../components/ActiveFilters';
+import { FILTER_KEY } from '../filtering-enums';
 
 function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Partial<T> {
   return Object.fromEntries(Object.entries(obj).filter(([key]) => keysToRemove.includes(key))) as Partial<T>;
@@ -23,7 +22,7 @@ export function useFilteringContainer() {
       void navigate({
         // @ts-ignore
         search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number | Date> = {
+          const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {
             ...prev,
             ...search,
           };

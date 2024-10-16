@@ -22,6 +22,12 @@ internal static class EmailTemplateLoader
         { EmailTemplateType.SelectAnswerFragment, "Fragments/select-answer-fragment.html" },
         { EmailTemplateType.SelectAnswerOptionFragment, "Fragments/select-answer-option-fragment.html" },
         { EmailTemplateType.SelectAnswerCheckedOptionFragment, "Fragments/select-answer-option-selected-fragment.html" },
+        
+        { EmailTemplateType.AnswerAttachmentsFragment, "Fragments/answer-attachments-fragment.html" },
+        { EmailTemplateType.AttachmentFragment, "Fragments/attachment-fragment.html" },
+        
+        { EmailTemplateType.AnswerNotesFragment, "Fragments/answer-notes-fragment.html" },
+        { EmailTemplateType.NoteFragment, "Fragments/note-fragment.html" },
     };
 
     public static string GetTemplate(EmailTemplateType templateType)

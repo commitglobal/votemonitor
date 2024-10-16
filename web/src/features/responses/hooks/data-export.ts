@@ -19,7 +19,7 @@ export function useStartDataExport(
   }: {
     electionRoundId: string;
     exportedDataType: ExportedDataType;
-    filterParams: Record<string, string>;
+    filterParams?: Record<string, any>;
   },
   options?: UseDataExportOptions
 ): UseMutationResult<DataExport, Error, void> {

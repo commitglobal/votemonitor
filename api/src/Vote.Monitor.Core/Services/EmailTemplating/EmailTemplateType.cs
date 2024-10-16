@@ -13,5 +13,11 @@ public enum EmailTemplateType
     SelectAnswerOptionFragment,
     SelectAnswerCheckedOptionFragment,
     RatingAnswerOptionCheckedOptionFragment,
-    RatingAnswerOptionOptionFragment
+    RatingAnswerOptionOptionFragment,
+    
+    AnswerAttachmentsFragment,
+    AttachmentFragment,
+    
+    AnswerNotesFragment,
+    NoteFragment
 }

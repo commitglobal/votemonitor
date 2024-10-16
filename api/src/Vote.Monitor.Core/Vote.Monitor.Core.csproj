@@ -92,6 +92,22 @@
     <Content Include="EmailTemplates\citizen-report.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="EmailTemplates\Fragments\answer-attachments-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\answer-attachments-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\answer-notes-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\answer-notes-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\attachment-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\attachment-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\note-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\note-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

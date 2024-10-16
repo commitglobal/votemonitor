@@ -29,7 +29,7 @@ interface CitizenReportEmailProps {
 
 export const CitizenReportEmail = ({
   heading = "~$heading$~",
-  preview = "~preview~",
+  preview = "~$preview$~",
   cdnUrl = "~$cdnUrl$~",
   answers = [],
 }: CitizenReportEmailProps) => (
@@ -71,16 +71,58 @@ CitizenReportEmail.PreviewProps = {
     <InputAnswerFragment
       text="1. Text question"
       answer="hello world"
+      notes={[
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      ]}
+      attachments={[
+        "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4",
+        "https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU",
+      ]}
       key={1}
     />,
-    <InputAnswerFragment text="2. Number question" answer="322" key={2} />,
-    <InputAnswerFragment text="3. Date question" answer="2024-01-01" key={3} />,
+    <InputAnswerFragment
+      text="2. Number question"
+      answer="322"
+      notes={["Nothing"]}
+      attachments={[
+        "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4",
+        "https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU",
+      ]}
+      key={2}
+    />,
+    <InputAnswerFragment
+      text="3. Date question"
+      answer="2024-01-01"
+      notes={[
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      ]}
+      key={3}
+      attachments={[
+        "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4",
+        "https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU",
+      ]}
+    />,
     <RatingAnswerFragment
       key={4}
       text="4. Rating question"
       options={[
         <RatingAnswerOptionFragment value="1" key={1} />,
         <RatingAnswerOptionSelectedFragment value="2" key={2} />,
+        <RatingAnswerOptionFragment value="3" key={3} />,
+        <RatingAnswerOptionFragment value="4" key={4} />,
+        <RatingAnswerOptionFragment value="5" key={5} />,
+        <RatingAnswerOptionFragment value="6" key={6} />,
+        <RatingAnswerOptionFragment value="7" key={7} />,
+        <RatingAnswerOptionFragment value="8" key={8} />,
+        <RatingAnswerOptionFragment value="9" key={9} />,
+        <RatingAnswerOptionFragment value="10" key={10} />,
+      ]}
+      notes={[
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      ]}
+      attachments={[
+        "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4",
+        "https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU",
       ]}
     />,
     <SelectAnswerFragment
@@ -89,6 +131,16 @@ CitizenReportEmail.PreviewProps = {
       options={[
         <SelectAnswerOptionFragment value={"option 1"} key={1} />,
         <SelectAnswerOptionSelectedFragment value={"option 2"} key={2} />,
+        <SelectAnswerOptionFragment value={"option 3"} key={3} />,
+        <SelectAnswerOptionFragment value={"option 4"} key={4} />,
+
+      ]}
+      notes={[
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      ]}
+      attachments={[
+        "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4",
+        "https://fastly.picsum.photos/id/0/5000/3333.jpg?hmac=_j6ghY5fCfSD6tvtcV74zXivkJSPIfR9B8w34XeQmvU",
       ]}
     />,
   ],

@@ -10,7 +10,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ExportDataButtonProps {
   exportedDataType: ExportedDataType;
-  filterParams: Record<string, string>;
+  filterParams?: Record<string, any>;
 }
 
 export function ExportDataButton({ exportedDataType, filterParams }: ExportDataButtonProps): FunctionComponent {

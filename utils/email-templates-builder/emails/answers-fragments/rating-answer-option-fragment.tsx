@@ -1,3 +1,4 @@
+import { Tailwind } from "@react-email/tailwind";
 import * as React from "react";
 
 interface RatingAnswerOptionFragmentProps {
@@ -5,13 +6,15 @@ interface RatingAnswerOptionFragmentProps {
 }
 
 export const RatingAnswerOptionFragment = ({
-  value = "~$text$~",
+  value = "~$value$~",
 }: RatingAnswerOptionFragmentProps) => (
-  <td align="center">
-    <div className="h-[20px] w-[20px] rounded-[8px] border border-solid border-gray-300 p-[8px] font-semibold">
-      {value}
-    </div>
-  </td>
+  <Tailwind>
+    <td align="center">
+      <div className="h-[20px] w-[20px] rounded-[8px] border border-solid border-gray-300 p-[8px] font-semibold">
+        {value}
+      </div>
+    </td>
+  </Tailwind>
 );
 
 RatingAnswerOptionFragment.PreviewProps = {

@@ -4,15 +4,15 @@ using Vote.Monitor.Core.Services.EmailTemplating.Props;
 
 namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
-internal class CitizenReportEmailGenerator
+internal static class CitizenReportEmailGenerator
 {
     private static readonly string Template = EmailTemplateLoader.GetTemplate(EmailTemplateType.CitizenReport);
 
     public static EmailModel Generate(CitizenReportEmailProps props)
     {
         var body = Template
-            .Replace("~heading~", props.Heading)
-            .Replace("~preview~", props.Preview)
+            .Replace("~$heading$~", props.Heading)
+            .Replace("~$preview$~", props.Preview)
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$answers$~", BuildAnswersFragment(props.Answers));
 
@@ -28,32 +28,86 @@ internal class CitizenReportEmailGenerator
         var result = new StringBuilder();
         foreach (var answer in userAnswers)
         {
+            var notesFragment = BuildNotesFragment(answer.NotesListTitle, answer.Notes);
+            var attachmentsFragment = BuildAttachmentsFragment(answer.AttachmentsListTitle, answer.Attachments);
+
             switch (answer)
             {
                 case InputAnswerFragmentProps inputAnswer:
                     result.Append(EmailTemplateLoader
                         .GetTemplate(EmailTemplateType.InputAnswerFragment)
                         .Replace("~$text$~", inputAnswer.Text)
-                        .Replace("~$answer$~", inputAnswer.Answer));
+                        .Replace("~$answer$~", inputAnswer.Answer)
+                        .Replace("~$notes$~", notesFragment)
+                        .Replace("~$attachments$~", attachmentsFragment));
                     break;
 
                 case RatingAnswerFragmentProps ratingAnswer:
                     result.Append(EmailTemplateLoader
                         .GetTemplate(EmailTemplateType.RatingAnswerFragment)
                         .Replace("~$text$~", ratingAnswer.Text)
-                        .Replace("~$options$~", BuildRatingOptionsFragment(ratingAnswer.Scale, ratingAnswer.Value)));
+                        .Replace("~$options$~", BuildRatingOptionsFragment(ratingAnswer.Scale, ratingAnswer.Value))
+                        .Replace("~$notes$~", notesFragment)
+                        .Replace("~$attachments$~", attachmentsFragment));
                     break;
 
                 case SelectAnswerFragmentProps selectAnswer:
                     result.Append(EmailTemplateLoader
                         .GetTemplate(EmailTemplateType.SelectAnswerFragment)
                         .Replace("~$text$~", selectAnswer.Text)
-                        .Replace("~$options$~", BuildSelectOptionsFragment(selectAnswer.Options)));
+                        .Replace("~$options$~", BuildSelectOptionsFragment(selectAnswer.Options))
+                        .Replace("~$notes$~", notesFragment)
+                        .Replace("~$attachments$~", attachmentsFragment));
                     break;
             }
         }
 
         return result.ToString();
+    }
+
+    private static string? BuildAttachmentsFragment(string attachmentsListTitle,
+        IEnumerable<AttachmentFragmentProps> attachments)
+    {
+        var attachmentsArray = attachments as AttachmentFragmentProps[] ?? attachments.ToArray();
+        if (!attachmentsArray.Any())
+        {
+            return string.Empty;
+        }
+
+        var attachmentsFragments = new StringBuilder();
+        var noteFragment = EmailTemplateLoader.GetTemplate(EmailTemplateType.AttachmentFragment);
+        foreach (var note in attachmentsArray)
+        {
+            attachmentsFragments.Append(noteFragment
+                .Replace("~$link$~", note.Url)
+                .Replace("~$linkText$~", note.Title));
+        }
+
+        return EmailTemplateLoader.GetTemplate(EmailTemplateType.AnswerAttachmentsFragment)
+            .Replace("~$listTitle$~", attachmentsListTitle)
+            .Replace("~$attachments$~", attachmentsFragments.ToString());
+    }
+
+    private static string? BuildNotesFragment(string notesListTitle, IEnumerable<NoteFragmentProps> notes)
+    {
+        var notesArray = notes as NoteFragmentProps[] ?? notes.ToArray();
+        if (!notesArray.Any())
+        {
+            return string.Empty;
+        }
+
+        var notesFragments = new StringBuilder();
+        var noteFragment = EmailTemplateLoader.GetTemplate(EmailTemplateType.NoteFragment);
+        foreach (var note in notesArray)
+        {
+            notesFragments.Append(noteFragment
+                .Replace("~$number$~", note.Index)
+                .Replace("~$text$~", note.Text));
+        }
+
+        return EmailTemplateLoader.GetTemplate(EmailTemplateType.AnswerNotesFragment)
+            .Replace("~$listTitle$~", notesListTitle)
+            .Replace("~$notes$~", notesFragments.ToString());
     }
 
     private static string BuildSelectOptionsFragment(IEnumerable<SelectAnswerOptionFragmentProps> options)
@@ -66,7 +120,7 @@ internal class CitizenReportEmailGenerator
                 ? EmailTemplateType.SelectAnswerCheckedOptionFragment
                 : EmailTemplateType.SelectAnswerOptionFragment);
 
-            result.Append(optionTemplate.Replace("~$value$~", option.Text));
+            result.Append(optionTemplate.Replace("~$text$~", option.Text));
         }
 
         return result.ToString();

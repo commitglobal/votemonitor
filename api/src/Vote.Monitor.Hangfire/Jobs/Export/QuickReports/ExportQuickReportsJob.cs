@@ -7,6 +7,7 @@ using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
+using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 
@@ -44,7 +45,7 @@ public class ExportQuickReportsJob(
 
             var utcNow = timeProvider.UtcNow;
 
-            var quickReports = await GetQuickReports(electionRoundId, ngoId, ct);
+            var quickReports = await GetQuickReports(electionRoundId, ngoId, exportedData.QuickReportsFilters, ct);
 
             foreach (var submission in quickReports)
             {
@@ -86,7 +87,8 @@ public class ExportQuickReportsJob(
         }
     }
 
-    private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId, CancellationToken ct)
+    private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId,
+        ExportQuickReportsFilters? filters, CancellationToken ct)
     {
         var sql = """
                   SELECT
@@ -123,14 +125,48 @@ public class ExportQuickReportsJob(
                   WHERE
                       QR."ElectionRoundId" = @electionRoundId
                       AND MN."NgoId" = @ngoId
-                  ORDER BY
-                      COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
+                      AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
+                      AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
+                      AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
+                      AND (
+                          @level1 IS NULL
+                          OR PS."Level1" = @level1
+                      )
+                      AND (
+                          @level2 IS NULL
+                          OR PS."Level2" = @level2
+                      )
+                      AND (
+                          @level3 IS NULL
+                          OR PS."Level3" = @level3
+                      )
+                      AND (
+                          @level4 IS NULL
+                          OR PS."Level4" = @level4
+                      )
+                      AND (
+                          @level5 IS NULL
+                          OR PS."Level5" = @level5
+                      )
+                      AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
+                      AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp)
+                  ORDER BY COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
                   """;
 
         var queryArgs = new
         {
             electionRoundId,
             ngoId,
+            level1 = filters?.Level1Filter,
+            level2 = filters?.Level2Filter,
+            level3 = filters?.Level3Filter,
+            level4 = filters?.Level4Filter,
+            level5 = filters?.Level5Filter,
+            followUpStatus = filters?.QuickReportFollowUpStatus?.ToString(),
+            quickReportLocationType = filters?.QuickReportLocationType?.ToString(),
+            incidentCategory = filters?.IncidentCategory?.ToString(),
+            fromDate = filters?.FromDateFilter?.ToString("O"),
+            toDate = filters?.ToDateFilter?.ToString("O"),
         };
 
         IEnumerable<QuickReportModel> quickReports = [];

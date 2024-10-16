@@ -1,10 +1,12 @@
-﻿using Feature.CitizenReports.Specifications;
+﻿using System.Text;
+using Feature.CitizenReports.Specifications;
 using Job.Contracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Options;
 using Vote.Monitor.Core.Services.EmailTemplating;
 using Vote.Monitor.Core.Services.EmailTemplating.Props;
+using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -43,7 +45,7 @@ public class Endpoint(
         }
 
         var citizenReportByIdSpecification =
-            new GetCitizenReportByIdSpecification(req.ElectionRoundId, req.FormId, req.CitizenReportId);
+            new GetCitizenReportByIdSpecification(req.ElectionRoundId, req.FormId, req.CitizenReportId, true);
         var citizenReport = await repository.FirstOrDefaultAsync(
             citizenReportByIdSpecification, ct);
 
@@ -57,7 +59,7 @@ public class Endpoint(
         var email = emailFactory.GenerateCitizenReportEmail(new CitizenReportEmailProps(
             $"Citizen report #{req.CitizenReportId}", $"Citizen report #{req.CitizenReportId}",
             $"Citizen report #{req.CitizenReportId}",
-            MapAnswersToEmailFragmentProps(form, citizenReport.Answers), _apiConfiguration.WebAppUrl));
+            MapAnswersToEmailFragmentProps(form, citizenReport), _apiConfiguration.WebAppUrl));
 
         jobService.EnqueueSendEmail(req.Email, email.Subject, email.Body);
 
@@ -66,11 +68,13 @@ public class Endpoint(
     }
 
     private IEnumerable<BaseAnswerFragmentProps> MapAnswersToEmailFragmentProps(FormAggregate form,
-        IReadOnlyList<BaseAnswer> citizenReportAnswers)
+        CitizenReportAggregate citizenReport)
     {
         var result = new List<BaseAnswerFragmentProps>();
+        var notesListTitle = "Notes";
+        var attachmentListTitle = "Attachments";
 
-        foreach (var answer in citizenReportAnswers)
+        foreach (var answer in citizenReport.Answers)
         {
             var question = form.Questions.FirstOrDefault(x => x.Id == answer.QuestionId);
             if (question == null)
@@ -79,31 +83,62 @@ public class Endpoint(
                 continue;
             }
 
+            var notes = citizenReport.Notes
+                .Where(x => x.QuestionId == answer.QuestionId).Select(x => x.Text)
+                .Select((note, index) => new NoteFragmentProps($"{index + 1}", note));
+
+            var attachments = citizenReport
+                .Attachments
+                .Where(x => x.QuestionId == answer.QuestionId)
+                .Select((x, idx) => MapAttachmentFragmentProps(_apiConfiguration.WebAppUrl, idx, x));
+            var questionText = question.Text[form.DefaultLanguage];
+
             switch (answer)
             {
                 case DateAnswer dateAnswer:
-                    result.Add(new InputAnswerFragmentProps(question.Text[form.DefaultLanguage],
+                    result.Add(new InputAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
                         dateAnswer.Date.ToString("yyyy-MM-dd HH:mm")));
                     break;
 
                 case NumberAnswer numberAnswer:
-                    result.Add(new InputAnswerFragmentProps(question.Text[form.DefaultLanguage],
+                    result.Add(new InputAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
                         numberAnswer.Value.ToString()));
                     break;
 
                 case TextAnswer textAnswer:
-                    result.Add(new InputAnswerFragmentProps(question.Text[form.DefaultLanguage], textAnswer.Text));
+                    result.Add(new InputAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
+                        textAnswer.Text));
                     break;
 
                 case RatingAnswer ratingAnswer:
                     var ratingQuestion = (question as RatingQuestion)!;
-                    result.Add(new RatingAnswerFragmentProps(question.Text[form.DefaultLanguage],
+                    result.Add(new RatingAnswerFragmentProps(GetRatingQuestionText(form, question, ratingQuestion),
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
                         ratingQuestion.Scale.UpperBound, ratingAnswer.Value));
                     break;
 
                 case SingleSelectAnswer singleSelectAnswer:
                     var singleSelectQuestion = (question as SingleSelectQuestion)!;
-                    result.Add(new SelectAnswerFragmentProps(question.Text[form.DefaultLanguage],
+                    result.Add(new SelectAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
                         MapOptionsToEmailFragmentProps(form.DefaultLanguage, singleSelectQuestion.Options,
                             [singleSelectAnswer.Selection])));
                     break;
@@ -111,7 +146,11 @@ public class Endpoint(
                 case MultiSelectAnswer multiSelectAnswer:
                     var multiSelectQuestion = (question as MultiSelectQuestion)!;
 
-                    result.Add(new SelectAnswerFragmentProps(question.Text[form.DefaultLanguage],
+                    result.Add(new SelectAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
                         MapOptionsToEmailFragmentProps(form.DefaultLanguage, multiSelectQuestion.Options,
                             multiSelectAnswer.Selection)));
                     break;
@@ -121,6 +160,34 @@ public class Endpoint(
         }
 
         return result;
+    }
+
+    private AttachmentFragmentProps MapAttachmentFragmentProps(string webAppUrl, int index,
+        CitizenReportAttachment attachment)
+    {
+        return new AttachmentFragmentProps($"Attachment {index + 1}",
+            Path.Combine(webAppUrl, "citizen-report-attachments",
+                attachment.ElectionRoundId.ToString(),
+                attachment.CitizenReportId.ToString(),
+                attachment.Id.ToString()));
+    }
+
+    private static string GetRatingQuestionText(FormAggregate form, BaseQuestion question,
+        RatingQuestion ratingQuestion)
+    {
+        var result = new StringBuilder(question.Text[form.DefaultLanguage]);
+        if (ratingQuestion.LowerLabel != null)
+        {
+            result.Append($"1 = {ratingQuestion.LowerLabel?.GetValueOrDefault(form.DefaultLanguage)}");
+        }
+
+        if (ratingQuestion.UpperLabel != null)
+        {
+            result.Append(
+                $"{ratingQuestion.Scale.UpperBound} = {ratingQuestion.UpperLabel?.GetValueOrDefault(form.DefaultLanguage)}");
+        }
+
+        return result.ToString();
     }
 
     private IEnumerable<SelectAnswerOptionFragmentProps> MapOptionsToEmailFragmentProps(string defaultLanguage,
@@ -133,7 +200,7 @@ public class Endpoint(
         {
             var selectedOption = selectedOptions.FirstOrDefault(x => x.OptionId == option.Id);
             result.Add(new SelectAnswerOptionFragmentProps(option.Text[defaultLanguage] + (selectedOption?.Text ?? ""),
-                selection != null));
+                selectedOption != null));
         }
 
         return result;

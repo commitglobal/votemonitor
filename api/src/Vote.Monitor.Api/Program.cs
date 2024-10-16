@@ -222,6 +222,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
+        x.Serializer.Options.Converters.Add(new JsonBooleanStringConverter());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });

@@ -274,8 +274,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;
