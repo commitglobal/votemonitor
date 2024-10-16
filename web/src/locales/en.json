@@ -128,7 +128,6 @@
   "observers": {
     "addObserver": {
       "title": "Add a new observer",
-      "description": "Fill in the following form",
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",

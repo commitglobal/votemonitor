@@ -68,11 +68,11 @@ export default function CreateMonitoringObserver() {
     },
   });
   return (
-    <Layout title={t('title')} backButton={<MonitorObserverBackButton />}>
+    <Layout title={''} backButton={<MonitorObserverBackButton />} enableBreadcrumbs={false}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
-            <CardTitle className='text-xl'>{t('description')}</CardTitle>
+            <CardTitle className='text-xl'>{t('title')}</CardTitle>
           </div>
           <Separator />
         </CardHeader>
@@ -148,6 +148,18 @@ export default function CreateMonitoringObserver() {
 
               <div className='flex justify-between'>
                 <div className='flex gap-2'>
+                  <Button
+                    variant='outline'
+                    type='button'
+                    onClick={() => {
+                      void navigate({
+                        to: '/monitoring-observers/$tab',
+                        params: { tab: 'list' },
+                      });
+                    }}>
+                    Cancel
+                  </Button>
+
                   <Button title={t('addBtnText')} type='submit' className='px-6'>
                     {t('addBtnText')}
                   </Button>
