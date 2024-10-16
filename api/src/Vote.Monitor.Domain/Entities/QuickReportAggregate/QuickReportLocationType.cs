@@ -1,14 +1,16 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<QuickReportLocationType, string>))]
 public sealed class QuickReportLocationType : SmartEnum<QuickReportLocationType, string>
 {
-    public static readonly QuickReportLocationType VisitedPollingStation = new(nameof(VisitedPollingStation), nameof(VisitedPollingStation));
+    public static readonly QuickReportLocationType VisitedPollingStation =
+        new(nameof(VisitedPollingStation), nameof(VisitedPollingStation));
 
-    public static readonly QuickReportLocationType OtherPollingStation = new(nameof(OtherPollingStation), nameof(OtherPollingStation));
+    public static readonly QuickReportLocationType OtherPollingStation =
+        new(nameof(OtherPollingStation), nameof(OtherPollingStation));
 
-    public static readonly QuickReportLocationType NotRelatedToAPollingStation = new(nameof(NotRelatedToAPollingStation), nameof(NotRelatedToAPollingStation));
+    public static readonly QuickReportLocationType NotRelatedToAPollingStation =
+        new(nameof(NotRelatedToAPollingStation), nameof(NotRelatedToAPollingStation));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>

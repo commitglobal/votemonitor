@@ -2,6 +2,7 @@
 
 namespace Vote.Monitor.Core.Models;
 
+[JsonConverter(typeof(SmartEnumValueConverter<SortOrder, string>))]
 public sealed class SortOrder : SmartEnum<SortOrder, string>
 {
     public static readonly SortOrder Asc = new(nameof(Asc), nameof(Asc));

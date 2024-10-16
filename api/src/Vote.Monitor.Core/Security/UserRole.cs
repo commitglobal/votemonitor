@@ -2,6 +2,7 @@
 
 namespace Vote.Monitor.Core.Security;
 
+[JsonConverter(typeof(SmartEnumValueConverter<UserRole, string>))]
 public sealed class UserRole : SmartEnum<UserRole, string>
 {
     public static readonly UserRole PlatformAdmin = new(nameof(PlatformAdmin), nameof(PlatformAdmin));

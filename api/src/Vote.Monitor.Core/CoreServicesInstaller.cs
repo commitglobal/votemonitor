@@ -1,12 +1,7 @@
-﻿using Hangfire;
-using Hangfire.PostgreSql;
-using Job.Contracts;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Core.Services.Csv;
 using Vote.Monitor.Core.Services.EmailTemplating;
-using Vote.Monitor.Core.Services.Hangfire;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
@@ -32,63 +27,9 @@ public static class CoreServicesInstaller
 
             return new FreezeTimeProvider(currentUtc);
         });
-
-        var enableHangfire = configuration.GetValue<bool>("EnableHangfire");
-        if (enableHangfire)
-        {
-            services.AddHangfire(config =>
-            {
-                config
-                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                    .UseSimpleAssemblyNameTypeSerializer()
-                    .UseRecommendedSerializerSettings()
-                    .UsePostgreSqlStorage(c =>
-                            c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")),
-                        new PostgreSqlStorageOptions { PrepareSchemaIfNecessary = false });
-
-                config.UseSerilogLogProvider();
-            });
-
-            services.AddTransient<IJobService, HangfireJobService>();
-        }
-        else
-        {
-            services.AddTransient<IJobService, NoopJobService>();
-        }
-
+        
         services.AddTransient<IEmailTemplateFactory, EmailTemplateFactory>();
 
         return services;
-    }
-
-    internal class NoopJobService : IJobService
-    {
-        public void EnqueueSendEmail(string to, string subject, string body)
-        {
-        }
-
-        public void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
-        {
-        }
-
-        public void EnqueueExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
-        {
-        }
-
-        public void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId)
-        {
-        }
-
-        public void EnqueueExportCitizenReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
-        {
-        }
-
-        public void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId)
-        {
-        }
-
-        public void EnqueueExportIncidentReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
-        {
-        }
     }
 }

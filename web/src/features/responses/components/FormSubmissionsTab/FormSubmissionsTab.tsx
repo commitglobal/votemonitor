@@ -11,9 +11,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useState, type ChangeEvent } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
@@ -23,13 +22,14 @@ import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColu
 
 import { FunctionComponent } from '@/common/types';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { FormSubmissionsByObserverTable } from '../FormSubmissionsByObserverTable/FormSubmissionsByObserverTable';
 import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/FormSubmissionsFiltersByEntry';
 import { FormSubmissionsFiltersByForm } from '../FormSubmissionsFiltersByForm/FormSubmissionsFiltersByForm';
 import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
-import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
-const routeApi = getRouteApi('/responses/');
+import { Route } from '@/routes/responses';
+import { useNavigate } from '@tanstack/react-router';
 
 const viewBy: Record<FormSubmissionsViewBy, string> = {
   byEntry: 'View by entry',
@@ -38,8 +38,8 @@ const viewBy: Record<FormSubmissionsViewBy, string> = {
 };
 
 export default function FormSubmissionsTab(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const { filteringIsActive } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
@@ -49,10 +49,35 @@ export default function FormSubmissionsTab(): FunctionComponent {
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const setPrevSearch = useSetPrevSearch();
+
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
     const value = ev.currentTarget.value;
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
+
+  const formSubmissionsFilter = useMemo(() => {
+    const params = [
+      ['searchText', searchText],
+      ['formTypeFilter', search.formTypeFilter],
+      ['hasFlaggedAnswers', search.hasFlaggedAnswers],
+      ['level1Filter', search.level1Filter],
+      ['level2Filter', search.level2Filter],
+      ['level3Filter', search.level3Filter],
+      ['level4Filter', search.level4Filter],
+      ['level5Filter', search.level5Filter],
+      ['pollingStationNumberFilter', search.pollingStationNumberFilter],
+      ['followUpStatus', search.followUpStatus],
+      ['questionsAnswered', search.questionsAnswered],
+      ['hasNotes', search.hasNotes],
+      ['hasAttachments', search.hasAttachments],
+      ['tagsFilter', search.tagsFilter],
+      ['formId', search.formId],
+      ['fromDateFilter', search.submissionsFromDate?.toISOString()],
+      ['toDateFilter', search.submissionsToDate?.toISOString()],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params)
+  }, [searchText, search]);
 
   return (
     <Card>
@@ -61,7 +86,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
           <CardTitle>Form submissions</CardTitle>
 
           <div className='flex items-center gap-4'>
-            <ExportDataButton exportedDataType={ExportedDataType.FormSubmissions} />
+            <ExportDataButton exportedDataType={ExportedDataType.FormSubmissions} filterParams={formSubmissionsFilter}/>
 
             <DropdownMenu>
               <DropdownMenuTrigger>

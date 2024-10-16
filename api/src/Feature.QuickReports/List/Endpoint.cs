@@ -56,7 +56,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND (
                 @level5 IS NULL
                 OR PS."Level5" = @level5
-            );
+            )
+            AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
+            AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp);
 
         SELECT
             QR."Id",
@@ -112,6 +114,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 @level5 IS NULL
                 OR PS."Level5" = @level5
             )
+            AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
+            AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp)
         GROUP BY
             QR."Id",
             O."Id",
@@ -140,6 +144,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             followUpStatus = req.QuickReportFollowUpStatus?.ToString(),
             quickReportLocationType = req.QuickReportLocationType?.ToString(),
             incidentCategory = req.IncidentCategory?.ToString(),
+            fromDate = req.FromDateFilter?.ToString("O"),
+            toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

@@ -52,7 +52,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             id = req.Id,
         };
 
-        CitizenNotificationModel notification;
+        CitizenNotificationModel? notification;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             notification = await dbConnection

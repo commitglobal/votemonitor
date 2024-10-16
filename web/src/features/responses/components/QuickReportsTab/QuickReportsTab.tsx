@@ -93,7 +93,7 @@ export function QuickReportsTab(): FunctionComponent {
         <div className='flex items-center justify-between px-6'>
           <CardTitle>Quick reports</CardTitle>
 
-          <ExportDataButton exportedDataType={ExportedDataType.QuickReports} />
+          <ExportDataButton exportedDataType={ExportedDataType.QuickReports} filterParams={queryParams} />
         </div>
 
         <Separator />

@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
-namespace Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<MonitoringNgoStatus, string>))]
 public sealed class MonitoringNgoStatus : SmartEnum<MonitoringNgoStatus, string>
 {
     public static readonly MonitoringNgoStatus Active = new(nameof(Active), nameof(Active));

@@ -9,8 +9,7 @@ public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, N
     {
         Query
             .Include(x => x.ElectionRound)
-            .Where(x => x.NgoId == ngoId)
-            .Where(x => x.ElectionRound.Status != ElectionRoundStatus.Archived);
+            .Where(x => x.NgoId == ngoId);
 
         Query.Select(x => new NgoElectionRoundView
         {
@@ -22,7 +21,8 @@ public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, N
             Country = x.ElectionRound.Country.FullName,
             CountryId = x.ElectionRound.CountryId,
             IsMonitoringNgoForCitizenReporting = x.ElectionRound.CitizenReportingEnabled &&
-                                                 x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == ngoId
+                                                 x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == ngoId,
+            Status = x.ElectionRound.Status,
         });
     }
 }

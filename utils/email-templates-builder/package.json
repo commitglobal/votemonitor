@@ -2,9 +2,10 @@
   "name": "email-templates-builder",
   "version": "0.0.19",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "email dev",
-    "export": "email export"
+    "export": "email export && node post-process-fragments.js"
   },
   "dependencies": {
     "@react-email/components": "0.0.19",

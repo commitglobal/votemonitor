@@ -4,5 +4,12 @@ namespace Vote.Monitor.Core.Services.EmailTemplating;
 
 public interface IEmailTemplateFactory
 {
-    EmailModel GenerateEmail(EmailTemplateType templateType, BaseEmailProps emailProps);
+    EmailModel GenerateConfirmAccountEmail(ConfirmEmailProps emailProps);
+
+    EmailModel GenerateResetPasswordEmail(ResetPasswordEmailProps emailProps);
+
+    EmailModel GenerateInvitationExistingUserEmail(InvitationExistingUserEmailProps emailProps);
+
+    EmailModel GenerateNewUserInvitationEmail(InvitationNewUserEmailProps emailProps);
+    EmailModel GenerateCitizenReportEmail(CitizenReportEmailProps citizenReportEmailProps);
 }

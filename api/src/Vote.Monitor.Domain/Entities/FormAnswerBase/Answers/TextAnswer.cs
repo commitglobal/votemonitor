@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Validators;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 

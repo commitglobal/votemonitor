@@ -115,8 +115,7 @@ public class ObserverImportService(
                         NgoName: ngoName,
                         ElectionRoundDetails: electionRoundName);
 
-                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser,
-                        invitationNewUserEmailProps);
+                    var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
                     jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
@@ -130,8 +129,7 @@ public class ObserverImportService(
                     var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(FullName: fullName,
                         CdnUrl: _apiConfig.WebAppUrl, NgoName: ngoName, ElectionRoundDetails: electionRoundName);
 
-                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-                        invitationExistingUserEmailProps);
+                    var email = emailFactory.GenerateInvitationExistingUserEmail(invitationExistingUserEmailProps);
                     jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
             }
@@ -160,8 +158,8 @@ public class ObserverImportService(
                 var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName,
                     CdnUrl: _apiConfig.WebAppUrl, AcceptUrl: acceptInviteUrl, NgoName: ngoName,
                     ElectionRoundDetails: electionRoundName);
-                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser,
-                    invitationNewUserEmailProps);
+
+                var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
                 jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
             }
         }

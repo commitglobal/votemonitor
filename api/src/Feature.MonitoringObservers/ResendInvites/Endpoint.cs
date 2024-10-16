@@ -79,7 +79,8 @@ public class Endpoint(IAuthorizationService authorizationService,
                 AcceptUrl: acceptInviteUrl,
                 NgoName: ngoName,
                 ElectionRoundDetails: electionRoundName);
-            var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, invitationNewUserEmailProps);
+            
+            var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
             jobService.EnqueueSendEmail(monitoringObserver.Email!, email.Subject, email.Body);
         }
 

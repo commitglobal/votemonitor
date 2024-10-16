@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 public record SelectedOption
 {

@@ -42,7 +42,7 @@ readdirSync("./locales", { withFileTypes: true, recursive: true })
   .forEach((file) => {
     const languageCode = file.parentPath.replace("locales/", "");
 
-    const locales = readFileSync(path.join(file.parentPath, file.name), "utf8");
+  
 
     const json = JSON.parse(locales);
 

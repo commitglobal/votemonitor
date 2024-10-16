@@ -10,4 +10,5 @@ public class NgoElectionRoundView
     public string Country { get; set; }
     public Guid CountryId { get; set; }
     public bool IsMonitoringNgoForCitizenReporting { get; set; }
+    public ElectionRoundStatus Status { get; set; }
 }

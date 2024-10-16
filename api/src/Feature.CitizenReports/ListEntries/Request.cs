@@ -22,4 +22,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public bool? HasNotes { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
+
+    [QueryParam] public DateTime? FromDateFilter { get; set; }
+    [QueryParam] public DateTime? ToDateFilter { get; set; }
 }

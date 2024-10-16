@@ -10,9 +10,10 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ExportDataButtonProps {
   exportedDataType: ExportedDataType;
+  filterParams?: Record<string, any>;
 }
 
-export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): FunctionComponent {
+export function ExportDataButton({ exportedDataType, filterParams }: ExportDataButtonProps): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
@@ -20,6 +21,7 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
     {
       electionRoundId: currentElectionRoundId,
       exportedDataType,
+      filterParams,
     },
     {
       onSuccess: (data) => {

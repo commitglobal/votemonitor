@@ -1,12 +1,13 @@
 ﻿using Dapper;
+using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Core.Services.Hangfire;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
+using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
@@ -60,7 +61,7 @@ public class ExportFormSubmissionsJob(
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var submissions = await GetSubmissions(electionRoundId, ngoId, ct);
+            var submissions = await GetSubmissions(electionRoundId, ngoId, exportedData.FormSubmissionsFilters, ct);
 
             foreach (var submission in submissions)
             {
@@ -116,36 +117,49 @@ public class ExportFormSubmissionsJob(
         }
     }
 
-    private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId, CancellationToken ct)
+    private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId,
+        ExportFormSubmissionsFilters? filters, CancellationToken ct)
     {
-        var sql = """
+                var sql = """
                   WITH submissions AS
                            (SELECT psi."Id" AS "SubmissionId",
-                                   (select "Id" from "PollingStationInformationForms" where "ElectionRoundId" = @electionRoundId) AS "FormId",
+                                   psi."PollingStationInformationFormId" AS "FormId",
+                                   'PSI' AS "FormType",
                                    psi."PollingStationId",
                                    psi."MonitoringObserverId",
                                    psi."Answers",
                                    psi."FollowUpStatus",
-                                   (select "Questions"
-                                    from "PollingStationInformationForms"
-                                    where "ElectionRoundId" = @electionRoundId) AS "Questions",
+                                   psif."Questions",
+                                   psi."NumberOfQuestionsAnswered",
+                                   psi."NumberOfFlaggedAnswers",
                                    '[]'::jsonb AS "Attachments",
                                    '[]'::jsonb AS "Notes",
                                    COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted"
                             FROM "PollingStationInformation" psi
                                      INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
                                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
+                                     INNER JOIN "PollingStationInformationForms" psif ON psif."Id" = psi."PollingStationInformationFormId"
                             WHERE mn."ElectionRoundId" = @electionRoundId
                               AND mn."NgoId" = @ngoId
+                              AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
+                              AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
+                              AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
+                              AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
+                              AND (@questionsAnswered IS NULL
+                                OR (@questionsAnswered = 'All' AND psif."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'Some' AND psif."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
                             UNION ALL
                             SELECT fs."Id" AS "SubmissionId",
                                    f."Id" AS "FormId",
+                                   f."FormType",
                                    fs."PollingStationId",
                                    fs."MonitoringObserverId",
                                    fs."Answers",
                                    fs."FollowUpStatus",
                                    f."Questions",
-                  
+                                   fs."NumberOfQuestionsAnswered",
+                                   fs."NumberOfFlaggedAnswers",
                                    COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName"))
                                              FROM "Attachments" a
                                              WHERE a."ElectionRoundId" = @electionRoundId
@@ -168,9 +182,18 @@ public class ExportFormSubmissionsJob(
                                      INNER JOIN "Forms" f on f."Id" = fs."FormId"
                             WHERE mn."ElectionRoundId" = @electionRoundId
                               AND mn."NgoId" = @ngoId
+                              AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
+                              AND (@formId IS NULL OR fs."FormId" = @formId)
+                              AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
+                              AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
+                              AND (@questionsAnswered IS NULL
+                                OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
+                                OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0))
                             order by "TimeSubmitted" desc)
                   SELECT s."SubmissionId",
                          s."FormId",
+                         s."FormType",
                          s."TimeSubmitted",
                          ps."Level1",
                          ps."Level2",
@@ -197,9 +220,54 @@ public class ExportFormSubmissionsJob(
                            INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
                   WHERE mn."ElectionRoundId" = @electionRoundId
                     AND mn."NgoId" = @ngoId
+                    AND (@searchText IS NULL OR @searchText = ''
+                      OR u."FirstName" ILIKE @searchText
+                      OR u."LastName" ILIKE @searchText
+                      OR u."Email" ILIKE @searchText
+                      OR u."PhoneNumber" ILIKE @searchText)
+                    AND (@formType IS NULL OR s."FormType" = @formType)
+                    AND (@level1 IS NULL OR ps."Level1" = @level1)
+                    AND (@level2 IS NULL OR ps."Level2" = @level2)
+                    AND (@level3 IS NULL OR ps."Level3" = @level3)
+                    AND (@level4 IS NULL OR ps."Level4" = @level4)
+                    AND (@level5 IS NULL OR ps."Level5" = @level5)
+                    AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
+                    AND (@hasFlaggedAnswers IS NULL
+                      OR (s."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false)
+                      OR (s."NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
+                    AND (@followUpStatus IS NULL OR s."FollowUpStatus" = @followUpStatus)
+                    AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
+                    AND (@hasNotes IS NULL
+                      OR (jsonb_array_length(s."Notes") = 0 AND @hasNotes = false)
+                      OR (jsonb_array_length(s."Notes") > 0 AND @hasNotes = true))
+                    AND (@hasAttachments IS NULL
+                      OR (jsonb_array_length(s."Attachments") = 0 AND @hasAttachments = false)
+                      OR (jsonb_array_length(s."Attachments") > 0 AND @hasAttachments = true))
                   """;
 
-        var queryParams = new { electionRoundId, ngoId };
+        var queryParams = new
+        {
+            electionRoundId,
+            ngoId,
+            searchText = $"%{filters?.SearchText?.Trim() ?? string.Empty}%",
+            formType = filters?.FormTypeFilter?.ToString(),
+            level1 = filters?.Level1Filter,
+            level2 = filters?.Level2Filter,
+            level3 = filters?.Level3Filter,
+            level4 = filters?.Level4Filter,
+            level5 = filters?.Level5Filter,
+            pollingStationNumber = filters?.PollingStationNumberFilter,
+            hasFlaggedAnswers = filters?.HasFlaggedAnswers,
+            followUpStatus = filters?.FollowUpStatus?.ToString(),
+            tagsFilter = filters?.TagsFilter ?? [],
+            monitoringObserverStatus = filters?.MonitoringObserverStatus?.ToString(),
+            formId = filters?.FormId,
+            hasNotes = filters?.HasNotes,
+            hasAttachments = filters?.HasAttachments,
+            questionsAnswered = filters?.QuestionsAnswered?.ToString(),
+            fromDate = filters?.FromDateFilter?.ToString("O"),
+            toDate = filters?.ToDateFilter?.ToString("O"),
+        };
 
         IEnumerable<SubmissionModel> submissions = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))

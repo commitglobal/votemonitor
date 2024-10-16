@@ -1,6 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
+[JsonConverter(typeof(SmartEnumValueConverter<ObserverGuideType, string>))]
 public sealed class ObserverGuideType : SmartEnum<ObserverGuideType, string>
 {
     public static readonly ObserverGuideType Website = new(nameof(Website), nameof(Website));

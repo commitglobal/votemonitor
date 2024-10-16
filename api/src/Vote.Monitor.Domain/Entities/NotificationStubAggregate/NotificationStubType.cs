@@ -1,7 +1,7 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.NotificationStubAggregate;
 
-namespace Vote.Monitor.Domain.Entities.NotificationStubAggregate;
 
+[JsonConverter(typeof(SmartEnumValueConverter<NotificationStubType, string>))]
 public class NotificationStubType : SmartEnum<NotificationStubType, string>
 {
     public static readonly NotificationStubType Firebase = new(nameof(Firebase), nameof(Firebase));

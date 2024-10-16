@@ -38,4 +38,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     [QueryParam] public IncidentReportFollowUpStatus? FollowUpStatus { get; set; }
     [QueryParam] public IncidentReportLocationType? LocationType { get; set; }
+    
+    [QueryParam] public DateTime? FromDateFilter { get; set; }
+    [QueryParam] public DateTime? ToDateFilter { get; set; }
 }

@@ -1,5 +1,10 @@
 ﻿global using System.Reflection;
 global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using Ardalis.SmartEnum.SystemTextJson;
+global using System.Text.Json.Serialization;
+global using Ardalis.SmartEnum;
+global using Ardalis.SmartEnum.SystemTextJson;
 global using Ardalis.Specification;
 global using Microsoft.EntityFrameworkCore;
 global using SmartEnum.EFCore;
@@ -14,3 +19,6 @@ global using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 global using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 global using Vote.Monitor.Domain.Entities.PollingStationAggregate;
 global using Vote.Monitor.Domain.EntitiesConfiguration;
+global using Ardalis.SmartEnum;
+
+

@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-
-namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
+﻿namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class DisplayLogic
 {

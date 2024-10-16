@@ -1,6 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 
-namespace Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
+[JsonConverter(typeof(SmartEnumValueConverter<CitizenGuideType, string>))]
 public sealed class CitizenGuideType : SmartEnum<CitizenGuideType, string>
 {
     public static readonly CitizenGuideType Website = new(nameof(Website), nameof(Website));

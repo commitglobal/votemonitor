@@ -1,13 +1,7 @@
 ﻿using FluentAssertions;
 using Vote.Monitor.Answer.Module.Aggregators;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
-using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 

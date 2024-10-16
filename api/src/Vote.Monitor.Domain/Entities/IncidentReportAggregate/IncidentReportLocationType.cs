@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
-namespace Vote.Monitor.Domain.Entities.IncidentReportAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<IncidentReportLocationType, string>))]
 public sealed class IncidentReportLocationType : SmartEnum<IncidentReportLocationType, string>
 {
     public static readonly IncidentReportLocationType PollingStation = new(nameof(PollingStation), nameof(PollingStation));

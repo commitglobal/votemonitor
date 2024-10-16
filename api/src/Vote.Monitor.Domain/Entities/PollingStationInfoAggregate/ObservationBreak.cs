@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 public record ObservationBreak

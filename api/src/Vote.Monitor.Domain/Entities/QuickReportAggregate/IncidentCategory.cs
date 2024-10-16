@@ -1,7 +1,6 @@
-using Ardalis.SmartEnum;
-
 namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
+[JsonConverter(typeof(SmartEnumValueConverter<IncidentCategory, string>))]
 public sealed class IncidentCategory : SmartEnum<IncidentCategory, string>
 {
     public static readonly IncidentCategory PhysicalViolenceIntimidationPressure =

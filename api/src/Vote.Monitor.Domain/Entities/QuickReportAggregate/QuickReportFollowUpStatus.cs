@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<QuickReportFollowUpStatus, string>))]
 public sealed class QuickReportFollowUpStatus : SmartEnum<QuickReportFollowUpStatus, string>
 {
     public static readonly QuickReportFollowUpStatus NotApplicable = new(nameof(NotApplicable), nameof(NotApplicable));

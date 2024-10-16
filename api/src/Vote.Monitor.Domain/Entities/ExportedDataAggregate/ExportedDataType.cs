@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<ExportedDataType, string>))]
 public sealed class ExportedDataType : SmartEnum<ExportedDataType, string>
 {
     public static readonly ExportedDataType FormSubmissions = new(nameof(FormSubmissions), nameof(FormSubmissions));

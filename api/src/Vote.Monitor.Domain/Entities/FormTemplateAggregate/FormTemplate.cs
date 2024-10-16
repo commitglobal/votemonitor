@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;

@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
-namespace Vote.Monitor.Domain.Entities.CitizenReportAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<CitizenReportFollowUpStatus, string>))]
 public sealed class CitizenReportFollowUpStatus : SmartEnum<CitizenReportFollowUpStatus, string>
 {
     public static readonly CitizenReportFollowUpStatus NotApplicable = new(nameof(NotApplicable), nameof(NotApplicable));

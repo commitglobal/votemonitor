@@ -3,13 +3,13 @@ using Vote.Monitor.Core.Services.EmailTemplating.Props;
 
 namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
-internal class ConfirmEmailGenerator : IEmailGenerator<ConfirmEmailProps>
+internal class ConfirmEmailGenerator
 {
-    public EmailModel Generate(ConfirmEmailProps props)
-    {
-        var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ConfirmEmail);
+    private static readonly string Template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ConfirmEmail);
 
-        var body = template
+    public static EmailModel Generate(ConfirmEmailProps props)
+    {
+        var body = Template
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$name$~", props.FullName)
             .Replace("~$confirmUrl$~", props.ConfirmUrl);

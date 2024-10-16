@@ -467,8 +467,6 @@ export function formatBytes(
   }`
 }
 
-
-
 /**
  * Ensures translated string contains a value for every available languages
  * @param availableLanguages available translations list
@@ -499,4 +497,16 @@ export const toKebabCase = (str: string): string => {
     .replace(/[^\w\-]+/g, '')             // Remove all non-word characters except hyphens
     .replace(/--+/g, '-')                 // Remove multiple hyphens
     .toLowerCase();                       // Convert the string to lowercase
+};
+
+export const getFileCategory = (mimeType: string): 'image' | 'video' | 'audio' | 'unknown' => {
+  if (mimeType.startsWith('image/')) {
+    return 'image'
+  } else if (mimeType.startsWith('video/')) {
+    return 'video'
+  } else if (mimeType.startsWith('audio/')) {
+    return 'audio'
+  } else {
+    return 'unknown'
+  }
 };
