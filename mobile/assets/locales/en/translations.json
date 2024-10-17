@@ -125,7 +125,11 @@
   "login": {
     "disclaimer": {
       "paragraph1": "Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
-      "paragraph2": "If you are not an accredited observer, you may still report irregularities as a citizen for an ongoing election event, without needing an account.",
+      "paragraph2": {
+        "slice1": "If you are not an accredited observer, you may still",
+        "link": "report irregularities as a citizen",
+        "slice2": "for an ongoing election event, without needing an account."
+      },
       "email": "info@commitglobal.org"
     },
     "heading": "Log in",

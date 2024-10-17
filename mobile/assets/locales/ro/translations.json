@@ -125,7 +125,11 @@
   "login": {
     "disclaimer": {
       "paragraph1": "Vote Monitor pentru Observatori poate fi folosit doar de observatori independenți, acreditați de o organizație care monitorizează procesele electorale. Este necesar un email de invitație de la organizația ta, cu instrucțiuni pentru crearea unui cont.",
-      "paragraph2": "Dacă nu ești un observator acreditat, poți totuși să raportezi nereguli ca cetățean pentru un eveniment electoral în desfășurare, fără a avea nevoie de un cont."
+      "paragraph2": {
+        "slice1": "Dacă nu ești un observator acreditat, poți totuși să",
+        "link": "raportezi nereguli ca cetățean",
+        "slice2": "pentru un eveniment electoral în desfășurare, fără a avea nevoie de un cont."
+      }
     },
     "heading": "Conectează-te",
     "paragraph": "Te rugăm să folosești adresa de email cu care te-ai înregistrat ca observator.",
