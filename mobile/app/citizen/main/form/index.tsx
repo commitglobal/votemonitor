@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Card, ScrollView, XStack, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -32,6 +32,9 @@ import MediaLoading from "../../../../components/MediaLoading";
 import { FileMetadata, useCamera } from "../../../../hooks/useCamera";
 import * as DocumentPicker from "expo-document-picker";
 import * as Crypto from "expo-crypto";
+import Card from "../../../../components/Card";
+import { AttachmentMimeType } from "../../../../services/api/get-attachments.api";
+import { MediaDialog } from "../../../../components/MediaDialog";
 // import { Buffer } from "buffer";
 // import * as FileSystem from "expo-file-system";
 
@@ -83,6 +86,11 @@ const CitizenForm = () => {
   const [questionId, setQuestionId] = useState<string>(initialQuestionId);
   const [isReviewSheetOpen, setIsReviewSheetOpen] = useState(false);
   const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] = useState<string | null>(null);
+  const [previewAttachment, setPreviewAttachment] = useState<{
+    fileMetadata: FileMetadata;
+    id: string;
+  } | null>(null);
 
   const {
     data: currentForm,
@@ -130,7 +138,7 @@ const CitizenForm = () => {
   });
 
   const handleGoBack = () => {
-    if (isDirty) {
+    if (isDirty || Object.keys(attachments).length) {
       Keyboard.dismiss();
       setShowWarningDialog(true);
     } else {
@@ -308,6 +316,7 @@ const CitizenForm = () => {
     setIsPreparingFile(false);
   };
   const handleOnShowAttachementSheet = () => {
+    Keyboard.dismiss();
     if (isOnline) {
       setIsOptionsSheetOpen(true);
     } else {
@@ -379,13 +388,17 @@ const CitizenForm = () => {
                       flexDirection="row"
                       justifyContent="space-between"
                       alignItems="center"
+                      onPress={() => setPreviewAttachment(attachment)}
                     >
                       <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
                         {attachment.fileMetadata.name}
                       </Typography>
                       <YStack
                         padding="$md"
-                        onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                        onPress={() => {
+                          Keyboard.dismiss();
+                          setSelectedAttachmentToDelete(attachment.id);
+                        }}
                         pressStyle={{ opacity: 0.5 }}
                       >
                         <Icon icon="xCircle" size={24} color="$gray5" />
@@ -397,6 +410,30 @@ const CitizenForm = () => {
             </YStack>
           ) : (
             false
+          )}
+
+          {selectedAttachmentToDelete && (
+            <WarningDialog
+              title={t("attachments.delete.title")}
+              description={t("attachments.delete.description")}
+              actionBtnText={t("attachments.delete.actions.clear")}
+              cancelBtnText={t("attachments.delete.actions.cancel")}
+              action={() => {
+                removeAttachmentLocal(selectedAttachmentToDelete);
+                setSelectedAttachmentToDelete(null);
+              }}
+              onCancel={() => setSelectedAttachmentToDelete(null)}
+            />
+          )}
+
+          {previewAttachment && previewAttachment.fileMetadata.type === AttachmentMimeType.IMG && (
+            <MediaDialog
+              media={{
+                type: previewAttachment.fileMetadata.type,
+                src: previewAttachment.fileMetadata.uri,
+              }}
+              onClose={() => setPreviewAttachment(null)}
+            />
           )}
 
           <AddAttachment

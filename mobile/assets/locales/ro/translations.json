@@ -125,7 +125,7 @@
       "heading": "Fișiere media încărcate",
       "loading": "Se adaugă atașamentul... ",
       "error": "Eroare la încărcarea atașamentului.",
-      "add": "Adaugă notițe sau fișiere media",
+      "add": "Adaugă fișiere media",
       "menu": {
         "add_note": "Adaugă o notiță",
         "load": "Încarcă din galerie",
@@ -141,6 +141,14 @@
         "completed": "Încărcarea a fost finalizată.",
         "aborted": "Încărcarea a fost anulată.",
         "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
+      },
+      "delete": {
+        "title": "Șterge fișierul media",
+        "description": "Această acțiune nu poate fi anulată. Odată șters, un fișier media nu mai poate fi recuperat.",
+        "actions": {
+          "cancel": "Anulează",
+          "clear": "Șterge"
+        }
       }
     }
   },

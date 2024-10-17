@@ -140,6 +140,14 @@
         "completed": "Upload completed.",
         "aborted": "Upload aborted.",
         "offline": "You need an internet connection in order to perform this action."
+      },
+      "delete": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Delete"
+        }
       }
     }
   },
