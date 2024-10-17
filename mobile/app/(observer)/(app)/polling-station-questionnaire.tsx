@@ -626,7 +626,6 @@ const OptionSheetContent = ({
         paddingVertical="$xs"
         onPress={() => {
           onSetCompletion(!isCompleted);
-          router.back();
         }}
         disabled={disableMarkAsDone}
       >
