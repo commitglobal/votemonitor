@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useMemo } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Button from "./Button";
@@ -19,6 +19,14 @@ import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { FileMetadata } from "../hooks/useCamera";
+import { MULTIPART_FILE_UPLOAD_SIZE } from "../common/constants";
+import { useUploadAttachmentCitizenMutation } from "../services/mutations/citizen/add-attachment-citizen.mutation";
+import { addAttachmentCitizenMultipartAbort, addAttachmentCitizenMultipartComplete, AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
+import * as FileSystem from "expo-file-system";
+import { Buffer } from "buffer";
+import { uploadS3Chunk } from "../services/api/add-attachment.api";
+import * as Sentry from "@sentry/react-native";
+import MediaLoading from "./MediaLoading";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -56,6 +64,11 @@ export default function ReviewCitizenFormSheet({
 
   const { mutate: postCitizenForm, isPending } = usePostCitizenFormMutation();
   const { selectedElectionRound } = useCitizenUserData();
+
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<string>("");
+
+  const { mutateAsync: addAttachmentCitizen } = useUploadAttachmentCitizenMutation();
 
   const mappedAnswers = useMemo(() => {
     if (!answers || !questions) return {};
@@ -124,27 +137,30 @@ export default function ReviewCitizenFormSheet({
     return currentForm.questions.filter((question) => mappedAnswers[question.id]);
   }, [currentForm?.questions, mappedAnswers]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!currentForm || !selectedElectionRound || !answers) {
       console.log("⛔️ Missing data for sending review citizen form. ⛔️");
       return;
     }
 
+    const citizenReportId = Crypto.randomUUID();
+
     postCitizenForm(
       {
         electionRoundId: selectedElectionRound,
-        citizenReportId: Crypto.randomUUID(),
+        citizenReportId,
         formId: currentForm.id,
         locationId: selectedLocationId,
         answers: Object.values(answers).filter(Boolean) as ApiFormAnswer[],
       },
       {
-        onSuccess: (response) => {
-          console.log("🔵 [CitizenForm] form submitted successfully, redirect to success page");
+        onSuccess: async (response) => {
+          await uploadAttachments(citizenReportId);
           router.replace(`/citizen/main/form/success?submissionId=${response.id}`);
+          setIsUploading(false);
         },
         onError: (error) => {
-          console.log("🔴 [CitizenForm] error submitting form", error);
+          Sentry.captureException(error);
           // close review modal and display error toast
           setIsReviewSheetOpen(false);
           return Toast.show({
@@ -157,59 +173,170 @@ export default function ReviewCitizenFormSheet({
     );
   };
 
+  const uploadAttachments = async (citizenReportId: string) => {
+    if (!currentForm || !selectedElectionRound || !answers) {
+      return;
+    }
+
+    if (attachments && Object.keys(attachments).length > 0) {
+      setIsUploading(true);
+      const attachmentArray: { questionId: string, fileMetadata: FileMetadata, id: string }[] = Object.entries(attachments).map(([questionId, attachments]) => attachments.map(a => ({ ...a, questionId }))).flat()
+      try {
+        const totalParts = attachmentArray.reduce((acc, attachment) => {
+          return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
+        }, 0);
+        let uploadedPartsNo = 0;
+        // Upload each attachment
+        setUploadProgress(`${t("attachments.upload.starting")}`);
+        for (const [, attachment] of attachmentArray.entries()) {
+          const payload: AddAttachmentCitizenStartAPIPayload = {
+            id: attachment.id,
+            fileName: attachment.fileMetadata.name,
+            contentType: attachment.fileMetadata.type,
+            numberOfUploadParts: Math.ceil(
+              attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE,
+            ),
+            electionRoundId: selectedElectionRound,
+            citizenReportId,
+            formId: currentForm.id,
+            questionId: attachment.questionId,
+          };
+
+          const data = await addAttachmentCitizen(payload);
+          await handleChunkUpload(
+            attachment.fileMetadata.uri,
+            data.uploadUrls,
+            data.uploadId,
+            attachment.id,
+            citizenReportId,
+            currentForm.id,
+            attachment.questionId,
+            uploadedPartsNo,
+            totalParts,
+          );
+          uploadedPartsNo += payload.numberOfUploadParts;
+        }
+        setUploadProgress(t("attachments.upload.completed"));
+      } catch (err) {
+        Sentry.captureException(err);
+        setIsUploading(false);
+      }
+    }
+
+  }
+
+  const handleChunkUpload = async (
+    filePath: string,
+    uploadUrls: Record<string, string>,
+    uploadId: string,
+    attachmentId: string,
+    citizenReportId: string,
+    formId: string,
+    questionId: string,
+    uploadedPartsNo: number,
+    totalParts: number,
+  ) => {
+    try {
+      let etags: Record<number, string> = {};
+      const urls = Object.values(uploadUrls);
+      for (const [index, url] of urls.entries()) {
+        const chunk = await FileSystem.readAsStringAsync(filePath, {
+          length: MULTIPART_FILE_UPLOAD_SIZE,
+          position: index * MULTIPART_FILE_UPLOAD_SIZE,
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        const buffer = Buffer.from(chunk, "base64");
+        const data = await uploadS3Chunk(url, buffer);
+        setUploadProgress(
+          `${t("attachments.upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
+        );
+        etags = { ...etags, [index + 1]: data.ETag };
+      }
+
+      if (selectedElectionRound) {
+        await addAttachmentCitizenMultipartComplete({
+          uploadId,
+          etags,
+          electionRoundId: selectedElectionRound,
+          id: attachmentId,
+          citizenReportId,
+        });
+      }
+    } catch (err) {
+      Sentry.captureException(err, { data: { selectedElectionRound, citizenReportId, formId, questionId } });
+      if (selectedElectionRound) {
+        setUploadProgress(t("attachments.upload.aborted"));
+        await addAttachmentCitizenMultipartAbort({
+          id: attachmentId,
+          uploadId,
+          electionRoundId: selectedElectionRound,
+          citizenReportId,
+        });
+      }
+    }
+  };
+
   return (
     <Sheet
       modal
       open
       zIndex={100_001}
-      snapPoints={[90]}
-      dismissOnSnapToBottom={!isPending}
+      snapPoints={isUploading ? [25] : [90]}
+      dismissOnSnapToBottom={!isPending && !isUploading}
+      dismissOnOverlayPress={!isPending && !isUploading}
       onOpenChange={(open: boolean) => {
         if (!open) {
           setIsReviewSheetOpen(false);
         }
       }}
+
     >
       <Sheet.Overlay />
       <Sheet.Frame>
-        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <YStack flex={1} marginBottom={insets.bottom + 16}>
-          {isPending ? (
-            <LoadingScreen />
-          ) : (
-            <Sheet.ScrollView
-              contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
-              bounces={false}
-              showsVerticalScrollIndicator={false}
-            >
-              <Typography preset="heading">{t("review.heading")}</Typography>
-              {displayedQuestions.map((question) => (
-                <YStack key={question.id} marginTop="$md">
-                  <Typography fontWeight="500">{question.text[language]}</Typography>
-                  {mappedAnswers && mappedAnswers[question.id] && (
-                    <Typography marginTop="$xs" color="$gray5">
-                      {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
-                    </Typography>
-                  )}
-                  {attachments && attachments[question.id] ? (
-                    <YStack gap="$xxs" paddingTop='$lg'>
-                      <Typography fontWeight="500">{t("attachments.heading")}: {attachments[question.id].length}</Typography>
-                    </YStack>
-                  ) : (
-                    false
-                  )}
-                  <Separator marginTop="$xs" />
-                </YStack>
-              ))}
-            </Sheet.ScrollView>
-          )}
+        {isUploading ?
+          (<YStack flex={1} justifyContent="center" alignItems="center">
+            <MediaLoading progress={uploadProgress} />
+          </YStack>) : (
+            <>
+              <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
+              <YStack flex={1} marginBottom={insets.bottom + 16}>
+                {isPending ? (
+                  <LoadingScreen />
+                ) : (
+                  <Sheet.ScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+                    bounces={false}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Typography preset="heading">{t("review.heading")}</Typography>
+                    {displayedQuestions.map((question) => (
+                      <YStack key={question.id} marginTop="$md">
+                        <Typography fontWeight="500">{question.text[language]}</Typography>
+                        {mappedAnswers && mappedAnswers[question.id] && (
+                          <Typography marginTop="$xs" color="$gray5">
+                            {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+                          </Typography>
+                        )}
+                        {attachments && attachments[question.id] ? (
+                          <YStack gap="$xxs" paddingTop='$lg'>
+                            <Typography fontWeight="500">{t("attachments.heading")}: {attachments[question.id].length}</Typography>
+                          </YStack>
+                        ) : (
+                          false
+                        )}
+                        <Separator marginTop="$xs" />
+                      </YStack>
+                    ))}
+                  </Sheet.ScrollView>
+                )}
 
-          <YStack paddingHorizontal="$lg" paddingTop="$md">
-            <Button onPress={handleSubmit} disabled={isPending}>
-              {t("review.send")}
-            </Button>
-          </YStack>
-        </YStack>
+                <YStack paddingHorizontal="$lg" paddingTop="$md">
+                  <Button onPress={handleSubmit} disabled={isPending}>
+                    {t("review.send")}
+                  </Button>
+                </YStack>
+              </YStack>
+            </>)}
       </Sheet.Frame>
     </Sheet>
   );

@@ -47,7 +47,9 @@ const CitizenForm = () => {
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
-  const [attachments, setAttachments] = useState<Record<string, { fileMetadata: FileMetadata, id: string }[]>>({});
+  const [attachments, setAttachments] = useState<
+    Record<string, { fileMetadata: FileMetadata; id: string }[]>
+  >({});
 
   const { uploadCameraOrMedia } = useCamera();
 
@@ -250,7 +252,7 @@ const CitizenForm = () => {
     setAttachments((prevAttachments) => {
       return {
         ...prevAttachments,
-        [questionId]: prevAttachments[questionId].filter(attachment => attachment.id !== id)
+        [questionId]: prevAttachments[questionId].filter((attachment) => attachment.id !== id),
       };
     });
   };
@@ -268,7 +270,9 @@ const CitizenForm = () => {
     setIsOptionsSheetOpen(false);
     setAttachments((prevAttachments) => ({
       ...prevAttachments,
-      [questionId]: prevAttachments[questionId] ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID() }] : [{ fileMetadata: cameraResult, id: Crypto.randomUUID() }],
+      [questionId]: prevAttachments[questionId]
+        ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID() }]
+        : [{ fileMetadata: cameraResult, id: Crypto.randomUUID() }],
     }));
     setIsPreparingFile(false);
   };
@@ -292,7 +296,9 @@ const CitizenForm = () => {
       setIsOptionsSheetOpen(false);
       setAttachments((prevAttachments) => ({
         ...prevAttachments,
-        [questionId]: prevAttachments[questionId] ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID() }] : [{ fileMetadata, id: Crypto.randomUUID() }],
+        [questionId]: prevAttachments[questionId]
+          ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID() }]
+          : [{ fileMetadata, id: Crypto.randomUUID() }],
       }));
       setIsPreparingFile(false);
     } else {
@@ -349,7 +355,7 @@ const CitizenForm = () => {
           />
 
           {attachments[questionId]?.length ? (
-            <YStack gap="$xxs" paddingTop='$lg'>
+            <YStack gap="$xxs" paddingTop="$lg">
               <Typography fontWeight="500">{t("attachments.heading")}</Typography>
               <YStack gap="$xxs">
                 {attachments[questionId].map((attachment) => {
@@ -419,8 +425,8 @@ const CitizenForm = () => {
       )}
 
       {isOptionsSheetOpen && (
-        <OptionsSheet setOpen={setIsOptionsSheetOpen} open isLoading={false || isPreparingFile}>
-          {false || isPreparingFile ? (
+        <OptionsSheet setOpen={setIsOptionsSheetOpen} open isLoading={isPreparingFile}>
+          {isPreparingFile ? (
             <MediaLoading progress={uploadProgress} />
           ) : (
             <YStack paddingHorizontal="$sm" gap="$xxs">
