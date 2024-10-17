@@ -307,6 +307,18 @@ const CitizenForm = () => {
 
     setIsPreparingFile(false);
   };
+  const handleOnShowAttachementSheet = () => {
+    if (isOnline) {
+      setIsOptionsSheetOpen(true);
+    } else {
+      Toast.show({
+        type: "error",
+        text2: t("attachments.upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+    }
+  };
 
   if (isLoadingCurrentForm || !activeQuestion) {
     return <Typography>Loading...</Typography>;
@@ -390,10 +402,7 @@ const CitizenForm = () => {
           <AddAttachment
             label={t("attachments.add")}
             marginTop="$sm"
-            onPress={() => {
-              Keyboard.dismiss();
-              setIsOptionsSheetOpen(true);
-            }}
+            onPress={handleOnShowAttachementSheet}
           />
         </YStack>
       </ScrollView>
