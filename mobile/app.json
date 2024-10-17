@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix set completion on PSI",
+      "message": "Fixes",
       "updateCritical": 48,
-      "updateVersion": 56
+      "updateVersion": 57
     },
     "owner": "commit-global",
     "runtimeVersion": {
