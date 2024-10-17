@@ -19,6 +19,7 @@ module "ecs_cluster" {
   on_demand_percentage_above_base_capacity = 0
   ecs_cloudwatch_log_retention             = 30
   userdata_cloudwatch_log_retention        = 30
+  desired_capacity_type                    = "units"
 
   spot_allocation_strategy = "price-capacity-optimized"
   spot_instance_pools      = 0
