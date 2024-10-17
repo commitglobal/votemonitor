@@ -224,22 +224,6 @@ export const getElectionRoundAllForms = (
 };
 
 /** ========================================================================
-    ================= GET ElectionRoundForm ====================
-    ========================================================================
-    @description Get a form by id for an election round
-    @param {string} electionRoundId 
-    @param {string} formId 
-    @returns {FormAPIModel}
-*/
-
-export const getElectionRoundFormById = (
-  electionRoundId: string,
-  formId: string,
-): Promise<FormAPIModel> => {
-  return API.get(`election-rounds/${electionRoundId}/forms/${formId}`, {}).then((res) => res.data);
-};
-
-/** ========================================================================
     ================= GET NotesForPollingStation ====================
     ========================================================================
     @description Get all the possible notes for a given polling station

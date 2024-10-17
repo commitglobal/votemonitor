@@ -212,14 +212,14 @@ const QuestionForm = forwardRef(
             }
 
             return (
-              <>
+              <YStack>
                 {returnedComponent}
                 {error && (
                   <Typography color="$red10" marginTop="$md">
                     {error.message}
                   </Typography>
                 )}
-              </>
+              </YStack>
             );
           }}
         />

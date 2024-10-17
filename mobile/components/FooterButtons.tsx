@@ -1,7 +1,8 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack } from "tamagui";
 import { Icon } from "./Icon";
 import Button from "./Button";
+import { Animated } from "react-native";
+import useAnimatedBottomPadding from "../hooks/useAnimatedBottomPadding";
 
 export const FooterButtons = ({
   primaryAction,
@@ -14,14 +15,17 @@ export const FooterButtons = ({
   isPrimaryButtonDisabled?: boolean;
   handleGoBack: () => void;
 }) => {
-  const insets = useSafeAreaInsets();
+  const paddingBottom = useAnimatedBottomPadding(16);
+
+  const AnimatedXStack = Animated.createAnimatedComponent(XStack);
 
   return (
-    <XStack
-      marginBottom={insets.bottom + 16}
+    <AnimatedXStack
       justifyContent="center"
       alignItems="center"
       paddingRight="$xl"
+      paddingTop="$md"
+      paddingBottom={paddingBottom}
     >
       <XStack
         justifyContent="center"
@@ -41,6 +45,6 @@ export const FooterButtons = ({
       >
         {primaryActionLabel}
       </Button>
-    </XStack>
+    </AnimatedXStack>
   );
 };

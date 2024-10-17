@@ -156,7 +156,11 @@ export default function ReviewCitizenFormSheet({
       {
         onSuccess: async (response) => {
           await uploadAttachments(citizenReportId);
-          router.replace(`/citizen/main/form/success?submissionId=${response.id}`);
+
+          router.replace(
+            `/citizen/main/form/success?formId=${currentForm.id}&submissionId=${response.id}`,
+          );
+
           setIsUploading(false);
         },
         onError: (error) => {

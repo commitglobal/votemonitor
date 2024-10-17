@@ -146,7 +146,11 @@
   "login": {
     "disclaimer": {
       "paragraph1": "Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
-      "paragraph2": "If you are not an accredited observer, you may still report irregularities as a citizen for an ongoing election event, without needing an account.",
+      "paragraph2": {
+        "slice1": "If you are not an accredited observer, you may still",
+        "link": "report irregularities as a citizen",
+        "slice2": "for an ongoing election event, without needing an account."
+      },
       "email": "info@commitglobal.org"
     },
     "heading": "Log in",
@@ -236,7 +240,10 @@
     "quick_report": "Report",
     "guides": "Guides",
     "inbox": "Inbox",
-    "more": "More"
+    "more": "More",
+    "report": "Report",
+    "resources": "Resources",
+    "updates": "Updates"
   },
   "add_polling_station": {
     "title": "Add polling station",
@@ -755,13 +762,13 @@
         "label": "New password *",
         "placeholder": "Insert new password",
         "helper": "Must be at least 8 characters",
-        "required": "Password is mandatory"
+        "required": "The new password is mandatory"
       },
       "confirm_password": {
         "label": "Confirm new password *",
         "placeholder": "Confirm password",
         "helper": "Both passwords must match.",
-        "required": "Password is mandatory",
+        "required": "The new password is mandatory",
         "no_match": "Passwords do not match"
       },
       "save": "Save new password"

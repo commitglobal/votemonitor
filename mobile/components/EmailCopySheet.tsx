@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Sheet, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,21 +7,28 @@ import { Typography } from "./Typography";
 import { Controller, useForm } from "react-hook-form";
 import FormInput from "./FormInputs/FormInput";
 import Button from "./Button";
+import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.provider";
+import { usePutCitizenReportCopyMutation } from "../services/mutations/citizen/put-citizen-report-copy..mutation";
 
 export const EmailCopySheet = ({
   submissionId,
+  formId,
   setIsEmailSheetOpen,
   setCopySent,
 }: {
-  submissionId: string;
+  submissionId: string | undefined;
+  formId: string | undefined;
   setIsEmailSheetOpen: Dispatch<SetStateAction<boolean>>;
   setCopySent: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation("citizen_form");
+
   const insets = useSafeAreaInsets();
 
-  // todo: delete this once we use the submissionId somewhere
-  console.log("submissionId", submissionId);
+  const [isSheetDraggable, setIsSheetDraggable] = useState(true);
+
+  const { selectedElectionRound } = useCitizenUserData();
+  const { mutate: sendEmailCopy, isPending } = usePutCitizenReportCopyMutation();
 
   const {
     control,
@@ -30,12 +37,29 @@ export const EmailCopySheet = ({
   } = useForm();
 
   const onSubmit = (formValues: any) => {
-    console.log(formValues);
-    // todo: implementation once API ready
-    // change success screen to copy sent screen
-    setCopySent(true);
-    // close sheet
-    setIsEmailSheetOpen(false);
+    if (!selectedElectionRound || !submissionId || !formId) {
+      console.log("⛔️ Missing data for sending email copy. ⛔️");
+      return;
+    }
+
+    sendEmailCopy(
+      {
+        electionRoundId: selectedElectionRound,
+        citizenReportId: submissionId,
+        reqBody: {
+          formId,
+          email: formValues.email,
+        },
+      },
+      {
+        onSuccess: () => {
+          setCopySent(true);
+        },
+        onSettled: () => {
+          setIsEmailSheetOpen(false);
+        },
+      },
+    );
   };
 
   return (
@@ -51,6 +75,7 @@ export const EmailCopySheet = ({
           setIsEmailSheetOpen(false);
         }
       }}
+      disableDrag={!isSheetDraggable}
     >
       <Sheet.Overlay />
       <Sheet.Frame>
@@ -86,6 +111,8 @@ export const EmailCopySheet = ({
                   onChangeText={onChange}
                   placeholder={t("email_copy.placeholder")}
                   error={errors.email?.message as string | undefined}
+                  onFocus={() => setIsSheetDraggable(false)}
+                  onBlur={() => setIsSheetDraggable(true)}
                 />
               )}
             />
@@ -94,7 +121,7 @@ export const EmailCopySheet = ({
               <Button preset="chromeless" onPress={() => setIsEmailSheetOpen(false)}>
                 {t("email_copy.cancel")}
               </Button>
-              <Button flex={1} onPress={handleSubmit(onSubmit)}>
+              <Button flex={1} onPress={handleSubmit(onSubmit)} disabled={isPending}>
                 {t("email_copy.send")}
               </Button>
             </XStack>

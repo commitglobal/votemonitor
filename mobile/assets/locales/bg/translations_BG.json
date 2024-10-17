@@ -130,7 +130,10 @@
     "quick_report": "Бърз доклад",
     "guides": "Упътвания",
     "inbox": "Кутия",
-    "more": "Още"
+    "more": "Още",
+    "report": "TODO:Raportiranje",
+    "resources": "TODO:Resurse",
+    "updates": "TODO:Aktuelnosti"
   },
   "add_polling_station": {
     "title": "Добавете изборна секция",

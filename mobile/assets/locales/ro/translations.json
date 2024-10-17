@@ -11,7 +11,7 @@
     },
     "forms": {
       "mark_as_done": "TODO: Marchează formularul ca finalizat",
-      "mark_as_in_progress": "TODO: Marchează formularul \"în curs de completare\""
+      "mark_as_in_progress": "Marchează formularul ca fiind în desfășurare"
     },
     "cancel": "Renunță",
     "save": "Salvează",
@@ -147,7 +147,11 @@
   "login": {
     "disclaimer": {
       "paragraph1": "Vote Monitor pentru Observatori poate fi folosit doar de observatori independenți, acreditați de o organizație care monitorizează procesele electorale. Este necesar un email de invitație de la organizația ta, cu instrucțiuni pentru crearea unui cont.",
-      "paragraph2": "Dacă nu ești un observator acreditat, poți totuși să raportezi nereguli ca cetățean pentru un eveniment electoral în desfășurare, fără a avea nevoie de un cont."
+      "paragraph2": {
+        "slice1": "Dacă nu ești un observator acreditat, poți totuși să",
+        "link": "raportezi nereguli ca cetățean",
+        "slice2": "pentru un eveniment electoral în desfășurare, fără a avea nevoie de un cont."
+      }
     },
     "heading": "Conectează-te",
     "paragraph": "Te rugăm să folosești adresa de email cu care te-ai înregistrat ca observator.",
@@ -236,7 +240,10 @@
     "quick_report": "Raportare",
     "guides": "Ghiduri",
     "inbox": "Mesaje",
-    "more": "Altele"
+    "more": "Altele",
+    "report": "TODO:Raportare",
+    "resources": "TODO:Resurse",
+    "updates": "TODO:Actualizări"
   },
   "add_polling_station": {
     "title": "Adaugă o secție de votare",
@@ -618,7 +625,7 @@
     "error": "Eroare la încărcarea raportării"
   },
   "guides": {
-    "title": "",
+    "title": "Resurse",
     "empty": {
       "heading": "Momentan nu ai niciun ghid de citit ",
       "paragraph": "Aici vei găsi la îndemâna ta ghiduri și resurse din partea organizației care te-a acreditat ca osbervator."
@@ -734,13 +741,13 @@
         "label": "Parola nouă *",
         "placeholder": "Te rugăm să introduci parola nouă",
         "helper": "Parola trebuie să conțină cel puțin 8 caractere",
-        "required": "Parola este obligatorie"
+        "required": "Parola nouă este obligatorie"
       },
       "confirm_password": {
         "label": "Confirmă parola nouă *",
         "placeholder": "Confirmă parola nouă",
         "helper": "Parolele trebuie să coincidă",
-        "required": "Parola este obligatorie",
+        "required": "Parola nouă este obligatorie",
         "no_match": "Parolele nu coincid"
       },
       "save": "Salvează parola nouă"

@@ -9,6 +9,10 @@ import { useUserData } from "../../../../../../../contexts/user/UserContext.prov
 import Card from "../../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
+import { useMemo, useState } from "react";
+import { MediaDialog } from "../../../../../../../components/MediaDialog";
+import { AttachmentMimeType } from "../../../../../../../services/api/get-attachments.api";
+import { QuickReportAttachmentAPIResponse } from "../../../../../../../services/api/quick-report/get-quick-reports.api";
 
 type SearchParamsType = {
   reportId: string;
@@ -18,6 +22,9 @@ type SearchParamsType = {
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
   const { t } = useTranslation(["report_details", "common"]);
+
+  const [previewAttachment, setPreviewAttachment] =
+    useState<QuickReportAttachmentAPIResponse | null>(null);
 
   if (!reportId || !reportTitle) {
     return <Typography>Incorrect page params</Typography>;
@@ -41,27 +48,28 @@ const ReportDetails = () => {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
-          title={`${reportTitle}`}
-          titleColor="white"
-          barStyle="light-content"
+          title={reportTitle || t("title")}
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flex: 1, alignItems: "center" }}
-          paddingVertical="$xxl"
-          refreshControl={
-            <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
-          }
-        >
-          <Typography>{t("error")}</Typography>
-        </ScrollView>
+        <YStack flex={1}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flex: 1, alignItems: "center", flexGrow: 1 }}
+            paddingVertical="$xxl"
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
+            }
+          >
+            <Typography>{t("error")}</Typography>
+          </ScrollView>
+        </YStack>
       </Screen>
     );
   }
 
-  const attachments = quickReport?.attachments || [];
+  const attachments = useMemo(() => quickReport?.attachments || [], [quickReport?.attachments]);
+
   return (
     <Screen
       preset="fixed"
@@ -72,45 +80,56 @@ const ReportDetails = () => {
     >
       <Header
         title={`${reportTitle}`}
-        titleColor="white"
-        barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <ScrollView
-        contentContainerStyle={{ gap: 32, justifyContent: "center" }}
-        paddingHorizontal={16}
-        paddingTop={32}
-        refreshControl={
-          <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
-        }
-      >
-        <YStack gap={16}>
-          <Typography preset="subheading" fontWeight="500">
-            {quickReport?.title}
-          </Typography>
-          <Typography preset="body1" lineHeight={24} color="$gray8">
-            {quickReport?.description}
-          </Typography>
-        </YStack>
 
-        {attachments.length === 0 ? (
-          <Typography fontWeight="500">{t("no_files")}</Typography>
-        ) : (
+      <YStack flex={1}>
+        <ScrollView
+          contentContainerStyle={{
+            paddingVertical: 32,
+            gap: 32,
+            flexGrow: 1,
+            paddingHorizontal: 16,
+          }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
+          }
+        >
           <YStack gap={16}>
-            <Typography fontWeight="500" color="$gray10">
-              {t("uploaded_media")}
+            <Typography preset="subheading" fontWeight="500">
+              {quickReport?.title}
             </Typography>
-            {attachments.map((attachment, key) => (
-              <Card key={key}>
-                <Typography preset="body1" fontWeight="700" key={attachment.id}>
-                  {attachment.fileName}
-                </Typography>
-              </Card>
-            ))}
+            <Typography preset="body1" lineHeight={24} color="$gray8">
+              {quickReport?.description}
+            </Typography>
           </YStack>
-        )}
-      </ScrollView>
+
+          {attachments.length === 0 ? (
+            <Typography fontWeight="500">{t("no_files")}</Typography>
+          ) : (
+            <YStack gap={16}>
+              <Typography fontWeight="500" color="$gray10">
+                {t("uploaded_media")}
+              </Typography>
+              {attachments.map((attachment, key) => (
+                <Card key={key} onPress={() => setPreviewAttachment(attachment)}>
+                  <Typography preset="body1" fontWeight="700" key={attachment.id}>
+                    {attachment.fileName}
+                  </Typography>
+                </Card>
+              ))}
+            </YStack>
+          )}
+          {previewAttachment && previewAttachment.mimeType === AttachmentMimeType.IMG && (
+            <MediaDialog
+              media={{ type: previewAttachment.mimeType, src: previewAttachment.presignedUrl }}
+              onClose={() => setPreviewAttachment(null)}
+            />
+          )}
+        </ScrollView>
+      </YStack>
     </Screen>
   );
 };

@@ -100,7 +100,16 @@ const QuickReportContent = ({
   const { t } = useTranslation(["quick_report", "common"]);
   const { width } = useWindowDimensions();
 
-  const { refetch, isRefetching } = useQuickReports(activeElectionRound?.id);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const { refetch } = useQuickReports(activeElectionRound?.id);
+
+  const handleRefetch = () => {
+    setIsRefreshing(true);
+    refetch().then(() => {
+      setIsRefreshing(false);
+    });
+  };
 
   if (isLoading) {
     return (
@@ -155,7 +164,7 @@ const QuickReportContent = ({
                 width: width - 32,
               }
         }
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
       />
     </YStack>
   );

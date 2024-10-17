@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
-import React, { ReactNode } from "react";
-import { AlertDialog, AlertDialogProps, YStack } from "tamagui";
+import React, { ReactNode, useState } from "react";
+import { AlertDialog, AlertDialogProps, Spinner, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,7 @@ interface MediaDialogProps extends AlertDialogProps {
 
 export const MediaDialog: React.FC<MediaDialogProps> = ({ trigger, media, onClose, ...props }) => {
   const { t } = useTranslation("common");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <AlertDialog open {...props}>
@@ -52,7 +53,25 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({ trigger, media, onClos
         >
           <YStack flex={1} backgroundColor={"white"}>
             {media && (
-              <Image source={media.src} contentFit="contain" style={{ flex: 1 }} transition={500} />
+              <>
+                {!isLoaded && (
+                  <YStack flex={1} justifyContent="center" alignItems="center">
+                    <Spinner size="large" color="$purple5" />
+                  </YStack>
+                )}
+
+                <Image
+                  source={media.src}
+                  contentFit="contain"
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: isLoaded ? 1 : 0,
+                  }}
+                  onLoad={() => setIsLoaded(true)}
+                />
+              </>
             )}
           </YStack>
 
