@@ -46,7 +46,7 @@ const ObservationTime = () => {
   const { mutate, isPending } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
     pollingStationId: selectedPollingStation?.pollingStationId,
-    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_dates`,
+    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}`,
   });
 
   const { isOnline } = useNetInfoContext();

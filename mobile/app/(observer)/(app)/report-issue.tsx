@@ -145,6 +145,7 @@ const ReportIssue = () => {
 
     if (!cameraResult || !activeElectionRound) {
       setUploadProgress("");
+      setIsPreparingFile(false);
       return;
     }
 
