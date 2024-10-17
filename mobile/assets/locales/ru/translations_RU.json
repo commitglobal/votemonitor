@@ -1,569 +1,599 @@
 {
-    "common": {
-        "skip": "",
-        "search": "",
-        "loading": "",
-        "status": {
-            "completed": "",
-            "in_progress": "",
-            "not_started": ""
-        },
-        "cancel": "",
-        "save": "",
-        "no_data": "",
-        "select": "",
-        "done": ""
+  "common": {
+    "skip": "",
+    "search": "",
+    "loading": "",
+    "status": {
+      "completed": "",
+      "in_progress": "",
+      "not_started": ""
     },
-    "languages": {
-        "ro": "Румынский язык",
-        "en": "Английский язык",
-        "pl": "Польский язык",
-        "bg": "Болгарский язык",
-        "sr": "Сербский язык",
-        "ka": "Грузинский язык",
-        "hy": "Армянский язык",
-        "ru": "Русский язык",
-        "az": "Азербайджанский язык"
+    "cancel": "",
+    "save": "",
+    "no_data": "",
+    "select": "",
+    "done": ""
+  },
+  "languages": {
+    "ro": "Румынский язык",
+    "en": "Английский язык",
+    "pl": "Польский язык",
+    "bg": "Болгарский язык",
+    "sr": "Сербский язык",
+    "ka": "Грузинский язык",
+    "hy": "Армянский язык",
+    "ru": "Русский язык",
+    "az": "Азербайджанский язык"
+  },
+  "onboarding": {
+    "language": {
+      "heading": "",
+      "description": "",
+      "save": ""
     },
-    "onboarding": {
-        "language": {
-            "heading": "",
-            "description": "",
-            "save": ""
-        },
-        "polling_stations": {
-            "heading": "",
-            "description": ""
-        },
-        "forms": {
-            "heading": "",
-            "description": ""
-        },
-        "media": {
-            "heading": "",
-            "description": "",
-            "save": ""
-        }
+    "polling_stations": {
+      "heading": "",
+      "description": ""
     },
-    "login": {
-        "disclaimer": {
-            "paragraph1": "",
-            "paragraph2": "",
-            "email": ""
-        },
-        "heading": "",
-        "paragraph": "",
-        "form": {
-            "email": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "pattern": ""
-            },
-            "password": {
-                "label": "",
-                "placeholder": "",
-                "required": ""
-            },
-            "submit": {
-                "save": "",
-                "loading": ""
-            },
-            "errors": {
-                "invalid_credentials": "",
-                "offline": ""
-            }
-        },
-        "actions": {
-            "forgot_password": ""
-        },
-        "email_toast": ""
+    "forms": {
+      "heading": "",
+      "description": ""
     },
-    "forgot_password": {
-        "header": {
-            "title": ""
-        },
-        "heading": "",
-        "paragraph": "",
-        "form": {
-            "email": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "pattern": ""
-            },
-            "submit": {
-                "loading": "",
-                "save": ""
-            },
-            "errors": {
-                "invalid_email": ""
-            }
-        },
-        "confirmation": {
-            "heading": "",
-            "paragraph": "",
-            "confirm": ""
-        }
-    },
-    "about_app": {
-        "title": "",
-        "general": "",
-        "purpose": "",
-        "app_provides": {
-            "paragraph": "",
-            "item1": "",
-            "item2": "",
-            "item3": ""
-        },
-        "usage": "",
-        "version": ""
-    },
-    "loading_screen": {
-        "heading": "",
-        "paragraph": ""
-    },
-    "tabs": {
-        "observation": "",
-        "quick_report": "",
-        "guides": "",
-        "inbox": "",
-        "more": ""
-    },
-    "add_polling_station": {
-        "title": "",
-        "progress": {
-            "location": ""
-        },
-        "actions": {
-            "next_step": "",
-            "back": "",
-            "finalize": ""
-        },
-        "error": ""
-    },
-    "observation": {
-        "title": "",
-        "no_election_round": {
-            "heading": "",
-            "paragraph": ""
-        },
-        "no_visited_polling_stations": {
-            "heading": "",
-            "paragraph": "",
-            "add": ""
-        },
-        "my_polling_stations": {
-            "heading": "",
-            "paragraph": "",
-            "add": ""
-        },
-        "polling_stations_information": {
-            "heading": "",
-            "time_select": {
-                "not_defined": "",
-                "arrival_time": "",
-                "departure_time": "",
-                "save": "",
-                "error": {
-                    "arrival_first": "",
-                    "later_departure": "",
-                    "earlier_arrival": "",
-                    "server": ""
-                }
-            },
-            "polling_station_form": {
-                "paragraph": "",
-                "form_details_button_label": "",
-                "number_of_questions": "",
-                "answer_questions": ""
-            }
-        },
-        "forms": {
-            "heading": "",
-            "list": {
-                "empty": "",
-                "error": {
-                    "paragraph1": "",
-                    "paragraph2": "",
-                    "retry": ""
-                }
-            },
-            "select_language_modal": {
-                "header": "",
-                "helper": "",
-                "error": ""
-            }
-        },
-        "options_menu": {
-            "manage_my_polling_stations": ""
-        }
-    },
-    "polling_station_information_form": {
-        "title": "",
-        "submit": "",
-        "form": {
-            "max": "",
-            "placeholder": ""
-        },
-        "menu": {
-            "clear": ""
-        },
-        "warning_modal": {
-            "title": "",
-            "description": "",
-            "actions": {
-                "cancel": "",
-                "clear": ""
-            }
-        },
-        "unsaved_changes_dialog": {
-            "title": "",
-            "description": "",
-            "actions": {
-                "discard": "",
-                "save": ""
-            }
-        }
-    },
-    "form_overview": {
-        "overview": {
-            "heading": "",
-            "status": "",
-            "answered_questions": "",
-            "resume": "",
-            "start_form": "",
-            "progress": ""
-        },
-        "questions": {
-            "title": "",
-            "not_answered": "",
-            "answered": "",
-            "no_notes": "",
-            "notes": ""
-        },
-        "attachments": {
-            "notes": "",
-            "media": ""
-        },
-        "error": "",
-        "menu": {
-            "clear": "",
-            "change_language": ""
-        },
-        "clear_answers_modal": {
-            "title": "",
-            "description": {
-                "p1": "",
-                "p2": ""
-            },
-            "actions": {
-                "clear": "",
-                "cancel": ""
-            }
-        }
-    },
-    "polling_station_form_wizard": {
-        "progress_bar": {
-            "label": "",
-            "clear_answer": ""
-        },
-        "form": {
-            "min": "",
-            "max": "",
-            "date_placeholder": "",
-            "text_placeholder": ""
-        },
-        "attachments": {
-            "heading": "",
-            "loading": "",
-            "error": "",
-            "add": "",
-            "menu": {
-                "add_note": "",
-                "load": "",
-                "take_picture": "",
-                "record_video": "",
-                "upload_audio": ""
-            }
-        },
-        "notes": {
-            "heading": "",
-            "add": {
-                "heading": "",
-                "form": {
-                    "input": {
-                        "placeholder": "",
-                        "max": "",
-                        "required": ""
-                    }
-                }
-            },
-            "edit": {
-                "heading": "",
-                "delete": ""
-            },
-            "delete": {
-                "title": "",
-                "description": "",
-                "actions": {
-                    "cancel": "",
-                    "delete": ""
-                }
-            }
-        },
-        "warning_modal": {
-            "question": {
-                "title": "",
-                "description": "",
-                "actions": {
-                    "cancel": "",
-                    "clear": ""
-                }
-            },
-            "attachment": {
-                "title": "",
-                "description": "",
-                "actions": {
-                    "cancel": "",
-                    "clear": ""
-                }
-            },
-            "unsaved_answer": {
-                "title": "",
-                "description": "",
-                "actions": {
-                    "cancel": "",
-                    "save": ""
-                }
-            }
-        },
-        "error": ""
-    },
-    "manage_my_polling_stations": {
-        "empty": {
-            "title": ""
-        },
-        "general_text": "",
-        "ps_card": {
-            "header": "",
-            "l1": "",
-            "l2": "",
-            "l3": "",
-            "l4": "",
-            "l5": "",
-            "street": "",
-            "ps_number": ""
-        },
-        "warning_dialog": {
-            "title": "",
-            "description": "",
-            "actions": {
-                "cancel": "",
-                "remove": "",
-                "loading": ""
-            }
-        },
-        "removal_unallowed_dialog": {
-            "title": "",
-            "description": ""
-        },
-        "delete_success": "",
-        "delete_error": "",
-        "offline_error_toast_msg": ""
-    },
-    "quick_report": {
-        "list": {
-            "title": "",
-            "heading": "",
-            "error": "",
-            "empty": "",
-            "add": "",
-            "no_files": "",
-            "attachment_one": "",
-            "attachment_other": ""
-        },
-        "options_menu": {
-            "manage_my_polling_stations": ""
-        }
-    },
-    "report_new_issue": {
-        "title": "",
-        "media": {
-            "heading": "",
-            "add": "",
-            "error": "",
-            "menu": {
-                "load": "",
-                "take_picture": "",
-                "record_video": "",
-                "upload_audio": ""
-            }
-        },
-        "form": {
-            "polling_station_id": {
-                "label": "",
-                "placeholder": "",
-                "extra": "",
-                "required": "",
-                "options": {
-                    "other": "",
-                    "not_related": ""
-                }
-            },
-            "polling_station_details": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "issue_title": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "issue_description": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "submit": "",
-            "clear": "",
-            "loading": "",
-            "error": ""
-        }
-    },
-    "report_details": {
-        "title": "",
-        "uploaded_media": "",
-        "no_files": "",
-        "error": ""
-    },
-    "guides": {
-        "title": "",
-        "empty": {
-            "heading": "",
-            "paragraph": ""
-        },
-        "list": {
-            "heading": "",
-            "guide": {
-                "backup_title": "",
-                "created_on": ""
-            }
-        },
-        "options_sheet": {
-            "manage_my_polling_stations": ""
-        }
-    },
-    "inbox": {
-        "title": "",
-        "empty": {
-            "heading": "",
-            "paragraph": ""
-        },
-        "banner": "",
-        "today": "",
-        "your_organization": "",
-        "menu": {
-            "manage_polling_stations": ""
-        }
-    },
-    "more": {
-        "title": "",
-        "change-language": "",
-        "change-password": "",
-        "terms": "",
-        "privacy_policy": "",
-        "about": "",
-        "app_version": "",
-        "support": "",
-        "feedback": "",
-        "logout": "",
-        "logged_in": "",
-        "warning_modal": {
-            "logout_offline": {
-                "title": "",
-                "description": "",
-                "cancel": "",
-                "action": ""
-            },
-            "logout_online": {
-                "title": "",
-                "cancel": "",
-                "action": ""
-            }
-        },
-        "feedback_toast": {
-            "success": "",
-            "offline": "",
-            "error": "",
-            "required": ""
-        },
-        "feedback_sheet": {
-            "heading": "",
-            "p1": "",
-            "placeholder": "",
-            "cancel": "",
-            "action": "",
-            "input": {
-                "max": ""
-            }
-        },
-        "options_sheet": {
-            "manage_my_polling_stations": ""
-        }
-    },
-    "change_password": {
-        "title": "",
-        "form": {
-            "current_password": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "credentials_error": ""
-            },
-            "new_password": {
-                "label": "",
-                "placeholder": "",
-                "helper": "",
-                "required": ""
-            },
-            "confirm_password": {
-                "label": "",
-                "placeholder": "",
-                "helper": "",
-                "required": "",
-                "no_match": ""
-            },
-            "save": ""
-        },
-        "confirmation": {
-            "heading": "",
-            "paragraph": "",
-            "confirm": ""
-        },
-        "error": {
-            "offline": ""
-        }
-    },
-    "generic_error_screen": {
-        "paragraph1": "",
-        "paragraph2": "",
-        "retry": "",
-        "logout": ""
-    },
-    "network_banner": {
-        "online": "",
-        "offline": "",
-        "more_details": "",
-        "offline_warning": ""
-    },
-    "sync": {
-        "sync_data": "",
-        "warning": "",
-        "files": ""
+    "media": {
+      "heading": "",
+      "description": "",
+      "save": ""
     }
+  },
+  "login": {
+    "disclaimer": {
+      "paragraph1": "",
+      "paragraph2": "",
+      "email": ""
+    },
+    "heading": "",
+    "paragraph": "",
+    "form": {
+      "email": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "pattern": ""
+      },
+      "password": {
+        "label": "",
+        "placeholder": "",
+        "required": ""
+      },
+      "submit": {
+        "save": "",
+        "loading": ""
+      },
+      "errors": {
+        "invalid_credentials": "",
+        "offline": ""
+      }
+    },
+    "actions": {
+      "forgot_password": ""
+    },
+    "email_toast": ""
+  },
+  "forgot_password": {
+    "header": {
+      "title": ""
+    },
+    "heading": "",
+    "paragraph": "",
+    "form": {
+      "email": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "pattern": ""
+      },
+      "submit": {
+        "loading": "",
+        "save": ""
+      },
+      "errors": {
+        "invalid_email": ""
+      }
+    },
+    "confirmation": {
+      "heading": "",
+      "paragraph": "",
+      "confirm": ""
+    }
+  },
+  "about_app": {
+    "title": "",
+    "general": "",
+    "purpose": "",
+    "app_provides": {
+      "paragraph": "",
+      "item1": "",
+      "item2": "",
+      "item3": ""
+    },
+    "usage": "",
+    "version": ""
+  },
+  "loading_screen": {
+    "heading": "",
+    "paragraph": ""
+  },
+  "tabs": {
+    "observation": "",
+    "quick_report": "",
+    "guides": "",
+    "inbox": "",
+    "more": ""
+  },
+  "add_polling_station": {
+    "title": "",
+    "progress": {
+      "location": ""
+    },
+    "actions": {
+      "next_step": "",
+      "back": "",
+      "finalize": ""
+    },
+    "error": ""
+  },
+  "observation": {
+    "title": "",
+    "no_election_round": {
+      "heading": "",
+      "paragraph": ""
+    },
+    "no_visited_polling_stations": {
+      "heading": "",
+      "paragraph": "",
+      "add": ""
+    },
+    "my_polling_stations": {
+      "heading": "",
+      "paragraph": "",
+      "add": ""
+    },
+    "polling_stations_information": {
+      "heading": "",
+      "time_select": {
+        "not_defined": "",
+        "arrival_time": "",
+        "departure_time": "",
+        "save": "",
+        "error": {
+          "arrival_first": "",
+          "later_departure": "",
+          "earlier_arrival": "",
+          "server": ""
+        }
+      },
+      "polling_station_form": {
+        "paragraph": "",
+        "form_details_button_label": "",
+        "number_of_questions": "",
+        "answer_questions": ""
+      }
+    },
+    "forms": {
+      "heading": "",
+      "list": {
+        "empty": "",
+        "error": {
+          "paragraph1": "",
+          "paragraph2": "",
+          "retry": ""
+        }
+      },
+      "select_language_modal": {
+        "header": "",
+        "helper": "",
+        "error": ""
+      }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": ""
+    }
+  },
+  "polling_station_information_form": {
+    "title": "",
+    "submit": "",
+    "form": {
+      "max": "",
+      "placeholder": ""
+    },
+    "menu": {
+      "clear": ""
+    },
+    "warning_modal": {
+      "title": "",
+      "description": "",
+      "actions": {
+        "cancel": "",
+        "clear": ""
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "",
+      "description": "",
+      "actions": {
+        "discard": "",
+        "save": ""
+      }
+    }
+  },
+  "form_overview": {
+    "overview": {
+      "heading": "",
+      "status": "",
+      "answered_questions": "",
+      "resume": "",
+      "start_form": "",
+      "progress": ""
+    },
+    "questions": {
+      "title": "",
+      "not_answered": "",
+      "answered": "",
+      "no_notes": "",
+      "notes": ""
+    },
+    "attachments": {
+      "notes": "",
+      "media": ""
+    },
+    "error": "",
+    "menu": {
+      "clear": "",
+      "change_language": ""
+    },
+    "clear_answers_modal": {
+      "title": "",
+      "description": {
+        "p1": "",
+        "p2": ""
+      },
+      "actions": {
+        "clear": "",
+        "cancel": ""
+      }
+    }
+  },
+  "polling_station_form_wizard": {
+    "progress_bar": {
+      "label": "",
+      "clear_answer": ""
+    },
+    "form": {
+      "min": "",
+      "max": "",
+      "date_placeholder": "",
+      "text_placeholder": ""
+    },
+    "attachments": {
+      "heading": "",
+      "loading": "",
+      "error": "",
+      "add": "",
+      "menu": {
+        "add_note": "",
+        "load": "",
+        "take_picture": "",
+        "record_video": "",
+        "upload_audio": ""
+      }
+    },
+    "notes": {
+      "heading": "",
+      "add": {
+        "heading": "",
+        "form": {
+          "input": {
+            "placeholder": "",
+            "max": "",
+            "required": ""
+          }
+        }
+      },
+      "edit": {
+        "heading": "",
+        "delete": ""
+      },
+      "delete": {
+        "title": "",
+        "description": "",
+        "actions": {
+          "cancel": "",
+          "delete": ""
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "",
+        "description": "",
+        "actions": {
+          "cancel": "",
+          "clear": ""
+        }
+      },
+      "attachment": {
+        "title": "",
+        "description": "",
+        "actions": {
+          "cancel": "",
+          "clear": ""
+        }
+      },
+      "unsaved_answer": {
+        "title": "",
+        "description": "",
+        "actions": {
+          "cancel": "",
+          "save": ""
+        }
+      }
+    },
+    "error": ""
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": ""
+    },
+    "general_text": "",
+    "ps_card": {
+      "header": "",
+      "l1": "",
+      "l2": "",
+      "l3": "",
+      "l4": "",
+      "l5": "",
+      "street": "",
+      "ps_number": ""
+    },
+    "warning_dialog": {
+      "title": "",
+      "description": "",
+      "actions": {
+        "cancel": "",
+        "remove": "",
+        "loading": ""
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "",
+      "description": ""
+    },
+    "delete_success": "",
+    "delete_error": "",
+    "offline_error_toast_msg": ""
+  },
+  "quick_report": {
+    "list": {
+      "title": "",
+      "heading": "",
+      "error": "",
+      "empty": "",
+      "add": "",
+      "no_files": "",
+      "attachment_one": "",
+      "attachment_other": ""
+    },
+    "options_menu": {
+      "manage_my_polling_stations": ""
+    }
+  },
+  "report_new_issue": {
+    "title": "",
+    "media": {
+      "heading": "",
+      "add": "",
+      "error": "",
+      "menu": {
+        "load": "",
+        "take_picture": "",
+        "record_video": "",
+        "upload_audio": ""
+      }
+    },
+    "form": {
+      "polling_station_id": {
+        "label": "",
+        "placeholder": "",
+        "extra": "",
+        "required": "",
+        "options": {
+          "other": "",
+          "not_related": ""
+        }
+      },
+      "incident_category": {
+        "label": "Incident category *",
+        "placeholder": "Incident category type",
+        "required": "This field is required.",
+        "options": {
+          "PhysicalViolenceIntimidationPressure": "Физическое насилие/угрозы/давление",
+          "CampaigningAtPollingStation": "Агитация на избирательном участке",
+          "RestrictionOfObserversRights": "Незаконное ограничение прав наблюдателя/ представителя/ медиа",
+          "UnauthorizedPersonsAtPollingStation": "Присутствие посторонних лиц на избирательном участке",
+          "ViolationDuringVoterVerificationProcess": "Нарушение в процессе верификации избирателя",
+          "VotingWithImproperDocumentation": "Голосование с ненадлежащей документацией",
+          "IllegalRestrictionOfVotersRightToVote": "Незаконное ограничение права голосования избирателя ",
+          "DamagingOrSeizingElectionMaterials": "Повреждение/ похищение избирательных материалов",
+          "ImproperFilingOrHandlingOfElectionDocumentation": "Ненадлежащее ведение/ заполнение избирательной документации",
+          "BallotStuffing": "Вброс/ фальсификация бюллетеней",
+          "ViolationsRelatedToControlPaper": "Нарушения, связанные с контрольным листом",
+          "NotCheckingVoterIdentificationSafeguardMeasures": "Маркировка избирателей не проверена",
+          "VotingWithoutVoterIdentificationSafeguardMeasures": "Голосование без маркировки",
+          "BreachOfSecrecyOfVote": "Нарушение тайны голосования",
+          "ViolationsRelatedToMobileBallotBox": "Нарушения, связанные с переносным избирательным ящиком",
+          "NumberOfBallotsExceedsNumberOfVoters": "Количество бюллетеней больше числа избирателей, пришедших на участок",
+          "ImproperInvalidationOrValidationOfBallots": "Неверное признание недействительности/ действительности бюллетеней",
+          "FalsificationOrImproperCorrectionOfFinalProtocol": "Исправление/ фальсификация итогового протокола",
+          "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Отказ в выдаче копии итогового протокола/ выдача ненадлежащей копии (отсутствие данных)",
+          "ImproperFillingInOfFinalProtocol": "Ненадлежащее заполнение итогового протокола",
+          "ViolationOfSealingProceduresOfElectionMaterials": "Нарушение порядка опечатывания избирательных материалов",
+          "ViolationsRelatedToVoterLists": "Нарушения, связанные со списками избирателей",
+          "Other": "Другое"
+        }
+      },
+      "polling_station_details": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "max": ""
+      },
+      "issue_title": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "max": ""
+      },
+      "issue_description": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "max": ""
+      },
+      "submit": "",
+      "clear": "",
+      "loading": "",
+      "error": ""
+    }
+  },
+  "report_details": {
+    "title": "",
+    "uploaded_media": "",
+    "no_files": "",
+    "error": ""
+  },
+  "guides": {
+    "title": "",
+    "empty": {
+      "heading": "",
+      "paragraph": ""
+    },
+    "list": {
+      "heading": "",
+      "guide": {
+        "backup_title": "",
+        "created_on": ""
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": ""
+    }
+  },
+  "inbox": {
+    "title": "",
+    "empty": {
+      "heading": "",
+      "paragraph": ""
+    },
+    "banner": "",
+    "today": "",
+    "your_organization": "",
+    "menu": {
+      "manage_polling_stations": ""
+    }
+  },
+  "more": {
+    "title": "",
+    "change-language": "",
+    "change-password": "",
+    "terms": "",
+    "privacy_policy": "",
+    "about": "",
+    "app_version": "",
+    "support": "",
+    "feedback": "",
+    "logout": "",
+    "logged_in": "",
+    "warning_modal": {
+      "logout_offline": {
+        "title": "",
+        "description": "",
+        "cancel": "",
+        "action": ""
+      },
+      "logout_online": {
+        "title": "",
+        "cancel": "",
+        "action": ""
+      }
+    },
+    "feedback_toast": {
+      "success": "",
+      "offline": "",
+      "error": "",
+      "required": ""
+    },
+    "feedback_sheet": {
+      "heading": "",
+      "p1": "",
+      "placeholder": "",
+      "cancel": "",
+      "action": "",
+      "input": {
+        "max": ""
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": ""
+    }
+  },
+  "change_password": {
+    "title": "",
+    "form": {
+      "current_password": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "credentials_error": ""
+      },
+      "new_password": {
+        "label": "",
+        "placeholder": "",
+        "helper": "",
+        "required": ""
+      },
+      "confirm_password": {
+        "label": "",
+        "placeholder": "",
+        "helper": "",
+        "required": "",
+        "no_match": ""
+      },
+      "save": ""
+    },
+    "confirmation": {
+      "heading": "",
+      "paragraph": "",
+      "confirm": ""
+    },
+    "error": {
+      "offline": ""
+    }
+  },
+  "generic_error_screen": {
+    "paragraph1": "",
+    "paragraph2": "",
+    "retry": "",
+    "logout": ""
+  },
+  "network_banner": {
+    "online": "",
+    "offline": "",
+    "more_details": "",
+    "offline_warning": ""
+  },
+  "sync": {
+    "sync_data": "",
+    "warning": "",
+    "files": ""
+  }
 }

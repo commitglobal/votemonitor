@@ -401,38 +401,68 @@
             }
         },
         "form": {
-            "polling_station_id": {
-                "label": "",
-                "placeholder": "",
-                "extra": "",
-                "required": "",
-                "options": {
-                    "other": "",
-                    "not_related": ""
-                }
-            },
-            "polling_station_details": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "issue_title": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "issue_description": {
-                "label": "",
-                "placeholder": "",
-                "required": "",
-                "max": ""
-            },
-            "submit": "",
-            "clear": "",
-            "loading": "",
-            "error": ""
+          "polling_station_id": {
+            "label": "",
+            "placeholder": "",
+            "extra": "",
+            "required": "",
+            "options": {
+              "other": "",
+              "not_related": ""
+            }
+          },
+          "incident_category": {
+            "label": "Incident category *",
+            "placeholder": "Incident category type",
+            "required": "This field is required.",
+            "options": {
+                "PhysicalViolenceIntimidationPressure": "Ֆիզիկական բռնություն/սպառնալիք/ճնշում",
+                "CampaigningAtPollingStation": "Ագիտացիա ընտրատեղամասում",
+                "RestrictionOfObserversRights": "Դիտորդի/ներկայացուցիչի/մեդիայի իրավունքների ապօրինի սահմանափակում",
+                "UnauthorizedPersonsAtPollingStation": "Ընտրատեղամասում իրավասություն չունեցող անձանց ներկայություն",
+                "ViolationDuringVoterVerificationProcess": "Խախտում ընտրողի վերիֆիկացման (ստուգման) գործընթացում ",
+                "VotingWithImproperDocumentation": "Քվեարկություն ոչ պատշաճ փաստաթղթերով ",
+                "IllegalRestrictionOfVotersRightToVote": "Ընտրողի ձայնի իրավունքի ապօրինի սահմանափակում",
+                "DamagingOrSeizingElectionMaterials": "Ընտրական նյութերի վնասում/հափշտակում",
+                "ImproperFilingOrHandlingOfElectionDocumentation": "Ընտրական փաստաթղթերի ոչ պատշաճ վարում/լրացում",
+                "BallotStuffing": "Քվեաթերթիկների լցոնում/կեղծում",
+                "ViolationsRelatedToControlPaper": "Ստուգողական թերթիկի հետ կապված խախտումներ",
+                "NotCheckingVoterIdentificationSafeguardMeasures": "Ընտրողների մարկերավորումը ստուգված չէ ",
+                "VotingWithoutVoterIdentificationSafeguardMeasures": "Քվեարկություն առանց մարկերավորման ",
+                "BreachOfSecrecyOfVote": "Քվեարկության գաղտնիության խախտում",
+                "ViolationsRelatedToMobileBallotBox": "Շարժական քվեատուփի հետ կապված խախտումներ",
+                "NumberOfBallotsExceedsNumberOfVoters": "Քվեաթերթիկների թիվը գերազանցում է ներկայացած ընտրողների թվին",
+                "ImproperInvalidationOrValidationOfBallots": "Քվեաթերթիկի վավերականության/անվավերության սխալ որոշում",
+                "FalsificationOrImproperCorrectionOfFinalProtocol": "Ամփոփիչ արձանագրության վերափոխում/կեղծում",
+                "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Ամփոփիչ արձանագրության պատճենի չտրամադրում/թերի պատճենի տրամադրում (որոշ տվյալներ բացակայում են)",
+                "ImproperFillingInOfFinalProtocol": "Ամփոփիչ արձանագրության ոչ պատշաճ լրացում",
+                "ViolationOfSealingProceduresOfElectionMaterials": "Ընտրական նյութերի դրոշմակնքման կարգի խախտում",
+                "ViolationsRelatedToVoterLists": "Ընտրացուցակի հետ կապված խախտումներ",
+                "Other": "Այլ"
+            }
+          },
+          "polling_station_details": {
+            "label": "",
+            "placeholder": "",
+            "required": "",
+            "max": ""
+          },
+          "issue_title": {
+            "label": "",
+            "placeholder": "",
+            "required": "",
+            "max": ""
+          },
+          "issue_description": {
+            "label": "",
+            "placeholder": "",
+            "required": "",
+            "max": ""
+          },
+          "submit": "",
+          "clear": "",
+          "loading": "",
+          "error": ""
         }
     },
     "report_details": {

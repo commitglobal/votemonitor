@@ -20,7 +20,10 @@ import { useAddQuickReport } from "../../../services/mutations/quick-report/add-
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
 import { useUploadAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
-import { QuickReportLocationType } from "../../../services/api/quick-report/post-quick-report.api";
+import {
+  IncidentCategory,
+  QuickReportLocationType,
+} from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../../components/Card";
@@ -42,6 +45,7 @@ import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
+import { localizeIncidentCategory } from "../../../helpers/translationHelper";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -68,11 +72,46 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
   return pollingStationsForSelect;
 };
 
+const mapIncidentCategoriesToSelectList = () => {
+  const incidentCategories = [
+    IncidentCategory.Other,
+    IncidentCategory.PhysicalViolenceIntimidationPressure,
+    IncidentCategory.CampaigningAtPollingStation,
+    IncidentCategory.RestrictionOfObserversRights,
+    IncidentCategory.UnauthorizedPersonsAtPollingStation,
+    IncidentCategory.ViolationDuringVoterVerificationProcess,
+    IncidentCategory.VotingWithImproperDocumentation,
+    IncidentCategory.IllegalRestrictionOfVotersRightToVote,
+    IncidentCategory.DamagingOrSeizingElectionMaterials,
+    IncidentCategory.ImproperFilingOrHandlingOfElectionDocumentation,
+    IncidentCategory.BallotStuffing,
+    IncidentCategory.ViolationsRelatedToControlPaper,
+    IncidentCategory.NotCheckingVoterIdentificationSafeguardMeasures,
+    IncidentCategory.VotingWithoutVoterIdentificationSafeguardMeasures,
+    IncidentCategory.BreachOfSecrecyOfVote,
+    IncidentCategory.ViolationsRelatedToMobileBallotBox,
+    IncidentCategory.NumberOfBallotsExceedsNumberOfVoters,
+    IncidentCategory.ImproperInvalidationOrValidationOfBallots,
+    IncidentCategory.FalsificationOrImproperCorrectionOfFinalProtocol,
+    IncidentCategory.RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy,
+    IncidentCategory.ImproperFillingInOfFinalProtocol,
+    IncidentCategory.ViolationOfSealingProceduresOfElectionMaterials,
+    IncidentCategory.ViolationsRelatedToVoterLists,
+  ];
+
+  return incidentCategories.map((incidentCategory) => ({
+    id: incidentCategory,
+    value: incidentCategory,
+    label: localizeIncidentCategory(incidentCategory),
+  }));
+};
+
 type ReportIssueFormType = {
   polling_station_id: string;
   polling_station_details: string;
   issue_title: string;
   issue_description: string;
+  incident_category: IncidentCategory;
 };
 
 const ReportIssue = () => {
@@ -80,6 +119,7 @@ const ReportIssue = () => {
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
+  const incidentCategories = useMemo(() => mapIncidentCategoriesToSelectList(), [i18n]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
   const { t } = useTranslation("report_new_issue");
   const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
@@ -126,6 +166,7 @@ const ReportIssue = () => {
       polling_station_details: "",
       issue_title: "",
       issue_description: "",
+      incident_category: IncidentCategory.Other,
     },
   });
 
@@ -308,6 +349,7 @@ const ReportIssue = () => {
       {
         id: uuid,
         electionRoundId: activeElectionRound?.id,
+        incidentCategory: formData.incident_category as IncidentCategory,
         description: formData.issue_description,
         title: formData.issue_title,
         quickReportLocationType,
@@ -339,7 +381,7 @@ const ReportIssue = () => {
     setAttachments((attachments) => attachments.filter((attachment) => attachment.id !== id));
   };
 
-  const handleOnShowAttachementSheet = () => {
+  const handleOnShowAttachmentSheet = () => {
     if (isOnline) {
       setOptionsSheetOpen(true);
     } else {
@@ -431,6 +473,36 @@ const ReportIssue = () => {
                 />
               )}
 
+              <Controller
+                key="incident_category"
+                name="incident_category"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: t("form.incident_category.required"),
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    {/* select polling station */}
+                    <FormElement
+                      title={t("form.incident_category.label")}
+                      error={errors.incident_category?.message}
+                    >
+                      <Select
+                        value={value}
+                        options={incidentCategories}
+                        placeholder={t("form.incident_category.placeholder")}
+                        onValueChange={onChange}
+                        itemNumberOfLines={2}
+                        error={errors.incident_category?.message}
+                      />
+                    </FormElement>
+                  </>
+                )}
+              />
+
               {/* issue title */}
               <Controller
                 key="issue_title"
@@ -519,7 +591,7 @@ const ReportIssue = () => {
                 label={t("media.add")}
                 onPress={() => {
                   Keyboard.dismiss();
-                  handleOnShowAttachementSheet();
+                  handleOnShowAttachmentSheet();
                 }}
               />
             </YStack>
@@ -575,7 +647,10 @@ const ReportIssue = () => {
         gap="$sm"
       >
         {/* this will reset form to defaultValues */}
-        <Button preset="chromeless" onPress={() => reset()}>
+        <Button
+          preset="chromeless"
+          onPress={() => reset({ incident_category: IncidentCategory.Other })}
+        >
           {t("form.clear")}
         </Button>
         <Button

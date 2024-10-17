@@ -419,6 +419,36 @@
           "not_related": "Не е свързано с изборна секция"
         }
       },
+      "incident_category": {
+        "label": "Incident category *",
+        "placeholder": "Incident category type",
+        "required": "This field is required.",
+        "options": {
+          "PhysicalViolenceIntimidationPressure": "Физическо насилие/заплахи/натиск",
+          "CampaigningAtPollingStation": "Агитация в изборната секция",
+          "RestrictionOfObserversRights": "Ограничаване на правата на наблюдателите (застъпниците/медиите)",
+          "UnauthorizedPersonsAtPollingStation": "Неупълномощено(и) лице(а) в избирателната секция",
+          "ViolationDuringVoterVerificationProcess": "Нарушение по време на процеса на проверка на данните на избирателите ",
+          "VotingWithImproperDocumentation": "Гласуване с некоректни/неправилни документи",
+          "IllegalRestrictionOfVotersRightToVote": "Незаконно ограничаване на правото на глас на избирателя",
+          "DamagingOrSeizingElectionMaterials": "Повреждане/отнемане на изборни материали",
+          "ImproperFilingOrHandlingOfElectionDocumentation": "Неправилно попълване на изборната документация",
+          "BallotStuffing": "Пълнене на урната с бюлетини",
+          "ViolationsRelatedToControlPaper": "Нарушения, свързани с контролния лист.",
+          "NotCheckingVoterIdentificationSafeguardMeasures": "Липса на проверка на защитните мерки (ако такива са предвидени) за идентификация на избирателите",
+          "VotingWithoutVoterIdentificationSafeguardMeasures": "Гласуване без да са спазени предвидените предпазни мерки за идентификация на избирателя",
+          "BreachOfSecrecyOfVote": "Нарушаване на тайната на вота",
+          "ViolationsRelatedToMobileBallotBox": "Нарушения, свързани с подвижната избирателна урна",
+          "NumberOfBallotsExceedsNumberOfVoters": "Броят на подадените бюлетини надвишава този на избирателите ",
+          "ImproperInvalidationOrValidationOfBallots": "Неправилно определяне на бюлетините за недействителни/действителни",
+          "FalsificationOrImproperCorrectionOfFinalProtocol": "Фалшифициране/неправомерна корекция на окончателния протокол",
+          "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Отказ за издаване на копие от окончателния протокол/издаване на несъответстващо копие",
+          "ImproperFillingInOfFinalProtocol": "Некоректно попълване на окончателния протокол",
+          "ViolationOfSealingProceduresOfElectionMaterials": "Нарушаване на процедурите за запечатване на изборните материали",
+          "ViolationsRelatedToVoterLists": "Нарушения, свързани с избирателните списъци",
+          "Other": "Други"
+        }
+      },
       "polling_station_details": {
         "label": "Подробности за изборната секция *",
         "placeholder": "Моля опишете подробности, свързани с тази изборна секция (например адрес, наименование, номер и т.н.)",

@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { MediaDialog } from "../../../../../../../components/MediaDialog";
 import { AttachmentMimeType } from "../../../../../../../services/api/get-attachments.api";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../../services/api/quick-report/get-quick-reports.api";
+import { localizeIncidentCategory } from "../../../../../../../helpers/translationHelper";
 
 type SearchParamsType = {
   reportId: string;
@@ -26,7 +27,7 @@ const ReportDetails = () => {
   const [previewAttachment, setPreviewAttachment] =
     useState<QuickReportAttachmentAPIResponse | null>(null);
 
-  if (!reportId || !reportTitle) {
+  if (!reportId) {
     return <Typography>Incorrect page params</Typography>;
   }
 
@@ -40,6 +41,14 @@ const ReportDetails = () => {
     isRefetching: isRefetchingQuickReport,
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
+  const incidentCategory = useMemo(() => {
+    if (quickReport?.incidentCategory) {
+      return localizeIncidentCategory(quickReport.incidentCategory);
+    }
+
+    return "";
+  }, [quickReport?.incidentCategory]);
+
   if (isLoadingCurrentReport) {
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
@@ -48,7 +57,7 @@ const ReportDetails = () => {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
-          title={`${reportTitle}`}
+          title={`${reportTitle ?? t("title")}`}
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
@@ -100,6 +109,9 @@ const ReportDetails = () => {
           <YStack gap={16}>
             <Typography preset="subheading" fontWeight="500">
               {quickReport?.title}
+            </Typography>
+            <Typography preset="body1" lineHeight={24} color="$gray8">
+              {incidentCategory}
             </Typography>
             <Typography preset="body1" lineHeight={24} color="$gray8">
               {quickReport?.description}
