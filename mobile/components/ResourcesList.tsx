@@ -3,12 +3,12 @@ import { Typography } from "./Typography";
 import { ListView } from "./ListView";
 import { Guide, guideType } from "../services/api/get-guides.api";
 import * as Linking from "expo-linking";
-import { RefreshControl } from "react-native-gesture-handler";
 import { EmptyContent, LoadingContent } from "./ListContent";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 import Card, { CardProps } from "./Card";
 import CardFooter from "./CardFooter";
+import { useCallback, useState } from "react";
 
 interface GuideCardProps extends CardProps {
   guide: Guide;
@@ -56,9 +56,8 @@ const ESTIMATED_ITEM_SIZE = 115;
 
 interface ResourcesListProps {
   isLoading: boolean;
-  isRefetching: boolean;
   resources: Guide[];
-  refetch: () => void;
+  refetch: () => Promise<unknown>;
   header?: JSX.Element;
   translationKey?: string;
   emptyContainerMarginTop?: string;
@@ -67,7 +66,6 @@ interface ResourcesListProps {
 
 const ResourcesGuidesList = ({
   isLoading,
-  isRefetching,
   resources,
   refetch,
   header,
@@ -76,6 +74,14 @@ const ResourcesGuidesList = ({
   onResourcePress,
 }: ResourcesListProps) => {
   const { width } = useWindowDimensions();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch().finally(() => {
+      setRefreshing(false);
+    });
+  }, [refetch]);
 
   if (isLoading) {
     return <LoadingContent />;
@@ -105,7 +111,8 @@ const ResourcesGuidesList = ({
             onResourcePress={onResourcePress}
           />
         )}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </YStack>
   );

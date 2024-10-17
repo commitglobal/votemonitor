@@ -27,7 +27,6 @@ const Guides = () => {
     data: guides,
     isLoading: isLoadingGuides,
     refetch: refetchGuides,
-    isRefetching: isRefetchingGuides,
   } = useGuides(activeElectionRound?.id);
 
   const filteredGuides = useMemo(() => {
@@ -73,7 +72,6 @@ const Guides = () => {
       </YStack>
       <ResourcesGuidesList
         isLoading={isLoadingGuides}
-        isRefetching={isRefetchingGuides}
         resources={filteredGuides || []}
         refetch={refetchGuides}
         emptyContainerMarginTop="30%"

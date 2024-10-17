@@ -14,9 +14,7 @@ const Updates = () => {
   const [isOpenInfoModal, setIsOpenInfoModal] = useState<boolean>(false);
   const navigation = useNavigation();
   const { selectedElectionRound } = useCitizenUserData();
-  const { data, isLoading, isRefetching, refetch } = useCitizenUpdates(
-    selectedElectionRound || undefined,
-  );
+  const { data, isLoading, refetch } = useCitizenUpdates(selectedElectionRound || undefined);
 
   const handleOpenInfoModal = () => {
     setIsOpenInfoModal(true);
@@ -40,7 +38,6 @@ const Updates = () => {
       <NewsList
         isLoading={isLoading}
         news={data?.notifications || []}
-        isRefetching={isRefetching}
         refetch={refetch}
         translationKey="updates"
       />
