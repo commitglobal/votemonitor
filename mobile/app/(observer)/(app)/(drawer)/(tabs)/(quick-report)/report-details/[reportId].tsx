@@ -48,7 +48,7 @@ const ReportDetails = () => {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
-          title={`${reportTitle}`}
+          title={reportTitle || t("title")}
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
