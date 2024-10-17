@@ -455,7 +455,7 @@ variable "lb_unhealthy_threshold" {
 
 variable "lb_deregistration_delay" {
   type        = number
-  default     = 510
+  default     = 10
   description = "Amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused. The range is 0-3600 seconds."
 }
 
