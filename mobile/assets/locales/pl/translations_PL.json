@@ -130,7 +130,10 @@
     "quick_report": "Szybki raport",
     "guides": "Podręczniki",
     "inbox": "Poczta",
-    "more": "Więcej"
+    "more": "Więcej",
+    "report": "TODO:Raportowanie",
+    "resources": "TODO:Zasoby",
+    "updates": "TODO:Aktualizacje"
   },
   "add_polling_station": {
     "title": "Dodaj komisję wyborczą",

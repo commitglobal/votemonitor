@@ -218,7 +218,10 @@
     "quick_report": "Raportare",
     "guides": "Ghiduri",
     "inbox": "Mesaje",
-    "more": "Altele"
+    "more": "Altele",
+    "report": "TODO:Raportare",
+    "resources": "TODO:Resurse",
+    "updates": "TODO:Actualizări"
   },
   "add_polling_station": {
     "title": "Adaugă o secție de votare",

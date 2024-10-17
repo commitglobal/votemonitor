@@ -219,7 +219,10 @@
     "quick_report": "Report",
     "guides": "Guides",
     "inbox": "Inbox",
-    "more": "More"
+    "more": "More",
+    "report": "Report",
+    "resources": "Resources",
+    "updates": "Updates"
   },
   "add_polling_station": {
     "title": "Add polling station",

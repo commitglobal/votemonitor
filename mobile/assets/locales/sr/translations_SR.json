@@ -130,7 +130,10 @@
     "quick_report": "Incident",
     "guides": "Priručnik",
     "inbox": "Poruke",
-    "more": "Još opcija"
+    "more": "Još opcija",
+    "report": "TODO:Raportiranje",
+    "resources": "TODO:Resurse",
+    "updates": "TODO:Aktuelnosti"
   },
   "add_polling_station": {
     "title": "Dodajte biračko mesto",
