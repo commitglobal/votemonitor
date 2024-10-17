@@ -34,14 +34,16 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import { BackHandler, Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
+import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
+  const insets = useSafeAreaInsets();
+  const { isOnline } = useNetInfoContext();
+
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const [showWarningDialog, setShowWarningDialog] = useState(false);
-
-  const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
@@ -303,6 +305,7 @@ const PollingStationQuestionnaire = () => {
           ref={scrollViewRef}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
+          bounces={isOnline}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
         >
           <YStack padding="$md" gap="$lg" flex={1}>

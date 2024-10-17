@@ -58,7 +58,7 @@ export type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
@@ -353,6 +353,18 @@ const FormQuestionnaire = () => {
   };
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    if (!isOnline) {
+      setIsPreparingFile(false);
+      setIsOptionsSheetOpen(false);
+      Toast.show({
+        type: "error",
+        text2: t("attachments.upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+      return;
+    }
+
     setIsPreparingFile(true);
     setUploadProgress(t("attachments.upload.preparing"));
     const cameraResult = await uploadCameraOrMedia(type, onCompressionProgress);
@@ -369,7 +381,6 @@ const FormQuestionnaire = () => {
       activeQuestion.question.id
     ) {
       try {
-
         const totalParts = Math.ceil(cameraResult.size! / MULTIPART_FILE_UPLOAD_SIZE);
         const attachmentId = Crypto.randomUUID();
         const payload: AddAttachmentStartAPIPayload = {
@@ -394,7 +405,7 @@ const FormQuestionnaire = () => {
           totalParts,
         );
         setUploadProgress(t("attachments.upload.completed"));
-        setIsOptionsSheetOpen(false)
+        setIsOptionsSheetOpen(false);
       } catch (err) {
         Sentry.captureException(err, { data: activeElectionRound });
       }
@@ -402,6 +413,18 @@ const FormQuestionnaire = () => {
   };
 
   const handleUploadAudio = async () => {
+    if (!isOnline) {
+      setIsPreparingFile(false);
+      setIsOptionsSheetOpen(false);
+      Toast.show({
+        type: "error",
+        text2: t("attachments.upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+      return;
+    }
+
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
@@ -434,7 +457,7 @@ const FormQuestionnaire = () => {
           const data = await addAttachmentStart(payload);
           await handleChunkUpload(file.uri, data.uploadUrls, data.uploadId, payload.id, totalParts);
           setUploadProgress(t("attachments.upload.completed"));
-          setIsOptionsSheetOpen(false)
+          setIsOptionsSheetOpen(false);
         } catch (err) {
           Sentry.captureException(err, { data: activeElectionRound });
         }
@@ -475,7 +498,13 @@ const FormQuestionnaire = () => {
           electionRoundId: activeElectionRound?.id,
           id: attachmentId,
         });
-        queryClient.invalidateQueries({ queryKey: AttachmentsKeys.attachments(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId) })
+        queryClient.invalidateQueries({
+          queryKey: AttachmentsKeys.attachments(
+            activeElectionRound?.id,
+            selectedPollingStation?.pollingStationId,
+            formId,
+          ),
+        });
       }
     } catch (err) {
       Sentry.captureException(err, { data: activeElectionRound });
@@ -503,16 +532,7 @@ const FormQuestionnaire = () => {
 
   const handleOnShowAttachementSheet = () => {
     Keyboard.dismiss();
-    if (isOnline) {
-      setIsOptionsSheetOpen(true);
-    } else {
-      Toast.show({
-        type: "error",
-        text2: t("upload.offline"),
-        visibilityTime: 5000,
-        text2Style: { textAlign: "center" },
-      });
-    }
+    setIsOptionsSheetOpen(true);
   };
 
   return (

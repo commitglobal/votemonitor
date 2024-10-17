@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { usePollingStationsVisits } from "../services/queries.service";
 import { ElectionRoundVM } from "../common/models/election-round.model";
 import { RefreshControl } from "react-native";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 const NoVisitsExist = ({
   activeElectionRound,
@@ -19,6 +20,7 @@ const NoVisitsExist = ({
 }) => {
   const navigation = useNavigation();
   const { t } = useTranslation("observation");
+  const { isOnline } = useNetInfoContext();
 
   const { refetch: refetchVisits, isRefetching: isRefetchingVisits } = usePollingStationsVisits(
     activeElectionRound?.id,
@@ -40,9 +42,11 @@ const NoVisitsExist = ({
           alignItems: "center",
           flex: 1,
           gap: 16,
+          paddingHorizontal: 24,
         }}
         backgroundColor="white"
         paddingHorizontal="$lg"
+        bounces={isOnline}
         refreshControl={
           <RefreshControl refreshing={isRefetchingVisits} onRefresh={refetchVisits} />
         }

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "./Icon";
 import { LoadingContent } from "./ListContent";
 import Button from "./Button";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 interface CitizenFormsListProps {
   forms: FormAPIModel[];
@@ -30,6 +31,7 @@ export const CitizenFormsList = ({
   onFormPress,
 }: CitizenFormsListProps) => {
   const { t } = useTranslation("citizen_report_issue");
+  const { isOnline } = useNetInfoContext();
 
   if (isLoading) {
     return <LoadingContent />;
@@ -59,6 +61,7 @@ export const CitizenFormsList = ({
           <IssueCard key={item.id} form={item} onClick={() => onFormPress(item)} />
         )}
         ItemSeparatorComponent={() => <YStack height={16} width="100%" />}
+        bounces={isOnline}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       />
     </YStack>

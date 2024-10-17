@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { MediaDialog } from "../../../../../../../components/MediaDialog";
 import { AttachmentMimeType } from "../../../../../../../services/api/get-attachments.api";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../../services/api/quick-report/get-quick-reports.api";
+import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 
 type SearchParamsType = {
   reportId: string;
@@ -22,6 +23,7 @@ type SearchParamsType = {
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
   const { t } = useTranslation(["report_details", "common"]);
+  const { isOnline } = useNetInfoContext();
 
   const [previewAttachment, setPreviewAttachment] =
     useState<QuickReportAttachmentAPIResponse | null>(null);
@@ -57,6 +59,7 @@ const ReportDetails = () => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flex: 1, alignItems: "center", flexGrow: 1 }}
             paddingVertical="$xxl"
+            bounces={isOnline}
             refreshControl={
               <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
             }
@@ -93,6 +96,7 @@ const ReportDetails = () => {
             paddingHorizontal: 16,
           }}
           showsVerticalScrollIndicator={false}
+          bounces={isOnline}
           refreshControl={
             <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
           }
