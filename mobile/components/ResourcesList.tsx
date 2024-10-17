@@ -9,6 +9,7 @@ import { useWindowDimensions } from "react-native";
 import Card, { CardProps } from "./Card";
 import CardFooter from "./CardFooter";
 import { useCallback, useState } from "react";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 interface GuideCardProps extends CardProps {
   guide: Guide;
@@ -74,6 +75,7 @@ const ResourcesGuidesList = ({
   onResourcePress,
 }: ResourcesListProps) => {
   const { width } = useWindowDimensions();
+  const { isOnline } = useNetInfoContext();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -92,7 +94,7 @@ const ResourcesGuidesList = ({
       <ListView<Guide>
         data={resources}
         showsVerticalScrollIndicator={false}
-        bounces={true}
+        bounces={isOnline}
         ListHeaderComponent={header}
         ListEmptyComponent={
           <EmptyContent

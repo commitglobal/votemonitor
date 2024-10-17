@@ -26,6 +26,7 @@ import {
   usePollingStationInformationForm,
 } from "../services/queries.service";
 import FormListEmptyComponent from "./FormListEmptyComponent";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -51,6 +52,7 @@ interface IFormListProps {
 
 const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   const { t } = useTranslation(["observation", "common"]);
+  const { isOnline } = useNetInfoContext();
   const { width } = useWindowDimensions();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
@@ -159,9 +161,10 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
       <ListView<FormListItem>
         data={formList}
         ListHeaderComponent={ListHeaderComponent}
+        contentContainerStyle={{ paddingVertical: 16 }}
         ListEmptyComponent={<FormListEmptyComponent />}
         showsVerticalScrollIndicator={false}
-        bounces={true}
+        bounces={isOnline}
         renderItem={({ item, index }) => {
           return (
             <FormCard
