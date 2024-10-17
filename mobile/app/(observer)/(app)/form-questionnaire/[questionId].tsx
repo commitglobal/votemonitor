@@ -353,6 +353,18 @@ const FormQuestionnaire = () => {
   };
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    if (!isOnline) {
+      setIsPreparingFile(false);
+      setIsOptionsSheetOpen(false);
+      Toast.show({
+        type: "error",
+        text2: t("attachments.upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+      return;
+    }
+
     setIsPreparingFile(true);
     setUploadProgress(t("attachments.upload.preparing"));
     const cameraResult = await uploadCameraOrMedia(type, onCompressionProgress);
@@ -401,6 +413,18 @@ const FormQuestionnaire = () => {
   };
 
   const handleUploadAudio = async () => {
+    if (!isOnline) {
+      setIsPreparingFile(false);
+      setIsOptionsSheetOpen(false);
+      Toast.show({
+        type: "error",
+        text2: t("attachments.upload.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+      return;
+    }
+
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
@@ -508,16 +532,7 @@ const FormQuestionnaire = () => {
 
   const handleOnShowAttachementSheet = () => {
     Keyboard.dismiss();
-    if (isOnline) {
-      setIsOptionsSheetOpen(true);
-    } else {
-      Toast.show({
-        type: "error",
-        text2: t("upload.offline"),
-        visibilityTime: 5000,
-        text2Style: { textAlign: "center" },
-      });
-    }
+    setIsOptionsSheetOpen(true);
   };
 
   return (
