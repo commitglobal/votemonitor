@@ -452,6 +452,7 @@
       "date_placeholder": "Please enter a date",
       "text_placeholder": "Please enter a text"
     },
+    "save_and_continue": "Save and continue",
     "attachments": {
       "heading": "Uploaded media",
       "loading": "Adding attachment... ",
