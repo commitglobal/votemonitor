@@ -7,8 +7,8 @@ module "ecs_api" {
 
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
-  min_capacity = 1
-  max_capacity = 1
+  min_capacity = 6
+  max_capacity = 12
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag
@@ -32,15 +32,19 @@ module "ecs_api" {
   container_port          = 80
   network_mode            = "awsvpc"
   network_security_groups = [aws_security_group.ecs.id]
-  network_subnets         = [aws_subnet.private.0.id]
+  network_subnets         = aws_subnet.private.*.id # network_subnets = [aws_subnet.private.0.id]
 
   task_role_arn          = aws_iam_role.ecs_task_role.arn
   enable_execute_command = var.enable_execute_command
 
   predefined_metric_type = "ECSServiceAverageMemoryUtilization"
-  target_value           = 70
+  target_value           = 85
 
   ordered_placement_strategy = [
+    {
+      type  = "spread"
+      field = "attribute:ecs.availability-zone"
+    },
     {
       type  = "spread"
       field = "instanceId"
