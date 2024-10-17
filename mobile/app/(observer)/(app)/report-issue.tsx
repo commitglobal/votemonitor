@@ -73,31 +73,7 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
 };
 
 const mapIncidentCategoriesToSelectList = () => {
-  const incidentCategories = [
-    IncidentCategory.Other,
-    IncidentCategory.PhysicalViolenceIntimidationPressure,
-    IncidentCategory.CampaigningAtPollingStation,
-    IncidentCategory.RestrictionOfObserversRights,
-    IncidentCategory.UnauthorizedPersonsAtPollingStation,
-    IncidentCategory.ViolationDuringVoterVerificationProcess,
-    IncidentCategory.VotingWithImproperDocumentation,
-    IncidentCategory.IllegalRestrictionOfVotersRightToVote,
-    IncidentCategory.DamagingOrSeizingElectionMaterials,
-    IncidentCategory.ImproperFilingOrHandlingOfElectionDocumentation,
-    IncidentCategory.BallotStuffing,
-    IncidentCategory.ViolationsRelatedToControlPaper,
-    IncidentCategory.NotCheckingVoterIdentificationSafeguardMeasures,
-    IncidentCategory.VotingWithoutVoterIdentificationSafeguardMeasures,
-    IncidentCategory.BreachOfSecrecyOfVote,
-    IncidentCategory.ViolationsRelatedToMobileBallotBox,
-    IncidentCategory.NumberOfBallotsExceedsNumberOfVoters,
-    IncidentCategory.ImproperInvalidationOrValidationOfBallots,
-    IncidentCategory.FalsificationOrImproperCorrectionOfFinalProtocol,
-    IncidentCategory.RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy,
-    IncidentCategory.ImproperFillingInOfFinalProtocol,
-    IncidentCategory.ViolationOfSealingProceduresOfElectionMaterials,
-    IncidentCategory.ViolationsRelatedToVoterLists,
-  ];
+  const incidentCategories = Object.values(IncidentCategory);
 
   return incidentCategories.map((incidentCategory) => ({
     id: incidentCategory,
@@ -649,7 +625,7 @@ const ReportIssue = () => {
         {/* this will reset form to defaultValues */}
         <Button
           preset="chromeless"
-          onPress={() => reset({ incident_category: IncidentCategory.Other })}
+          onPress={() => reset()}
         >
           {t("form.clear")}
         </Button>
