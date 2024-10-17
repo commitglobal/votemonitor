@@ -17,7 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
 
@@ -27,9 +27,11 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import i18n from '@/i18n';
 import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { format } from 'date-fns';
+import { Plus } from 'lucide-react';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
@@ -173,9 +175,7 @@ function MonitoringObserversList() {
         };
 
         const tagString =
-          pageParams.tags == undefined
-            ? ''
-            : pageParams.tags?.map((n: string) => `tags=${n}`).join('&');
+          pageParams.tags == undefined ? '' : pageParams.tags?.map((n: string) => `tags=${n}`).join('&');
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
           `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,
@@ -276,6 +276,13 @@ function MonitoringObserversList() {
         <div className='flex flex-row items-center justify-between px-6'>
           <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
           <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
+            <Link to='/monitoring-observers/new-observer'>
+              <Button>
+                <Plus className='mr-2' width={18} height={18} />
+                {i18n.t('observers.addObserver.addBtnText')}
+              </Button>
+            </Link>
+
             {!!importErrorsFileId && (
               <ImportMonitoringObserversErrorsDialog
                 fileId={importErrorsFileId}

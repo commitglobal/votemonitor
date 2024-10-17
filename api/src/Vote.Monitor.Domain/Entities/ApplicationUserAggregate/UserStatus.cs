@@ -1,7 +1,6 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-
+[JsonConverter(typeof(SmartEnumValueConverter<UserStatus, string>))]
 public sealed class UserStatus : SmartEnum<UserStatus, string>
 {
     public static readonly UserStatus Active = new(nameof(Active), nameof(Active));

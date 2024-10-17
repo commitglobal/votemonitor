@@ -5,6 +5,9 @@ echo "Configuring ECS agent..."
 echo "ECS_CLUSTER=${ecs_cluster_name}" >>/etc/ecs/ecs.config
 echo "ECS_ENABLE_CONTAINER_METADATA=true" >>/etc/ecs/ecs.config
 echo "ECS_ENGINE_TASK_CLEANUP_WAIT_DURATION=3m" >>/etc/ecs/ecs.config
+echo "ECS_CONTAINER_STOP_TIMEOUT=5s" >>/etc/ecs/ecs.config
+echo "ECS_IMAGE_PULL_BEHAVIOR=prefer-cached" >>/etc/ecs/ecs.config
+echo "ECS_ENABLE_TASK_ENI=true" >>/etc/ecs/ecs.config
 
 echo "######    Installing CloudWatch Agent..."
 yum install wget -y

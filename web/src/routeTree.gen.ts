@@ -27,6 +27,7 @@ import { Route as ResetPasswordSuccessImport } from './routes/reset-password/suc
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
+import { Route as MonitoringObserversNewObserverImport } from './routes/monitoring-observers/new-observer'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
@@ -54,6 +55,7 @@ import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
+import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
 
 // Create/Update Routes
 
@@ -136,6 +138,12 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   path: '/ngos/$ngoId',
   getParentRoute: () => rootRoute,
 } as any)
+
+const MonitoringObserversNewObserverRoute =
+  MonitoringObserversNewObserverImport.update({
+    path: '/monitoring-observers/new-observer',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const MonitoringObserversCreateNewMessageRoute =
   MonitoringObserversCreateNewMessageImport.update({
@@ -285,6 +293,14 @@ const FormsFormIdEditTranslationLanguageCodeRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
+  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport.update(
+    {
+      path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId',
+      getParentRoute: () => rootRoute,
+    } as any,
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -323,6 +339,10 @@ declare module '@tanstack/react-router' {
     }
     '/monitoring-observers/create-new-message': {
       preLoaderRoute: typeof MonitoringObserversCreateNewMessageImport
+      parentRoute: typeof rootRoute
+    }
+    '/monitoring-observers/new-observer': {
+      preLoaderRoute: typeof MonitoringObserversNewObserverImport
       parentRoute: typeof rootRoute
     }
     '/ngos/$ngoId': {
@@ -441,6 +461,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
+      preLoaderRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -476,6 +500,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
+  MonitoringObserversNewObserverRoute,
   NgosNgoIdRoute,
   ObserverGuidesNewRoute,
   ObserversObserverIdRoute,
@@ -505,6 +530,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesCitizenReportsCitizenReportIdRoute,
   ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
+  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,

@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Security;
-
-namespace Feature.Citizen.Notifications.ListReceived;
+﻿namespace Feature.Citizen.Notifications.ListReceived;
 
 public class Request
 {

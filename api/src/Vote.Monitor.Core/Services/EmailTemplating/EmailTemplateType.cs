@@ -5,5 +5,19 @@ public enum EmailTemplateType
     ConfirmEmail,
     ResetPassword,
     InvitationExistingUser,
-    InvitationNewUser,
+    NewUserInvitation,
+    CitizenReport,
+    InputAnswerFragment,
+    RatingAnswerFragment,
+    SelectAnswerFragment,
+    SelectAnswerOptionFragment,
+    SelectAnswerCheckedOptionFragment,
+    RatingAnswerOptionCheckedOptionFragment,
+    RatingAnswerOptionOptionFragment,
+    
+    AnswerAttachmentsFragment,
+    AttachmentFragment,
+    
+    AnswerNotesFragment,
+    NoteFragment
 }

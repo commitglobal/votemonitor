@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
@@ -137,7 +136,7 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return CitizenReport.Create(citizenReportId, ElectionRound, this, location, answers, numberOfQuestionAnswered,
+        return CitizenReport.Create(citizenReportId, ElectionRoundId, this, location, answers, numberOfQuestionAnswered,
             numberOfFlaggedAnswers);
     }
 

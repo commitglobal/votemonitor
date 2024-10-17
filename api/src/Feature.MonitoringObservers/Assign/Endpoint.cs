@@ -94,8 +94,7 @@ public class Endpoint(
             NgoName: monitoringNgo.Ngo.Name,
             ElectionRoundDetails: electionRound.Title);
 
-        var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-            invitationExistingUserEmailProps);
+        var email = emailFactory.GenerateInvitationExistingUserEmail(invitationExistingUserEmailProps);
         jobService.EnqueueSendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
 
         return TypedResults.Ok(new Response

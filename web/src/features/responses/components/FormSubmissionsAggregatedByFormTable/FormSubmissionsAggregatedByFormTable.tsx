@@ -36,7 +36,7 @@ export function FormSubmissionsAggregatedByFormTable({
     const params = [
       ['searchText', searchText],
       ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['hasNotes', debouncedSearch.hasNotes],
+      ['hasNotes',debouncedSearch.hasNotes],
       ['hasAttachments', debouncedSearch.hasAttachments],
     ].filter(([_, value]) => value);
 

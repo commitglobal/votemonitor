@@ -3,18 +3,19 @@ using Vote.Monitor.Core.Services.EmailTemplating.Props;
 
 namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
-internal class InvitationExistingUserEmailGenerator : IEmailGenerator<InvitationExistingUserEmailProps>
+internal class InvitationExistingUserEmailGenerator
 {
-    public EmailModel Generate(InvitationExistingUserEmailProps props)
-    {
-        var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationExistingUser);
+    private static readonly string Template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationExistingUser);
 
-        var body = template
+    public static EmailModel Generate(InvitationExistingUserEmailProps props)
+    {
+        var body = Template
             .Replace("~$name$~", props.FullName)
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$ngoName$~", props.NgoName)
             .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails);
 
-        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.", body);
+        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.",
+            body);
     }
 }

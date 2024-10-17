@@ -22,12 +22,9 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.307.15" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.300.74" />
     <PackageReference Include="CsvHelper" Version="31.0.3" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="FastEndpoints" Version="5.24.0" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.1" />
-    <PackageReference Include="Hangfire" Version="1.8.12" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12" />
-    <PackageReference Include="Hangfire.Core" Version="1.8.12" />
-    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.8" />
     <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MailKit" Version="4.5.0" />
@@ -46,10 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Job.Contracts\Job.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="EmailTemplates\confirm-email.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -62,6 +55,65 @@
     <Content Include="EmailTemplates\reset-password.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="EmailTemplates\Fragments\rating-answer-entry-fragment.html" />
+    <None Remove="EmailTemplates\Fragments\rating-answer-entry-selected-fragment.html" />
+    <None Remove="EmailTemplates\Fragments\select-answer-entry-fragment.html" />
+    <None Remove="EmailTemplates\Fragments\select-answer-entry-selected-fragment.html" />
+    <None Remove="EmailTemplates\citizen-submission.html" />
+    <None Remove="EmailTemplates\Fragments\input-answer-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\input-answer-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\rating-answer-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\rating-answer-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\rating-answer-option-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\rating-answer-option-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\rating-answer-option-selected-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\rating-answer-option-selected-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\select-answer-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\select-answer-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\select-answer-option-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\select-answer-option-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\select-answer-option-selected-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\select-answer-option-selected-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\citizen-report.html" />
+    <Content Include="EmailTemplates\citizen-report.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\answer-attachments-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\answer-attachments-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\answer-notes-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\answer-notes-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\attachment-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\attachment-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="EmailTemplates\Fragments\note-fragment.html" />
+    <Content Include="EmailTemplates\Fragments\note-fragment.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\..\..\..\..\.nuget\packages\dapper\2.0.123\lib\net5.0\Dapper.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 
