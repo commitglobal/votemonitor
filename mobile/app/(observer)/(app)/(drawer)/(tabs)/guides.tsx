@@ -71,13 +71,13 @@ const Guides = () => {
         </YStack>
       </YStack>
       <ResourcesGuidesList
+        key={`guides-${activeElectionRound?.id}`}
         isLoading={isLoadingGuides}
-        resources={filteredGuides || []}
+        resources={filteredGuides}
         refetch={refetchGuides}
         emptyContainerMarginTop="30%"
         onResourcePress={handleResourcePress}
       />
-
       {isOpenInfoModal && (
         <InfoModal paragraphs={[t("info_modal")]} handleCloseInfoModal={handleCloseInfoModal} />
       )}

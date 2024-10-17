@@ -114,7 +114,7 @@ const Inbox = () => {
           </YStack>
         )}
       </YStack>
-      <InboxList />
+      <InboxList key={`inbox-${activeElectionRound?.id}`} />
       {isOpenInfoModal && (
         <InfoModal
           paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}
