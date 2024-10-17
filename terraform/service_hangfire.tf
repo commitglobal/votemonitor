@@ -23,8 +23,8 @@ module "ecs_hangfire" {
   lb_health_check_enabled = true
   lb_path                 = "/health"
 
-  container_memory_soft_limit = 256
-  container_memory_hard_limit = 512
+  container_memory_soft_limit = 1024
+  container_memory_hard_limit = 1536
 
   log_group_name                 = module.ecs_cluster.log_group_name
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
@@ -32,7 +32,7 @@ module "ecs_hangfire" {
   container_port          = 80
   network_mode            = "awsvpc"
   network_security_groups = [aws_security_group.ecs.id]
-  network_subnets         = [aws_subnet.private.0.id]
+  network_subnets         = aws_subnet.private.*.id # network_subnets = [aws_subnet.private.0.id]
 
   task_role_arn          = aws_iam_role.ecs_task_role.arn
   enable_execute_command = var.enable_execute_command
@@ -41,6 +41,10 @@ module "ecs_hangfire" {
   # target_value           = 65
 
   ordered_placement_strategy = [
+    {
+      type  = "spread"
+      field = "attribute:ecs.availability-zone"
+    },
     {
       type  = "spread"
       field = "instanceId"
