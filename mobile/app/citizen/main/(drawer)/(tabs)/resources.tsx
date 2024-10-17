@@ -64,6 +64,7 @@ export default function Resources() {
         </YStack>
       </YStack>
       <ResourcesGuidesList
+        key={`resources-${selectedElectionRound}`}
         isLoading={isLoading}
         resources={filteredResources || []}
         refetch={refetch}

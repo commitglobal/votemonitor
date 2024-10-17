@@ -36,6 +36,7 @@ const Updates = () => {
         onRightPress={handleOpenInfoModal}
       />
       <NewsList
+        key={`updates-${selectedElectionRound}`}
         isLoading={isLoading}
         news={data?.notifications || []}
         refetch={refetch}
