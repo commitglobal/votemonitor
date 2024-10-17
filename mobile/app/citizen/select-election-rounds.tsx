@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
@@ -31,8 +31,8 @@ const SelectElectionEvent = () => {
     router.push("select-app-mode");
   };
 
-  const renderHeader = useMemo(() => {
-    return () => (
+  const renderHeader = useCallback(
+    () => (
       <Header barStyle="light-content" backgroundColor="white">
         <XStack paddingTop="$xxl" justifyContent="center" alignItems="center">
           <Icon icon="vmCitizenLogo" width={295} height={82} />
@@ -41,8 +41,9 @@ const SelectElectionEvent = () => {
           {t("heading")}
         </Typography>
       </Header>
-    );
-  }, []);
+    ),
+    [t],
+  );
 
   // error state
   if (isErrorElectionEvents && !isLoadingElectionEvents) {
