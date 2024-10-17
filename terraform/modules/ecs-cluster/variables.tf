@@ -62,6 +62,12 @@ variable "capacity_rebalance" {
   default     = false
 }
 
+variable "desired_capacity_type" {
+  description = "(Optional) The unit of measurement for the value specified for desired_capacity. Supported for attribute-based instance type selection only. Valid values: units, vcpu, memory-mib"
+  type        = string
+  default     = null
+}
+
 variable "on_demand_base_capacity" {
   description = "Absolute minimum amount of desired capacity that must be fulfilled by on-demand instances"
   type        = number
