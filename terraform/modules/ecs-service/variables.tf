@@ -437,7 +437,7 @@ variable "lb_matcher" {
 
 variable "lb_timeout" {
   type        = number
-  default     = 10
+  default     = 4
   description = "Amount of time, in seconds, during which no response from a target means a failed health check. The range is 2–120 seconds."
 }
 
