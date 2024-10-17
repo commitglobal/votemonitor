@@ -1,20 +1,31 @@
 import Header from "../../../../../components/Header";
 import { Screen } from "../../../../../components/Screen";
 import { Icon } from "../../../../../components/Icon";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { DrawerActions, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import InfoModal from "../../../../../components/InfoModal";
 import { useCitizenUpdates } from "../../../../../services/queries/notifications.query";
 import NewsList from "../../../../../components/NewsList";
 import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { useNetInfoContext } from "../../../../../contexts/net-info-banner/NetInfoContext";
 
 const Updates = () => {
   const { t } = useTranslation("updates");
+  const { isOnline } = useNetInfoContext();
   const [isOpenInfoModal, setIsOpenInfoModal] = useState<boolean>(false);
   const navigation = useNavigation();
   const { selectedElectionRound } = useCitizenUserData();
   const { data, isLoading, refetch } = useCitizenUpdates(selectedElectionRound || undefined);
+
+  // refetch data when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (isOnline) {
+        refetch();
+      }
+    }, [refetch, isOnline]),
+  );
 
   const handleOpenInfoModal = () => {
     setIsOpenInfoModal(true);
@@ -36,6 +47,7 @@ const Updates = () => {
         onRightPress={handleOpenInfoModal}
       />
       <NewsList
+        key={`updates-${selectedElectionRound}`}
         isLoading={isLoading}
         news={data?.notifications || []}
         refetch={refetch}

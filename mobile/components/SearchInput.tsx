@@ -1,5 +1,5 @@
 import { Icon } from "./Icon";
-import { Input, XStack, styled } from "tamagui";
+import { Input, XStack, styled, Button } from "tamagui";
 import i18n from "../common/config/i18n";
 import { useState, useCallback, useEffect } from "react";
 
@@ -26,6 +26,11 @@ const Search = ({ onSearch }: SearchInputProps) => {
     return cancelDebounce;
   }, [searchTerm, debouncedSearch]);
 
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    onSearch("");
+  };
+
   return (
     <XStack backgroundColor="white" borderRadius={8} alignItems="center">
       <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
@@ -35,6 +40,16 @@ const Search = ({ onSearch }: SearchInputProps) => {
         onChangeText={setSearchTerm}
         maxFontSizeMultiplier={1.2}
       />
+      {searchTerm !== "" && (
+        <Button
+          size="$2"
+          circular
+          icon={<Icon icon="x" size={16} color="$gray5" />}
+          onPress={handleClearSearch}
+          backgroundColor="transparent"
+          marginRight="$sm"
+        />
+      )}
     </XStack>
   );
 };

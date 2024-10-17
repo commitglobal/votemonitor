@@ -67,7 +67,7 @@ interface ResourcesListProps {
 
 const ResourcesGuidesList = ({
   isLoading,
-  resources,
+  resources = [],
   refetch,
   header,
   translationKey = "guides",
