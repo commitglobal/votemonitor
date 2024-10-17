@@ -18,7 +18,6 @@ import CredentialsError from "../../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Header from "../../components/Header";
-import * as Clipboard from "expo-clipboard";
 import { FooterButtons } from "../../components/FooterButtons";
 
 interface FormData {
@@ -66,16 +65,6 @@ const Login = () => {
     }
   };
 
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(t("disclaimer.email"));
-    return Toast.show({
-      type: "success",
-      text2: t("email_toast"),
-      visibilityTime: 5000,
-      text2Style: { textAlign: "center" },
-    });
-  };
-
   return (
     <Screen
       preset="fixed"
@@ -99,11 +88,16 @@ const Login = () => {
             <YStack gap="$lg" maxWidth="90%">
               <Typography>{t("disclaimer.paragraph1")}</Typography>
               <Typography>
-                {t("disclaimer.paragraph2")}{" "}
-                <Typography color="$purple5" onPress={copyToClipboard}>
-                  {t("disclaimer.email")}
+                {t("disclaimer.paragraph2.slice1")}{" "}
+                <Typography
+                  color="$purple5"
+                  textDecorationLine="underline"
+                  onPress={() => router.push("/citizen/select-election-rounds")}
+                  pressStyle={{ opacity: 0.5 }}
+                >
+                  {t("disclaimer.paragraph2.link")}{" "}
                 </Typography>
-                .
+                {t("disclaimer.paragraph2.slice2")}
               </Typography>
             </YStack>
           </XStack>
