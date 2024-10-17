@@ -2,15 +2,19 @@ import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
 import { ScrollView, YStack } from "tamagui";
 import { Guide } from "../services/api/get-guides.api";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ResourceScreenProps {
   resource: Guide;
 }
 
 const ResourceScreen = ({ resource }: ResourceScreenProps) => {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const { top, bottom } = useSafeAreaInsets();
+  const windowHeight = height - top - bottom - 24; // take into account header
+
   return (
-    <YStack paddingHorizontal={"$md"} height={"85%"}>
+    <YStack paddingHorizontal={"$md"} maxHeight={windowHeight}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
