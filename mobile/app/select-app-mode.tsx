@@ -3,17 +3,15 @@ import { Screen } from "../components/Screen";
 import Header from "../components/Header";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Selector } from "../components/Selector";
-import Button from "../components/Button";
 import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
 import { useRouter } from "expo-router";
+import WizzardControls from "../components/WizzardControls";
 
 export default function SelectAppMode() {
   const { t } = useTranslation("select_app_mode");
-  const insets = useSafeAreaInsets();
   const { appMode, setAppMode: setAppModeContext } = useAppMode();
   const [appModeLocal, setAppModeLocal] = useState<AppMode>(appMode || AppMode.CITIZEN);
   const router = useRouter();
@@ -45,13 +43,7 @@ export default function SelectAppMode() {
         </Typography>
       </Header>
 
-      <YStack
-        flex={1}
-        backgroundColor="$purple6"
-        paddingTop="$xl"
-        paddingBottom={insets.bottom + 32}
-        gap="$xl"
-      >
+      <YStack flex={1} backgroundColor="$purple6" paddingTop="$xl" gap="$xl">
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -84,11 +76,13 @@ export default function SelectAppMode() {
           </Typography>
         </ScrollView>
 
-        <XStack justifyContent="center" alignItems="center" paddingHorizontal="$xl">
-          <Button flex={1} preset="yellow" onPress={handleSetAppModeContext}>
-            {t("continue")}
-          </Button>
-        </XStack>
+        <WizzardControls
+          actionBtnPreset="yellow"
+          onActionButtonPress={handleSetAppModeContext}
+          actionBtnLabel={t("continue")}
+          isFirstElement
+          backgroundColor="$purple6"
+        />
       </YStack>
     </Screen>
   );
