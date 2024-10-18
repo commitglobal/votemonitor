@@ -287,17 +287,23 @@ const ObservationTime = () => {
               )}
             />
 
-            <Button
-              preset="chromeless"
-              paddingHorizontal={0}
-              paddingRight="$lg"
-              icon={<Icon icon="coffeeBreak" color="$purple5" size={24} />}
-              alignSelf="flex-start"
-              disabled={!watch("arrivalTime") || isLoading}
-              onPress={handleAddBreak}
-            >
-              {t("polling_stations_information.observation_time.add_break")}
-            </Button>
+            <XStack>
+              <Button
+                preset="chromeless"
+                maxWidth="100%"
+                flex={1}
+                textStyle={{ flex: 1 }}
+                height="100%"
+                paddingHorizontal={0}
+                icon={<Icon icon="coffeeBreak" color="$purple5" size={24} />}
+                disabled={!watch("arrivalTime") || isLoading}
+                onPress={handleAddBreak}
+                justifyContent="flex-start"
+                alignItems="flex-start"
+              >
+                {t("polling_stations_information.observation_time.add_break")}
+              </Button>
+            </XStack>
           </YStack>
 
           {/* BREAKS SECTION */}
