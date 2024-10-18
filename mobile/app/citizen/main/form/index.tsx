@@ -25,7 +25,6 @@ import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoC
 import Toast from "react-native-toast-message";
 import ReviewCitizenFormSheet from "../../../../components/ReviewCitizenFormSheet";
 import WarningDialog from "../../../../components/WarningDialog";
-import i18n from "../../../../common/config/i18n";
 import AddAttachment from "../../../../components/AddAttachment";
 import OptionsSheet from "../../../../components/OptionsSheet";
 import MediaLoading from "../../../../components/MediaLoading";
@@ -39,7 +38,7 @@ import { MediaDialog } from "../../../../components/MediaDialog";
 // import * as FileSystem from "expo-file-system";
 
 const CitizenForm = () => {
-  const { t } = useTranslation(["citizen_form", "network_banner"]);
+  const { t, i18n } = useTranslation(["citizen_form", "network_banner"]);
   const router = useRouter();
   const scrollViewRef = useRef(null);
   const textareaRef = useRef(null);

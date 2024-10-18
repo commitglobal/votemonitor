@@ -61,7 +61,8 @@ const tagsStyles = {
     color: "hsl(240, 5%, 34%)",
   },
   p: {
-    lineHeight: 24,
+    margin: 0,
+    marginBottom: 8,
   },
   h1: {
     fontSize: 24,

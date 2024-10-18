@@ -30,7 +30,6 @@ import {
   AddAttachmentQuickReportStartAPIPayload,
 } from "../../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 // import { t } from "i18next";
@@ -40,8 +39,9 @@ import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import { removeMutationByScopeId, useUploadS3ChunkMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
+import { TFunction } from "i18next";
 
-const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
+const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = [], t: TFunction) => {
   const pollingStationsForSelect = visits.map((visit) => {
     return {
       id: visit.pollingStationId,
@@ -55,12 +55,12 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
     {
       id: "other",
       value: QuickReportLocationType.OtherPollingStation,
-      label: i18n.t("form.polling_station_id.options.other", { ns: "report_new_issue" }),
+      label: t("form.polling_station_id.options.other", { ns: "report_new_issue" }),
     },
     {
       id: "not_related_to_polling_station",
       value: QuickReportLocationType.NotRelatedToAPollingStation,
-      label: i18n.t("form.polling_station_id.options.not_related", { ns: "report_new_issue" }),
+      label: t("form.polling_station_id.options.not_related", { ns: "report_new_issue" }),
     },
   );
   return pollingStationsForSelect;
@@ -75,12 +75,12 @@ type ReportIssueFormType = {
 
 const ReportIssue = () => {
   const cancelRef = useRef<boolean>(false);
+  const { t } = useTranslation("report_new_issue");
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
-  const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
+  const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits, t), [visits, t]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
-  const { t } = useTranslation("report_new_issue");
   const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -148,6 +148,7 @@ const ReportIssue = () => {
 
     if (!cameraResult || !activeElectionRound) {
       setUploadProgress("");
+      setIsPreparingFile(false);
       return;
     }
 

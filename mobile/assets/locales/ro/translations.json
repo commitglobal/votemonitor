@@ -10,7 +10,7 @@
       "marked_as_completed": "Marcat ca finalizat"
     },
     "forms": {
-      "mark_as_done": "TODO: Marchează formularul ca finalizat",
+      "mark_as_done": "Marchează formularul ca finalizat",
       "mark_as_in_progress": "Marchează formularul ca fiind în desfășurare"
     },
     "cancel": "Renunță",
@@ -25,7 +25,11 @@
     "en": "Engleză",
     "pl": "Poloneză",
     "bg": "Bulgară",
-    "sr": "Sârbă"
+    "sr": "Sârbă",
+    "ge": "Georgiană",
+    "am": "Armeană",
+    "ru": "Rusă",
+    "az": "Azerbeidjană"
   },
   "onboarding": {
     "language": {
@@ -127,7 +131,6 @@
       "error": "Eroare la încărcarea atașamentului.",
       "add": "Adaugă fișiere media",
       "menu": {
-        "add_note": "Adaugă o notiță",
         "load": "Încarcă din galerie",
         "take_picture": "Fă o poză",
         "record_video": "Înregistrează un video",
@@ -249,9 +252,9 @@
     "guides": "Ghiduri",
     "inbox": "Mesaje",
     "more": "Altele",
-    "report": "TODO:Raportare",
-    "resources": "TODO:Resurse",
-    "updates": "TODO:Actualizări"
+    "report": "Raportare",
+    "resources": "Resurse",
+    "updates": "Actualizări"
   },
   "add_polling_station": {
     "title": "Adaugă o secție de votare",
@@ -452,6 +455,7 @@
       "date_placeholder": "Te rugăm să introduci data",
       "text_placeholder": "Te rugăm să introduci un text"
     },
+    "save_and_continue": "Salvează și continuă",
     "attachments": {
       "heading": "Fișiere media încărcate",
       "loading": "Se adaugă atașamentul... ",
@@ -572,6 +576,18 @@
       "attachment_one": "{{count}} fișiere atașate",
       "attachment_other": "{{count}} fișiere atașate"
     },
+    "attachments": {
+      "heading": "Fișiere media încărcate",
+      "loading": "Se adaugă atașamentul... ",
+      "upload": {
+        "preparing": "Se pregătește atașamentul...",
+        "starting": "Se începe încărcarea...",
+        "progress": "Progresul încărcării:",
+        "completed": "Încărcarea a fost finalizată.",
+        "aborted": "Încărcarea a fost anulată."
+      },
+      "error": "Eroare la încărcarea atașamentului!"
+    },
     "options_menu": {
       "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     },
@@ -582,6 +598,15 @@
   },
   "report_new_issue": {
     "title": "Raportează problemă nouă",
+    "upload": {
+      "compressing": "Se comprimă atașamentul: ",
+      "preparing": "Se pregătește atașamentul...",
+      "starting": "Se începe încărcarea...",
+      "progress": "Progresul încărcării:",
+      "completed": "Încărcarea a fost finalizată.",
+      "aborted": "Încărcarea a fost anulată.",
+      "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
+    },
     "media": {
       "heading": "Fișiere media încărcate",
       "add": "Adaugă fișiere media",

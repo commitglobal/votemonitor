@@ -96,7 +96,7 @@ const PollingStationQuestionnaire = () => {
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
     pollingStationId: selectedPollingStation?.pollingStationId,
-    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_answers`,
+    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}`,
   });
 
   const onSetCompletion = (completion: boolean) => {

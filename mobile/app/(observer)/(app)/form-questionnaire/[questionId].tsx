@@ -680,6 +680,7 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
+        actionBtnLabel={t("save_and_continue")}
         onActionButtonPress={handleSubmit(async (formValues) => {
           const nextQuestion = await onSubmitAnswer(formValues);
           goToNextQuestion(nextQuestion);

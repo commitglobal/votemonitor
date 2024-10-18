@@ -67,7 +67,7 @@ interface ResourcesListProps {
 
 const ResourcesGuidesList = ({
   isLoading,
-  resources,
+  resources = [],
   refetch,
   header,
   translationKey = "guides",
@@ -90,10 +90,11 @@ const ResourcesGuidesList = ({
   }
 
   return (
-    <YStack padding="$md" flex={1}>
+    <YStack flex={1}>
       <ListView<Guide>
         data={resources}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16 }}
         bounces={isOnline}
         ListHeaderComponent={header}
         ListEmptyComponent={

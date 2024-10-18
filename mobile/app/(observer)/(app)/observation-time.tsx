@@ -46,7 +46,7 @@ const ObservationTime = () => {
   const { mutate, isPending } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
     pollingStationId: selectedPollingStation?.pollingStationId,
-    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_dates`,
+    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}`,
   });
 
   const { isOnline } = useNetInfoContext();
@@ -138,14 +138,6 @@ const ObservationTime = () => {
       reset(getValues());
     }
   }, [psiData, getValues, reset]);
-
-  // if there are breaks errors, display modal
-  useEffect(() => {
-    console.log("errors ⛔️", errors);
-    if (Object.keys(errors).includes("breaks")) {
-      setIsUnableToSaveObservationTime(true);
-    }
-  }, [errors.breaks]);
 
   const handleGoBack = () => {
     if (isDirty) {
@@ -258,6 +250,7 @@ const ObservationTime = () => {
                   onChange={onChange}
                   value={value}
                   disabled={isLoading}
+                  maximumDate={watch("departureTime")}
                 />
               )}
             />
@@ -283,13 +276,13 @@ const ObservationTime = () => {
                   )}
                   onChange={onChange}
                   value={value}
-                  disabled={isLoading}
+                  disabled={isLoading || !watch("arrivalTime")}
                   error={
                     errors.departureTime?.type === "departureTimeAfterArrivalTime"
                       ? t("polling_stations_information.observation_time.departure_after_arrival")
                       : ""
                   }
-                  minimumDate={getValues("arrivalTime")}
+                  minimumDate={watch("arrivalTime")}
                 />
               )}
             />
@@ -329,12 +322,17 @@ const ObservationTime = () => {
       <WizzardControls
         isFirstElement
         onActionButtonPress={() => {
-          handleSubmit(async (data) => {
-            await onSubmit(data);
-            if (!isUnableToSaveObservationTime) {
+          handleSubmit(
+            async (data) => {
+              await onSubmit(data);
               router.back();
-            }
-          })();
+            },
+            (errors) => {
+              if (Object.keys(errors).includes("breaks")) {
+                setIsUnableToSaveObservationTime(true);
+              }
+            },
+          )();
         }}
         actionBtnLabel={t("polling_stations_information.observation_time.save")}
         marginTop="auto"
@@ -380,14 +378,23 @@ const ObservationTime = () => {
             router.back();
           }}
           action={() => {
-            handleSubmit(onSubmit)();
-            // if no errors occured, go back
-            // otherwise, close this modal and the unable to save one will be displayed from the useEffect
-            if (!isUnableToSaveObservationTime) {
-              router.back();
-            } else {
-              setIsSaveChangesModalOpen(false);
-            }
+            handleSubmit(
+              async (data) => {
+                await onSubmit(data);
+                router.back();
+              },
+              (errors) => {
+                // close modal in order to see the input error displayed for departureTime
+                if (errors.departureTime) {
+                  return setIsSaveChangesModalOpen(false);
+                }
+                if (Object.keys(errors).includes("breaks")) {
+                  // close this modal and display the unable to save observation time one
+                  setIsSaveChangesModalOpen(false);
+                  return setIsUnableToSaveObservationTime(true);
+                }
+              },
+            )();
           }}
         />
       )}
