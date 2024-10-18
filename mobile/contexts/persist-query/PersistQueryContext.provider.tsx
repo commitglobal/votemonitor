@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
-import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
@@ -13,15 +12,13 @@ import {
   AddQuickReportAPIPayload,
   addQuickReport,
 } from "../../services/api/quick-report/post-quick-report.api";
-import {
-  AddAttachmentQuickReportAPIPayload,
-  addAttachmentQuickReport,
-} from "../../services/api/quick-report/add-attachment-quick-report.api";
+
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
-import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import { ASYNC_STORAGE_KEYS, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
+import { QuickReportAttachmentAPIResponse } from "../../services/api/quick-report/get-quick-reports.api";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -109,15 +106,9 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
-  queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
-    mutationFn: async (payload: AddAttachmentAPIPayload) => {
-      return addAttachment(payload);
-    },
-  });
-
   queryClient.setMutationDefaults(AttachmentsKeys.deleteAttachment(), {
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return payload.isNotSynched ? () => {} : deleteAttachment(payload);
+      return payload.isNotSynched ? () => { } : deleteAttachment(payload);
     },
   });
 
@@ -135,7 +126,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
-      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
+      return payload.isNotSynched ? () => { } : API.deleteNote(payload);
     },
   });
 
@@ -143,14 +134,8 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     mutationFn: async ({
       attachments: _,
       ...payload
-    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] }) => {
+    }: AddQuickReportAPIPayload & { attachments: QuickReportAttachmentAPIResponse[] }) => {
       return addQuickReport(payload);
-    },
-  });
-
-  queryClient.setMutationDefaults(QuickReportKeys.addAttachment(), {
-    mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return addAttachmentQuickReport(payload);
     },
   });
 
@@ -230,6 +215,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
             // if (query.meta?.dontPersist) return false;
 
             return defaultShouldDehydrateQuery(query);
+          },
+          shouldDehydrateMutation: (mutation) => {
+            if (mutation.options.scope?.id === MUTATION_SCOPE_DO_NOT_HYDRATE) {
+              return false;
+            }
+            return true;
           },
         },
       }}

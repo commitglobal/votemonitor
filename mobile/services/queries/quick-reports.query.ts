@@ -15,6 +15,8 @@ export const QuickReportKeys = {
   ],
   add: () => [...QuickReportKeys.all, "add"] as const,
   addAttachment: () => [...AttachmentsKeys.all, ...QuickReportKeys.all, "addAttachment"],
+  addAttachmentComplete: () => [...QuickReportKeys.all, "addAttachmentComplete"],
+  addAttachmentAbort: () => [...QuickReportKeys.all, "addAttachmentAbort"],
 };
 
 export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(
