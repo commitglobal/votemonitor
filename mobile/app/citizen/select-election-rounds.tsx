@@ -49,8 +49,9 @@ const SelectElectionEvent = () => {
           preset="heading"
           fontWeight="500"
           marginVertical="$xl"
-          marginHorizontal="$lg"
           textAlign="center"
+          width="100%"
+          paddingHorizontal="$lg"
         >
           {t("heading")}
         </Typography>

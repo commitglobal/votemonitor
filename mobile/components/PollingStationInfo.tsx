@@ -35,7 +35,6 @@ const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
           }
           maxWidth="45%"
           textStyle={{ textAlign: "center" }}
-          alignSelf="baseline"
         >
           {isMarkedAsCompleted
             ? t("status.marked_as_completed", { ns: "common" })

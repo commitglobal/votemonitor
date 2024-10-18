@@ -13,8 +13,8 @@ import { Typography } from "./Typography";
 import { PSITime } from "./PSITime";
 
 interface PollingStationGeneralProps {
-  psiData: PollingStationInformationAPIResponse | null | undefined;
-  psiFormQuestions: PollingStationInformationFormAPIResponse;
+  psiData: PollingStationInformationAPIResponse | undefined | null;
+  psiFormQuestions: PollingStationInformationFormAPIResponse | undefined;
 }
 
 export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({

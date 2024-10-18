@@ -1,4 +1,4 @@
-import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FormStatus, mapFormToFormListItem } from "../services/form.parser";
 import { useUserData } from "../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
@@ -9,7 +9,7 @@ import {
 } from "../common/language.preferences";
 import { router } from "expo-router";
 import { Typography } from "./Typography";
-import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import { ListView } from "./ListView";
 import FormCard from "./FormCard";
 import { Dialog } from "./Dialog";
@@ -27,8 +27,10 @@ import {
 } from "../services/queries.service";
 import FormListEmptyComponent from "./FormListEmptyComponent";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import ObservationSkeleton from "./SkeletonLoaders/ObservationSkeleton";
+import { PollingStationGeneral } from "./PollingStationGeneral";
 
-const ESTIMATED_ITEM_SIZE = 100;
+const ESTIMATED_ITEM_SIZE = 125;
 
 export type FormListItem = {
   id: string;
@@ -40,26 +42,25 @@ export type FormListItem = {
   status: FormStatus;
 };
 
-type ListHeaderComponentType =
-  | ComponentType<any>
-  | ReactElement<any, string | JSXElementConstructor<any>>
-  | null
-  | undefined;
-
-interface IFormListProps {
-  ListHeaderComponent: ListHeaderComponentType;
-}
-
-const FormList = ({ ListHeaderComponent }: IFormListProps) => {
+const FormList = ({ isLoading: isLoadingUserData }: { isLoading: boolean }) => {
   const { t } = useTranslation(["observation", "common"]);
   const { isOnline } = useNetInfoContext();
-  const { width } = useWindowDimensions();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const queryClient = useQueryClient();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
+
+  const { data: psiData, isLoading: isLoadingPsiData } = usePollingStationInformation(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+  );
+
+  console.log("psiData", Object.keys(psiData || {}).length);
+
+  const { data: psiFormQuestions, isLoading: isLoadingPsiFormQuestions } =
+    usePollingStationInformationForm(activeElectionRound?.id);
 
   const {
     data: allForms,
@@ -74,6 +75,22 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     error: answersError,
     refetch: refetchFormSubmissions,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+
+  const isLoading = useMemo(() => {
+    return (
+      isLoadingForms ||
+      isLoadingAnswers ||
+      isLoadingPsiData ||
+      isLoadingPsiFormQuestions ||
+      isLoadingUserData
+    );
+  }, [
+    isLoadingForms,
+    isLoadingAnswers,
+    isLoadingPsiData,
+    isLoadingPsiFormQuestions,
+    isLoadingUserData,
+  ]);
 
   const { refetch: refetchPSIData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -130,12 +147,8 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     }
   };
 
-  if (isLoadingAnswers || isLoadingForms) {
-    return (
-      <YStack justifyContent="center" alignItems="center" flex={1}>
-        <Spinner size="large" color="$purple5" />
-      </YStack>
-    );
+  if (isLoading) {
+    return <ObservationSkeleton />;
   }
 
   if (formsError || answersError) {
@@ -160,15 +173,22 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     <YStack flex={1}>
       <ListView<FormListItem>
         data={formList}
-        ListHeaderComponent={ListHeaderComponent}
+        ListHeaderComponent={
+          <YStack minHeight={100}>
+            <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
+            <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
+              {t("forms.heading")}
+            </Typography>
+          </YStack>
+        }
         contentContainerStyle={{ paddingVertical: 16 }}
         ListEmptyComponent={<FormListEmptyComponent />}
         showsVerticalScrollIndicator={false}
         bounces={isOnline}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           return (
             <FormCard
-              key={index}
+              key={item.id}
               form={item}
               onPress={openForm.bind(null, item)}
               marginBottom="$xxs"
@@ -176,7 +196,6 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
           );
         }}
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         refreshing={isRefreshing}
         onRefresh={handleRefetch}
       />

@@ -24,6 +24,27 @@ export interface BadgeProps extends ViewProps {
   textStyle?: TextStyle;
 }
 
+const StyledView = styled(View, {
+  name: "StyledView",
+  paddingHorizontal: "$xs",
+  paddingVertical: 2,
+  borderRadius: 28,
+  borderWidth: 1,
+  borderColor: "$purple5",
+  backgroundColor: "$purple2",
+  alignItems: "center",
+  justifyContent: "center",
+  alignSelf: "flex-start",
+  variants: {
+    presets: {
+      default: {},
+      success: { backgroundColor: "$green1", borderColor: "$green6" },
+      warning: { backgroundColor: "$yellow3", borderColor: "$yellow7" },
+      danger: { backgroundColor: "$red1", borderColor: "$red12" },
+    },
+  } as const,
+});
+
 /**
  * Badge component which supports 4 initial presets: default, succes, warning and danger
  * @param {BadgeProps} props - The props for the `Badge` component.
@@ -31,32 +52,6 @@ export interface BadgeProps extends ViewProps {
  */
 const Badge = (props: BadgeProps): JSX.Element => {
   const { status, textStyle, ...rest } = props;
-
-  // TODO @madalinazanficu: use strong typed values for props
-
-  const StyledView = useMemo(
-    () =>
-      styled(View, {
-        name: "StyledView",
-        paddingHorizontal: "$xs",
-        paddingVertical: 2,
-        borderRadius: 28,
-        borderWidth: 1,
-        borderColor: "$purple5",
-        backgroundColor: "$purple2",
-        alignItems: "center",
-        justifyContent: "center",
-        variants: {
-          presets: {
-            default: {},
-            success: { backgroundColor: "$green1", borderColor: "$green6" },
-            warning: { backgroundColor: "$yellow3", borderColor: "$yellow7" },
-            danger: { backgroundColor: "$red1", borderColor: "$red12" },
-          },
-        } as const,
-      }),
-    [],
-  );
 
   const presetType = useMemo(
     () =>
