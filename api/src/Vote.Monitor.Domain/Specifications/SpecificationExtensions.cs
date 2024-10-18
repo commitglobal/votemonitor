@@ -24,10 +24,8 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.CreatedOn)
-                    .ThenBy(x => x.Id)
                 : builder
-                    .OrderByDescending(x => x.CreatedOn)
-                    .ThenBy(x => x.Id);
+                    .OrderByDescending(x => x.CreatedOn);
         }
 
         if (string.Equals(request.SortColumnName, nameof(AuditableBaseEntity.LastModifiedOn), StringComparison.InvariantCultureIgnoreCase))
@@ -35,14 +33,13 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.LastModifiedOn)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.CreatedOn)
                 : builder
                     .OrderByDescending(x => x.LastModifiedOn)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.CreatedOn);
         }
 
         return builder
-            .OrderBy(x => x.CreatedOn)
-            .ThenBy(x => x.Id);
+            .OrderBy(x => x.CreatedOn);
     }
 }

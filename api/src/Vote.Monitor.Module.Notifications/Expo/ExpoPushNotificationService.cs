@@ -53,8 +53,8 @@ public class ExpoPushNotificationService(
                     {
                         if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
                         {
-                            logger.LogError("Error received when sending push notification {@request} {@response}",
-                                request, response);
+                            logger.LogError("Error received when sending push notification {@response} {@request}",
+                                response, request);
 
                             failedCount += identifiersBatch.Length;
                             continue;
