@@ -14,7 +14,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SelectAppLanguage from "../../../../../components/SelectAppLanguage";
-import i18n from "../../../../../common/config/i18n";
 import { useNotification } from "../../../../../hooks/useNotifications";
 import { ASYNC_STORAGE_KEYS } from "../../../../../common/constants";
 import { useNetInfoContext } from "../../../../../contexts/net-info-banner/NetInfoContext";
@@ -46,7 +45,7 @@ export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: Men
 );
 
 const More = () => {
-  const { t } = useTranslation(["more", "languages", "common"]);
+  const { t, i18n } = useTranslation(["more", "languages", "common"]);
 
   const { isOnline } = useNetInfoContext();
   const { signOut } = useAuth();

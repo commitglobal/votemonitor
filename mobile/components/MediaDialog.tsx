@@ -1,8 +1,9 @@
 import { Image } from "expo-image";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { AlertDialog, AlertDialogProps, Spinner, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
+import { BackHandler } from "react-native";
 
 interface MediaDialogProps extends AlertDialogProps {
   // what you press on in order to open the dialog
@@ -15,6 +16,17 @@ interface MediaDialogProps extends AlertDialogProps {
 export const MediaDialog: React.FC<MediaDialogProps> = ({ trigger, media, onClose, ...props }) => {
   const { t } = useTranslation("common");
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const handleHardwareBackPress = () => {
+    onClose();
+    return true;
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", handleHardwareBackPress);
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <AlertDialog open {...props}>

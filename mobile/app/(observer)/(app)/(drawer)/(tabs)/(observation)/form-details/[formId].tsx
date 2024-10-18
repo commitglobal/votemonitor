@@ -27,6 +27,7 @@ import WarningDialog from "../../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../../services/queries/attachments.query";
 import { useNotesForFormId } from "../../../../../../../services/queries/notes.query";
 import { RefreshControl } from "react-native";
+import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -38,6 +39,7 @@ type SearchParamsType = {
 const FormDetails = () => {
   const { t } = useTranslation(["form_overview", "common"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
+  const { isOnline } = useNetInfoContext();
 
   if (!formId || !language) {
     return <Typography>Incorrect page params</Typography>;
@@ -266,6 +268,7 @@ const FormDetails = () => {
           contentContainerStyle={{ flex: 1, alignItems: "center" }}
           paddingVertical="$xxl"
           showsVerticalScrollIndicator={false}
+          bounces={isOnline}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
         >
           <Typography>{t("error")}</Typography>
@@ -310,7 +313,7 @@ const FormDetails = () => {
             </YStack>
           }
           showsVerticalScrollIndicator={false}
-          bounces={true}
+          bounces={isOnline}
           renderItem={({ item, index }) => {
             return (
               <FormQuestionListItem
@@ -360,7 +363,7 @@ const FormDetails = () => {
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography
               preset="body1"
-              color={disableMarkAsDone ? "$gray3" : "$gray7"}
+              color={disableMarkAsDone ? "$gray3" : "$gray9"}
               paddingVertical="$xs"
               lineHeight={24}
               onPress={() => {

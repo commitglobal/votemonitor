@@ -19,7 +19,6 @@ import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../../components/WizzardControls";
 import { ListView } from "../../../components/ListView";
-import i18n from "../../../common/config/i18n";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapPollingStationOptionsToSelectValues = (
@@ -234,6 +233,7 @@ const PollingStationWizzardContent = ({
             value={searchTerm}
             onChangeText={setSearchTerm}
             maxFontSizeMultiplier={1.2}
+            placeholder={t("search", { ns: "common" })}
           />
         </XStack>
       </YStack>
@@ -279,7 +279,6 @@ const $containerStyle: ViewStyle = {
 
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: i18n.t("search", { ns: "common" }),
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {

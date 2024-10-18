@@ -61,7 +61,7 @@ export const useMutatePollingStationGeneralData = ({
         ...(payload?.arrivalTime ? { arrivalTime: payload?.arrivalTime } : {}),
         ...(payload?.departureTime ? { departureTime: payload?.departureTime } : {}),
         ...(payload?.breaks ? { breaks: payload?.breaks } : {}),
-        ...(payload?.isCompleted ? { isCompleted: payload?.isCompleted } : {}),
+        ...(payload?.isCompleted !== undefined ? { isCompleted: payload?.isCompleted } : {}),
       });
 
       // Update Visits query optimistic

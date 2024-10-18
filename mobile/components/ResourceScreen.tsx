@@ -9,13 +9,17 @@ interface ResourceScreenProps {
 
 const ResourceScreen = ({ resource }: ResourceScreenProps) => {
   const { width } = useWindowDimensions();
+
   return (
-    <YStack paddingHorizontal={"$md"} height={"85%"}>
+    <YStack flex={1}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           gap: 32,
           flexGrow: 1,
+          paddingHorizontal: 24,
+          paddingTop: 24,
+          paddingBottom: 16,
         }}
       >
         <RenderHtml
@@ -39,7 +43,8 @@ const tagsStyles = {
     color: "hsl(240, 5%, 34%)",
   },
   p: {
-    lineHeight: 24,
+    margin: 0,
+    marginBottom: 8,
   },
   h1: {
     fontSize: 24,

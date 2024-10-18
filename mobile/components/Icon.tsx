@@ -172,13 +172,13 @@ export const defaultIcon = React.forwardRef(
       audio: <Audio fill={color} />,
       form: <Form fill={color} />,
       checkCircle: <CheckCircle fill={color} width={size} height={size} />,
-      vmCitizenLogo: <VMCitizenLogo fill={color} width={width} height={height} />,
+      vmCitizenLogo: <VMCitizenLogo fill="none" width={width} height={height} />,
       warning: <Warning stroke={color} width={size} height={size} />,
       publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
       appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
       coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
       updates: <Updates fill={color} width={size} height={size} />,
-      vmObserverLogo: <VMObserverLogo fill={color} width={width} height={height} />,
+      vmObserverLogo: <VMObserverLogo fill="none" width={width} height={height} />,
     };
 
     return (

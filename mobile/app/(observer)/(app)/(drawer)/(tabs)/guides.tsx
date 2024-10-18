@@ -27,7 +27,6 @@ const Guides = () => {
     data: guides,
     isLoading: isLoadingGuides,
     refetch: refetchGuides,
-    isRefetching: isRefetchingGuides,
   } = useGuides(activeElectionRound?.id);
 
   const filteredGuides = useMemo(() => {
@@ -72,14 +71,13 @@ const Guides = () => {
         </YStack>
       </YStack>
       <ResourcesGuidesList
+        key={`guides-${activeElectionRound?.id}`}
         isLoading={isLoadingGuides}
-        isRefetching={isRefetchingGuides}
-        resources={filteredGuides || []}
+        resources={filteredGuides}
         refetch={refetchGuides}
         emptyContainerMarginTop="30%"
         onResourcePress={handleResourcePress}
       />
-
       {isOpenInfoModal && (
         <InfoModal paragraphs={[t("info_modal")]} handleCloseInfoModal={handleCloseInfoModal} />
       )}

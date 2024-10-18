@@ -13,7 +13,7 @@ import { StatusBar } from "react-native";
 const CitizenFormSuccess = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("citizen_form");
-  const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
+  const { submissionId, formId } = useLocalSearchParams<{ submissionId: string; formId: string }>();
 
   const [isEmailSheetOpen, setIsEmailSheetOpen] = useState(false);
   const [copySent, setCopySent] = useState(false);
@@ -51,6 +51,7 @@ const CitizenFormSuccess = () => {
       {isEmailSheetOpen && (
         <EmailCopySheet
           submissionId={submissionId}
+          formId={formId}
           setIsEmailSheetOpen={setIsEmailSheetOpen}
           setCopySent={setCopySent}
         />

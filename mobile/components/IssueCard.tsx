@@ -4,12 +4,14 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { FormAPIModel } from "../services/definitions.api";
-import i18n from "../common/config/i18n";
+import { useTranslation } from "react-i18next";
 
 export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () => void }) => {
+  const { i18n } = useTranslation();
+
   const currentLanguage = useMemo(
     () => i18n.language.toLocaleUpperCase() || Object.keys(form?.name)[0],
-    [form],
+    [i18n.language, form],
   );
 
   const formName = useMemo(() => {

@@ -6,7 +6,6 @@ export const getCitizenGuides = async ({
 }: {
   electionRoundId: string;
 }): Promise<Guide[]> => {
-  console.log("😁😁 citizen guides", electionRoundId);
   return API.get(`election-rounds/${electionRoundId}/citizen-guides`).then(
     (res) => res.data.guides,
   );

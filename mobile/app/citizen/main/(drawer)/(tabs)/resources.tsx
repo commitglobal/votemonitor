@@ -23,12 +23,7 @@ export default function Resources() {
 
   const { selectedElectionRound } = useCitizenUserData();
 
-  const {
-    data: resources,
-    isLoading,
-    refetch,
-    isRefetching,
-  } = useCitizenGuides(selectedElectionRound);
+  const { data: resources, isLoading, refetch } = useCitizenGuides(selectedElectionRound);
 
   const filteredResources = useMemo(() => {
     return filterResources(resources || [], searchTerm);
@@ -69,8 +64,8 @@ export default function Resources() {
         </YStack>
       </YStack>
       <ResourcesGuidesList
+        key={`resources-${selectedElectionRound}`}
         isLoading={isLoading}
-        isRefetching={isRefetching}
         resources={filteredResources || []}
         refetch={refetch}
         translationKey="resources"

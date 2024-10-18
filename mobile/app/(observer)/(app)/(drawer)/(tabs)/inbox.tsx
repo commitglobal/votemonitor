@@ -21,7 +21,7 @@ import InfoModal from "../../../../../components/InfoModal";
 const InboxList = () => {
   const queryClient = useQueryClient();
   const { activeElectionRound } = useUserData();
-  const { data, isLoading, isRefetching, refetch } = useNotifications(activeElectionRound?.id);
+  const { data, isLoading, refetch } = useNotifications(activeElectionRound?.id);
 
   const notifications = useMemo(() => data?.notifications || [], [data]);
 
@@ -69,13 +69,7 @@ const InboxList = () => {
   });
 
   return (
-    <NewsList
-      isLoading={isLoading}
-      news={notifications}
-      isRefetching={isRefetching}
-      refetch={refetch}
-      translationKey="inbox"
-    />
+    <NewsList isLoading={isLoading} news={notifications} refetch={refetch} translationKey="inbox" />
   );
 };
 
@@ -120,7 +114,7 @@ const Inbox = () => {
           </YStack>
         )}
       </YStack>
-      <InboxList />
+      <InboxList key={`inbox-${activeElectionRound?.id}`} />
       {isOpenInfoModal && (
         <InfoModal
           paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}

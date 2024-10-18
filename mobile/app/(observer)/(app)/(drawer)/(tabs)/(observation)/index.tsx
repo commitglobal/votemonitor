@@ -45,7 +45,7 @@ const Index = () => {
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
-      <YStack marginBottom={20}>
+      <YStack>
         <Header
           title={t("title")}
           titleColor="white"

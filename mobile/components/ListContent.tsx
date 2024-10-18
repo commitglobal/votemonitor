@@ -26,7 +26,7 @@ export const EmptyContent = ({
     >
       {illustrationIconKey && <Icon icon={illustrationIconKey} size={190} />}
 
-      <YStack gap="$xxxs" paddingHorizontal="$lg">
+      <YStack gap="$xs" paddingHorizontal="$lg">
         <Typography preset="subheading" textAlign="center">
           {t("empty.heading")}
         </Typography>

@@ -16,6 +16,7 @@ import { QuickReportsAPIResponse } from "../../../../../../services/api/quick-re
 import { useTranslation } from "react-i18next";
 import { ElectionRoundVM } from "../../../../../../common/models/election-round.model";
 import InfoModal from "../../../../../../components/InfoModal";
+import { useNetInfoContext } from "../../../../../../contexts/net-info-banner/NetInfoContext";
 
 const QuickReport = () => {
   const { t } = useTranslation("quick_report");
@@ -98,6 +99,8 @@ const QuickReportContent = ({
   activeElectionRound,
 }: QuickReportContentProps) => {
   const { t } = useTranslation(["quick_report", "common"]);
+  const { isOnline } = useNetInfoContext();
+
   const { width } = useWindowDimensions();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -145,7 +148,7 @@ const QuickReportContent = ({
             </YStack>
           </YStack>
         }
-        bounces={true}
+        bounces={isOnline}
         renderItem={({ item, index }) => (
           <ReportCard
             key={`${index}`}

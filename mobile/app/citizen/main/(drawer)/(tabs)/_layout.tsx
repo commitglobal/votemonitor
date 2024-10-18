@@ -34,21 +34,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Report",
+          title: t("report"),
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
         }}
       />
       <Tabs.Screen
         name="resources"
         options={{
-          title: "Resources",
+          title: t("resources"),
           tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
         }}
       />
       <Tabs.Screen
         name="updates"
         options={{
-          title: "Updates",
+          title: t("updates"),
           tabBarIcon: ({ color }) => <Icon icon="updates" color={color} />,
         }}
       />

@@ -3,7 +3,7 @@ import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import Button from "./Button";
-import { StyleProp, TextStyle } from "react-native";
+import { BackHandler, StyleProp, TextStyle } from "react-native";
 
 type WarningDialogProps = {
   title: string;
@@ -27,6 +27,18 @@ const WarningDialog = ({
   theme = "danger",
 }: WarningDialogProps) => {
   const tamaguiTheme = useTheme();
+
+  const handleHardwareBackPress = () => {
+    onCancel();
+    return true;
+  };
+
+  React.useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", handleHardwareBackPress);
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <Dialog
       open

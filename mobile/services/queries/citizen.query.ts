@@ -13,6 +13,7 @@ export const citizenQueryKeys = {
   electionRounds: () => [...citizenQueryKeys.all, "election-rounds"] as const,
   reportingForms: (electionRoundId: string) =>
     [...citizenQueryKeys.all, "reporting-forms", electionRoundId] as const,
+  attachments: () => [...citizenQueryKeys.all, "attachments", "start"] as const,
   locations: (electionRoundId: string) =>
     [...citizenQueryKeys.all, "locations", electionRoundId] as const,
   locationsByParentId: (parentId: number, electionRoundId: string) =>

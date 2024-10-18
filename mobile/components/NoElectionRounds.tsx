@@ -8,11 +8,12 @@ import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
 import { useElectionRoundsQuery } from "../services/queries.service";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 const NoElectionRounds = () => {
   const navigation = useNavigation();
   const { t } = useTranslation("observation");
-
+  const { isOnline } = useNetInfoContext();
   const { isRefetching: isRefetchingRounds, refetch: refetchRounds } = useElectionRoundsQuery();
 
   return (
@@ -31,6 +32,7 @@ const NoElectionRounds = () => {
         }}
         showsVerticalScrollIndicator={false}
         backgroundColor="white"
+        bounces={isOnline}
         refreshControl={
           <RefreshControl refreshing={isRefetchingRounds} onRefresh={refetchRounds} />
         }
