@@ -37,14 +37,11 @@ import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import * as Sentry from "@sentry/react-native";
 import QuestionForm from "../../../../components/QuestionForm";
 import NotesSkeleton from "../../../../components/SkeletonLoaders/NotesSkeleton";
-import { useUploadAttachmentMutation } from "../../../../services/mutations/attachments/add-attachment.mutation";
-import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../../common/constants";
+import { removeMutationByScopeId, useUploadAttachmentAbortMutation, useUploadAttachmentCompleteMutation, useUploadAttachmentMutation, useUploadS3ChunkMutation } from "../../../../services/mutations/attachments/add-attachment.mutation";
+import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../../common/constants";
 import * as FileSystem from "expo-file-system";
 import {
-  addAttachmentMultipartAbort,
-  addAttachmentMultipartComplete,
   AddAttachmentStartAPIPayload,
-  uploadS3Chunk,
 } from "../../../../services/api/add-attachment.api";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import { Buffer } from "buffer";
@@ -58,6 +55,7 @@ export type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
+  const cancelRef = useRef<boolean>(false);
   const queryClient = useQueryClient();
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
@@ -72,6 +70,7 @@ const FormQuestionnaire = () => {
   const [addingNote, setAddingNote] = useState(false);
   const [deletingAnswer, setDeletingAnswer] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
 
   const [showWarningDialog, setShowWarningDialog] = useState<{
@@ -344,9 +343,11 @@ const FormQuestionnaire = () => {
     mutateAsync: addAttachmentStart,
     isPending: isLoadingAddAttachmentt,
     isPaused,
-  } = useUploadAttachmentMutation(
-    `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
-  );
+  } = useUploadAttachmentMutation();
+
+  const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
+  const { mutateAsync: addAttachmentComplete } = useUploadAttachmentCompleteMutation();
+  const { mutateAsync: addAttachmentAbort } = useUploadAttachmentAbortMutation();
 
   const onCompressionProgress = (progress: number) => {
     setUploadProgress(`${t("attachments.upload.compressing")} ${Math.ceil(progress * 100)}%`);
@@ -374,12 +375,16 @@ const FormQuestionnaire = () => {
       return;
     }
 
+    setIsPreparingFile(false);
+
     if (
       activeElectionRound &&
       selectedPollingStation?.pollingStationId &&
       formId &&
       activeQuestion.question.id
     ) {
+      cancelRef.current = false;
+      setIsUploading(true);
       try {
         const totalParts = Math.ceil(cameraResult.size! / MULTIPART_FILE_UPLOAD_SIZE);
         const attachmentId = Crypto.randomUUID();
@@ -394,6 +399,10 @@ const FormQuestionnaire = () => {
           formId,
           questionId: activeQuestion.question.id,
         };
+
+        if (cancelRef.current) {
+          return;
+        }
 
         setUploadProgress(`${t("attachments.upload.starting")}`);
         const data = await addAttachmentStart(payload);
@@ -424,14 +433,19 @@ const FormQuestionnaire = () => {
       });
       return;
     }
+    setIsPreparingFile(true);
 
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
     });
 
+    setIsPreparingFile(false);
+
     if (doc?.assets?.[0]) {
       const file = doc?.assets?.[0];
+      setIsUploading(true);
+      cancelRef.current = false;
 
       if (
         activeElectionRound &&
@@ -454,6 +468,11 @@ const FormQuestionnaire = () => {
           };
 
           setUploadProgress(`${t("attachments.upload.starting")}`);
+
+          if (cancelRef.current) {
+            return;
+          }
+
           const data = await addAttachmentStart(payload);
           await handleChunkUpload(file.uri, data.uploadUrls, data.uploadId, payload.id, totalParts);
           setUploadProgress(t("attachments.upload.completed"));
@@ -478,13 +497,17 @@ const FormQuestionnaire = () => {
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
+        if (cancelRef.current) {
+          throw new Error("Upload cancelled");
+        }
+
         const chunk = await FileSystem.readAsStringAsync(filePath, {
           length: MULTIPART_FILE_UPLOAD_SIZE,
           position: index * MULTIPART_FILE_UPLOAD_SIZE,
           encoding: FileSystem.EncodingType.Base64,
         });
         const buffer = Buffer.from(chunk, "base64");
-        const data = await uploadS3Chunk(url, buffer);
+        const data = await uploadS3Chunk({ url, chunk: buffer });
         setUploadProgress(
           `${t("attachments.upload.progress")} ${Math.ceil(((index + 1) / totalParts) * 100)}%`,
         );
@@ -492,7 +515,7 @@ const FormQuestionnaire = () => {
       }
 
       if (activeElectionRound?.id) {
-        await addAttachmentMultipartComplete({
+        await addAttachmentComplete({
           uploadId,
           etags,
           electionRoundId: activeElectionRound?.id,
@@ -505,12 +528,13 @@ const FormQuestionnaire = () => {
             formId,
           ),
         });
+        setIsUploading(false);
       }
     } catch (err) {
       Sentry.captureException(err, { data: activeElectionRound });
       if (activeElectionRound?.id) {
         setUploadProgress(t("attachments.upload.aborted"));
-        await addAttachmentMultipartAbort({
+        await addAttachmentAbort({
           id: attachmentId,
           uploadId,
           electionRoundId: activeElectionRound.id,
@@ -518,6 +542,7 @@ const FormQuestionnaire = () => {
       }
     } finally {
       setIsPreparingFile(false);
+      setIsUploading(false);
     }
   };
 
@@ -533,6 +558,21 @@ const FormQuestionnaire = () => {
   const handleOnShowAttachementSheet = () => {
     Keyboard.dismiss();
     setIsOptionsSheetOpen(true);
+  };
+
+  const onAbortUpload = () => {
+    setUploadProgress("");
+    setIsPreparingFile(false);
+    setIsUploading(false);
+    setIsOptionsSheetOpen(false);
+    queryClient.invalidateQueries({
+      queryKey: AttachmentsKeys.attachments(
+        activeElectionRound?.id,
+        selectedPollingStation?.pollingStationId,
+        formId,
+      ),
+    });
+    removeMutationByScopeId(MUTATION_SCOPE_DO_NOT_HYDRATE);
   };
 
   return (
@@ -655,11 +695,15 @@ const FormQuestionnaire = () => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);
           }}
-          isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile}
+          isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile || isUploading}
           disableDrag={addingNote}
         >
-          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (
-            <MediaLoading progress={uploadProgress} />
+          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile || isUploading ? (
+            <MediaLoading
+              progress={uploadProgress}
+              isUploading={isUploading}
+              onAbortUpload={onAbortUpload}
+            />
           ) : addingNote ? (
             <AddNoteSheetContent
               setAddingNote={setAddingNote}

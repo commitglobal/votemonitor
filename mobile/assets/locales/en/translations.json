@@ -475,7 +475,9 @@
         "progress": "Upload progress:",
         "completed": "Upload completed.",
         "aborted": "Upload aborted.",
-        "offline": "You need an internet connection in order to perform this action."
+        "offline": "You need an internet connection in order to perform this action.",
+        "abort_offline": "Go online to continue or abort the upload",
+        "abort_offline_button": "Cancel the upload"
       }
     },
     "notes": {

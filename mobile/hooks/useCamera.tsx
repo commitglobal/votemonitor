@@ -82,6 +82,8 @@ export const useCamera = () => {
       allowsMultipleSelection: false,
       videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current,
     });
 
     if (result.canceled) {
