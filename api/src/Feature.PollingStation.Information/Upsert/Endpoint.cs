@@ -82,7 +82,9 @@ public class Endpoint(
                 return TypedResults.NotFound();
             }
 
-            pollingStationInformation = form.CreatePollingStationInformation(pollingStation,
+            pollingStationInformation = form.CreatePollingStationInformation(
+                req.ObserverId,
+                pollingStation,
                 monitoringObserver,
                 req.ArrivalTime,
                 req.DepartureTime,
@@ -118,7 +120,9 @@ public class Endpoint(
                 ArrivalTime = inserting.ArrivalTime,
                 DepartureTime = inserting.DepartureTime,
                 Answers = inserting.Answers,
-                Breaks = inserting.Breaks
+                Breaks = inserting.Breaks,
+                CreatedOn = existing.CreatedOn,
+                LastModifiedOn = DateTime.UtcNow
             })
             .RunAsync(ct);
 
