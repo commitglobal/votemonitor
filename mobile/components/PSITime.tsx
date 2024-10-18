@@ -110,7 +110,7 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
         </XStack>
 
         {/* breaks */}
-        <XStack alignItems="flex-start" flex={0.4} justifyContent="flex-end" gap="$xxxs">
+        <XStack alignItems="flex-start" flex={0.3} justifyContent="flex-end" gap="$xxxs">
           <Icon icon="coffeeBreak" color="$purple5" size={24} />
           <XStack justifyContent="flex-end" maxWidth="80%">
             <Typography fontWeight="500" color="$purple5" maxWidth="100%">
