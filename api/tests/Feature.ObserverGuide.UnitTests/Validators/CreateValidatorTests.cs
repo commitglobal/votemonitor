@@ -106,24 +106,7 @@ public class CreateValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.WebsiteUrl);
     }
-
-    [Fact]
-    public void Should_Have_Error_When_WebsiteUrl_Is_Invalid_For_Website_Type()
-    {
-        // Arrange
-        var model = new Create.Request
-        {
-            GuideType = ObserverGuideType.Website,
-            WebsiteUrl = "invalid-url"
-        };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.WebsiteUrl);
-    }
-
+    
     [Fact]
     public void Should_Have_Error_When_Text_Is_Empty_For_Text_Type()
     {

@@ -68,14 +68,6 @@ export default function AddGuideForm({
             path: ['websiteUrl'],
           });
         }
-
-        if (isNotNilOrWhitespace(websiteUrl) && /^(https?):\/\/(?=.*\.[a-z]{2,})[^\s$.?#].[^\s]*$/i.test(websiteUrl!)) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `Please enter a valid URL`,
-            path: ['websiteUrl'],
-          });
-        }
       }
 
       if (guideType === GuideType.Text && isNilOrWhitespace(text)) {

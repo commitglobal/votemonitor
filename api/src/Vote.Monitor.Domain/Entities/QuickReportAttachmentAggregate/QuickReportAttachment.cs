@@ -4,6 +4,7 @@ namespace Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
 public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid QuickReportId { get; private set; }
@@ -24,8 +25,9 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool? isCompleted) : base(id)
+        bool? isCompleted)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
         QuickReportId = quickReportId;

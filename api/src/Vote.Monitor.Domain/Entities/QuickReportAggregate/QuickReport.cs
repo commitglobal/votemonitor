@@ -4,6 +4,7 @@ namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 public class QuickReport : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid MonitoringObserverId { get; private set; }
@@ -60,8 +61,9 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         string description,
         Guid? pollingStationId,
         string? pollingStationDetails,
-        IncidentCategory incidentCategory) : base(id)
+        IncidentCategory incidentCategory)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
         QuickReportLocationType = quickReportLocationType;

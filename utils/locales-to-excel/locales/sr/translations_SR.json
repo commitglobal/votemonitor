@@ -6,20 +6,30 @@
     "status": {
       "completed": "Završeno",
       "in_progress": "U realizaciji",
-      "not_started": "Nije započeto"
+      "not_started": "Nije započeto",
+      "marked_as_completed": "TODO: Označeno kao završeno"
+    },
+    "forms": {
+      "mark_as_done": "TODO: Markiraj obrazac kao završen",
+      "mark_as_in_progress": "TODO: Markiraj obrazac kao u toku"
     },
     "cancel": "Otkaži",
     "save": "Sačuvaj",
     "no_data": "Nema podataka.",
     "select": "Izaberi",
-    "done": "Završeno"
+    "done": "Završeno",
+    "ok": "Dobro"
   },
   "languages": {
     "ro": "rumunski",
     "en": "engleski",
-    "pl": "Poljski",
+    "pl": "poljski",
     "bg": "bugarski",
-    "sr": "srpski"
+    "sr": "srpski",
+    "ka": "gruzijski",
+    "hy": "jermenski",
+    "ru": "ruski",
+    "az": "azerski"
   },
   "onboarding": {
     "language": {
@@ -258,6 +268,7 @@
     "form": {
       "min": "Polje mora da sadrži najmanje {{value}} karaktera",
       "max": "Polje mora da sadrži najviše {{value}} karaktera",
+      "required": "Ovo polje je obavezno",
       "date_placeholder": "Unesite datum",
       "text_placeholder": "Unesite text"
     },
@@ -272,6 +283,15 @@
         "take_picture": "Napravite fotografiju",
         "record_video": "Napravite video zapis",
         "upload_audio": "Učitaj audio snimak"
+      },
+      "upload": {
+        "compressing": "Kompresovanje medije: ",
+        "preparing": "Priprema medije...",
+        "starting": "Počinje slanje...",
+        "progress": "Napredak slanja:",
+        "completed": "Slanje završeno.",
+        "aborted": "Slanje prekinuto.",
+        "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
       }
     },
     "notes": {
@@ -368,6 +388,15 @@
   },
   "report_new_issue": {
     "title": "Prijavite novi incident",
+    "upload": {
+      "compressing": "Kompresovanje medije: ",
+      "preparing": "Priprema medije...",
+      "starting": "Počinje slanje...",
+      "progress": "Napredak slanja:",
+      "completed": "Slanje završeno.",
+      "aborted": "Slanje prekinuto.",
+      "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
+    },
     "media": {
       "heading": "Otpremljeni mediji",
       "add": "Dodaj medijske datoteke",
@@ -437,6 +466,19 @@
       "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
+  "resources": {
+    "title": "TODO: Resursi",
+    "info": "TODO: U ovom odeljku očekujte ključne informacije i resurse dizajnirane da vam pomognu da posmatrate izborne procese i prijavite bilo kakve izborne probleme ili nepravilnosti na koje naiđete kao građanin.",
+    "empty": {
+      "heading": "TODO: Još nema vodiča za čitanje",
+      "paragraph": "TODO: Vodiči i resursi o posmatranju izbornih procesa i prijavljivanju problema kao građanin su vam na dohvat ruke."
+    },
+    "types": {
+      "Document": "TODO: Tip fajla PDF",
+      "Website": "TODO: Spoljni URL",
+      "Text": "TODO: Vodič u aplikaciji"
+    }
+  },
   "inbox": {
     "title": "",
     "empty": {
@@ -448,6 +490,17 @@
     "your_organization": "vaša organizacija",
     "menu": {
       "manage_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "updates": {
+    "title": "TODO: Ažuriranja",
+    "empty": {
+      "heading": "TODO: Još nema primljenih ažuriranja",
+      "paragraph": "TODO: Ažuriranja o izbornom periodu će se pojaviti ovde."
+    },
+    "info_modal": {
+      "p1": "TODO: U ovom odeljku očekujte da ćete primati ažuriranja uživo od tima Vote Monitor-a u vezi sa izbornim periodom koji je relevantan za vas kao građanina zainteresovanog za građanski angažman.",
+      "p2": "TODO: Proveravajte periodično da li ste primili nove informacije."
     }
   },
   "more": {
@@ -537,8 +590,10 @@
   "network_banner": {
     "online": "Povezani ste sa internetom. Svi odgovori su poslati na server.",
     "offline": "Režim rada van mreže. Odgovori se čuvaju lokalno.",
+    "offline_citizen": "TODO: Režim rada van mreže. Potrebna vam je internet veza da biste izvršili ovu radnju.",
     "more_details": "Više detalja",
-    "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije."
+    "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije.",
+    "offline_warning_citizen": "TODO: Trenutno niste povezani na internet. Potrebna vam je internet veza da biste izvršili ovu radnju."
   },
   "sync": {
     "sync_data": "Sinhronizovanje oflajn podataka...",
