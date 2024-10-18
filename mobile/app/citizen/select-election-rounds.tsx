@@ -8,7 +8,7 @@ import { ScrollView, Spinner, XStack, YStack } from "tamagui";
 import { Selector } from "../../components/Selector";
 import { useGetCitizenElectionRounds } from "../../services/queries/citizen.query";
 import { useCitizenUserData } from "../../contexts/citizen-user/CitizenUserContext.provider";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { FooterButtons } from "../../components/FooterButtons";
 
 const SelectElectionEvent = () => {
@@ -27,6 +27,14 @@ const SelectElectionEvent = () => {
     isRefetching: isRefetchingElectionEvents,
   } = useGetCitizenElectionRounds();
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!isLoadingElectionEvents) {
+        refetchElectionEvents();
+      }
+    }, [refetchElectionEvents, isLoadingElectionEvents]),
+  );
+
   const handleGoBack = () => {
     router.push("select-app-mode");
   };
@@ -37,7 +45,13 @@ const SelectElectionEvent = () => {
         <XStack paddingTop="$xxl" justifyContent="center" alignItems="center">
           <Icon icon="vmCitizenLogo" width={295} height={82} />
         </XStack>
-        <Typography preset="heading" fontWeight="500" marginVertical="$xl">
+        <Typography
+          preset="heading"
+          fontWeight="500"
+          marginVertical="$xl"
+          marginHorizontal="$lg"
+          textAlign="center"
+        >
           {t("heading")}
         </Typography>
       </Header>

@@ -45,10 +45,11 @@ const NewsList = ({ isLoading, news = [], refetch, translationKey = "inbox" }: N
   }
 
   return (
-    <YStack padding="$md" flex={1}>
+    <YStack flex={1}>
       <ListView<Notification>
         data={displayedNews}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16 }}
         renderItem={({ item }) => {
           return <NotificationListItem notification={item} />;
         }}

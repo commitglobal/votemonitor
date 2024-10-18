@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Spinner, YStack } from "tamagui";
 import { Typography } from "./Typography";
+import Button from "./Button";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
-const MediaLoading = ({ progress }: { progress?: string }) => {
+const MediaLoading = ({ progress, isUploading, onAbortUpload }: { progress?: string, isUploading?: boolean, onAbortUpload?: () => void }) => {
+  const { isOnline } = useNetInfoContext();
   const { t } = useTranslation("polling_station_form_wizard");
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
@@ -10,6 +13,16 @@ const MediaLoading = ({ progress }: { progress?: string }) => {
       <Typography preset="subheading" fontWeight="500" color="$purple5">
         {progress || t("attachments.loading")}
       </Typography>
+      {!isOnline && isUploading && (
+        <>
+          <Typography preset="body1" fontWeight="500" color="$purple5">
+            {t("attachments.upload.abort_offline")}
+          </Typography>
+          <Button preset="red" onPress={onAbortUpload}>
+            {t("attachments.upload.abort_offline_button")}
+          </Button>
+        </>
+      )}
     </YStack>
   );
 };

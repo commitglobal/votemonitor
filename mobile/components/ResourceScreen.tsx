@@ -2,24 +2,24 @@ import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
 import { ScrollView, YStack } from "tamagui";
 import { Guide } from "../services/api/get-guides.api";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ResourceScreenProps {
   resource: Guide;
 }
 
 const ResourceScreen = ({ resource }: ResourceScreenProps) => {
-  const { width, height } = useWindowDimensions();
-  const { top, bottom } = useSafeAreaInsets();
-  const windowHeight = height - top - bottom - 24; // take into account header
+  const { width } = useWindowDimensions();
 
   return (
-    <YStack paddingHorizontal={"$md"} maxHeight={windowHeight}>
+    <YStack flex={1}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           gap: 32,
           flexGrow: 1,
+          paddingHorizontal: 24,
+          paddingTop: 24,
+          paddingBottom: 16,
         }}
       >
         <RenderHtml
@@ -43,7 +43,8 @@ const tagsStyles = {
     color: "hsl(240, 5%, 34%)",
   },
   p: {
-    lineHeight: 24,
+    margin: 0,
+    marginBottom: 8,
   },
   h1: {
     fontSize: 24,

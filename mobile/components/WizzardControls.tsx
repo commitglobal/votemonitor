@@ -12,6 +12,7 @@ interface WizzardControlsProps extends XStackProps {
   onPreviousButtonPress?: () => void;
   onActionButtonPress?: () => void;
   actionBtnLabel?: string;
+  actionBtnPreset?: "default" | "outlined" | "chromeless" | "yellow" | "red";
 }
 
 const WizzardControls = ({
@@ -21,6 +22,7 @@ const WizzardControls = ({
   onPreviousButtonPress,
   onActionButtonPress,
   actionBtnLabel,
+  actionBtnPreset = "default",
   ...rest
 }: WizzardControlsProps) => {
   const { t } = useTranslation("add_polling_station");
@@ -55,6 +57,7 @@ const WizzardControls = ({
 
       <XStack flex={isFirstElement ? 1 : 0.65}>
         <Button
+          preset={actionBtnPreset}
           disabled={isNextDisabled}
           width="100%"
           onPress={onActionButtonPress}

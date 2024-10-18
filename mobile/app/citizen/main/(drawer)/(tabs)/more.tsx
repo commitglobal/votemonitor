@@ -11,7 +11,6 @@ import Header from "../../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
 import Constants from "expo-constants";
 import SelectAppLanguage from "../../../../../components/SelectAppLanguage";
-import i18n from "../../../../../common/config/i18n";
 import FeedbackSheet from "../../../../../components/FeedbackSheet";
 
 interface MenuItemProps {
@@ -39,7 +38,7 @@ export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: Men
 );
 
 const More = () => {
-  const { t } = useTranslation(["more", "languages", "common"]);
+  const { t, i18n } = useTranslation(["more", "languages", "common"]);
 
   const navigation = useNavigation();
 

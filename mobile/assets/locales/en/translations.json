@@ -25,7 +25,11 @@
     "en": "English",
     "pl": "Polish",
     "bg": "Bulgarian",
-    "sr": "Serbian"
+    "sr": "Serbian",
+    "ge": "Georgian",
+    "am": "Armenian",
+    "ru": "Russian",
+    "az": "Azerbaijani"
   },
   "onboarding": {
     "language": {
@@ -158,8 +162,7 @@
         "slice1": "If you are not an accredited observer, you may still",
         "link": "report irregularities as a citizen",
         "slice2": "for an ongoing election event, without needing an account."
-      },
-      "email": "info@commitglobal.org"
+      }
     },
     "heading": "Log in",
     "paragraph": "Please use the email address with which you registered as an independent observer:",
@@ -472,7 +475,9 @@
         "progress": "Upload progress:",
         "completed": "Upload completed.",
         "aborted": "Upload aborted.",
-        "offline": "You need an internet connection in order to perform this action."
+        "offline": "You need an internet connection in order to perform this action.",
+        "abort_offline": "Go online to continue or abort the upload",
+        "abort_offline_button": "Cancel the upload"
       }
     },
     "notes": {
