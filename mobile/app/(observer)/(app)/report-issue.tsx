@@ -623,10 +623,7 @@ const ReportIssue = () => {
         gap="$sm"
       >
         {/* this will reset form to defaultValues */}
-        <Button
-          preset="chromeless"
-          onPress={() => reset()}
-        >
+        <Button preset="chromeless" onPress={() => reset()}>
           {t("form.clear")}
         </Button>
         <Button

@@ -58,7 +58,7 @@ export type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
@@ -369,7 +369,6 @@ const FormQuestionnaire = () => {
       activeQuestion.question.id
     ) {
       try {
-
         const totalParts = Math.ceil(cameraResult.size! / MULTIPART_FILE_UPLOAD_SIZE);
         const attachmentId = Crypto.randomUUID();
         const payload: AddAttachmentStartAPIPayload = {
@@ -394,7 +393,7 @@ const FormQuestionnaire = () => {
           totalParts,
         );
         setUploadProgress(t("attachments.upload.completed"));
-        setIsOptionsSheetOpen(false)
+        setIsOptionsSheetOpen(false);
       } catch (err) {
         Sentry.captureException(err, { data: activeElectionRound });
       }
@@ -434,7 +433,7 @@ const FormQuestionnaire = () => {
           const data = await addAttachmentStart(payload);
           await handleChunkUpload(file.uri, data.uploadUrls, data.uploadId, payload.id, totalParts);
           setUploadProgress(t("attachments.upload.completed"));
-          setIsOptionsSheetOpen(false)
+          setIsOptionsSheetOpen(false);
         } catch (err) {
           Sentry.captureException(err, { data: activeElectionRound });
         }
@@ -475,7 +474,13 @@ const FormQuestionnaire = () => {
           electionRoundId: activeElectionRound?.id,
           id: attachmentId,
         });
-        queryClient.invalidateQueries({ queryKey: AttachmentsKeys.attachments(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId) })
+        queryClient.invalidateQueries({
+          queryKey: AttachmentsKeys.attachments(
+            activeElectionRound?.id,
+            selectedPollingStation?.pollingStationId,
+            formId,
+          ),
+        });
       }
     } catch (err) {
       Sentry.captureException(err, { data: activeElectionRound });
