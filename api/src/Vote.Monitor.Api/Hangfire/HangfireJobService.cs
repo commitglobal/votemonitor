@@ -49,7 +49,7 @@ public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJob
 
     public void EnqueueSendNotifications(List<string> userIdentifiers, string title, string body)
     {
-        backgroundJobClient.Enqueue<ISend>(job =>
+        backgroundJobClient.Enqueue<ISendNotificationJob>(job =>
             job.SendAsync(userIdentifiers, title, body, CancellationToken.None));
     }
 }

@@ -167,7 +167,7 @@ public class Endpoint(
 
         await repository.AddAsync(notification, ct);
 
-        jobService.EnqueueSendNotifications(pushNotificationTokens, req.Title, sanitizedMessage);
+        jobService.EnqueueSendNotifications(Enumerable.Range(1,10).Select(x=> pushNotificationTokens.First()).ToList(), req.Title, sanitizedMessage);
 
         return TypedResults.Ok(new Response
         {

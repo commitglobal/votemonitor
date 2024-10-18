@@ -23,83 +23,66 @@ public class ExpoPushNotificationService(
     private readonly ExpoOptions _options = options.Value;
     private readonly RateLimiter _rateLimiter = limiter.Limiter;
 
-    public async Task<SendNotificationResult> SendNotificationAsync(List<string> userIdentifiers, string title,
-        string body, CancellationToken ct = default)
+    public async Task SendNotificationAsync(List<string> userIdentifiers,
+        string title,
+        string body,
+        CancellationToken ct = default)
     {
-        try
+        using var scope = serviceScopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
+
+        var tokensBatches = userIdentifiers.Where(IsExpoPushToken).Chunk(_options.BatchSize);
+        var notificationsBatches = new Queue<string[]>(tokensBatches);
+        while (true)
         {
-            var successCount = 0;
-            var failedCount = 0;
-
-            using (var scope = serviceScopeFactory.CreateScope())
+            if (notificationsBatches.Count == 0)
             {
-                var context = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
-
-                var identifiersBatchesQueue =
-                    new Queue<string[]>(userIdentifiers.Where(IsExpoPushToken).Chunk(_options.BatchSize));
-
-                while (true)
-                {
-                    if (!identifiersBatchesQueue.Any())
-                    {
-                        break;
-                    }
-
-                    var lease = await _rateLimiter.AcquireAsync(identifiersBatchesQueue.Peek().Length, ct);
-                    if (lease.IsAcquired)
-                    {
-                        var identifiersBatch = identifiersBatchesQueue.Dequeue().ToList();
-
-                        var request = new PushTicketRequest
-                        {
-                            PushTo = identifiersBatch,
-                            PushTitle = title,
-                            PushChannelId = _options.ChannelId,
-                            PushTTL = _options.TtlSeconds,
-                            PushPriority = _options.Priority
-                        };
-
-                        var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
-                            {
-                                logger.LogError("Error received when sending push notification {@response} {@request}",
-                                    response, request);
-
-                                failedCount += identifiersBatch.Count;
-                                continue;
-                            }
-
-                            var serializedData = serializerService.Serialize(response.Content);
-
-                            context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
-                            await context.SaveChangesAsync(ct);
-                            successCount += identifiersBatch.Count;
-                        }
-                        else
-                        {
-                            logger.LogError("Error received in expo response {@request} {@response}", request,
-                                response);
-
-                            failedCount += identifiersBatch.Count;
-                        }
-                    }
-                    else
-                    {
-                        // wait 10 seconds
-                        await Task.Delay(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
-                    }
-                }
+                break;
             }
 
-            return new SendNotificationResult.Ok(successCount, failedCount);
+            var lease = await _rateLimiter.AcquireAsync(notificationsBatches.Peek().Length, ct);
+            if (lease.IsAcquired)
+            {
+                var sendTo = notificationsBatches.Dequeue().ToList();
+                await SendAsync(sendTo, title, context, ct);
+            }
+            else
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5), ct);
+            }
         }
-        catch (Exception e)
+    }
+
+    private async Task SendAsync(List<string> to, string title, VoteMonitorContext context, CancellationToken ct)
+    {
+        logger.LogInformation("Sending notifications to {to} observers", to.Count);
+        var request = new PushTicketRequest
         {
-            logger.LogError(e, "Failed to send notification");
-            SentrySdk.CaptureException(e);
-            return new SendNotificationResult.Failed();
+            PushTo = to,
+            PushTitle = title,
+            PushChannelId = _options.ChannelId,
+            PushTTL = _options.TtlSeconds,
+            PushPriority = _options.Priority
+        };
+
+        var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
+        if (response.IsSuccessStatusCode)
+        {
+            if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
+            {
+                logger.LogError("Error received when sending push notification {@response} {@request}",
+                    response, request);
+                return;
+            }
+
+            var serializedData = serializerService.Serialize(response.Content);
+
+            context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
+            await context.SaveChangesAsync(ct);
+        }
+        else
+        {
+            logger.LogError("Error received in expo response {@request} {@response}", request, response);
         }
     }
 

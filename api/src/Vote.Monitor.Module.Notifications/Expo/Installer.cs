@@ -46,7 +46,7 @@ internal static class Installer
                 ReplenishmentPeriod = TimeSpan.FromMinutes(1),
                 TokenLimit = 600,
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                TokensPerPeriod = 500,
+                TokensPerPeriod = 512
             })));
 
         services.AddSingleton<IPushNotificationService, ExpoPushNotificationService>();

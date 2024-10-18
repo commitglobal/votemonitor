@@ -125,6 +125,7 @@ builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>(
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
 builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
 builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
+builder.Services.AddScoped<ISendNotificationJob, SendNotificationJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
 
@@ -145,7 +146,7 @@ builder.Services.AddHangfire((sp,config) =>
         });
 
     config.UseActivator(new ContainerJobActivator(sp));
-    config.UseFilter(new AutomaticRetryAttribute { Attempts = 5 });
+    config.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 
     config.UseSerilogLogProvider();
 });
