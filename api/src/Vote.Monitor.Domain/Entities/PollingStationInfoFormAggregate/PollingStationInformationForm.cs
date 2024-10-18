@@ -43,6 +43,7 @@ public class PollingStationInformationForm : BaseForm
         new(electionRound, defaultLanguage, languages, questions);
 
     public PollingStationInformation CreatePollingStationInformation(
+        Guid userId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         ValueOrUndefined<DateTime?> arrivalTime,
@@ -63,7 +64,7 @@ public class PollingStationInformationForm : BaseForm
         var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
+        return PollingStationInformation.Create(userId, ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
 

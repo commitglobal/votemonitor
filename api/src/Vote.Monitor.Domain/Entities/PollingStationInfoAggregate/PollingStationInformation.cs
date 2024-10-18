@@ -28,6 +28,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public bool IsCompleted { get; internal set; }
 
     internal PollingStationInformation(
+        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -52,7 +53,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-
+        CreatedBy = userId;
+        CreatedOn = DateTime.UtcNow;
         Answers = answers.ToList().AsReadOnly();
 
         if (!isCompleted.IsUndefined)
@@ -64,6 +66,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     }
 
     internal static PollingStationInformation Create(
+        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -75,8 +78,18 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
         ValueOrUndefined<bool> isCompleted) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
+        new(userId,
+            electionRound,
+            pollingStation,
+            monitoringObserver,
+            pollingStationInformationForm,
+            arrivalTime,
+            departureTime,
+            answers,
+            numberOfQuestionsAnswered,
+            numberOfFlaggedAnswers,
+            breaks,
+            isCompleted);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
@@ -105,7 +118,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         {
             IsCompleted = isCompleted.Value;
         }
-
+        
+        LastModifiedOn = DateTime.UtcNow;
+        
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
