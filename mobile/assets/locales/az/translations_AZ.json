@@ -26,8 +26,8 @@
         "pl": "Polyak dili",
         "bg": "Bolqar dili",
         "sr": "Serb dili",
-        "ka": "Gürcü dili",
-        "hy": "Erməni dili",
+        "ge": "Gürcü dili",
+        "am": "Erməni dili",
         "ru": "Rus dili",
         "az": "Azərbaycan dili"
     },
@@ -124,13 +124,45 @@
                 "discard": "Geri qayıt",
                 "save": "Burada qalın"
             }
+        },
+        "attachments": {
+            "heading": "Yüklənmiş media",
+            "loading": "Qoşma əlavə edilir…",
+            "error": "Qoşma göndərilərkən xəta baş verdi!",
+            "add": "Media faylları əlavə edin",
+            "menu": {
+                "load": "Qalereyadan yükləmə",
+                "take_picture": "Şəkil çəkdirmək",
+                "record_video": "Video yazmaq",
+                "upload_audio": "Audio faylın yüklənməsi"
+            },
+            "upload": {
+                "compressing": "Əlavənin sıxılması:",
+                "preparing": "Qoşma hazırlanır...",
+                "starting": "Yükləmə başlayır...",
+                "progress": "Qoşmalar yüklənir:",
+                "completed": "Yükləmə tamamlandı.",
+                "aborted": "Yükləmə dayandırıldı.",
+                "offline": "Bu fəaliyyəti yerinə yetirmək üçün internet bağlantısı lazımdır."
+            },
+            "delete": {
+                "title": "Media faylın silinməsi",
+                "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
+                "actions": {
+                    "cancel": "Ləğv etmək",
+                    "clear": "Silmək"
+                }
+            }
         }
     },
     "login": {
         "disclaimer": {
             "paragraph1": "Xahiş edirik, nəzərə alasınız ki, əgər siz ölkənizdə müşahidəni həyata keçirən təşkilat tərəfindən akreditasiyalı müstəqil müşahidəçi deyilsinizsə siz Vote Monitor aplikasiyadan istifadə edə bilməyəcəksiniz.",
-            "paragraph2": "Xahiş edirik, atılması lazım olan növbəti addımlar üçün belə təşkilatlara müraciət edin ki, seçki müşahidəçisi ola biləsiniz və ya əlavə məlumat üçün sonrakı ünvan vasitəsilə bizimlə əlaqə saxlayasanız:",
-            "email": "info@commitglobal.org"
+            "paragraph2": {
+                "slice1": "Əgər siz akkreditə olunmuş müşahidəçi deyilsinizsə, hesaba ehtiyac",
+                "link": "olmadan davam edən seçki tədbiri üçün vətəndaş kimi qanun",
+                "slice2": "pozuntuları barədə məlumat verə bilərsiniz."
+            }
         },
         "heading": "Avtorizasiya",
         "paragraph": "Xahiş edirik, müşahidəçi olaraq qeydiyyatdan keçdiyiniz E-poçt ünvanından istifadə edəsiniz",
@@ -219,7 +251,10 @@
         "quick_report": "Hesabat",
         "guides": "Bələdçilər",
         "inbox": "Gələnlər qutusu",
-        "more": "Daha artıq"
+        "more": "Daha artıq",
+        "report": "Hesabat",
+        "resources": "Bələdçilər",
+        "updates": "Yeniləmələr"
     },
     "add_polling_station": {
         "title": "Seçki məntəqəsi əlavə et",
@@ -280,8 +315,8 @@
                 "select_start_time": "Başlama vaxtını seçin",
                 "end_time": "Bitmə vaxtı",
                 "select_end_time": "Bitmə vaxtını seçin",
-                "undefined_date": "",
-                "undefined_time": "",
+                "undefined_date": "Gün/Ay/İl",
+                "undefined_time": "HH:MM",
                 "save": "Müşahidə vaxtına qənaət edin",
                 "clear": "Müşahidə müddətini təmizləyin",
                 "confirmation_modals": {
@@ -420,6 +455,7 @@
             "date_placeholder": "Xahiş edirik tarixi qeyd edin",
             "text_placeholder": "Xahiş edirik mətni qeyd edin"
         },
+        "save_and_continue": "Yadda saxlayın və davam edin",
         "attachments": {
             "heading": "Yüklənmiş media",
             "loading": "Qoşma əlavə edilir…",
@@ -591,6 +627,36 @@
                     "not_related": "Seçki məntəqəsi ilə əlaqədar deyil"
                 }
             },
+            "incident_category": {
+                "label": "Hadisə kateqoriyası *",
+                "placeholder": "Kateqoriya",
+                "required": "Bu sütun mütləqdir",
+                "options": {
+                    "PhysicalViolenceIntimidationPressure": "Fiziki zorakılıq/hədələmə/təzyiq",
+                    "CampaigningAtPollingStation": "Seçki məntəqəsində təşviqat",
+                    "RestrictionOfObserversRights": "Müşahidəçinin/nümayəndənin/media hüquqların qeyri-qanuni məhdudlaşdırılması",
+                    "UnauthorizedPersonsAtPollingStation": "Səlahiyyətsiz şəxslərin seçki məntəqəsində olması",
+                    "ViolationDuringVoterVerificationProcess": "Seçicinin kimliyinin müəyyən edilməsi prosesində pozuntu",
+                    "VotingWithImproperDocumentation": "Qeyri-müvafiq sənəd ilə səs vermək",
+                    "IllegalRestrictionOfVotersRightToVote": "Seçicinin səsvermə hüququnun qeyri-qanuni məhdudlaşdırılması",
+                    "DamagingOrSeizingElectionMaterials": "Seçki materiallarına ziyan vurmaq/qaçırmaq",
+                    "ImproperFilingOrHandlingOfElectionDocumentation": "Seçki sənədlərinin qeyri-müvafiq şəkildə hazırlanması/doldurulması",
+                    "BallotStuffing": "Əlavə bülletenlərin qutuya atılması/saxtalaşdırma",
+                    "ViolationsRelatedToControlPaper": "Nəzarət vərəqi ilə əlaqədar pozuntular",
+                    "NotCheckingVoterIdentificationSafeguardMeasures": "İşarələmənin yoxlanmaması",
+                    "VotingWithoutVoterIdentificationSafeguardMeasures": "İşarlənmədən keçmədən səs vermək",
+                    "BreachOfSecrecyOfVote": "Səsvermənin gizliliyinin pozulması",
+                    "ViolationsRelatedToMobileBallotBox": "Daşınan seçki qutusu ilə əlaqədar pozuntular",
+                    "NumberOfBallotsExceedsNumberOfVoters": "Bülletenlərin sayı gələn seçicilərin sayından çoxdur",
+                    "ImproperInvalidationOrValidationOfBallots": "Bülletenin etibarsız olması/həqiqiliyinə səhv qərar verilməsi",
+                    "FalsificationOrImproperCorrectionOfFinalProtocol": "Yekun protokolun dəyişdirilməsi/saxtalaşdırılması",
+                    "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Yekun protokolun surətinin verilməməsi/natamam surətin verilməsi (Məlumat çatmır)",
+                    "ImproperFillingInOfFinalProtocol": "Yekun protokolun qeyri-müvafiq doldurulması",
+                    "ViolationOfSealingProceduresOfElectionMaterials": "Seçki materialının surğuclanma qaydasının pozulması",
+                    "ViolationsRelatedToVoterLists": "Seçicilər siyahısı ilə əlaqədar pozuntular",
+                    "Other": "Başqa"
+                }
+            },
             "polling_station_details": {
                 "label": "Seçki məntəqəsinin detalları",
                 "placeholder": "Xahiş edirik, burada bu seçki məntəqəsinə aid detalları qeyd edin (ünvan, ad, nömrə və s. kimi",
@@ -616,7 +682,7 @@
         }
     },
     "report_details": {
-        "title": "Sürətli hesabat təfərrüatları",
+        "title": "Sürətli hesabat başlığı",
         "uploaded_media": "Yüklənmiş media",
         "no_files": "Əlavə fayllar yoxdur",
         "error": "Hesabatı əlavə edərkən xəta qeydə alındı"

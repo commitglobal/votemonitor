@@ -7,11 +7,11 @@
             "completed": "Završeno",
             "in_progress": "U realizaciji",
             "not_started": "Nije započeto",
-            "marked_as_completed": "TODO: Označeno kao završeno"
+            "marked_as_completed": "Označeno kao završeno"
         },
         "forms": {
-            "mark_as_done": "TODO: Markiraj obrazac kao završen",
-            "mark_as_in_progress": "TODO: Markiraj obrazac kao u toku"
+            "mark_as_done": "Markiraj obrazac kao završen",
+            "mark_as_in_progress": "Markiraj obrazac kao u toku"
         },
         "cancel": "Otkaži",
         "save": "Sačuvaj",
@@ -26,8 +26,8 @@
         "pl": "poljski",
         "bg": "bugarski",
         "sr": "srpski",
-        "ka": "gruzijski",
-        "hy": "jermenski",
+        "ge": "gruzijski",
+        "am": "jermenski",
         "ru": "ruski",
         "az": "azerski"
     },
@@ -124,13 +124,45 @@
                 "discard": "Vrati se nazad.",
                 "save": "Ostani ovde."
             }
+        },
+        "attachments": {
+            "heading": "Učitani mediji",
+            "loading": "Dodavanje priloga...",
+            "error": "Greška prilikom slanja priloge!",
+            "add": "Dodaj medijske datoteke.",
+            "menu": {
+                "load": "Učitaj iz galerije",
+                "take_picture": "Napravite fotografiju",
+                "record_video": "Napravite video zapis",
+                "upload_audio": "Učitaj audio snimak"
+            },
+            "upload": {
+                "compressing": "Kompresovanje medije: ",
+                "preparing": "Priprema medije...",
+                "starting": "Počinje slanje...",
+                "progress": "Napredak slanja:",
+                "completed": "Slanje završeno.",
+                "aborted": "Slanje prekinuto.",
+                "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
+            },
+            "delete": {
+                "title": "Izbriši medijsku datoteku",
+                "description": "Ova brisanje je trajno. Kada je medijska datoteka izbrisana ne može se povratiti.",
+                "actions": {
+                    "cancel": "Otkaži",
+                    "clear": "Izbriši"
+                }
+            }
         }
     },
     "login": {
         "disclaimer": {
             "paragraph1": "Imajte na umu da ako niste akreditovani kao nezavisni posmatrač od strane organizacije koja prati izborne procese u vašoj zemlji, ne možete koristiti aplikaciju Vote Monitor.",
-            "paragraph2": "Molimo vas da se obratite takvim organizacijama kako biste saznali koje korake trebate preduzeti da biste postali izborni posmatrač ili nas kontaktirajte za više informacija na",
-            "email": "info@commitglobal.org"
+            "paragraph2": {
+                "slice1": "Ako niste akreditirani posmatrač,",
+                "link": "još uvek možete da prijavite nepravilnosti kao ",
+                "slice2": "građanin na tekućem izbornom događaju, bez potrebe za računom."
+            }
         },
         "heading": "Ulogujte se",
         "paragraph": "Molimo vas da koristite mejl adresu sa kojom ste se registrovali kao nezavisni posmatrač:",
@@ -219,7 +251,10 @@
         "quick_report": "Incident",
         "guides": "Priručnik",
         "inbox": "Poruke",
-        "more": "Još opcija"
+        "more": "Još opcija",
+        "report": "Incident",
+        "resources": "Resursi",
+        "updates": "Ažuriranja"
     },
     "add_polling_station": {
         "title": "Dodajte biračko mesto",
@@ -420,6 +455,7 @@
             "date_placeholder": "Unesite datum",
             "text_placeholder": "Unesite text"
         },
+        "save_and_continue": "Sačuvaj promene i nastavi.",
         "attachments": {
             "heading": "Otpremljeni mediji",
             "loading": "Dodavanje priloga...",
@@ -591,6 +627,36 @@
                     "not_related": "Ne odnosi se na biračko mesto"
                 }
             },
+            "incident_category": {
+                "label": "Kategorija incidenta *",
+                "placeholder": "Kategorija",
+                "required": "Polje je obavezno",
+                "options": {
+                    "PhysicalViolenceIntimidationPressure": "Fizičko nasilje / zastrašivanje / pritisak",
+                    "CampaigningAtPollingStation": "Kampanja na biračkom mestu",
+                    "RestrictionOfObserversRights": "Ograničenje prava posmatrača (predstavnika / medija)",
+                    "UnauthorizedPersonsAtPollingStation": "Neovlašćene osobe na glasačkom mestu",
+                    "ViolationDuringVoterVerificationProcess": "Kršenje zakona tokom procesa provere glasača",
+                    "VotingWithImproperDocumentation": "Glasanje sa neprikladnom dokumentacijom",
+                    "IllegalRestrictionOfVotersRightToVote": "Nezakonito ograničenje glasačkog prava",
+                    "DamagingOrSeizingElectionMaterials": "Uništavanje / zaplenjivanje izbornog materijala",
+                    "ImproperFilingOrHandlingOfElectionDocumentation": "Nepravilno podnesenje / rukovanje izborne dokumentacije",
+                    "BallotStuffing": "Punjenje glasačkih listića",
+                    "ViolationsRelatedToControlPaper": "Prekršaji vezani za kontrolne papire",
+                    "NotCheckingVoterIdentificationSafeguardMeasures": "Ne proveravamo mere zaštite za identifikaciju birača.",
+                    "VotingWithoutVoterIdentificationSafeguardMeasures": "Glasanje bez zaštitnih mera za identifikaciju glasača",
+                    "BreachOfSecrecyOfVote": "Kršenje tajnosti glasanja",
+                    "ViolationsRelatedToMobileBallotBox": "Prekršaji vezani za mobilnu glasačku kutiju",
+                    "NumberOfBallotsExceedsNumberOfVoters": "Broj glasova premašuje broj glasača",
+                    "ImproperInvalidationOrValidationOfBallots": "Nepravilno poništenje / validacija glasačkih listića",
+                    "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsifikacija / nepravilna korekcija konačnog protokola",
+                    "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Odbijanje izdavanja kopije konačnog protokola / izdavanje neprimerene kopije",
+                    "ImproperFillingInOfFinalProtocol": "Nepravilno ispunjavanje konačnog protokola.",
+                    "ViolationOfSealingProceduresOfElectionMaterials": "Kršenje procedura zatvaranja izbornog materijala",
+                    "ViolationsRelatedToVoterLists": "Prekršaji vezani za biračke liste",
+                    "Other": "Drugo."
+                }
+            },
             "polling_station_details": {
                 "label": "Informacije o biračkom mestu *",
                 "placeholder": "Molimo vas da ovde napišete neke identifikacione detalje za ovo biračko mesto (kao što su adresa, ime, broj i sl.)",
@@ -616,7 +682,7 @@
         }
     },
     "report_details": {
-        "title": "Detalji brzog izveštaja.",
+        "title": "Naslov brzog izveštaja",
         "uploaded_media": "Otpremljeni mediji",
         "no_files": "Nema medijskih datoteka",
         "error": "Greška pri učitavanju izveštaja"
@@ -640,16 +706,16 @@
         "info_modal": "U ovom delu očekujte ključne informacije i resurse koji će vam pomoći da posmatrate izborne procese i prijavite sva izborna pitanja ili nepravilnosti sa kojima se susrećete kao nezavisni posmatrač."
     },
     "resources": {
-        "title": "TODO: Resursi",
-        "info": "TODO: U ovom odeljku očekujte ključne informacije i resurse dizajnirane da vam pomognu da posmatrate izborne procese i prijavite bilo kakve izborne probleme ili nepravilnosti na koje naiđete kao građanin.",
+        "title": "Resursi",
+        "info": "U ovom odeljku očekujte ključne informacije i resurse dizajnirane da vam pomognu da posmatrate izborne procese i prijavite bilo kakve izborne probleme ili nepravilnosti na koje naiđete kao građanin.",
         "empty": {
-            "heading": "TODO: Još nema vodiča za čitanje",
-            "paragraph": "TODO: Vodiči i resursi o posmatranju izbornih procesa i prijavljivanju problema kao građanin su vam na dohvat ruke."
+            "heading": "Još nema vodiča za čitanje",
+            "paragraph": "Vodiči i resursi o posmatranju izbornih procesa i prijavljivanju problema kao građanin su vam na dohvat ruke."
         },
         "types": {
-            "Document": "TODO: Tip fajla PDF",
-            "Website": "TODO: Spoljni URL",
-            "Text": "TODO: Vodič u aplikaciji"
+            "Document": "Tip fajla PDF",
+            "Website": "Spoljni URL",
+            "Text": "Vodič u aplikaciji"
         }
     },
     "inbox": {
@@ -670,14 +736,14 @@
         }
     },
     "updates": {
-        "title": "TODO: Ažuriranja",
+        "title": "Ažuriranja",
         "empty": {
-            "heading": "TODO: Još nema primljenih ažuriranja",
-            "paragraph": "TODO: Ažuriranja o izbornom periodu će se pojaviti ovde."
+            "heading": "Još nema primljenih ažuriranja",
+            "paragraph": "Ažuriranja o izbornom periodu će se pojaviti ovde."
         },
         "info_modal": {
-            "p1": "TODO: U ovom odeljku očekujte da ćete primati ažuriranja uživo od tima Vote Monitor-a u vezi sa izbornim periodom koji je relevantan za vas kao građanina zainteresovanog za građanski angažman.",
-            "p2": "TODO: Proveravajte periodično da li ste primili nove informacije."
+            "p1": "U ovom odeljku očekujte da ćete primati ažuriranja uživo od tima Vote Monitor-a u vezi sa izbornim periodom koji je relevantan za vas kao građanina zainteresovanog za građanski angažman.",
+            "p2": "Proveravajte periodično da li ste primili nove informacije."
         }
     },
     "more": {
@@ -767,10 +833,10 @@
     "network_banner": {
         "online": "Povezani ste sa internetom. Svi odgovori su poslati na server.",
         "offline": "Režim rada van mreže. Odgovori se čuvaju lokalno.",
-        "offline_citizen": "TODO: Režim rada van mreže. Potrebna vam je internet veza da biste izvršili ovu radnju.",
+        "offline_citizen": "Režim rada van mreže. Potrebna vam je internet veza da biste izvršili ovu radnju.",
         "more_details": "Više detalja",
         "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije.",
-        "offline_warning_citizen": "TODO: Trenutno niste povezani na internet. Potrebna vam je internet veza da biste izvršili ovu radnju."
+        "offline_warning_citizen": "Trenutno niste povezani na internet. Potrebna vam je internet veza da biste izvršili ovu radnju."
     },
     "sync": {
         "sync_data": "Sinhronizovanje oflajn podataka...",

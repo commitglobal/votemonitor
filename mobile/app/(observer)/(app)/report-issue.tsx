@@ -73,7 +73,32 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
 };
 
 const mapIncidentCategoriesToSelectList = () => {
-  const incidentCategories = Object.values(IncidentCategory);
+  // The order is important that is why it is done like this
+  const incidentCategories = [
+    IncidentCategory.Other,
+    IncidentCategory.PhysicalViolenceIntimidationPressure,
+    IncidentCategory.CampaigningAtPollingStation,
+    IncidentCategory.RestrictionOfObserversRights,
+    IncidentCategory.UnauthorizedPersonsAtPollingStation,
+    IncidentCategory.ViolationDuringVoterVerificationProcess,
+    IncidentCategory.VotingWithImproperDocumentation,
+    IncidentCategory.IllegalRestrictionOfVotersRightToVote,
+    IncidentCategory.DamagingOrSeizingElectionMaterials,
+    IncidentCategory.ImproperFilingOrHandlingOfElectionDocumentation,
+    IncidentCategory.BallotStuffing,
+    IncidentCategory.ViolationsRelatedToControlPaper,
+    IncidentCategory.NotCheckingVoterIdentificationSafeguardMeasures,
+    IncidentCategory.VotingWithoutVoterIdentificationSafeguardMeasures,
+    IncidentCategory.BreachOfSecrecyOfVote,
+    IncidentCategory.ViolationsRelatedToMobileBallotBox,
+    IncidentCategory.NumberOfBallotsExceedsNumberOfVoters,
+    IncidentCategory.ImproperInvalidationOrValidationOfBallots,
+    IncidentCategory.FalsificationOrImproperCorrectionOfFinalProtocol,
+    IncidentCategory.RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy,
+    IncidentCategory.ImproperFillingInOfFinalProtocol,
+    IncidentCategory.ViolationOfSealingProceduresOfElectionMaterials,
+    IncidentCategory.ViolationsRelatedToVoterLists,
+  ];
 
   return incidentCategories.map((incidentCategory) => ({
     id: incidentCategory,
