@@ -4,7 +4,7 @@ import { Typography } from "./Typography";
 import Button from "./Button";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
-const MediaLoading = ({ progress, isUploading, onOfflineCallback }: { progress?: string, isUploading?: boolean, onOfflineCallback?: () => void }) => {
+const MediaLoading = ({ progress, isUploading, onAbortUpload }: { progress?: string, isUploading?: boolean, onAbortUpload?: () => void }) => {
   const { isOnline } = useNetInfoContext();
   const { t } = useTranslation("polling_station_form_wizard");
   return (
@@ -18,7 +18,7 @@ const MediaLoading = ({ progress, isUploading, onOfflineCallback }: { progress?:
           <Typography preset="body1" fontWeight="500" color="$purple5">
             {t("attachments.upload.abort_offline")}
           </Typography>
-          <Button preset="red" onPress={onOfflineCallback}>
+          <Button preset="red" onPress={onAbortUpload}>
             {t("attachments.upload.abort_offline_button")}
           </Button>
         </>

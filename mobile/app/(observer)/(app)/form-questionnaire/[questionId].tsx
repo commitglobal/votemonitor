@@ -498,7 +498,7 @@ const FormQuestionnaire = () => {
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
         if (cancelRef.current) {
-          return;
+          throw new Error("Upload cancelled");
         }
 
         const chunk = await FileSystem.readAsStringAsync(filePath, {
@@ -702,7 +702,7 @@ const FormQuestionnaire = () => {
             <MediaLoading
               progress={uploadProgress}
               isUploading={isUploading}
-              onOfflineCallback={onAbortUpload}
+              onAbortUpload={onAbortUpload}
             />
           ) : addingNote ? (
             <AddNoteSheetContent

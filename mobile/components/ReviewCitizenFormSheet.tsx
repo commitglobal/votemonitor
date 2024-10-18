@@ -205,36 +205,40 @@ export default function ReviewCitizenFormSheet({
         // Upload each attachment
         setUploadProgress(`${t("success.title")}\n${t("attachments.upload.starting")}`);
         for (const attachment of attachmentArray) {
-          if (cancelRef.current) {
-            return;
+          try {
+            if (cancelRef.current) {
+              throw new Error('Upload aborted');
+            }
+
+            const payload: AddAttachmentCitizenStartAPIPayload = {
+              id: attachment.id,
+              fileName: attachment.fileMetadata.name,
+              contentType: attachment.fileMetadata.type,
+              numberOfUploadParts: Math.ceil(
+                attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE,
+              ),
+              electionRoundId: selectedElectionRound,
+              citizenReportId,
+              formId: currentForm.id,
+              questionId: attachment.questionId,
+            };
+
+            const data = await addAttachmentCitizen(payload);
+            await handleChunkUpload(
+              attachment.fileMetadata.uri,
+              data.uploadUrls,
+              data.uploadId,
+              attachment.id,
+              citizenReportId,
+              currentForm.id,
+              attachment.questionId,
+              uploadedPartsNo,
+              totalParts,
+            );
+            uploadedPartsNo += payload.numberOfUploadParts;
+          } catch (err) {
+            Sentry.captureException(err);
           }
-
-          const payload: AddAttachmentCitizenStartAPIPayload = {
-            id: attachment.id,
-            fileName: attachment.fileMetadata.name,
-            contentType: attachment.fileMetadata.type,
-            numberOfUploadParts: Math.ceil(
-              attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE,
-            ),
-            electionRoundId: selectedElectionRound,
-            citizenReportId,
-            formId: currentForm.id,
-            questionId: attachment.questionId,
-          };
-
-          const data = await addAttachmentCitizen(payload);
-          await handleChunkUpload(
-            attachment.fileMetadata.uri,
-            data.uploadUrls,
-            data.uploadId,
-            attachment.id,
-            citizenReportId,
-            currentForm.id,
-            attachment.questionId,
-            uploadedPartsNo,
-            totalParts,
-          );
-          uploadedPartsNo += payload.numberOfUploadParts;
         }
         setUploadProgress(t("attachments.upload.completed"));
       } catch (err) {
@@ -259,14 +263,14 @@ export default function ReviewCitizenFormSheet({
   ) => {
     try {
       if (cancelRef.current === true) {
-        return;
+        throw new Error('Upload aborted');
       }
 
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
         if (cancelRef.current) {
-          return;
+          throw new Error('Upload aborted');
         }
         const chunk = await FileSystem.readAsStringAsync(filePath, {
           length: MULTIPART_FILE_UPLOAD_SIZE,
@@ -293,7 +297,6 @@ export default function ReviewCitizenFormSheet({
         });
       }
     } catch (err) {
-
       Sentry.captureException(err, { data: { selectedElectionRound, citizenReportId, formId, questionId } });
       if (selectedElectionRound) {
         setUploadProgress(t("attachments.upload.aborted"));
@@ -335,7 +338,7 @@ export default function ReviewCitizenFormSheet({
       <Sheet.Frame>
         {isUploading ?
           (<YStack flex={1} justifyContent="center" alignItems="center">
-            <MediaLoading progress={uploadProgress} isUploading={isUploading} onOfflineCallback={onAbortUpload} />
+            <MediaLoading progress={uploadProgress} isUploading={isUploading} onAbortUpload={onAbortUpload} />
           </YStack>) : (
             <>
               <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />

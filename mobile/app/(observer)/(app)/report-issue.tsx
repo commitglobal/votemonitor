@@ -202,7 +202,7 @@ const ReportIssue = () => {
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
         if (cancelRef.current) {
-          return;
+          throw new Error('Upload aborted');
         }
 
         const chunk = await FileSystem.readAsStringAsync(filePath, {
@@ -284,7 +284,7 @@ const ReportIssue = () => {
         setUploadProgress(`${t("upload.starting")}`);
         for (const [, attachment] of attachments.entries()) {
           if (cancelRef.current) {
-            return;
+            throw new Error('Upload aborted');
           }
 
           const payload: AddAttachmentQuickReportStartAPIPayload = {
@@ -368,6 +368,7 @@ const ReportIssue = () => {
   };
 
   const onAbortUpload = () => {
+    cancelRef.current = true;
     setOptionsSheetOpen(false);
     setIsPreparingFile(false);
     setIsUploading(false);
@@ -558,7 +559,7 @@ const ReportIssue = () => {
             <MediaLoading
               progress={uploadProgress}
               isUploading={isUploading}
-              onOfflineCallback={onAbortUpload}
+              onAbortUpload={onAbortUpload}
             />
           ) : (
             <YStack paddingHorizontal="$sm">
