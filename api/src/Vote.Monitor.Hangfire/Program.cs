@@ -42,6 +42,7 @@ using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 using Vote.Monitor.Hangfire.Models;
+using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -94,8 +95,8 @@ SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByVal
 
 #endregion
 
+builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 builder.Services.AddSingleton<ISerializerService, SerializerService>();
-
 builder.Services.AddSingleton<CurrentUtcTimeProvider>();
 builder.Services.AddScoped<ITimeProvider>(sp =>
 {

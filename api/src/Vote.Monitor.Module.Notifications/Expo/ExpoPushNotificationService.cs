@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,12 +16,15 @@ public class ExpoPushNotificationService(
     IExpoApi expoApi,
     ISerializerService serializerService,
     IOptions<ExpoOptions> options,
+    IPushNotificationRateLimiter limiter,
     ILogger<ExpoPushNotificationService> logger)
     : IPushNotificationService
 {
     private readonly ExpoOptions _options = options.Value;
+    private readonly RateLimiter _rateLimiter = limiter.Limiter;
 
-    public async Task<SendNotificationResult> SendNotificationAsync(List<string> userIdentifiers, string title, string body, CancellationToken ct = default)
+    public async Task<SendNotificationResult> SendNotificationAsync(List<string> userIdentifiers, string title,
+        string body, CancellationToken ct = default)
     {
         try
         {
@@ -31,46 +35,60 @@ public class ExpoPushNotificationService(
             {
                 var context = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
 
-                foreach (var identifiersBatch in userIdentifiers.Chunk(_options.BatchSize))
+                var identifiersBatchesQueue =
+                    new Queue<string[]>(userIdentifiers.Where(IsExpoPushToken).Chunk(_options.BatchSize));
+
+                while (true)
                 {
-                    var expoIdentifiers = identifiersBatch.Where(IsExpoPushToken).ToList();
-                    if (!expoIdentifiers.Any())
+                    if (!identifiersBatchesQueue.Any())
                     {
-                        continue;
+                        break;
                     }
 
-                    var request = new PushTicketRequest
+                    var lease = await _rateLimiter.AcquireAsync(identifiersBatchesQueue.Peek().Length, ct);
+                    if (lease.IsAcquired)
                     {
-                        PushTo = expoIdentifiers,
-                        PushTitle = title,
-                        PushChannelId = _options.ChannelId,
-                        PushTTL = _options.TtlSeconds,
-                        PushPriority = _options.Priority
-                    };
+                        var identifiersBatch = identifiersBatchesQueue.Dequeue().ToList();
 
-                    var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
+                        var request = new PushTicketRequest
                         {
-                            logger.LogError("Error received when sending push notification {@response} {@request}",
-                                response, request);
+                            PushTo = identifiersBatch,
+                            PushTitle = title,
+                            PushChannelId = _options.ChannelId,
+                            PushTTL = _options.TtlSeconds,
+                            PushPriority = _options.Priority
+                        };
 
-                            failedCount += identifiersBatch.Length;
-                            continue;
+                        var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
+                            {
+                                logger.LogError("Error received when sending push notification {@response} {@request}",
+                                    response, request);
+
+                                failedCount += identifiersBatch.Count;
+                                continue;
+                            }
+
+                            var serializedData = serializerService.Serialize(response.Content);
+
+                            context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
+                            await context.SaveChangesAsync(ct);
+                            successCount += identifiersBatch.Count;
                         }
+                        else
+                        {
+                            logger.LogError("Error received in expo response {@request} {@response}", request,
+                                response);
 
-                        var serializedData = serializerService.Serialize(response.Content);
-
-                        context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
-                        context.SaveChanges();
-                        successCount += identifiersBatch.Length;
+                            failedCount += identifiersBatch.Count;
+                        }
                     }
                     else
                     {
-                        logger.LogError("Error received in expo response {@request} {@response}", request, response);
-
-                        failedCount += identifiersBatch.Length;
+                        // wait 10 seconds
+                        await Task.Delay(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
                     }
                 }
             }
@@ -89,6 +107,7 @@ public class ExpoPushNotificationService(
     {
         return (token.StartsWith("ExponentPushToken[") || token.StartsWith("ExpoPushToken[")) &&
                token.EndsWith("]") ||
-               Regex.IsMatch(token, @"^[a-z\d]{8}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{12}$", RegexOptions.IgnoreCase);
+               Regex.IsMatch(token, @"^[a-z\d]{8}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{12}$",
+                   RegexOptions.IgnoreCase);
     }
 }
