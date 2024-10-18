@@ -27,6 +27,10 @@ const ChangeLanguageDialog = ({
     EN: t("en", { ns: "languages" }),
     PL: t("pl", { ns: "languages" }),
     BG: t("bg", { ns: "languages" }),
+    KA: t("ka", { ns: "languages" }),
+    HY: t("hy", { ns: "languages" }),
+    RU: t("ru", { ns: "languages" }),
+    AZ: t("az", { ns: "languages" }),
   };
 
   const {

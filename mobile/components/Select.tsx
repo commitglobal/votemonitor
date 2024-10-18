@@ -19,9 +19,16 @@ interface StyledSelectProps extends SelectProps {
   placeholder?: string;
   options: { id: string | number; value: string; label: string }[];
   error?: string;
+  itemNumberOfLines?: number;
 }
 
-const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) => {
+const Select = ({
+  placeholder,
+  options,
+  itemNumberOfLines = 1,
+  error,
+  ...props
+}: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -116,7 +123,7 @@ const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) =>
                   >
                     <TamaguiSelect.ItemText
                       width={"90%"}
-                      numberOfLines={1}
+                      numberOfLines={itemNumberOfLines}
                       maxFontSizeMultiplier={1.2}
                     >
                       {entry.label}

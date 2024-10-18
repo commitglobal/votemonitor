@@ -128,7 +128,7 @@ const QuickReportContent = ({
 
   return (
     <YStack flex={1}>
-      <ListView<any>
+      <ListView<QuickReportsAPIResponse>
         data={quickReports}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 16 }}
@@ -155,6 +155,7 @@ const QuickReportContent = ({
             key={`${index}`}
             title={item.title}
             description={item.description}
+            incidentCategory={item.incidentCategory}
             numberOfAttachments={item.attachments.length}
             onPress={() => router.push(`/report-details/${item.id}?reportTitle=${item.title}`)}
           />
