@@ -5,51 +5,31 @@ using Vote.Monitor.Module.Notifications.Contracts;
 
 namespace Vote.Monitor.Module.Notifications.Firebase;
 
-public class FirebasePushNotificationService : IPushNotificationService
+public class FirebasePushNotificationService(
+    IOptions<FirebaseOptions> options,
+    ILogger<FirebasePushNotificationService> logger)
+    : IPushNotificationService
 {
-    private readonly ILogger<FirebasePushNotificationService> _logger;
-    private readonly FirebaseOptions _options;
+    private readonly FirebaseOptions _options = options.Value;
 
-    public FirebasePushNotificationService(IOptions<FirebaseOptions> options, ILogger<FirebasePushNotificationService> logger)
+    public async Task SendNotificationAsync(List<string> userIdentifiers, string title, string body,
+        CancellationToken ct = default)
     {
-        _logger = logger;
-        _options = options.Value;
-    }
-
-    public async Task<SendNotificationResult> SendNotificationAsync(List<string> userIdentifiers, string title, string body, CancellationToken ct = default)
-    {
-        try
-        {
-            var successCount = 0;
-            var failedCount = 0;
-
-            var batchedMessages = userIdentifiers
-                .Select(identifier => new Message
-                {
-                    Notification = new Notification
-                    {
-                        Title = title,
-                    },
-                    Token = identifier
-                }).Chunk(_options.BatchSize);
-
-            foreach (var batch in batchedMessages)
+        var batchedMessages = userIdentifiers
+            .Select(identifier => new Message
             {
-                var response = await FirebaseMessaging.DefaultInstance.SendEachAsync(batch, ct);
+                Notification = new Notification
+                {
+                    Title = title,
+                },
+                Token = identifier
+            }).Chunk(_options.BatchSize);
 
-                successCount += response.SuccessCount;
-                failedCount += response.FailureCount;
-
-                _logger.LogInformation("Batch notifications sent. {@response}", response);
-            }
-
-            return new SendNotificationResult.Ok(successCount, failedCount);
-        }
-        catch (Exception e)
+        foreach (var batch in batchedMessages)
         {
-            _logger.LogError(e, "Failed to send notification");
-            SentrySdk.CaptureException(e);
-            return new SendNotificationResult.Failed();
+            var response = await FirebaseMessaging.DefaultInstance.SendEachAsync(batch, ct);
+
+            logger.LogInformation("Batch notifications sent. {@response}", response);
         }
     }
 }
