@@ -18,7 +18,7 @@ const GuideScreen = () => {
   };
 
   return (
-    <Screen preset="fixed" safeAreaEdges={["bottom"]}>
+    <Screen preset="fixed" safeAreaEdges={["bottom"]} contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={guide?.title || ""}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
