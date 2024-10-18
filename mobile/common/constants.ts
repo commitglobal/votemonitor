@@ -12,3 +12,5 @@ export const SECURE_STORAGE_KEYS = {
 export const I18N_LANGUAGE = "i18n-language";
 
 export const MULTIPART_FILE_UPLOAD_SIZE = 10 * 1024 * 1024; // 10MB.
+
+export const MUTATION_SCOPE_DO_NOT_HYDRATE = "MUTATION_SCOPE_DO_NOT_HYDRATE";

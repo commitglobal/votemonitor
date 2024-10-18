@@ -1,16 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
 import { QuickReportKeys } from "../../queries/quick-reports.query";
 import {
+  AddAttachmentQuickReportAbortAPIPayload,
+  AddAttachmentQuickReportCompleteAPIPayload,
   AddAttachmentQuickReportStartAPIPayload,
+  addAttachmentQuickReportMultipartAbort,
+  addAttachmentQuickReportMultipartComplete,
   addAttachmentQuickReportMultipartStart,
 } from "../../api/quick-report/add-attachment-quick-report.api";
+import { MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../common/constants";
 
 // Multipart Upload - Start
-export const useUploadAttachmentQuickReportMutation = (scopeId: string) => {
+export const useUploadAttachmentQuickReportMutation = () => {
   return useMutation({
     mutationKey: QuickReportKeys.addAttachment(),
     scope: {
-      id: scopeId,
+      id: MUTATION_SCOPE_DO_NOT_HYDRATE,
     },
     mutationFn: (payload: AddAttachmentQuickReportStartAPIPayload) =>
       addAttachmentQuickReportMultipartStart(payload),
@@ -18,5 +23,27 @@ export const useUploadAttachmentQuickReportMutation = (scopeId: string) => {
       console.log(err);
     },
     onSettled: (_data, _err, _variables) => {},
+  });
+};
+
+export const useUploadAttachmentQuickReportCompleteMutation = () => {
+  return useMutation({
+    scope: {
+      id: MUTATION_SCOPE_DO_NOT_HYDRATE,
+    },
+    mutationKey: QuickReportKeys.addAttachmentComplete(),
+    mutationFn: (payload: AddAttachmentQuickReportCompleteAPIPayload) =>
+      addAttachmentQuickReportMultipartComplete(payload),
+  });
+};
+
+export const useUploadAttachmentQuickReportAbortMutation = () => {
+  return useMutation({
+    scope: {
+      id: MUTATION_SCOPE_DO_NOT_HYDRATE,
+    },
+    mutationKey: QuickReportKeys.addAttachmentAbort(),
+    mutationFn: (payload: AddAttachmentQuickReportAbortAPIPayload) =>
+      addAttachmentQuickReportMultipartAbort(payload),
   });
 };

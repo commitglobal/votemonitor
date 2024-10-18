@@ -18,6 +18,9 @@ export const AttachmentsKeys = {
       formId,
     ] as const,
   addAttachmentMutation: () => [...AttachmentsKeys.all, "add"] as const,
+  addAttachmentCompleteMutation: () => [...AttachmentsKeys.all, "complete"] as const,
+  addAttachmentAbortMutation: () => [...AttachmentsKeys.all, "abort"] as const,
+  addS3ChunkMutation: () => [...AttachmentsKeys.all, "addS3Chunk"] as const,
   deleteAttachment: () => [...AttachmentsKeys.all, "delete"] as const,
 };
 

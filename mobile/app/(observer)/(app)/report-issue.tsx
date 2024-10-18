@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { XStack, YStack } from "tamagui";
 import { Screen } from "../../../components/Screen";
 import { Icon } from "../../../components/Icon";
@@ -19,7 +19,7 @@ import { Typography } from "../../../components/Typography";
 import { useAddQuickReport } from "../../../services/mutations/quick-report/add-quick-report.mutation";
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { useUploadAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
+import { useUploadAttachmentQuickReportAbortMutation, useUploadAttachmentQuickReportCompleteMutation, useUploadAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
 import { QuickReportLocationType } from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
@@ -27,21 +27,19 @@ import Card from "../../../components/Card";
 import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
 import {
-  addAttachmentQuickReportMultipartAbort,
-  addAttachmentQuickReportMultipartComplete,
   AddAttachmentQuickReportStartAPIPayload,
 } from "../../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
-import { uploadS3Chunk } from "../../../services/api/add-attachment.api";
 // import { t } from "i18next";
-import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
+import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../common/constants";
 import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
+import { removeMutationByScopeId, useUploadS3ChunkMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -76,6 +74,7 @@ type ReportIssueFormType = {
 };
 
 const ReportIssue = () => {
+  const cancelRef = useRef<boolean>(false);
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
@@ -84,6 +83,7 @@ const ReportIssue = () => {
   const { t } = useTranslation("report_new_issue");
   const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const { isOnline } = useNetInfoContext();
 
@@ -97,9 +97,12 @@ const ReportIssue = () => {
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
 
-  const { mutateAsync: addAttachmentQReport } = useUploadAttachmentQuickReportMutation(
-    `Quick_Report_${activeElectionRound?.id}}`,
-  );
+  const { mutateAsync: addAttachmentQReport } = useUploadAttachmentQuickReportMutation();
+  const { mutateAsync: addAttachmentQReportComplete } = useUploadAttachmentQuickReportCompleteMutation();
+  const { mutateAsync: addAttachmentQReportAbort } = useUploadAttachmentQuickReportAbortMutation();
+  const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
+
+
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -197,13 +200,17 @@ const ReportIssue = () => {
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
+        if (cancelRef.current) {
+          return;
+        }
+
         const chunk = await FileSystem.readAsStringAsync(filePath, {
           length: MULTIPART_FILE_UPLOAD_SIZE,
           position: index * MULTIPART_FILE_UPLOAD_SIZE,
           encoding: FileSystem.EncodingType.Base64,
         });
         const buffer = Buffer.from(chunk, "base64");
-        const data = await uploadS3Chunk(url, buffer);
+        const data = await uploadS3Chunk({ url, chunk: buffer });
         setUploadProgress(
           `${t("upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
         );
@@ -211,7 +218,7 @@ const ReportIssue = () => {
       }
 
       if (activeElectionRound?.id) {
-        await addAttachmentQuickReportMultipartComplete({
+        await addAttachmentQReportComplete({
           uploadId,
           etags,
           electionRoundId: activeElectionRound?.id,
@@ -223,7 +230,7 @@ const ReportIssue = () => {
       Sentry.captureException(err, { data: activeElectionRound });
       if (activeElectionRound?.id) {
         setUploadProgress(t("upload.aborted"));
-        await addAttachmentQuickReportMultipartAbort({
+        await addAttachmentQReportAbort({
           id: attachmentId,
           uploadId,
           electionRoundId: activeElectionRound.id,
@@ -263,8 +270,10 @@ const ReportIssue = () => {
     const optimisticAttachments: AddAttachmentQuickReportStartAPIPayload[] = [];
 
     if (attachments.length > 0) {
+      setIsUploading(true);
       setOptionsSheetOpen(true);
       setIsLoadingAttachment(true);
+      cancelRef.current = false;
       try {
         const totalParts = attachments.reduce((acc, attachment) => {
           return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
@@ -273,6 +282,10 @@ const ReportIssue = () => {
         // Upload each attachment
         setUploadProgress(`${t("upload.starting")}`);
         for (const [, attachment] of attachments.entries()) {
+          if (cancelRef.current) {
+            return;
+          }
+
           const payload: AddAttachmentQuickReportStartAPIPayload = {
             id: attachment.id,
             fileName: attachment.fileMetadata.name,
@@ -299,6 +312,7 @@ const ReportIssue = () => {
           optimisticAttachments.push(payload);
         }
         setUploadProgress(t("upload.completed"));
+        setIsUploading(false);
       } catch (err) {
         Sentry.captureException(err);
       }
@@ -350,6 +364,14 @@ const ReportIssue = () => {
         text2Style: { textAlign: "center" },
       });
     }
+  };
+
+  const onAbortUpload = () => {
+    setOptionsSheetOpen(false);
+    setIsPreparingFile(false);
+    setIsUploading(false);
+    setUploadProgress("");
+    removeMutationByScopeId(MUTATION_SCOPE_DO_NOT_HYDRATE);
   };
 
   return (
@@ -529,10 +551,14 @@ const ReportIssue = () => {
         <OptionsSheet
           open={optionsSheetOpen}
           setOpen={setOptionsSheetOpen}
-          isLoading={isLoadingAttachment || isPreparingFile}
+          isLoading={isLoadingAttachment || isPreparingFile || isUploading}
         >
-          {isLoadingAttachment || isPreparingFile ? (
-            <MediaLoading progress={uploadProgress} />
+          {isLoadingAttachment || isPreparingFile || isUploading ? (
+            <MediaLoading
+              progress={uploadProgress}
+              isUploading={isUploading}
+              onOfflineCallback={onAbortUpload}
+            />
           ) : (
             <YStack paddingHorizontal="$sm">
               <Typography

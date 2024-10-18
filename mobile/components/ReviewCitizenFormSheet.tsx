@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Button from "./Button";
@@ -19,14 +19,15 @@ import { useCitizenUserData } from "../contexts/citizen-user/CitizenUserContext.
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { FileMetadata } from "../hooks/useCamera";
-import { MULTIPART_FILE_UPLOAD_SIZE } from "../common/constants";
-import { useUploadAttachmentCitizenMutation } from "../services/mutations/citizen/add-attachment-citizen.mutation";
-import { addAttachmentCitizenMultipartAbort, addAttachmentCitizenMultipartComplete, AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
+import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../common/constants";
+import { useUploadAttachmentCitizenAbortMutation, useUploadAttachmentCitizenCompleteMutation, useUploadAttachmentCitizenMutation } from "../services/mutations/citizen/add-attachment-citizen.mutation";
+import { AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
 import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
-import { uploadS3Chunk } from "../services/api/add-attachment.api";
 import * as Sentry from "@sentry/react-native";
 import MediaLoading from "./MediaLoading";
+import { removeMutationByScopeId, useUploadS3ChunkMutation } from "../services/mutations/attachments/add-attachment.mutation";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -58,11 +59,17 @@ export default function ReviewCitizenFormSheet({
   selectedLocationId: string;
   language: string;
 }) {
+  const cancelRef = useRef<boolean>(false);
   const { t } = useTranslation("citizen_form");
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { isOnline } = useNetInfoContext();
 
   const { mutate: postCitizenForm, isPending } = usePostCitizenFormMutation();
+  const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
+  const { mutateAsync: addAttachmentCitizenComplete } = useUploadAttachmentCitizenCompleteMutation();
+  const { mutateAsync: addAttachmentCitizenAbort } = useUploadAttachmentCitizenAbortMutation();
+
   const { selectedElectionRound } = useCitizenUserData();
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -139,7 +146,6 @@ export default function ReviewCitizenFormSheet({
 
   const handleSubmit = async () => {
     if (!currentForm || !selectedElectionRound || !answers) {
-      console.log("⛔️ Missing data for sending review citizen form. ⛔️");
       return;
     }
 
@@ -157,15 +163,19 @@ export default function ReviewCitizenFormSheet({
         onSuccess: async (response) => {
           await uploadAttachments(citizenReportId);
 
-          router.replace(
-            `/citizen/main/form/success?formId=${currentForm.id}&submissionId=${response.id}`,
-          );
+          if (cancelRef.current === true) {
+            return;
+          } else {
+            router.replace(
+              `/citizen/main/form/success?formId=${currentForm.id}&submissionId=${response.id}`,
+            );
+          }
+
 
           setIsUploading(false);
         },
         onError: (error) => {
           Sentry.captureException(error);
-          // close review modal and display error toast
           setIsReviewSheetOpen(false);
           return Toast.show({
             type: "error",
@@ -182,6 +192,8 @@ export default function ReviewCitizenFormSheet({
       return;
     }
 
+    cancelRef.current = false;
+
     if (attachments && Object.keys(attachments).length > 0) {
       setIsUploading(true);
       const attachmentArray: { questionId: string, fileMetadata: FileMetadata, id: string }[] = Object.entries(attachments).map(([questionId, attachments]) => attachments.map(a => ({ ...a, questionId }))).flat()
@@ -191,8 +203,12 @@ export default function ReviewCitizenFormSheet({
         }, 0);
         let uploadedPartsNo = 0;
         // Upload each attachment
-        setUploadProgress(`${t("attachments.upload.starting")}`);
-        for (const [, attachment] of attachmentArray.entries()) {
+        setUploadProgress(`${t("success.title")}\n${t("attachments.upload.starting")}`);
+        for (const attachment of attachmentArray) {
+          if (cancelRef.current) {
+            return;
+          }
+
           const payload: AddAttachmentCitizenStartAPIPayload = {
             id: attachment.id,
             fileName: attachment.fileMetadata.name,
@@ -223,6 +239,7 @@ export default function ReviewCitizenFormSheet({
         setUploadProgress(t("attachments.upload.completed"));
       } catch (err) {
         Sentry.captureException(err);
+      } finally {
         setIsUploading(false);
       }
     }
@@ -241,16 +258,25 @@ export default function ReviewCitizenFormSheet({
     totalParts: number,
   ) => {
     try {
+      if (cancelRef.current === true) {
+        return;
+      }
+
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
+        if (cancelRef.current) {
+          return;
+        }
         const chunk = await FileSystem.readAsStringAsync(filePath, {
           length: MULTIPART_FILE_UPLOAD_SIZE,
           position: index * MULTIPART_FILE_UPLOAD_SIZE,
           encoding: FileSystem.EncodingType.Base64,
         });
         const buffer = Buffer.from(chunk, "base64");
-        const data = await uploadS3Chunk(url, buffer);
+
+        const data = await uploadS3Chunk({ url, chunk: buffer });
+
         setUploadProgress(
           `${t("attachments.upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
         );
@@ -258,7 +284,7 @@ export default function ReviewCitizenFormSheet({
       }
 
       if (selectedElectionRound) {
-        await addAttachmentCitizenMultipartComplete({
+        await addAttachmentCitizenComplete({
           uploadId,
           etags,
           electionRoundId: selectedElectionRound,
@@ -267,10 +293,11 @@ export default function ReviewCitizenFormSheet({
         });
       }
     } catch (err) {
+
       Sentry.captureException(err, { data: { selectedElectionRound, citizenReportId, formId, questionId } });
       if (selectedElectionRound) {
         setUploadProgress(t("attachments.upload.aborted"));
-        await addAttachmentCitizenMultipartAbort({
+        await addAttachmentCitizenAbort({
           id: attachmentId,
           uploadId,
           electionRoundId: selectedElectionRound,
@@ -280,12 +307,21 @@ export default function ReviewCitizenFormSheet({
     }
   };
 
+
+  const onAbortUpload = () => {
+    cancelRef.current = true;
+    setUploadProgress("");
+    setIsUploading(false);
+    setIsReviewSheetOpen(false);
+    removeMutationByScopeId(MUTATION_SCOPE_DO_NOT_HYDRATE);
+  }
+
   return (
     <Sheet
       modal
       open
       zIndex={100_001}
-      snapPoints={isUploading ? [25] : [90]}
+      snapPoints={isUploading ? isOnline ? [25] : [40] : [90]}
       dismissOnSnapToBottom={!isPending && !isUploading}
       dismissOnOverlayPress={!isPending && !isUploading}
       onOpenChange={(open: boolean) => {
@@ -299,7 +335,7 @@ export default function ReviewCitizenFormSheet({
       <Sheet.Frame>
         {isUploading ?
           (<YStack flex={1} justifyContent="center" alignItems="center">
-            <MediaLoading progress={uploadProgress} />
+            <MediaLoading progress={uploadProgress} isUploading={isUploading} onOfflineCallback={onAbortUpload} />
           </YStack>) : (
             <>
               <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
