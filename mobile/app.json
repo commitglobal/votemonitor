@@ -48,7 +48,7 @@
       },
       "message": "Small fixes",
       "updateCritical": 48,
-      "updateVersion": 59
+      "updateVersion": 60
     },
     "owner": "commit-global",
     "runtimeVersion": {
