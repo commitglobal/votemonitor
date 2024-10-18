@@ -21,10 +21,10 @@ const Updates = () => {
   // refetch data when the screen is focused
   useFocusEffect(
     useCallback(() => {
-      if (isOnline) {
+      if (isOnline && !isLoading) {
         refetch();
       }
-    }, [refetch, isOnline]),
+    }, [refetch, isOnline, isLoading]),
   );
 
   const handleOpenInfoModal = () => {
