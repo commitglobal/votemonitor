@@ -40,6 +40,7 @@ public class Location : AuditableBaseEntity, IAggregateRoot, IDisposable
         return location;
     }
 
+    public Guid Id { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid ElectionRoundId { get; private set; }
 
@@ -52,8 +53,9 @@ public class Location : AuditableBaseEntity, IAggregateRoot, IDisposable
         string level4,
         string level5,
         int displayOrder,
-        JsonDocument tags) : base(id)
+        JsonDocument tags)
     {
+        Id = id;
         ElectionRoundId = electionRound.Id;
         ElectionRound = electionRound;
         Level1 = level1;

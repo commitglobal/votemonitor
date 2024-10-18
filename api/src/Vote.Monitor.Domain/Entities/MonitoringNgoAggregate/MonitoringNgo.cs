@@ -6,6 +6,7 @@ namespace Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid NgoId { get; private set; }
@@ -15,8 +16,9 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     public MonitoringNgoStatus Status { get; private set; }
 
-    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo) : base(Guid.NewGuid())
+    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo)
     {
+        Id = Guid.NewGuid();
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
         Ngo = ngo;

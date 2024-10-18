@@ -8,6 +8,7 @@ namespace Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
 public class CitizenReport : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid FormId { get; private set; }
@@ -32,8 +33,9 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) : base(id)
+        int numberOfFlaggedAnswers)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         Form = form;
         FormId = form.Id;

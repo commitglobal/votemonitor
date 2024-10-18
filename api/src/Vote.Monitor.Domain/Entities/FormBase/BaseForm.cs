@@ -13,6 +13,7 @@ namespace Vote.Monitor.Domain.Entities.FormBase;
 
 public class BaseForm : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; set; }
     public ElectionRound ElectionRound { get; set; }
     public FormType FormType { get; private set; }
@@ -50,8 +51,9 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
+        IEnumerable<BaseQuestion> questions)
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
 
         FormType = formType;
@@ -77,8 +79,9 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         string[] languages,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id)
+        LanguagesTranslationStatus languagesTranslationStatus)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         FormType = formType;
         Code = code;

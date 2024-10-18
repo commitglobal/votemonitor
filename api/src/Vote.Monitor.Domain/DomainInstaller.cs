@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -28,10 +29,11 @@ public static class DomainInstaller
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(5),
                     errorCodesToAdd: null
-                );
+                ).UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             });
 
             options.EnableSensitiveDataLogging(!isProductionEnvironment);
+            
         });
         services.AddSingleton<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));

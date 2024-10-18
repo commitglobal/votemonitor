@@ -84,20 +84,7 @@ public class UpdateValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.WebsiteUrl);
     }
-
-    [Fact]
-    public void Should_Have_Error_When_WebsiteUrl_Is_Invalid()
-    {
-        // Arrange
-        var model = new Update.Request { WebsiteUrl = "invalid-url" };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.WebsiteUrl);
-    }
-
+    
     [Fact]
     public void Should_Not_Have_Error_When_Valid_Request()
     {

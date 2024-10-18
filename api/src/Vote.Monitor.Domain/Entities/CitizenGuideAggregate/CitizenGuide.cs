@@ -2,6 +2,7 @@
 
 public class CitizenGuide : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public virtual ElectionRound ElectionRound { get; private set; }
     public string Title { get; private set; }
@@ -18,8 +19,9 @@ public class CitizenGuide : AuditableBaseEntity, IAggregateRoot
         string title,
         string fileName,
         string filePath,
-        string mimeType) : base(Guid.NewGuid())
+        string mimeType)
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
         Title = title;
         FileName = fileName;
@@ -35,8 +37,9 @@ public class CitizenGuide : AuditableBaseEntity, IAggregateRoot
 
     private CitizenGuide(Guid electionRoundId,
         string title,
-        Uri websiteUrl) : base(Guid.NewGuid())
+        Uri websiteUrl)
     {
+        Id= Guid.NewGuid();
         ElectionRoundId = electionRoundId;
         Title = title;
         WebsiteUrl = websiteUrl.ToString();
@@ -46,8 +49,9 @@ public class CitizenGuide : AuditableBaseEntity, IAggregateRoot
     
     private CitizenGuide(Guid electionRoundId,
         string title,
-        string text) : base(Guid.NewGuid())
+        string text)
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
         Title = title;
         Text = text;
