@@ -127,10 +127,11 @@ const QuickReportContent = ({
   }
 
   return (
-    <YStack padding="$md" flex={1}>
+    <YStack flex={1}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16 }}
         ListEmptyComponent={
           <YStack alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />
