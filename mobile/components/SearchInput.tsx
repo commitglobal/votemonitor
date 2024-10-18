@@ -1,7 +1,7 @@
 import { Icon } from "./Icon";
 import { Input, XStack, styled, Button } from "tamagui";
-import i18n from "../common/config/i18n";
 import { useState, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SearchInputProps {
   onSearch: (value: string) => void;
@@ -10,6 +10,7 @@ interface SearchInputProps {
 // TODO: Update this to reuse in all the application
 const Search = ({ onSearch }: SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const { t } = useTranslation();
 
   const debouncedSearch = useCallback(
     (value: string) => {
@@ -39,6 +40,7 @@ const Search = ({ onSearch }: SearchInputProps) => {
         value={searchTerm}
         onChangeText={setSearchTerm}
         maxFontSizeMultiplier={1.2}
+        placeholder={t("search", { ns: "common" })}
       />
       {searchTerm !== "" && (
         <Button
@@ -56,7 +58,6 @@ const Search = ({ onSearch }: SearchInputProps) => {
 
 const SearchInput = styled(Input, {
   backgroundColor: "white",
-  placeholder: i18n.t("search", { ns: "common" }),
   color: "$gray5",
   placeholderTextColor: "$gray5",
   focusStyle: {

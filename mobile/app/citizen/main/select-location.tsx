@@ -3,7 +3,6 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { router, useLocalSearchParams } from "expo-router";
-import i18n from "../../../common/config/i18n";
 import { Typography } from "../../../components/Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ListView } from "../../../components/ListView";
@@ -153,6 +152,7 @@ export default function CitizenSelectLocation() {
             value={searchTerm}
             onChangeText={setSearchTerm}
             maxFontSizeMultiplier={1.2}
+            placeholder={t("search", { ns: "common" })}
           />
         </XStack>
       </YStack>
@@ -198,7 +198,6 @@ const $containerStyle: ViewStyle = {
 
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: i18n.t("search", { ns: "common" }),
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {
