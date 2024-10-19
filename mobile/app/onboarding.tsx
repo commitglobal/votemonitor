@@ -10,6 +10,7 @@ import { Animated } from "react-native";
 import { Typography } from "../components/Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { setSecureStoreItem } from "../helpers/SecureStoreWrapper";
 
 export default function Onboarding() {
   const [languageSelectionApplied, setLanguageSelectionApplied] = useState(false);
@@ -26,7 +27,7 @@ export default function Onboarding() {
   const data = [1, 2, 3];
 
   const onOnboardingComplete = () => {
-    SecureStore.setItemAsync(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, "true");
+    setSecureStoreItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, "true");
     router.replace("select-app-mode");
   };
 

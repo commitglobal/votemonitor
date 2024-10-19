@@ -7,9 +7,10 @@ export const ASYNC_STORAGE_KEYS = {
 export const SECURE_STORAGE_KEYS = {
   ONBOARDING_COMPLETE: "onboardingComplete",
   ONBOARDING_NEW_COMPLETE: "onboardingNewComplete",
+  I18N_LANGUAGE: "i18n-language",
 };
 
-export const I18N_LANGUAGE = "i18n-language";
+// export const I18N_LANGUAGE = "i18n-language";
 
 export const MULTIPART_FILE_UPLOAD_SIZE = 10 * 1024 * 1024; // 10MB.
 

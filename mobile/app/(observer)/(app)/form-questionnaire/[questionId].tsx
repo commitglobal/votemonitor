@@ -37,12 +37,19 @@ import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import * as Sentry from "@sentry/react-native";
 import QuestionForm from "../../../../components/QuestionForm";
 import NotesSkeleton from "../../../../components/SkeletonLoaders/NotesSkeleton";
-import { removeMutationByScopeId, useUploadAttachmentAbortMutation, useUploadAttachmentCompleteMutation, useUploadAttachmentMutation, useUploadS3ChunkMutation } from "../../../../services/mutations/attachments/add-attachment.mutation";
-import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../../common/constants";
-import * as FileSystem from "expo-file-system";
 import {
-  AddAttachmentStartAPIPayload,
-} from "../../../../services/api/add-attachment.api";
+  removeMutationByScopeId,
+  useUploadAttachmentAbortMutation,
+  useUploadAttachmentCompleteMutation,
+  useUploadAttachmentMutation,
+  useUploadS3ChunkMutation,
+} from "../../../../services/mutations/attachments/add-attachment.mutation";
+import {
+  MULTIPART_FILE_UPLOAD_SIZE,
+  MUTATION_SCOPE_DO_NOT_HYDRATE,
+} from "../../../../common/constants";
+import * as FileSystem from "expo-file-system";
+import { AddAttachmentStartAPIPayload } from "../../../../services/api/add-attachment.api";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import { Buffer } from "buffer";
 import { useQueryClient } from "@tanstack/react-query";

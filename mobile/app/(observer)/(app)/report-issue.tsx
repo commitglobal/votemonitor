@@ -19,26 +19,37 @@ import { Typography } from "../../../components/Typography";
 import { useAddQuickReport } from "../../../services/mutations/quick-report/add-quick-report.mutation";
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { useUploadAttachmentQuickReportAbortMutation, useUploadAttachmentQuickReportCompleteMutation, useUploadAttachmentQuickReportMutation } from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
-import { IncidentCategory, QuickReportLocationType } from "../../../services/api/quick-report/post-quick-report.api";
+import {
+  useUploadAttachmentQuickReportAbortMutation,
+  useUploadAttachmentQuickReportCompleteMutation,
+  useUploadAttachmentQuickReportMutation,
+} from "../../../services/mutations/quick-report/add-attachment-quick-report.mutation";
+import {
+  IncidentCategory,
+  QuickReportLocationType,
+} from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../../components/Card";
 import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
-import {
-  AddAttachmentQuickReportStartAPIPayload,
-} from "../../../services/api/quick-report/add-attachment-quick-report.api";
+import { AddAttachmentQuickReportStartAPIPayload } from "../../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 // import { t } from "i18next";
-import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../common/constants";
+import {
+  MULTIPART_FILE_UPLOAD_SIZE,
+  MUTATION_SCOPE_DO_NOT_HYDRATE,
+} from "../../../common/constants";
 import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
-import { removeMutationByScopeId, useUploadS3ChunkMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
+import {
+  removeMutationByScopeId,
+  useUploadS3ChunkMutation,
+} from "../../../services/mutations/attachments/add-attachment.mutation";
 import { TFunction } from "i18next";
 import { localizeIncidentCategory } from "../../../helpers/translationHelper";
 
@@ -102,7 +113,6 @@ const mapIncidentCategoriesToSelectList = () => {
   }));
 };
 
-
 type ReportIssueFormType = {
   polling_station_id: string;
   polling_station_details: string;
@@ -138,7 +148,8 @@ const ReportIssue = () => {
   } = useAddQuickReport();
 
   const { mutateAsync: addAttachmentQReport } = useUploadAttachmentQuickReportMutation();
-  const { mutateAsync: addAttachmentQReportComplete } = useUploadAttachmentQuickReportCompleteMutation();
+  const { mutateAsync: addAttachmentQReportComplete } =
+    useUploadAttachmentQuickReportCompleteMutation();
   const { mutateAsync: addAttachmentQReportAbort } = useUploadAttachmentQuickReportAbortMutation();
   const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
 
@@ -167,7 +178,7 @@ const ReportIssue = () => {
       polling_station_details: "",
       issue_title: "",
       issue_description: "",
-      incident_category: IncidentCategory.Other
+      incident_category: IncidentCategory.Other,
     },
   });
 
@@ -241,7 +252,7 @@ const ReportIssue = () => {
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
         if (cancelRef.current) {
-          throw new Error('Upload aborted');
+          throw new Error("Upload aborted");
         }
 
         const chunk = await FileSystem.readAsStringAsync(filePath, {
@@ -323,7 +334,7 @@ const ReportIssue = () => {
         setUploadProgress(`${t("upload.starting")}`);
         for (const [, attachment] of attachments.entries()) {
           if (cancelRef.current) {
-            throw new Error('Upload aborted');
+            throw new Error("Upload aborted");
           }
 
           const payload: AddAttachmentQuickReportStartAPIPayload = {
@@ -495,7 +506,7 @@ const ReportIssue = () => {
                 />
               )}
 
-               <Controller
+              <Controller
                 key="incident_category"
                 name="incident_category"
                 control={control}

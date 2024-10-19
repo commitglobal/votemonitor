@@ -5,8 +5,8 @@ import { BackHandler, Keyboard, Platform } from "react-native";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import * as SecureStore from "expo-secure-store";
-import { I18N_LANGUAGE } from "../common/constants";
+import { SECURE_STORAGE_KEYS } from "../common/constants";
+import { setSecureStoreItem } from "../helpers/SecureStoreWrapper";
 
 interface SelectLanguageProps {
   open: boolean;
@@ -22,7 +22,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
     Keyboard.dismiss();
     changeLanguage(language);
     setOpen(false);
-    SecureStore.setItem(I18N_LANGUAGE, language);
+    setSecureStoreItem(SECURE_STORAGE_KEYS.I18N_LANGUAGE, language);
   };
 
   // close sheet on android back press

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { SECURE_STORAGE_KEYS } from "../../common/constants";
-import * as SecureStore from "expo-secure-store";
+import { getSecureStoreItem, setSecureStoreItem } from "../../helpers/SecureStoreWrapper";
 
 export enum AppMode {
   CITIZEN = "citizen",
@@ -18,7 +18,7 @@ const AppModeContextProvider = ({ children }: React.PropsWithChildren) => {
   const [appMode, setAppMode] = useState<AppMode | null>(null);
 
   useEffect(() => {
-    const appMode = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
+    const appMode = getSecureStoreItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
     if (appMode) {
       setAppMode(appMode as AppMode);
     }
@@ -26,7 +26,7 @@ const AppModeContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const handleSetAppMode = (appMode: AppMode) => {
     setAppMode(appMode);
-    SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, appMode);
+    setSecureStoreItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, appMode);
   };
 
   return (

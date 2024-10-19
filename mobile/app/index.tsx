@@ -1,11 +1,11 @@
 import React from "react";
 import { Redirect } from "expo-router";
 import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
-import * as SecureStore from "expo-secure-store";
 import { SECURE_STORAGE_KEYS } from "../common/constants";
+import { getSecureStoreItem } from "../helpers/SecureStoreWrapper";
 
 function RootIndex() {
-  const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
+  const onboardingComplete = getSecureStoreItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
   const { appMode } = useAppMode();
 
   if (!onboardingComplete) {

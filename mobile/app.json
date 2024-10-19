@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Prevent capitalize password",
+      "message": "Fixes",
       "updateCritical": 48,
-      "updateVersion": 61
+      "updateVersion": 62
     },
     "owner": "commit-global",
     "runtimeVersion": {

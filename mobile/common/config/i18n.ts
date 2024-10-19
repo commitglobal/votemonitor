@@ -7,16 +7,17 @@ import bg from "../../assets/locales/bg/translations_BG.json";
 import sr from "../../assets/locales/sr/translations_SR.json";
 import pl from "../../assets/locales/pl/translations_PL.json";
 
-import ka from "../../assets/locales/ka/translations_KA.json";
-import hy from "../../assets/locales/hy/translations_HY.json";
+import ge from "../../assets/locales/ge/translations_GE.json";
+import am from "../../assets/locales/am/translations_AM.json";
 import ru from "../../assets/locales/ru/translations_RU.json";
 import az from "../../assets/locales/az/translations_AZ.json";
 
-import * as SecureStore from "expo-secure-store";
-import { I18N_LANGUAGE } from "../constants";
+import { SECURE_STORAGE_KEYS } from "../constants";
+import { getSecureStoreItem } from "../../helpers/SecureStoreWrapper";
 
 const systemLocale =
-  SecureStore.getItem(I18N_LANGUAGE) || Localization.getLocales()[0].languageCode;
+  getSecureStoreItem(SECURE_STORAGE_KEYS.I18N_LANGUAGE) ||
+  Localization.getLocales()[0].languageCode;
 
 // handle RTL languages
 const language = Localization.getLocales().find((lang) => lang.languageCode === systemLocale);
@@ -25,19 +26,19 @@ export const isRTL = language?.textDirection === "rtl";
 i18n.use(initReactI18next).init<ResourceLanguage>({
   // default language app is currently the system locale or english
   lng: systemLocale || "en",
-  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
+  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ge", "am", "ru", "az"],
   compatibilityJSON: "v3",
-  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
+  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ge", "am", "ru", "az"],
   resources: {
     en,
     ro,
     pl,
     bg,
     sr,
-    ka,
-    hy,
+    ge,
+    am,
     ru,
-    az
+    az,
   },
   debug: true,
   interpolation: {
@@ -46,4 +47,3 @@ i18n.use(initReactI18next).init<ResourceLanguage>({
 });
 
 export default i18n;
-
