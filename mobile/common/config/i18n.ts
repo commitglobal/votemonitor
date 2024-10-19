@@ -7,8 +7,8 @@ import bg from "../../assets/locales/bg/translations_BG.json";
 import sr from "../../assets/locales/sr/translations_SR.json";
 import pl from "../../assets/locales/pl/translations_PL.json";
 
-import ge from "../../assets/locales/ge/translations_GE.json";
-import am from "../../assets/locales/am/translations_AM.json";
+import ka from "../../assets/locales/ka/translations_KA.json";
+import hy from "../../assets/locales/hy/translations_HY.json";
 import ru from "../../assets/locales/ru/translations_RU.json";
 import az from "../../assets/locales/az/translations_AZ.json";
 
@@ -26,17 +26,17 @@ export const isRTL = language?.textDirection === "rtl";
 i18n.use(initReactI18next).init<ResourceLanguage>({
   // default language app is currently the system locale or english
   lng: systemLocale || "en",
-  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ge", "am", "ru", "az"],
+  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
   compatibilityJSON: "v3",
-  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ge", "am", "ru", "az"],
+  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
   resources: {
     en,
     ro,
     pl,
     bg,
     sr,
-    ge,
-    am,
+    ka,
+    hy,
     ru,
     az,
   },

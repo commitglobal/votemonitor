@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -12,26 +12,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "74",
+      "buildNumber": "75",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       }
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 74,
+      "versionCode": 75,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -79,18 +74,14 @@
           "color": "#FDD20C"
         }
       ],
-      [
-        "@morrowdigital/watermelondb-expo-plugin"
-      ],
+      ["@morrowdigital/watermelondb-expo-plugin"],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }

@@ -100,8 +100,8 @@ const CitizenForm = () => {
   const language = useMemo(() => {
     if (!currentForm) return i18n.language;
     // if the language of the app can be found in the form, use it, otherwise use the form default language or the first language found in the languages array coming from the form
-    if (currentForm?.languages.includes(i18n.language)) {
-      return i18n.language;
+    if (currentForm?.languages.includes(i18n.language.toUpperCase())) {
+      return i18n.language.toUpperCase();
     }
 
     return currentForm?.defaultLanguage || currentForm?.languages[0];
@@ -126,7 +126,7 @@ const CitizenForm = () => {
 
   const formTitle = useMemo(() => {
     return `${currentForm?.code} - ${currentForm?.name[language || currentForm.defaultLanguage]} (${language || currentForm?.defaultLanguage})`;
-  }, [currentForm]);
+  }, [currentForm, t]);
 
   const {
     control,

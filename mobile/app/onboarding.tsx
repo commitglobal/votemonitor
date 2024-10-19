@@ -1,4 +1,3 @@
-import * as SecureStore from "expo-secure-store";
 import { SECURE_STORAGE_KEYS } from "../common/constants";
 import { useRef, useState } from "react";
 import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
