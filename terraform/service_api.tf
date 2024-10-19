@@ -191,6 +191,14 @@ module "ecs_api" {
       name      = "Statistics__ApiKey"
       valueFrom = aws_secretsmanager_secret.statistics_api_key.arn
     },
+    {
+      name  = "PushNotifications__SenderType"
+      value = "Expo"
+    },
+    {
+      name  = "PushNotifications__Expo__BatchSize"
+      value = "75"
+    },
   ]
 
   allowed_secrets = [
