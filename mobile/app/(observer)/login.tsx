@@ -191,6 +191,8 @@ const LoginForm = ({
             secureTextEntry={secureTextEntry}
             title={t("form.password.label")}
             placeholder={t("form.password.placeholder")}
+            autoCapitalize="none"
+            autoCorrect={false}
             value={value}
             onChangeText={onChange}
             iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}

@@ -24,6 +24,11 @@
     "android-apk": {
       "android": {
         "buildType": "apk"
+      },
+      "channel": "android-apk",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "android-apk",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
       }
     },
     "preview": {
