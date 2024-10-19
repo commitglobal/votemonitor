@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 import { MediaDialog } from "../../../../../../../components/MediaDialog";
 import { AttachmentMimeType } from "../../../../../../../services/api/get-attachments.api";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../../services/api/quick-report/get-quick-reports.api";
-import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
+import { localizeIncidentCategory } from "../../../../../../../helpers/translationHelper";
 
 type SearchParamsType = {
   reportId: string;
@@ -23,12 +23,11 @@ type SearchParamsType = {
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
   const { t } = useTranslation(["report_details", "common"]);
-  const { isOnline } = useNetInfoContext();
 
   const [previewAttachment, setPreviewAttachment] =
     useState<QuickReportAttachmentAPIResponse | null>(null);
 
-  if (!reportId || !reportTitle) {
+  if (!reportId) {
     return <Typography>Incorrect page params</Typography>;
   }
 
@@ -42,6 +41,14 @@ const ReportDetails = () => {
     isRefetching: isRefetchingQuickReport,
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
+  const incidentCategory = useMemo(() => {
+    if (quickReport?.incidentCategory) {
+      return localizeIncidentCategory(quickReport.incidentCategory);
+    }
+
+    return "";
+  }, [quickReport?.incidentCategory]);
+
   if (isLoadingCurrentReport) {
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
@@ -50,7 +57,7 @@ const ReportDetails = () => {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
-          title={reportTitle || t("title")}
+          title={`${reportTitle ?? t("title")}`}
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
@@ -59,7 +66,6 @@ const ReportDetails = () => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flex: 1, alignItems: "center", flexGrow: 1 }}
             paddingVertical="$xxl"
-            bounces={isOnline}
             refreshControl={
               <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
             }
@@ -96,7 +102,6 @@ const ReportDetails = () => {
             paddingHorizontal: 16,
           }}
           showsVerticalScrollIndicator={false}
-          bounces={isOnline}
           refreshControl={
             <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
           }
@@ -104,6 +109,9 @@ const ReportDetails = () => {
           <YStack gap={16}>
             <Typography preset="subheading" fontWeight="500">
               {quickReport?.title}
+            </Typography>
+            <Typography preset="body1" lineHeight={24} color="$gray8">
+              {incidentCategory}
             </Typography>
             <Typography preset="body1" lineHeight={24} color="$gray8">
               {quickReport?.description}

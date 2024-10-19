@@ -1,13 +1,13 @@
 import API from "../../api";
 import {} from "../../definitions.api";
-import { QuickReportLocationType } from "./post-quick-report.api";
+import { IncidentCategory, QuickReportLocationType } from "./post-quick-report.api";
 
 /** ========================================================================
     ================= GET quickReports ====================
     ========================================================================
     @description Retrieves all Quick Reports for an Election Round ID
-    @param {string} electionRoundId 
-    @returns {QuickReportsAPIResponse} 
+    @param {string} electionRoundId
+    @returns {QuickReportsAPIResponse}
 */
 export type QuickReportAttachmentAPIResponse = {
   id: string;
@@ -22,6 +22,7 @@ export type QuickReportsAPIResponse = {
   id: string;
   electionRoundId: string;
   quickReportLocationType: QuickReportLocationType;
+  incidentCategory: IncidentCategory;
   title: string;
   description: string;
   pollingStationId?: string | null;
