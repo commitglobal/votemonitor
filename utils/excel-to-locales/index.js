@@ -89,7 +89,7 @@ for (const language of languages) {
   ensureDirectoryExists(`locales/${language.code}`);
 
   const fileName =
-    language.code.toLowerCase() === "en"
+    (language.code.toLowerCase() === "en" ||  language.code.toLowerCase() === "ro" )
       ? `locales/${language.code}/translations.json`
       : `locales/${
           language.code
@@ -101,3 +101,5 @@ for (const language of languages) {
     "utf8"
   );
 }
+
+console.log("done")
