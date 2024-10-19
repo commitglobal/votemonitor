@@ -60,37 +60,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              "FormSubmissions" FS
                          WHERE
                              FS."ElectionRoundId" = @electionRoundId
-                         UNION
-                         SELECT
-                             N."ElectionRoundId",
-                             N."PollingStationId",
-                             N."MonitoringObserverId",
-                             COALESCE(N."LastModifiedOn", N."CreatedOn") "LatestTimestamp"
-                         FROM
-                             "Notes" N
-                         WHERE
-                             N."ElectionRoundId" = @electionRoundId
-                         UNION
-                         SELECT
-                             A."ElectionRoundId",
-                             A."PollingStationId",
-                             A."MonitoringObserverId",
-                             COALESCE(A."LastModifiedOn", A."CreatedOn") "LatestTimestamp"
-                         FROM
-                             "Attachments" A
-                         WHERE
-                             A."ElectionRoundId" = @electionRoundId
-                             AND a."IsDeleted" = false AND a."IsCompleted" = true
-                         UNION
-                         SELECT
-                             QR."ElectionRoundId",
-                             QR."PollingStationId",
-                             QR."MonitoringObserverId",
-                             COALESCE(QR."LastModifiedOn", QR."CreatedOn") "LatestTimestamp"
-                         FROM
-                             "QuickReports" QR
-                         WHERE
-                             QR."ElectionRoundId" = @electionRoundId
                      ) T
                      INNER JOIN "MonitoringObservers" MO ON MO."Id" = T."MonitoringObserverId"
                      INNER JOIN "PollingStations" PS ON PS."Id" = T."PollingStationId"

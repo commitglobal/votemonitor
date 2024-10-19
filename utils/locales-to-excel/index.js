@@ -50,12 +50,7 @@ readdirSync("./locales", { withFileTypes: true, recursive: true })
     languages.push(languageCode);
   });
 
-const languageWithLongestNumberOfKeys = maxBy(
-  languages,
-  (l) => Object.keys(dictionary[l]).length
-);
-
-const keys = Object.keys(dictionary[languageWithLongestNumberOfKeys]);
+const keys = Object.keys(dictionary['en']);
 
 const data = keys.map((key) => {
   const keyData = {

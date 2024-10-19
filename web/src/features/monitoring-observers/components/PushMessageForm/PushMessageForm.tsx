@@ -30,6 +30,7 @@ import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/pu
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
+import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -180,13 +181,14 @@ function PushMessageForm(): FunctionComponent {
                 <FormField
                   control={form.control}
                   name='messageBody'
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem className='w-[540px]'>
                       <FormLabel className='text-left'>
                         Message body <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
-                        <RichTextEditor {...field} onValueChange={field.onChange} />
+                        {/* <RichTextEditor {...field} onValueChange={field.onChange} /> */}
+                        <Textarea {...field} {...fieldState} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
