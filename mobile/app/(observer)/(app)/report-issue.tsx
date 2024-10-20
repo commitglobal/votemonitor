@@ -424,7 +424,7 @@ const ReportIssue = () => {
     setIsPreparingFile(false);
     setIsUploading(false);
     setUploadProgress("");
-    removeMutationByScopeId(MUTATION_SCOPE_DO_NOT_HYDRATE);
+    removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
   };
 
   return (

@@ -20,14 +20,22 @@ import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { FileMetadata } from "../hooks/useCamera";
 import { MULTIPART_FILE_UPLOAD_SIZE, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../common/constants";
-import { useUploadAttachmentCitizenAbortMutation, useUploadAttachmentCitizenCompleteMutation, useUploadAttachmentCitizenMutation } from "../services/mutations/citizen/add-attachment-citizen.mutation";
+import {
+  useUploadAttachmentCitizenAbortMutation,
+  useUploadAttachmentCitizenCompleteMutation,
+  useUploadAttachmentCitizenMutation,
+} from "../services/mutations/citizen/add-attachment-citizen.mutation";
 import { AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
 import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
 import * as Sentry from "@sentry/react-native";
 import MediaLoading from "./MediaLoading";
-import { removeMutationByScopeId, useUploadS3ChunkMutation } from "../services/mutations/attachments/add-attachment.mutation";
+import {
+  removeMutationByScopeId,
+  useUploadS3ChunkMutation,
+} from "../services/mutations/attachments/add-attachment.mutation";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -54,7 +62,7 @@ export default function ReviewCitizenFormSheet({
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
-  attachments: Record<string, { fileMetadata: FileMetadata, id: string }[]> | undefined;
+  attachments: Record<string, { fileMetadata: FileMetadata; id: string }[]> | undefined;
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
   language: string;
@@ -64,10 +72,12 @@ export default function ReviewCitizenFormSheet({
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { isOnline } = useNetInfoContext();
+  const queryClient = useQueryClient();
 
   const { mutate: postCitizenForm, isPending } = usePostCitizenFormMutation();
   const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
-  const { mutateAsync: addAttachmentCitizenComplete } = useUploadAttachmentCitizenCompleteMutation();
+  const { mutateAsync: addAttachmentCitizenComplete } =
+    useUploadAttachmentCitizenCompleteMutation();
   const { mutateAsync: addAttachmentCitizenAbort } = useUploadAttachmentCitizenAbortMutation();
 
   const { selectedElectionRound } = useCitizenUserData();
@@ -171,7 +181,6 @@ export default function ReviewCitizenFormSheet({
             );
           }
 
-
           setIsUploading(false);
         },
         onError: (error) => {
@@ -196,7 +205,10 @@ export default function ReviewCitizenFormSheet({
 
     if (attachments && Object.keys(attachments).length > 0) {
       setIsUploading(true);
-      const attachmentArray: { questionId: string, fileMetadata: FileMetadata, id: string }[] = Object.entries(attachments).map(([questionId, attachments]) => attachments.map(a => ({ ...a, questionId }))).flat()
+      const attachmentArray: { questionId: string; fileMetadata: FileMetadata; id: string }[] =
+        Object.entries(attachments)
+          .map(([questionId, attachments]) => attachments.map((a) => ({ ...a, questionId })))
+          .flat();
       try {
         const totalParts = attachmentArray.reduce((acc, attachment) => {
           return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
@@ -207,7 +219,7 @@ export default function ReviewCitizenFormSheet({
         for (const attachment of attachmentArray) {
           try {
             if (cancelRef.current) {
-              throw new Error('Upload aborted');
+              throw new Error("Upload aborted");
             }
 
             const payload: AddAttachmentCitizenStartAPIPayload = {
@@ -247,8 +259,7 @@ export default function ReviewCitizenFormSheet({
         setIsUploading(false);
       }
     }
-
-  }
+  };
 
   const handleChunkUpload = async (
     filePath: string,
@@ -263,14 +274,14 @@ export default function ReviewCitizenFormSheet({
   ) => {
     try {
       if (cancelRef.current === true) {
-        throw new Error('Upload aborted');
+        throw new Error("Upload aborted");
       }
 
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
         if (cancelRef.current) {
-          throw new Error('Upload aborted');
+          throw new Error("Upload aborted");
         }
         const chunk = await FileSystem.readAsStringAsync(filePath, {
           length: MULTIPART_FILE_UPLOAD_SIZE,
@@ -297,7 +308,9 @@ export default function ReviewCitizenFormSheet({
         });
       }
     } catch (err) {
-      Sentry.captureException(err, { data: { selectedElectionRound, citizenReportId, formId, questionId } });
+      Sentry.captureException(err, {
+        data: { selectedElectionRound, citizenReportId, formId, questionId },
+      });
       if (selectedElectionRound) {
         setUploadProgress(t("attachments.upload.aborted"));
         await addAttachmentCitizenAbort({
@@ -310,21 +323,20 @@ export default function ReviewCitizenFormSheet({
     }
   };
 
-
   const onAbortUpload = () => {
     cancelRef.current = true;
     setUploadProgress("");
     setIsUploading(false);
     setIsReviewSheetOpen(false);
-    removeMutationByScopeId(MUTATION_SCOPE_DO_NOT_HYDRATE);
-  }
+    removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
+  };
 
   return (
     <Sheet
       modal
       open
       zIndex={100_001}
-      snapPoints={isUploading ? isOnline ? [25] : [40] : [90]}
+      snapPoints={isUploading ? (isOnline ? [25] : [40]) : [90]}
       dismissOnSnapToBottom={!isPending && !isUploading}
       dismissOnOverlayPress={!isPending && !isUploading}
       onOpenChange={(open: boolean) => {
@@ -332,54 +344,61 @@ export default function ReviewCitizenFormSheet({
           setIsReviewSheetOpen(false);
         }
       }}
-
     >
       <Sheet.Overlay />
       <Sheet.Frame>
-        {isUploading ?
-          (<YStack flex={1} justifyContent="center" alignItems="center">
-            <MediaLoading progress={uploadProgress} isUploading={isUploading} onAbortUpload={onAbortUpload} />
-          </YStack>) : (
-            <>
-              <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-              <YStack flex={1} marginBottom={insets.bottom + 16}>
-                {isPending ? (
-                  <LoadingScreen />
-                ) : (
-                  <Sheet.ScrollView
-                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
-                    bounces={false}
-                    showsVerticalScrollIndicator={false}
-                  >
-                    <Typography preset="heading">{t("review.heading")}</Typography>
-                    {displayedQuestions.map((question) => (
-                      <YStack key={question.id} marginTop="$md">
-                        <Typography fontWeight="500">{question.text[language]}</Typography>
-                        {mappedAnswers && mappedAnswers[question.id] && (
-                          <Typography marginTop="$xs" color="$gray5">
-                            {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+        {isUploading ? (
+          <YStack flex={1} justifyContent="center" alignItems="center">
+            <MediaLoading
+              progress={uploadProgress}
+              isUploading={isUploading}
+              onAbortUpload={onAbortUpload}
+            />
+          </YStack>
+        ) : (
+          <>
+            <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
+            <YStack flex={1} marginBottom={insets.bottom + 16}>
+              {isPending ? (
+                <LoadingScreen />
+              ) : (
+                <Sheet.ScrollView
+                  contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+                  bounces={false}
+                  showsVerticalScrollIndicator={false}
+                >
+                  <Typography preset="heading">{t("review.heading")}</Typography>
+                  {displayedQuestions.map((question) => (
+                    <YStack key={question.id} marginTop="$md">
+                      <Typography fontWeight="500">{question.text[language]}</Typography>
+                      {mappedAnswers && mappedAnswers[question.id] && (
+                        <Typography marginTop="$xs" color="$gray5">
+                          {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+                        </Typography>
+                      )}
+                      {attachments && attachments[question.id] ? (
+                        <YStack gap="$xxs" paddingTop="$lg">
+                          <Typography fontWeight="500">
+                            {t("attachments.heading")}: {attachments[question.id].length}
                           </Typography>
-                        )}
-                        {attachments && attachments[question.id] ? (
-                          <YStack gap="$xxs" paddingTop='$lg'>
-                            <Typography fontWeight="500">{t("attachments.heading")}: {attachments[question.id].length}</Typography>
-                          </YStack>
-                        ) : (
-                          false
-                        )}
-                        <Separator marginTop="$xs" />
-                      </YStack>
-                    ))}
-                  </Sheet.ScrollView>
-                )}
+                        </YStack>
+                      ) : (
+                        false
+                      )}
+                      <Separator marginTop="$xs" />
+                    </YStack>
+                  ))}
+                </Sheet.ScrollView>
+              )}
 
-                <YStack paddingHorizontal="$lg" paddingTop="$md">
-                  <Button onPress={handleSubmit} disabled={isPending}>
-                    {t("review.send")}
-                  </Button>
-                </YStack>
+              <YStack paddingHorizontal="$lg" paddingTop="$md">
+                <Button onPress={handleSubmit} disabled={isPending}>
+                  {t("review.send")}
+                </Button>
               </YStack>
-            </>)}
+            </YStack>
+          </>
+        )}
       </Sheet.Frame>
     </Sheet>
   );

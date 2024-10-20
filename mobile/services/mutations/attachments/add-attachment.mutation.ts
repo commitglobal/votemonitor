@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AddAttachmentAbortAPIPayload,
   AddAttachmentCompleteAPIPayload,
@@ -73,8 +73,7 @@ export const useUploadS3ChunkMutation = () => {
   });
 };
 
-export const removeMutationByScopeId = (scopeId: string) => {
-  const queryClient = useQueryClient();
+export const removeMutationByScopeId = (queryClient: QueryClient, scopeId: string) => {
   queryClient
     .getMutationCache()
     .getAll()

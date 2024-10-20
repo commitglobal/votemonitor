@@ -4,7 +4,15 @@ import { Typography } from "./Typography";
 import Button from "./Button";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
-const MediaLoading = ({ progress, isUploading, onAbortUpload }: { progress?: string, isUploading?: boolean, onAbortUpload?: () => void }) => {
+const MediaLoading = ({
+  progress,
+  isUploading,
+  onAbortUpload,
+}: {
+  progress?: string;
+  isUploading?: boolean;
+  onAbortUpload?: () => void;
+}) => {
   const { isOnline } = useNetInfoContext();
   const { t } = useTranslation("polling_station_form_wizard");
   return (
