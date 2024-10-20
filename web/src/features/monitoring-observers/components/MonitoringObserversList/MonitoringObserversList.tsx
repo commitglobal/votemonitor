@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
+import { PageResponse } from '@/common/types';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,23 +16,24 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
-import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
+import { useMutation, UseQueryResult } from '@tanstack/react-query';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
-import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
+import { Route } from '@/routes/monitoring-observers/$tab';
+import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { Plus } from 'lucide-react';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
+import { monitoringObserversKeys, useMonitoringObservers } from '../../hooks/monitoring-observers-queries';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
@@ -45,7 +46,7 @@ type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverRespons
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
-  const queryParams = useSearch({ strict: false });
+  const search = Route.useSearch();
 
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -126,6 +127,8 @@ function MonitoringObserversList() {
   ];
 
   const [searchText, setSearchText] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
+
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const importMonitoringObserversDialog = useDialog();
@@ -150,51 +153,16 @@ function MonitoringObserversList() {
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
-  const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
-    const pageParams = queryParams as any;
-    return useQuery({
-      queryKey: [
-        'monitoring-observers',
-        params.pageNumber,
-        params.pageSize,
-        params.sortColumnName,
-        params.sortOrder,
-        searchText,
-        pageParams[FILTER_KEY.MonitoringObserverStatus],
-        pageParams[FILTER_KEY.MonitoringObserverTags],
-      ],
-      queryFn: async () => {
-        const paramsObject: any = {
-          PageNumber: params.pageNumber,
-          PageSize: params.pageSize,
-          SortColumnName: params.sortColumnName,
-          SortOrder: params.sortOrder,
-          searchText: searchText,
-          status: pageParams[FILTER_KEY.MonitoringObserverStatus],
-          tags: pageParams[FILTER_KEY.MonitoringObserverTags],
-        };
 
-        const tagString =
-          pageParams.tags == undefined ? '' : pageParams.tags?.map((n: string) => `tags=${n}`).join('&');
+  const queryParams = useMemo(() => {
+    const params = [
+      ['status', debouncedSearch.monitoringObserverStatus],
+      ['tags', debouncedSearch.tags],
+      ['searchText', searchText]
+    ].filter(([_, value]) => value);
 
-        const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,
-          {
-            params: Object.keys(paramsObject)
-              .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
-              .reduce((a, k) => ({ ...a, [k]: paramsObject[k] }), {}),
-          }
-        );
-
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch monitoring observers');
-        }
-
-        return { ...response.data, isEmpty: !isQueryFiltered(paramsObject) && response.data.items.length === 0 };
-      },
-      enabled: !!currentElectionRoundId,
-    });
-  };
+    return Object.fromEntries(params);
+  }, [debouncedSearch]);
 
   const resendInvitationsMutation = useMutation({
     mutationFn: ({
@@ -209,8 +177,8 @@ function MonitoringObserversList() {
       });
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
+    onSuccess: (_, {electionRoundId}) => {
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       router.invalidate();
 
       setMonitoringObserverId(undefined);
@@ -373,8 +341,8 @@ function MonitoringObserversList() {
       <CardContent>
         <QueryParamsDataTable
           columns={monitoringObserverColDefs}
-          useQuery={useMonitoringObservers}
-          // onRowClick={rowClickHandler}
+          useQuery={(params) => useMonitoringObservers(currentElectionRoundId, params)}
+          queryParams={queryParams}
           getCellProps={getCellProps}
           emptySubtitle='Start adding a first list of observers for this election event by filling in the template and then uploading it in this section.'
           emptyTitle='No observers added yet'

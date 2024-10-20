@@ -267,7 +267,7 @@ export function round(value: number, decimals: number): number {
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
 }
 
-export function isQueryFiltered(queryParams: Record<string, string>): boolean {
+export function isQueryFiltered(queryParams: Record<string, any>): boolean {
   return Object.entries(queryParams).some(
     ([key, value]) => !['PageNumber', 'PageSize', 'SortColumnName', 'SortOrder'].includes(key) && Boolean(value)
   );
