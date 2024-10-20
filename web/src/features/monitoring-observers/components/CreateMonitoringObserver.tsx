@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { MonitorObserverBackButton } from './MonitoringObserverBackButton';
+import { monitoringObserversKeys } from '../hooks/monitoring-observers-queries';
 
 export default function CreateMonitoringObserver() {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
@@ -46,13 +47,13 @@ export default function CreateMonitoringObserver() {
       return authApi.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers: [values] });
     },
 
-    onSuccess: () => {
+    onSuccess: (_, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: t('onSuccess'),
       });
 
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers', currentElectionRoundId] });
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
 
       navigate({
         to: '/monitoring-observers/$tab',
