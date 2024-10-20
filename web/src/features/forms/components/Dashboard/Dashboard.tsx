@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { LanguageBadge } from '@/components/ui/language-badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
@@ -25,7 +26,7 @@ import i18n from '@/i18n';
 import { cn, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
-import { ChevronDownIcon, ChevronUpIcon, EllipsisVerticalIcon, FunnelIcon , PhotoIcon} from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon, EllipsisVerticalIcon, FunnelIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
@@ -37,7 +38,6 @@ import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
 import { FormFilters } from './FormFilters/FormFilters';
-import { LanguageBadge } from '@/components/ui/language-badge';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
