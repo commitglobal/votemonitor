@@ -16,9 +16,15 @@ public class PollingStationInformationForm : BaseForm
         ElectionRound electionRound,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(electionRound, FormType.PSI, "PSI",
+        IEnumerable<BaseQuestion> questions) : base(electionRound,
+        FormType.PSI,
+        "PSI",
         TranslatedString.New(languages, "PSI"),
-        TranslatedString.New(languages, ""), defaultLanguage, languages, questions)
+        TranslatedString.New(languages, ""),
+        defaultLanguage,
+        languages,
+        null,
+        questions)
     {
     }
 
@@ -64,7 +70,8 @@ public class PollingStationInformationForm : BaseForm
         var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        return PollingStationInformation.Create(userId, ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
+        return PollingStationInformation.Create(userId, ElectionRound, pollingStation, monitoringObserver, this,
+            arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
 

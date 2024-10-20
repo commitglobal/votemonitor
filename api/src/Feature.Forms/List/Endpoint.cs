@@ -57,7 +57,7 @@ public class Endpoint(
                          F."FormType",
                          F."NumberOfQuestions",
                          F."LanguagesTranslationStatus",
-                  
+                         F."Icon",
                          F."LastModifiedOn",
                          F."LastModifiedBy"
                   FROM (SELECT F."Id",
@@ -70,6 +70,7 @@ public class Endpoint(
                                F."FormType",
                                F."NumberOfQuestions",
                                F."LanguagesTranslationStatus",
+                               F."Icon",
                                COALESCE(F."LastModifiedOn", F."CreatedOn")                as "LastModifiedOn",
                                COALESCE(UPDATER."FirstName" || ' ' || UPDATER."LastName",
                                         CREATOR."FirstName" || ' ' || CREATOR."LastName") AS "LastModifiedBy"
