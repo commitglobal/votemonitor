@@ -209,6 +209,7 @@ export type FormAPIModel = {
   createdOn: string;
   lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
   questions: ApiFormQuestion[];
+  icon?: string;
 };
 
 export type ElectionRoundsAllFormsAPIResponse = {

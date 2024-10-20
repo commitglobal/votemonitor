@@ -5,6 +5,7 @@ import Card from "./Card";
 import { Icon } from "./Icon";
 import { FormAPIModel } from "../services/definitions.api";
 import { useTranslation } from "react-i18next";
+import { SvgXml } from "react-native-svg";
 
 export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () => void }) => {
   const { i18n } = useTranslation();
@@ -35,7 +36,12 @@ export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () 
           borderRadius={12}
           alignSelf="flex-start"
         >
-          <Icon icon="publicResourcesProblems" size={40} />
+          {form.icon ? (
+            <SvgXml xml={form.icon} width={40} height={40} />
+          ) : (
+            <Icon icon="publicResourcesProblems" size={40} />
+          )}
+          {/* <Icon icon="publicResourcesProblems" size={40} /> */}
         </XStack>
 
         {/* text */}
