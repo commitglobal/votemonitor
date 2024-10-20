@@ -629,6 +629,36 @@
           "not_related": "Nu are legătură cu vreo secție de votare"
         }
       },
+      "incident_category": {
+        "label": "Categoria incidentului *",
+        "placeholder": "Categoria",
+        "required": "Acest câmp este obligatoriu",
+        "options": {
+          "PhysicalViolenceIntimidationPressure": "Violență fizică/Intimidare/Presiune",
+          "CampaigningAtPollingStation": "Campanie electorală la secția de votare",
+          "RestrictionOfObserversRights": "Restricționarea drepturilor observatorilor (reprezentantului/media)",
+          "UnauthorizedPersonsAtPollingStation": "Persoană(e) neautorizate la secțiile de votare",
+          "ViolationDuringVoterVerificationProcess": "Încălcări făcute pe durata procesului de verificare a alegătorilor",
+          "VotingWithImproperDocumentation": "Votare cu documentare improprie",
+          "IllegalRestrictionOfVotersRightToVote": "Restrângerea ilegală a dreptului de vot al alegătorului",
+          "DamagingOrSeizingElectionMaterials": "Deteriorarea/distrugerea materialelor electorale",
+          "ImproperFilingOrHandlingOfElectionDocumentation": "Depunerea/manipularea necorespunzătoare a documentelor electorale",
+          "BallotStuffing": "Introducerea ilegală de buletine de vot",
+          "ViolationsRelatedToControlPaper": "Încălcări legate de hârtia de control",
+          "NotCheckingVoterIdentificationSafeguardMeasures": "Neverificarea măsurilor de siguranță pentru identificarea alegătorilor",
+          "VotingWithoutVoterIdentificationSafeguardMeasures": "Votare fără măsuri de siguranță pentru identificarea alegătorilor",
+          "BreachOfSecrecyOfVote": "Încălcarea secretului votului",
+          "ViolationsRelatedToMobileBallotBox": "Încălcări legate de urna mobilă",
+          "NumberOfBallotsExceedsNumberOfVoters": "Numărul buletinelor de vot depășește numărul de alegători",
+          "ImproperInvalidationOrValidationOfBallots": "Invalidarea/validarea necorespunzătoare a buletinelor de vot",
+          "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsificarea/corectarea necorespunzătoare a procesului-verbal final",
+          "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Refuzul de a elibera o copie a procesului-verbal final/eliberarea unei copii necorespunzătoare",
+          "ImproperFillingInOfFinalProtocol": "Completarea necorespunzătoare a procesului-verbal final",
+          "ViolationOfSealingProceduresOfElectionMaterials": "Încălcarea procedurilor de sigilare a materialelor electorale",
+          "ViolationsRelatedToVoterLists": "Încălcări legate de listele electorale",
+          "Other": "Altele"
+        }
+      },
       "polling_station_details": {
         "label": "Detaliile secției de votare *",
         "placeholder": "Te rugăm să ne oferi câteva detalii de identificare ale secției de votare (precum adresă, nume, număr, etc.)",
