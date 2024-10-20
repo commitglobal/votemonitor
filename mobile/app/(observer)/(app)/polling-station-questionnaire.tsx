@@ -403,7 +403,7 @@ const PollingStationQuestionnaire = () => {
                         <YStack>
                           <RadioFormInput
                             options={question.options.map((option) => ({
-                              id: option.id,
+                              id: question.id + option.id,
                               label: option.text[currentLanguage],
                               value: option.id,
                             }))}
@@ -427,7 +427,7 @@ const PollingStationQuestionnaire = () => {
                                     )
                                   }
                                   marginTop="$md"
-                                  key={option.id}
+                                  key={question.id + option.id}
                                   value={value.textValue}
                                   placeholder={t("form.placeholder")}
                                   onChangeText={(textValue) => onChange({ ...value, textValue })}
@@ -486,10 +486,10 @@ const PollingStationQuestionnaire = () => {
                         return (
                           <>
                             {question.options.map((option) => (
-                              <YStack key={option.id}>
+                              <YStack key={question.id + option.id}>
                                 <CheckboxInput
                                   marginBottom="$md"
-                                  id={option.id}
+                                  id={question.id + option.id}
                                   label={option.text[currentLanguage]}
                                   checked={selections[option.id]?.optionId === option.id}
                                   onCheckedChange={(checked) => {
