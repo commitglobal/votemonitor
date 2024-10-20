@@ -5,8 +5,8 @@ import { ASYNC_STORAGE_KEYS } from "../common/constants";
 import { reloadAsync } from "expo-updates";
 
 const API = axios.create({
-  // baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
-  baseURL: `https://api.votemonitor.org/api/`,
+  baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
+  // baseURL: `https://api.votemonitor.org/api/`,
   timeout: 100000,
   headers: {
     "Content-Type": "application/json",
@@ -24,6 +24,7 @@ API.interceptors.request.use(async (request) => {
 
     if (token) {
       request.headers.Authorization = `Bearer ${token}`;
+      // console.log("request.headers", request.headers.Authorization);
     }
   } catch (err) {
     // User not authenticated. May be a public API.
@@ -63,7 +64,7 @@ API.interceptors.response.use(
       // Something happened in setting up the request that triggered an Error
       console.log("Error", error.message);
     }
-    console.log(error.config);
+    console.log(error);
     console.log("❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️");
     throw error;
   },

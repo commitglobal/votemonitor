@@ -8,6 +8,7 @@ import * as Sentry from "@sentry/react-native";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import { clearAsyncStorage } from "../../common/utils/utils";
 import { Typography } from "../../components/Typography";
+import { decodeAndSetUserInSentry } from "../../helpers/decode-jwt";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -19,6 +20,9 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const init = async () => {
     try {
       const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
+      if (token) {
+        decodeAndSetUserInSentry(token);
+      }
       setIsAuthenticated(!!token);
     } catch (err) {
       Sentry.captureException(err);
@@ -36,7 +40,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       });
       try {
         await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
-        Sentry.setUser({ email });
+        decodeAndSetUserInSentry(token);
       } catch (err) {
         console.error("Could not set Aceess Token in AsyncStorage");
         throw err;
