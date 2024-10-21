@@ -5,6 +5,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';
 
 export const MonitoringObserversSearchParamsSchema = z.object({
+  searchText: z.coerce.string().optional(),
   tags: z.array(z.string()).optional(),
   monitoringObserverStatus: z.nativeEnum(MonitoringObserverStatus).optional()
 });
