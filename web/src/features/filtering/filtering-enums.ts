@@ -25,7 +25,6 @@ export const enum FILTER_KEY {
   FromDate = 'submissionsFromDate',
   ToDate = 'submissionsToDate',
   SearchText = 'searchText',
-
 }
 
 export const enum FILTER_LABEL {

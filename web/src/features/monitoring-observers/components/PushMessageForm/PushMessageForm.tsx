@@ -1,40 +1,36 @@
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { RichTextEditor } from '@/components/rich-text-editor';
-import { FilterBadge } from '@/components/ui/badge';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
+import { FormTypeSelect } from '@/features/forms/components/filtering/FormTypeSelect';
+import { FormSubmissionsFormSelect } from '@/features/responses/filtering/FormSubmissionsFormSelect';
+import { FormSubmissionsFromDateFilter } from '@/features/responses/filtering/FormSubmissionsFromDateFilter';
+import { FormSubmissionsQuestionsAnsweredSelect } from '@/features/responses/filtering/FormSubmissionsQuestionsAnsweredSelect';
+import { FormSubmissionsToDateFilter } from '@/features/responses/filtering/FormSubmissionsToDateFilter';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { MonitoringObserverStatusSelect } from '../../filtering/MonitoringObserverStatusSelect';
+import { MonitoringObserverTagsSelect } from '../../filtering/MonitoringObserverTagsSelect';
 import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
-import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
-import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -51,37 +47,9 @@ function PushMessageForm(): FunctionComponent {
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const router = useRouter();
 
   const queryClient = useQueryClient();
-
-  const onTagsFilterChange = useCallback(
-    (tag: string) => () => {
-      void navigate({
-        search: (prev: PushMessageTargetedObserversSearchParams) => {
-          const prevTagsFilter = prev.tagsFilter ?? [];
-          const newTags = prevTagsFilter.includes(tag)
-            ? prevTagsFilter.filter((t) => t !== tag)
-            : [...prevTagsFilter, tag];
-
-          return { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
-        },
-      });
-    },
-    [navigate]
-  );
-
-  const onClearFilter = useCallback(
-    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) =>
-      () => {
-        const filters = Array.isArray(filter)
-          ? Object.fromEntries(filter.map((key) => [key, undefined]))
-          : { [filter]: undefined };
-        void navigate({ search: (prev) => ({ ...prev, ...filters }) });
-      },
-    [navigate]
-  );
 
   useEffect(() => {
     void navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) });
@@ -92,14 +60,19 @@ function PushMessageForm(): FunctionComponent {
   const queryParams = useMemo(() => {
     const params = [
       ['searchText', debouncedSearchText],
-      ['statusFilter', debouncedSearch.statusFilter],
-      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['statusFilter', debouncedSearch.monitoringObserverStatus],
+      ['tagsFilter', debouncedSearch.tags],
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
+      ['formTypeFilter', debouncedSearch.formTypeFilter],
+      ['questionsAnswered', debouncedSearch.questionsAnswered],
+      ['formId', debouncedSearch.formId],
+      ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
+      ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
@@ -204,145 +177,26 @@ function PushMessageForm(): FunctionComponent {
                 2. Filter the list of observers to reduce it to the desired recipients of the message
               </h2>
 
-              <div className='flex flex-col gap-6'>
-                <div className='grid items-center grid-cols-6 gap-4'>
+              <div className='mb-8'>
+                <FilteringContainer>
                   <Input onChange={handleSearchInput} placeholder='Search' />
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
-                        <span className='text-sm font-normal text-slate-700'>Observer tags</span>
-                        {search.tagsFilter && (
-                          <span className='inline-block px-2 text-purple-600 rounded-full bg-purple-50'>
-                            {search.tagsFilter.length}
-                          </span>
-                        )}
-                        <ChevronDownIcon className='w-[20px] ml-auto' />
-                      </Button>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent>
-                      {tags?.map((tag) => (
-                        <DropdownMenuCheckboxItem
-                          checked={search.tagsFilter?.includes(tag)}
-                          onCheckedChange={onTagsFilterChange(tag)}
-                          key={tag}>
-                          {tag}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <Select
-                    onValueChange={(value) => {
-                      void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
-                    }}
-                    value={search.statusFilter ?? ''}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Observer status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {Object.values(MonitoringObserverStatus).map((value) => (
-                          <SelectItem value={value} key={value}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <MonitoringObserverTagsSelect />
+                  <MonitoringObserverStatusSelect />
+                  <FormTypeSelect />
+                  <FormSubmissionsFormSelect />
+                  <FormSubmissionsQuestionsAnsweredSelect />
                   <PollingStationsFilters />
-
-                  <Button
-                    type='button'
-                    onClick={() => {
-                      void navigate({});
-                    }}
-                    variant='ghost-primary'
-                    className='w-[180px]'>
-                    Reset filters
-                  </Button>
-                </div>
-
-                {Object.entries(search).length > 0 && (
-                  <div className='flex flex-wrap gap-2 col-span-full'>
-                    {search.tagsFilter?.map((tag) => (
-                      <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
-                    ))}
-
-                    {search.statusFilter && (
-                      <FilterBadge label={`Status: ${search.statusFilter}`} onClear={onClearFilter('statusFilter')} />
-                    )}
-
-                    {search.level1Filter && (
-                      <FilterBadge
-                        label={`Location - L1: ${search.level1Filter}`}
-                        onClear={onClearFilter([
-                          'level1Filter',
-                          'level2Filter',
-                          'level3Filter',
-                          'level4Filter',
-                          'level5Filter',
-                          'pollingStationNumberFilter',
-                        ])}
-                      />
-                    )}
-
-                    {search.level2Filter && (
-                      <FilterBadge
-                        label={`Location - L2: ${search.level2Filter}`}
-                        onClear={onClearFilter([
-                          'level2Filter',
-                          'level3Filter',
-                          'level4Filter',
-                          'level5Filter',
-                          'pollingStationNumberFilter',
-                        ])}
-                      />
-                    )}
-
-                    {search.level3Filter && (
-                      <FilterBadge
-                        label={`Location - L3: ${search.level3Filter}`}
-                        onClear={onClearFilter([
-                          'level3Filter',
-                          'level4Filter',
-                          'level5Filter',
-                          'pollingStationNumberFilter',
-                        ])}
-                      />
-                    )}
-
-                    {search.level4Filter && (
-                      <FilterBadge
-                        label={`Location - L4: ${search.level4Filter}`}
-                        onClear={onClearFilter(['level4Filter', 'level5Filter', 'pollingStationNumberFilter'])}
-                      />
-                    )}
-
-                    {search.level5Filter && (
-                      <FilterBadge
-                        label={`Location - L5: ${search.level5Filter}`}
-                        onClear={onClearFilter(['level5Filter', 'pollingStationNumberFilter'])}
-                      />
-                    )}
-
-                    {search.pollingStationNumberFilter && (
-                      <FilterBadge
-                        label={`PS Number: ${search.pollingStationNumberFilter}`}
-                        onClear={onClearFilter('pollingStationNumberFilter')}
-                      />
-                    )}
-                  </div>
-                )}
-
-                <QueryParamsDataTable
-                  columns={targetedMonitoringObserverColDefs}
-                  useQuery={(params) => useTargetedMonitoringObservers(currentElectionRoundId, params)}
-                  onDataFetchingSucceed={handleDataFetchingSucceed}
-                  queryParams={queryParams}
-                />
+                  <FormSubmissionsFromDateFilter />
+                  <FormSubmissionsToDateFilter />
+                </FilteringContainer>
               </div>
+
+              <QueryParamsDataTable
+                columns={targetedMonitoringObserverColDefs}
+                useQuery={(params) => useTargetedMonitoringObservers(currentElectionRoundId, params)}
+                onDataFetchingSucceed={handleDataFetchingSucceed}
+                queryParams={queryParams}
+              />
 
               <div className='fixed bottom-0 left-0 flex justify-end w-screen px-12 py-4 bg-white'>
                 <Button>Send message to {totalRowsCount} observers</Button>
