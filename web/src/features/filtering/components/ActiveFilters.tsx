@@ -46,6 +46,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
   [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
+  [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
