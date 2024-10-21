@@ -462,7 +462,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
 
                      SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(FS."LastModifiedOn", FS."CreatedOn")))::TIMESTAMPTZ AS "Bucket",
                             COUNT(1) AS "FormsSubmitted",
-                            SUM("NumberOfFlaggedAnswers") AS "NumberOfQuestionsAnswered",
+                            SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
                             SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers"
                      FROM "FormSubmissions" FS
                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"

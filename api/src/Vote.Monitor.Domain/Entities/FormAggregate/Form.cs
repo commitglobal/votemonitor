@@ -27,8 +27,16 @@ public class Form : BaseForm
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(electionRound, formType, code, name,
-        description, defaultLanguage, languages, questions)
+        string? icon,
+        IEnumerable<BaseQuestion> questions) : base(electionRound,
+        formType,
+        code,
+        name,
+        description,
+        defaultLanguage,
+        languages,
+        icon,
+        questions)
     {
         MonitoringNgoId = monitoringNgo.Id;
         MonitoringNgo = monitoringNgo;
@@ -43,6 +51,7 @@ public class Form : BaseForm
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
+        string? icon,
         IEnumerable<BaseQuestion> questions) : base(
         electionRoundId,
         formType,
@@ -51,6 +60,7 @@ public class Form : BaseForm
         description,
         defaultLanguage,
         languages,
+        icon,
         questions)
     {
         MonitoringNgoId = monitoringNgoId;
@@ -67,9 +77,20 @@ public class Form : BaseForm
         FormStatus status,
         string defaultLanguage,
         string[] languages,
+        string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id, electionRoundId, formType, code, name,
-        description, status, defaultLanguage, languages, numberOfQuestions, languagesTranslationStatus)
+        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
+        electionRoundId,
+        formType,
+        code,
+        name,
+        description,
+        status,
+        defaultLanguage,
+        languages,
+        icon,
+        numberOfQuestions,
+        languagesTranslationStatus)
     {
         MonitoringNgoId = monitoringNgoId;
     }
@@ -83,8 +104,10 @@ public class Form : BaseForm
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
+        string? icon,
         IEnumerable<BaseQuestion> questions) =>
-        new(electionRound, monitoringNgo, formType, code, name, description, defaultLanguage, languages, questions);
+        new(electionRound, monitoringNgo, formType, code, name, description, defaultLanguage, languages, icon,
+            questions);
 
     public static Form Create(
         Guid electionRoundId,
@@ -95,11 +118,14 @@ public class Form : BaseForm
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
+        string? icon,
         IEnumerable<BaseQuestion> questions) =>
-        new(electionRoundId, monitoringNgoId, formType, code, name, description, defaultLanguage, languages, questions);
+        new(electionRoundId, monitoringNgoId, formType, code, name, description, defaultLanguage, languages, icon,
+            questions);
 
     public Form Duplicate() =>
-        new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Questions);
+        new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
+            Questions);
 
     public FormSubmission CreateFormSubmission(
         PollingStation pollingStation,
@@ -150,7 +176,7 @@ public class Form : BaseForm
         bool? isCompleted)
     {
         answers ??= [];
-        
+
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 

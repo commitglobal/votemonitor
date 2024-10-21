@@ -8,37 +8,39 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/layout/Header/Logo';
 
-import { Route as ResetPasswordRoute } from '@/routes/reset-password/index'
+import { Route as ResetPasswordRoute } from '@/routes/reset-password/index';
 import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
 import { useNavigate } from '@tanstack/react-router';
 import type { FunctionComponent } from '@/common/types';
 
-interface ResetPasswordRequest{
+interface ResetPasswordRequest {
   password: string;
   token: string;
   email: string;
 }
 
-const formSchema = z.object({
-  email: z
-  .string()
-  .min(1, {
-    message: 'Email is mandatory',
+const formSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, {
+        message: 'Email is mandatory',
+      })
+      .email({ message: 'Email format is not correct' }),
+    password: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
+    confirmPassword: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
   })
-  .email({ message: 'Email format is not correct' }),
-  password: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
-  confirmPassword: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
-}).refine(
-  (values) => {
-    return values.password === values.confirmPassword;
-  },
-  {
-    message: "Passwords must match!",
-    path: ["confirmPassword"],
-  }
-);
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    {
+      message: 'Passwords must match!',
+      path: ['confirmPassword'],
+    }
+  );
 
 function ResetPassword(): FunctionComponent {
   const navigate = useNavigate();
@@ -54,11 +56,8 @@ function ResetPassword(): FunctionComponent {
   });
 
   const resetPasswordMutation = useMutation({
-    mutationFn: (obj:ResetPasswordRequest) => {
-      return noAuthApi.post<ResetPasswordRequest>(
-        `auth/reset-password`,
-        obj
-      );
+    mutationFn: (obj: ResetPasswordRequest) => {
+      return noAuthApi.post<ResetPasswordRequest>(`auth/reset-password`, obj);
     },
 
     onSuccess: () => {
@@ -74,12 +73,12 @@ function ResetPassword(): FunctionComponent {
     resetPasswordMutation.mutate({
       email: values.email,
       password: values.password,
-      token: token
-    })
+      token: token,
+    });
   };
 
   return (
-    <div className='w-screen h-screen flex flex-col justify-center items-center gap-8'>
+    <div className='flex flex-col items-center justify-center w-screen h-screen gap-8'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <Card className='w-full max-w-sm'>
@@ -101,7 +100,6 @@ function ResetPassword(): FunctionComponent {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type='email' {...field} />
-
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,7 +113,6 @@ function ResetPassword(): FunctionComponent {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input type='password' {...field} />
-
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,7 +126,7 @@ function ResetPassword(): FunctionComponent {
                   <FormItem>
                     <FormLabel>Confirm your password</FormLabel>
                     <FormControl>
-                      <Input type='password' {...field} />
+                      <Input type='password' autoCorrect='off' autoCapitalize='none' autoComplete='off' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
