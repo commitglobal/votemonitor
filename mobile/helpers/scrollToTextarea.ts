@@ -1,7 +1,6 @@
-import { useMemo } from "react";
 import { Platform } from "react-native";
 
-const scrollToPadding = useMemo(() => 16, []);
+const scrollToPadding = 16;
 
 export const scrollToTextarea = (scrollViewRef: any, textareaRef: any) => {
   if (Platform.OS === "ios") {
