@@ -21,13 +21,6 @@ export interface MonitoringObserver {
   latestActivityAt?: string;
 }
 
-export const monitoringObserverRouteSearchSchema = z.object({
-  searchText: z.string().catch(''),
-  pageNumber: z.number().catch(1),
-  pageSize: z.number().catch(10),
-  status: z.enum(['Active', 'Inactive', 'Suspended']).catch('Active'),
-});
-
 export const monitoringObserverDetailsRouteSearchSchema = z.object({
   formCodeFilter: z.string().catch('').optional(),
   formTypeFilter: z.string().catch('').optional(),

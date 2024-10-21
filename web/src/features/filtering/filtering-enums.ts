@@ -46,5 +46,7 @@ export const enum FILTER_LABEL {
   FormId = 'Form',
   FormStatus = 'Form status',
   FromDate = 'From date',
-  ToDate = 'ToDate',
+  ToDate = 'To Date',
+  SearchText = 'Search text',
+
 }

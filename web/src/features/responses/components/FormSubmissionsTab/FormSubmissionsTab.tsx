@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
@@ -40,24 +40,24 @@ const viewBy: Record<FormSubmissionsViewBy, string> = {
 export default function FormSubmissionsTab(): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { filteringIsActive } = useFilteringContainer();
+  const { filteringIsActive, navigateHandler } = useFilteringContainer();
+  const [filtersExpanded, setFiltersExpanded] = useState<boolean>(false);
 
   const { viewBy: byFilter } = search;
 
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const [searchText, setSearchText] = useState<string>(search.searchText ?? '');
 
-  const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const setPrevSearch = useSetPrevSearch();
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
     const value = ev.currentTarget.value;
-    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+    setSearchText(value);
   };
 
   const formSubmissionsFilter = useMemo(() => {
     const params = [
-      ['searchText', searchText],
+      ['searchText', search.searchText],
       ['formTypeFilter', search.formTypeFilter],
       ['hasFlaggedAnswers', search.hasFlaggedAnswers],
       ['level1Filter', search.level1Filter],
@@ -76,8 +76,18 @@ export default function FormSubmissionsTab(): FunctionComponent {
       ['toDateFilter', search.submissionsToDate?.toISOString()],
     ].filter(([_, value]) => value);
 
-    return Object.fromEntries(params)
+    return Object.fromEntries(params);
   }, [searchText, search]);
+
+  useEffect(() => {
+    navigateHandler({
+      [FILTER_KEY.SearchText]: debouncedSearchText,
+    });
+  }, [debouncedSearchText]);
+
+  useEffect(() => {
+    setSearchText(search.searchText ?? '');
+  }, [search.searchText]);
 
   return (
     <Card>
@@ -86,7 +96,10 @@ export default function FormSubmissionsTab(): FunctionComponent {
           <CardTitle>Form submissions</CardTitle>
 
           <div className='flex items-center gap-4'>
-            <ExportDataButton exportedDataType={ExportedDataType.FormSubmissions} filterParams={formSubmissionsFilter}/>
+            <ExportDataButton
+              exportedDataType={ExportedDataType.FormSubmissions}
+              filterParams={formSubmissionsFilter}
+            />
 
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -101,7 +114,6 @@ export default function FormSubmissionsTab(): FunctionComponent {
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' });
                     void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' } });
-                    setIsFiltering(false);
                   }}
                   value={byFilter}>
                   {Object.entries(viewBy).map(([value, label]) => (
@@ -119,12 +131,12 @@ export default function FormSubmissionsTab(): FunctionComponent {
 
         <div className='flex justify-end gap-4 px-6'>
           <>
-            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+            <Input className='max-w-md' onChange={handleSearchInput} value={searchText} placeholder='Search' />
             <FunnelIcon
               className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
               onClick={() => {
-                setIsFiltering((prev) => !prev);
+                setFiltersExpanded((prev) => !prev);
               }}
             />
           </>
@@ -134,7 +146,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
 
         <Separator />
 
-        {isFiltering && (
+        {filtersExpanded && (
           <>
             {byFilter === 'byEntry' && <FormSubmissionsFiltersByEntry />}
             {byFilter === 'byObserver' && <FormSubmissionsFiltersByObserver />}
