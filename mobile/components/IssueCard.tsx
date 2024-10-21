@@ -27,22 +27,7 @@ export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () 
     <Card onPress={onClick}>
       <XStack gap="$md">
         {/* icon */}
-        <XStack
-          justifyContent="center"
-          alignItems="center"
-          borderWidth={1}
-          borderColor="$purple5"
-          padding="$md"
-          borderRadius={12}
-          alignSelf="flex-start"
-        >
-          {form.icon ? (
-            <SvgXml xml={form.icon} width={40} height={40} />
-          ) : (
-            <Icon icon="publicResourcesProblems" size={40} />
-          )}
-          {/* <Icon icon="publicResourcesProblems" size={40} /> */}
-        </XStack>
+        {form.icon ? <SvgXml xml={form.icon} /> : <Icon icon="publicResourcesProblems" />}
 
         {/* text */}
         <YStack flex={1} gap="$xxs" justifyContent="space-between">

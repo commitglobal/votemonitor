@@ -174,7 +174,7 @@ export const defaultIcon = React.forwardRef(
       checkCircle: <CheckCircle fill={color} width={size} height={size} />,
       vmCitizenLogo: <VMCitizenLogo fill="none" width={width} height={height} />,
       warning: <Warning stroke={color} width={size} height={size} />,
-      publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
+      publicResourcesProblems: <PublicResourcesProblems fill="white" />,
       appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
       coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
       updates: <Updates fill={color} width={size} height={size} />,
