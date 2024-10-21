@@ -17,7 +17,8 @@ import { getSecureStoreItem } from "../../helpers/SecureStoreWrapper";
 
 const systemLocale =
   getSecureStoreItem(SECURE_STORAGE_KEYS.I18N_LANGUAGE) ||
-  Localization.getLocales()[0].languageCode;
+  Localization.getLocales()?.[0]?.languageCode ||
+  "en";
 
 // handle RTL languages
 const language = Localization.getLocales().find((lang) => lang.languageCode === systemLocale);
