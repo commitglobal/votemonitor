@@ -9,7 +9,6 @@ public sealed class AuditableBaseEntityFaker : Faker<TestEntity>
 
     public AuditableBaseEntityFaker(int? index = null)
     {
-        RuleFor(fake => fake.Id, Guid.NewGuid());
         RuleFor(o => o.LastModifiedOn, _baseUpdateDate.AddHours(index ?? 0));
 
         CustomInstantiator(faker => new TestEntity());

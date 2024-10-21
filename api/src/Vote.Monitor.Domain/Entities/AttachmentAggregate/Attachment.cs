@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.AttachmentAggregate;
 
 public class Attachment : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid PollingStationId { get; private set; }
@@ -32,8 +33,9 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool? isCompleted) : base(id)
+        bool? isCompleted)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
         MonitoringObserverId = monitoringObserverId;

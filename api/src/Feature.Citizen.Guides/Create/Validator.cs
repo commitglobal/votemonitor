@@ -18,7 +18,6 @@ public class Validator : Validator<Request>
         RuleFor(x => x.WebsiteUrl)
             .NotEmpty()!
             .MaximumLength(2048)
-            .IsValidUri()
             .When(x => x.GuideType == CitizenGuideType.Website);
         
         RuleFor(x => x.Text)

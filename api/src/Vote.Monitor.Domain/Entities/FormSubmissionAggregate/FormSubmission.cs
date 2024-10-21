@@ -6,6 +6,7 @@ namespace Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 public class FormSubmission : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid PollingStationId { get; private set; }
@@ -28,8 +29,9 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted) : base(Guid.NewGuid())
+        bool? isCompleted)
     {
+        Id = Guid.NewGuid();
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
         PollingStation = pollingStation;

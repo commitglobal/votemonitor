@@ -4,13 +4,15 @@ namespace Vote.Monitor.Domain.Entities.ObserverAggregate;
 
 public class Observer : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ApplicationUserId { get; private set; }
     public ApplicationUser ApplicationUser { get; private set; }
 
     public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
-    private Observer(ApplicationUser applicationUser) : base(applicationUser.Id)
+    private Observer(ApplicationUser applicationUser)
     {
+        Id = applicationUser.Id;
         ApplicationUser = applicationUser;
         ApplicationUserId = applicationUser.Id;
     }

@@ -117,6 +117,7 @@
     "field.defaultLanguage": "Base language",
     "field.languageCode": "Language",
     "field.formType": "Form type",
+    "field.Icon": "Icon",
     "field.languages": "Available languages",
     "field.status": "Status",
     "placeholder.code": "Form code",

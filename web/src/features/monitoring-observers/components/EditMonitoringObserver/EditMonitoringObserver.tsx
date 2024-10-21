@@ -1,5 +1,4 @@
 import { authApi } from '@/common/auth-api';
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +10,7 @@ import TagsSelectFormField from '@/components/ui/tag-selector';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
+import { monitoringObserverDetailsQueryOptions, Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
@@ -19,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
+import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -80,15 +80,13 @@ export default function EditObserver() {
         request
       );
     },
-    mutationKey: ['monitoring-observers'],
-    onSuccess: () => {
+    onSuccess: (_, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Observer successfully updated',
       });
       router.invalidate();
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
 
       navigate({
         to: '/monitoring-observers/view/$monitoringObserverId/$tab',

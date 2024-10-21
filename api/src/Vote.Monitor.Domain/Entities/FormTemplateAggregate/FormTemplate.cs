@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public FormTemplateType FormTemplateType { get; private set; }
     public string Code { get; private set; }
     public string DefaultLanguage { get; private set; }
@@ -23,8 +24,9 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         TranslatedString name,
         TranslatedString description,
         FormTemplateStatus status,
-        string[] languages) : base(id)
+        string[] languages)
     {
+        Id = id;
         FormTemplateType = formTemplateType;
         Code = code;
         DefaultLanguage = defaultLanguage;
@@ -40,8 +42,9 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         TranslatedString name,
         TranslatedString description,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
+        IEnumerable<BaseQuestion> questions)
     {
+        Id = Guid.NewGuid();
         FormTemplateType = formTemplateType;
         Code = code;
         DefaultLanguage = defaultLanguage;

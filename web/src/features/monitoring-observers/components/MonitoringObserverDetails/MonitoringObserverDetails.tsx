@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MonitoringObserverDetailsView from '../MonitoringObserverDetailsView/MonitoringObserverDetailsView';
 import { MonitoringObserverFormSubmissions } from '../MonitoringObserverFormSubmissions/MonitoringObserverFormSubmissions';
 
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import type { FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
@@ -14,6 +13,7 @@ import { MonitoringObserverQuickReports } from '../MonitoringObserverQuickReport
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { MonitoringObserverIncidentReports } from '../MonitoringObserverIncidentReports/MonitoringObserverIncidentReports';
+import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
   const { monitoringObserverId, tab } = Route.useParams();

@@ -16,6 +16,7 @@ namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
 
 public class PSIFormSubmissionsAggregateTests
 {
+    private readonly Guid _userId = Guid.NewGuid();
     private readonly PollingStationInformationForm _form;
     private readonly TextQuestion _textQuestion = new TextQuestionFaker().Generate();
     private readonly NumberQuestion _numberQuestion = new NumberQuestionFaker().Generate();
@@ -105,10 +106,12 @@ public class PSIFormSubmissionsAggregateTests
 
         var pollingStation = new PollingStationFaker(electionRound: _electionRound).Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+        var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+        var formSubmission2 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 0, [], ValueOrUndefined<bool>.Some(false));
 
@@ -131,13 +134,16 @@ public class PSIFormSubmissionsAggregateTests
         var monitoringObserver1 = new MonitoringObserverFaker().Generate();
         var monitoringObserver2 = new MonitoringObserverFaker().Generate();
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1,
+        var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver1,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver2,
+        var formSubmission2 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver2,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1,
+        var formSubmission3 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver1,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 0, [], ValueOrUndefined<bool>.Some(false));
 
@@ -168,13 +174,16 @@ public class PSIFormSubmissionsAggregateTests
 
         var monitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+        var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation1,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             22, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2, monitoringObserver,
+        var formSubmission2 = PollingStationInformation.Create(_userId, _electionRound, pollingStation2,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             44, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+        var formSubmission3 = PollingStationInformation.Create(_userId, _electionRound, pollingStation1,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             55, 0, [], ValueOrUndefined<bool>.Some(false));
 
@@ -198,13 +207,16 @@ public class PSIFormSubmissionsAggregateTests
 
         var monitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+        var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation1,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 12, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2, monitoringObserver,
+        var formSubmission2 = PollingStationInformation.Create(_userId, _electionRound, pollingStation2,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 22, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+        var formSubmission3 = PollingStationInformation.Create(_userId, _electionRound, pollingStation1,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
             0, 35, [], ValueOrUndefined<bool>.Some(false));
 
@@ -248,13 +260,16 @@ public class PSIFormSubmissionsAggregateTests
             new NumberAnswerFaker(_numberQuestion.Id),
         ];
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+        var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
             submission1Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+        var formSubmission2 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
             submission2Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false));
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+        var formSubmission3 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,
+            monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
             submission3Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false));
 

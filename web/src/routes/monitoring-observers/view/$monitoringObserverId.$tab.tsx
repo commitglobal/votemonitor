@@ -1,9 +1,9 @@
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import type { FunctionComponent } from '@/common/types';
 import MonitoringObserverDetails from '@/features/monitoring-observers/components/MonitoringObserverDetails/MonitoringObserverDetails';
 import { monitoringObserverDetailsRouteSearchSchema } from '@/features/monitoring-observers/models/monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import { monitoringObserverDetailsQueryOptions } from '../edit.$monitoringObserverId';
 
 export const Route = createFileRoute('/monitoring-observers/view/$monitoringObserverId/$tab')({
   beforeLoad: ({params}) => {

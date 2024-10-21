@@ -8,25 +8,27 @@ namespace Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
 {
-    public Guid ElectionRoundId { get; private set; }
-    public ElectionRound ElectionRound { get; private set; }
-    public Guid PollingStationId { get; private set; }
-    public PollingStation PollingStation { get; private set; }
-    public Guid MonitoringObserverId { get; private set; }
-    public MonitoringObserver MonitoringObserver { get; private set; }
-    public Guid PollingStationInformationFormId { get; private set; }
-    public PollingStationInformationForm PollingStationInformationForm { get; private set; }
-    public DateTime? ArrivalTime { get; private set; }
-    public DateTime? DepartureTime { get; private set; }
-    public double? MinutesMonitoring { get; private set; }
-    public int NumberOfQuestionsAnswered { get; private set; }
-    public int NumberOfFlaggedAnswers { get; private set; }
-    public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
-    public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
-    public IReadOnlyList<ObservationBreak> Breaks { get; private set; } = new List<ObservationBreak>().AsReadOnly();
-    public bool IsCompleted { get; private set; }
+    public Guid Id { get; internal set; }    
+    public Guid ElectionRoundId { get; internal set; }
+    public ElectionRound ElectionRound { get; internal set; }
+    public Guid PollingStationId { get; internal set; }
+    public PollingStation PollingStation { get; internal set; }
+    public Guid MonitoringObserverId { get; internal set; }
+    public MonitoringObserver MonitoringObserver { get; internal set; }
+    public Guid PollingStationInformationFormId { get; internal set; }
+    public PollingStationInformationForm PollingStationInformationForm { get; internal set; }
+    public DateTime? ArrivalTime { get; internal set; }
+    public DateTime? DepartureTime { get; internal set; }
+    public double? MinutesMonitoring { get; internal set; }
+    public int NumberOfQuestionsAnswered { get; internal set; }
+    public int NumberOfFlaggedAnswers { get; internal set; }
+    public SubmissionFollowUpStatus FollowUpStatus { get; internal set; }
+    public IReadOnlyList<BaseAnswer> Answers { get; internal set; } = new List<BaseAnswer>().AsReadOnly();
+    public IReadOnlyList<ObservationBreak> Breaks { get; internal set; } = new List<ObservationBreak>().AsReadOnly();
+    public bool IsCompleted { get; internal set; }
 
-    private PollingStationInformation(
+    internal PollingStationInformation(
+        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -37,8 +39,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
-        ValueOrUndefined<bool> isCompleted) : base(Guid.NewGuid())
+        ValueOrUndefined<bool> isCompleted)
     {
+        Id = Guid.NewGuid();
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
         PollingStation = pollingStation;
@@ -50,7 +53,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-
+        CreatedBy = userId;
+        CreatedOn = DateTime.UtcNow;
         Answers = answers.ToList().AsReadOnly();
 
         if (!isCompleted.IsUndefined)
@@ -62,6 +66,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     }
 
     internal static PollingStationInformation Create(
+        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -73,8 +78,18 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
         ValueOrUndefined<bool> isCompleted) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
+        new(userId,
+            electionRound,
+            pollingStation,
+            monitoringObserver,
+            pollingStationInformationForm,
+            arrivalTime,
+            departureTime,
+            answers,
+            numberOfQuestionsAnswered,
+            numberOfFlaggedAnswers,
+            breaks,
+            isCompleted);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
@@ -103,11 +118,13 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         {
             IsCompleted = isCompleted.Value;
         }
-
+        
+        LastModifiedOn = DateTime.UtcNow;
+        
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    private void UpdateTimesOfStay(ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime,
+    internal void UpdateTimesOfStay(ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime,
         IEnumerable<ObservationBreak>? breaks)
 
     {
@@ -146,7 +163,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
-    private PollingStationInformation()
+    internal PollingStationInformation()
     {
     }
 #pragma warning restore CS8618

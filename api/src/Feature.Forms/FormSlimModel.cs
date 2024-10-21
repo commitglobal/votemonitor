@@ -16,6 +16,7 @@ public class FormSlimModel
 
     public required string Code { get; init; }
     public TranslatedString Name { get; init; }
+    public string? Icon { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]
     public required FormStatus Status { get; init; }

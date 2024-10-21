@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { downloadImportExample } from '../../helpers';
+import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 export interface ImportMonitoringObserversDialogProps {
   onImportError: (fileId: string) => void;
   open: boolean;
@@ -66,9 +67,9 @@ function ImportMonitoringObserversDialog({ onImportError, open, onOpenChange }: 
       });
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
+    onSuccess: (_, {electionRoundId}) => {
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.lists(electionRoundId) });
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.tags(electionRoundId) });
 
       toast({
         title: 'Success',

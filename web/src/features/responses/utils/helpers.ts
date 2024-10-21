@@ -17,7 +17,7 @@ export function mapQuickReportLocationType(locationType: QuickReportLocationType
   if (locationType === QuickReportLocationType.VisitedPollingStation)
     return i18n.t('quickReports.locationType.VisitedPollingStation');
 
-  return 'Unknown';
+  return locationType;
 }
 
 export function mapFormSubmissionFollowUpStatus(followUpStatus: FormSubmissionFollowUpStatus): string {
@@ -27,7 +27,7 @@ export function mapFormSubmissionFollowUpStatus(followUpStatus: FormSubmissionFo
     return i18n.t('formSubmissions.followUpStatus.NeedsFollowUp');
   if (followUpStatus === FormSubmissionFollowUpStatus.Resolved) return i18n.t('formSubmissions.followUpStatus.Resolved');
 
-  return 'Unknown';
+  return followUpStatus;
 }
 
 export function mapQuickReportFollowUpStatus(followUpStatus: QuickReportFollowUpStatus): string {
@@ -37,7 +37,7 @@ export function mapQuickReportFollowUpStatus(followUpStatus: QuickReportFollowUp
     return i18n.t('quickReports.followUpStatus.NeedsFollowUp');
   if (followUpStatus === QuickReportFollowUpStatus.Resolved) return i18n.t('quickReports.followUpStatus.Resolved');
 
-  return 'Unknown';
+  return followUpStatus;
 }
 
 export function mapCitizenReportFollowUpStatus(followUpStatus: CitizenReportFollowUpStatus): string {
@@ -47,7 +47,7 @@ export function mapCitizenReportFollowUpStatus(followUpStatus: CitizenReportFoll
     return i18n.t('citizenReports.followUpStatus.NeedsFollowUp');
   if (followUpStatus === CitizenReportFollowUpStatus.Resolved) return i18n.t('citizenReports.followUpStatus.Resolved');
 
-  return 'Unknown';
+  return followUpStatus;
 }
 
 export function mapIncidentReportFollowUpStatus(followUpStatus: IncidentReportFollowUpStatus): string {
@@ -58,7 +58,7 @@ export function mapIncidentReportFollowUpStatus(followUpStatus: IncidentReportFo
   if (followUpStatus === IncidentReportFollowUpStatus.Resolved)
     return i18n.t('incidentReports.followUpStatus.Resolved');
 
-  return 'Unknown';
+  return followUpStatus;
 }
 
 export function mapIncidentReportLocationType(locationType: IncidentReportLocationType): string {
@@ -67,7 +67,7 @@ export function mapIncidentReportLocationType(locationType: IncidentReportLocati
   if (locationType === IncidentReportLocationType.OtherLocation)
     return i18n.t('incidentReports.locationType.OtherLocation');
 
-  return 'Unknown';
+  return locationType;
 }
 
 export function mapQuestionsAnswered(questionsAnswered: QuestionsAnswered): string {
@@ -75,7 +75,7 @@ export function mapQuestionsAnswered(questionsAnswered: QuestionsAnswered): stri
   if (questionsAnswered === QuestionsAnswered.Some) return i18n.t('enums.questionsAnswered.Some');
   if (questionsAnswered === QuestionsAnswered.All) return i18n.t('enums.questionsAnswered.All');
 
-  return 'Unknown';
+  return questionsAnswered;
 }
 
 export function mapIncidentCategory(incidentCategory: IncidentCategory): string {
@@ -125,5 +125,5 @@ export function mapIncidentCategory(incidentCategory: IncidentCategory): string 
     return i18n.t('quickReports.incidentCategory.ViolationsRelatedToVoterLists');
   if (incidentCategory === IncidentCategory.Other) return i18n.t('quickReports.incidentCategory.Other');
 
-  return 'Unknown';
+  return incidentCategory;
 }

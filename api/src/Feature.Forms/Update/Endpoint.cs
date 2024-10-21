@@ -40,19 +40,22 @@ public class Endpoint(
 
         if (form.Status == FormStatus.Published)
         {
-            ThrowError(x=>x.Id, "Cannot edit published form");
+            ThrowError(x => x.Id, "Cannot edit published form");
         }
-        
-        var questions = req.Questions
-                 .Select(QuestionsMapper.ToEntity)
-                 .ToList()
-                 .AsReadOnly();
 
-        form.UpdateDetails(req.Code, req.Name, req.Description, req.FormType, req.DefaultLanguage, req.Languages, questions);
+        var questions = req.Questions
+            .Select(QuestionsMapper.ToEntity)
+            .ToList()
+            .AsReadOnly();
+
+        form.UpdateDetails(req.Code, req.Name, req.Description, req.FormType, req.DefaultLanguage, req.Languages,
+            req.Icon, questions);
 
         await formsRepository.UpdateAsync(form, ct);
 
-        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        var monitoringNgo =
+            await monitoringNgoRepository.FirstOrDefaultAsync(
+                new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
         monitoringNgo!.UpdateFormVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

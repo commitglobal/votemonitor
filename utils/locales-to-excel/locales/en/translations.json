@@ -1,0 +1,816 @@
+{
+  "common": {
+    "skip": "Next",
+    "search": "Search",
+    "loading": "Loading...",
+    "status": {
+      "completed": "Done",
+      "in_progress": "In progress",
+      "not_started": "Not started",
+      "marked_as_completed": "Marked as done"
+    },
+    "forms": {
+      "mark_as_done": "Mark form as done",
+      "mark_as_in_progress": "Mark form as in progress"
+    },
+    "cancel": "Cancel",
+    "save": "Save",
+    "no_data": "No data found.",
+    "select": "Select",
+    "done": "Done",
+    "ok": "OK"
+  },
+  "languages": {
+    "ro": "Romanian",
+    "en": "English",
+    "pl": "Polish",
+    "bg": "Bulgarian",
+    "sr": "Serbian",
+    "ge": "Georgian",
+    "am": "Armenian",
+    "ru": "Russian",
+    "az": "Azerbaijani"
+  },
+  "onboarding": {
+    "language": {
+      "heading": "Choose your language",
+      "description": "This will be the language in which your app will be displayed, and can be changed at any time from the More Section of the application.",
+      "save": "Apply selection"
+    },
+    "polling_stations": {
+      "heading": "Monitor election processes",
+      "description": "and report campaign irregularities, polling station issues, and flag any problems with voting day procedures"
+    },
+    "forms": {
+      "heading": "Fill in observation forms",
+      "description": "and submit reports for each monitoring stage to help ensure a transparent and fair electoral process"
+    },
+    "media": {
+      "heading": "Add notes or media files",
+      "description": "to further support your observations and provide evidence for any irregularities",
+      "save": "Go to app"
+    }
+  },
+  "select_app_mode": {
+    "heading": "Select app mode",
+    "description": "You can monitor the electoral process as an accredited observer, or just as a citizen interested in supporting fair and democratic elections.",
+    "accredited_observer": {
+      "title": "Vote Monitor for Accredited Observers",
+      "description": "I am an accredited independent observer, invited by an NGO to observe the electoral process. **"
+    },
+    "citizen": {
+      "title": "Vote Monitor for Citizens",
+      "description": "I am a citizen and I want to report electoral irregularities I see during the electoral campaign or on election day."
+    },
+    "helper": "**As an accredited observer you will be able to switch to Citizen mode at any time, from the app’s menu.",
+    "continue": "Continue"
+  },
+  "select_election_event": {
+    "heading": "Available election events",
+    "description": "Select the event for which you would like to submit a report for:",
+    "continue": "Continue",
+    "empty_description": "At this moment there are no active electoral events for which you can report incidents as a citizen. Once an event will be available, you will see it in this section.",
+    "error_description": "Something went wrong while retrieving the available election events. Please retry.",
+    "retry": "Retry"
+  },
+  "drawer": {
+    "report_as": "Report as {{value}}",
+    "citizen": "citizen",
+    "accredited_observer": "accredited observer"
+  },
+  "citizen_report_issue": {
+    "header_title": "Report an issue",
+    "description": "As a citizen, you can report an election-related issue, by filling-in a reporting form, from the list below.",
+    "empty_forms": "Reporting forms will appear here once Vote Monitor team will publish them in the system.",
+    "error_message": "Something went wrong while retrieving the reporting forms. Please retry.",
+    "retry": "Retry",
+    "info_modal": {
+      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
+      "p2": "Please note that submitting a report through this application does not constitute an official complaint filed with the institutions responsible for organising elections.",
+      "ok": "OK"
+    }
+  },
+  "citizen_form": {
+    "review": {
+      "heading": "Review your report",
+      "send": "Send report",
+      "sending_report": "We're sending your report. Please wait..."
+    },
+    "progress_bar_label": "Form progress",
+    "success": {
+      "title": "Your report has been successfuly sent!",
+      "description": "Thank you for your civic involvement. You have the option to send a copy of your responses to your email, or you can return to the main page.",
+      "back_to_main": "Back to the main page",
+      "send_copy": "Send me a copy"
+    },
+    "error": "There was a problem while sending your review.",
+    "email_copy": {
+      "title": "Enter your email to receive a form copy",
+      "description": "To receive a copy of your form, please enter your email address below. This email address will be used only to send you the copy and will not be stored or used for any other purpose.",
+      "placeholder": "Enter your email",
+      "required": "The email is mandatory",
+      "invalid": "The email format is not valid",
+      "cancel": "Cancel",
+      "send": "Send"
+    },
+    "copy_sent": {
+      "title": "Your copy has been sent",
+      "description": "Your copy should arrive instantly, but in rare occasions it may take a few minutes to process. You can return to the main page in the meantime."
+    },
+    "unsaved_changes_dialog": {
+      "title": "You have unsaved changes",
+      "description": "Leaving this page will cause all your progress on the form to be lost. Are you sure you wish to go back?",
+      "actions": {
+        "discard": "Go back",
+        "save": "Stay here"
+      }
+    },
+    "attachments": {
+      "heading": "Uploaded media",
+      "loading": "Adding attachment... ",
+      "error": "Error while sending the attachment!",
+      "add": "Add media files",
+      "menu": {
+        "load": "Load from gallery",
+        "take_picture": "Take a photo",
+        "record_video": "Record a video",
+        "upload_audio": "Upload audio file"
+      },
+      "upload": {
+        "compressing": "Compressing attachment: ",
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Uploading attachments: ",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted.",
+        "offline": "You need an internet connection in order to perform this action."
+      },
+      "delete": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Delete"
+        }
+      }
+    }
+  },
+  "login": {
+    "disclaimer": {
+      "paragraph1": "Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.",
+      "paragraph2": {
+        "slice1": "If you are not an accredited observer, you may still",
+        "link": "report irregularities as a citizen",
+        "slice2": "for an ongoing election event, without needing an account."
+      }
+    },
+    "heading": "Log in",
+    "paragraph": "Please use the email address with which you registered as an independent observer:",
+    "form": {
+      "email": {
+        "label": "E-mail *",
+        "placeholder": "E-mail",
+        "required": "E-mail is mandatory",
+        "pattern": "E-mail format is not valid"
+      },
+      "password": {
+        "label": "Password *",
+        "placeholder": "Password",
+        "required": "Password is mandatory"
+      },
+      "submit": {
+        "save": "Log in",
+        "loading": "Log in..."
+      },
+      "errors": {
+        "invalid_credentials": "There was an error with your credentials. Please try again.",
+        "offline": "You need an internet connection in order to log in."
+      }
+    },
+    "actions": {
+      "forgot_password": "Forgot your password?"
+    },
+    "email_toast": "Email address was copied to clipboard"
+  },
+  "forgot_password": {
+    "header": {
+      "title": "Forgot password"
+    },
+    "heading": "Forgot your password?",
+    "paragraph": "Please enter the email address associated with your account and we’ll send you a link to reset your password.",
+    "form": {
+      "email": {
+        "label": "E-mail *",
+        "placeholder": "E-mail",
+        "required": "E-mail is mandatory",
+        "pattern": "E-mail format is not valid"
+      },
+      "submit": {
+        "loading": "Sending...",
+        "save": "Send"
+      },
+      "errors": {
+        "invalid_email": "The current email is not registered in the system. Please try again."
+      }
+    },
+    "confirmation": {
+      "heading": "Email sent",
+      "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email.",
+      "confirm": "Back to login"
+    }
+  },
+  "about_app": {
+    "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Observer",
+    "general": "Vote Monitor is a dedicated digital tool for independent observers and international organizations engaged in election monitoring. Vote Monitor is developed and managed by Code for Romania/Commit Global.",
+    "purpose": "The app assists independent observers in monitoring polling stations and documenting the polling process in real-time for a specific election round. All data collected through the mobile app is sent in real-time to accrediting organizations to identify potential red flags that may indicate fraud or other irregularities. Ultimately, our goal is to provide a clear, simple, and realistic snapshot of the polling process proceedings.",
+    "app_provides": {
+      "paragraph": "The app provides observers with:",
+      "item1": "A way to manage multiple visited polling stations",
+      "item2": "An efficient method to monitor the flow of the polling process through forms set up by accrediting organizations",
+      "item3": "A means of quickly reporting other problematic issues outside the standard forms"
+    },
+    "usage": "The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania, Poland and Bulgaria.",
+    "version": "Vote Monitor version {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "About Vote Monitor",
+    "title_observer": "About Vote Monitor Citizen",
+    "p1": "Vote Monitor Citizen enables everyday citizens to actively participate in monitoring elections by reporting any irregularities they encounter during the electoral period, including campaign activities, polling station operations, and voting day procedures.",
+    "p2": "Vote Monitor Citizen is an extension of the Vote Monitor app, which was initially developed by Code for Romania/Commit Global for independent observers working alongside NGOs in election monitoring efforts.",
+    "p3": "Users can submit real-time reports that will be analysed by non-governmental organizations involved in the electoral process. These reports may contribute to detailed observation documents and, in some instances, could be forwarded to relevant institutions to improve future elections.",
+    "p4": "While citizen reports play a vital role in promoting transparency, please note that submitting a report through this app does not constitute an official complaint to the institutions responsible for organizing elections.",
+    "version": "Vote Monitor version {{value}}"
+  },
+  "loading_screen": {
+    "heading": "Loading...",
+    "paragraph": "We are preparing all the data, please wait!"
+  },
+  "tabs": {
+    "observation": "Observation",
+    "quick_report": "Report",
+    "guides": "Guides",
+    "inbox": "Inbox",
+    "more": "More",
+    "report": "Report",
+    "resources": "Resources",
+    "updates": "Updates"
+  },
+  "add_polling_station": {
+    "title": "Add polling station",
+    "progress": {
+      "location": "Add polling station from {{value}}"
+    },
+    "actions": {
+      "next_step": "Next step",
+      "back": "Back",
+      "finalize": "Finalize"
+    },
+    "error": "Error while loading polling stations!"
+  },
+  "observation": {
+    "title": "Polling Station Observation",
+    "no_election_round": {
+      "heading": "No election event to observe yet",
+      "paragraph": "You will be able to use the app once you will be assigned to an election event by your organization"
+    },
+    "no_visited_polling_stations": {
+      "heading": "No visited polling stations yet",
+      "paragraph": "Start configuring your first polling station before completing observation forms.",
+      "add": "Add your first polling station"
+    },
+    "my_polling_stations": {
+      "heading": "My polling stations",
+      "paragraph": "You can switch between polling stations if you want to revisit form answers or polling station information.",
+      "add": "Add new polling station"
+    },
+    "polling_stations_information": {
+      "heading": "Polling station information",
+      "time_select": {
+        "not_defined": "Not defined",
+        "arrival_time": "Arrival time",
+        "departure_time": "Departure time",
+        "save": "Done",
+        "error": {
+          "arrival_first": "Please select an arrival time first.",
+          "later_departure": "Please select a departure time that is at a later time than the arrival.",
+          "earlier_arrival": "Please select an arrival time that is at an earlier time than the departure.",
+          "server": "We couldn't send the information to the server."
+        }
+      },
+      "observation_time": {
+        "observation_time": "Observation time",
+        "not_defined": "Not defined",
+        "no_of_breaks": "{{value}} breaks",
+        "one_break": "{{value}} break",
+        "arrival_and_departure": "Arrival and departure time",
+        "arrival_time": "Arrival time",
+        "departure_time": "Departure time",
+        "departure_after_arrival": "The departure time must be after the arrival time",
+        "select_arrival_time": "Select arrival time",
+        "select_departure_time": "Select departure time",
+        "add_break": "Add new break in observation",
+        "break": "Break {{value}}",
+        "start_time": "Start time",
+        "select_start_time": "Select start time",
+        "end_time": "End time",
+        "select_end_time": "Select end time",
+        "undefined_date": "DD/MM/YYYY",
+        "undefined_time": "HH:MM",
+        "save": "Save observation time",
+        "clear": "Clear observation time",
+        "confirmation_modals": {
+          "clear": {
+            "title": "Clear observation time",
+            "description": "This action will delete your arrival and departure time, including all your breaks entered so far for this polling station. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "clear": "Clear observation time"
+            }
+          },
+          "delete": {
+            "title": "Delete break",
+            "description": "This action will delete your break. To avoid unintended information loss, please ensure you check the times before performing this action.",
+            "actions": {
+              "cancel": "Cancel",
+              "delete": "Delete break"
+            }
+          },
+          "unsaved_changes": {
+            "title": "Save changes to observation time",
+            "description": "You have unsaved changes related to the observation time you entered. Do you want to save your changes before leaving the page?",
+            "actions": {
+              "discard": "Discard",
+              "save": "Save changes"
+            }
+          },
+          "unable_to_save": {
+            "title": "Unable to Save Observation Time",
+            "p1": "The times you entered cannot be saved due to a conflict between the break periods and the arrival/departure times.",
+            "p2": "Please ensure that break periods do not exceed the time interval defined by the arrival and departure observation times. Please review and adjust the times accordingly.",
+            "ok": "OK"
+          }
+        }
+      },
+      "polling_station_form": {
+        "paragraph": "Answer a few quick questions about the polling station.",
+        "form_details_button_label": "Polling station questions",
+        "number_of_questions": "{{value}} questions",
+        "answer_questions": "Answer questions"
+      }
+    },
+    "forms": {
+      "heading": "Observation forms",
+      "list": {
+        "empty": "Observation forms will appear here once your organization will publish them in the system.",
+        "error": {
+          "paragraph1": "Something went wrong!",
+          "paragraph2": "We could not fetch the data. Press the retry button to try again!",
+          "retry": "Retry"
+        }
+      },
+      "select_language_modal": {
+        "header": "Select form language",
+        "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
+        "error": "Please select one of the options"
+      }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
+    }
+  },
+  "polling_station_information_form": {
+    "title": "Polling station information",
+    "submit": "Submit answers",
+    "form": {
+      "max": "Input cannot exceed {{value}} characters",
+      "placeholder": "Please enter a text.."
+    },
+    "menu": {
+      "clear": "Clear form (delete all answers)"
+    },
+    "warning_modal": {
+      "title": "Clear Polling station information form",
+      "description": "This action will delete all answers entered so far for this form. To avoid unintended information loss, please ensure you check the form before performing this action.",
+      "actions": {
+        "cancel": "Cancel",
+        "clear": "Clear form"
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Save changes to form",
+      "description": "You have unsaved changes on this form. Do you want to save your changes before leaving?",
+      "actions": {
+        "discard": "Discard",
+        "save": "Save changes"
+      }
+    }
+  },
+  "form_overview": {
+    "overview": {
+      "heading": "Form Overview",
+      "status": "Form status",
+      "answered_questions": "Answered questions",
+      "resume": "Resume form",
+      "start_form": "Start form",
+      "progress": "progress"
+    },
+    "questions": {
+      "title": "Questions",
+      "not_answered": "Not Answered",
+      "answered": "Answered",
+      "no_notes": "No attached notes",
+      "notes": "Includes attached notes"
+    },
+    "attachments": {
+      "notes": "{{count}} Note(s)",
+      "media": "{{count}} Media file(s)"
+    },
+    "error": "Error while loading the form data!",
+    "menu": {
+      "clear": "Clear form (delete all answers)",
+      "change_language": "Change language"
+    },
+    "clear_answers_modal": {
+      "title": "Clear form {{value}}",
+      "description": {
+        "p1": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to 'Not Answered'.",
+        "p2": "To avoid unintended information loss, please ensure you check the form before performing this action"
+      },
+      "actions": {
+        "clear": "Clear form",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "polling_station_form_wizard": {
+    "progress_bar": {
+      "label": "Form progress",
+      "clear_answer": "Clear answer"
+    },
+    "form": {
+      "min": "The field must be at least {{value}} characters long",
+      "max": "The field must have a maximum of {{value}} characters",
+      "required": "This field is required",
+      "date_placeholder": "Please enter a date",
+      "text_placeholder": "Please enter a text"
+    },
+    "save_and_continue": "Save and continue",
+    "attachments": {
+      "heading": "Uploaded media",
+      "loading": "Adding attachment... ",
+      "error": "Error while sending the attachment!",
+      "add": "Add notes and media",
+      "menu": {
+        "add_note": "Add note",
+        "load": "Load from gallery",
+        "take_picture": "Take a photo",
+        "record_video": "Record a video",
+        "upload_audio": "Upload audio file"
+      },
+      "upload": {
+        "compressing": "Compressing attachment: ",
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted.",
+        "offline": "You need an internet connection in order to perform this action."
+      }
+    },
+    "notes": {
+      "heading": "Notes",
+      "add": {
+        "heading": "Add a note",
+        "form": {
+          "input": {
+            "placeholder": "Add any relevant notes to this question.",
+            "max": "Input cannot exceed 10,000 characters",
+            "required": "This field is required"
+          }
+        }
+      },
+      "edit": {
+        "heading": "Edit note",
+        "delete": "Delete note"
+      },
+      "delete": {
+        "title": "Delete note",
+        "description": "This action cannot be undone. Once deleted, a note cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "delete": "Delete"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "Clear answer to question {{value}}",
+        "description": "Clearing the answer to this question will permanently delete all its information (including notes and media files), as well as all its connected questions. Question statuses will be reverted to Not Answered.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Clear answer"
+        }
+      },
+      "attachment": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Delete"
+        }
+      },
+      "unsaved_answer": {
+        "title": "Save changes to question",
+        "description": "You have unsaved changes on this question. Do you want to save your changes before leaving?",
+        "actions": {
+          "cancel": "Discard",
+          "save": "Save changes"
+        }
+      }
+    },
+    "error": "Error while loading question data!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "No visited polling stations yet"
+    },
+    "general_text": "Manage my polling stations",
+    "ps_card": {
+      "header": "Polling station #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Street",
+      "ps_number": "Polling station number"
+    },
+    "warning_dialog": {
+      "title": "Remove Polling station #{{value}}",
+      "description": "This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.",
+      "actions": {
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "loading": "Loading..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Removing polling station #{{value}} not allowed",
+      "description": "The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action."
+    },
+    "delete_success": "Polling station deleted successfully!",
+    "delete_error": "We encountered a problem while deleting the polling station visit. Please try again.",
+    "offline_error_toast_msg": "You need an internet connection in order to perform this action."
+  },
+  "quick_report": {
+    "list": {
+      "title": "Quick Report",
+      "heading": "My reported issues",
+      "error": "Error while loading the reports!",
+      "empty": "Start sending quick reports to the organization if you notice irregularities inside, outside the polling station or whenever needed.",
+      "add": "Report new issue",
+      "no_files": "No attached files",
+      "attachment_one": "{{count}} attachment file",
+      "attachment_other": "{{count}} attachment files"
+    },
+    "attachments": {
+      "heading": "Uploaded media",
+      "loading": "Adding attachment... ",
+      "upload": {
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted."
+      },
+      "error": "Error while sending the attachment!"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": {
+      "p1": "From this section, you can quickly report any electoral irregularities you observe at polling stations or nearby areas.",
+      "p2": "This feature allows you to alert the organization instantly, outside the regular observation forms, ensuring urgent issues are addressed promptly."
+    }
+  },
+  "report_new_issue": {
+    "title": "Report new issue",
+    "upload": {
+      "compressing": "Compressing attachment: ",
+      "preparing": "Preparing attachment...",
+      "starting": "Starting the upload...",
+      "progress": "Uploading attachments: ",
+      "completed": "Upload completed.",
+      "aborted": "Upload aborted.",
+      "offline": "You need an internet connection in order to perform this action."
+    },
+    "media": {
+      "heading": "Uploaded media",
+      "add": "Add media",
+      "error": "Error while sending the attachment!",
+      "menu": {
+        "load": "Load from gallery",
+        "take_picture": "Take a photo",
+        "record_video": "Record video",
+        "upload_audio": "Upload audio file"
+      }
+    },
+    "form": {
+      "polling_station_id": {
+        "label": "Polling station *",
+        "placeholder": "Select polling station",
+        "extra": "Please write here some identification details for this polling station (such as address, name, number, etc.)",
+        "required": "This field is required.",
+        "options": {
+          "other": "Other polling station",
+          "not_related": "Not related to a polling station"
+        }
+      },
+      "polling_station_details": {
+        "label": "Polling station details *",
+        "placeholder": "Please write here some identification details for this polling station (such as address, name, number, etc.)",
+        "required": "This field is required.",
+        "max": "Input cannot exceed {{value}} characters"
+      },
+      "issue_title": {
+        "label": "Title of issue *",
+        "placeholder": "Write a title for the issue.",
+        "required": "Title of the issue is required",
+        "max": "Input cannot exceed {{value}} characters"
+      },
+      "issue_description": {
+        "label": "Description *",
+        "placeholder": "Describe the situation in detail here.",
+        "required": "Description of the issue is required",
+        "max": "Input cannot exceed {{value}} characters"
+      },
+      "submit": "Submit issue",
+      "clear": "Clear",
+      "loading": "Processing...",
+      "error": "Error while adding the report"
+    }
+  },
+  "report_details": {
+    "title": "",
+    "uploaded_media": "Uploaded media",
+    "no_files": "No attached files",
+    "error": "Error while loading the report"
+  },
+  "guides": {
+    "title": "Resources",
+    "empty": {
+      "heading": "No guides to read yet",
+      "paragraph": "Guides and resources from your organization at your hands."
+    },
+    "list": {
+      "heading": "Guides",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Created on"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as an independent observer."
+  },
+  "resources": {
+    "title": "Resources",
+    "info": "In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.",
+    "empty": {
+      "heading": "No guides to read yet",
+      "paragraph": "Guides and resources about observing electoral processes and reporting issues as a citizen at your hands."
+    },
+    "types": {
+      "Document": "Filetype PDF",
+      "Website": "External URL",
+      "Text": "In app guide"
+    }
+  },
+  "inbox": {
+    "title": "Inbox",
+    "empty": {
+      "heading": "No message received yet",
+      "paragraph": "Push messages and alerts from your organization will appear here."
+    },
+    "banner": "Messages from {{ngoName}}",
+    "today": "Today",
+    "your_organization": "your organization",
+    "menu": {
+      "manage_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": {
+      "p1": "In this Inbox expect to receive live updates and messages from the NGO that accredited you as an observer.",
+      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity."
+    }
+  },
+  "updates": {
+    "title": "Updates",
+    "empty": {
+      "heading": "No updates received yet",
+      "paragraph": "Updates about electoral period will appear here."
+    },
+    "info_modal": {
+      "p1": "In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.",
+      "p2": "Check back periodically to see if you have received any new information."
+    }
+  },
+  "more": {
+    "title": "More",
+    "change-language": "Change app language",
+    "change-password": "Change password",
+    "terms": "Terms and Conditions",
+    "privacy_policy": "Privacy Policy",
+    "about": "About Vote Monitor",
+    "app_version": "Vote Monitor version {{value}}",
+    "support": "Call the NGO Hotline",
+    "feedback": "Offer app feedback",
+    "logout": "Logout",
+    "logged_in": "Logged in as {{user}}",
+    "warning_modal": {
+      "logout_offline": {
+        "title": "Attention: You have unsynced data",
+        "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
+        "cancel": "Cancel",
+        "action": "Logout"
+      },
+      "logout_online": {
+        "title": "Are you sure you want to logout?",
+        "cancel": "Cancel",
+        "action": "Logout"
+      }
+    },
+    "feedback_toast": {
+      "success": "Feedback sent!",
+      "offline": "You need an internet connection in order to perform this action.",
+      "error": "Error while adding feedback!",
+      "required": "This field is required"
+    },
+    "feedback_sheet": {
+      "heading": "Send us your feedback",
+      "p1": "Please tell us about any issues you might have encountered with the functioning of the app, or any suggestions you would like to share to improve Vote Monitor for the future. We appreciate every feedback!",
+      "placeholder": "Write your feedback here...",
+      "cancel": "Cancel",
+      "action": "Send",
+      "input": {
+        "max": "Input cannot exceed {{value}} characters"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
+    }
+  },
+  "change_password": {
+    "title": "Change password",
+    "form": {
+      "current_password": {
+        "label": "Current password *",
+        "placeholder": "Insert current password",
+        "required": "Password is mandatory",
+        "credentials_error": "The current password is incorrect"
+      },
+      "new_password": {
+        "label": "New password *",
+        "placeholder": "Insert new password",
+        "helper": "Must be at least 8 characters",
+        "required": "The new password is mandatory"
+      },
+      "confirm_password": {
+        "label": "Confirm new password *",
+        "placeholder": "Confirm password",
+        "helper": "Both passwords must match.",
+        "required": "The new password is mandatory",
+        "no_match": "Passwords do not match"
+      },
+      "save": "Save new password"
+    },
+    "confirmation": {
+      "heading": "Password changed!",
+      "paragraph": "Your password has been successfully changed.",
+      "confirm": "Back to app"
+    },
+    "error": {
+      "offline": "App is offline and cannot do the request"
+    }
+  },
+  "generic_error_screen": {
+    "paragraph1": "Oops, something went wrong!",
+    "paragraph2": "We could not recover after this error. Please check your internet connection and restart the application!",
+    "retry": "Retry",
+    "logout": "Logout"
+  },
+  "network_banner": {
+    "online": "App online. All answers sent to server.",
+    "offline": "Offline mode. Saving answers locally.",
+    "offline_citizen": "Offline mode. You need internet to submit the form.",
+    "more_details": "More Details",
+    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports.",
+    "offline_warning_citizen": "It looks like you're currently offline. In order to submit the form, you need to be online."
+  },
+  "sync": {
+    "sync_data": "Synchronizing offline data...",
+    "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
+    "files": "We are uploading your files, it may take a while..."
+  }
+}

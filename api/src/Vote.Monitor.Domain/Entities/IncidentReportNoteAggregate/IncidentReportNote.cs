@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 
 public class IncidentReportNote : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public Guid FormId { get; private set; }
     public Guid IncidentReportId { get; private set; }
@@ -20,8 +21,9 @@ public class IncidentReportNote : AuditableBaseEntity, IAggregateRoot
         Guid incidentReportId,
         Guid formId,
         Guid questionId,
-        string text) : base(id)
+        string text)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         FormId = formId;
         IncidentReportId = incidentReportId;

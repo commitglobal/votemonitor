@@ -42,6 +42,7 @@ using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 using Vote.Monitor.Hangfire.Models;
+using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -94,8 +95,8 @@ SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByVal
 
 #endregion
 
+builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 builder.Services.AddSingleton<ISerializerService, SerializerService>();
-
 builder.Services.AddSingleton<CurrentUtcTimeProvider>();
 builder.Services.AddScoped<ITimeProvider>(sp =>
 {
@@ -124,6 +125,7 @@ builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>(
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
 builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
 builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
+builder.Services.AddScoped<ISendNotificationJob, SendNotificationJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
 
@@ -144,7 +146,7 @@ builder.Services.AddHangfire((sp,config) =>
         });
 
     config.UseActivator(new ContainerJobActivator(sp));
-    config.UseFilter(new AutomaticRetryAttribute { Attempts = 5 });
+    config.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 
     config.UseSerilogLogProvider();
 });

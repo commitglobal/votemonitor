@@ -7,3 +7,5 @@
 [assembly: InternalsVisibleTo("Vote.Monitor.TestUtils")]
 [assembly: InternalsVisibleTo("Vote.Monitor.Form.Module.UnitTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+// Allow upsert 
+[assembly: InternalsVisibleTo("Feature.PollingStation.Information")]

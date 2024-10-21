@@ -17,6 +17,7 @@ export interface FormBase {
     formType: FormType;
     code: string;
     defaultLanguage: string;
+    icon?: string;
     name: TranslatedString;
     description?: TranslatedString;
     status: FormStatus;
@@ -39,6 +40,7 @@ export interface UpdateFormRequest {
     name: TranslatedString;
     description?: TranslatedString;
     languages: string[];
+    icon?: string;
     questions: BaseQuestion[]
 }
 

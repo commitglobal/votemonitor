@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.TestUtils", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Hangfire.UnitTests", "tests\Vote.Monitor.Hangfire.UnitTests\Vote.Monitor.Hangfire.UnitTests.csproj", "{9CF1754A-94BA-495C-B22E-BB22FD97B505}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Module.Notifications", "src\Vote.Monitor.Module.Notifications\Vote.Monitor.Module.Notifications.csproj", "{A2A7C720-FB6E-4DEB-83AD-A98AF744A670}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{9CF1754A-94BA-495C-B22E-BB22FD97B505}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CF1754A-94BA-495C-B22E-BB22FD97B505}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CF1754A-94BA-495C-B22E-BB22FD97B505}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A7C720-FB6E-4DEB-83AD-A98AF744A670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A7C720-FB6E-4DEB-83AD-A98AF744A670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A7C720-FB6E-4DEB-83AD-A98AF744A670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A7C720-FB6E-4DEB-83AD-A98AF744A670}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{EB76532A-84F4-485E-B669-47005C6B8E82} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{EF9AC4E9-6E9D-4FFE-A347-4440097E0FDA} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{9CF1754A-94BA-495C-B22E-BB22FD97B505} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{A2A7C720-FB6E-4DEB-83AD-A98AF744A670} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

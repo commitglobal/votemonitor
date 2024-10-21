@@ -6,11 +6,6 @@ public partial class FormTests
     public void WhenDuplicate_ThenCreatesNewDraftedFormTemplate()
     {
         // Arrange
-        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
-
-        form.Publish();
-
         BaseQuestion[] questions =
         [
             new TextQuestionFaker(Languages).Generate(),
@@ -21,8 +16,10 @@ public partial class FormTests
             new MultiSelectQuestionFaker(languageList: Languages).Generate(),
         ];
 
-        form.UpdateDetails(form.Code, form.Name, form.Description, form.FormType, form.DefaultLanguage, form.Languages,
-            questions);
+        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
+            LanguagesList.RO.Iso1, Languages, null, questions);
+
+        form.Publish();
 
         // Act
         var newFormTemplate = form.Duplicate();
@@ -44,8 +41,8 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.EN.Iso1, Languages, questions);
-        
+            LanguagesList.EN.Iso1, Languages, null, questions);
+
         // Act
         var newForm = form.Duplicate();
 

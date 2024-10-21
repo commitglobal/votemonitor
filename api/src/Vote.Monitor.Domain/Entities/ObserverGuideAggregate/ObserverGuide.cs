@@ -4,6 +4,7 @@ namespace Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid MonitoringNgoId { get; private set; }
     public MonitoringNgo MonitoringNgo { get; private set; }
     public string Title { get; private set; }
@@ -20,8 +21,9 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
         string title,
         string fileName,
         string filePath,
-        string mimeType) : base(Guid.NewGuid())
+        string mimeType)
     {
+        Id = Guid.NewGuid();
         MonitoringNgo = monitoringNgo;
         MonitoringNgoId = monitoringNgo.Id;
         Title = title;
@@ -38,8 +40,9 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
 
     private ObserverGuide(MonitoringNgo monitoringNgo,
         string title,
-        Uri websiteUrl) : base(Guid.NewGuid())
+        Uri websiteUrl)
     {
+        Id = Guid.NewGuid();
         MonitoringNgo = monitoringNgo;
         MonitoringNgoId = monitoringNgo.Id;
         Title = title;
@@ -50,8 +53,9 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
 
     private ObserverGuide(MonitoringNgo monitoringNgo,
         string title,
-        string text) : base(Guid.NewGuid())
+        string text)
     {
+        Id = Guid.NewGuid();
         MonitoringNgo = monitoringNgo;
         MonitoringNgoId = monitoringNgo.Id;
         Title = title;

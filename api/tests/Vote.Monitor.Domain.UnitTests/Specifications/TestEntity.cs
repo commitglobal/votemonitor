@@ -2,7 +2,7 @@
 
 public class TestEntity : AuditableBaseEntity
 {
-    public TestEntity() : base(Guid.NewGuid())
+    public TestEntity()
     {
     }
 }

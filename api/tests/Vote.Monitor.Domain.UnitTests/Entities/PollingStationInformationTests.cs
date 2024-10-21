@@ -11,6 +11,7 @@ namespace Vote.Monitor.Domain.UnitTests.Entities;
 
 public class PollingStationInformationTests
 {
+    private readonly Guid _userId = Guid.NewGuid();
     private static readonly ElectionRound ElectionRound = new ElectionRoundAggregateFaker().Generate();
     private readonly PollingStation _pollingStation = new PollingStationFaker().Generate();
     private readonly MonitoringObserver _monitoringObserver = new MonitoringObserverFaker().Generate();
@@ -30,7 +31,9 @@ public class PollingStationInformationTests
     public void Update_Should_Not_Override_IsCompleted_When_Undefined()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -56,7 +59,9 @@ public class PollingStationInformationTests
     public void Update_Should_Override_IsCompleted_When_HasValue()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -82,7 +87,9 @@ public class PollingStationInformationTests
     public void Update_Should_Not_Override_ArrivalTime_When_Undefined()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -108,7 +115,9 @@ public class PollingStationInformationTests
     public void Update_Should_Override_ArrivalTime_When_HasValue()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -134,7 +143,9 @@ public class PollingStationInformationTests
     public void Update_Should_Not_Override_DepartureTime_When_Undefined()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now),
@@ -160,7 +171,9 @@ public class PollingStationInformationTests
     public void Update_Should_Override_DepartureTime_When_HasValue()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now),
@@ -188,7 +201,9 @@ public class PollingStationInformationTests
         // Arrange
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -217,7 +232,9 @@ public class PollingStationInformationTests
         // Arrange
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -245,7 +262,9 @@ public class PollingStationInformationTests
         // Arrange
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -271,7 +290,9 @@ public class PollingStationInformationTests
     public void Update_Should_Not_Override_Answers_When_Null()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -298,7 +319,9 @@ public class PollingStationInformationTests
     public void Update_Should_Override_Answers_When_Empty()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -324,7 +347,9 @@ public class PollingStationInformationTests
     public void Update_Should_Override_Answers_WithNewValue()
     {
         // Arrange
-        var submission = _form.CreatePollingStationInformation(pollingStation: _pollingStation,
+        var submission = _form.CreatePollingStationInformation(
+            _userId,
+            pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),

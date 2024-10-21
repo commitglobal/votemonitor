@@ -13,6 +13,7 @@ namespace Vote.Monitor.Domain.Entities.FormBase;
 
 public class BaseForm : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; set; }
     public ElectionRound ElectionRound { get; set; }
     public FormType FormType { get; private set; }
@@ -22,6 +23,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     public FormStatus Status { get; private set; }
     public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; } = [];
+    public string? Icon { get; set; }
     public int NumberOfQuestions { get; private set; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; } = new();
@@ -35,8 +37,16 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : this(electionRound.Id, formType, code, name,
-        description, defaultLanguage, languages, questions)
+        string? icon,
+        IEnumerable<BaseQuestion> questions) : this(electionRound.Id,
+        formType,
+        code,
+        name,
+        description,
+        defaultLanguage,
+        languages,
+        icon,
+        questions)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -50,8 +60,10 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
+        string? icon,
+        IEnumerable<BaseQuestion> questions)
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
 
         FormType = formType;
@@ -63,6 +75,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
+        Icon = icon;
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
@@ -76,9 +89,11 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         FormStatus status,
         string defaultLanguage,
         string[] languages,
+        string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id)
+        LanguagesTranslationStatus languagesTranslationStatus)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         FormType = formType;
         Code = code;
@@ -87,6 +102,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Status = status;
         DefaultLanguage = defaultLanguage;
         Languages = languages;
+        Icon = icon;
         NumberOfQuestions = numberOfQuestions;
         LanguagesTranslationStatus = languagesTranslationStatus;
     }
@@ -122,6 +138,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string defaultLanguage,
         IEnumerable<string> languages,
+        string? icon,
         IEnumerable<BaseQuestion> questions)
     {
         Code = code;
@@ -132,6 +149,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
+        Icon = icon;
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
@@ -180,7 +198,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime, List<ObservationBreak>? breaks, ValueOrUndefined<bool> isCompleted)
+        ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime,
+        List<ObservationBreak>? breaks, ValueOrUndefined<bool> isCompleted)
     {
         ValidateAnswers(answers);
         var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
@@ -190,7 +209,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         return psiSubmission;
     }
-    
+
     public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool? isCompleted)
     {
         ValidateAnswers(answers);
@@ -263,7 +282,6 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         LanguagesTranslationStatus =
             ComputeLanguagesTranslationStatus();
     }
-
 
     private LanguagesTranslationStatus ComputeLanguagesTranslationStatus()
     {

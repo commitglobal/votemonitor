@@ -199,7 +199,10 @@ public class Endpoint(
         foreach (var option in options)
         {
             var selectedOption = selectedOptions.FirstOrDefault(x => x.OptionId == option.Id);
-            result.Add(new SelectAnswerOptionFragmentProps(option.Text[defaultLanguage] + (selectedOption?.Text ?? ""),
+            var freeText = string.IsNullOrWhiteSpace(selectedOption?.Text)
+                ? string.Empty
+                : " (" + selectedOption?.Text + " )";
+            result.Add(new SelectAnswerOptionFragmentProps(option.Text[defaultLanguage] + freeText,
                 selectedOption != null));
         }
 

@@ -11,12 +11,14 @@ public class Ngo : AuditableBaseEntity, IAggregateRoot
     }
 #pragma warning restore CS8618
 
+    public Guid Id { get; private set; }
     public string Name { get; private set; }
     public NgoStatus Status { get; private set; }
     public HashSet<NgoAdmin> Admins { get; private set; } = new();
 
-    public Ngo(string name) : base(Guid.NewGuid())
+    public Ngo(string name)
     {
+        Id = Guid.NewGuid();
         Name = name;
         Status = NgoStatus.Activated;
     }

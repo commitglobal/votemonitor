@@ -27,11 +27,11 @@ import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/Pr
 import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { getTranslationOrDefault, mapFormType } from '@/lib/utils';
+import { getTranslationOrDefault, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { FormStatus } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
-import { FormStatus } from '../../models/form';
 
 export default function PreviewForm(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
@@ -90,13 +90,27 @@ export default function PreviewForm(): FunctionComponent {
                   </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.icon')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    {isNotNilOrWhitespace(form.icon) ? (
+                      <div dangerouslySetInnerHTML={{ __html: form.icon ?? '' }}></div>
+                    ) : (
+                      <>-</>
+                    )}
+                  </dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.defaultLanguage')}</dt>
-                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{form.defaultLanguage}</dd>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    <LanguageBadge languageCode={form.defaultLanguage} variant={'unstyled'} displayMode='native' />
+                  </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.languages')}</dt>
                   <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                    {form.languages.join(', ')}
+                    {form.languages.map((l) => (
+                      <LanguageBadge languageCode={l} variant={'unstyled'} displayMode='native' />
+                    ))}
                   </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>

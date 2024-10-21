@@ -11,6 +11,7 @@ namespace Vote.Monitor.Domain.UnitTests.Entities;
 
 public class BaseFormTests
 {
+    private readonly Guid _userId = Guid.NewGuid();
     private static readonly ElectionRound ElectionRound = new ElectionRoundAggregateFaker().Generate();
     private readonly PollingStation _pollingStation = new PollingStationFaker().Generate();
     private readonly MonitoringObserver _monitoringObserver = new MonitoringObserverFaker().Generate();
@@ -32,7 +33,8 @@ public class BaseFormTests
         List<ObservationBreak> breaks)
     {
         // Act
-        var submission = _form.CreatePollingStationInformation(_pollingStation,
+        var submission = _form.CreatePollingStationInformation(_userId,
+            _pollingStation,
             _monitoringObserver,
             arrivalTime,
             departureTime,

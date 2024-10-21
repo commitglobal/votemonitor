@@ -18,6 +18,7 @@ public class Request
     public FormType FormType { get; set; }
     public List<string> Languages { get; set; } = [];
     public string DefaultLanguage { get; set; }
-    
+    public string Icon { get; set; }
+
     public List<BaseQuestionRequest> Questions { get; set; } = new();
 }

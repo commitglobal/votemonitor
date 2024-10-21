@@ -43,7 +43,6 @@ COPY ["src/Feature.Monitoring/Feature.Monitoring.csproj", "src/Feature.Monitorin
 COPY ["src/Vote.Monitor.Api.Feature.NgoAdmin/Vote.Monitor.Api.Feature.NgoAdmin.csproj", "src/Vote.Monitor.Api.Feature.NgoAdmin/"]
 COPY ["src/Vote.Monitor.Api.Feature.Ngo/Vote.Monitor.Api.Feature.Ngo.csproj", "src/Vote.Monitor.Api.Feature.Ngo/"]
 COPY ["src/Feature.Notifications/Feature.Notifications.csproj", "src/Feature.Notifications/"]
-COPY ["src/Vote.Monitor.Module.Notifications/Vote.Monitor.Module.Notifications.csproj", "src/Vote.Monitor.Module.Notifications/"]
 COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.csproj", "src/Vote.Monitor.Api.Feature.Observer/"]
 COPY ["src/Feature.Attachments/Feature.Attachments.csproj", "src/Feature.Attachments/"]
 COPY ["src/Feature.Notes/Feature.Notes.csproj", "src/Feature.Notes/"]

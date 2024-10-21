@@ -8,9 +8,10 @@ import { QuestionType, ZFormType } from '@/common/types';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { EditFormType } from './EditForm';
 import { changeLanguageCode, mapFormType } from '@/lib/utils';
+import { useEffect, useRef, useState } from 'react';
 
 export interface EditFormDetailsProps {
   languageCode: string;
@@ -19,7 +20,48 @@ export interface EditFormDetailsProps {
 function EditFormDetails({ languageCode }: EditFormDetailsProps) {
   const { t } = useTranslation();
   const form = useFormContext<EditFormType>();
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const formType = useWatch({ control: form.control, name: 'formType' });
+  const icon = useWatch({ control: form.control, name: 'icon' });
+
+  const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
+  const [error, setError] = useState('');
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (icon && previewRef.current) {
+      try {
+        // Clear previous content and error
+        previewRef.current.innerHTML = '';
+        setError('');
+
+        // Create a temporary div to hold the SVG
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = icon.trim();
+
+        // Check if the input is a valid SVG
+        const svgElement = tempDiv.querySelector('svg');
+        if (!svgElement) {
+          throw new Error('Invalid SVG input');
+        }
+
+        // Append the SVG to the preview div
+        previewRef.current.appendChild(svgElement);
+
+        // Get the rendered dimensions
+        const bbox = svgElement.getBBox();
+        setSvgDimensions({
+          width: Math.round(bbox.width),
+          height: Math.round(bbox.height),
+        });
+      } catch (err) {
+        setError('Invalid SVG input');
+        setSvgDimensions({ width: 0, height: 0 });
+      }
+    } else {
+      setSvgDimensions({ width: 0, height: 0 });
+    }
+  }, [icon]);
 
   const handleLanguageChange = (newLanguageCode: string): void => {
     const formValues = form.getValues();
@@ -28,10 +70,13 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
     form.setValue('description', changeLanguageCode(formValues.description, languageCode, newLanguageCode));
 
     form.setValue('languageCode', newLanguageCode);
-    form.setValue('languages', [...formValues.languages.filter(l => l !== languageCode), newLanguageCode]);
+    form.setValue('languages', [...formValues.languages.filter((l) => l !== languageCode), newLanguageCode]);
 
     formValues.questions.forEach((question, index) => {
-      if (question.$questionType === QuestionType.NumberQuestionType || question.$questionType === QuestionType.TextQuestionType) {
+      if (
+        question.$questionType === QuestionType.NumberQuestionType ||
+        question.$questionType === QuestionType.TextQuestionType
+      ) {
         form.setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
@@ -41,7 +86,10 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
         });
       }
 
-      if (question.$questionType === QuestionType.DateQuestionType || question.$questionType === QuestionType.RatingQuestionType) {
+      if (
+        question.$questionType === QuestionType.DateQuestionType ||
+        question.$questionType === QuestionType.RatingQuestionType
+      ) {
         form.setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
@@ -50,16 +98,19 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
         });
       }
 
-      if (question.$questionType === QuestionType.SingleSelectQuestionType || question.$questionType === QuestionType.MultiSelectQuestionType) {
+      if (
+        question.$questionType === QuestionType.SingleSelectQuestionType ||
+        question.$questionType === QuestionType.MultiSelectQuestionType
+      ) {
         form.setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
           text: changeLanguageCode(question.text, languageCode, newLanguageCode)!,
           helptext: changeLanguageCode(question.helptext, languageCode, newLanguageCode),
-          options: question.options?.map(option => ({
+          options: question.options?.map((option) => ({
             ...option,
             text: changeLanguageCode(option.text, languageCode, newLanguageCode)!,
-          }))
+          })),
         });
       }
 
@@ -74,22 +125,30 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
       <div className='space-y-4 md:w-1/2'>
         <FormField
           control={form.control}
-          name="formType"
+          name='formType'
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('form.field.formType')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className='truncate'>
-                    <SelectValue placeholder="Select a form type" />
+                    <SelectValue placeholder='Select a form type' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
-                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
-                  <SelectItem value={ZFormType.Values.IncidentReporting}>{mapFormType(ZFormType.Values.IncidentReporting)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>
+                    {mapFormType(ZFormType.Values.ClosingAndCounting)}
+                  </SelectItem>
+                  {isMonitoringNgoForCitizenReporting && (
+                    <SelectItem value={ZFormType.Values.CitizenReporting}>
+                      {mapFormType(ZFormType.Values.CitizenReporting)}
+                    </SelectItem>
+                  )}
+                  <SelectItem value={ZFormType.Values.IncidentReporting}>
+                    {mapFormType(ZFormType.Values.IncidentReporting)}
+                  </SelectItem>
                   <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectContent>
               </Select>
@@ -97,6 +156,34 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
             </FormItem>
           )}
         />
+
+        {formType === ZFormType.Values.CitizenReporting && isMonitoringNgoForCitizenReporting ? (
+          <>
+            <FormField
+              control={form.control}
+              name='icon'
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>{t('form.field.icon')}</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder={t('form.placeholder.icon')} {...field} {...fieldState} rows={5} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className='space-y-2'>
+              {error ? <p className='text-red-500'>{error}</p> : <div ref={previewRef} />}
+              {svgDimensions.width > 0 && svgDimensions.height > 0 && (
+                <p className='text-sm text-muted-foreground'>
+                  {svgDimensions.width}px x {svgDimensions.height}px
+                </p>
+              )}
+            </div>
+          </>
+        ) : null}
+
         <FormField
           control={form.control}
           name='code'
@@ -117,14 +204,18 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
             <FormItem>
               <FormLabel>{t('form.field.name')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('form.placeholder.name')}
+                <Input
+                  placeholder={t('form.placeholder.name')}
                   {...field}
                   {...fieldState}
                   value={field.value[languageCode]}
-                  onChange={event => field.onChange({
-                    ...field.value,
-                    [languageCode]: event.target.value
-                  })} />
+                  onChange={(event) =>
+                    field.onChange({
+                      ...field.value,
+                      [languageCode]: event.target.value,
+                    })
+                  }
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -150,10 +241,14 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
         />
 
         <div className='inline-flex text-slate-700'>
-          <div><InformationCircleIcon width={24} height={24} /></div>
-          <div className='ml-2 text-sm'>Base language is the language a form is initially written in. You can multiple translations after you finalize the form in base language.</div>
+          <div>
+            <InformationCircleIcon width={24} height={24} />
+          </div>
+          <div className='ml-2 text-sm'>
+            Base language is the language a form is initially written in. You can multiple translations after you
+            finalize the form in base language.
+          </div>
         </div>
-
       </div>
       <div className='md:w-1/2'>
         <FormField
@@ -170,10 +265,13 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
                   {...fieldState}
                   placeholder={t('form.placeholder.description')}
                   value={field.value ? field.value[languageCode] : ''}
-                  onChange={event => field.onChange({
-                    ...field.value,
-                    [languageCode]: event.target.value
-                  })} />
+                  onChange={(event) =>
+                    field.onChange({
+                      ...field.value,
+                      [languageCode]: event.target.value,
+                    })
+                  }
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -181,9 +279,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
         />
       </div>
     </div>
-  )
-
-
+  );
 }
 
-export default EditFormDetails
+export default EditFormDetails;

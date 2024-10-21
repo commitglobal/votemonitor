@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.NoteAggregate;
 
 public class Note : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public Guid PollingStationId { get; private set; }
     public Guid MonitoringObserverId { get; private set; }
@@ -22,8 +23,9 @@ public class Note : AuditableBaseEntity, IAggregateRoot
         Guid monitoringObserverId,
         Guid formId,
         Guid questionId,
-        string text) : base(id)
+        string text)
     {
+        Id = id;
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
         MonitoringObserverId = monitoringObserverId;
