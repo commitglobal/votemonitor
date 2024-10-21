@@ -1,11 +1,8 @@
-
-import { DateTimeHourBucketFormat } from '@/common/formats';
 import { round } from '@/lib/utils';
 import type { ChartData, ScriptableContext } from 'chart.js';
-import { format } from 'date-fns';
 import { HistogramEntry, ObserversStats, VisitedPollingStationLevelStats } from '../models/ngo-admin-statistics-models';
 
-export const observersAccountsDataConfig = (stats?: ObserversStats): ChartData<"doughnut"> => {
+export const observersAccountsDataConfig = (stats?: ObserversStats): ChartData<'doughnut'> => {
   const labels = [];
   const data = [];
   const colors = [];
@@ -39,11 +36,14 @@ export const observersAccountsDataConfig = (stats?: ObserversStats): ChartData<"
         backgroundColor: colors,
         borderWidth: 1,
       },
-    ]
-  }
+    ],
+  };
 };
 
-export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, numberOfObserversOnTheField?: number): ChartData<"doughnut"> => {
+export const observersOnTheFieldDataConfig = (
+  totalNumberOfObservers?: number,
+  numberOfObserversOnTheField?: number
+): ChartData<'doughnut'> => {
   const labels = [];
   const data = [];
   const colors = [];
@@ -72,11 +72,13 @@ export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, n
         backgroundColor: colors,
         borderWidth: 1,
       },
-    ]
-  }
+    ],
+  };
 };
 
-export const pollingStationsDataConfig = (pollingStationsStats?: VisitedPollingStationLevelStats): ChartData<"doughnut"> => {
+export const pollingStationsDataConfig = (
+  pollingStationsStats?: VisitedPollingStationLevelStats
+): ChartData<'doughnut'> => {
   const labels = [];
   const data = [];
   const colors = [];
@@ -88,7 +90,8 @@ export const pollingStationsDataConfig = (pollingStationsStats?: VisitedPollingS
     colors.push('#7833B3');
   }
 
-  const numberOfNotVisitedPollingStations = (pollingStationsStats?.numberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
+  const numberOfNotVisitedPollingStations =
+    (pollingStationsStats?.numberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
   if (numberOfNotVisitedPollingStations) {
     labels.push('Not visited');
     data.push(numberOfNotVisitedPollingStations);
@@ -104,11 +107,11 @@ export const pollingStationsDataConfig = (pollingStationsStats?: VisitedPollingS
         backgroundColor: colors,
         borderWidth: 1,
       },
-    ]
+    ],
   };
-}
+};
 
-export const timeSpentObservingDataConfig = (totalMinutesObserving?: number): ChartData<"doughnut"> => {
+export const timeSpentObservingDataConfig = (totalMinutesObserving?: number): ChartData<'doughnut'> => {
   const totalHours = totalMinutesObserving ? round(totalMinutesObserving / 60, 2) : 0;
 
   return {
@@ -120,19 +123,22 @@ export const timeSpentObservingDataConfig = (totalMinutesObserving?: number): Ch
           '#7833B3', // total color
         ],
       },
-    ]
+    ],
   };
-}
+};
 
 // NOTE!! server returns dates in UTC extract local hour part
-export const histogramChartConfig = (histogram: HistogramEntry[] | undefined, variant: 'red' | 'blue' = 'blue'): ChartData<"line", number[]> => {
-  const labels: string[] = [];
+export const histogramChartConfig = (
+  histogram: HistogramEntry[] | undefined,
+  variant: 'red' | 'blue' = 'blue'
+): ChartData<'line', number[]> => {
+  const labels: Date[] = [];
   const data: number[] = [];
 
   histogram
     ?.sort((a, b) => new Date(a.bucket).getTime() - new Date(b.bucket).getTime())
-    ?.forEach(b => {
-      labels.push(format(new Date(b.bucket), DateTimeHourBucketFormat));
+    ?.forEach((b) => {
+      labels.push(new Date(b.bucket));
       data.push(b.value);
     });
   return {
@@ -146,20 +152,20 @@ export const histogramChartConfig = (histogram: HistogramEntry[] | undefined, va
           const gradient = ctx.createLinearGradient(0, 0, 0, 180);
 
           if (variant === 'blue') {
-            gradient.addColorStop(0, "#7A33B3");
-            gradient.addColorStop(1, "rgba(122, 51, 179, 0.00)");
+            gradient.addColorStop(0, '#7A33B3');
+            gradient.addColorStop(1, 'rgba(122, 51, 179, 0.00)');
           }
 
           if (variant === 'red') {
-            gradient.addColorStop(0, "#EC6666");
-            gradient.addColorStop(1, "rgba(256, 256, 256, 0.00)");
+            gradient.addColorStop(0, '#EC6666');
+            gradient.addColorStop(1, 'rgba(256, 256, 256, 0.00)');
           }
 
           return gradient;
         },
         fill: 'origin',
-        borderWidth: 1
+        borderWidth: 1,
       },
-    ]
+    ],
   };
-}
+};

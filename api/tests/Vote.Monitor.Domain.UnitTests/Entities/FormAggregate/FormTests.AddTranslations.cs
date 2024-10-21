@@ -9,7 +9,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
+            LanguagesList.RO.Iso1, Languages, null, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -25,7 +25,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
+            LanguagesList.RO.Iso1, Languages, null, []);
 
         var formBefore = form.DeepClone();
 
@@ -41,7 +41,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
+            LanguagesList.RO.Iso1, Languages, null, []);
 
         var formBefore = form.DeepClone();
 
@@ -57,7 +57,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
+            LanguagesList.RO.Iso1, Languages, null, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -73,9 +73,6 @@ public partial class FormTests
     public void WhenAddingTranslations_ThenAddsTranslationsForEachQuestion()
     {
         // Arrange
-        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, []);
-
         BaseQuestion[] questions =
         [
             new TextQuestionFaker(Languages).Generate(),
@@ -86,8 +83,8 @@ public partial class FormTests
             new MultiSelectQuestionFaker(languageList: Languages).Generate(),
         ];
 
-        form.UpdateDetails(form.Code, form.Name, form.Description, form.FormType, form.DefaultLanguage,
-            form.Languages, questions);
+        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
+            LanguagesList.RO.Iso1, Languages, null, questions);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -140,7 +137,7 @@ public partial class FormTests
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, questions);
+            LanguagesList.RO.Iso1, Languages, null, questions);
 
         string[] newLanguages = [LanguagesList.HU.Iso1];
 

@@ -7,12 +7,12 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 
 import { DateTimeFormat } from '@/common/formats';
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import type { FunctionComponent } from '@/common/types';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 
 export default function MonitoringObserverDetailsView(): FunctionComponent {
   const { monitoringObserverId } = Route.useParams();
@@ -30,8 +30,8 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
 
   return (
     <Card className='w-[800px] pt-0'>
-      <CardHeader className='flex flex-column gap-2'>
-        <div className='flex flex-row justify-between items-center'>
+      <CardHeader className='flex gap-2 flex-column'>
+        <div className='flex flex-row items-center justify-between'>
           <CardTitle className='text-xl'>Monitoring observer details</CardTitle>
           <Button onClick={navigateToEdit} variant='ghost-primary'>
             <PencilIcon className='w-[18px] mr-2 text-purple-900' />
@@ -40,31 +40,31 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
         </div>
         <Separator />
       </CardHeader>
-      <CardContent className='flex flex-col gap-6 items-baseline'>
+      <CardContent className='flex flex-col items-baseline gap-6'>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Name</p>
-          <p className='text-gray-900 font-normal'>
+          <p className='font-bold text-gray-700'>Name</p>
+          <p className='font-normal text-gray-900'>
             {monitoringObserver.firstName} {monitoringObserver.lastName}
           </p>
         </div>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Email</p>
-          <p className='text-gray-900 font-normal'>{monitoringObserver.email}</p>
+          <p className='font-bold text-gray-700'>Email</p>
+          <p className='font-normal text-gray-900'>{monitoringObserver.email}</p>
         </div>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Phone</p>
-          <p className='text-gray-900 font-normal'>{monitoringObserver.phoneNumber}</p>
+          <p className='font-bold text-gray-700'>Phone</p>
+          <p className='font-normal text-gray-900'>{monitoringObserver.phoneNumber}</p>
         </div>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Tags</p>
+          <p className='font-bold text-gray-700'>Tags</p>
           <TableTagList tags={monitoringObserver.tags} />
         </div>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Last activity</p>
-          <p className='text-gray-900 font-normal'> {monitoringObserver.latestActivityAt ? format(monitoringObserver.latestActivityAt, DateTimeFormat) : '-'}</p>
+          <p className='font-bold text-gray-700'>Last activity</p>
+          <p className='font-normal text-gray-900'> {monitoringObserver.latestActivityAt ? format(monitoringObserver.latestActivityAt, DateTimeFormat) : '-'}</p>
         </div>
         <div className='flex flex-col gap-1'>
-          <p className='text-gray-700 font-bold'>Status</p>
+          <p className='font-bold text-gray-700'>Status</p>
           <Badge className={'badge-' + monitoringObserver.status}>{monitoringObserver.status}</Badge>
         </div>
       </CardContent>

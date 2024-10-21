@@ -1,6 +1,15 @@
 import MonitoringObserversDashboard from '@/features/monitoring-observers/components/Dashboard/Dashboard';
+import { MonitoringObserverStatus } from '@/features/monitoring-observers/models/monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import { z } from 'zod';
+
+export const MonitoringObserversSearchParamsSchema = z.object({
+  tags: z.array(z.string()).optional(),
+  monitoringObserverStatus: z.nativeEnum(MonitoringObserverStatus).optional()
+});
+
+export type MonitoringObserversSearchParams = z.infer<typeof MonitoringObserversSearchParamsSchema>;
 
 export const Route = createFileRoute('/monitoring-observers/$tab')({
   beforeLoad: ({ params: { tab } }) => {
@@ -11,6 +20,7 @@ export const Route = createFileRoute('/monitoring-observers/$tab')({
       throw redirect({ to: `/monitoring-observers/$tab`, params: { tab: coercedTab } });
     }
   },
+  validateSearch: MonitoringObserversSearchParamsSchema,
   component: MonitoringObservers,
 });
 

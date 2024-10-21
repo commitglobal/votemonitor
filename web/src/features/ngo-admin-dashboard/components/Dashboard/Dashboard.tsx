@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon, ArrowsPointingInIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/solid';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
@@ -49,24 +49,33 @@ export default function NgoAdminDashboard(): FunctionComponent {
 
   const { data: statistics } = useElectionRoundStatistics(currentElectionRoundId);
 
-  function getInterval(histogram: HistogramEntry[] | undefined): string {
+  const getInterval = useCallback((histogram: HistogramEntry[] | undefined) => {
     if (histogram && histogram.some((x) => x)) {
-      const data = histogram.map((x) => new Date(x.bucket)).map((date) => date.getTime());
+      const data = histogram.map((x) => new Date(x.bucket).getTime());
       const minDate = new Date(Math.min(...data));
-
-      // Get the maximum date
       const maxDate = new Date(Math.max(...data));
-
       return `${format(minDate, DateTimeHourBucketFormat)} - ${format(maxDate, DateTimeHourBucketFormat)}`;
     }
     return '-';
-  }
+  }, []);
 
-  function getTotal(formsHistogram: HistogramEntry[] | undefined): number {
-    return (formsHistogram ?? [])
-      .map((x) => x.value)
-      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  }
+  const getTotal = useCallback((formsHistogram: HistogramEntry[] | undefined) => {
+    return (formsHistogram ?? []).reduce((acc, { value }) => acc + value, 0);
+  }, []);
+
+  const saveChartCallback = useCallback((chartRef:any, fileName:string) => {
+    if (chartRef?.current) {
+      saveChart(chartRef, fileName);
+    }
+  }, []);
+
+  const getHistogramChartConfig = useCallback(
+    (histogram: HistogramEntry[] | undefined, variant: 'red' | 'blue' = 'blue') => {
+      return histogramChartConfig(histogram, variant);
+    },
+    []
+  );
+
 
   return (
     <Layout title={t('title')} subtitle={t('subtitle')}>
@@ -80,7 +89,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   type='button'
                   variant='ghost'
                   onClick={() => {
-                    saveChart(observersAccountsChartRef, 'observers-accounts.png');
+                    saveChartCallback(observersAccountsChartRef, 'observers-accounts.png');
                   }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
@@ -101,7 +110,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   type='button'
                   variant='ghost'
                   onClick={() => {
-                    saveChart(observersOnFieldChartRef, 'observers-on-field.png');
+                    saveChartCallback(observersOnFieldChartRef, 'observers-on-field.png');
                   }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
@@ -127,7 +136,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   type='button'
                   variant='ghost'
                   onClick={() => {
-                    saveChart(pollingStationsChartRef, 'polling-stations-covered.png');
+                    saveChartCallback(pollingStationsChartRef, 'polling-stations-covered.png');
                   }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
@@ -150,7 +159,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   type='button'
                   variant='ghost'
                   onClick={() => {
-                    saveChart(timeSpentObservingChartRef, 'time-spent-observing.png');
+                    saveChartCallback(timeSpentObservingChartRef, 'time-spent-observing.png');
                   }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
@@ -181,7 +190,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     type='button'
                     variant='ghost'
                     onClick={() => {
-                      saveChart(startedFormsChartRef, 'started-forms.png');
+                      saveChartCallback(startedFormsChartRef, 'started-forms.png');
                     }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
@@ -199,10 +208,9 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title={t('startedForms.indicatorTitle', {
                     interval: getInterval(statistics?.formsHistogram),
                   })}
-                  data={histogramChartConfig(statistics?.formsHistogram)}
+                  data={getHistogramChartConfig(statistics?.formsHistogram)}
                   ref={startedFormsChartRef}
                   total={getTotal(statistics?.formsHistogram)}
-                  showTotal
                 />
               </CardContent>
             </Card>
@@ -217,7 +225,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     type='button'
                     variant='ghost'
                     onClick={() => {
-                      saveChart(questionsAnsweredChartRef, 'questions-answered.png');
+                      saveChartCallback(questionsAnsweredChartRef, 'questions-answered.png');
                     }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
@@ -233,12 +241,11 @@ export default function NgoAdminDashboard(): FunctionComponent {
               <CardContent>
                 <TimeLineChart
                   title={t('questionsAnswered.indicatorTitle', {
-                    interval: getInterval(statistics?.formsHistogram),
+                    interval: getInterval(statistics?.questionsHistogram),
                   })}
-                  data={histogramChartConfig(statistics?.questionsHistogram)}
+                  data={getHistogramChartConfig(statistics?.questionsHistogram)}
                   ref={questionsAnsweredChartRef}
                   total={getTotal(statistics?.questionsHistogram)}
-                  showTotal
                 />
               </CardContent>
             </Card>
@@ -253,7 +260,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     type='button'
                     variant='ghost'
                     onClick={() => {
-                      saveChart(flaggedAnswersChartRef, 'flagged-answers.png');
+                      saveChartCallback(flaggedAnswersChartRef, 'flagged-answers.png');
                     }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
@@ -269,12 +276,11 @@ export default function NgoAdminDashboard(): FunctionComponent {
               <CardContent>
                 <TimeLineChart
                   title={t('flaggedAnswers.indicatorTitle', {
-                    interval: getInterval(statistics?.formsHistogram),
+                    interval: getInterval(statistics?.flaggedAnswersHistogram),
                   })}
-                  data={histogramChartConfig(statistics?.flaggedAnswersHistogram, 'red')}
+                  data={getHistogramChartConfig(statistics?.flaggedAnswersHistogram, 'red')}
                   ref={flaggedAnswersChartRef}
                   total={getTotal(statistics?.flaggedAnswersHistogram)}
-                  showTotal
                 />
               </CardContent>
             </Card>
@@ -289,7 +295,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     type='button'
                     variant='ghost'
                     onClick={() => {
-                      saveChart(quickReportsChartRef, 'quick-reports.png');
+                      saveChartCallback(quickReportsChartRef, 'quick-reports.png');
                     }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
@@ -307,10 +313,9 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title={t('quickReports.indicatorTitle', {
                     interval: getInterval(statistics?.quickReportsHistogram),
                   })}
-                  data={histogramChartConfig(statistics?.quickReportsHistogram, 'red')}
+                  data={getHistogramChartConfig(statistics?.quickReportsHistogram, 'red')}
                   ref={quickReportsChartRef}
                   total={getTotal(statistics?.quickReportsHistogram)}
-                  showTotal
                 />
               </CardContent>
             </Card>
@@ -326,7 +331,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                       type='button'
                       variant='ghost'
                       onClick={() => {
-                        saveChart(citizenReportsChartRef, 'quick-reports.png');
+                        saveChartCallback(citizenReportsChartRef, 'quick-reports.png');
                       }}>
                       <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                     </Button>
@@ -344,10 +349,9 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     title={t('citizenReports.indicatorTitle', {
                       interval: getInterval(statistics?.citizenReportsHistogram),
                     })}
-                    data={histogramChartConfig(statistics?.citizenReportsHistogram, 'red')}
+                    data={getHistogramChartConfig(statistics?.citizenReportsHistogram, 'red')}
                     ref={citizenReportsChartRef}
                     total={getTotal(statistics?.citizenReportsHistogram)}
-                    showTotal
                   />
                 </CardContent>
               </Card>
@@ -363,7 +367,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     type='button'
                     variant='ghost'
                     onClick={() => {
-                      saveChart(incidentReportsChartRef, 'incident-reports.png');
+                      saveChartCallback(incidentReportsChartRef, 'incident-reports.png');
                     }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
@@ -381,10 +385,9 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title={t('incidentReports.indicatorTitle', {
                     interval: getInterval(statistics?.incidentReportsHistogram),
                   })}
-                  data={histogramChartConfig(statistics?.incidentReportsHistogram, 'red')}
+                  data={getHistogramChartConfig(statistics?.incidentReportsHistogram, 'red')}
                   ref={incidentReportsChartRef}
                   total={getTotal(statistics?.incidentReportsHistogram)}
-                  showTotal
                 />
               </CardContent>
             </Card>
