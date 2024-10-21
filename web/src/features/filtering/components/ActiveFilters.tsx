@@ -24,6 +24,7 @@ export const HIDDEN_FILTERS = [
   FILTER_KEY.Tab,
   FILTER_KEY.SortOrder,
   FILTER_KEY.SortColumnName,
+  FILTER_KEY.SearchText,
 ];
 
 const FILTER_LABELS = new Map<string, string>([
@@ -76,7 +77,6 @@ interface ActiveFiltersProps {
 function isDateType(value: any): boolean {
   return value instanceof Date && !isNaN(value.getTime());
 }
-
 
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);

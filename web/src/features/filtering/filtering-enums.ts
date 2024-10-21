@@ -24,6 +24,7 @@ export const enum FILTER_KEY {
   SortColumnName = 'sortColumnName',
   FromDate = 'submissionsFromDate',
   ToDate = 'submissionsToDate',
+  SearchText = 'searchText',
 }
 
 export const enum FILTER_LABEL {
