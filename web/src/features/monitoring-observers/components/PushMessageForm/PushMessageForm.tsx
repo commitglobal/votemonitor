@@ -4,33 +4,33 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { RichTextEditor } from '@/components/rich-text-editor';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { FormTypeSelect } from '@/features/forms/components/filtering/FormTypeSelect';
 import { FormSubmissionsFormSelect } from '@/features/responses/filtering/FormSubmissionsFormSelect';
+import { FormSubmissionsFromDateFilter } from '@/features/responses/filtering/FormSubmissionsFromDateFilter';
 import { FormSubmissionsQuestionsAnsweredSelect } from '@/features/responses/filtering/FormSubmissionsQuestionsAnsweredSelect';
+import { FormSubmissionsToDateFilter } from '@/features/responses/filtering/FormSubmissionsToDateFilter';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { MonitoringObserverStatusSelect } from '../../filtering/MonitoringObserverStatusSelect';
 import { MonitoringObserverTagsSelect } from '../../filtering/MonitoringObserverTagsSelect';
 import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
-import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -47,37 +47,9 @@ function PushMessageForm(): FunctionComponent {
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const router = useRouter();
 
   const queryClient = useQueryClient();
-
-  const onTagsFilterChange = useCallback(
-    (tag: string) => () => {
-      void navigate({
-        search: (prev: PushMessageTargetedObserversSearchParams) => {
-          const prevTagsFilter = prev.tagsFilter ?? [];
-          const newTags = prevTagsFilter.includes(tag)
-            ? prevTagsFilter.filter((t) => t !== tag)
-            : [...prevTagsFilter, tag];
-
-          return { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
-        },
-      });
-    },
-    [navigate]
-  );
-
-  const onClearFilter = useCallback(
-    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) =>
-      () => {
-        const filters = Array.isArray(filter)
-          ? Object.fromEntries(filter.map((key) => [key, undefined]))
-          : { [filter]: undefined };
-        void navigate({ search: (prev) => ({ ...prev, ...filters }) });
-      },
-    [navigate]
-  );
 
   useEffect(() => {
     void navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) });
@@ -88,14 +60,19 @@ function PushMessageForm(): FunctionComponent {
   const queryParams = useMemo(() => {
     const params = [
       ['searchText', debouncedSearchText],
-      ['statusFilter', debouncedSearch.statusFilter],
-      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['statusFilter', debouncedSearch.monitoringObserverStatus],
+      ['tagsFilter', debouncedSearch.tags],
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
+      ['formTypeFilter', debouncedSearch.formTypeFilter],
+      ['questionsAnswered', debouncedSearch.questionsAnswered],
+      ['formId', debouncedSearch.formId],
+      ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
+      ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
@@ -209,6 +186,8 @@ function PushMessageForm(): FunctionComponent {
                   <FormSubmissionsFormSelect />
                   <FormSubmissionsQuestionsAnsweredSelect />
                   <PollingStationsFilters />
+                  <FormSubmissionsFromDateFilter />
+                  <FormSubmissionsToDateFilter />
                 </FilteringContainer>
               </div>
 
