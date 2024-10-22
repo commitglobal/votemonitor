@@ -96,6 +96,10 @@ module "ecs_hangfire" {
       name  = "PushNotifications__SenderType"
       value = "Expo"
     },
+    {
+      name  = "FileStorage__S3__PresignedUrlValidityInSeconds"
+      value = "432000"
+    },
   ]
 
   secrets = [
