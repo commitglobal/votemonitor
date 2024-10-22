@@ -74,9 +74,8 @@
     "retry": "Retry"
   },
   "drawer": {
-    "report_as": "Report as {{value}}",
-    "citizen": "citizen",
-    "accredited_observer": "accredited observer"
+    "report_as_citizen": "Report as citizen",
+    "report_as_accredited_observer": "Report as accredited observer"
   },
   "citizen_report_issue": {
     "header_title": "Report an issue",

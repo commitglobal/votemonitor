@@ -74,9 +74,8 @@
     "retry": "Կրկին փորձեք "
   },
   "drawer": {
-    "report_as": "Հաղորդագրություն որպես {{value}}",
-    "citizen": "Քաղաքացի ",
-    "accredited_observer": "Հավատարմագրված դիտորդ "
+    "report_as_citizen": "Հաղորդագրություն որպես Քաղաքացի ",
+    "report_as_accredited_observer": "Հաղորդագրություն որպես Հավատարմագրված դիտորդ "
   },
   "citizen_report_issue": {
     "header_title": "Հրատապ հաղորդագրություն խախտման մասին ",

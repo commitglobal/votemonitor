@@ -36,9 +36,9 @@ export const AppModeSwitchButton = ({
   const renderModeToSwitchTo = () => {
     switch (switchToMode) {
       case AppMode.CITIZEN:
-        return t("citizen");
+        return t("report_as_citizen");
       case AppMode.OBSERVER:
-        return t("accredited_observer");
+        return t("report_as_accredited_observer");
     }
   };
 
@@ -55,7 +55,7 @@ export const AppModeSwitchButton = ({
     >
       <Icon icon="appModeSwitch" color={color} size={32} />
       <Typography color={color} preset="body2" textDecorationLine="underline" flex={1}>
-        {t("report_as", { value: renderModeToSwitchTo() })}
+        {renderModeToSwitchTo()}
       </Typography>
     </XStack>
   );
