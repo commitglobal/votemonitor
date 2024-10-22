@@ -74,9 +74,8 @@
     "retry": "Yenidən cəhd edin"
   },
   "drawer": {
-    "report_as": "{{value}} olaraq bildirin",
-    "citizen": "vətəndaş",
-    "accredited_observer": "akkreditə olunmuş müşahidəçi"
+    "report_as_citizen": "vətəndaş olaraq bildirin",
+    "report_as_accredited_observer": "akkreditə olunmuş müşahidəçi olaraq bildirin"
   },
   "citizen_report_issue": {
     "header_title": "Problemi bildirin",

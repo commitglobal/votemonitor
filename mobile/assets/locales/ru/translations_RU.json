@@ -74,9 +74,8 @@
     "retry": "Повторная попытка"
   },
   "drawer": {
-    "report_as": "Сообщить как {{value}}",
-    "citizen": "гражданин/гражданка",
-    "accredited_observer": "аккредитованный наблюдатель"
+    "report_as_citizen": "Сообщить как гражданин/гражданка",
+    "report_as_accredited_observer": "Сообщить как аккредитованный наблюдатель"
   },
   "citizen_report_issue": {
     "header_title": "Сообщить о проблеме",

@@ -74,9 +74,8 @@
     "retry": "Încearcă din nou"
   },
   "drawer": {
-    "report_as": "Raportează ca {{value}}",
-    "citizen": "cetățean",
-    "accredited_observer": "observator acreditat"
+    "report_as_citizen": "Raportează ca cetățean",
+    "report_as_accredited_observer": "Raportează ca observator acreditat"
   },
   "citizen_report_issue": {
     "header_title": "Raportează o problemă",
