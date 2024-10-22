@@ -1,5 +1,4 @@
 import { authApi } from '@/common/auth-api';
-import { PageResponse } from '@/common/types';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,15 +15,16 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { useMutation, UseQueryResult } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
 import { queryClient } from '@/main';
@@ -39,16 +39,14 @@ import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMo
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
 
-type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
-
-type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverResponse, Error>;
-
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
   const search = Route.useSearch();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
-  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
+  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(()=>{
+    return [
     {
       header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
       accessorKey: 'name',
@@ -124,18 +122,19 @@ function MonitoringObserversList() {
         </DropdownMenu>
       ),
     },
-  ];
+  ];}, [currentElectionRoundId]);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(search.searchText);
   const debouncedSearch = useDebounce(search, 300);
+  const debouncedSearchText = useDebounce(searchText, 300);
 
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
-  const { filteringIsActive } = useFilteringContainer();
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const { filteringIsActive, navigateHandler } = useFilteringContainer();
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -147,22 +146,30 @@ function MonitoringObserversList() {
       params: { monitoringObserverId, tab: 'details' },
     });
   };
+
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
   };
-
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-
 
   const queryParams = useMemo(() => {
     const params = [
       ['status', debouncedSearch.monitoringObserverStatus],
       ['tags', debouncedSearch.tags],
-      ['searchText', searchText]
+      ['searchText', debouncedSearch.searchText]
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);
   }, [debouncedSearch]);
+
+  useEffect(() => {
+    navigateHandler({
+      [FILTER_KEY.SearchText]: debouncedSearchText,
+    });
+  }, [debouncedSearchText]);
+
+  useEffect(() => {
+    setSearchText(search.searchText ?? '');
+  }, [search.searchText]);
 
   const resendInvitationsMutation = useMutation({
     mutationFn: ({
@@ -199,7 +206,7 @@ function MonitoringObserversList() {
   });
 
   const changeIsFiltering = () => {
-    setIsFiltering((prev) => {
+    setFiltersExpanded((prev) => {
       return !prev;
     });
   };
@@ -326,17 +333,17 @@ function MonitoringObserversList() {
         <Separator />
         <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <>
-            <Input onChange={handleSearchInput} className='max-w-md' placeholder='Search' />
+            <Input onChange={handleSearchInput} value={searchText} className='max-w-md' placeholder='Search' />
             <FunnelIcon
               onClick={changeIsFiltering}
               className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
             />
             <Cog8ToothIcon className='w-[20px] text-purple-900' />
           </>
         </div>
         <Separator />
-        {isFiltering && <MonitoringObserversListFilters />}
+        {filtersExpanded && <MonitoringObserversListFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
