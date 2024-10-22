@@ -51,7 +51,12 @@ export const DrawerContent = (props: DrawerContentProps) => {
             {citizenElectionRounds?.map((electionEvent, index) => (
               <DrawerItem
                 key={index}
-                label={electionEvent.title}
+                // use a custom component for the label, as the default one only displays one line of text
+                label={({ color }) => (
+                  <Typography preset="body2" color={color}>
+                    {electionEvent.title}
+                  </Typography>
+                )}
                 focused={selectedElectionRound === electionEvent.id}
                 activeTintColor="white"
                 activeBackgroundColor={theme.purple5?.val}

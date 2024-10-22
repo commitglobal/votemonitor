@@ -10,6 +10,7 @@ import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";
+import { Typography } from "../../../../components/Typography";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -41,7 +42,12 @@ export const DrawerContent = (props: DrawerContentProps) => {
         return (
           <DrawerItem
             key={index}
-            label={`${round.status} - ${round.title}`}
+            // use a custom component for the label, as the default one only displays one line of text
+            label={({ color }) => (
+              <Typography preset="body2" color={color}>
+                {`${round.status} - ${round.title}`}
+              </Typography>
+            )}
             focused={activeElectionRound?.id === round.id}
             activeTintColor={theme.purple5?.val}
             activeBackgroundColor={theme.yellow5?.val}
