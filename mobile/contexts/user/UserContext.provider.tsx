@@ -13,7 +13,13 @@ import {
   PollingStationVisitVM,
 } from "../../common/models/polling-station.model";
 import { ElectionRoundVM } from "../../common/models/election-round.model";
-import { skipToken, useQueries } from "@tanstack/react-query";
+import {
+  skipToken,
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
 import { getElectionRoundAllForms } from "../../services/definitions.api";
@@ -22,6 +28,8 @@ import { NotificationsKeys } from "../../services/queries/notifications.query";
 import { getNotifications } from "../../services/api/notifications/notifications-get.api";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import { getQuickReports } from "../../services/api/quick-report/get-quick-reports.api";
+import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -34,12 +42,46 @@ type UserContextType = {
 
   error: Error | null;
   setSelectedPollingStationId: (pollingStationId: string | null) => void;
+  setSelectedElectionRoundId: (electionRoundId: string) => void;
 };
 
 export const UserContext = createContext<UserContextType | null>(null);
 
+const useSelectedElectionRoundId = () => {
+  return useQuery({
+    queryKey: [ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID],
+    queryFn: () => AsyncStorage.getItem(ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID),
+    staleTime: 0,
+    networkMode: "always",
+  });
+};
+
+const useSetSelectedElectionRoundIdMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["SET_SELECTED_ELECTION_ROUND_ID"],
+    mutationFn: (electionRoundId: string) => {
+      console.log("Selected election round id", electionRoundId);
+      return AsyncStorage.setItem(ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID, electionRoundId);
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID],
+      });
+      // await queryClient.invalidateQueries();
+    },
+    networkMode: "always",
+  });
+};
+
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const [selectedPollingStationId, setSelectedPollingStationId] = useState<string | null>();
+
+  const { data: selectedElectionRoundId, isLoading: isLoadingSelectedElectionRoundId } =
+    useSelectedElectionRoundId();
+  const { mutate: setSelectedElectionRoundId, isPending: isSettingSelectedElectionRoundId } =
+    useSetSelectedElectionRoundIdMutation();
 
   const {
     data: rounds,
@@ -47,10 +89,27 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     error: ElectionRoundsError,
   } = useElectionRoundsQuery();
 
-  const activeElectionRound = useMemo(
-    () => rounds?.find((round) => round.status === "Started"),
-    [rounds],
-  );
+  const activeElectionRound = useMemo(() => {
+    if (!rounds || isLoadingSelectedElectionRoundId) {
+      return undefined;
+    }
+
+    let selectedElectionRound;
+    if (selectedElectionRoundId) {
+      // Look for the election round saved in AsyncStorage for the user
+      selectedElectionRound = rounds?.find(
+        (round) => round.id === selectedElectionRoundId && round.status === "Started",
+      );
+    }
+
+    if (!selectedElectionRound) {
+      // If no election round is saved in AsyncStorage for the user, return the first election round that is started
+      AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID);
+      return rounds?.find((round) => round.status === "Started");
+    }
+
+    return selectedElectionRound;
+  }, [rounds, selectedElectionRoundId]);
 
   const {
     data: visits,
@@ -134,7 +193,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     NomenclatureError ||
     PollingStationNomenclatorNodeDBError;
 
-  const isLoading = isLoadingRounds || isLoadingVisits || isLoadingNomenclature; // will be false while offline, because the queryFn is not running. isPending will be true
+  const isLoading =
+    isLoadingRounds || isLoadingVisits || isLoadingNomenclature || isSettingSelectedElectionRoundId; // will be false while offline, because the queryFn is not running. isPending will be true
 
   const contextValues = useMemo(() => {
     return {
@@ -145,6 +205,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
       activeElectionRound,
       selectedPollingStation: lastVisitedPollingStation,
       setSelectedPollingStationId,
+      setSelectedElectionRoundId,
     };
   }, [error, isLoading, visits, rounds, activeElectionRound, lastVisitedPollingStation]);
 

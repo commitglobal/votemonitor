@@ -2,6 +2,7 @@ export const ASYNC_STORAGE_KEYS = {
   CURRENT_USER_STORAGE_KEY: "current-user",
   ACCESS_TOKEN: "access_token",
   REACT_QUERY_OFFLINE_CACHE: "REACT_QUERY_OFFLINE_CACHE",
+  SELECTED_ELECTION_ROUND_ID: "selected-election-round-id",
 };
 
 export const SECURE_STORAGE_KEYS = {

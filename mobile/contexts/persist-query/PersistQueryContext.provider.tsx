@@ -73,7 +73,7 @@ const queryClient = new QueryClient({
       */
 
       gcTime: 5 * 24 * 60 * 60 * 1000, // 5 days The duration until inactive queries will be removed from the cache. This defaults to 5 minutes. Queries transition to the inactive state as soon as there are no observers registered, so when all components which use that query have unmounted.
-      staleTime: 30 * 60 * 1000, // 30 minutes - The duration until a query transitions from fresh to stale. As long as the query is fresh, data will always be read from the cache only - no network request will happen! If the query is stale (which per default is: instantly), you will still get data from the cache, but a background refetch can happen under certain conditions.
+      staleTime: 5 * 60 * 1000, // 30 minutes - The duration until a query transitions from fresh to stale. As long as the query is fresh, data will always be read from the cache only - no network request will happen! If the query is stale (which per default is: instantly), you will still get data from the cache, but a background refetch can happen under certain conditions.
     },
   },
 });
@@ -108,7 +108,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.deleteAttachment(), {
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return payload.isNotSynched ? () => { } : deleteAttachment(payload);
+      return payload.isNotSynched ? () => {} : deleteAttachment(payload);
     },
   });
 
@@ -126,7 +126,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
-      return payload.isNotSynched ? () => { } : API.deleteNote(payload);
+      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
     },
   });
 
