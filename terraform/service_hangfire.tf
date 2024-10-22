@@ -97,7 +97,7 @@ module "ecs_hangfire" {
       value = "Expo"
     },
     {
-      name  = "PresignedUrlValidityInSeconds"
+      name  = "FileStorage__S3__PresignedUrlValidityInSeconds"
       value = "432000"
     },
   ]
