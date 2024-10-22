@@ -274,6 +274,8 @@
       "heading": "Brak zdarzeń dotyczących wyborów",
       "paragraph": "Możesz używać tej aplikacji, gdy zostaniesz przypisany/a przez swoją organizację do wydarzenia wyborczego."
     },
+    "no_form": "Formularz Informacje o lokalu wyborczym nie jest skonfigurowany",
+    "refresh_page": "Jeśli dane nie są widoczne, spróbuj odświeżyć stronę, aby pobrać najnowsze informacje",
     "no_visited_polling_stations": {
       "heading": "Brak odwiedzonych komisji wyborczych",
       "paragraph": "Uzupełnij dane dla pierwszej komisji wyborczej zanim zaczniesz wypełniać formularze obserwacyjne.",

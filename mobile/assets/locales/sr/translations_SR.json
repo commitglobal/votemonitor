@@ -274,6 +274,8 @@
       "heading": "Nema izbora za posmatranje.",
       "paragraph": "Moći ćete da koristite aplikaciju kada budete dodeljeni izbornom događaju."
     },
+    "no_form": "Formular za informacije o biračkom mestu nije konfigurisan",
+    "refresh_page": "Ako podaci nisu vidljivi, pokušajte da ažurirate stranicu da biste dobili najnovije informacije",
     "no_visited_polling_stations": {
       "heading": "Nema posećenih biračkih mesta",
       "paragraph": "Najpre konfigurišite svoje prvo biračko mesto pre popunjavanja izveštaja posmatranja.",
