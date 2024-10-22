@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -38,6 +38,7 @@ import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monit
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
+import CreateMonitoringObserverDialog from './CreateMonitoringObserverDialog';
 
 function MonitoringObserversList() {
   const navigate = useNavigate();
@@ -45,84 +46,85 @@ function MonitoringObserversList() {
   const search = Route.useSearch();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
-  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(()=>{
+  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(() => {
     return [
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-      accessorKey: 'name',
-      enableSorting: true,
-      enableGlobalFilter: true,
-      cell: ({
-        row: {
-          original: { firstName, lastName },
-        },
-      }) => (
-        <p>
-          {firstName} {lastName}
-        </p>
-      ),
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
-      accessorKey: 'email',
-      enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-      accessorKey: 'tags',
-      cell: ({
-        row: {
-          original: { tags },
-        },
-      }) => <TableTagList tags={tags} />,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
-      accessorKey: 'phoneNumber',
-      enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
-      accessorKey: 'status',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <Badge className={'badge-' + status}>{status}</Badge>,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
-      accessorKey: 'latestActivityAt',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { latestActivityAt },
-        },
-      }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
-    },
-    {
-      header: '',
-      accessorKey: 'action',
-      enableSorting: true,
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={row.original.status !== MonitoringObserverStatus.Pending}
-              onClick={() => handleResendInviteToObserver(row.original.id)}>
-              Resend invitation email
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ];}, [currentElectionRoundId]);
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
+        accessorKey: 'name',
+        enableSorting: true,
+        enableGlobalFilter: true,
+        cell: ({
+          row: {
+            original: { firstName, lastName },
+          },
+        }) => (
+          <p>
+            {firstName} {lastName}
+          </p>
+        ),
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
+        accessorKey: 'email',
+        enableSorting: true,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
+        accessorKey: 'tags',
+        cell: ({
+          row: {
+            original: { tags },
+          },
+        }) => <TableTagList tags={tags} />,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
+        accessorKey: 'phoneNumber',
+        enableSorting: true,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
+        accessorKey: 'status',
+        enableSorting: true,
+        cell: ({
+          row: {
+            original: { status },
+          },
+        }) => <Badge className={'badge-' + status}>{status}</Badge>,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
+        accessorKey: 'latestActivityAt',
+        enableSorting: true,
+        cell: ({
+          row: {
+            original: { latestActivityAt },
+          },
+        }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
+      },
+      {
+        header: '',
+        accessorKey: 'action',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={row.original.status !== MonitoringObserverStatus.Pending}
+                onClick={() => handleResendInviteToObserver(row.original.id)}>
+                Resend invitation email
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ];
+  }, [currentElectionRoundId]);
 
   const [searchText, setSearchText] = useState(search.searchText);
   const debouncedSearch = useDebounce(search, 300);
@@ -130,6 +132,7 @@ function MonitoringObserversList() {
 
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
+  const createMonitoringObserverDialog = useDialog();
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
@@ -155,7 +158,7 @@ function MonitoringObserversList() {
     const params = [
       ['status', debouncedSearch.monitoringObserverStatus],
       ['tags', debouncedSearch.tags],
-      ['searchText', debouncedSearch.searchText]
+      ['searchText', debouncedSearch.searchText],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);
@@ -184,7 +187,7 @@ function MonitoringObserversList() {
       });
     },
 
-    onSuccess: (_, {electionRoundId}) => {
+    onSuccess: (_, { electionRoundId }) => {
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       router.invalidate();
 
@@ -251,19 +254,13 @@ function MonitoringObserversList() {
         <div className='flex flex-row items-center justify-between px-6'>
           <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
           <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
-            <Link to='/monitoring-observers/new-observer'>
-              <Button>
-                <Plus className='mr-2' width={18} height={18} />
-                {i18n.t('observers.addObserver.addBtnText')}
-              </Button>
-            </Link>
-
             {!!importErrorsFileId && (
               <ImportMonitoringObserversErrorsDialog
                 fileId={importErrorsFileId}
                 {...importMonitoringObserverErrorsDialog.dialogProps}
               />
             )}
+
             <ImportMonitoringObserversDialog
               {...importMonitoringObserversDialog.dialogProps}
               onImportError={(fileId) => {
@@ -291,6 +288,12 @@ function MonitoringObserversList() {
               </svg>
               Import observer list
             </Button>
+            <Button variant='secondary' onClick={() => createMonitoringObserverDialog.trigger()}>
+              <Plus className='mr-2' width={18} height={18} />
+              {i18n.t('observers.addObserver.addBtnText')}
+            </Button>
+            <CreateMonitoringObserverDialog {...createMonitoringObserverDialog.dialogProps} />
+
             <Button
               className='text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
               onClick={exportMonitoringObservers}>

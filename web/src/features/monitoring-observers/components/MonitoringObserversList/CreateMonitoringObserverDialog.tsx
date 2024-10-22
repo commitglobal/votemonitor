@@ -1,28 +1,28 @@
 import { authApi } from '@/common/auth-api';
-import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import TagsSelectFormField from '@/components/ui/tag-selector';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { MonitorObserverBackButton } from './MonitoringObserverBackButton';
-import { monitoringObserversKeys } from '../hooks/monitoring-observers-queries';
+import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 
-export default function CreateMonitoringObserver() {
+export interface CreateMonitoringObserverDialogProps {
+  open: boolean;
+  onOpenChange: (open: any) => void;
+}
+
+function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoringObserverDialogProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: availableTags } = useMonitoringObserversTags(currentElectionRoundId);
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const newObserverSchema = z.object({
     firstName: z.string(),
@@ -47,18 +47,15 @@ export default function CreateMonitoringObserver() {
       return authApi.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers: [values] });
     },
 
-    onSuccess: (_, {electionRoundId}) => {
+    onSuccess: (_, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: t('onSuccess'),
       });
 
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
-
-      navigate({
-        to: '/monitoring-observers/$tab',
-        params: { tab: 'list' },
-      });
+      form.reset({});
+      onOpenChange(false);
     },
     onError: () => {
       toast({
@@ -68,16 +65,19 @@ export default function CreateMonitoringObserver() {
       });
     },
   });
+
   return (
-    <Layout title={''} backButton={<MonitorObserverBackButton />} enableBreadcrumbs={false}>
-      <Card className='w-[800px] pt-0'>
-        <CardHeader className='flex gap-2 flex-column'>
-          <div className='flex flex-row items-center justify-between'>
-            <CardTitle className='text-xl'>{t('title')}</CardTitle>
-          </div>
-          <Separator />
-        </CardHeader>
-        <CardContent>
+    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+      <DialogContent
+        className='min-w-[650px] min-h-[350px]'
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault();
+        }}>
+        <DialogTitle className='mb-3.5'>{t('title')}</DialogTitle>
+        <div className='flex flex-col gap-3'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
@@ -147,29 +147,22 @@ export default function CreateMonitoringObserver() {
                 )}
               />
 
-              <div className='flex justify-between'>
-                <div className='flex gap-2'>
-                  <Button
-                    variant='outline'
-                    type='button'
-                    onClick={() => {
-                      void navigate({
-                        to: '/monitoring-observers/$tab',
-                        params: { tab: 'list' },
-                      });
-                    }}>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                     Cancel
                   </Button>
-
-                  <Button title={t('addBtnText')} type='submit' className='px-6'>
-                    {t('addBtnText')}
-                  </Button>
-                </div>
-              </div>
+                </DialogClose>
+                <Button title={t('addBtnText')} type='submit' className='px-6'>
+                  {t('addBtnText')}
+                </Button>
+              </DialogFooter>
             </form>
           </Form>
-        </CardContent>
-      </Card>
-    </Layout>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
+
+export default CreateMonitoringObserverDialog;
