@@ -274,6 +274,8 @@
       "heading": "No election event to observe yet",
       "paragraph": "You will be able to use the app once you will be assigned to an election event by your organization"
     },
+    "no_form": "The Polling Station Information form is not configured",
+    "refresh_page": "If data is not visible, try refreshing the page to retrieve the most recent information",
     "no_visited_polling_stations": {
       "heading": "No visited polling stations yet",
       "paragraph": "Start configuring your first polling station before completing observation forms.",

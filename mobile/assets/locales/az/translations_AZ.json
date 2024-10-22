@@ -274,6 +274,8 @@
       "heading": "Hələ müşahidəyə ehtiyac duyan seçki tədbiri yoxdur",
       "paragraph": "Təşkilatınız sizi seçki tədbirinə əlavə etdikdən sonra aplikasiyadan istifadə edə biləcəksiniz"
     },
+    "no_form": "Hələlik seçki məntəqəsinin məlumat forması yoxdur",
+    "refresh_page": "Əgər məlumat görünmüyorsa, təkrar səhifəni yükləyərək ən son məlumatı alın",
     "no_visited_polling_stations": {
       "heading": "Seçki məntəqələri hələ ziyarət edilməyib",
       "paragraph": "Müşahidəçi formalarını doldurmazdan əvvəl ilk seçki məntəqəsini göstərin",

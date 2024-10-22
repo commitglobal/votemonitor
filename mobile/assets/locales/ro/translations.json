@@ -274,6 +274,8 @@
       "heading": "Momentan nu ai niciun eveniment electoral de observat",
       "paragraph": "Vei putea folosi aplicația după ce organizația care te-a acreditat te alocă unui eveniment electoral."
     },
+    "no_form": "Formularul de informații despre secția de votare nu este configurat",
+    "refresh_page": "Dacă datele nu sunt vizibile, reîncarcă pagina pentru a obține cele mai recente informații",
     "no_visited_polling_stations": {
       "heading": "Momentan nu ai nicio secție de votare vizitată",
       "paragraph": "Înainte de a completa primul formular configurează o secție de votare.",
