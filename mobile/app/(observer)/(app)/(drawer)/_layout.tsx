@@ -17,7 +17,7 @@ type DrawerContentProps = ScrollViewProps & {
 };
 
 export const DrawerContent = (props: DrawerContentProps) => {
-  const { electionRounds, activeElectionRound } = useUserData();
+  const { electionRounds, activeElectionRound, setSelectedElectionRoundId } = useUserData();
 
   const startedElectionRounds = useMemo(
     () => electionRounds?.filter((electionRound) => electionRound.status === "Started"),
@@ -46,7 +46,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
             activeTintColor={theme.purple5?.val}
             activeBackgroundColor={theme.yellow5?.val}
             inactiveTintColor="white"
-            onPress={() => console.log("")}
+            onPress={() => setSelectedElectionRoundId(round.id)}
             style={{
               paddingVertical: 4,
               paddingHorizontal: 16,
