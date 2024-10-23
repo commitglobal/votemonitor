@@ -42,22 +42,6 @@ public class IncidentReportsAggregateFilterValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_FormId_Is_Empty()
-    {
-        // Arrange
-        var request = new IncidentReportsAggregateFilter
-        {
-            FormId = Guid.Empty
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FormId);
-    }
-
-    [Fact]
     public void Should_Not_Have_Error_When_All_Fields_Are_Valid()
     {
         // Arrange

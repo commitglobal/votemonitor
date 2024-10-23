@@ -1,4 +1,6 @@
 ﻿using Vote.Monitor.Core.Constants;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.Create;
@@ -28,8 +30,17 @@ public class Endpoint(
 
         var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title, req.EnglishTitle, req.StartDate);
         await repository.AddAsync(electionRound, ct);
-        await psiFormsRepository.AddAsync(PollingStationInformationForm.Create(electionRound, LanguagesList.EN.Iso1,
-            [LanguagesList.EN.Iso1], []), ct);
+        
+        IEnumerable<string> languages = new[] { LanguagesList.EN.Iso1 };
+        var option1 = SelectOption.Create(Guid.NewGuid(), TranslatedString.New(languages, "Yes"));
+        var option2 = SelectOption.Create(Guid.NewGuid(), TranslatedString.New(languages, "Yes!"));
+        var questions = new BaseQuestion[]
+        {
+            SingleSelectQuestion.Create(Guid.NewGuid(), "PSI",
+                TranslatedString.New(languages, "Did you forgot to add PSI questions?"), [option1, option2])
+        };
+        var psiForm = PollingStationInformationForm.Create(electionRound, LanguagesList.EN.Iso1, languages, questions);
+        await psiFormsRepository.AddAsync(psiForm, ct);
 
         var country = CountriesList.Get(req.CountryId)!;
 
