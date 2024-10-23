@@ -177,7 +177,7 @@ public class ExportFormSubmissionsJob(
                                                AND n."MonitoringObserverId" = fs."MonitoringObserverId"
                                                AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
                   
-                                   COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted"
+                                   COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted",
                                    FS."IsCompleted"
                             FROM "FormSubmissions" fs
                                      INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
