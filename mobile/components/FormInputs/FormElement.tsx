@@ -22,7 +22,7 @@ const FormElement: React.FC<FormElementProps> = ({
     <YStack gap="$xxs" onPress={Keyboard.dismiss}>
       {/* title */}
       {title && (
-        <Typography fontWeight="500" style={titleProps} color={error && "$red5"}>
+        <Typography fontWeight="500" style={titleProps} color={error ? "$red5" : undefined}>
           {title}
         </Typography>
       )}

@@ -14,7 +14,7 @@ const FormInput: React.FC<FormInputProps> = forwardRef(
           ref={ref}
           type={type}
           placeholder={placeholder}
-          borderColor={error && "$red7"}
+          borderColor={error ? "$red7" : undefined}
           {...rest}
         />
       </FormElement>
