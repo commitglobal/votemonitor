@@ -7,7 +7,7 @@ public sealed class GetObserverElectionSpecification : Specification<ElectionRou
         Query
             .Include(x => x.MonitoringNgos)
             .ThenInclude(x => x.MonitoringObservers)
-            .Where(x => x.Status != ElectionRoundStatus.Archived)
+            .Where(x => x.Status == ElectionRoundStatus.Started)
             .Where(x => x.MonitoringNgos.Any(ngo => ngo.MonitoringObservers.Any(o => o.ObserverId == observerId)));
 
         Query.Select(x => new ElectionRoundModel

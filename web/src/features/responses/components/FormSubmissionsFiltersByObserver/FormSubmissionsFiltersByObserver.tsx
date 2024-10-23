@@ -1,8 +1,8 @@
 import { type FunctionComponent } from '@/common/types';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
-import { FormSubmissionsFlaggedAnswersSelect } from '../../filtering/FormSubmissionsFlaggedAnswersSelect';
-import { FormSubmissionsFollowUpSelect } from '../../filtering/FormSubmissionsFollowUpSelect';
+import { FormSubmissionsFlaggedAnswersSelect } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
+import { FormSubmissionsFollowUpSelect } from '../../../filtering/components/FormSubmissionsFollowUpFilter';
 
 export function FormSubmissionsFiltersByObserver(): FunctionComponent {
   return (

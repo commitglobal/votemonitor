@@ -1,16 +1,16 @@
 ﻿using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
-namespace Feature.CitizenReports.GetSubmissionsAggregated;
+namespace Feature.CitizenReports.Requests;
 
-public class Request
+public class CitizenReportsAggregateFilter
 {
     public Guid ElectionRoundId { get; set; }
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    public Guid FormId { get; set; }
+    public Guid? FormId { get; set; }
 
     [QueryParam] public string? Level1Filter { get; set; }
 

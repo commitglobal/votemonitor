@@ -1,6 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Create;
+﻿using Vote.Monitor.Core.Constants;
+using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository)
+namespace Vote.Monitor.Api.Feature.ElectionRound.Create;
+
+public class Endpoint(
+    IRepository<ElectionRoundAggregate> repository,
+    IRepository<PollingStationInformationForm> psiFormsRepository)
     : Endpoint<Request, Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -9,7 +14,8 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var specification = new GetActiveElectionRoundSpecification(req.CountryId, req.Title);
         var hasElectionRoundWithSameTitle = await repository.AnyAsync(specification, ct);
@@ -20,11 +26,13 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title,req.EnglishTitle, req.StartDate);
+        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title, req.EnglishTitle, req.StartDate);
         await repository.AddAsync(electionRound, ct);
+        await psiFormsRepository.AddAsync(PollingStationInformationForm.Create(electionRound, LanguagesList.EN.Iso1,
+            [LanguagesList.EN.Iso1], []), ct);
 
         var country = CountriesList.Get(req.CountryId)!;
-        
+
         return TypedResults.Ok(new ElectionRoundModel
         {
             Id = electionRound.Id,

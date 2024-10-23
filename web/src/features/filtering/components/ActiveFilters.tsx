@@ -6,6 +6,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
+import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -47,6 +48,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
+  [FILTER_KEY.FormIsCompleted, FILTER_LABEL.FormCompleted],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -71,13 +73,18 @@ const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
 };
 
 interface ActiveFiltersProps {
-  queryParams: any;
+  queryParams: Record<string, string | Date | number | string[] | undefined>;
 }
 
 function isDateType(value: any): boolean {
   return value instanceof Date && !isNaN(value.getTime());
 }
 
+function isBooleanType(value: any): boolean {
+  const trimmedValue = value.toString().toLowerCase().trim();
+
+  return trimmedValue === 'true' || trimmedValue === 'false';
+}
 
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
@@ -85,39 +92,53 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
 
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
-      {Object.keys(queryParams).map((filterId) => {
-        let key = '';
-        const value = queryParams[filterId];
-        const isArray = Array.isArray(value);
-        const isDate = isDateType(value);
+      {Object.entries(queryParams)
+        .filter(([key, value]) => !!value)
+        .filter(([key, value]) => isNotNilOrWhitespace(value?.toString()))
+        .map(([filterId, value]) => {
+          let key = '';
+          const isArray = Array.isArray(value);
+          const isDate = isDateType(value);
+          const isBoolean = isBooleanType(value);
 
-        if (HIDDEN_FILTERS.includes(filterId)) return;
+          if (HIDDEN_FILTERS.includes(filterId)) return;
 
-        if (filterId === FILTER_KEY.FormId) {
-          key = `active-filter-${filterId}`;
-          const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);
+          if (filterId === FILTER_KEY.FormId) {
+            key = `active-filter-${filterId}`;
+            const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);
 
-          if (form) {
-            return <ActiveFilter key={key} filterId={filterId} value={`${form.formCode} - ${form.formName}`} />;
+            if (form) {
+              return <ActiveFilter key={key} filterId={filterId} value={`${form.formCode} - ${form.formName}`} />;
+            }
           }
-        }
 
-        if (!isArray && !isDate) {
-          key = `active-filter-${filterId}`;
-          return <ActiveFilter key={key} filterId={filterId} value={value} />;
-        }
+          if (!isArray && !isDate && !isBoolean) {
+            key = `active-filter-${filterId}`;
+            return <ActiveFilter key={key} filterId={filterId} value={value!.toString()} />;
+          }
 
-        if (isDate) {
-          key = `active-filter-${filterId}`;
-          return <ActiveFilter key={key} filterId={filterId} value={format(value, DateTimeFormat)} />;
-        }
+          if (isBoolean) {
+            key = `active-filter-${filterId}`;
+            return (
+              <ActiveFilter
+                key={key}
+                filterId={filterId}
+                value={toBoolean(value!.toString()) === true ? 'Yes' : 'No'}
+              />
+            );
+          }
 
-        return value.map((item: any) => {
-          key = `active-filter-${filterId}-${item}`;
+          if (isDate) {
+            key = `active-filter-${filterId}`;
+            return <ActiveFilter key={key} filterId={filterId} value={format(value!.toString(), DateTimeFormat)} />;
+          }
 
-          return <ActiveFilter key={key} filterId={filterId} value={item as string} isArray />;
-        });
-      })}
+          return (value as unknown[]).map((item: any) => {
+            key = `active-filter-${filterId}-${item}`;
+
+            return <ActiveFilter key={key} filterId={filterId} value={item as string} isArray />;
+          });
+        })}
     </div>
   );
 };

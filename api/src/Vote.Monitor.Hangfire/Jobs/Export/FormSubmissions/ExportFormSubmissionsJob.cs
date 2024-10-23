@@ -134,7 +134,8 @@ public class ExportFormSubmissionsJob(
                                    psi."NumberOfFlaggedAnswers",
                                    '[]'::jsonb AS "Attachments",
                                    '[]'::jsonb AS "Notes",
-                                   COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted"
+                                   COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
+                                   psi."IsCompleted"
                             FROM "PollingStationInformation" psi
                                      INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
                                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
@@ -145,10 +146,12 @@ public class ExportFormSubmissionsJob(
                               AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
                               AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
                               AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
+                              AND (@isCompleted is NULL OR psi."IsCompleted" = @isCompleted)
                               AND (@questionsAnswered IS NULL
                                 OR (@questionsAnswered = 'All' AND psif."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
                                 OR (@questionsAnswered = 'Some' AND psif."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered")
                                 OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
+                              
                             UNION ALL
                             SELECT fs."Id" AS "SubmissionId",
                                    f."Id" AS "FormId",
@@ -175,7 +178,7 @@ public class ExportFormSubmissionsJob(
                                                AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
                   
                                    COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted"
-                  
+                                   FS."IsCompleted"
                             FROM "FormSubmissions" fs
                                      INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
                                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
@@ -186,6 +189,7 @@ public class ExportFormSubmissionsJob(
                               AND (@formId IS NULL OR fs."FormId" = @formId)
                               AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                               AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
+                              AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                               AND (@questionsAnswered IS NULL
                                 OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                                 OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
@@ -211,7 +215,8 @@ public class ExportFormSubmissionsJob(
                          s."Notes",
                          s."Answers",
                          s."Questions",
-                         s."FollowUpStatus"
+                         s."FollowUpStatus",
+                         s."IsCompleted"
                   FROM submissions s
                            INNER JOIN "PollingStations" ps on ps."Id" = s."PollingStationId"
                            INNER JOIN "MonitoringObservers" mo on mo."Id" = s."MonitoringObserverId"
@@ -267,6 +272,7 @@ public class ExportFormSubmissionsJob(
             questionsAnswered = filters?.QuestionsAnswered?.ToString(),
             fromDate = filters?.FromDateFilter?.ToString("O"),
             toDate = filters?.ToDateFilter?.ToString("O"),
+            isCompleted = filters?.IsCompletedFilter
         };
 
         IEnumerable<SubmissionModel> submissions = [];

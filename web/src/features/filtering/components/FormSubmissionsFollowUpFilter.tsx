@@ -3,7 +3,7 @@ import { SelectFilter, SelectFilterOption } from '@/features/filtering/component
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { FC } from 'react';
-import { mapFormSubmissionFollowUpStatus } from '../utils/helpers';
+import { mapFormSubmissionFollowUpStatus } from '../../responses/utils/helpers';
 
 export const FormSubmissionsFollowUpSelect: FC = () => {
   const { queryParams, navigateHandler } = useFilteringContainer();

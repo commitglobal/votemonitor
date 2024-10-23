@@ -17,7 +17,7 @@ import {
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 
-export function IncidentReportsFiltersByEntry(): FunctionComponent {
+export function IncidentReportsFiltersByForm(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();

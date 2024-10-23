@@ -37,7 +37,8 @@ public class ExportIncidentReportsJob(
 
         try
         {
-            if (exportedData.ExportStatus == ExportedDataStatus.Completed || exportedData.ExportStatus == ExportedDataStatus.Failed)
+            if (exportedData.ExportStatus == ExportedDataStatus.Completed ||
+                exportedData.ExportStatus == ExportedDataStatus.Failed)
             {
                 logger.LogWarning("ExportData was completed or failed for {electionRoundId} {ngoId} {exportedDataId}",
                     electionRoundId, ngoId, exportedDataId);
@@ -119,6 +120,7 @@ public class ExportIncidentReportsJob(
                               IR."NumberOfQuestionsAnswered",
                               IR."NumberOfFlaggedAnswers",
                               IR."Answers",
+                              IR."IsCompleted",
                               COALESCE(
                                (
                                    SELECT
@@ -176,6 +178,7 @@ public class ExportIncidentReportsJob(
                             )
                             AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
                             AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
+                            AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -202,7 +205,8 @@ public class ExportIncidentReportsJob(
                       IR."Attachments",
                       IR."Notes",
                       IR."FollowUpStatus",
-                      IR."NumberOfFlaggedAnswers"
+                      IR."NumberOfFlaggedAnswers",
+                      IR."IsCompleted"
                   FROM
                       INCIDENT_REPORTS IR
                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
@@ -266,8 +270,9 @@ public class ExportIncidentReportsJob(
             questionsAnswered = filters?.QuestionsAnswered?.ToString(),
             fromDate = filters?.FromDateFilter?.ToString("O"),
             toDate = filters?.ToDateFilter?.ToString("O"),
+            isCompleted = filters?.IsCompletedFilter
         };
-        
+
         IEnumerable<IncidentReportModel> incidentReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {

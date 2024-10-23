@@ -1,18 +1,19 @@
-using Feature.IncidentReports.GetSubmissionsAggregated;
+using Feature.IncidentReports.Requests;
+using Feature.IncidentReports.Validators;
 using FluentValidation.TestHelper;
 using Xunit;
 
 namespace Feature.IncidentReports.UnitTests.ValidatorTests;
 
-public class GetSubmissionsAggregatedValidatorTests
+public class IncidentReportsAggregateFilterValidatorTests
 {
-    private readonly Validator _validator = new();
+    private readonly IncidentReportsAggregateFilterValidator _validator = new();
 
     [Fact]
     public void Should_Have_Error_When_ElectionRoundId_Is_Empty()
     {
         // Arrange
-        var request = new Request
+        var request = new IncidentReportsAggregateFilter
         {
             ElectionRoundId = Guid.Empty
         };
@@ -28,7 +29,7 @@ public class GetSubmissionsAggregatedValidatorTests
     public void Should_Have_Error_When_NgoId_Is_Empty()
     {
         // Arrange
-        var request = new Request
+        var request = new IncidentReportsAggregateFilter
         {
             NgoId = Guid.Empty,
         };
@@ -44,7 +45,7 @@ public class GetSubmissionsAggregatedValidatorTests
     public void Should_Have_Error_When_FormId_Is_Empty()
     {
         // Arrange
-        var request = new Request
+        var request = new IncidentReportsAggregateFilter
         {
             FormId = Guid.Empty
         };
@@ -60,7 +61,7 @@ public class GetSubmissionsAggregatedValidatorTests
     public void Should_Not_Have_Error_When_All_Fields_Are_Valid()
     {
         // Arrange
-        var request = new Request
+        var request = new IncidentReportsAggregateFilter
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),

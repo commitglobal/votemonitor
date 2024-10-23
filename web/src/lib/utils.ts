@@ -510,3 +510,16 @@ export const getFileCategory = (mimeType: string): 'image' | 'video' | 'audio' |
     return 'unknown'
   }
 };
+
+
+export const toBoolean = (value: string): boolean | undefined => {
+  if (value.toLowerCase().trim() === 'true') {
+    return true;
+  }
+
+  if (value.toLowerCase().trim() === 'false') {
+    return false;
+  }
+
+  return undefined;
+};
