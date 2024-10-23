@@ -42,7 +42,7 @@ Sentry.init({
   enableNative: true,
   environment: process.env.EXPO_PUBLIC_ENVIRONMENT,
   attachScreenshot: true,
-  enabled: false,
+  enabled: !__DEV__,
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
