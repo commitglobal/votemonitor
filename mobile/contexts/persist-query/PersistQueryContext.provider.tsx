@@ -1,5 +1,10 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { MutationCache, QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryClient,
+  defaultShouldDehydrateMutation,
+  defaultShouldDehydrateQuery,
+} from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
@@ -220,7 +225,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
             if (mutation.options.scope?.id === MUTATION_SCOPE_DO_NOT_HYDRATE) {
               return false;
             }
-            return true;
+            return defaultShouldDehydrateMutation(mutation);
           },
         },
       }}
