@@ -1,6 +1,6 @@
 import React from "react";
 import { router, useNavigation } from "expo-router";
-import { ScrollView, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import { Screen } from "./Screen";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -60,14 +60,18 @@ const NoVisitsExist = ({
             {t("no_visited_polling_stations.paragraph")}
           </Typography>
         </YStack>
-        <Button
-          preset="outlined"
-          backgroundColor="white"
-          width="100%"
-          onPress={router.push.bind(null, "/polling-station-wizzard")}
-        >
-          {t("no_visited_polling_stations.add")}
-        </Button>
+        <XStack>
+          <Button
+            preset="outlined"
+            backgroundColor="white"
+            width="100%"
+            height="100%"
+            textStyle={{ textAlign: "center" }}
+            onPress={router.push.bind(null, "/polling-station-wizzard")}
+          >
+            {t("no_visited_polling_stations.add")}
+          </Button>
+        </XStack>
       </ScrollView>
     </Screen>
   );

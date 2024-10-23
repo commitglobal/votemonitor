@@ -1,4 +1,4 @@
-import { Stack, YStack } from "tamagui";
+import { Stack, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Button from "./Button";
@@ -17,9 +17,11 @@ const FormListErrorScreen = ({ onPress }: { onPress: () => void }) => {
         <Typography preset="body1" textAlign="center" color="$gray5">
           {t("forms.list.error.paragraph2")}
         </Typography>
-        <Button style={{ marginTop: 10 }} onPress={onPress}>
-          {t("forms.list.error.retry")}
-        </Button>
+        <XStack marginTop="$xs" justifyContent="center">
+          <Button height="100%" textStyle={{ textAlign: "center" }} onPress={onPress}>
+            {t("forms.list.error.retry")}
+          </Button>
+        </XStack>
       </YStack>
     </Stack>
   );
