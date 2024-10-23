@@ -69,9 +69,9 @@ const useSetSelectedElectionRoundIdMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: [ASYNC_STORAGE_KEYS.SELECTED_ELECTION_ROUND_ID],
       });
-      // await queryClient.invalidateQueries();
     },
     networkMode: "always",
+    gcTime: 0,
   });
 };
 
@@ -80,8 +80,10 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const { data: selectedElectionRoundId, isLoading: isLoadingSelectedElectionRoundId } =
     useSelectedElectionRoundId();
-  const { mutate: setSelectedElectionRoundId, isPending: isSettingSelectedElectionRoundId } =
-    useSetSelectedElectionRoundIdMutation();
+  const {
+    mutate: setSelectedElectionRoundIdMutation,
+    isPending: isSettingSelectedElectionRoundId,
+  } = useSetSelectedElectionRoundIdMutation();
 
   const {
     data: rounds,
@@ -130,6 +132,15 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     isLoading: isLoadingNomenclature,
     error: NomenclatureError,
   } = usePollingStationsNomenclatorQuery(activeElectionRound?.id);
+
+  const setSelectedElectionRoundId = (electionRoundId: string) => {
+    setSelectedElectionRoundIdMutation(electionRoundId, {
+      onSuccess: () => {
+        // Reset the selected polling station id when the selected election round id is changed
+        setSelectedPollingStationId(null);
+      },
+    });
+  };
 
   const {
     data: lastVisitedPollingStation,
