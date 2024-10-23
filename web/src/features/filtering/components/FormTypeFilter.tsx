@@ -6,7 +6,7 @@ import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringCo
 import { mapFormType } from '@/lib/utils';
 import { FC, useMemo } from 'react';
 
-export const FormTypeSelect: FC = () => {
+export const FormTypeFilter: FC = () => {
   const { queryParams, navigateHandler } = useFilteringContainer();
 
   const onChange = (value: string) => {

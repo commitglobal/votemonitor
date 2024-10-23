@@ -48,6 +48,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          "Tags",
                          "NumberOfFlaggedAnswers",
                          "NumberOfIncidentsSubmitted",
+                         "NumberOfCompletedForms"
                          "FollowUpStatus"
                   FROM (SELECT MO."Id" AS "MonitoringObserverId",
                                U."FirstName" || ' ' || U."LastName" AS "ObserverName",
@@ -60,6 +61,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                         WHERE IR."MonitoringObserverId" = MO."Id"),
                                        0
                                ) AS "NumberOfFlaggedAnswers",
+                               COALESCE(
+                                     (SELECT COUNT(*)
+                                      FROM "IncidentReports" IR
+                                      WHERE IR."MonitoringObserverId" = MO."Id"),
+                                     0
+                               ) AS "NumberOfCompletedForms",
                                (SELECT COUNT(1)
                                 FROM "IncidentReports" IR
                                 WHERE IR."MonitoringObserverId" = MO."Id" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
@@ -73,7 +80,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                            THEN 'NeedsFollowUp'
                                        ELSE NULL
                                        END
-                                   )                                           AS "FollowUpStatus"
+                                   ) AS "FollowUpStatus"
                         FROM "MonitoringObservers" MO
                                  INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                                  INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
@@ -93,6 +100,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
                       CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
                       CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
+                      
+                      CASE WHEN @sortExpression = 'NumberOfCompletedForms ASC' THEN "NumberOfCompletedForms" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfCompletedForms DESC' THEN "NumberOfCompletedForms" END DESC,
+                      
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
                       
@@ -162,6 +173,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return $"{nameof(ObserverIncidentReportsOverview.Tags)} {sortOrder}";
         }
 
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfCompletedForms),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverIncidentReportsOverview.NumberOfCompletedForms)} {sortOrder}";
+        }
+        
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {

@@ -102,7 +102,6 @@
     "closingAndCounting": "Closing And Counting",
     "other": "Other"
   },
-
   "form": {
     "field.code": "Form Code",
     "field.name": "Form Name",
@@ -141,7 +140,7 @@
       "lastName": "Last name",
       "email": "Email",
       "phone": "Phone number",
-      "addBtnText": "Add observer",
+      "addBtnText": "Add individual observer",
       "onSuccess": "Observer created",
       "onError": "Error adding observer"
     }
@@ -149,56 +148,44 @@
   "ngoAdminDashboard": {
     "title": "Dashboard",
     "subtitle": "Key indicators",
-
     "observersAccounts": {
       "cardTitle": "Observers Accounts",
       "indicatorTitle": "Total accounts"
     },
-
     "observersOnFieldCardTitle": "Observers on field",
-
     "observersInPollingStations": {
       "indicatorTitle": "Observers in polling stations",
       "metricLabel": "With at least one question answered"
     },
-
     "pollingStationCardTitle": "Polling stations",
-
     "stationsVisitedByAtLeastOneObserver": {
       "indicatorTitle": "Stations visited by at least one observer",
       "metricLabel": "coverage"
     },
-
     "timeSpentObserving": {
       "cardTitle": "Time spent observing",
       "indicatorTitle": "Based on start-end times reported"
     },
-
     "startedForms": {
       "cardTitle": "Started forms",
       "indicatorTitle": "forms started between {{interval}}"
     },
-
     "questionsAnswered": {
       "cardTitle": "Questions answered",
       "indicatorTitle": "questions answered between {{interval}}"
     },
-
     "flaggedAnswers": {
       "cardTitle": "Flagged answers",
       "indicatorTitle": "answers were flagged through forms between {{interval}}"
     },
-
     "quickReports": {
       "cardTitle": "Quick reports",
       "indicatorTitle": "quick reports were signalled between {{interval}}"
     },
-
     "citizenReports": {
       "cardTitle": "Citizen reports",
       "indicatorTitle": "citizen reports were signalled between {{interval}}"
     },
-
     "incidentReports": {
       "cardTitle": "Incident reports",
       "indicatorTitle": "incidents reports were signalled between {{interval}}"
@@ -242,11 +229,8 @@
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
       "citizenGuidesCardTitle": "Citizen guides",
-
       "citizenNotificationsTabTitle": "Citizen Notifications",
       "citizenNotificationsCardTitle": "Citizen notifications",
-
-
       "observerGuidesTabTitle": "Observer Guides",
       "observerGuidesCardTitle": "Observer guides",
       "headers": {

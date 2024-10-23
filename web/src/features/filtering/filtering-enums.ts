@@ -25,7 +25,10 @@ export const enum FILTER_KEY {
   FromDate = 'submissionsFromDate',
   ToDate = 'submissionsToDate',
   SearchText = 'searchText',
-
+  FormIsCompleted = 'formIsCompleted',
+  QuickReportIncidentCategory ='incidentCategory',
+  QuickReportFollowUpStatus ='quickReportFollowUpStatus',
+  HasQuickReports ='hasQuickReports',
 }
 
 export const enum FILTER_LABEL {
@@ -49,5 +52,8 @@ export const enum FILTER_LABEL {
   FromDate = 'From date',
   ToDate = 'To Date',
   SearchText = 'Search text',
-
+  FormCompleted = 'Form completed',
+  QuickReportIncidentCategory ='Incident category',
+  QuickReportFollowUpStatus ='Quick report follow up status',
+  HasQuickReports ='Has quick reports',
 }

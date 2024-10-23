@@ -13,6 +13,7 @@ public record ObserverSubmissionOverview
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfLocations { get; init; }
     public int NumberOfFormsSubmitted { get; init; }
+    public int NumberOfCompletedForms { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus? FollowUpStatus { get; init; }

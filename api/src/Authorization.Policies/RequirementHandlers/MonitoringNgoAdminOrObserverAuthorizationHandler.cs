@@ -28,8 +28,7 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
 
             if (result is not null)
             {
-                if (result.ElectionRoundStatus == ElectionRoundStatus.Archived ||
-                    result.NgoStatus == NgoStatus.Deactivated ||
+                if (result.NgoStatus == NgoStatus.Deactivated ||
                     result.MonitoringNgoStatus == MonitoringNgoStatus.Suspended ||
                     result.UserStatus == UserStatus.Deactivated ||
                     result.MonitoringObserverStatus == MonitoringObserverStatus.Suspended)

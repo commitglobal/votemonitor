@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
@@ -11,10 +12,12 @@ public record FormSubmissionEntry
     public DateTime TimeSubmitted { get; init; }
 
     public string FormCode { get; init; } = default!;
+    public TranslatedString FormName { get; init; } = default!;
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public FormType FormType { get; init; } = default!;
 
+    public string DefaultLanguage { get; set; }
     public Guid PollingStationId { get; init; }
     public string Level1 { get; init; } = default!;
     public string Level2 { get; init; } = default!;
@@ -37,4 +40,6 @@ public record FormSubmissionEntry
 
     [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
+
+    public bool IsCompleted { get; set; }
 }

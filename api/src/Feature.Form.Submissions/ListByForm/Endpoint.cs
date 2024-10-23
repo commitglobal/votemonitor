@@ -1,7 +1,9 @@
-﻿namespace Feature.Form.Submissions.ListByForm;
+﻿using Feature.Form.Submissions.Requests;
+
+namespace Feature.Form.Submissions.ListByForm;
 
 public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    : Endpoint<FormSubmissionsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -13,7 +15,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Summary(x => { x.Summary = "Form submissions aggregated by observer"; });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -27,6 +29,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       F."Id" AS "FormId",
                       'PSI' AS "FormCode",
                       'PSI' AS "FormType",
+                      F."Name" as "FormName",
+                      F."DefaultLanguage",
                       COUNT(DISTINCT PSI."Id") "NumberOfSubmissions",
                       SUM(PSI."NumberOfFlaggedAnswers") "NumberOfFlaggedAnswers",
                       0 AS "NumberOfMediaFiles",
@@ -56,6 +60,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
                       AND (@hasNotes is NULL OR (TRUE AND @hasNotes = false) OR (FALSE AND @hasNotes = true))
                       AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
+                      AND (@isCompleted is NULL OR psi."IsCompleted" = @isCompleted)
                   GROUP BY
                       F."Id"
                   UNION ALL
@@ -63,6 +68,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       F."Id" AS "FormId",
                       F."Code" AS "FormCode",
                       F."FormType" AS "FormType",
+                      F."Name" as "FormName",
+                      F."DefaultLanguage",
                       COUNT(DISTINCT FS."Id") "NumberOfSubmissions",
                       SUM(FS."NumberOfFlaggedAnswers") "NumberOfFlaggedAnswers",
                       (
@@ -93,6 +100,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       F."ElectionRoundId" = @electionRoundId
                       AND MN."NgoId" = @ngoId
                       AND F."Status" = 'Published'
+                      AND F."FormType" NOT IN ('CitizenReporting', 'IncidentReporting')
                       AND (@level1 IS NULL OR ps."Level1" = @level1)
                       AND (@level2 IS NULL OR ps."Level2" = @level2)
                       AND (@level3 IS NULL OR ps."Level3" = @level3)
@@ -104,6 +112,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
                       AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                       AND (@formId IS NULL OR fs."FormId" = @formId)
+                      AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                       AND (@questionsAnswered is null 
                                   OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                                   OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered") 
@@ -115,9 +124,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") = 0 AND @hasNotes = false) 
                            OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") > 0 AND @hasNotes = true))
                   GROUP BY
-                      F."Id",
-                      F."Code",
-                      F."FormType";
+                      F."Id"
                   """;
 
         var queryArgs = new
@@ -138,9 +145,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
+            isCompleted = req.IsCompletedFilter
         };
 
-        IEnumerable<AggregatedFormOverview> aggregatedFormOverviews = [];
+        IEnumerable<AggregatedFormOverview> aggregatedFormOverviews;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {

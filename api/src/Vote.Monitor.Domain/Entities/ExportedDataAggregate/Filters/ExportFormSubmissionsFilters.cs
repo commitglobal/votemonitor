@@ -32,4 +32,5 @@ public class ExportFormSubmissionsFilters
 
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
+    public bool? IsCompletedFilter { get; set; }
 }

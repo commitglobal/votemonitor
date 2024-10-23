@@ -23,4 +23,5 @@ public class Request
     [QueryParam] public bool? HasNotes { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
+    [QueryParam] public bool? IsCompletedFilter { get; set; }
 }
