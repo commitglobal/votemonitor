@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography } from "../../../../../../components/Typography";
-import { Spinner, YStack } from "tamagui";
+import { Spinner, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../../../components/Icon";
 import { Screen } from "../../../../../../components/Screen";
 import { router, useNavigation } from "expo-router";
@@ -139,13 +139,18 @@ const QuickReportContent = ({
               <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
                 {t("list.empty")}
               </Typography>
-              <Button
-                preset="outlined"
-                onPress={router.push.bind(null, "/report-issue")}
-                backgroundColor="white"
-              >
-                {t("list.add")}
-              </Button>
+              <XStack>
+                <Button
+                  preset="outlined"
+                  width="100%"
+                  height="100%"
+                  textStyle={{ textAlign: "center" }}
+                  onPress={router.push.bind(null, "/report-issue")}
+                  backgroundColor="white"
+                >
+                  {t("list.add")}
+                </Button>
+              </XStack>
             </YStack>
           </YStack>
         }

@@ -38,13 +38,17 @@ export const FooterButtons = ({
       >
         <Icon icon="chevronLeft" size={24} color="$purple5" />
       </XStack>
-      <Button
-        flex={0.8}
-        disabled={isPrimaryButtonDisabled || !primaryAction}
-        onPress={primaryAction}
-      >
-        {primaryActionLabel}
-      </Button>
+      <XStack flex={0.8}>
+        <Button
+          width="100%"
+          height="100%"
+          textStyle={{ textAlign: "center" }}
+          disabled={isPrimaryButtonDisabled || !primaryAction}
+          onPress={primaryAction}
+        >
+          {primaryActionLabel}
+        </Button>
+      </XStack>
     </AnimatedXStack>
   );
 };
