@@ -52,7 +52,11 @@ export const DrawerContent = (props: DrawerContentProps) => {
             activeTintColor={theme.purple5?.val}
             activeBackgroundColor={theme.yellow5?.val}
             inactiveTintColor="white"
-            onPress={() => setSelectedElectionRoundId(round.id)}
+            onPress={() => {
+              if (activeElectionRound?.id !== round.id) {
+                setSelectedElectionRoundId(round.id);
+              }
+            }}
             style={{
               paddingVertical: 4,
               paddingHorizontal: 16,
