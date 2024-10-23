@@ -4,7 +4,6 @@ using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
-using Vote.Monitor.Domain.Migrations;
 
 namespace Feature.Notifications.ListRecipients;
 
@@ -14,7 +13,7 @@ public class Request : BaseSortPaginatedRequest
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
-
+    
     [QueryParam] public string? SearchText { get; set; }
 
     [QueryParam] public FormType? FormTypeFilter { get; set; }
@@ -48,4 +47,5 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public QuickReportFollowUpStatus? QuickReportFollowUpStatus { get; set; }
     [QueryParam] public IncidentCategory? QuickReportIncidentCategory { get; set; }
     [QueryParam] public bool? HasQuickReports { get; set; }
+
 }

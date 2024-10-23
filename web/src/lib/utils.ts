@@ -249,7 +249,7 @@ export function ratingScaleToNumber(scale: RatingScaleType): number {
 export function buildURLSearchParams(data: any) {
   const params = new URLSearchParams();
 
-  Object.entries(data).forEach(([key, value]) => {
+  Object.entries(data).filter(([_,value])=>!!value).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       // @ts-ignore
       value.forEach((value) => params.append(key, value.toString()));
@@ -299,7 +299,7 @@ export function mapFormType(formType: FormType): string {
     case ZFormType.Values.CitizenReporting:
       return i18n.t('form.type.citizenReporting');
     case ZFormType.Values.IncidentReporting:
-        return i18n.t('form.type.incidentReporting');
+      return i18n.t('form.type.incidentReporting');
     case ZFormType.Values.PSI:
       return i18n.t('form.type.psi');
     case ZFormType.Values.Other:
@@ -452,19 +452,19 @@ export const getTranslationOrDefault = (
 export function formatBytes(
   bytes: number,
   opts: {
-    decimals?: number
-    sizeType?: "accurate" | "normal"
+    decimals?: number;
+    sizeType?: 'accurate' | 'normal';
   } = {}
 ) {
-  const { decimals = 0, sizeType = "normal" } = opts
+  const { decimals = 0, sizeType = 'normal' } = opts;
 
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
-  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"]
-  if (bytes === 0) return "0 Byte"
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
+  if (bytes === 0) return '0 Byte';
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
-  }`
+    sizeType === 'accurate' ? accurateSizes[i] ?? 'Bytest' : sizes[i] ?? 'Bytes'
+  }`;
 }
 
 /**
@@ -473,11 +473,15 @@ export function formatBytes(
  * @param value value to set for required languageCode
  * @returns new instance of @see {@link TranslatedString}
  */
-export const ensureTranslatedStringCorrectness = (translatedString:TranslatedString | null | undefined, availableLanguages: string[], value: string = ''): TranslatedString => {
-  if(translatedString === undefined || translatedString === null) return emptyTranslatedString(availableLanguages);
+export const ensureTranslatedStringCorrectness = (
+  translatedString: TranslatedString | null | undefined,
+  availableLanguages: string[],
+  value: string = ''
+): TranslatedString => {
+  if (translatedString === undefined || translatedString === null) return emptyTranslatedString(availableLanguages);
 
   availableLanguages.forEach((language) => {
-    if(translatedString[language] === undefined){
+    if (translatedString[language] === undefined) {
       translatedString[language] = value;
     }
   });
@@ -491,28 +495,29 @@ export async function sleep(ms: number) {
 
 export const toKebabCase = (str: string): string => {
   return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')  // Handle camelCase (e.g., myString -> my-string)
-    .replace(/\s+/g, '-')                 // Replace spaces with hyphens
-    .replace(/_+/g, '-')                  // Replace underscores with hyphens
-    .replace(/[^\w\-]+/g, '')             // Remove all non-word characters except hyphens
-    .replace(/--+/g, '-')                 // Remove multiple hyphens
-    .toLowerCase();                       // Convert the string to lowercase
+    .replace(/([a-z])([A-Z])/g, '$1-$2') // Handle camelCase (e.g., myString -> my-string)
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/_+/g, '-') // Replace underscores with hyphens
+    .replace(/[^\w\-]+/g, '') // Remove all non-word characters except hyphens
+    .replace(/--+/g, '-') // Remove multiple hyphens
+    .toLowerCase(); // Convert the string to lowercase
 };
 
 export const getFileCategory = (mimeType: string): 'image' | 'video' | 'audio' | 'unknown' => {
   if (mimeType.startsWith('image/')) {
-    return 'image'
+    return 'image';
   } else if (mimeType.startsWith('video/')) {
-    return 'video'
+    return 'video';
   } else if (mimeType.startsWith('audio/')) {
-    return 'audio'
+    return 'audio';
   } else {
-    return 'unknown'
+    return 'unknown';
   }
 };
 
+export const toBoolean = (value: string | undefined): boolean | undefined => {
+  if (value === undefined) return undefined;
 
-export const toBoolean = (value: string): boolean | undefined => {
   if (value.toLowerCase().trim() === 'true') {
     return true;
   }

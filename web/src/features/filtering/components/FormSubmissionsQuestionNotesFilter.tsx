@@ -3,7 +3,7 @@ import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { FC } from 'react';
 
-export const FormSubmissionsQuestionNotesSelect: FC = () => {
+export const FormSubmissionsQuestionNotesFilter: FC = () => {
   const { queryParams, navigateHandler } = useFilteringContainer();
 
   const onChange = (value: string) => {

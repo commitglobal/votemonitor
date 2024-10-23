@@ -7,6 +7,13 @@ import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
 import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
+import {
+  mapFormSubmissionFollowUpStatus,
+  mapIncidentCategory,
+  mapQuickReportFollowUpStatus,
+  mapQuickReportLocationType,
+} from '@/features/responses/utils/helpers';
+import { QuickReportFollowUpStatus } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -49,6 +56,15 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
   [FILTER_KEY.FormIsCompleted, FILTER_LABEL.FormCompleted],
+  [FILTER_KEY.QuickReportIncidentCategory, FILTER_LABEL.QuickReportIncidentCategory],
+  [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
+  [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],
+]);
+
+const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
+  [FILTER_KEY.QuickReportFollowUpStatus, mapQuickReportFollowUpStatus],
+  [FILTER_KEY.FormSubmissionFollowUpStatus, mapFormSubmissionFollowUpStatus],
+  [FILTER_KEY.QuickReportIncidentCategory, mapIncidentCategory],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -85,6 +101,9 @@ function isBooleanType(value: any): boolean {
 
   return trimmedValue === 'true' || trimmedValue === 'false';
 }
+function defaultLocalizator(value: any): string {
+  return (value ?? '').toString();
+}
 
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
@@ -100,6 +119,7 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
           const isArray = Array.isArray(value);
           const isDate = isDateType(value);
           const isBoolean = isBooleanType(value);
+          const localizator = FILTER_VALUE_LOCALIZATORS.get(filterId) ?? defaultLocalizator;
 
           if (HIDDEN_FILTERS.includes(filterId)) return;
 
@@ -114,7 +134,7 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
 
           if (!isArray && !isDate && !isBoolean) {
             key = `active-filter-${filterId}`;
-            return <ActiveFilter key={key} filterId={filterId} value={value!.toString()} />;
+            return <ActiveFilter key={key} filterId={filterId} value={localizator(value!.toString())} />;
           }
 
           if (isBoolean) {

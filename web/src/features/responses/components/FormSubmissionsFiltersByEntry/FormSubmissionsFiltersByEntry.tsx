@@ -4,12 +4,12 @@ import { FormSubmissionsCompletionFilter } from '@/features/filtering/components
 import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
-import { FormSubmissionsFlaggedAnswersSelect } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
-import { FormSubmissionsFollowUpSelect } from '../../../filtering/components/FormSubmissionsFollowUpFilter';
-import { FormSubmissionsFormSelect } from '../../../filtering/components/FormSubmissionsFormFilter';
+import { FormSubmissionsFlaggedAnswersFilter } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
+import { FormSubmissionsFollowUpFilter } from '../../../filtering/components/FormSubmissionsFollowUpFilter';
+import { FormSubmissionsFormFilter } from '../../../filtering/components/FormSubmissionsFormFilter';
 import { FormSubmissionsFromDateFilter } from '../../../filtering/components/FormSubmissionsFromDateFilter';
-import { FormSubmissionsMediaFilesSelect } from '../../../filtering/components/FormSubmissionsMediaFilesFilter';
-import { FormSubmissionsQuestionNotesSelect } from '../../../filtering/components/FormSubmissionsQuestionNotesFilter';
+import { FormSubmissionsMediaFilesFilter } from '../../../filtering/components/FormSubmissionsMediaFilesFilter';
+import { FormSubmissionsQuestionNotesFilter } from '../../../filtering/components/FormSubmissionsQuestionNotesFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '../../../filtering/components/FormSubmissionsQuestionsAnsweredFilter';
 import { FormSubmissionsToDateFilter } from '../../../filtering/components/FormSubmissionsToDateFilter';
 
@@ -17,13 +17,13 @@ export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
     <FilteringContainer>
       <FormTypeFilter />
-      <FormSubmissionsFormSelect />
+      <FormSubmissionsFormFilter />
       <FormSubmissionsCompletionFilter />
-      <FormSubmissionsFlaggedAnswersSelect />
-      <FormSubmissionsFollowUpSelect />
+      <FormSubmissionsFlaggedAnswersFilter />
+      <FormSubmissionsFollowUpFilter />
       <FormSubmissionsQuestionsAnsweredFilter />
-      <FormSubmissionsQuestionNotesSelect />
-      <FormSubmissionsMediaFilesSelect />
+      <FormSubmissionsQuestionNotesFilter />
+      <FormSubmissionsMediaFilesFilter />
       <MonitoringObserverTagsSelect isFilteringFormSubmissions />
       <PollingStationsFilters />
       <FormSubmissionsFromDateFilter />

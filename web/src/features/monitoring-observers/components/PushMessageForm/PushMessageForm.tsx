@@ -17,7 +17,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
-import { FormSubmissionsFormSelect } from '@/features/filtering/components/FormSubmissionsFormFilter';
+import { FormSubmissionsFormFilter } from '@/features/filtering/components/FormSubmissionsFormFilter';
 import { FormSubmissionsFromDateFilter } from '@/features/filtering/components/FormSubmissionsFromDateFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '@/features/filtering/components/FormSubmissionsQuestionsAnsweredFilter';
 import { FormSubmissionsToDateFilter } from '@/features/filtering/components/FormSubmissionsToDateFilter';
@@ -33,6 +33,11 @@ import type { PushMessageTargetedObserversSearchParams } from '../../models/sear
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
+import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
+import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
+import { QuickReportsFollowUpFilter } from '@/features/filtering/components/QuickReportsFollowUpFilter';
+import { HasQuickReportsFilter } from '@/features/filtering/components/HasQuickReportsFilter';
+import { toBoolean } from '@/lib/utils';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -64,30 +69,33 @@ function PushMessageForm(): FunctionComponent {
   const debouncedSearch = useDebounce(search, 300);
 
   const queryParams = useMemo(() => {
-    const params = [
-      ['searchText', searchText],
-      ['formTypeFilter', debouncedSearch.formTypeFilter],
-      ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level2Filter', debouncedSearch.level2Filter],
-      ['level3Filter', debouncedSearch.level3Filter],
-      ['level4Filter', debouncedSearch.level4Filter],
-      ['level5Filter', debouncedSearch.level5Filter],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['followUpStatus', debouncedSearch.followUpStatus],
-      ['questionsAnswered', debouncedSearch.questionsAnswered],
-      ['hasNotes', debouncedSearch.hasNotes],
-      ['hasAttachments', debouncedSearch.hasAttachments],
-      ['tagsFilter', debouncedSearch.tagsFilter],
-      ['formId', debouncedSearch.formId],
-      ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
-      ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
-      ['isCompletedFilter', debouncedSearch.formIsCompleted],
-      ['monitoringObserverStatus', debouncedSearch.monitoringObserverStatus],
+    const params: SendPushNotificationRequest = {
+      searchText: searchText,
+      statusFilter: debouncedSearch.statusFilter,
+      formTypeFilter: debouncedSearch.formTypeFilter,
+      level1Filter: debouncedSearch.level1Filter,
+      level2Filter: debouncedSearch.level2Filter,
+      level3Filter: debouncedSearch.level3Filter,
+      level4Filter: debouncedSearch.level4Filter,
+      level5Filter: debouncedSearch.level5Filter,
+      pollingStationNumberFilter: debouncedSearch.pollingStationNumberFilter,
+      followUpStatus: debouncedSearch.followUpStatus,
+      questionsAnswered: debouncedSearch.questionsAnswered,
+      hasFlaggedAnswers: toBoolean(debouncedSearch.hasFlaggedAnswers),
+      hasNotes: toBoolean(debouncedSearch.hasNotes),
+      hasAttachments: toBoolean(debouncedSearch.hasAttachments),
+      hasQuickReports: toBoolean(debouncedSearch.hasQuickReports),
+      tagsFilter: debouncedSearch.tagsFilter,
+      formId: debouncedSearch.formId,
+      fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
+      toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
+      isCompletedFilter: toBoolean(debouncedSearch.formIsCompleted),
+      monitoringObserverStatus: debouncedSearch.monitoringObserverStatus,
+      quickReportIncidentCategory: debouncedSearch.incidentCategory,
+      quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
+    };
 
-    ].filter(([_, value]) => value);
-
-    return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
+    return params;
   }, [debouncedSearchText, debouncedSearch]);
 
   const handleDataFetchingSucceed = (pageSize: number, currentPage: number, totalCount: number): void => {
@@ -103,8 +111,14 @@ function PushMessageForm(): FunctionComponent {
   });
 
   const sendNotificationMutation = useMutation({
-    mutationFn: ({ electionRoundId, request }: { electionRoundId: string; request: SendPushNotificationRequest }) => {
-      return authApi.post<SendPushNotificationRequest>(
+    mutationFn: ({
+      electionRoundId,
+      request,
+    }: {
+      electionRoundId: string;
+      request: SendPushNotificationRequest & { title: string; body: string };
+    }) => {
+      return authApi.post<PushMessageTargetedObserversSearchParams>(
         `/election-rounds/${electionRoundId}/notifications:send`,
         request
       );
@@ -193,12 +207,18 @@ function PushMessageForm(): FunctionComponent {
                   <MonitoringObserverTagsSelect />
                   <MonitoringObserverStatusSelect />
                   <FormTypeFilter />
-                  <FormSubmissionsFormSelect />
+                  <FormSubmissionsFormFilter />
+                  <FormSubmissionsCompletionFilter />
                   <FormSubmissionsQuestionsAnsweredFilter />
-                  <PollingStationsFilters />
+                  <FormSubmissionsFollowUpFilter />
+
                   <FormSubmissionsFromDateFilter />
                   <FormSubmissionsToDateFilter />
-                  <FormSubmissionsCompletionFilter />
+                  <HasQuickReportsFilter />
+                  <QuickReportsIncidentCategoryFilter />
+                  <QuickReportsFollowUpFilter placeholder='Quick reports follow up status' />
+
+                  <PollingStationsFilters />
                 </FilteringContainer>
               </div>
 

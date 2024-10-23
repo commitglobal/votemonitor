@@ -5,7 +5,7 @@ import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringCo
 import { FC, useMemo } from 'react';
 import { useFormSubmissionsFilters } from '../../responses/hooks/form-submissions-queries';
 
-export const FormSubmissionsFormSelect: FC = () => {
+export const FormSubmissionsFormFilter: FC = () => {
   const { queryParams, navigateHandler } = useFilteringContainer();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data } = useFormSubmissionsFilters(currentElectionRoundId);
