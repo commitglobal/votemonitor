@@ -3,9 +3,13 @@ import { SelectFilter, SelectFilterOption } from '@/features/filtering/component
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { FC } from 'react';
-import { mapFormSubmissionFollowUpStatus } from '../utils/helpers';
+import { mapFormSubmissionFollowUpStatus } from '../../responses/utils/helpers';
 
-export const FormSubmissionsFollowUpSelect: FC = () => {
+interface FormSubmissionsFollowUpFilterProps {
+  placeholder?: string;
+}
+
+export const FormSubmissionsFollowUpFilter: FC<FormSubmissionsFollowUpFilterProps> = ({ placeholder = 'Follow-up status' }) => {
   const { queryParams, navigateHandler } = useFilteringContainer();
 
   const onChange = (value: string) => {
@@ -14,16 +18,16 @@ export const FormSubmissionsFollowUpSelect: FC = () => {
   const options: SelectFilterOption[] = [
     {
       value: FormSubmissionFollowUpStatus.NotApplicable,
-      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NotApplicable)
+      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NotApplicable),
     },
 
     {
       value: FormSubmissionFollowUpStatus.NeedsFollowUp,
-      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NeedsFollowUp)
+      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NeedsFollowUp),
     },
     {
       value: FormSubmissionFollowUpStatus.Resolved,
-      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.Resolved)
+      label: mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.Resolved),
     },
   ];
 

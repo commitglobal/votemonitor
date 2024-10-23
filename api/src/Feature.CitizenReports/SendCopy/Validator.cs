@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.CitizenReports.SendCopy;
+﻿namespace Feature.CitizenReports.SendCopy;
 
 public class Validator : Validator<Request>
 {

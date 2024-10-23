@@ -40,6 +40,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
     hasNotes: z.string().catch('').optional(),
     hasAttachments: z.string().catch('').optional(),
+    formIsCompleted: z.string().catch('').optional(),
     formId: z.string().optional(),
 
     submissionsFromDate: z.coerce.date().optional(),

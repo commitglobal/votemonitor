@@ -1,3 +1,5 @@
+import { FormSubmissionFollowUpStatus, FormType, QuestionsAnswered, QuickReportFollowUpStatus } from "@/common/types";
+import { IncidentCategory } from "@/features/responses/models/quick-report";
 import { MonitoringObserverStatus } from "./monitoring-observer";
 
 export interface PushMessageModel {
@@ -25,15 +27,31 @@ export interface PushMessageDetailedModel {
 }
 
 export interface SendPushNotificationRequest {
-    title: string;
-    body: string;
-    searchText?: string;
-    level1Filter?: string;
-    level2Filter?: string;
-    level3Filter?: string;
-    level4Filter?: string;
-    level5Filter?: string;
-    pollingStationNumberFilter?: string;
-    statusFilter?: string;
-    tagsFilter?: string[];
-  }
+  searchText?: string;
+  statusFilter?: MonitoringObserverStatus;
+  level1Filter?: string;
+  level2Filter?: string;
+  level3Filter?: string;
+  level4Filter?: string;
+  level5Filter?: string;
+  pollingStationNumberFilter?: string;
+  tagsFilter?: string[];
+  submissionsFromDate?: string;
+  submissionsToDate?: string;
+  questionsAnswered?: QuestionsAnswered;
+  formId?: string;
+  formTypeFilter?: FormType;
+  formIsCompleted?: boolean;
+  followUpStatus?: FormSubmissionFollowUpStatus;
+  monitoringObserverId?: string;
+  hasFlaggedAnswers?: boolean;
+  hasNotes?: boolean;
+  hasAttachments?: boolean;
+  hasQuickReports?: boolean;
+  monitoringObserverStatus?: MonitoringObserverStatus;
+  quickReportIncidentCategory?: IncidentCategory;
+  quickReportFollowUpStatus?: QuickReportFollowUpStatus;
+  fromDateFilter?: string;
+  toDateFilter?: string;
+  isCompletedFilter?: boolean;
+}

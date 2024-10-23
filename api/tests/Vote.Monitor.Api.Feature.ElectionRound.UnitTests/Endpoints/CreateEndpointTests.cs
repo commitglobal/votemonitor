@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
+﻿using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+
+namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
 
 public class CreateEndpointTests
 {
@@ -11,12 +13,13 @@ public class CreateEndpointTests
         var startDate = new DateOnly(2024, 01, 02);
 
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var psiFormRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
 
         repository
             .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository);
+        var endpoint = Factory.Create<Create.Endpoint>(repository, psiFormRepository);
 
         // Act
         var request = new Create.Request
@@ -47,15 +50,17 @@ public class CreateEndpointTests
     {
         // Arrange
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var psiFormRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
 
         repository
             .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository);
+        var endpoint = Factory.Create<Create.Endpoint>(repository, psiFormRepository);
 
         // Act
-        var request = new Create.Request { Title = "a title", EnglishTitle = "an english title", StartDate = DateOnly.MinValue };
+        var request = new Create.Request
+            { Title = "a title", EnglishTitle = "an english title", StartDate = DateOnly.MinValue };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -63,5 +68,30 @@ public class CreateEndpointTests
             .Should().BeOfType<Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
+    }
+
+
+    [Fact]
+    public async Task ShouldCreate_PSIForm()
+    {
+        // Arrange
+        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var psiFormRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
+
+        var endpoint = Factory.Create<Create.Endpoint>(repository, psiFormRepository);
+
+        // Act
+        var request = new Create.Request
+        {
+            Title = "a title",
+            EnglishTitle = "an english title",
+            StartDate = DateOnly.MinValue,
+            CountryId = CountriesList.MD.Id
+        };
+        await endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        await psiFormRepository.Received(1)
+            .AddAsync(Arg.Is<PollingStationInformationForm>(f => f.Questions.Count == 1));
     }
 }

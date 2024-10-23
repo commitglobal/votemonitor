@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.ObserverGuide.Update;
+﻿namespace Feature.ObserverGuide.Update;
 
 public class Validator : Validator<Request>
 {

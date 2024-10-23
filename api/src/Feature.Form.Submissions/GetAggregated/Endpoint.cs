@@ -1,9 +1,11 @@
 ﻿using Feature.Form.Submissions.Models;
+using Feature.Form.Submissions.Requests;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.Form.Submissions.GetAggregated;
@@ -12,7 +14,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
     INpgsqlConnectionFactory connectionFactory,
-    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    IFileStorageService fileStorageService) : Endpoint<FormSubmissionsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -23,7 +25,8 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req,
+        CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -31,12 +34,14 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-        
+
         var form = await context
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringNgo.NgoId == req.NgoId
                         && x.Id == req.FormId)
+            .Where(x => x.Status == FormStatus.Published)
+            .Where(x => x.FormType != FormType.CitizenReporting && x.FormType != FormType.IncidentReporting)
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
 
@@ -59,7 +64,7 @@ public class Endpoint(
     }
 
     private async Task<Results<Ok<Response>, NotFound>> AggregateNgoFormSubmissionsAsync(FormAggregate form,
-        Request req,
+        FormSubmissionsAggregateFilter req,
         CancellationToken ct)
     {
         var tags = req.TagsFilter ?? [];
@@ -118,6 +123,7 @@ public class Endpoint(
                     && a.FormId == x.FormId
                     && a.PollingStationId == x.PollingStationId
                     && a.ElectionRoundId == x.ElectionRoundId) == 0))
+            .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
             .AsNoTracking()
             .AsSplitQuery()
             .ToListAsync(ct);
@@ -219,13 +225,30 @@ public class Endpoint(
         {
             SubmissionsAggregate = formSubmissionsAggregate,
             Notes = notes,
-            Attachments = attachments
+            Attachments = attachments,
+            SubmissionsFilter = new SubmissionsFilterModel
+            {
+                HasAttachments = req.HasAttachments,
+                HasNotes = req.HasNotes,
+                Level1Filter = req.Level1Filter,
+                Level2Filter = req.Level2Filter,
+                Level3Filter = req.Level3Filter,
+                Level4Filter = req.Level4Filter,
+                Level5Filter = req.Level5Filter,
+                QuestionsAnswered = req.QuestionsAnswered,
+                TagsFilter = req.TagsFilter,
+                FollowUpStatus = req.FollowUpStatus,
+                HasFlaggedAnswers = req.HasFlaggedAnswers,
+                IsCompletedFilter = req.IsCompletedFilter,
+                MonitoringObserverStatus = req.MonitoringObserverStatus,
+                PollingStationNumberFilter = req.PollingStationNumberFilter,
+            }
         });
     }
 
     private async Task<Results<Ok<Response>, NotFound>> AggregatePSIFormSubmissionsAsync(
         PollingStationInformationForm form,
-        Request req,
+        FormSubmissionsAggregateFilter req,
         CancellationToken ct)
     {
         var tags = req.TagsFilter ?? [];

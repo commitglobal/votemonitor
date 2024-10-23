@@ -1,27 +1,29 @@
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
+import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
+import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
-import { FormSubmissionsFlaggedAnswersSelect } from '../../filtering/FormSubmissionsFlaggedAnswersSelect';
-import { FormSubmissionsFollowUpSelect } from '../../filtering/FormSubmissionsFollowUpSelect';
-import { FormSubmissionsMediaFilesSelect } from '../../filtering/FormSubmissionsMediaFilesSelect';
-import { FormSubmissionsQuestionNotesSelect } from '../../filtering/FormSubmissionsQuestionNotesSelect';
-import { FormSubmissionsQuestionsAnsweredSelect } from '../../filtering/FormSubmissionsQuestionsAnsweredSelect';
-import { FormSubmissionsTypeSelect } from '../../filtering/FormSubmissionsTypeSelect';
-import { FormSubmissionsFormSelect } from '../../filtering/FormSubmissionsFormSelect';
-import { FormSubmissionsFromDateFilter } from '../../filtering/FormSubmissionsFromDateFilter';
-import { FormSubmissionsToDateFilter } from '../../filtering/FormSubmissionsToDateFilter';
+import { FormSubmissionsFlaggedAnswersFilter } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
+import { FormSubmissionsFollowUpFilter } from '../../../filtering/components/FormSubmissionsFollowUpFilter';
+import { FormSubmissionsFormFilter } from '../../../filtering/components/FormSubmissionsFormFilter';
+import { FormSubmissionsFromDateFilter } from '../../../filtering/components/FormSubmissionsFromDateFilter';
+import { FormSubmissionsMediaFilesFilter } from '../../../filtering/components/FormSubmissionsMediaFilesFilter';
+import { FormSubmissionsQuestionNotesFilter } from '../../../filtering/components/FormSubmissionsQuestionNotesFilter';
+import { FormSubmissionsQuestionsAnsweredFilter } from '../../../filtering/components/FormSubmissionsQuestionsAnsweredFilter';
+import { FormSubmissionsToDateFilter } from '../../../filtering/components/FormSubmissionsToDateFilter';
 
 export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
     <FilteringContainer>
-      <FormSubmissionsTypeSelect />
-      <FormSubmissionsFormSelect />
-      <FormSubmissionsFlaggedAnswersSelect />
-      <FormSubmissionsFollowUpSelect />
-      <FormSubmissionsQuestionsAnsweredSelect />
-      <FormSubmissionsQuestionNotesSelect />
-      <FormSubmissionsMediaFilesSelect />
+      <FormTypeFilter />
+      <FormSubmissionsFormFilter />
+      <FormSubmissionsCompletionFilter />
+      <FormSubmissionsFlaggedAnswersFilter />
+      <FormSubmissionsFollowUpFilter />
+      <FormSubmissionsQuestionsAnsweredFilter />
+      <FormSubmissionsQuestionNotesFilter />
+      <FormSubmissionsMediaFilesFilter />
       <MonitoringObserverTagsSelect isFilteringFormSubmissions />
       <PollingStationsFilters />
       <FormSubmissionsFromDateFilter />

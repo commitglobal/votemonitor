@@ -1,7 +1,9 @@
-﻿namespace Feature.IncidentReports.ListFormsOverview;
+﻿using Feature.IncidentReports.Requests;
+
+namespace Feature.IncidentReports.ListFormsOverview;
 
 public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
-    : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    : Endpoint<IncidentReportsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -13,7 +15,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         Summary(x => { x.Summary = "Incident reports aggregated by form"; });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(IncidentReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -51,6 +53,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                 : !x.Attachments.Any()))
             .Where(x => req.FollowUpStatusFilter == null || x.FollowUpStatus == req.FollowUpStatusFilter)
             .Where(x => req.LocationTypeFilter == null || x.LocationType == req.LocationTypeFilter)
+            .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
             .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Name, cr.Form.DefaultLanguage })
             .Select(cr => new AggregatedFormOverview
             {

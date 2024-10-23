@@ -1,14 +1,19 @@
-namespace Feature.Form.Submissions.UnitTests.ValidatorTests;
+using Feature.IncidentReports.Requests;
+using Feature.IncidentReports.Validators;
+using FluentValidation.TestHelper;
+using Xunit;
 
-public class GetSubmissionsAggregatedValidatorTests
+namespace Feature.IncidentReports.UnitTests.ValidatorTests;
+
+public class IncidentReportsAggregateFilterValidatorTests
 {
-    private readonly GetAggregated.Validator _validator = new();
+    private readonly IncidentReportsAggregateFilterValidator _validator = new();
 
     [Fact]
     public void Should_Have_Error_When_ElectionRoundId_Is_Empty()
     {
         // Arrange
-        var request = new GetAggregated.Request
+        var request = new IncidentReportsAggregateFilter
         {
             ElectionRoundId = Guid.Empty
         };
@@ -24,7 +29,7 @@ public class GetSubmissionsAggregatedValidatorTests
     public void Should_Have_Error_When_NgoId_Is_Empty()
     {
         // Arrange
-        var request = new GetAggregated.Request
+        var request = new IncidentReportsAggregateFilter
         {
             NgoId = Guid.Empty,
         };
@@ -37,26 +42,10 @@ public class GetSubmissionsAggregatedValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_FormId_Is_Empty()
-    {
-        // Arrange
-        var request = new GetAggregated.Request
-        {
-            FormId = Guid.Empty
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FormId);
-    }
-
-    [Fact]
     public void Should_Not_Have_Error_When_All_Fields_Are_Valid()
     {
         // Arrange
-        var request = new GetAggregated.Request
+        var request = new IncidentReportsAggregateFilter
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),
