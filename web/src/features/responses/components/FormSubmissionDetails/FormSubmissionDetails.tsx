@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { FormSubmissionFollowUpStatus, FunctionComponent } from '@/common/types';
+import { FormSubmissionFollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -131,6 +131,42 @@ export default function FormSubmissionDetails(): FunctionComponent {
             </div>
           </CardContent>
         </Card>
+        {formSubmission.formType === ZFormType.Enum.PSI ? (
+          <Card>
+            <CardHeader>
+              <div className='flex gap-4'>
+                <div>
+                  <p className='font-bold'>Arrival time</p>
+                  {<p>{formSubmission.arrivalTime ? format(formSubmission.arrivalTime, DateTimeFormat) : '-'}</p>}
+                </div>
+
+                <div>
+                  <p className='font-bold'>Departure time</p>
+                  {<p>{formSubmission.departureTime ? format(formSubmission.departureTime, DateTimeFormat) : '-'}</p>}
+                </div>
+              </div>
+              {formSubmission.breaks ? (
+                <div>
+                  {formSubmission.breaks.length > 0 ? (
+                    <ul className='space-y-4'>
+                      {formSubmission.breaks.map((breakItem, index) => (
+                        <li key={index}>
+                          <div>
+                            <p className='font-bold'>Break #{index + 1}</p>
+                            <p>Start: {format(breakItem.start, DateTimeFormat)}</p>
+                            {breakItem.end ? <p>End: {format(breakItem.end, DateTimeFormat)}</p> : <p>End: -</p>}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No breaks</p>
+                  )}
+                </div>
+              ) : null}
+            </CardHeader>
+          </Card>
+        ) : null}
 
         <Card>
           <CardHeader>
