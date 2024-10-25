@@ -79,13 +79,16 @@
   },
   "citizen_report_issue": {
     "header_title": "Report an issue",
-    "description": "As a citizen, you can report an election-related issue, by filling-in a reporting form, from the list below.",
+    "description": "As a citizen, you can report an election-related issue by completing one of the reporting forms available below.",
+    "disclaimer": "Submitting a report through Vote Monitor Citizen is not the same as filing an official complaint with the authorities responsible for organizing elections. For more information on how reports are used, check the info button in the upper right corner. If you want to submit an official complaint, please refer to the article How to Submit an Official Complaint in the Resources section.",
     "empty_forms": "Reporting forms will appear here once Vote Monitor team will publish them in the system.",
     "error_message": "Something went wrong while retrieving the reporting forms. Please retry.",
     "retry": "Retry",
     "info_modal": {
-      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
-      "p2": "Please note that submitting a report through this application does not constitute an official complaint filed with the institutions responsible for organising elections.",
+      "p1": "Submitting a report through Vote Monitor Citizen does not constitute an official complaint to the authorities responsible for organizing elections and does not guarantee that your report will be reviewed or addressed.",
+      "p2": "After data analysis, some reports submitted through the app may be included in election observation reports prepared by organizations partnered with Code for Romania/Commit Global. Aggregated and anonymized data may also be used for statistical purposes.",
+      "p3": "In certain cases, your reports may be shared with authorities responsible for organizing elections to help improve future electoral processes, though this is not guaranteed.",
+      "p4": "You have full control over your personal data. Reporting forms allow you to choose whether to report anonymously or consent to being contacted by an organization should your report be reviewed.",
       "ok": "OK"
     }
   },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Spinner, XStack, YStack } from "tamagui";
 import { ListView } from "./ListView";
 import { FormAPIModel } from "../services/definitions.api";
@@ -31,6 +31,7 @@ export const CitizenFormsList = ({
   onFormPress,
 }: CitizenFormsListProps) => {
   const { t } = useTranslation("citizen_report_issue");
+  const description = useMemo(() => [t("description"), t("disclaimer")], [t]);
   const { isOnline } = useNetInfoContext();
 
   if (isLoading) {
@@ -47,13 +48,15 @@ export const CitizenFormsList = ({
         data={forms}
         contentContainerStyle={{
           paddingHorizontal: 16,
-          paddingBottom: 24,
+          paddingVertical: 24,
         }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          <Typography marginTop="$lg" marginBottom="$md">
-            {t("description")}
-          </Typography>
+          <YStack gap="$md" paddingBottom="$lg">
+            {description.map((paragraph, index) => (
+              <Typography key={index}>{paragraph}</Typography>
+            ))}
+          </YStack>
         }
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
         ListEmptyComponent={CitizenFormsListEmptyContent}

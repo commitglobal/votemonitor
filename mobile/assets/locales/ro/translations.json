@@ -80,12 +80,15 @@
   "citizen_report_issue": {
     "header_title": "Raportează o problemă",
     "description": "Ca cetățean, poți raporta o problemă legată de alegeri completând un formular de raportare din lista de mai jos.",
+    "disclaimer": "Trimiterea unei sesizări prin Vote Monitor Citizen nu reprezintă o plângere oficială depusă la instituțiile responsabile cu organizarea alegerilor. Pentru detalii suplimentare despre cum sunt utilizate raportările, consultă butonul de info din dreapta sus. Dacă dorești să depui o plângere oficială, citește articolul Cum depui o sesizare oficială? din secțiunea Resurse.",
     "empty_forms": "Formularele de raportare vor apărea aici odată ce echipa Vote Monitor le va publica în sistem.",
     "error_message": "Ceva nu a funcționat în timp ce se încărcau formularele de raportare. Te rugăm să încerci din nou.",
     "retry": "Încearcă din nou",
     "info_modal": {
-      "p1": "Rapoartele trimise prin Vote Monitor Citizen vor fi analizate de ONG-urile care monitorizează evenimentul electoral și pot fi incluse în rapoartele de observare electorală. În anumite cazuri, sesizările tale pot fi transmise instituțiilor responsabile cu organizarea alegerilor pentru a îmbunătăți procesele electorale viitoare.",
-      "p2": "Te rugăm să reții că trimiterea unei sesizări prin această aplicație nu constituie o plângere oficială depusă la instituțiile responsabile cu organizarea alegerilor.",
+      "p1": "Trimiterea unei sesizări prin Vote Monitor Citizen nu reprezintă o plângere oficială depusă la instituțiile responsabile cu organizarea alegerilor și nu garantează că raportarea va fi preluată pentru soluționare.",
+      "p2": "După analiză, unele raportări primite prin aplicație ar putea fi incluse în rapoartele de observare electorală realizate de organizațiile cu care Code for Romania/Commit Global are încheiat un parteneriat. Datele agregate și anonimizate ar putea fi folosite în scop statistic.",
+      "p3": "În anumite cazuri, sesizările tale ar putea fi transmise instituțiilor responsabile cu organizarea alegerilor pentru a îmbunătăți procesele electorale viitoare, însă acest lucru nu este garantat.",
+      "p4": "Ai control deplin asupra datelor tale personale. Formularele de sesizare îți permit să alegi dacă vrei să raportezi anonim sau ești de acord ca în cazul în care sesizarea este preluată de o organizație, să fii contactat.",
       "ok": "OK"
     }
   },

@@ -118,7 +118,12 @@ export default function CitizenReportIssue() {
 
       {isOpenInfoModal && (
         <InfoModal
-          paragraphs={[t("info_modal.p1"), t("info_modal.p2")]}
+          paragraphs={[
+            t("info_modal.p1"),
+            t("info_modal.p2"),
+            t("info_modal.p3"),
+            t("info_modal.p4"),
+          ]}
           handleCloseInfoModal={handleCloseInfoModal}
         />
       )}
