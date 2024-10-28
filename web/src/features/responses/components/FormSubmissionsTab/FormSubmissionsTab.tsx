@@ -93,8 +93,8 @@ export default function FormSubmissionsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex items-center justify-between px-6'>
-          <CardTitle>Form submissions</CardTitle>
+        <div className='flex items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>Form submissions</CardTitle>
 
           <div className='flex items-center gap-4'>
             <ExportDataButton

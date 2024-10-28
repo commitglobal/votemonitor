@@ -26,7 +26,13 @@ import i18n from '@/i18n';
 import { cn, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
-import { ChevronDownIcon, ChevronUpIcon, EllipsisVerticalIcon, FunnelIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  EllipsisVerticalIcon,
+  FunnelIcon,
+  PhotoIcon,
+} from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
@@ -317,18 +323,17 @@ export default function FormsDashboard(): ReactElement {
             row.depth === 0 ? (
               isNotNilOrWhitespace(row.original.icon) ? (
                 <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
-                      <PhotoIcon className='w-6 h-6'/>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                  <div dangerouslySetInnerHTML={{ __html: row.original.icon ?? '' }}></div>
-
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                        <PhotoIcon className='w-6 h-6' />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div dangerouslySetInnerHTML={{ __html: row.original.icon ?? '' }}></div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ) : (
                 <></>
               )
@@ -506,8 +511,10 @@ export default function FormsDashboard(): ReactElement {
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
-        <CardTitle className='flex flex-row items-center justify-between px-6'>
-          <div className='text-xl'>{i18n.t('electionEvent.observerForms.cardTitle')}</div>
+        <CardTitle className='flex flex-row items-center justify-between pr-6'>
+          <div className='text-2xl font-semibold leading-none tracking-tight'>
+            {i18n.t('electionEvent.observerForms.cardTitle')}
+          </div>
           <div>
             <CreateDialog title={i18n.t('electionEvent.observerForms.createDialogTitle')}>
               <CreateForm />

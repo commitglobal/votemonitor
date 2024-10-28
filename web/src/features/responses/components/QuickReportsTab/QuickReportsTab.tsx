@@ -90,15 +90,15 @@ export function QuickReportsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex items-center justify-between px-6'>
-          <CardTitle>Quick reports</CardTitle>
+        <div className='flex items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>Quick reports</CardTitle>
 
           <ExportDataButton exportedDataType={ExportedDataType.QuickReports} filterParams={queryParams} />
         </div>
 
         <Separator />
 
-        <div className='flex justify-end gap-4 px-6'>
+        <div className='flex justify-end gap-4 px-6 h-9'>
           <FunnelIcon
             className='w-[20px] text-purple-900 cursor-pointer'
             fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}

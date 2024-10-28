@@ -251,8 +251,10 @@ function MonitoringObserversList() {
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
-        <div className='flex flex-row items-center justify-between px-6'>
-          <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
+        <div className='flex flex-row items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
+            Monitoring observers list
+          </CardTitle>
           <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
             {!!importErrorsFileId && (
               <ImportMonitoringObserversErrorsDialog
