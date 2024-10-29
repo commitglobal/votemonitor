@@ -88,8 +88,8 @@ function PushMessages(): FunctionComponent {
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
-        <div className='flex flex-row justify-between items-center px-6'>
-          <CardTitle className='text-xl'>Push messages</CardTitle>
+        <div className='flex flex-row justify-between items-center pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>Push messages</CardTitle>
           <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
             <Link to='/monitoring-observers/create-new-message' search={{ pageSize: 25 }}>
               <Button>
