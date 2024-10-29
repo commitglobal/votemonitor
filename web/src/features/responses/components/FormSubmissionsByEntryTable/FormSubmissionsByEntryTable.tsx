@@ -38,7 +38,7 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       ['questionsAnswered', debouncedSearch.questionsAnswered],
       ['hasNotes', debouncedSearch.hasNotes],
       ['hasAttachments', debouncedSearch.hasAttachments],
-      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['tagsFilter', debouncedSearch.tags],
       ['formId', debouncedSearch.formId],
       ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
       ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],

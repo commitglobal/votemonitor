@@ -16,7 +16,6 @@ export const enum FILTER_KEY {
   LocationL4 = 'level4Filter',
   LocationL5 = 'level5Filter',
   PollingStationNumber = 'pollingStationNumberFilter',
-  FormSubmissionsMonitoringObserverTags = 'tagsFilter',
   ViewBy = 'viewBy',
   Tab = 'tab',
   FormId = 'formId',
@@ -34,7 +33,7 @@ export const enum FILTER_KEY {
 
 export const enum FILTER_LABEL {
   MonitoringObserverStatus = 'Observer status',
-  MonitoringObserverTags = 'Tags',
+  MonitoringObserverTags = 'Observer tags',
   FormTypeFilter = 'Form type',
   HasFlaggedAnswers = 'Flagged answers',
   FollowUpStatus = 'Follow-up status',
@@ -46,7 +45,6 @@ export const enum FILTER_LABEL {
   LocationL4 = 'Location - L4',
   LocationL5 = 'Location - L5',
   PollingStationNumber = 'Polling station number',
-  FormSubmissionsMonitoringObserverTags = 'Observer tags',
   MediaFiles = 'Has attachments',
   FormId = 'Form',
   FormStatus = 'Form status',

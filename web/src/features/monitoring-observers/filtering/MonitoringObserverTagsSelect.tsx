@@ -6,14 +6,8 @@ import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 
 import { FC } from 'react';
 
-interface MonitoringObserverTagsSelectProps {
-  isFilteringFormSubmissions?: boolean;
-}
-
-export const MonitoringObserverTagsSelect: FC<MonitoringObserverTagsSelectProps> = ({ isFilteringFormSubmissions }) => {
-  const COMPONENT_FILTER_KEY = isFilteringFormSubmissions
-    ? FILTER_KEY.FormSubmissionsMonitoringObserverTags
-    : FILTER_KEY.MonitoringObserverTags;
+export const MonitoringObserverTagsSelect: FC = () => {
+  const COMPONENT_FILTER_KEY = FILTER_KEY.MonitoringObserverTags;
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);

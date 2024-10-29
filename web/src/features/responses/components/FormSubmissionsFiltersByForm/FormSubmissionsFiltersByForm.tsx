@@ -6,7 +6,6 @@ import { FormSubmissionsFormFilter } from '@/features/filtering/components/FormS
 import { FormSubmissionsFromDateFilter } from '@/features/filtering/components/FormSubmissionsFromDateFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '@/features/filtering/components/FormSubmissionsQuestionsAnsweredFilter';
 import { FormSubmissionsToDateFilter } from '@/features/filtering/components/FormSubmissionsToDateFilter';
-import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
 import { FormSubmissionsFlaggedAnswersFilter } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
@@ -23,7 +22,7 @@ export const FormSubmissionsFiltersByForm: FC = () => {
       <FormSubmissionsQuestionsAnsweredFilter />
       <FormSubmissionsQuestionNotesFilter />
       <FormSubmissionsMediaFilesFilter />
-      <MonitoringObserverTagsSelect isFilteringFormSubmissions />
+      <MonitoringObserverTagsSelect />
       <PollingStationsFilters />
       <FormSubmissionsFromDateFilter />
       <FormSubmissionsToDateFilter />

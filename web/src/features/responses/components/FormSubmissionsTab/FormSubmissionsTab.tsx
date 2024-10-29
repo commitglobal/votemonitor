@@ -70,7 +70,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
       ['questionsAnswered', search.questionsAnswered],
       ['hasNotes', search.hasNotes],
       ['hasAttachments', search.hasAttachments],
-      ['tagsFilter', search.tagsFilter],
+      ['tagsFilter', search.tags],
       ['formId', search.formId],
       ['fromDateFilter', search.submissionsFromDate?.toISOString()],
       ['toDateFilter', search.submissionsToDate?.toISOString()],

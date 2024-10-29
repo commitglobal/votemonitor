@@ -47,7 +47,6 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.LocationL3, FILTER_LABEL.LocationL3],
   [FILTER_KEY.LocationL4, FILTER_LABEL.LocationL4],
   [FILTER_KEY.LocationL5, FILTER_LABEL.LocationL5],
-  [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
   [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
