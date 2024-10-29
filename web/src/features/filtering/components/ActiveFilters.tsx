@@ -2,18 +2,17 @@ import { DateTimeFormat } from '@/common/formats';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
+import {
+  mapFormSubmissionFollowUpStatus,
+  mapIncidentCategory,
+  mapIncidentReportLocationType,
+  mapQuickReportFollowUpStatus,
+} from '@/features/responses/utils/helpers';
+import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
-import {
-  mapFormSubmissionFollowUpStatus,
-  mapIncidentCategory,
-  mapQuickReportFollowUpStatus,
-  mapQuickReportLocationType,
-} from '@/features/responses/utils/helpers';
-import { QuickReportFollowUpStatus } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -59,12 +58,14 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.QuickReportIncidentCategory, FILTER_LABEL.QuickReportIncidentCategory],
   [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
   [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],
+  [FILTER_KEY.IncidentReportLocationType, FILTER_LABEL.IncidentReportLocationType],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
   [FILTER_KEY.QuickReportFollowUpStatus, mapQuickReportFollowUpStatus],
   [FILTER_KEY.FormSubmissionFollowUpStatus, mapFormSubmissionFollowUpStatus],
   [FILTER_KEY.QuickReportIncidentCategory, mapIncidentCategory],
+  [FILTER_KEY.IncidentReportLocationType, mapIncidentReportLocationType],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

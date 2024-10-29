@@ -63,7 +63,7 @@ export default function IncidentReportsTab(): FunctionComponent {
       ['level4Filter', search.level4Filter],
       ['level5Filter', search.level5Filter],
       ['pollingStationNumberFilter', search.pollingStationNumberFilter],
-      ['followUpStatus', search.incidentReportFollowUpStatus],
+      ['followUpStatus', search.followUpStatus],
       ['locationType', search.incidentReportLocationType],
     ].filter(([_, value]) => value);
 
@@ -128,7 +128,7 @@ export default function IncidentReportsTab(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid items-center grid-cols-6 gap-4'>
+          <div>
             {byFilter === 'byEntry' && <IncidentReportsFiltersByEntry />}
             {byFilter === 'byObserver' && <IncidentReportsFiltersByObserver />}
             {byFilter === 'byForm' && <IncidentReportsFiltersByForm />}

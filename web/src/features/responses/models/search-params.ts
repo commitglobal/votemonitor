@@ -7,12 +7,15 @@ import {
   QuickReportFollowUpStatus,
 } from '@/common/types';
 import { z } from 'zod';
-import { IncidentCategory, QuickReportLocationType } from './quick-report';
 import { IncidentReportLocationType } from './incident-report';
+import { IncidentCategory, QuickReportLocationType } from './quick-report';
 
 export const ResponsesPageSearchParamsSchema = z.object({
   viewBy: z.enum(['byEntry', 'byObserver', 'byForm']).catch('byEntry').default('byEntry'),
-  tab: z.enum(['form-answers', 'quick-reports','citizen-reports','incident-reports']).catch('form-answers').optional(),
+  tab: z
+    .enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports'])
+    .catch('form-answers')
+    .optional(),
 });
 
 export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema.merge(
@@ -27,7 +30,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     pollingStationNumberFilter: z.string().catch('').optional(),
     hasFlaggedAnswers: z.string().catch('').optional(),
     monitoringObserverId: z.string().catch('').optional(),
-    tagsFilter: z.array(z.string()).optional().catch([]).optional(),
+    tags: z.array(z.string()).optional().catch([]).optional(),
     followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),
     quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
     citizenReportFollowUpStatus: z.nativeEnum(CitizenReportFollowUpStatus).optional(),
@@ -45,7 +48,8 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
 
     submissionsFromDate: z.coerce.date().optional(),
     submissionsToDate: z.coerce.date().optional(),
-  }));
+  })
+);
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;
 
@@ -64,16 +68,17 @@ export const QuickReportsSearchParamsSchema = z.object({
 export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>;
 
 export const CitizenReportsSearchParamsSchema = z.object({
-  citizenReportFollowUpStatus: z
-    .nativeEnum(CitizenReportFollowUpStatus)
-    .optional(),
+  citizenReportFollowUpStatus: z.nativeEnum(CitizenReportFollowUpStatus).optional(),
 });
 
 export type CitizenReportsSearchParams = z.infer<typeof CitizenReportsSearchParamsSchema>;
 
 export const IncidentReportsSearchParamsSchema = z.object({
   viewBy: z.enum(['byEntry', 'byObserver', 'byForm']).catch('byEntry').default('byEntry'),
-  tab: z.enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports']).catch('form-answers').optional(),
+  tab: z
+    .enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports'])
+    .catch('form-answers')
+    .optional(),
   searchText: z.string().catch('').optional(),
   level1Filter: z.string().catch('').optional(),
   level2Filter: z.string().catch('').optional(),
