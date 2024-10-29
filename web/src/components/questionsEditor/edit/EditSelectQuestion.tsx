@@ -9,6 +9,7 @@ import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { cn, newTranslatedString } from '@/lib/utils';
 import { FlagIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { CheckCircle, CheckSquare, PencilLine } from 'lucide-react';
+import { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
@@ -111,13 +112,17 @@ function EditSelectQuestion({ questionIndex }: EditMultiSelectQuestionProps) {
     trigger(`questions.${questionIndex}.options`);
   }
 
+  useEffect(() => {
+    trigger(`questions.${questionIndex}.options`);
+  }, [options, questionIndex, trigger]);
+
   return (
     <div>
       <Label htmlFor='choices'>Options</Label>
       <div className='space-y-4' id='choices'>
         {options &&
           options.map((option, optionIndex) => (
-            <div key={optionIndex} className='inline-flex w-full items-center space-y-4 '>
+            <div key={option.optionId} className='inline-flex w-full items-center space-y-4 '>
               <div className='inline-flex justify-between w-full'>
                 <FormField
                   control={control}
