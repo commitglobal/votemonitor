@@ -48,7 +48,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          "Tags",
                          "NumberOfFlaggedAnswers",
                          "NumberOfIncidentsSubmitted",
-                         "NumberOfCompletedForms"
+                         "NumberOfCompletedForms",
                          "FollowUpStatus"
                   FROM (SELECT MO."Id" AS "MonitoringObserverId",
                                U."FirstName" || ' ' || U."LastName" AS "ObserverName",
