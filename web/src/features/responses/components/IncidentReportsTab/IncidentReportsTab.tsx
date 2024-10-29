@@ -73,8 +73,10 @@ export default function IncidentReportsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex items-center justify-between px-6'>
-          <CardTitle>Incident reports submissions</CardTitle>
+        <div className='flex items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
+            Incident reports submissions
+          </CardTitle>
 
           <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.IncidentReports} filterParams={queryParams} />
