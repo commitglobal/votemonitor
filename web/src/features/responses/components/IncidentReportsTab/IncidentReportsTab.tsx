@@ -55,6 +55,7 @@ export default function IncidentReportsTab(): FunctionComponent {
   const queryParams = useMemo(() => {
     const params = [
       ['searchText', searchText],
+      ['formId', search.formId],
       ['hasFlaggedAnswers', search.hasFlaggedAnswers],
       ['level1Filter', search.level1Filter],
       ['level2Filter', search.level2Filter],
