@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
@@ -28,6 +28,7 @@ import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/
 import { FormSubmissionsFiltersByForm } from '../FormSubmissionsFiltersByForm/FormSubmissionsFiltersByForm';
 import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
 
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -40,8 +41,7 @@ const viewBy: Record<FormSubmissionsViewBy, string> = {
 export default function FormSubmissionsTab(): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { filteringIsActive, navigateHandler } = useFilteringContainer();
-  const [filtersExpanded, setFiltersExpanded] = useState<boolean>(false);
+  const { filteringIsExpanded, setFilteringIsExpanded, navigateHandler } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
 
@@ -133,13 +133,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
         <div className='flex justify-end gap-4 px-6'>
           <>
             <Input className='max-w-md' onChange={handleSearchInput} value={searchText} placeholder='Search' />
-            <FunnelIcon
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
-              onClick={() => {
-                setFiltersExpanded((prev) => !prev);
-              }}
-            />
+            <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
           </>
 
           <FormSubmissionsColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
@@ -147,7 +141,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
 
         <Separator />
 
-        {filtersExpanded && (
+        {filteringIsExpanded && (
           <>
             {byFilter === 'byEntry' && <FormSubmissionsFiltersByEntry />}
             {byFilter === 'byObserver' && <FormSubmissionsFiltersByObserver />}

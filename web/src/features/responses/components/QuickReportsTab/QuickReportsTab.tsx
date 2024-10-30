@@ -15,11 +15,12 @@ import {
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { Cog8ToothIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuickReports } from '../../hooks/quick-reports';
 import { ExportedDataType } from '../../models/data-export';
 import { IncidentCategoryList, QuickReportLocationType } from '../../models/quick-report';
@@ -40,9 +41,7 @@ export function QuickReportsTab(): FunctionComponent {
 
   const columnsVisibility = useQuickReportsColumnsVisibility();
   const toggleColumns = useQuickReportsToggleColumn();
-  const { filteringIsActive } = useFilteringContainer();
-
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const { filteringIsExpanded, setFilteringIsExpanded } = useFilteringContainer();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -99,13 +98,7 @@ export function QuickReportsTab(): FunctionComponent {
         <Separator />
 
         <div className='flex justify-end gap-4 px-6 h-9'>
-          <FunnelIcon
-            className='w-[20px] text-purple-900 cursor-pointer'
-            fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-            onClick={() => {
-              setIsFiltering((prev) => !prev);
-            }}
-          />
+          <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
 
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -131,7 +124,7 @@ export function QuickReportsTab(): FunctionComponent {
 
         <Separator />
 
-        {isFiltering && (
+        {filteringIsExpanded && (
           <div className='grid items-center grid-cols-6 gap-4'>
             <Select
               onValueChange={(value) => {
@@ -199,9 +192,9 @@ export function QuickReportsTab(): FunctionComponent {
             </Select>
 
             <PollingStationsFilters />
-            <ResetFiltersButton disabled={!isFiltering} params={{ tag: 'quick-reports' }} />
+            <ResetFiltersButton disabled={filteringIsExpanded} params={{ tag: 'quick-reports' }} />
 
-            {isFiltering && (
+            {filteringIsExpanded && (
               <div className='flex flex-wrap gap-2 col-span-full'>
                 {search.quickReportFollowUpStatus && (
                   <FilterBadge

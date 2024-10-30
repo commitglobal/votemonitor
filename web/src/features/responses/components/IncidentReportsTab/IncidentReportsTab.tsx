@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useMemo, useState, type ChangeEvent } from 'react';
@@ -19,6 +19,7 @@ import type { IncidentReportsViewBy } from '../../utils/column-visibility-option
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 
 import { FunctionComponent } from '@/common/types';
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Route } from '@/routes/responses';
@@ -39,11 +40,9 @@ const viewBy: Record<IncidentReportsViewBy, string> = {
 export default function IncidentReportsTab(): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { filteringIsActive } = useFilteringContainer();
+  const { filteringIsExpanded, setFilteringIsExpanded } = useFilteringContainer();
 
   const { viewBy: byFilter } = search;
-
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -94,7 +93,7 @@ export default function IncidentReportsTab(): FunctionComponent {
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' });
                     void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' } });
-                    setIsFiltering(false);
+                    setFilteringIsExpanded(false);
                   }}
                   value={byFilter}>
                   {Object.entries(viewBy).map(([value, label]) => (
@@ -113,13 +112,7 @@ export default function IncidentReportsTab(): FunctionComponent {
         <div className='flex justify-end gap-4 px-6'>
           <>
             <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
-            <FunnelIcon
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-              onClick={() => {
-                setIsFiltering((prev) => !prev);
-              }}
-            />
+            <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
           </>
 
           <IncidentReportsColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
@@ -127,7 +120,7 @@ export default function IncidentReportsTab(): FunctionComponent {
 
         <Separator />
 
-        {isFiltering && (
+        {filteringIsExpanded && (
           <div>
             {byFilter === 'byEntry' && <IncidentReportsFiltersByEntry />}
             {byFilter === 'byObserver' && <IncidentReportsFiltersByObserver />}
