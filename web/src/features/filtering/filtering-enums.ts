@@ -29,6 +29,7 @@ export const enum FILTER_KEY {
   QuickReportFollowUpStatus = 'quickReportFollowUpStatus',
   HasQuickReports = 'hasQuickReports',
   IncidentReportLocationType = 'incidentReportLocationType',
+  QuickReportLocationType = 'quickReportLocationType',
 }
 
 export const enum FILTER_LABEL {

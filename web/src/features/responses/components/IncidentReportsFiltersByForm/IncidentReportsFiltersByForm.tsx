@@ -8,7 +8,7 @@ import { FormSubmissionsFormFilter } from '@/features/filtering/components/FormS
 import { FormSubmissionsMediaFilesFilter } from '@/features/filtering/components/FormSubmissionsMediaFilesFilter';
 import { FormSubmissionsQuestionNotesFilter } from '@/features/filtering/components/FormSubmissionsQuestionNotesFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '@/features/filtering/components/FormSubmissionsQuestionsAnsweredFilter';
-import { IncidentReportsLocationTypeFilter } from '@/features/filtering/components/IncidentReportsLocationTypeFilter';
+import { IncidentReportsLocationTypeFilter } from '@/features/filtering/components/LocationTypeFilters';
 
 export function IncidentReportsFiltersByForm(): FunctionComponent {
   return (
