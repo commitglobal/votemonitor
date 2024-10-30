@@ -53,6 +53,7 @@ import {
 import { TFunction } from "i18next";
 import { localizeIncidentCategory } from "../../../helpers/translationHelper";
 
+
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = [], t: TFunction) => {
   const pollingStationsForSelect = visits.map((visit) => {
     return {
@@ -137,7 +138,7 @@ const ReportIssue = () => {
   const [uploadProgress, setUploadProgress] = useState("");
   const { isOnline } = useNetInfoContext();
 
-  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
+  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string, uploaded: boolean }>>(
     [],
   );
 
@@ -205,7 +206,7 @@ const ReportIssue = () => {
     setOptionsSheetOpen(false);
     setAttachments((attachments) => [
       ...attachments,
-      { fileMetadata: cameraResult, id: Crypto.randomUUID() },
+      { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false },
     ]);
     setIsPreparingFile(false);
   };
@@ -229,7 +230,7 @@ const ReportIssue = () => {
       };
 
       setOptionsSheetOpen(false);
-      setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID() }]);
+      setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID(), uploaded: false }]);
       setIsPreparingFile(false);
     } else {
       // Cancelled
@@ -276,6 +277,11 @@ const ReportIssue = () => {
           id: attachmentId,
           quickReportId,
         });
+        setAttachments((attachments) =>
+          attachments.map((attachment) =>
+            attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment
+          ),
+        );
       }
     } catch (err) {
       Sentry.captureException(err, { data: activeElectionRound });
@@ -326,7 +332,7 @@ const ReportIssue = () => {
       setIsLoadingAttachment(true);
       cancelRef.current = false;
       try {
-        const totalParts = attachments.reduce((acc, attachment) => {
+        const totalParts = attachments.filter((attachment) => !attachment.uploaded).reduce((acc, attachment) => {
           return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
         }, 0);
         let uploadedPartsNo = 0;
@@ -349,17 +355,19 @@ const ReportIssue = () => {
             quickReportId: uuid,
           };
 
-          const data = await addAttachmentQReport(payload);
-          await handleChunkUpload(
-            attachment.fileMetadata.uri,
-            data.uploadUrls,
-            data.uploadId,
-            attachment.id,
-            uuid,
-            uploadedPartsNo,
-            totalParts,
-          );
-          uploadedPartsNo += payload.numberOfUploadParts;
+          if (!attachment.uploaded) {
+            const data = await addAttachmentQReport(payload);
+            await handleChunkUpload(
+              attachment.fileMetadata.uri,
+              data.uploadUrls,
+              data.uploadId,
+              attachment.id,
+              uuid,
+              uploadedPartsNo,
+              totalParts,
+            );
+            uploadedPartsNo += payload.numberOfUploadParts;
+          }
           optimisticAttachments.push(payload);
         }
         setUploadProgress(t("upload.completed"));
@@ -425,6 +433,11 @@ const ReportIssue = () => {
     setIsUploading(false);
     setUploadProgress("");
     removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
+    setAttachments((attachments) =>
+      attachments.map((attachment) =>
+        attachment.uploaded ? attachment : { ...attachment, id: Crypto.randomUUID() },
+      ),
+    );
   };
 
   return (
@@ -605,13 +618,20 @@ const ReportIssue = () => {
                           >
                             {attachment.fileMetadata.name}
                           </Typography>
-                          <YStack
-                            padding="$md"
-                            onPress={removeAttachmentLocal.bind(null, attachment.id)}
-                            pressStyle={{ opacity: 0.5 }}
-                          >
-                            <Icon icon="xCircle" size={24} color="$gray5" />
-                          </YStack>
+                          {!attachment.uploaded && (
+                            <YStack
+                              padding="$md"
+                              onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                              pressStyle={{ opacity: 0.5 }}
+                            >
+                              <Icon icon="xCircle" size={24} color="$gray5" />
+                            </YStack>
+                          )}
+                          {attachment.uploaded && (
+                            <YStack padding="$md">
+                              <Icon icon="checkCircle" size={24} color="$green5" />
+                            </YStack>
+                          )}
                         </Card>
                       );
                     })}
