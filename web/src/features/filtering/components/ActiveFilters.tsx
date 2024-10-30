@@ -7,6 +7,7 @@ import {
   mapIncidentCategory,
   mapIncidentReportLocationType,
   mapQuickReportFollowUpStatus,
+  mapQuickReportLocationType,
 } from '@/features/responses/utils/helpers';
 import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
@@ -58,6 +59,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
   [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],
   [FILTER_KEY.IncidentReportLocationType, FILTER_LABEL.IncidentReportLocationType],
+  [FILTER_KEY.QuickReportLocationType, FILTER_LABEL.IncidentReportLocationType],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
@@ -65,6 +67,7 @@ const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
   [FILTER_KEY.FormSubmissionFollowUpStatus, mapFormSubmissionFollowUpStatus],
   [FILTER_KEY.QuickReportIncidentCategory, mapIncidentCategory],
   [FILTER_KEY.IncidentReportLocationType, mapIncidentReportLocationType],
+  [FILTER_KEY.QuickReportLocationType, mapQuickReportLocationType],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
