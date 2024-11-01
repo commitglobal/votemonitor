@@ -481,7 +481,10 @@
         "aborted": "Încărcarea a fost anulată.",
         "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune.",
         "abort_offline": "Conectează-te la internet pentru a continua sau anulează încărcarea",
-        "abort_offline_button": "Anulează încărcarea"
+        "abort_offline_button": "Anulează încărcarea",
+        "uploaded": "Au fost încărcate cu succes {{value}} fișiere.",
+        "abort_offline_confirm": "Sunteți sigur că doriți să anulați încărcarea?",
+        "abort_offline_cancel": "Anulează"
       }
     },
     "notes": {

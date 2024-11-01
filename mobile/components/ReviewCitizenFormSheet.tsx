@@ -55,6 +55,7 @@ export default function ReviewCitizenFormSheet({
   answers,
   questions,
   attachments,
+  setAttachments,
   setIsReviewSheetOpen,
   selectedLocationId,
   language,
@@ -62,7 +63,8 @@ export default function ReviewCitizenFormSheet({
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
-  attachments: Record<string, { fileMetadata: FileMetadata; id: string }[]> | undefined;
+  attachments: Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]> | undefined;
+  setAttachments: Dispatch<SetStateAction<Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]>>>
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
   language: string;
@@ -84,6 +86,7 @@ export default function ReviewCitizenFormSheet({
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [responseId, setResponseId] = useState<string | null>(null);
 
   const { mutateAsync: addAttachmentCitizen } = useUploadAttachmentCitizenMutation();
 
@@ -171,7 +174,9 @@ export default function ReviewCitizenFormSheet({
       },
       {
         onSuccess: async (response) => {
+          setResponseId(response.id);
           await uploadAttachments(citizenReportId);
+
 
           if (cancelRef.current === true) {
             return;
@@ -205,7 +210,7 @@ export default function ReviewCitizenFormSheet({
 
     if (attachments && Object.keys(attachments).length > 0) {
       setIsUploading(true);
-      const attachmentArray: { questionId: string; fileMetadata: FileMetadata; id: string }[] =
+      const attachmentArray: { questionId: string; fileMetadata: FileMetadata; id: string, uploaded: boolean }[] =
         Object.entries(attachments)
           .map(([questionId, attachments]) => attachments.map((a) => ({ ...a, questionId })))
           .flat();
@@ -222,6 +227,10 @@ export default function ReviewCitizenFormSheet({
               throw new Error("Upload aborted");
             }
 
+            if (attachment.uploaded) {
+              continue;
+            }
+
             const payload: AddAttachmentCitizenStartAPIPayload = {
               id: attachment.id,
               fileName: attachment.fileMetadata.name,
@@ -236,6 +245,7 @@ export default function ReviewCitizenFormSheet({
             };
 
             const data = await addAttachmentCitizen(payload);
+            console.log('nr of parts', payload.numberOfUploadParts)
             await handleChunkUpload(
               attachment.fileMetadata.uri,
               data.uploadUrls,
@@ -306,6 +316,13 @@ export default function ReviewCitizenFormSheet({
           id: attachmentId,
           citizenReportId,
         });
+        setAttachments((attachments) =>
+        ({
+          ...attachments,
+          [questionId]: attachments[questionId].map(
+            (attachment) => attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment)
+        })
+        );
       }
     } catch (err) {
       Sentry.captureException(err, {
@@ -329,6 +346,11 @@ export default function ReviewCitizenFormSheet({
     setIsUploading(false);
     setIsReviewSheetOpen(false);
     removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
+    if (responseId && currentForm) {
+      router.replace(
+        `/citizen/main/form/success?formId=${currentForm.id}&submissionId=${responseId}`,
+      );
+    }
   };
 
   return (
@@ -336,7 +358,7 @@ export default function ReviewCitizenFormSheet({
       modal
       open
       zIndex={100_001}
-      snapPoints={isUploading ? (isOnline ? [25] : [40]) : [90]}
+      snapPoints={isUploading ? (isOnline ? [25] : [65]) : [90]}
       dismissOnSnapToBottom={!isPending && !isUploading}
       dismissOnOverlayPress={!isPending && !isUploading}
       onOpenChange={(open: boolean) => {
@@ -347,12 +369,14 @@ export default function ReviewCitizenFormSheet({
     >
       <Sheet.Overlay />
       <Sheet.Frame>
-        {isUploading ? (
+        {isUploading && attachments ? (
           <YStack flex={1} justifyContent="center" alignItems="center">
             <MediaLoading
               progress={uploadProgress}
               isUploading={isUploading}
+              uploadedAttachments={Object.entries(attachments).map(([, attachments]) => attachments.filter((a) => a.uploaded)).flat().length}
               onAbortUpload={onAbortUpload}
+              confirmAbort
             />
           </YStack>
         ) : (

@@ -50,7 +50,7 @@ const CitizenForm = () => {
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [attachments, setAttachments] = useState<
-    Record<string, { fileMetadata: FileMetadata; id: string }[]>
+    Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]>
   >({});
 
   const { uploadCameraOrMedia } = useCamera();
@@ -278,8 +278,8 @@ const CitizenForm = () => {
     setAttachments((prevAttachments) => ({
       ...prevAttachments,
       [questionId]: prevAttachments[questionId]
-        ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID() }]
-        : [{ fileMetadata: cameraResult, id: Crypto.randomUUID() }],
+        ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false }]
+        : [{ fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false }],
     }));
     setIsPreparingFile(false);
   };
@@ -304,8 +304,8 @@ const CitizenForm = () => {
       setAttachments((prevAttachments) => ({
         ...prevAttachments,
         [questionId]: prevAttachments[questionId]
-          ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID() }]
-          : [{ fileMetadata, id: Crypto.randomUUID() }],
+          ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID(), uploaded: false }]
+          : [{ fileMetadata, id: Crypto.randomUUID(), uploaded: false }],
       }));
       setIsPreparingFile(false);
     } else {
@@ -462,6 +462,7 @@ const CitizenForm = () => {
           answers={answers}
           questions={currentForm?.questions}
           attachments={attachments}
+          setAttachments={setAttachments}
           setIsReviewSheetOpen={setIsReviewSheetOpen}
           selectedLocationId={selectedLocationId}
         />

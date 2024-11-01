@@ -53,7 +53,6 @@ import {
 import { TFunction } from "i18next";
 import { localizeIncidentCategory } from "../../../helpers/translationHelper";
 
-
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = [], t: TFunction) => {
   const pollingStationsForSelect = visits.map((visit) => {
     return {
@@ -138,9 +137,11 @@ const ReportIssue = () => {
   const [uploadProgress, setUploadProgress] = useState("");
   const { isOnline } = useNetInfoContext();
 
-  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string, uploaded: boolean }>>(
-    [],
-  );
+  const [uuid] = useState(Crypto.randomUUID());
+
+  const [attachments, setAttachments] = useState<
+    Array<{ fileMetadata: FileMetadata; id: string; uploaded: boolean }>
+  >([]);
 
   const {
     mutate,
@@ -230,7 +231,10 @@ const ReportIssue = () => {
       };
 
       setOptionsSheetOpen(false);
-      setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID(), uploaded: false }]);
+      setAttachments((attachments) => [
+        ...attachments,
+        { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
+      ]);
       setIsPreparingFile(false);
     } else {
       // Cancelled
@@ -279,7 +283,7 @@ const ReportIssue = () => {
         });
         setAttachments((attachments) =>
           attachments.map((attachment) =>
-            attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment
+            attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment,
           ),
         );
       }
@@ -321,8 +325,6 @@ const ReportIssue = () => {
       pollingStationId = null;
     }
 
-    const uuid = Crypto.randomUUID();
-
     // Use the attachments to optimistically update the UI
     const optimisticAttachments: AddAttachmentQuickReportStartAPIPayload[] = [];
 
@@ -332,9 +334,11 @@ const ReportIssue = () => {
       setIsLoadingAttachment(true);
       cancelRef.current = false;
       try {
-        const totalParts = attachments.filter((attachment) => !attachment.uploaded).reduce((acc, attachment) => {
-          return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
-        }, 0);
+        const totalParts = attachments
+          .filter((attachment) => !attachment.uploaded)
+          .reduce((acc, attachment) => {
+            return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
+          }, 0);
         let uploadedPartsNo = 0;
         // Upload each attachment
         setUploadProgress(`${t("upload.starting")}`);
@@ -658,6 +662,7 @@ const ReportIssue = () => {
         >
           {isLoadingAttachment || isPreparingFile || isUploading ? (
             <MediaLoading
+              uploadedAttachments={attachments.filter((attachment) => attachment.uploaded).length}
               progress={uploadProgress}
               isUploading={isUploading}
               onAbortUpload={onAbortUpload}
