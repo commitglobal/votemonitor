@@ -19,7 +19,7 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
         Query.Select(x => new FormTemplateSlimModel
         {
             Id = x.Id,
-            FormTemplateType = x.FormTemplateType,
+            FormType = x.FormType,
             Code = x.Code,
             DefaultLanguage = x.DefaultLanguage,
             Name = x.Name,

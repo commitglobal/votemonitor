@@ -5,12 +5,12 @@ using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
-public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
+public class FormTemplateConfiguration : IEntityTypeConfiguration<Form>
 {
-    public void Configure(EntityTypeBuilder<FormTemplate> builder)
+    public void Configure(EntityTypeBuilder<Form> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.Property(x => x.FormTemplateType).IsRequired();
+        builder.Property(x => x.FormType).IsRequired();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Status).IsRequired();

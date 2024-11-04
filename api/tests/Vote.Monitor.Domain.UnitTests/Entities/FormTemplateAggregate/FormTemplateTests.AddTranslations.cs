@@ -1,10 +1,11 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Utils;
+using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormTemplateAggregate;
 
-public partial class FormTemplateTests
+public partial class FormTests
 {
     [Fact]
     public void WhenAddingTranslations_AndDuplicatedLanguageCodes_ThenOnlyNewLanguagesAreAdded()
@@ -14,7 +15,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
@@ -34,7 +35,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         var formBefore = formTemplate.DeepClone();
@@ -54,7 +55,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         var formBefore = formTemplate.DeepClone();
@@ -74,7 +75,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
@@ -105,7 +106,7 @@ public partial class FormTemplateTests
             new MultiSelectQuestionFaker(languageList: languages).Generate(),
         ];
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, questions);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];

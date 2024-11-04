@@ -21,6 +21,7 @@ public sealed class IncidentReportFollowUpStatus : SmartEnum<IncidentReportFollo
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private IncidentReportFollowUpStatus(string name, string value) : base(name, value)
     {
     }

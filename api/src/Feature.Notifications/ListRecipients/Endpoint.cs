@@ -2,7 +2,6 @@
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
-using Vote.Monitor.Domain.Migrations;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListRecipients;

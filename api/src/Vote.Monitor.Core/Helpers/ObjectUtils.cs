@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Vote.Monitor.TestUtils.Utils;
+namespace Vote.Monitor.Core.Helpers;
 
 public static class ObjectUtils
 {

@@ -8,16 +8,16 @@ public partial class FormTests
         // Arrange
         BaseQuestion[] questions =
         [
-            new TextQuestionFaker(Languages).Generate(),
-            new NumberQuestionFaker(Languages).Generate(),
-            new DateQuestionFaker(Languages).Generate(),
-            new RatingQuestionFaker(languageList: Languages).Generate(),
-            new SingleSelectQuestionFaker(languageList: Languages).Generate(),
-            new MultiSelectQuestionFaker(languageList: Languages).Generate(),
+            new TextQuestionFaker(_languages).Generate(),
+            new NumberQuestionFaker(_languages).Generate(),
+            new DateQuestionFaker(_languages).Generate(),
+            new RatingQuestionFaker(languageList: _languages).Generate(),
+            new SingleSelectQuestionFaker(languageList: _languages).Generate(),
+            new MultiSelectQuestionFaker(languageList: _languages).Generate(),
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, null, questions);
+            LanguagesList.RO.Iso1, _languages, null, questions);
 
         form.Publish();
 
@@ -41,7 +41,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.EN.Iso1, Languages, null, questions);
+            LanguagesList.EN.Iso1, _languages, null, questions);
 
         // Act
         var newForm = form.Duplicate();

@@ -18,6 +18,19 @@ public class GetRequestValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldFail_When_NgoId_Empty()
+    {
+        // Arrange
+        var request = new Get.Request { NgoId = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
+    }
+
+    [Fact]
     public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
@@ -34,11 +47,7 @@ public class GetRequestValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new Get.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            Id = Guid.NewGuid()
-        };
+        var request = new Get.Request { ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid(), Id = Guid.NewGuid() };
 
         // Act
         var result = _validator.TestValidate(request);
