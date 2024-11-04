@@ -1,8 +1,9 @@
 ﻿using Feature.FormTemplates.Specifications;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Update;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
@@ -19,7 +20,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormTemplateSpecification(req.Id, req.Code, req.FormTemplateType);
+        var specification = new GetFormTemplateSpecification(req.Id, req.Code, req.FormType);
         var duplicatedFormTemplate = await repository.AnyAsync(specification, ct);
 
         if (duplicatedFormTemplate)
@@ -31,7 +32,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
         var questions = req.Questions.Select(QuestionsMapper.ToEntity)
                  .ToList()
                  .AsReadOnly();
-        formTemplate.UpdateDetails(req.Code, req.DefaultLanguage, req.Name,  req.Description, req.FormTemplateType, req.Languages, questions);
+        formTemplate.UpdateDetails(req.Code, req.DefaultLanguage, req.Name,  req.Description, req.FormType, req.Languages, questions);
 
         await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();

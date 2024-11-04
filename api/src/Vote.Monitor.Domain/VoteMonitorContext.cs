@@ -30,6 +30,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
 namespace Vote.Monitor.Domain;
 
@@ -57,8 +58,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ElectionRound> ElectionRounds { get; set; }
     public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
-    public DbSet<FormTemplate> FormTemplates { set; get; }
-    public DbSet<Form> Forms { set; get; }
+    public DbSet<Form> FormTemplates { set; get; }
+    public DbSet<Entities.FormAggregate.Form> Forms { set; get; }
     public DbSet<FormSubmission> FormSubmissions { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformation { set; get; }

@@ -20,7 +20,8 @@ public sealed class ElectionRoundStatus : SmartEnum<ElectionRoundStatus, string>
     {
         return TryFromValue(value, out result);
     }
-
+    
+    [JsonConstructor]
     private ElectionRoundStatus(string name, string value) : base(name, value)
     {
     }

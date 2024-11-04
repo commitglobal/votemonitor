@@ -2,11 +2,12 @@
 using Feature.FormTemplates.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Get;
 
 public class Endpoint(
-    IReadRepository<FormTemplateAggregate> repository,
+    IReadRepository<Form> repository,
     ICurrentUserRoleProvider userRoleProvider,
     IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormTemplateFullModel>, NotFound>>
 {
@@ -40,7 +41,7 @@ public class Endpoint(
         return TypedResults.Ok(new FormTemplateFullModel
         {
             Id = formTemplate.Id,
-            FormTemplateType = formTemplate.FormTemplateType,
+            FormType = formTemplate.FormType,
             Code = formTemplate.Code,
             DefaultLanguage = formTemplate.DefaultLanguage,
             Name = formTemplate.Name,

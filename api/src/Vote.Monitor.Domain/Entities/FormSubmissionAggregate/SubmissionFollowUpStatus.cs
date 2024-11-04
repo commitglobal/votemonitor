@@ -21,6 +21,7 @@ public sealed class SubmissionFollowUpStatus : SmartEnum<SubmissionFollowUpStatu
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private SubmissionFollowUpStatus(string name, string value) : base(name, value)
     {
     }
