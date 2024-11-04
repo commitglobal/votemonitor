@@ -68,6 +68,7 @@ resource "aws_autoscaling_group" "ecs" {
   capacity_rebalance    = var.capacity_rebalance
   protect_from_scale_in = var.protect_from_scale_in
   enabled_metrics       = var.enabled_metrics
+  desired_capacity_type = var.desired_capacity_type
 
   mixed_instances_policy {
     instances_distribution {

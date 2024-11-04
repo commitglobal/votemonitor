@@ -1,5 +1,4 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,10 +15,10 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
@@ -27,110 +26,118 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { isQueryFiltered } from '@/lib/utils';
+import i18n from '@/i18n';
 import { queryClient } from '@/main';
+import { Route } from '@/routes/monitoring-observers/$tab';
+import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
+import { Plus } from 'lucide-react';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
+import { monitoringObserversKeys, useMonitoringObservers } from '../../hooks/monitoring-observers-queries';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
-
-type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
-
-type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverResponse, Error>;
+import CreateMonitoringObserverDialog from './CreateMonitoringObserverDialog';
 
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
-  const queryParams = useSearch({ strict: false });
+  const search = Route.useSearch();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
-  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-      accessorKey: 'name',
-      enableSorting: true,
-      enableGlobalFilter: true,
-      cell: ({
-        row: {
-          original: { firstName, lastName },
-        },
-      }) => (
-        <p>
-          {firstName} {lastName}
-        </p>
-      ),
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
-      accessorKey: 'email',
-      enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-      accessorKey: 'tags',
-      cell: ({
-        row: {
-          original: { tags },
-        },
-      }) => <TableTagList tags={tags} />,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
-      accessorKey: 'phoneNumber',
-      enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
-      accessorKey: 'status',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <Badge className={'badge-' + status}>{status}</Badge>,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
-      accessorKey: 'latestActivityAt',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { latestActivityAt },
-        },
-      }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
-    },
-    {
-      header: '',
-      accessorKey: 'action',
-      enableSorting: true,
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={row.original.status !== MonitoringObserverStatus.Pending}
-              onClick={() => handleResendInviteToObserver(row.original.id)}>
-              Resend invitation email
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ];
+  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(() => {
+    return [
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
+        accessorKey: 'name',
+        enableSorting: true,
+        enableGlobalFilter: true,
+        cell: ({
+          row: {
+            original: { firstName, lastName },
+          },
+        }) => (
+          <p>
+            {firstName} {lastName}
+          </p>
+        ),
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
+        accessorKey: 'email',
+        enableSorting: true,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
+        accessorKey: 'tags',
+        cell: ({
+          row: {
+            original: { tags },
+          },
+        }) => <TableTagList tags={tags} />,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
+        accessorKey: 'phoneNumber',
+        enableSorting: true,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
+        accessorKey: 'status',
+        enableSorting: true,
+        cell: ({
+          row: {
+            original: { status },
+          },
+        }) => <Badge className={'badge-' + status}>{status}</Badge>,
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
+        accessorKey: 'latestActivityAt',
+        enableSorting: true,
+        cell: ({
+          row: {
+            original: { latestActivityAt },
+          },
+        }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
+      },
+      {
+        header: '',
+        accessorKey: 'action',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={row.original.status !== MonitoringObserverStatus.Pending}
+                onClick={() => handleResendInviteToObserver(row.original.id)}>
+                Resend invitation email
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ];
+  }, [currentElectionRoundId]);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(search.searchText);
+  const debouncedSearch = useDebounce(search, 300);
+  const debouncedSearchText = useDebounce(searchText, 300);
+
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
+  const createMonitoringObserverDialog = useDialog();
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
-  const { filteringIsActive } = useFilteringContainer();
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const { filteringIsActive, navigateHandler } = useFilteringContainer();
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -142,59 +149,30 @@ function MonitoringObserversList() {
       params: { monitoringObserverId, tab: 'details' },
     });
   };
+
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
   };
 
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const queryParams = useMemo(() => {
+    const params = [
+      ['status', debouncedSearch.monitoringObserverStatus],
+      ['tags', debouncedSearch.tags],
+      ['searchText', debouncedSearch.searchText],
+    ].filter(([_, value]) => value);
 
-  const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
-    const pageParams = queryParams as any;
-    return useQuery({
-      queryKey: [
-        'monitoring-observers',
-        params.pageNumber,
-        params.pageSize,
-        params.sortColumnName,
-        params.sortOrder,
-        searchText,
-        pageParams[FILTER_KEY.MonitoringObserverStatus],
-        pageParams[FILTER_KEY.MonitoringObserverTags],
-      ],
-      queryFn: async () => {
-        const paramsObject: any = {
-          PageNumber: params.pageNumber,
-          PageSize: params.pageSize,
-          SortColumnName: params.sortColumnName,
-          SortOrder: params.sortOrder,
-          searchText: searchText,
-          status: pageParams[FILTER_KEY.MonitoringObserverStatus],
-          tags: pageParams[FILTER_KEY.MonitoringObserverTags],
-        };
+    return Object.fromEntries(params);
+  }, [debouncedSearch]);
 
-        const tagString =
-          pageParams.tags == undefined
-            ? ''
-            : pageParams.tags?.map((n: string) => `tags=${n}`).join('&');
-
-        const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,
-          {
-            params: Object.keys(paramsObject)
-              .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
-              .reduce((a, k) => ({ ...a, [k]: paramsObject[k] }), {}),
-          }
-        );
-
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch monitoring observers');
-        }
-
-        return { ...response.data, isEmpty: !isQueryFiltered(paramsObject) && response.data.items.length === 0 };
-      },
-      enabled: !!currentElectionRoundId,
+  useEffect(() => {
+    navigateHandler({
+      [FILTER_KEY.SearchText]: debouncedSearchText,
     });
-  };
+  }, [debouncedSearchText]);
+
+  useEffect(() => {
+    setSearchText(search.searchText ?? '');
+  }, [search.searchText]);
 
   const resendInvitationsMutation = useMutation({
     mutationFn: ({
@@ -209,8 +187,8 @@ function MonitoringObserversList() {
       });
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
+    onSuccess: (_, { electionRoundId }) => {
+      queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       router.invalidate();
 
       setMonitoringObserverId(undefined);
@@ -231,7 +209,7 @@ function MonitoringObserversList() {
   });
 
   const changeIsFiltering = () => {
-    setIsFiltering((prev) => {
+    setFiltersExpanded((prev) => {
       return !prev;
     });
   };
@@ -273,8 +251,10 @@ function MonitoringObserversList() {
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
-        <div className='flex flex-row items-center justify-between px-6'>
-          <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
+        <div className='flex flex-row items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
+            Monitoring observers list
+          </CardTitle>
           <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
             {!!importErrorsFileId && (
               <ImportMonitoringObserversErrorsDialog
@@ -282,6 +262,7 @@ function MonitoringObserversList() {
                 {...importMonitoringObserverErrorsDialog.dialogProps}
               />
             )}
+
             <ImportMonitoringObserversDialog
               {...importMonitoringObserversDialog.dialogProps}
               onImportError={(fileId) => {
@@ -309,6 +290,12 @@ function MonitoringObserversList() {
               </svg>
               Import observer list
             </Button>
+            <Button variant='secondary' onClick={() => createMonitoringObserverDialog.trigger()}>
+              <Plus className='mr-2' width={18} height={18} />
+              {i18n.t('observers.addObserver.addBtnText')}
+            </Button>
+            <CreateMonitoringObserverDialog {...createMonitoringObserverDialog.dialogProps} />
+
             <Button
               className='text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
               onClick={exportMonitoringObservers}>
@@ -351,23 +338,23 @@ function MonitoringObserversList() {
         <Separator />
         <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <>
-            <Input onChange={handleSearchInput} className='max-w-md' placeholder='Search' />
+            <Input onChange={handleSearchInput} value={searchText} className='max-w-md' placeholder='Search' />
             <FunnelIcon
               onClick={changeIsFiltering}
               className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
             />
             <Cog8ToothIcon className='w-[20px] text-purple-900' />
           </>
         </div>
         <Separator />
-        {isFiltering && <MonitoringObserversListFilters />}
+        {filtersExpanded && <MonitoringObserversListFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
           columns={monitoringObserverColDefs}
-          useQuery={useMonitoringObservers}
-          // onRowClick={rowClickHandler}
+          useQuery={(params) => useMonitoringObservers(currentElectionRoundId, params)}
+          queryParams={queryParams}
           getCellProps={getCellProps}
           emptySubtitle='Start adding a first list of observers for this election event by filling in the template and then uploading it in this section.'
           emptyTitle='No observers added yet'

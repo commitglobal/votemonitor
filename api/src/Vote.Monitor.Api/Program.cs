@@ -29,7 +29,6 @@ using Vote.Monitor.Api.Extensions;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
-using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.CitizenReports;
@@ -124,8 +123,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddCoreServices(builder.Configuration.GetRequiredSection(CoreServicesInstaller.SectionKey));
 builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
-
-builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey),
     builder.Environment.IsProduction());

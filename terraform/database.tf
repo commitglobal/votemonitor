@@ -3,10 +3,10 @@ resource "aws_db_instance" "main" {
   db_name             = local.db.name
   instance_class      = local.db.instance_class
   publicly_accessible = false
-  multi_az            = false
+  multi_az            = true
   deletion_protection = true
 
-  availability_zone = local.availability_zone
+  # availability_zone = local.availability_zone
 
   username = local.db.name
   password = random_password.database.result
@@ -34,8 +34,8 @@ resource "aws_db_instance" "main" {
 
   maintenance_window = "Thu:04:45-Thu:06:00"
 
-  performance_insights_enabled = false
-  # performance_insights_retention_period = 7
+  performance_insights_enabled          = true
+  performance_insights_retention_period = 7
 
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.database.id]

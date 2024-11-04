@@ -56,7 +56,7 @@ function AcceptInvite() {
         title: 'Success',
         description: 'Password was set successfully',
       });
-      
+
       navigate({to: '/accept-invite/success'});
     },
 
@@ -78,7 +78,7 @@ function AcceptInvite() {
   };
 
   return (
-    <div className='w-screen h-screen flex flex-col justify-center items-center gap-8'>
+    <div className='flex flex-col items-center justify-center w-screen h-screen gap-8'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <Card className='w-full max-w-sm'>
@@ -99,7 +99,7 @@ function AcceptInvite() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type='password' {...field} />
+                      <Input type='password' autoCorrect='off' autoCapitalize='none' autoComplete='off' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

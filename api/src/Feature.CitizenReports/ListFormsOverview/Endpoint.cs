@@ -1,7 +1,9 @@
-﻿namespace Feature.CitizenReports.ListFormsOverview;
+﻿using Feature.CitizenReports.Requests;
+
+namespace Feature.CitizenReports.ListFormsOverview;
 
 public class Endpoint(VoteMonitorContext context, IAuthorizationService authorizationService)
-    : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    : Endpoint<CitizenReportsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -13,7 +15,7 @@ public class Endpoint(VoteMonitorContext context, IAuthorizationService authoriz
         Summary(x => { x.Summary = "Citizen report submissions aggregated by form"; });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(CitizenReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,

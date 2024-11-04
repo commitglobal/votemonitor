@@ -25,6 +25,7 @@ public class FormFullModel
     public required string DefaultLanguage { get; init; }
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
+    public string? Icon { get; set; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
 
@@ -42,8 +43,10 @@ public class FormFullModel
             Questions = form.Questions.Select(QuestionsMapper.ToModel).ToList(),
             NumberOfQuestions = form.NumberOfQuestions,
             Description = form.Description,
-            LanguagesTranslationStatus = form.LanguagesTranslationStatus
+            LanguagesTranslationStatus = form.LanguagesTranslationStatus,
+            Icon = form.Icon
         };
+
 
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 }

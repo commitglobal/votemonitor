@@ -8,6 +8,7 @@ namespace Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
 public class IncidentReport : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
 
@@ -43,8 +44,9 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted) : base(incidentReportId)
+        bool? isCompleted)
     {
+        Id = incidentReportId;
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
         MonitoringObserverId = monitoringObserverId;

@@ -77,12 +77,12 @@ public class UpsertValidatorTests
     {
         // Arrange
         var request = new Request { Breaks = [
-            new Request.BreakRequest()
+            new Request.BreakRequest
             {
                 Start = DateTime.UtcNow.AddDays(-1),
                 End = DateTime.UtcNow,
             },
-            new Request.BreakRequest()
+            new Request.BreakRequest
             {
                 Start = DateTime.UtcNow,
                 End = DateTime.UtcNow.AddDays(-1),
@@ -105,12 +105,12 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             Breaks = [
-            new Request.BreakRequest()
+            new Request.BreakRequest
             {
                 Start = DateTime.UtcNow.AddDays(-1),
                 End = DateTime.UtcNow,
             },
-            new Request.BreakRequest()
+            new Request.BreakRequest
             {
                 Start = DateTime.UtcNow,
                 End = null

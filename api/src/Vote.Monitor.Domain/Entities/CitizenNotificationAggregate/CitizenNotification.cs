@@ -4,6 +4,7 @@ namespace Vote.Monitor.Domain.Entities.CitizenNotificationAggregate;
 
 public class CitizenNotification : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid SenderId { get; private set; }
@@ -14,8 +15,9 @@ public class CitizenNotification : AuditableBaseEntity, IAggregateRoot
     private CitizenNotification(Guid electionRoundId,
         Guid senderId,
         string title,
-        string body) : base(Guid.NewGuid())
+        string body)
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
         SenderId = senderId;
 

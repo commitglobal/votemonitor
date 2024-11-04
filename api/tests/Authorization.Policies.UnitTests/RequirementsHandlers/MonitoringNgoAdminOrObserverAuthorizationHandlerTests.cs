@@ -162,25 +162,6 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_ElectionRoundIsArchived_Failure()
-    {
-        // Arrange
-        _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserProvider.GetUserId().Returns(_observerId);
-
-        _monitoringObserverRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(CreateMonitoringObserverView.With().ArchivedElectionRound());
-
-        // Act
-        await _handler.HandleAsync(_context);
-
-        // Assert
-        _context.HasSucceeded.Should().BeFalse();
-    }
-
-    [Fact]
     public async Task HandleRequirementAsync_ObserverNgoIsDeactivated_Failure()
     {
         // Arrange

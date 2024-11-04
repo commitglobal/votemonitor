@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useMemo, useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
@@ -21,13 +21,14 @@ import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FunctionComponent } from '@/common/types';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import { Route } from '@/routes/responses';
 import { IncidentReportsAggregatedByFormTable } from '../IncidentReportsAggregatedByFormTable/IncidentReportsAggregatedByFormTable';
 import { IncidentReportsByEntryTable } from '../IncidentReportsByEntryTable/IncidentReportsByEntryTable';
 import { IncidentReportsByObserverTable } from '../IncidentReportsByObserverTable/IncidentReportsByObserverTable';
 import { IncidentReportsColumnsVisibilitySelector } from '../IncidentReportsColumnsVisibilitySelector/IncidentReportsColumnsVisibilitySelector';
 import { IncidentReportsFiltersByEntry } from '../IncidentReportsFiltersByEntry/IncidentReportsFiltersByEntry';
+import { IncidentReportsFiltersByForm } from '../IncidentReportsFiltersByForm/IncidentReportsFiltersByForm';
 import { IncidentReportsFiltersByObserver } from '../IncidentReportsFiltersByObserver/IncidentReportsFiltersByObserver';
-import { Route } from '@/routes/responses';
 
 const viewBy: Record<IncidentReportsViewBy, string> = {
   byEntry: 'View by entry',
@@ -72,8 +73,10 @@ export default function IncidentReportsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex items-center justify-between px-6'>
-          <CardTitle>Incident reports submissions</CardTitle>
+        <div className='flex items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
+            Incident reports submissions
+          </CardTitle>
 
           <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.IncidentReports} filterParams={queryParams} />
@@ -108,18 +111,16 @@ export default function IncidentReportsTab(): FunctionComponent {
         <Separator />
 
         <div className='flex justify-end gap-4 px-6'>
-          {byFilter !== 'byForm' && (
-            <>
-              <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
-              <FunnelIcon
-                className='w-[20px] text-purple-900 cursor-pointer'
-                fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-                onClick={() => {
-                  setIsFiltering((prev) => !prev);
-                }}
-              />
-            </>
-          )}
+          <>
+            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+            <FunnelIcon
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              onClick={() => {
+                setIsFiltering((prev) => !prev);
+              }}
+            />
+          </>
 
           <IncidentReportsColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
         </div>
@@ -129,8 +130,8 @@ export default function IncidentReportsTab(): FunctionComponent {
         {isFiltering && (
           <div className='grid items-center grid-cols-6 gap-4'>
             {byFilter === 'byEntry' && <IncidentReportsFiltersByEntry />}
-
             {byFilter === 'byObserver' && <IncidentReportsFiltersByObserver />}
+            {byFilter === 'byForm' && <IncidentReportsFiltersByForm />}
           </div>
         )}
       </CardHeader>

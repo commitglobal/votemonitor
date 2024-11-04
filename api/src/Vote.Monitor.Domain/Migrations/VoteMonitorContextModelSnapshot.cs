@@ -3375,6 +3375,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
                     b.Property<string[]>("Languages")
                         .IsRequired()
                         .HasColumnType("text[]");

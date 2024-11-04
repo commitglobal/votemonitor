@@ -65,6 +65,7 @@
   "questionEditor.question.text": "Question text",
   "questionEditor.question.textRequired": "Question text is required",
   "questionEditor.question.helptext": "Details (helptext)",
+  "questionEditor.question.iconPlaceholder": "Icon SVG code",
   "questionEditor.question.inputPlaceholder": "Placeholder",
   "questionEditor.question.displayLogic": "Apply display logic to this question",
   "questionEditor.question.displayLogic.chooseQuestion": "Display this question only when answer for previous question",
@@ -101,7 +102,6 @@
     "closingAndCounting": "Closing And Counting",
     "other": "Other"
   },
-
   "form": {
     "field.code": "Form Code",
     "field.name": "Form Name",
@@ -109,9 +109,11 @@
     "field.defaultLanguage": "Base language",
     "field.languageCode": "Language",
     "field.formType": "Form type",
+    "field.icon": "Icon",
     "field.languages": "Available languages",
     "field.status": "Status",
     "placeholder.code": "Form code",
+    "placeholder.icon": "<svg>...</svg>",
     "placeholder.name": "Form name",
     "placeholder.description": "Form description",
     "placeholder.defaultLanguage": "Select a default language",
@@ -131,59 +133,59 @@
       "obsolete": "Obsolete"
     }
   },
+  "observers": {
+    "addObserver": {
+      "title": "Add a new observer",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone number",
+      "addBtnText": "Add individual observer",
+      "onSuccess": "Observer created",
+      "onError": "Error adding observer"
+    }
+  },
   "ngoAdminDashboard": {
     "title": "Dashboard",
     "subtitle": "Key indicators",
-
     "observersAccounts": {
       "cardTitle": "Observers Accounts",
       "indicatorTitle": "Total accounts"
     },
-
     "observersOnFieldCardTitle": "Observers on field",
-
     "observersInPollingStations": {
       "indicatorTitle": "Observers in polling stations",
       "metricLabel": "With at least one question answered"
     },
-
     "pollingStationCardTitle": "Polling stations",
-
     "stationsVisitedByAtLeastOneObserver": {
       "indicatorTitle": "Stations visited by at least one observer",
       "metricLabel": "coverage"
     },
-
     "timeSpentObserving": {
       "cardTitle": "Time spent observing",
       "indicatorTitle": "Based on start-end times reported"
     },
-
     "startedForms": {
       "cardTitle": "Started forms",
       "indicatorTitle": "forms started between {{interval}}"
     },
-
     "questionsAnswered": {
       "cardTitle": "Questions answered",
       "indicatorTitle": "questions answered between {{interval}}"
     },
-
     "flaggedAnswers": {
       "cardTitle": "Flagged answers",
       "indicatorTitle": "answers were flagged through forms between {{interval}}"
     },
-
     "quickReports": {
       "cardTitle": "Quick reports",
       "indicatorTitle": "quick reports were signalled between {{interval}}"
     },
-
     "citizenReports": {
       "cardTitle": "Citizen reports",
       "indicatorTitle": "citizen reports were signalled between {{interval}}"
     },
-
     "incidentReports": {
       "cardTitle": "Incident reports",
       "indicatorTitle": "incidents reports were signalled between {{interval}}"
@@ -227,11 +229,8 @@
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
       "citizenGuidesCardTitle": "Citizen guides",
-
       "citizenNotificationsTabTitle": "Citizen Notifications",
       "citizenNotificationsCardTitle": "Citizen notifications",
-
-
       "observerGuidesTabTitle": "Observer Guides",
       "observerGuidesCardTitle": "Observer guides",
       "headers": {
@@ -250,6 +249,7 @@
       "cardTitle": "Observation forms",
       "headers": {
         "formCode": "Form Code",
+        "icon": "Icon",
         "name": "Name",
         "formType": "Form type",
         "language": "Language",

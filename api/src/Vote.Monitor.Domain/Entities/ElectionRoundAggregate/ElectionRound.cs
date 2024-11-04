@@ -13,6 +13,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     private readonly List<MonitoringNgo> _monitoringNgos = new();
 
+    public Guid Id { get; private set; }
     public string Title { get; private set; }
     public string EnglishTitle { get; private set; }
     public DateOnly StartDate { get; private set; }
@@ -31,8 +32,9 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     public ElectionRound(Guid countryId,
         string title,
         string englishTitle,
-        DateOnly startDate) : base(Guid.NewGuid())
+        DateOnly startDate)
     {
+        Id = Guid.NewGuid();
         Title = title;
         EnglishTitle = englishTitle;
         StartDate = startDate;
@@ -47,8 +49,9 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         string englishTitle,
         DateOnly startDate,
         Country country,
-        List<MonitoringNgo> monitoringNgos) : base(id)
+        List<MonitoringNgo> monitoringNgos)
     {
+        Id = id;
         Title = title;
         EnglishTitle = englishTitle;
         StartDate = startDate;
@@ -107,7 +110,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     }
     public void UpdateLocationsVersion()
     {
-        PollingStationsVersion = Guid.NewGuid();
+        LocationsVersion = Guid.NewGuid();
     }
 
     public void EnableCitizenReporting(MonitoringNgo monitoringNgo)

@@ -22,7 +22,7 @@ public class Endpoint(VoteMonitorContext context) : EndpointWithoutRequest<Respo
     {
         var electionRounds = await context.ElectionRounds
             .Include(x => x.Country)
-            .Where(x => x.CitizenReportingEnabled && x.Status != ElectionRoundStatus.Archived)
+            .Where(x => x.CitizenReportingEnabled && x.Status == ElectionRoundStatus.Started)
             .Select(x => new ElectionRoundModel
             {
                 Id = x.Id,

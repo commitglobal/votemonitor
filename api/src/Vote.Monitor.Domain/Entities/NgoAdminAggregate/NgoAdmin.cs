@@ -4,13 +4,15 @@ namespace Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 public class NgoAdmin : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ApplicationUserId { get; private set; }
     public ApplicationUser ApplicationUser { get; private set; }
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
 
-    public NgoAdmin(Guid ngoId, ApplicationUser applicationUser) : base(applicationUser.Id)
+    public NgoAdmin(Guid ngoId, ApplicationUser applicationUser)
     {
+        Id = applicationUser.Id;
         NgoId = ngoId;
         ApplicationUser = applicationUser;
         ApplicationUserId = applicationUser.Id;

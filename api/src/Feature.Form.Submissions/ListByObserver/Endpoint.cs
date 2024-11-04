@@ -46,6 +46,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       "PhoneNumber",
                       "Email",
                       "Tags",
+                      "NumberOfCompletedForms",
                       "NumberOfFlaggedAnswers",
                       "NumberOfLocations",
                       "NumberOfFormsSubmitted",
@@ -57,6 +58,17 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           U."PhoneNumber",
                           U."Email",
                           MO."Tags",
+                          COALESCE(
+                           (
+                               SELECT
+                                   count(*)
+                               FROM
+                                   "FormSubmissions" FS
+                               WHERE
+                                   FS."MonitoringObserverId" = MO."Id" and fs."IsCompleted" = true
+                           ),
+                           0
+                       ) AS "NumberOfCompletedForms",
                           COALESCE(
                               (
                                   SELECT
@@ -160,7 +172,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN "NumberOfLocations" END DESC,
                     
                       CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN "NumberOfFormsSubmitted" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC
+                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC,
+                      
+                      CASE WHEN @sortExpression = 'NumberOfCompletedForms ASC' THEN "NumberOfCompletedForms" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfCompletedForms DESC' THEN "NumberOfCompletedForms" END DESC
 
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
@@ -241,6 +256,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfCompletedForms),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.NumberOfCompletedForms)} {sortOrder}";
         }
 
         return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";

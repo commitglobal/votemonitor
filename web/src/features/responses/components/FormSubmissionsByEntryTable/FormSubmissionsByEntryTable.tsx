@@ -42,6 +42,7 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       ['formId', debouncedSearch.formId],
       ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
       ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
+      ['isCompletedFilter', debouncedSearch.formIsCompleted],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

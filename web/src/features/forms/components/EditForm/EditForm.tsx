@@ -55,6 +55,7 @@ export const ZEditFormType = z
     code: z.string().trim().min(1),
     name: ZTranslatedString,
     description: ZTranslatedString.optional(),
+    icon: z.string().optional(),
     languages: z.array(z.string()),
     formType: ZFormType.catch(ZFormType.Values.Opening),
     questions: z.array(ZEditQuestionType),
@@ -380,6 +381,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       description: ensureTranslatedStringCorrectness(formData.description, formData.languages),
       formType: formData.formType,
       questions: editQuestions,
+      icon: formData.icon ?? ''
     },
     mode: 'all',
   });
@@ -457,6 +459,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       description: values.description,
       formType: values.formType,
       languages: values.languages,
+      icon: isNilOrWhitespace(values.icon) ? undefined : values.icon,
       questions: values.questions.map(mapToQuestionRequest),
     };
     editMutation.mutate({ form: updatedForm, shouldExitEditor, electionRoundId: currentElectionRoundId });

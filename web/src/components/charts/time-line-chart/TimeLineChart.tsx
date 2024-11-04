@@ -20,7 +20,18 @@ import 'chartjs-adapter-date-fns';
 import { enGB } from 'date-fns/locale';
 import { DateTimeHourBucketFormat } from '@/common/formats';
 
-ChartJS.register(CategoryScale, LinearScale, TimeScale, TimeSeriesScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const defaultOptions: ChartOptions<'line'> = {
   maintainAspectRatio: false,
@@ -45,18 +56,18 @@ const defaultOptions: ChartOptions<'line'> = {
       ticks: {
         source: 'auto',
         autoSkip: true,
-        autoSkipPadding: 12
+        autoSkipPadding: 12,
       },
       time: {
         unit: 'hour',
         tooltipFormat: DateTimeHourBucketFormat,
         displayFormats: {
-          hour: 'yyyy/MM/dd hh:00',
+          hour: 'HH:00',
         },
       },
       bounds: 'data',
       adapters: {
-        date: {locale: enGB},
+        date: { locale: enGB },
       },
     },
   },
@@ -65,16 +76,15 @@ const defaultOptions: ChartOptions<'line'> = {
 export interface TimeLineProps {
   title?: string;
   data: ChartData<'line', number[]>;
-  showTotal?: boolean;
   total?: number;
 }
 
 const TimeLineChart = forwardRef<ChartJSOrUndefined<'line', number[]>, TimeLineProps>((props, chartRef) => {
   return (
     <div>
-      {(props.showTotal || props.title) && (
+      {(props.title) && (
         <div>
-          {props.showTotal && <div className='text-2xl font-bold'>{props.total ?? 0}</div>}
+          {(props.total!==undefined) && <div className='text-2xl font-bold'>{props.total ?? 0}</div>}
           {props.title && <span className='text-sm text-slate-500'>{props.title}</span>}
         </div>
       )}

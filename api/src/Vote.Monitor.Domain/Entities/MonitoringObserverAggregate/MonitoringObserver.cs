@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 {
+    public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid MonitoringNgoId { get; private set; }
@@ -18,8 +19,8 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
     public string[] Tags { get; private set; }
 
     private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags, MonitoringObserverStatus status)
-        : base(Guid.NewGuid())
     {
+        Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
         MonitoringNgoId = monitoringNgoId;
         ObserverId = observerId;

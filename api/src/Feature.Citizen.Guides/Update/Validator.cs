@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.Citizen.Guides.Update;
+﻿namespace Feature.Citizen.Guides.Update;
 
 public class Validator : Validator<Request>
 {
@@ -11,7 +9,6 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Title).NotEmpty().MaximumLength(256);
 
         RuleFor(x => x.WebsiteUrl)
-            .IsValidUri()
             .MaximumLength(2048)
             .When(x => !string.IsNullOrWhiteSpace(x.WebsiteUrl));
     }
