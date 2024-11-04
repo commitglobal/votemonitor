@@ -34,6 +34,7 @@ import * as Crypto from "expo-crypto";
 import Card from "../../../../components/Card";
 import { AttachmentMimeType } from "../../../../services/api/get-attachments.api";
 import { MediaDialog } from "../../../../components/MediaDialog";
+import { AttachmentData } from "../../../../services/api/add-attachment.api";
 // import { Buffer } from "buffer";
 // import * as FileSystem from "expo-file-system";
 
@@ -49,9 +50,7 @@ const CitizenForm = () => {
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
-  const [attachments, setAttachments] = useState<
-    Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]>
-  >({});
+  const [attachments, setAttachments] = useState<Record<string, AttachmentData[]>>({});
 
   const { uploadCameraOrMedia } = useCamera();
 
@@ -278,7 +277,10 @@ const CitizenForm = () => {
     setAttachments((prevAttachments) => ({
       ...prevAttachments,
       [questionId]: prevAttachments[questionId]
-        ? [...prevAttachments[questionId], { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false }]
+        ? [
+          ...prevAttachments[questionId],
+          { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false },
+        ]
         : [{ fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false }],
     }));
     setIsPreparingFile(false);
@@ -304,7 +306,10 @@ const CitizenForm = () => {
       setAttachments((prevAttachments) => ({
         ...prevAttachments,
         [questionId]: prevAttachments[questionId]
-          ? [...prevAttachments[questionId], { fileMetadata, id: Crypto.randomUUID(), uploaded: false }]
+          ? [
+            ...prevAttachments[questionId],
+            { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
+          ]
           : [{ fileMetadata, id: Crypto.randomUUID(), uploaded: false }],
       }));
       setIsPreparingFile(false);

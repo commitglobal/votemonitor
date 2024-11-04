@@ -52,6 +52,7 @@ import {
 } from "../../../services/mutations/attachments/add-attachment.mutation";
 import { TFunction } from "i18next";
 import { localizeIncidentCategory } from "../../../helpers/translationHelper";
+import { AttachmentData } from "../../../services/api/add-attachment.api";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = [], t: TFunction) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -139,9 +140,7 @@ const ReportIssue = () => {
 
   const [uuid] = useState(Crypto.randomUUID());
 
-  const [attachments, setAttachments] = useState<
-    Array<{ fileMetadata: FileMetadata; id: string; uploaded: boolean }>
-  >([]);
+  const [attachments, setAttachments] = useState<AttachmentData[]>([]);
 
   const {
     mutate,

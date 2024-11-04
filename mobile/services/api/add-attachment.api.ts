@@ -1,3 +1,4 @@
+import { FileMetadata } from "../../hooks/useCamera";
 import API from "../api";
 import axios from "axios";
 
@@ -44,6 +45,12 @@ export type AddAttachmentAPIResponse = {
 export type AddAttachmentMultipartStartAPIResponse = {
   uploadId: string;
   uploadUrls: Record<string, string>;
+};
+
+export type AttachmentData = {
+  fileMetadata: FileMetadata;
+  id: string;
+  uploaded: boolean;
 };
 
 // Multipart Upload - Add Attachment - Question

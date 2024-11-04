@@ -36,6 +36,7 @@ import {
 } from "../services/mutations/attachments/add-attachment.mutation";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { AttachmentData } from "../services/api/add-attachment.api";
 
 const LoadingScreen = () => {
   const { t } = useTranslation("citizen_form");
@@ -63,8 +64,8 @@ export default function ReviewCitizenFormSheet({
   currentForm: FormAPIModel | undefined;
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
-  attachments: Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]> | undefined;
-  setAttachments: Dispatch<SetStateAction<Record<string, { fileMetadata: FileMetadata; id: string; uploaded: boolean }[]>>>
+  attachments: Record<string, AttachmentData[]> | undefined;
+  setAttachments: Dispatch<SetStateAction<Record<string, AttachmentData[]>>>
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
   language: string;
@@ -245,7 +246,6 @@ export default function ReviewCitizenFormSheet({
             };
 
             const data = await addAttachmentCitizen(payload);
-            console.log('nr of parts', payload.numberOfUploadParts)
             await handleChunkUpload(
               attachment.fileMetadata.uri,
               data.uploadUrls,
