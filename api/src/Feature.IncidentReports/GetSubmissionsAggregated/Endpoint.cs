@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Feature.IncidentReports.Requests;
+using Vote.Monitor.Answer.Module.Aggregators;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 
@@ -6,7 +7,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    : Endpoint<IncidentReportsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -20,7 +21,7 @@ public class Endpoint(
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(IncidentReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -46,7 +47,7 @@ public class Endpoint(
     }
 
     private async Task<Results<Ok<Response>, NotFound>> AggregateIncidentReportsAsync(FormAggregate form,
-        Request req,
+        IncidentReportsAggregateFilter req,
         CancellationToken ct)
     {
         var incidentReports = await context.IncidentReports
@@ -92,6 +93,7 @@ public class Endpoint(
                 : !x.Attachments.Any()))
             .Where(x => req.FollowUpStatusFilter == null || x.FollowUpStatus == req.FollowUpStatusFilter)
             .Where(x => req.LocationTypeFilter == null || x.LocationType == req.LocationTypeFilter)
+            .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
             .AsSplitQuery()
             .AsNoTracking()
             .ToListAsync(ct);
@@ -125,7 +127,23 @@ public class Endpoint(
         {
             SubmissionsAggregate = formSubmissionsAggregate,
             Notes = incidentReports.SelectMany(x => x.Notes).Select(NoteModel.FromEntity).ToArray(),
-            Attachments = attachments
+            Attachments = attachments,
+            SubmissionsFilter = new SubmissionsFilterModel
+            {
+                HasAttachments = req.HasAttachments,
+                HasNotes = req.HasNotes,
+                Level1Filter = req.Level1Filter,
+                Level2Filter = req.Level2Filter,
+                Level3Filter = req.Level3Filter,
+                Level4Filter = req.Level4Filter,
+                Level5Filter = req.Level5Filter,
+                QuestionsAnswered = req.QuestionsAnswered,
+                HasFlaggedAnswers = req.HasFlaggedAnswers,
+                IsCompletedFilter = req.IsCompletedFilter,
+                LocationTypeFilter = req.LocationTypeFilter,
+                FollowUpStatusFilter = req.FollowUpStatusFilter,
+                PollingStationNumberFilter = req.PollingStationNumberFilter
+            }
         });
     }
 }

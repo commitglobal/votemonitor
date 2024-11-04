@@ -8,7 +8,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, Languages, null, []);
+            LanguagesList.RO.Iso1, _languages, null, []);
         // Act
         form.UpdateDetails(form.Code, form.Name, form.Description, form.FormType, form.DefaultLanguage, form.Languages,
             null, questions);

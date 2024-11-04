@@ -101,7 +101,7 @@ public class ObserverImportService(
                     existingAccount.NewInvite();
                     var newObserver = ObserverAggregate.Create(existingAccount);
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(electionRoundId,
-                        monitoringNgo.Id, newObserver.Id, observer.Tags);
+                        monitoringNgo.Id, newObserver.Id, observer.Tags ?? []);
                     await context.Observers.AddAsync(newObserver, ct);
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
@@ -123,7 +123,7 @@ public class ObserverImportService(
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(electionRoundId,
                         monitoringNgo.Id,
                         existingObserver.Id,
-                        observer.Tags);
+                        observer.Tags ?? []);
 
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
                     var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(FullName: fullName,
@@ -148,7 +148,7 @@ public class ObserverImportService(
 
                 var newObserver = ObserverAggregate.Create(user);
                 var newMonitoringObserver = MonitoringObserverAggregate.Create(electionRoundId, monitoringNgo.Id,
-                    newObserver.Id, observer.Tags);
+                    newObserver.Id, observer.Tags ?? []);
                 await context.Observers.AddAsync(newObserver, ct);
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
                 var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));

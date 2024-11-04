@@ -18,6 +18,9 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
 import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
+import { MediaFilesCell } from '../MediaFilesCell/MediaFilesCell';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
+import { SubmissionType } from '../../models/common';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
@@ -198,30 +201,16 @@ export default function QuickReportDetails(): FunctionComponent {
               <p>{quickReport.description}</p>
             </div>
 
-            {quickReport.attachments.length > 0 && (
-              <div>
-                <p className='pb-2 font-bold'>Media files</p>
-                <div className='flex flex-wrap gap-4'>
-                  {quickReport.attachments.map((attachment) => (
-                    <Dialog>
-                      <DialogTrigger>
-                        <button type='button'>
-                          <img
-                            alt={attachment.fileName}
-                            className='rounded-lg h-44 w-44'
-                            src={attachment.presignedUrl}
-                          />
-                        </button>
-                      </DialogTrigger>
-                      <DialogContent className='max-w-5xl'>
-                        <div className='flex justify-center'>
-                          <img alt={attachment.fileName} src={attachment.presignedUrl} />
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  ))}
-                </div>
-              </div>
+            {!!quickReport.attachments && quickReport.attachments.length > 0 && (
+              <ResponseExtraDataSection
+                attachments={quickReport.attachments.map((a) => ({
+                  ...a,
+                  timeSubmitted: quickReport.timestamp,
+                }))}
+                notes={[]}
+                aggregateDisplay={false}
+                submissionType={SubmissionType.QuickReport}
+              />
             )}
           </CardContent>
         </Card>

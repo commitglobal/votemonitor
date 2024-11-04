@@ -1,22 +1,34 @@
-﻿using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.Core.Helpers;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Questions;
 
 public partial class MultiSelectQuestionTests
 {
+    private readonly string _defaultLanguageCode = LanguagesList.EN.Iso1;
+    private readonly string _languageCode = LanguagesList.RO.Iso1;
+    private readonly SelectOption _translatedOption;
+
+    private TranslatedString CreateTranslatedString(string value)
+    {
+        return new TranslatedString { [_defaultLanguageCode] = "some text for default language", [_languageCode] = value };
+    }
+
+    public MultiSelectQuestionTests()
+    {
+        _translatedOption = SelectOption.Create(Guid.NewGuid(),
+            new TranslatedString
+            {
+                [_defaultLanguageCode] = "some option", [_languageCode] = "some option translated"
+            });
+    }
+
     [Fact]
     public void ComparingToAMultiSelectQuestion_WithSameProperties_ReturnsTrue()
     {
         // Arrange
-        var text = new TranslatedString
-        {
-            {"EN", "some text"}
-        };
+        var text = new TranslatedString { { _defaultLanguageCode, "some text" } };
 
-        var helptext = new TranslatedString
-        {
-            {"EN", "other text"}
-        };
+        var helptext = new TranslatedString { { _defaultLanguageCode, "other text" } };
 
         SelectOption[] options = [.. new SelectOptionFaker().Generate(3)];
 
@@ -35,25 +47,13 @@ public partial class MultiSelectQuestionTests
     public void ComparingToAMultiSelectQuestion_WithDifferentProperties_ReturnsFalse()
     {
         // Arrange
-        var text1 = new TranslatedString
-        {
-            {"EN", "some text"}
-        };
+        var text1 = new TranslatedString { { _defaultLanguageCode, "some text" } };
 
-        var text2 = new TranslatedString
-        {
-            {"EN", "some text"}
-        };
+        var text2 = new TranslatedString { { _defaultLanguageCode, "some text" } };
 
-        var helptext1 = new TranslatedString
-        {
-            {"EN", "other text"}
-        };
+        var helptext1 = new TranslatedString { { _defaultLanguageCode, "other text" } };
 
-        var helptext2 = new TranslatedString
-        {
-            {"EN", "other different"}
-        };
+        var helptext2 = new TranslatedString { { _defaultLanguageCode, "other different" } };
 
         SelectOption[] options1 = [.. new SelectOptionFaker().Generate(3)];
         SelectOption[] options2 = [.. new SelectOptionFaker().Generate(3)];

@@ -59,6 +59,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
                            AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
                            AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
+                           AND (@isCompleted is NULL OR PSI."IsCompleted" = @isCompleted)
                        UNION ALL SELECT count(*) AS count
                        FROM "FormSubmissions" fs
                        INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -95,6 +96,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
                            AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                            AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
+                           AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                   ) c;
 
                   WITH polling_station_submissions AS (
@@ -108,7 +110,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              0 AS "MediaFilesCount",
                              0 AS "NotesCount",
                              COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
-                             psi."FollowUpStatus"
+                             psi."FollowUpStatus",
+                             psif."DefaultLanguage",
+                             psif."Name",
+                             psi."IsCompleted"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "PollingStationInformationForms" psif ON psif."Id" = psi."PollingStationInformationFormId"
                       INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
@@ -120,6 +125,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
                         AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
                         AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
+                        AND (@isCompleted is NULL OR psi."IsCompleted" = @isCompleted)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND psif."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND psif."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered")
@@ -149,7 +155,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                    AND fs."PollingStationId" = N."PollingStationId"
                              ) AS "NotesCount",
                              COALESCE(fs."LastModifiedOn", fs."CreatedOn") AS "TimeSubmitted",
-                             fs."FollowUpStatus"
+                             fs."FollowUpStatus",
+                             f."DefaultLanguage",
+                             f."Name",
+                             fs."IsCompleted"
                       FROM "FormSubmissions" fs
                       INNER JOIN "Forms" f ON f."Id" = fs."FormId"
                       INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
@@ -161,6 +170,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         AND (@formId IS NULL OR fs."FormId" = @formId)
                         AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                         AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
+                        AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
@@ -170,6 +180,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          s."TimeSubmitted",
                          s."FormCode",
                          s."FormType",
+                         s."DefaultLanguage",
+                         s."Name" as "FormName",
                          ps."Id" AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",
@@ -187,7 +199,9 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          s."NumberOfFlaggedAnswers",
                          s."MediaFilesCount",
                          s."NotesCount",
-                         s."FollowUpStatus"
+                         s."FollowUpStatus",
+                         s."IsCompleted",
+                         mo."Status" "MonitoringObserverStatus"
                   FROM (
                       SELECT * FROM polling_station_submissions
                       UNION ALL
@@ -244,7 +258,17 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'Number ASC' THEN ps."Number" END ASC,
                       CASE WHEN @sortExpression = 'Number DESC' THEN ps."Number" END DESC,
                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN u."FirstName" || ' ' || u."LastName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."FirstName" || ' ' || u."LastName" END DESC
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."FirstName" || ' ' || u."LastName" END DESC,
+                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN s."NumberOfFlaggedAnswers" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN s."NumberOfFlaggedAnswers" END DESC,
+                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN s."NumberOfQuestionsAnswered" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered DESC' THEN s."NumberOfQuestionsAnswered" END DESC,
+                      CASE WHEN @sortExpression = 'MediaFilesCount ASC' THEN s."MediaFilesCount" END ASC,
+                      CASE WHEN @sortExpression = 'MediaFilesCount DESC' THEN s."MediaFilesCount" END DESC,
+                      CASE WHEN @sortExpression = 'NotesCount ASC' THEN s."NotesCount" END ASC,
+                      CASE WHEN @sortExpression = 'NotesCount DESC' THEN s."NotesCount" END DESC,
+                      CASE WHEN @sortExpression = 'MonitoringObserverStatus ASC' THEN mo."Status" END ASC,
+                      CASE WHEN @sortExpression = 'MonitoringObserverStatus DESC' THEN mo."Status" END DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
@@ -274,6 +298,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
+            isCompleted = req.IsCompletedFilter,
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

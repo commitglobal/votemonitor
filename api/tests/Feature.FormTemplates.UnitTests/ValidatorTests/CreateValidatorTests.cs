@@ -1,6 +1,7 @@
 ﻿using Feature.FormTemplates.Create;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Form.Module.Requests;
 
 namespace Feature.FormTemplates.UnitTests.ValidatorTests;
@@ -83,7 +84,7 @@ public class CreateValidatorTests
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor(x => x.FormTemplateType);
+            .ShouldHaveValidationErrorFor(x => x.FormType);
     }
 
     [Fact]
@@ -216,7 +217,7 @@ public class CreateValidatorTests
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
             DefaultLanguage = LanguagesList.EN.Iso1,
             Code = "A code",
-            FormTemplateType = FormTemplateType.ClosingAndCounting,
+            FormType = FormType.ClosingAndCounting,
             Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
             Description = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
         };

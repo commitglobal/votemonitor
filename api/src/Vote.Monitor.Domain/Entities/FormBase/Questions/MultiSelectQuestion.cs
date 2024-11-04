@@ -53,6 +53,15 @@ public record MultiSelectQuestion : BaseQuestion
             : TranslationStatus.Translated;
     }
 
+    protected override void InternalTrimTranslations(IEnumerable<string> languages)
+    {
+        var languagesArray = languages as string[] ?? languages.ToArray();
+        foreach (var option in Options)
+        {
+            option.TrimTranslations(languagesArray);
+        }
+    }
+
     public override int GetHashCode()
     {
         return HashCode.Combine(base.GetHashCode(), Options);

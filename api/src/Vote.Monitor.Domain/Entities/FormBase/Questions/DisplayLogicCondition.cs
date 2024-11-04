@@ -27,6 +27,7 @@ public class DisplayLogicCondition : SmartEnum<DisplayLogicCondition, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private DisplayLogicCondition(string name, string value) : base(name, value)
     {
     }

@@ -37,6 +37,7 @@ public class IncidentReportsFilters
 
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
+    public bool? IsCompletedFilter { get; set; }
 
     public ExportIncidentReportsFilters ToFilter()
     {
@@ -60,7 +61,8 @@ public class IncidentReportsFilters
             FollowUpStatus = FollowUpStatus,
             LocationType = LocationType,
             FromDateFilter = FromDateFilter,
-            ToDateFilter = ToDateFilter
+            ToDateFilter = ToDateFilter,
+            IsCompletedFilter = IsCompletedFilter
         };
     }
 }

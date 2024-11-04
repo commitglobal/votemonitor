@@ -27,7 +27,6 @@ import { Route as ResetPasswordSuccessImport } from './routes/reset-password/suc
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
-import { Route as MonitoringObserversNewObserverImport } from './routes/monitoring-observers/new-observer'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
@@ -138,12 +137,6 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   path: '/ngos/$ngoId',
   getParentRoute: () => rootRoute,
 } as any)
-
-const MonitoringObserversNewObserverRoute =
-  MonitoringObserversNewObserverImport.update({
-    path: '/monitoring-observers/new-observer',
-    getParentRoute: () => rootRoute,
-  } as any)
 
 const MonitoringObserversCreateNewMessageRoute =
   MonitoringObserversCreateNewMessageImport.update({
@@ -341,10 +334,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversCreateNewMessageImport
       parentRoute: typeof rootRoute
     }
-    '/monitoring-observers/new-observer': {
-      preLoaderRoute: typeof MonitoringObserversNewObserverImport
-      parentRoute: typeof rootRoute
-    }
     '/ngos/$ngoId': {
       preLoaderRoute: typeof NgosNgoIdImport
       parentRoute: typeof rootRoute
@@ -500,7 +489,6 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
-  MonitoringObserversNewObserverRoute,
   NgosNgoIdRoute,
   ObserverGuidesNewRoute,
   ObserversObserverIdRoute,

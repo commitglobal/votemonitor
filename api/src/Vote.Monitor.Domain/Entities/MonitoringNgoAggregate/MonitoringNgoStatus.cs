@@ -20,6 +20,7 @@ public sealed class MonitoringNgoStatus : SmartEnum<MonitoringNgoStatus, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private MonitoringNgoStatus(string name, string value) : base(name, value)
     {
     }

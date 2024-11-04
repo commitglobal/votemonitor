@@ -56,26 +56,6 @@ public class MonitoringNgoAdminAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_ElectionRoundArchived_Failure()
-    {
-        // Arrange
-        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(CreateMonitoringNgoView.With().ArchivedElectionRound());
-
-        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _currentUserRoleProvider, _monitoringNgoRepository);
-
-        // Act
-        await handler.HandleAsync(_context);
-
-        // Assert
-        _context.HasSucceeded.Should().BeFalse();
-    }
-
-    [Fact]
     public async Task HandleRequirementAsync_NgoIsDeactivated_Failure()
     {
         // Arrange

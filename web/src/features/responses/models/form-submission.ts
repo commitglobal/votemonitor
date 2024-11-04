@@ -8,6 +8,7 @@ import type {
   RatingAnswer,
   SingleSelectAnswer,
   TextAnswer,
+  TranslatedString,
 } from '@/common/types';
 import { Attachment, Note } from './common';
 
@@ -16,6 +17,7 @@ export interface FormSubmissionByEntry {
   observerName: string;
   formCode: string;
   formType: FormType;
+  formName: TranslatedString;
   defaultLanguage: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
@@ -34,6 +36,7 @@ export interface FormSubmissionByEntry {
   tags: string[];
   timeSubmitted: string;
   followUpStatus: FormSubmissionFollowUpStatus;
+  isCompleted: boolean;
 }
 
 export interface FormSubmissionByObserver {
@@ -41,6 +44,7 @@ export interface FormSubmissionByObserver {
   observerName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
+  numberOfCompletedForms: number;
   numberOfFormsSubmitted: number;
   numberOfLocations: number;
   phoneNumber: string;
@@ -52,6 +56,8 @@ export interface FormSubmissionByForm {
   formId: string;
   formCode: string;
   formType: FormType;
+  formName: TranslatedString;
+  defaultLanguage: string;
   numberOfSubmissions: number;
   numberOfFlaggedAnswers: number;
   numberOfNotes: number;

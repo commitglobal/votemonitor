@@ -1,4 +1,5 @@
 ﻿using Feature.CitizenReports.Models;
+using Feature.CitizenReports.Requests;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
@@ -8,7 +9,7 @@ public class Endpoint(
     VoteMonitorContext context,
     IAuthorizationService authorizationService,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    : Endpoint<CitizenReportsAggregateFilter, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -23,7 +24,7 @@ public class Endpoint(
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(CitizenReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
@@ -49,7 +50,7 @@ public class Endpoint(
     }
 
     private async Task<Results<Ok<Response>, NotFound>> AggregateCitizenReportsAsync(FormAggregate form,
-        Request req,
+        CitizenReportsAggregateFilter req,
         CancellationToken ct)
     {
         var citizenReports = await context.CitizenReports
@@ -118,7 +119,20 @@ public class Endpoint(
         {
             SubmissionsAggregate = formSubmissionsAggregate,
             Notes = citizenReports.SelectMany(x => x.Notes).Select(NoteModel.FromEntity).ToArray(),
-            Attachments = attachments
+            Attachments = attachments,
+            SubmissionsFilter = new SubmissionsFilterModel
+            {
+                HasAttachments = req.HasAttachments,
+                HasNotes = req.HasNotes,
+                Level1Filter = req.Level1Filter,
+                Level2Filter = req.Level2Filter,
+                Level3Filter = req.Level3Filter,
+                Level4Filter = req.Level4Filter,
+                Level5Filter = req.Level5Filter,
+                HasFlaggedAnswers = req.HasFlaggedAnswers,
+                QuestionsAnswered = req.QuestionsAnswered,
+                FollowUpStatus = req.FollowUpStatus,
+            }
         });
     }
 }

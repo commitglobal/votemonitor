@@ -110,7 +110,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     }
     public void UpdateLocationsVersion()
     {
-        PollingStationsVersion = Guid.NewGuid();
+        LocationsVersion = Guid.NewGuid();
     }
 
     public void EnableCitizenReporting(MonitoringNgo monitoringNgo)

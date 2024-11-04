@@ -49,7 +49,6 @@ const LinkEditBlock = ({ editor, onSetLink, close, className, ...props }: LinkEd
   }, [editor])
 
   React.useEffect(() => {
-    console.log('effect');
     setField(data)
   }, [data])
 
@@ -77,13 +76,13 @@ const LinkEditBlock = ({ editor, onSetLink, close, className, ...props }: LinkEd
       <div className={cn('space-y-4', className)} {...props}>
         <div>
           <Toggle aria-label="Url" onPressedChange={() => setField({ ...field, type: LinkType.URL })} pressed={field.type === LinkType.URL}>
-            <Link2Icon className="h-4 w-4" />
+            <Link2Icon className="w-4 h-4" />
           </Toggle>
           <Toggle aria-label="Email" onPressedChange={() => setField({ ...field, type: LinkType.EMAIL })} pressed={field.type === LinkType.EMAIL} >
-            <EnvelopeClosedIcon className="h-4 w-4" />
+            <EnvelopeClosedIcon className="w-4 h-4" />
           </Toggle>
           <Toggle aria-label="Telephone" onPressedChange={() => setField({ ...field, type: LinkType.TELEPHONE })} pressed={field.type === LinkType.TELEPHONE}>
-            <MobileIcon className="h-4 w-4" />
+            <MobileIcon className="w-4 h-4" />
           </Toggle>
         </div>
         <div className="space-y-1">

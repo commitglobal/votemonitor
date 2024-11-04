@@ -14,8 +14,11 @@ export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();
 
   const { formId } = Route.useParams();
+  const params = Route.useSearch();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
+  const { data: formSubmission } = useSuspenseQuery(
+    formAggregatedDetailsQueryOptions(currentElectionRoundId, formId, params)
+  );
 
   const { submissionsAggregate } = formSubmission;
   const { defaultLanguage, formCode, formType, aggregates, responders } = submissionsAggregate;

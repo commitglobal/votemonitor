@@ -1,6 +1,6 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { HIDDEN_FILTERS } from '../components/ActiveFilters';
 import { FILTER_KEY } from '../filtering-enums';
 
@@ -13,9 +13,12 @@ export function useFilteringContainer() {
   const queryParams = useSearch({ strict: false });
 
   const setPrevSearch = useSetPrevSearch();
-  const filteringIsActive = Object.keys(queryParams)
-    .filter((key) => !HIDDEN_FILTERS.includes(key))
-    .some((key) => !!key);
+  const filteringIsActive = useMemo(() => {
+
+    return Object.entries(queryParams)
+      .filter(([key, _]) => !HIDDEN_FILTERS.includes(key))
+      .some(([_, value]) => !!value);
+  }, [queryParams]);
 
   const navigateHandler = useCallback(
     (search: Record<string, any | undefined>) => {

@@ -222,6 +222,11 @@ public class QuestionsMapperTests
         {
             return TranslationStatus.Translated;
         }
+
+        protected override void InternalTrimTranslations(IEnumerable<string> languages)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [Fact]

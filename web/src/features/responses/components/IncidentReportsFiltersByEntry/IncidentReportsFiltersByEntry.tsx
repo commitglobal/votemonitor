@@ -102,6 +102,26 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
+          navigateHandler({ formIsCompleted: value });
+        }}
+        value={search.formIsCompleted ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Is Completed' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select
+        onValueChange={(value) => {
           navigateHandler({ incidentReportLocationType: value });
         }}
         value={search.incidentReportLocationType ?? ''}>
@@ -179,6 +199,26 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ formIsCompleted: value });
+        }}
+        value={search.formIsCompleted ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Form completed' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
       <PollingStationsFilters />
 
       <ResetFiltersButton
@@ -199,6 +239,13 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
             <FilterBadge
               label={`Follow-up status: ${mapIncidentReportFollowUpStatus(search.incidentReportFollowUpStatus)}`}
               onClear={onClearFilter('incidentReportFollowUpStatus')}
+            />
+          )}
+
+          {search.formIsCompleted && (
+            <FilterBadge
+              label={`Is completed: ${search.formIsCompleted.toString()}`}
+              onClear={onClearFilter('formIsCompleted')}
             />
           )}
 
@@ -275,6 +322,13 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
             <FilterBadge
               label={`Question notes: ${search.hasNotes === 'true' ? 'yes' : 'no'}`}
               onClear={onClearFilter('hasNotes')}
+            />
+          )}
+
+          {search.formIsCompleted && (
+            <FilterBadge
+              label={`Form completed: ${search.formIsCompleted === 'true' ? 'yes' : 'no'}`}
+              onClear={onClearFilter('formIsCompleted')}
             />
           )}
         </div>

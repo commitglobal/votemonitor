@@ -222,7 +222,7 @@ export default function PollingStationsDashboard(): ReactElement {
   return (
     <Card className='pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
-        <div className='flex items-center justify-between px-6'>
+        <div className='flex items-center justify-between'>
           <CardTitle>{i18n.t('electionEvent.pollingStations.cardTitle')}</CardTitle>
 
           <div className='flex items-center gap-4'>

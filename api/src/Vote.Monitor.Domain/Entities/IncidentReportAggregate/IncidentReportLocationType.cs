@@ -22,6 +22,7 @@ public sealed class IncidentReportLocationType : SmartEnum<IncidentReportLocatio
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private IncidentReportLocationType(string name, string value) : base(name, value)
     {
     }

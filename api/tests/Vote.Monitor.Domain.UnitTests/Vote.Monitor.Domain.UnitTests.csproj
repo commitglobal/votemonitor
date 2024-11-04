@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Core.UnitTests\Vote.Monitor.Core.UnitTests.csproj" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 

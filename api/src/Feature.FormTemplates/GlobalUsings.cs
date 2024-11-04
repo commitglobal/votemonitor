@@ -8,4 +8,4 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.HttpResults;
 global using Vote.Monitor.Domain.Repository;
 global using Vote.Monitor.Form.Module.Mappers;
-global using FormTemplateAggregate = Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate;
+global using FormTemplateAggregate = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;

@@ -2,28 +2,6 @@
 
 public partial class SingleSelectQuestionTests
 {
-    private readonly string _defaultLanguageCode = LanguagesList.EN.Iso1;
-    private readonly string _languageCode = LanguagesList.RO.Iso1;
-    private readonly SelectOption _translatedOption;
-
-    public SingleSelectQuestionTests()
-    {
-        _translatedOption = SelectOption.Create(Guid.NewGuid(), new TranslatedString
-        {
-            [_defaultLanguageCode] = "some option",
-            [_languageCode] = "some option translated"
-        });
-    }
-
-    private TranslatedString CreateTranslatedString(string value)
-    {
-        return new TranslatedString
-        {
-            [_defaultLanguageCode] = "some text",
-            [_languageCode] = value
-        };
-    }
-
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
     public void GetTranslationStatus_WithMissingTranslationForText_ReturnsMissingTranslation(string emptyString)

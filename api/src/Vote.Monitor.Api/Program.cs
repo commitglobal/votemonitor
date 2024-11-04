@@ -199,7 +199,6 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<NgoStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
-        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
@@ -231,7 +230,6 @@ SqlMapper.AddTypeHandler(typeof(UserRole), new SmartEnumByValueTypeHandler<UserR
 SqlMapper.AddTypeHandler(typeof(NgoStatus), new SmartEnumByValueTypeHandler<NgoStatus, string>());
 SqlMapper.AddTypeHandler(typeof(ElectionRoundStatus), new SmartEnumByValueTypeHandler<ElectionRoundStatus, string>());
 SqlMapper.AddTypeHandler(typeof(SortOrder), new SmartEnumByValueTypeHandler<SortOrder, string>());
-SqlMapper.AddTypeHandler(typeof(FormTemplateType), new SmartEnumByValueTypeHandler<FormTemplateType, string>());
 SqlMapper.AddTypeHandler(typeof(FormTemplateStatus), new SmartEnumByValueTypeHandler<FormTemplateStatus, string>());
 SqlMapper.AddTypeHandler(typeof(MonitoringNgoStatus), new SmartEnumByValueTypeHandler<MonitoringNgoStatus, string>());
 SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus), new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());

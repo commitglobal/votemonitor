@@ -1,6 +1,7 @@
 ﻿using Feature.FormTemplates.Update;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Form.Module.Requests;
 
 namespace Feature.FormTemplates.UnitTests.ValidatorTests;
@@ -220,7 +221,7 @@ public class UpdateValidatorTests
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor(x => x.FormTemplateType);
+            .ShouldHaveValidationErrorFor(x => x.FormType);
     }
 
     [Fact]
@@ -248,7 +249,7 @@ public class UpdateValidatorTests
         var request = new Request
         {
             Id = Guid.NewGuid(),
-            FormTemplateType = FormTemplateType.ClosingAndCounting,
+            FormType = FormType.ClosingAndCounting,
             DefaultLanguage = LanguagesList.EN.Iso1,
             Languages = [LanguagesList.EN.Iso1],
             Code = "c!",

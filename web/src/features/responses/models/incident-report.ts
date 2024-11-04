@@ -40,6 +40,7 @@ export interface IncidentReportByEntry {
   tags: string[];
   timeSubmitted: string;
   followUpStatus: IncidentReportFollowUpStatus;
+  isCompleted: boolean;
 }
 
 export interface IncidentReportByObserver {
@@ -47,6 +48,7 @@ export interface IncidentReportByObserver {
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfIncidentsSubmitted: number;
+  numberOfCompletedForms: number;
   phoneNumber: string;
   tags: string[];
   followUpStatus?: IncidentReportFollowUpStatus;

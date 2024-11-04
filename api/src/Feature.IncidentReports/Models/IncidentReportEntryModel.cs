@@ -35,4 +35,6 @@ public record IncidentReportEntryModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus FollowUpStatus { get; set; }
+
+    public bool IsCompleted { get; set; }
 }

@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { FormSubmissionFollowUpStatus, FunctionComponent } from '@/common/types';
+import { FormSubmissionFollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +15,8 @@ import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../..
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
+import { format } from 'date-fns';
+import { DateTimeFormat } from '@/common/formats';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -26,7 +28,13 @@ export default function FormSubmissionDetails(): FunctionComponent {
   const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
-    mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FormSubmissionFollowUpStatus }) => {
+    mutationFn: ({
+      electionRoundId,
+      followUpStatus,
+    }: {
+      electionRoundId: string;
+      followUpStatus: FormSubmissionFollowUpStatus;
+    }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`, {
         followUpStatus,
       });
@@ -75,44 +83,90 @@ export default function FormSubmissionDetails(): FunctionComponent {
               </Link>
             </div>
 
-            <div className='flex gap-2'>
-              <p>Phone number:</p>
-              {formSubmission.phoneNumber}
+            <div>
+              <p className='font-bold'>Time submitted</p>
+              {formSubmission.timeSubmitted && <p>{format(formSubmission.timeSubmitted, DateTimeFormat)}</p>}
             </div>
 
-            <div className='flex gap-4'>
-              <div className='flex gap-2'>
-                <p>Location - L1:</p>
-                {formSubmission.level1}
+            {formSubmission.level1 && (
+              <div className='flex gap-4'>
+                <div>
+                  <p className='font-bold'>Location - L1</p>
+                  {formSubmission.level1}
+                </div>
+                {formSubmission.level2 && (
+                  <div>
+                    <p className='font-bold'>Location - L2</p>
+                    {formSubmission.level2}
+                  </div>
+                )}
+                {formSubmission.level3 && (
+                  <div>
+                    <p className='font-bold'>Location - L3</p>
+                    {formSubmission.level3}
+                  </div>
+                )}
+                {formSubmission.level4 && (
+                  <div>
+                    <p className='font-bold'>Location - L4</p>
+                    {formSubmission.level4}
+                  </div>
+                )}
+                {formSubmission.level5 && (
+                  <div>
+                    <p className='font-bold'>Location - L5</p>
+                    {formSubmission.level5}
+                  </div>
+                )}
+                <div>
+                  <p className='font-bold'>Number</p>
+                  <p>{formSubmission.number}</p>
+                </div>
               </div>
-              {formSubmission.level2 && (
-                <div className='flex gap-2'>
-                  <p>Location - L2:</p>
-                  {formSubmission.level2}
-                </div>
-              )}
-              {formSubmission.level3 && (
-                <div className='flex gap-2'>
-                  <p>Location - L3:</p>
-                  {formSubmission.level3}
-                </div>
-              )}
-              {formSubmission.level4 && (
-                <div className='flex gap-2'>
-                  <p>Location - L4:</p>
-                  {formSubmission.level4}
-                </div>
-              )}
-              {formSubmission.level5 && (
-                <div className='flex gap-2'>
-                  <p>Location - L5:</p>
-                  {formSubmission.level5}
-                </div>
-              )}
-              <p>Number:</p>#{formSubmission.number}
+            )}
+
+            <div>
+              <p className='font-bold'>Is completed:</p>
+              {formSubmission.isCompleted.toString()}
             </div>
           </CardContent>
         </Card>
+        {formSubmission.formType === ZFormType.Enum.PSI ? (
+          <Card>
+            <CardHeader>
+              <div className='flex gap-4'>
+                <div>
+                  <p className='font-bold'>Arrival time</p>
+                  {<p>{formSubmission.arrivalTime ? format(formSubmission.arrivalTime, DateTimeFormat) : '-'}</p>}
+                </div>
+
+                <div>
+                  <p className='font-bold'>Departure time</p>
+                  {<p>{formSubmission.departureTime ? format(formSubmission.departureTime, DateTimeFormat) : '-'}</p>}
+                </div>
+              </div>
+              {formSubmission.breaks ? (
+                <div>
+                  {formSubmission.breaks.length > 0 ? (
+                    <ul className='space-y-4'>
+                      {formSubmission.breaks.map((breakItem, index) => (
+                        <li key={index}>
+                          <div>
+                            <p className='font-bold'>Break #{index + 1}</p>
+                            <p>Start: {format(breakItem.start, DateTimeFormat)}</p>
+                            {breakItem.end ? <p>End: {format(breakItem.end, DateTimeFormat)}</p> : <p>End: -</p>}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No breaks</p>
+                  )}
+                </div>
+              ) : null}
+            </CardHeader>
+          </Card>
+        ) : null}
 
         <Card>
           <CardHeader>

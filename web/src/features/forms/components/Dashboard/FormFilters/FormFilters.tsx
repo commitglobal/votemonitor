@@ -1,13 +1,13 @@
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { FC } from 'react';
-import { FormTypeSelect } from '../../filtering/FormTypeSelect';
-import { FormStatusSelect } from '../../filtering/FormStatusSelect';
+import { FormTypeFilter } from '../../../../filtering/components/FormTypeFilter';
+import { FormStatusFilter } from '../../../../filtering/components/FormStatusFilter';
 
 export const FormFilters: FC = () => {
   return (
     <FilteringContainer>
-      <FormTypeSelect />
-      <FormStatusSelect />
+      <FormTypeFilter />
+      <FormStatusFilter />
     </FilteringContainer>
   );
 };

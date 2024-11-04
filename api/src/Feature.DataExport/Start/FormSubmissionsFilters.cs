@@ -39,6 +39,8 @@ public class FormSubmissionsFilters
     public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
+    
+    public bool? IsCompletedFilter { get; set; }
 
     public ExportFormSubmissionsFilters ToFilter()
     {
@@ -62,7 +64,8 @@ public class FormSubmissionsFilters
             HasAttachments = HasAttachments,
             QuestionsAnswered = QuestionsAnswered,
             FromDateFilter = FromDateFilter,
-            ToDateFilter = ToDateFilter
+            ToDateFilter = ToDateFilter,
+            IsCompletedFilter = IsCompletedFilter
         };
     }
 }

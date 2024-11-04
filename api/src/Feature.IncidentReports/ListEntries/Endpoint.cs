@@ -100,7 +100,8 @@ public class Endpoint(
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
                       ))
                     AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp);
+                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
+                    AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted);
                       
                       
                   WITH
@@ -128,7 +129,8 @@ public class Endpoint(
                               ) AS "MediaFilesCount",
                               ( SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") AS "NotesCount",
                               COALESCE(IR."LastModifiedOn", IR."CreatedOn") AS "TimeSubmitted",
-                              IR."FollowUpStatus"
+                              IR."FollowUpStatus",
+                              IR."IsCompleted"
                           FROM
                               "IncidentReports" IR
                                   INNER JOIN "Forms" F ON F."Id" = IR."FormId"
@@ -148,6 +150,7 @@ public class Endpoint(
                             )
                             AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
                             AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
+                            AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -174,7 +177,8 @@ public class Endpoint(
                       IR."NumberOfFlaggedAnswers",
                       IR."MediaFilesCount",
                       IR."NotesCount",
-                      IR."FollowUpStatus"
+                      IR."FollowUpStatus",
+                      IR."IsCompleted"
                   FROM
                       INCIDENT_REPORTS IR
                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
@@ -263,6 +267,7 @@ public class Endpoint(
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            iscompleted = req.IsCompletedFilter
         };
 
         int totalRowCount;

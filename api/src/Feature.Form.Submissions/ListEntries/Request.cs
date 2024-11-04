@@ -44,4 +44,5 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
 
+    [QueryParam] public bool? IsCompletedFilter  { get; set; }
 }

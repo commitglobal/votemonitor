@@ -1,8 +1,9 @@
 ﻿using Feature.FormTemplates.Specifications;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Create;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository) :
+public class Endpoint(IRepository<Form> repository) :
         Endpoint<Request, Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -13,7 +14,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
 
     public override async Task<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormTemplateSpecification(req.Code, req.FormTemplateType);
+        var specification = new GetFormTemplateSpecification(req.Code, req.FormType);
         var duplicatedFormTemplate = await repository.AnyAsync(specification, ct);
 
         if (duplicatedFormTemplate)
@@ -26,14 +27,14 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
             .ToList()
             .AsReadOnly();
         
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages, questions);
+        var formTemplate = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form.Create(req.FormType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages, questions);
 
         await repository.AddAsync(formTemplate, ct);
 
         return TypedResults.Ok(new FormTemplateSlimModel
         {
             Id = formTemplate.Id,
-            FormTemplateType = formTemplate.FormTemplateType,
+            FormType = formTemplate.FormType,
             Code = formTemplate.Code,
             Languages = formTemplate.Languages,
             DefaultLanguage = formTemplate.DefaultLanguage,

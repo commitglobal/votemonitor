@@ -70,4 +70,19 @@ public abstract record BaseQuestion
     }
 
     protected abstract TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode);
+
+
+    public BaseQuestion TrimTranslations(IEnumerable<string> languages)
+    {
+        var languagesArray = languages.ToArray();
+
+        Text.TrimTranslations(languagesArray);
+        Helptext?.TrimTranslations(languagesArray);
+
+        InternalTrimTranslations(languagesArray);
+
+        return this;
+    }
+
+    protected abstract void InternalTrimTranslations(IEnumerable<string> languages);
 }

@@ -21,6 +21,7 @@ public sealed class ExportedDataStatus : SmartEnum<ExportedDataStatus, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private ExportedDataStatus(string name, string value) : base(name, value)
     {
     }

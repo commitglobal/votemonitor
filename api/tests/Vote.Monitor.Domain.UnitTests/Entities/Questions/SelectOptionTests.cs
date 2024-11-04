@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.Core.Helpers;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Questions;
 

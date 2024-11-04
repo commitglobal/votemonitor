@@ -20,7 +20,8 @@ public sealed class TrailType : SmartEnum<TrailType, string>
     {
         return TryFromValue(value, out result);
     }
-
+    
+    [JsonConstructor]
     private TrailType(string name, string value) : base(name, value)
     {
     }

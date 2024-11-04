@@ -21,7 +21,6 @@ import { DataTablePagination } from './DataTablePagination';
 
 export interface RowData {
   id: string;
-  defaultLanguage?: string;
 }
 
 export interface TableCellProps {
@@ -118,7 +117,7 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
 
   onDataFetchingSucceed?: (pageSize: number, currentPage: number, totalCount: number) => void;
 
-  onRowClick?: (id: string, defaultLanguage?: string) => void;
+  onRowClick?: (id: string) => void;
 
   getCellProps?: (context: CellContext<TData, unknown>) => TableCellProps | void;
 
@@ -255,7 +254,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
                       data-state={row.getIsSelected() && 'selected'}
                       className={getRowClassName ? getRowClassName(row) : ''}
                       onClick={() => {
-                        onRowClick?.(row.original.id, row.original.defaultLanguage);
+                        onRowClick?.(row.original.id);
                       }}
                       style={{ cursor: onRowClick ? 'pointer' : undefined }}>
                       {row.getVisibleCells().map((cell) => (

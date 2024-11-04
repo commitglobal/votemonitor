@@ -27,9 +27,8 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Description)
             .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages));
 
-        RuleFor(x => x.FormTemplateType)
+        RuleFor(x => x.FormType)
             .NotEmpty();
-        
         
         RuleForEach(x => x.Questions)
             .SetInheritanceValidator(v =>

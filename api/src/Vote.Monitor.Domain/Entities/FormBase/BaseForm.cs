@@ -1,4 +1,6 @@
 using FluentValidation;
+using FluentValidation.Results;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -6,8 +8,11 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Form = Vote.Monitor.Domain.Entities.FormAggregate.Form;
+using PublishResult = Vote.Monitor.Domain.Entities.FormAggregate.PublishResult;
 
 namespace Vote.Monitor.Domain.Entities.FormBase;
 
@@ -283,6 +288,44 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
             ComputeLanguagesTranslationStatus();
     }
 
+    public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    {
+        if (Status != FormStatus.Published)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(Status), "Form is not published.")
+            ]);
+        }
+        
+        if (!Languages.Contains(defaultLanguage))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(defaultLanguage), "Default language is not supported.")
+            ]);
+        }
+
+        foreach (var iso in languages)
+        {
+            if (!Languages.Contains(iso))
+            {
+                throw new ValidationException([
+                    new ValidationFailure(nameof(languages) + $".{iso}", "Language is not supported.")
+                ]);
+            }
+        }
+
+        return Form.Create(electionRoundId,
+            monitoringNgoId,
+            FormType,
+            Code,
+            new TranslatedString(Name).TrimTranslations(languages),
+            new TranslatedString(Description).TrimTranslations(languages),
+            defaultLanguage,
+            languages,
+            null,
+            Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
+    }
+    
     private LanguagesTranslationStatus ComputeLanguagesTranslationStatus()
     {
         var languagesTranslationStatus = new LanguagesTranslationStatus();

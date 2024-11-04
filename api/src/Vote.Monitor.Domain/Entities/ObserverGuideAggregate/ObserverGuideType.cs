@@ -21,6 +21,7 @@ public sealed class ObserverGuideType : SmartEnum<ObserverGuideType, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private ObserverGuideType(string name, string value) : base(name, value)
     {
     }

@@ -14,7 +14,9 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
+  formName: true,
   formType: true,
+  isCompleted: true,
   number: true,
   level1: false,
   level2: false,
@@ -41,6 +43,7 @@ export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState
   phoneNumber: true,
   tags: true,
   numberOfLocations: true,
+  numberOfCompletedForms: true,
   numberOfFormsSubmitted: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
@@ -50,6 +53,7 @@ export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState
 };
 
 export const formSubmissionsByFormDefaultColumns: TableColumnVisibilityState<FormSubmissionByForm> = {
+  formName: true,
   formCode: true,
   formType: true,
   numberOfFlaggedAnswers: true,
@@ -58,6 +62,7 @@ export const formSubmissionsByFormDefaultColumns: TableColumnVisibilityState<For
   // delete >
   formId: false,
   numberOfSubmissions: false,
+  defaultLanguage: false,
 };
 
 export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<FormSubmissionByEntry> = {
@@ -65,6 +70,8 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   timeSubmitted: true,
   formCode: true,
   formType: true,
+  formName: true,
+  isCompleted: true,
   level1: false,
   level2: false,
   level3: false,
@@ -99,6 +106,7 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
+  { id: 'formName', label: 'Form name', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
@@ -112,12 +120,14 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
+  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const formSubmissionsByObserverColumnVisibilityOptions: ColumnOption<FormSubmissionByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
+  { id: 'numberOfCompletedForms', label: 'Completed forms', enableHiding: false },
   { id: 'numberOfLocations', label: 'Locations', enableHiding: false },
   { id: 'numberOfFormsSubmitted', label: 'Forms', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
@@ -127,6 +137,7 @@ const formSubmissionsByObserverColumnVisibilityOptions: ColumnOption<FormSubmiss
 const formSubmissionsByFormColumnVisibilityOptions: ColumnOption<FormSubmissionByForm>[] = [
   { id: 'formCode', label: 'Form code', enableHiding: false },
   { id: 'formType', label: 'Form type', enableHiding: false },
+  { id: 'formName', label: 'Form name', enableHiding: false },
   { id: 'numberOfSubmissions', label: 'Responses', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'numberOfNotes', label: 'Question notes', enableHiding: true },
@@ -216,6 +227,7 @@ export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport
 export const citizenReportsColumnVisibilityOptions: ColumnOption<CitizenReportByEntry>[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formName', label: 'Form name', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
@@ -255,6 +267,7 @@ const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReport
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
+  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentReportByObserver>[] = [
@@ -262,6 +275,7 @@ const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentRep
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfIncidentsSubmitted', label: 'Number of submissions', enableHiding: false },
+  { id: 'numberOfCompletedForms', label: 'Number completed forms', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
@@ -290,6 +304,8 @@ export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormS
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
+  { id: 'formName', label: 'Form name', enableHiding: true },
+  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
@@ -306,6 +322,8 @@ export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormS
 export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<IncidentReportByEntry>[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formName', label: 'Form name', enableHiding: true },
+  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'locationType', label: 'Location type', enableHiding: true },
   { id: 'pollingStationLevel1', label: 'Location - L1', enableHiding: true },
   { id: 'pollingStationLevel2', label: 'Location - L2', enableHiding: true },
@@ -321,17 +339,20 @@ export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<Incid
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<FormSubmissionByEntry> = {
-  submissionId: false,
+export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<IncidentReportByEntry> = {
+  incidentReportId: false,
   timeSubmitted: true,
   formCode: true,
-  formType: true,
-  number: true,
-  level1: false,
-  level2: false,
-  level3: false,
-  level4: false,
-  level5: false,
+  formName: true,
+  isCompleted: true,
+  locationType: true,
+  locationDescription: false,
+  pollingStationNumber: true,
+  pollingStationLevel1: false,
+  pollingStationLevel2: false,
+  pollingStationLevel3: false,
+  pollingStationLevel4: false,
+  pollingStationLevel5: false,
   observerName: false,
   tags: false,
   numberOfQuestionsAnswered: true,
@@ -340,8 +361,7 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   mediaFilesCount: false,
   followUpStatus: true,
   // delete ?
-  defaultLanguage: false,
-  email: false,
+  formDefaultLanguage: false,
   monitoringObserverId: false,
   phoneNumber: false,
   pollingStationId: false,
@@ -351,6 +371,7 @@ export const incidentReportsByObserverDefaultColumns: TableColumnVisibilityState
   observerName: true,
   phoneNumber: true,
   tags: true,
+  numberOfCompletedForms: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
   numberOfIncidentsSubmitted: true,
@@ -375,6 +396,7 @@ export const observerIncidentReportsColumns: TableColumnVisibilityState<Incident
   timeSubmitted: true,
   formCode: true,
   formName: true,
+  isCompleted: true,
   locationType: true,
   locationDescription: false,
   pollingStationLevel1: false,

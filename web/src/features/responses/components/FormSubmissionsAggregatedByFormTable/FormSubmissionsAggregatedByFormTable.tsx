@@ -27,17 +27,50 @@ export function FormSubmissionsAggregatedByFormTable({
 
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
-      void navigate({ to: '/responses/$formId/aggregated', params: { formId } });
+      void navigate({
+        to: '/responses/$formId/aggregated',
+        params: { formId },
+        search: {
+          hasFlaggedAnswers: search.hasFlaggedAnswers,
+          level1Filter: search.level1Filter,
+          level2Filter: search.level2Filter,
+          level3Filter: search.level3Filter,
+          level4Filter: search.level4Filter,
+          level5Filter: search.level5Filter,
+          pollingStationNumberFilter: search.pollingStationNumberFilter,
+          followUpStatus: search.followUpStatus,
+          questionsAnswered: search.questionsAnswered,
+          hasNotes: search.hasNotes,
+          hasAttachments: search.hasAttachments,
+          tagsFilter: search.tagsFilter,
+          submissionsFromDate: search.submissionsFromDate,
+          submissionsToDate: search.submissionsToDate,
+          formIsCompleted: search.formIsCompleted,
+        },
+      });
     },
-    [navigate]
+    [navigate, search]
   );
 
   const queryParams = useMemo(() => {
     const params = [
       ['searchText', searchText],
-      ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['hasNotes',debouncedSearch.hasNotes],
-      ['hasAttachments', debouncedSearch.hasAttachments],
+      ['hasFlaggedAnswers', search.hasFlaggedAnswers],
+      ['level1Filter', search.level1Filter],
+      ['level2Filter', search.level2Filter],
+      ['level3Filter', search.level3Filter],
+      ['level4Filter', search.level4Filter],
+      ['level5Filter', search.level5Filter],
+      ['pollingStationNumberFilter', search.pollingStationNumberFilter],
+      ['followUpStatus', search.followUpStatus],
+      ['questionsAnswered', search.questionsAnswered],
+      ['hasNotes', search.hasNotes],
+      ['hasAttachments', search.hasAttachments],
+      ['tagsFilter', search.tagsFilter],
+      ['formId', search.formId],
+      ['fromDateFilter', search.submissionsFromDate?.toISOString()],
+      ['toDateFilter', search.submissionsToDate?.toISOString()],
+      ['isCompletedFilter', search.formIsCompleted],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

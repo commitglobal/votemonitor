@@ -18,7 +18,8 @@ public record SelectOption
         IsFreeText = isFreeText;
     }
 
-    public static SelectOption Create(Guid id, TranslatedString text, bool isFreeText = false, bool isFlagged = false) =>
+    public static SelectOption Create(Guid id, TranslatedString text, bool isFreeText = false,
+        bool isFlagged = false) =>
         new(id, text, isFreeText, isFlagged);
 
     public void AddTranslation(string languageCode)
@@ -29,5 +30,10 @@ public record SelectOption
     public void RemoveTranslation(string languageCode)
     {
         Text.RemoveTranslation(languageCode);
+    }
+
+    public void TrimTranslations(IEnumerable<string> languages)
+    {
+        Text.TrimTranslations(languages);
     }
 }

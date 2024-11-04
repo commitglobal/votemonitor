@@ -215,8 +215,8 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
-        <div className='flex flex-row items-center justify-between px-6'>
-          <CardTitle className='text-xl'>
+        <div className='flex flex-row items-center justify-between pr-6'>
+          <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
             {guidePageType === GuidePageType.Observer
               ? i18n.t('electionEvent.guides.observerGuidesCardTitle')
               : i18n.t('electionEvent.guides.citizenGuidesCardTitle')}
