@@ -45,4 +45,9 @@ public record TextQuestion : BaseQuestion
         
         return TranslationStatus.Translated;
     }
+
+    protected override void InternalTrimTranslations(IEnumerable<string> languages)
+    {
+        InputPlaceholder?.TrimTranslations(languages);
+    }
 }

@@ -63,4 +63,12 @@ public record RatingQuestion : BaseQuestion
         
         return TranslationStatus.Translated;
     }
+
+    protected override void InternalTrimTranslations(IEnumerable<string> languages)
+    {
+        var languagesArray = languages as string[] ?? languages.ToArray();
+        
+        LowerLabel?.TrimTranslations(languagesArray);
+        UpperLabel?.TrimTranslations(languagesArray);
+    }
 }

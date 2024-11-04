@@ -2,6 +2,25 @@
 
 public class TranslatedString : Dictionary<string, string>
 {
+    public TranslatedString()
+    {
+        
+    }
+    
+    public TranslatedString(TranslatedString? source)
+    {
+        if (source == null)
+        {
+            return;
+        }
+
+        foreach (var translation in source)
+        {
+            this[translation.Key] = translation.Value;
+        }
+    }
+    
+    
     // Override GetHashCode method
     public override int GetHashCode()
     {
@@ -11,6 +30,7 @@ public class TranslatedString : Dictionary<string, string>
             hashCode = hashCode * 23 + pair.Key.GetHashCode();
             hashCode = hashCode * 23 + pair.Value.GetHashCode();
         }
+
         return hashCode;
     }
 
@@ -63,5 +83,17 @@ public class TranslatedString : Dictionary<string, string>
         }
 
         return translatedString;
+    }
+
+    public TranslatedString TrimTranslations(IEnumerable<string> languages)
+    {
+        var translationsToRemove = Keys.Where(x => !languages.Contains(x));
+
+        foreach (var code in translationsToRemove)
+        {
+            RemoveTranslation(code);
+        }
+
+        return this;
     }
 }

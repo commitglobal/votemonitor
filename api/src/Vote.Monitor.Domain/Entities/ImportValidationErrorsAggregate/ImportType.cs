@@ -21,6 +21,7 @@ public sealed class ImportType : SmartEnum<ImportType, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private ImportType(string name, string value) : base(name, value)
     {
     }

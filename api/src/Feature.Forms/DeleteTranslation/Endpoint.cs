@@ -23,7 +23,7 @@ public class Endpoint(IRepository<MonitoringNgo> monitoringNgoRepository,
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)

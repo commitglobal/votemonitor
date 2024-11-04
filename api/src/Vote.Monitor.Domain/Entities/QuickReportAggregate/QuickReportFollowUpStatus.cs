@@ -21,6 +21,7 @@ public sealed class QuickReportFollowUpStatus : SmartEnum<QuickReportFollowUpSta
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private QuickReportFollowUpStatus(string name, string value) : base(name, value)
     {
     }

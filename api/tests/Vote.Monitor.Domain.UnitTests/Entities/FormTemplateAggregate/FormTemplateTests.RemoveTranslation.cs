@@ -1,10 +1,11 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Utils;
+using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormTemplateAggregate;
 
-public partial class FormTemplateTests
+public partial class FormTests
 {
     [Fact]
     public void WhenRemovingTranslation_AndFormTemplateDoesNotHaveIt_ThenFormTemplateStaysTheSame()
@@ -14,7 +15,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages,[]);
 
         var formBefore = formTemplate.DeepClone();
@@ -34,7 +35,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         // Act
@@ -54,7 +55,7 @@ public partial class FormTemplateTests
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages, []);
 
         // Act
@@ -83,7 +84,7 @@ public partial class FormTemplateTests
             new MultiSelectQuestionFaker(languageList: languages).Generate(),
         ];
 
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+        var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
             description, languages,questions);
         
         // Act
@@ -104,6 +105,14 @@ public partial class FormTemplateTests
             .OfType<NumberQuestion>()
             .Should()
             .AllSatisfy(q => q.InputPlaceholder.Should().NotContainKey(LanguagesList.UK.Iso1));
+        
+        formTemplate
+            .Questions
+            .OfType<RatingQuestion>()
+            .Should()
+            .AllSatisfy(q => q.LowerLabel.Should().NotContainKey(LanguagesList.UK.Iso1))
+            .And
+            .AllSatisfy(q => q.UpperLabel.Should().NotContainKey(LanguagesList.UK.Iso1));
 
         formTemplate
             .Questions

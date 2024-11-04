@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
-using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Answers;
 

@@ -1,6 +1,8 @@
-﻿namespace Feature.FormTemplates.Draft;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+namespace Feature.FormTemplates.Draft;
+
+public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
