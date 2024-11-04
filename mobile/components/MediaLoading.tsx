@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Spinner, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import Button from "./Button";
-import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import { useState } from "react";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 const MediaLoading = ({
   progress,
   isUploading,
@@ -32,14 +32,14 @@ const MediaLoading = ({
           <Typography preset="body1" fontWeight="500" color="$purple5">
             {t("attachments.upload.abort_offline")}
           </Typography>
-          {uploadedAttachments && uploadedAttachments > 0 && (
+          {typeof uploadedAttachments === 'number' && uploadedAttachments > 0 && (
             <Typography preset="body1" fontWeight="500" color="$purple5">
               {t("attachments.upload.uploaded", { value: uploadedAttachments })}
             </Typography>
           )}
 
           {!promptConfirmAbort && (
-            <Button preset="red" onPress={() => confirmAbort ? setPromptConfirmAbort(true) : onAbortUpload()}>
+            <Button preset="red" onPress={() => { confirmAbort ? setPromptConfirmAbort(true) : onAbortUpload() }}>
               {t("attachments.upload.abort_offline_button")}
             </Button>
           )}
@@ -53,7 +53,7 @@ const MediaLoading = ({
                 <Button preset="red" onPress={onAbortUpload}>
                   {t("attachments.upload.abort_offline_button")}
                 </Button>
-                <Button preset="outlined" onPress={() => setPromptConfirmAbort(false)}>
+                <Button preset="outlined" onPress={() => { setPromptConfirmAbort(false) }}>
                   {t("attachments.upload.abort_offline_cancel")}
                 </Button>
               </XStack>
