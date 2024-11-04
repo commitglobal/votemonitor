@@ -89,6 +89,7 @@ public sealed class IncidentCategory : SmartEnum<IncidentCategory, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private IncidentCategory(string name, string value) : base(name, value)
     {
     }

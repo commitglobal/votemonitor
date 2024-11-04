@@ -1,6 +1,8 @@
-﻿namespace Feature.FormTemplates.Delete;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+namespace Feature.FormTemplates.Delete;
+
+public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
     public override void Configure()
     {

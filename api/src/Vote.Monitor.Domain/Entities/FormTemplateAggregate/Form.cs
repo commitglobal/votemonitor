@@ -1,12 +1,16 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class FormTemplate : AuditableBaseEntity, IAggregateRoot
+public class Form : AuditableBaseEntity, IAggregateRoot
 {
     public Guid Id { get; private set; }
-    public FormTemplateType FormTemplateType { get; private set; }
+    public FormType FormType { get; set; }
     public string Code { get; private set; }
     public string DefaultLanguage { get; private set; }
     public TranslatedString Name { get; private set; }
@@ -17,8 +21,8 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     [JsonConstructor]
-    internal FormTemplate(Guid id,
-        FormTemplateType formTemplateType,
+    internal Form(Guid id,
+        FormType formType,
         string code,
         string defaultLanguage,
         TranslatedString name,
@@ -27,7 +31,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string[] languages)
     {
         Id = id;
-        FormTemplateType = formTemplateType;
+        FormType = formType;
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
@@ -36,7 +40,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Languages = languages;
     }
 
-    private FormTemplate(FormTemplateType formTemplateType,
+    private Form(FormType formTemplateType,
         string code,
         string defaultLanguage,
         TranslatedString name,
@@ -45,7 +49,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         IEnumerable<BaseQuestion> questions)
     {
         Id = Guid.NewGuid();
-        FormTemplateType = formTemplateType;
+        FormType = formTemplateType;
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
@@ -55,12 +59,12 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList();
     }
 
-    public static FormTemplate Create(FormTemplateType formTemplateType,
+    public static Form Create(FormType formTemplateType,
         string code,
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
-        IEnumerable<string> languages, 
+        IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) =>
         new(formTemplateType, code, defaultLanguage, name, description, languages, questions);
 
@@ -88,7 +92,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
-        FormTemplateType formTemplateType,
+        FormType formTemplateType,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions)
     {
@@ -96,7 +100,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Name = name;
         Description = description;
-        FormTemplateType = formTemplateType;
+        FormType = formTemplateType;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
@@ -158,15 +162,52 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = languageCode;
     }
 
-    public FormTemplate Duplicate() =>
-        new(FormTemplateType, Code, DefaultLanguage, Name, Description, Languages, Questions);
+    public Form Duplicate() =>
+        new(FormType, Code, DefaultLanguage, Name, Description, Languages, Questions);
+
+    public FormAggregate.Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    {
+        if (Status != FormTemplateStatus.Published)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(Status), "Form template is not published.")
+            ]);
+        }
+
+
+        if (!Languages.Contains(defaultLanguage))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(defaultLanguage), "Default language is not supported.")
+            ]);
+        }
+
+        foreach (var iso in languages)
+        {
+            if (!Languages.Contains(iso))
+            {
+                throw new ValidationException([
+                    new ValidationFailure(nameof(languages) + $".{iso}", "Language is not supported.")
+                ]);
+            }
+        }
+
+        return FormAggregate.Form.Create(electionRoundId,
+            monitoringNgoId,
+            FormType,
+            Code,
+            new TranslatedString(Name).TrimTranslations(languages),
+            new TranslatedString(Description).TrimTranslations(languages),
+            defaultLanguage,
+            languages,
+            null,
+            Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
+    }
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
-    private FormTemplate()
+    private Form()
     {
-
     }
 #pragma warning restore CS8618
-
 }

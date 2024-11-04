@@ -26,6 +26,7 @@ public sealed class QuickReportLocationType : SmartEnum<QuickReportLocationType,
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private QuickReportLocationType(string name, string value) : base(name, value)
     {
     }

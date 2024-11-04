@@ -20,7 +20,8 @@ public sealed class CitizenReportFollowUpStatus : SmartEnum<CitizenReportFollowU
     {
         return TryFromValue(value, out result);
     }
-
+    
+    [JsonConstructor]
     private CitizenReportFollowUpStatus(string name, string value) : base(name, value)
     {
     }

@@ -16,7 +16,7 @@ public class GetFormTemplateSpecificationTests
             .Union(new FormTemplateAggregateFaker().Generate(500))
             .ToList();
 
-        var spec = new GetFormTemplateSpecification(formTemplate.Code, formTemplate.FormTemplateType);
+        var spec = new GetFormTemplateSpecification(formTemplate.Code, formTemplate.FormType);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -39,7 +39,7 @@ public class GetFormTemplateSpecificationTests
             .Union(new FormTemplateAggregateFaker().Generate(500))
             .ToList();
 
-        var spec = new GetFormTemplateSpecification(formTemplate1.Id, formTemplate1.Code, formTemplate1.FormTemplateType);
+        var spec = new GetFormTemplateSpecification(formTemplate1.Id, formTemplate1.Code, formTemplate1.FormType);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
