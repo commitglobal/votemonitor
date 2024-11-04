@@ -2,19 +2,73 @@ import axios, { AxiosRequestHeaders } from "axios";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
-import { reloadAsync } from "expo-updates";
+import { router } from "expo-router";
+import { setAuthTokens } from "../helpers/authTokensSetter";
+
+/*
+ * Token Refresh Mechanism:
+ *
+ * 1. When an API call fails with a 401 or token-expired header:
+ *    - If not already refreshing, initiates a token refresh
+ *    - If already refreshing, adds request to queue of subscribers
+ *
+ * 2. Token refresh process:
+ *    - Gets current tokens from AsyncStorage
+ *    - Calls refresh endpoint with existing tokens
+ *    - Stores new tokens in AsyncStorage
+ *    - Updates original request with new token
+ *    - Retries original request
+ *
+ * 3. For concurrent requests during refresh:
+ *    - Queues them as subscribers
+ *    - Once refresh completes, replays all queued requests with new token
+ *    - Prevents multiple simultaneous refresh calls
+ *
+ * 4. On refresh failure:
+ *    - Clears tokens from storage
+ *    - Redirects to login
+ */
+
+const API_BASE_URL = "https://votemonitor.staging.heroesof.tech/api/";
+const TIMEOUT = 60 * 1000; // 60 seconds
+
+class TokenRefreshManager {
+  private isRefreshing = false;
+  private refreshSubscribers: ((token: string) => void)[] = [];
+
+  onRefreshed(token: string) {
+    this.refreshSubscribers.forEach((callback) => callback(token));
+    this.refreshSubscribers = [];
+  }
+
+  addRefreshSubscriber(callback: (token: string) => void) {
+    this.refreshSubscribers.push(callback);
+  }
+
+  setRefreshing(value: boolean) {
+    this.isRefreshing = value;
+  }
+
+  isCurrentlyRefreshing() {
+    return this.isRefreshing;
+  }
+
+  clearSubscribers() {
+    this.refreshSubscribers = [];
+  }
+}
+
+const tokenManager = new TokenRefreshManager();
 
 const API = axios.create({
-  baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
-  // baseURL: `https://api.votemonitor.org/api/`,
-  timeout: 100000,
+  baseURL: API_BASE_URL,
+  timeout: TIMEOUT,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 API.interceptors.request.use(async (request) => {
-  // add auth header with jwt if account is logged in and request is to the api url
   try {
     const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
 
@@ -24,48 +78,88 @@ API.interceptors.request.use(async (request) => {
 
     if (token) {
       request.headers.Authorization = `Bearer ${token}`;
-      // console.log("request.headers", request.headers.Authorization);
     }
   } catch (err) {
-    // User not authenticated. May be a public API.
-    // Catches "The user is not authenticated".
     Sentry.captureException(err);
-    return request;
   }
 
   return request;
 });
 
-API.interceptors.response.use(
-  async (response) => {
-    return response;
-  },
-  async (error: any) => {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(
-        "❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️ API ERROR CAUGHT BY INTERCEPTOR ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️",
-      );
-      console.log("Response data", error.response.data);
-      console.log("Response status", error.response.status);
-      console.log(error.response.headers);
+const handleTokenRefresh = async (originalRequest: any) => {
+  try {
+    const [token, refreshToken] = await Promise.all([
+      AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN),
+      AsyncStorage.getItem(ASYNC_STORAGE_KEYS.REFRESH_TOKEN),
+    ]);
 
-      if (error.response.status === 401) {
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
-        reloadAsync();
-      }
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
+    if (!token || !refreshToken) {
+      throw new Error("No tokens available");
     }
-    console.log(error);
-    console.log("❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️");
+
+    const { data } = await axios.post(`${API_BASE_URL}auth/refresh`, {
+      token,
+      refreshToken,
+    });
+
+    await setAuthTokens(data.token, data.refreshToken, data.refreshTokenExpiryTime);
+    tokenManager.onRefreshed(data.token);
+
+    originalRequest.headers.Authorization = `Bearer ${data.token}`;
+    return API(originalRequest);
+  } catch (error) {
+    await AsyncStorage.multiRemove([
+      ASYNC_STORAGE_KEYS.ACCESS_TOKEN,
+      ASYNC_STORAGE_KEYS.REFRESH_TOKEN,
+    ]);
+    router.replace("/login");
+    throw error;
+  } finally {
+    tokenManager.setRefreshing(false);
+  }
+};
+
+API.interceptors.response.use(
+  (response) => response,
+  async (error: any) => {
+    const originalRequest = error.config;
+    const isTokenExpiredError =
+      error.response?.headers["token-expired"] === "true" || error.response?.status === 401;
+
+    if (
+      error.response &&
+      isTokenExpiredError &&
+      !originalRequest?.url?.includes("auth") &&
+      !originalRequest._retry
+    ) {
+      if (tokenManager.isCurrentlyRefreshing()) {
+        return new Promise((resolve) => {
+          tokenManager.addRefreshSubscriber(async (token: string) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(API(originalRequest));
+          });
+        });
+      }
+
+      console.log("❌ [API FAILED] URL", originalRequest.url);
+      console.log("❌ [API FAILED] Status", error.response?.status);
+      console.log("❌ [API FAILED] isTokenExpiredError", isTokenExpiredError);
+
+      originalRequest._retry = true;
+      tokenManager.setRefreshing(true);
+      return handleTokenRefresh(originalRequest);
+    }
+
+    if (error.request) {
+      console.log("❌ [API FAILED] Request", error.request);
+      Sentry.captureException(new Error("Network request failed"), {
+        extra: { request: error.request },
+      });
+    } else {
+      console.log("❌ [API FAILED] Error", error);
+      Sentry.captureException(error);
+    }
+
     throw error;
   },
 );
