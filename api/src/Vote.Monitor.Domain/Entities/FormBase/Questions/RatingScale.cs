@@ -28,6 +28,7 @@ public class RatingScale : SmartEnum<RatingScale, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private RatingScale(string name, string value, int upperBound) : base(name, value)
     {
         UpperBound = upperBound;

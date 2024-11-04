@@ -21,6 +21,7 @@ public sealed class CitizenGuideType : SmartEnum<CitizenGuideType, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private CitizenGuideType(string name, string value) : base(name, value)
     {
     }
