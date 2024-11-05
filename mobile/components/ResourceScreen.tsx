@@ -40,7 +40,7 @@ export default ResourceScreen;
 // TODO: this needs to be moved
 const tagsStyles = {
   body: {
-    color: "hsl(240, 5%, 34%)",
+    color: "hsl(240, 5%, 12%)",
   },
   p: {
     margin: 0,
@@ -51,7 +51,7 @@ const tagsStyles = {
     marginVertical: 16,
   },
   a: {
-    color: "hsl(272, 56%, 45%)",
+    color: "hsl(272, 56%, 12%)",
     fontWeight: "700",
     textDecoration: "none",
     // for some reason textDecoration: "none" doesn't seem to work

@@ -5,11 +5,13 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useGuide } from "../../../../services/queries/guides.query";
 import ResourceScreen from "../../../../components/ResourceScreen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const GuideScreen = () => {
   const router = useRouter();
   const { guideId } = useLocalSearchParams();
   const { activeElectionRound } = useUserData();
+  const insets = useSafeAreaInsets();
 
   const { data: guide } = useGuide(guideId as string, activeElectionRound?.id);
 
@@ -18,7 +20,11 @@ const GuideScreen = () => {
   };
 
   return (
-    <Screen preset="fixed" safeAreaEdges={["bottom"]} contentContainerStyle={{ flexGrow: 1 }}>
+    <Screen
+      preset="fixed"
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 + insets.bottom }}
+      style={{ backgroundColor: "white" }}
+    >
       <Header
         title={guide?.title || ""}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
