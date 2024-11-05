@@ -1,16 +1,25 @@
 import Layout from '@/components/layout/Layout';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { FormBase } from '@/features/forms/models/form';
 import { useFormTemplates } from '@/features/forms/queries';
 import { cn, mapFormType } from '@/lib/utils';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import PreviewTemplateDialog, { usePreviewTemplateDialog } from './PreviewTemplateDialog';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
+  const previewTemplateDialog = usePreviewTemplateDialog();
   const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
@@ -66,11 +75,11 @@ export const FormBuilderScreenTemplate: FC = () => {
 
     {
       accessorKey: 'formTemplateType',
-      accessorFn: (row, _) => mapFormType(row.formTemplateType),
+      accessorFn: (row, _) => mapFormType(row.formType),
       enableSorting: false,
       enableResizing: false,
       header: ({ column }) => <DataTableColumnHeader title={'Form type'} column={column} />,
-      cell: ({ row }) => (row.depth === 0 ? row.original.formTemplateType : ''),
+      cell: ({ row }) => (row.depth === 0 ? row.original.formType : ''),
     },
 
     {
@@ -78,6 +87,27 @@ export const FormBuilderScreenTemplate: FC = () => {
       enableSorting: false,
       enableResizing: false,
       header: ({ column }) => <DataTableColumnHeader title={'Language'} column={column} />,
+    },
+
+    {
+      header: '',
+      id: 'action',
+      enableSorting: false,
+      enableResizing: false,
+      cell: ({ row }) => (
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => previewTemplateDialog.trigger(row.original.id, row.original.defaultLanguage)}>
+              Preview template
+            </DropdownMenuItem>
+            <DropdownMenuItem>Use template</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
     },
   ];
 
@@ -89,6 +119,7 @@ export const FormBuilderScreenTemplate: FC = () => {
         getSubrows={getSubrows}
         getRowClassName={getRowClassName}
       />
+      <PreviewTemplateDialog />
     </Layout>
   );
 };

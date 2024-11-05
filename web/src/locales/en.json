@@ -284,7 +284,8 @@
       "template": {
         "title": "Start from a VM template",
         "description": "Choose from available templates",
-        "buttonText": "Browse templates"
+        "buttonText": "Browse templates",
+        "useTemplate": "Use template"
       },
       "reuse": {
         "title": "Reuse a previous form",

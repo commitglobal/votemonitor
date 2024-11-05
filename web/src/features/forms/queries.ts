@@ -71,7 +71,22 @@ export function useFormTemplates(): UseQueryResult<PageResponse<any>, Error> {
       const response = await authApi.get<PageResponse<any>>(`/form-templates`);
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch form tem');
+        throw new Error('Failed to fetch form templates');
+      }
+
+      return response.data;
+    },
+  });
+}
+
+export function useFormTemplateDetails(templateId: string): UseQueryResult<FormFull, Error> {
+  return useQuery({
+    queryKey: ['form-templates', templateId],
+    queryFn: async () => {
+      const response = await authApi.get<FormFull>(`/form-templates/${templateId}`);
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch form template data');
       }
 
       return response.data;
