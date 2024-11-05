@@ -29,7 +29,7 @@ import {
   QuickReportLocationType,
 } from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
-import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../../components/Card";
 import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
@@ -406,10 +406,6 @@ const ReportIssue = () => {
         },
       },
     );
-
-    if (!onlineManager.isOnline()) {
-      router.back();
-    }
   };
 
   const removeAttachmentLocal = (id: string): void => {
