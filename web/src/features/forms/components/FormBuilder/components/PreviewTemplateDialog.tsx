@@ -39,19 +39,20 @@ export const usePreviewTemplateDialog = create<AddTranslationsDialogPropsProps>(
 interface TemplateDetailProps {
   name: string;
   content: string | undefined;
+  noContentErrorMessage?: string;
 }
 
-const TemplateDetail: FC<TemplateDetailProps> = ({ name, content }) => {
+const TemplateDetail: FC<TemplateDetailProps> = ({ name, content, noContentErrorMessage }) => {
   return (
     <div className='flex flex-col gap-1'>
       <p className='font-bold text-gray-700'>{name}</p>
-      <p className='font-normal text-gray-900'>{content}</p>
+      <p className='font-normal text-gray-900'>{content ?? noContentErrorMessage}</p>
     </div>
   );
 };
 
 function PreviewTemplateDialog({}) {
-  const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
+  const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form.template' });
   const { isOpen, templateId, languageCode, trigger, dismiss } = usePreviewTemplateDialog();
   const { data } = useFormTemplateDetails(templateId);
   console.log(data);
@@ -60,6 +61,8 @@ function PreviewTemplateDialog({}) {
     if (open) trigger(templateId, languageCode);
     else dismiss();
   };
+
+  const filteredLanguages = data?.languages && data?.languages.filter((language) => language !== data.defaultLanguage);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange} modal={true}>
@@ -72,13 +75,32 @@ function PreviewTemplateDialog({}) {
           e.preventDefault();
         }}>
         <DialogTitle className='mb-3.5'>{languageCode ? `Preview ${data?.name[languageCode]}` : ''}</DialogTitle>
-        <div className='flex flex-col gap-3 overflow-y-scroll max-h-[500px]'>
-          <TemplateDetail name='Description' content={data?.description?.[languageCode]} />
-          <TemplateDetail name='Base language' content={data?.defaultLanguage} />
+        <div className='flex flex-col gap-3 overflow-y-auto max-h-[500px]'>
+          <TemplateDetail
+            name={t('formDescription')}
+            content={data?.description?.[languageCode]}
+            noContentErrorMessage={t('formDescriptionErr')}
+          />
+          <TemplateDetail
+            name={t('formBaseLanguage')}
+            content={data?.defaultLanguage}
+            noContentErrorMessage={t('formBaseLanguageErr')}
+          />
+
+          {filteredLanguages && filteredLanguages?.length > 0 && (
+            <TemplateDetail name={t('formOtherLanguages')} content={filteredLanguages?.join(', ')} />
+          )}
+
+          {data?.questions?.length == 0 && (
+            <div className='flex flex-col gap-1'>
+              <p className='font-bold text-gray-700'>{t('formQuestions')}</p>
+              <p className='font-normal text-gray-900'>{t('formQuestionsErr')}</p>
+            </div>
+          )}
 
           {data?.questions && data?.questions?.length > 0 && (
-            <div className='flex flex-col gap-1'>
-              <p className='font-bold text-gray-700'>Questions</p>
+            <div className='flex flex-col gap-1 mt-2'>
+              <p className='font-bold text-gray-700'>{`${t('formQuestions')}: ${data.questions.length}`}</p>
 
               {data?.questions?.map((question) => (
                 <>
@@ -166,8 +188,8 @@ function PreviewTemplateDialog({}) {
               Cancel
             </Button>
           </DialogClose>
-          <Button title={t('template.useTemplate')} type='submit' className='px-6'>
-            {t('template.useTemplate')}
+          <Button title={t('useTemplate')} type='submit' className='px-6'>
+            {t('useTemplate')}
           </Button>
         </DialogFooter>
       </DialogContent>
