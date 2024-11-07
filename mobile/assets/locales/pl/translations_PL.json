@@ -476,7 +476,12 @@
         "progress": "Postęp wysyłania:",
         "completed": "Wysyłanie zakończone.",
         "aborted": "Wysyłanie przerwane.",
-        "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+        "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję.",
+        "abort_offline": "Przejdź do internetu, aby kontynuować lub ponownie rozpocząć wysyłanie",
+        "abort_offline_button": "Ponowne wysyłanie",
+        "uploaded": "Pomyślnie wysłano {{value}} plików.",
+        "abort_offline_confirm": "Czy na pewno chcesz przerwać wysyłanie?",
+        "abort_offline_cancel": "Anuluj"
       }
     },
     "notes": {

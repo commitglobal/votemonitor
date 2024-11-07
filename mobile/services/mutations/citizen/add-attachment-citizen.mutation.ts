@@ -24,6 +24,7 @@ export const useUploadAttachmentCitizenMutation = () => {
       Sentry.captureException(err, { data: { _variables, _context } });
     },
     onSettled: (_data, _err, _variables) => {},
+    retry: 3,
   });
 };
 
@@ -35,6 +36,7 @@ export const useUploadAttachmentCitizenCompleteMutation = () => {
     mutationKey: citizenQueryKeys.attachments(),
     mutationFn: (payload: AddAttachmentCitizenCompleteAPIPayload) =>
       addAttachmentCitizenMultipartComplete(payload),
+    retry: 3,
   });
 };
 
@@ -46,5 +48,6 @@ export const useUploadAttachmentCitizenAbortMutation = () => {
     mutationKey: citizenQueryKeys.attachments(),
     mutationFn: (payload: AddAttachmentCitizenAbortAPIPayload) =>
       addAttachmentCitizenMultipartAbort(payload),
+    retry: 3,
   });
 };

@@ -9,6 +9,7 @@ import {
   addAttachmentQuickReportMultipartStart,
 } from "../../api/quick-report/add-attachment-quick-report.api";
 import { MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../../common/constants";
+import * as Sentry from "@sentry/react-native";
 
 // Multipart Upload - Start
 export const useUploadAttachmentQuickReportMutation = () => {
@@ -20,9 +21,10 @@ export const useUploadAttachmentQuickReportMutation = () => {
     mutationFn: (payload: AddAttachmentQuickReportStartAPIPayload) =>
       addAttachmentQuickReportMultipartStart(payload),
     onError: (err, _variables, _context) => {
-      console.log(err);
+      Sentry.captureException(err, { data: { _variables, _context } });
     },
     onSettled: (_data, _err, _variables) => {},
+    retry: 3,
   });
 };
 
@@ -34,6 +36,7 @@ export const useUploadAttachmentQuickReportCompleteMutation = () => {
     mutationKey: QuickReportKeys.addAttachmentComplete(),
     mutationFn: (payload: AddAttachmentQuickReportCompleteAPIPayload) =>
       addAttachmentQuickReportMultipartComplete(payload),
+    retry: 3,
   });
 };
 
@@ -45,5 +48,6 @@ export const useUploadAttachmentQuickReportAbortMutation = () => {
     mutationKey: QuickReportKeys.addAttachmentAbort(),
     mutationFn: (payload: AddAttachmentQuickReportAbortAPIPayload) =>
       addAttachmentQuickReportMultipartAbort(payload),
+    retry: 3,
   });
 };

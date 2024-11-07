@@ -476,7 +476,12 @@
         "progress": "Yükləmə prosesi:",
         "completed": "Yükləmə tamamlandı.",
         "aborted": "Yükləmə dayandırıldı.",
-        "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır."
+        "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır.",
+        "abort_offline": "İnternetə keçid edərək, əməliyyatı tamamlamaq və ya yenidən başlamaq üçün",
+        "abort_offline_button": "Yenidən başlamaq",
+        "uploaded": "Əlavəni göndərən zaman xəta qeydə alındı!",
+        "abort_offline_confirm": "Are you sure you want to abort the upload?",
+        "abort_offline_cancel": "Cancel"
       }
     },
     "notes": {

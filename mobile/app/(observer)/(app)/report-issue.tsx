@@ -29,7 +29,7 @@ import {
   QuickReportLocationType,
 } from "../../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
-import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../../components/Card";
 import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
@@ -52,6 +52,7 @@ import {
 } from "../../../services/mutations/attachments/add-attachment.mutation";
 import { TFunction } from "i18next";
 import { localizeIncidentCategory } from "../../../helpers/translationHelper";
+import { AttachmentData } from "../../../services/api/add-attachment.api";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = [], t: TFunction) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -137,9 +138,9 @@ const ReportIssue = () => {
   const [uploadProgress, setUploadProgress] = useState("");
   const { isOnline } = useNetInfoContext();
 
-  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
-    [],
-  );
+  const [uuid] = useState(Crypto.randomUUID());
+
+  const [attachments, setAttachments] = useState<AttachmentData[]>([]);
 
   const {
     mutate,
@@ -205,7 +206,7 @@ const ReportIssue = () => {
     setOptionsSheetOpen(false);
     setAttachments((attachments) => [
       ...attachments,
-      { fileMetadata: cameraResult, id: Crypto.randomUUID() },
+      { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false },
     ]);
     setIsPreparingFile(false);
   };
@@ -229,7 +230,10 @@ const ReportIssue = () => {
       };
 
       setOptionsSheetOpen(false);
-      setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID() }]);
+      setAttachments((attachments) => [
+        ...attachments,
+        { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
+      ]);
       setIsPreparingFile(false);
     } else {
       // Cancelled
@@ -276,6 +280,11 @@ const ReportIssue = () => {
           id: attachmentId,
           quickReportId,
         });
+        setAttachments((attachments) =>
+          attachments.map((attachment) =>
+            attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment,
+          ),
+        );
       }
     } catch (err) {
       Sentry.captureException(err, { data: activeElectionRound });
@@ -315,8 +324,6 @@ const ReportIssue = () => {
       pollingStationId = null;
     }
 
-    const uuid = Crypto.randomUUID();
-
     // Use the attachments to optimistically update the UI
     const optimisticAttachments: AddAttachmentQuickReportStartAPIPayload[] = [];
 
@@ -326,9 +333,11 @@ const ReportIssue = () => {
       setIsLoadingAttachment(true);
       cancelRef.current = false;
       try {
-        const totalParts = attachments.reduce((acc, attachment) => {
-          return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
-        }, 0);
+        const totalParts = attachments
+          .filter((attachment) => !attachment.uploaded)
+          .reduce((acc, attachment) => {
+            return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
+          }, 0);
         let uploadedPartsNo = 0;
         // Upload each attachment
         setUploadProgress(`${t("upload.starting")}`);
@@ -349,17 +358,19 @@ const ReportIssue = () => {
             quickReportId: uuid,
           };
 
-          const data = await addAttachmentQReport(payload);
-          await handleChunkUpload(
-            attachment.fileMetadata.uri,
-            data.uploadUrls,
-            data.uploadId,
-            attachment.id,
-            uuid,
-            uploadedPartsNo,
-            totalParts,
-          );
-          uploadedPartsNo += payload.numberOfUploadParts;
+          if (!attachment.uploaded) {
+            const data = await addAttachmentQReport(payload);
+            await handleChunkUpload(
+              attachment.fileMetadata.uri,
+              data.uploadUrls,
+              data.uploadId,
+              attachment.id,
+              uuid,
+              uploadedPartsNo,
+              totalParts,
+            );
+            uploadedPartsNo += payload.numberOfUploadParts;
+          }
           optimisticAttachments.push(payload);
         }
         setUploadProgress(t("upload.completed"));
@@ -395,10 +406,6 @@ const ReportIssue = () => {
         },
       },
     );
-
-    if (!onlineManager.isOnline()) {
-      router.back();
-    }
   };
 
   const removeAttachmentLocal = (id: string): void => {
@@ -425,6 +432,11 @@ const ReportIssue = () => {
     setIsUploading(false);
     setUploadProgress("");
     removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
+    setAttachments((attachments) =>
+      attachments.map((attachment) =>
+        attachment.uploaded ? attachment : { ...attachment, id: Crypto.randomUUID() },
+      ),
+    );
   };
 
   return (
@@ -605,13 +617,20 @@ const ReportIssue = () => {
                           >
                             {attachment.fileMetadata.name}
                           </Typography>
-                          <YStack
-                            padding="$md"
-                            onPress={removeAttachmentLocal.bind(null, attachment.id)}
-                            pressStyle={{ opacity: 0.5 }}
-                          >
-                            <Icon icon="xCircle" size={24} color="$gray5" />
-                          </YStack>
+                          {!attachment.uploaded && (
+                            <YStack
+                              padding="$md"
+                              onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                              pressStyle={{ opacity: 0.5 }}
+                            >
+                              <Icon icon="xCircle" size={24} color="$gray5" />
+                            </YStack>
+                          )}
+                          {attachment.uploaded && (
+                            <YStack padding="$md">
+                              <Icon icon="checkCircle" size={24} color="$green5" />
+                            </YStack>
+                          )}
                         </Card>
                       );
                     })}
@@ -638,6 +657,7 @@ const ReportIssue = () => {
         >
           {isLoadingAttachment || isPreparingFile || isUploading ? (
             <MediaLoading
+              uploadedAttachments={attachments.filter((attachment) => attachment.uploaded).length}
               progress={uploadProgress}
               isUploading={isUploading}
               onAbortUpload={onAbortUpload}

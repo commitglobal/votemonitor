@@ -37,6 +37,7 @@ export const useUploadAttachmentMutation = () => {
         ),
       });
     },
+    retry: 3,
   });
 };
 
@@ -48,6 +49,7 @@ export const useUploadAttachmentCompleteMutation = () => {
     mutationKey: AttachmentsKeys.addAttachmentCompleteMutation(),
     mutationFn: (payload: AddAttachmentCompleteAPIPayload) =>
       addAttachmentMultipartComplete(payload),
+    retry: 3,
   });
 };
 
@@ -58,6 +60,7 @@ export const useUploadAttachmentAbortMutation = () => {
     },
     mutationKey: AttachmentsKeys.addAttachmentAbortMutation(),
     mutationFn: (payload: AddAttachmentAbortAPIPayload) => addAttachmentMultipartAbort(payload),
+    retry: 3,
   });
 };
 

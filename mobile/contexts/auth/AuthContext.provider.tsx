@@ -9,6 +9,7 @@ import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import { clearAsyncStorage } from "../../common/utils/utils";
 import { Typography } from "../../components/Typography";
 import { decodeAndSetUserInSentry } from "../../helpers/decode-jwt";
+import { setAuthTokens } from "../../helpers/authTokensSetter";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -33,13 +34,13 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const signIn = async (email: string, password: string) => {
     try {
       const {
-        data: { token },
+        data: { token, refreshToken, refreshTokenExpiryTime },
       } = await API.post("auth/login", {
         email,
         password,
       });
       try {
-        await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
+        setAuthTokens(token, refreshToken, refreshTokenExpiryTime);
         decodeAndSetUserInSentry(token);
       } catch (err) {
         console.error("Could not set Aceess Token in AsyncStorage");

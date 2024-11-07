@@ -476,7 +476,12 @@
         "progress": "Napredak slanja:",
         "completed": "Slanje završeno.",
         "aborted": "Slanje prekinuto.",
-        "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju."
+        "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju.",
+        "abort_offline": "Pređite na internet da biste nastavili ili ponovno počeli sa slanjem",
+        "abort_offline_button": "Ponovno počni slanje",
+        "uploaded": "Uspješno je učitano {{value}} datoteka.",
+        "abort_offline_confirm": "Da li ste sigurni da želite da prekinete slanje?",
+        "abort_offline_cancel": "Otkaži"
       }
     },
     "notes": {
