@@ -39,7 +39,7 @@
     },
     "polling_stations": {
       "heading": "Monitorizează procesele electorale",
-      "description": "și raportează nereguli în campanie sau la secțiile de votare și semnalează orice nereguli legate de procedurile din ziua votării"
+      "description": "și raportează nereguli legate de campania electorală, secțiile de votare sau procedurile din ziua votului"
     },
     "forms": {
       "heading": "Completează formulare",
@@ -47,7 +47,7 @@
     },
     "media": {
       "heading": "Adaugă notițe sau fișiere media",
-      "description": "pentru a susține în continuare observațiile tale și a furniza dovezi pentru orice nereguli",
+      "description": "pentru a oferi informații suplimentare despre neregulile observate",
       "save": "Mergi la aplicație"
     }
   },
@@ -483,7 +483,7 @@
         "abort_offline": "Conectează-te la internet pentru a continua sau anulează încărcarea",
         "abort_offline_button": "Anulează încărcarea",
         "uploaded": "Au fost încărcate cu succes {{value}} fișiere.",
-        "abort_offline_confirm": "Sunteți sigur că doriți să anulați încărcarea?",
+        "abort_offline_confirm": "Ești sigur că dorești să anulezi încărcarea?",
         "abort_offline_cancel": "Anulează"
       }
     },
