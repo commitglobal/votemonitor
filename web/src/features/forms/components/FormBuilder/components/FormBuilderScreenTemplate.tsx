@@ -15,7 +15,8 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import PreviewTemplateDialog, { usePreviewTemplateDialog } from './PreviewTemplateDialog';
+import PreviewTemplateDialog from './PreviewTemplateDialog';
+import { usePreviewTemplateDialog } from '@/features/forms/hooks';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
@@ -79,7 +80,7 @@ export const FormBuilderScreenTemplate: FC = () => {
       enableSorting: false,
       enableResizing: false,
       header: ({ column }) => <DataTableColumnHeader title={'Form type'} column={column} />,
-      cell: ({ row }) => (row.depth === 0 ? row.original.formType : ''),
+      cell: ({ row }) => (row.depth === 0 ? mapFormType(row.original.formType) : ''),
     },
 
     {

@@ -1,7 +1,6 @@
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { useFormTemplateDetails } from '@/features/forms/queries';
 import { useTranslation } from 'react-i18next';
-import { create } from 'zustand';
 
 import {
   isDateQuestion,
@@ -18,23 +17,8 @@ import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewR
 import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
 import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
 import { Button } from '@/components/ui/button';
+import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
 import { FC } from 'react';
-
-export interface AddTranslationsDialogPropsProps {
-  isOpen: boolean;
-  templateId: string;
-  languageCode: string;
-  trigger: (templateId: string, languageCode: string) => void;
-  dismiss: VoidFunction;
-}
-
-export const usePreviewTemplateDialog = create<AddTranslationsDialogPropsProps>((set) => ({
-  isOpen: false,
-  templateId: '',
-  languageCode: '',
-  trigger: (templateId: string, languageCode: string) => set({ templateId, languageCode, isOpen: true }),
-  dismiss: () => set({ isOpen: false }),
-}));
 
 interface TemplateDetailProps {
   name: string;
@@ -51,18 +35,18 @@ const TemplateDetail: FC<TemplateDetailProps> = ({ name, content, noContentError
   );
 };
 
-function PreviewTemplateDialog({}) {
+function PreviewTemplateDialog() {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form.template' });
   const { isOpen, templateId, languageCode, trigger, dismiss } = usePreviewTemplateDialog();
   const { data } = useFormTemplateDetails(templateId);
-  console.log(data);
+  const { createFormFromTemplateMutation } = useCreateFormFromTemplate();
 
   const onOpenChange = (open: boolean) => {
     if (open) trigger(templateId, languageCode);
     else dismiss();
   };
 
-  const filteredLanguages = data?.languages && data?.languages.filter((language) => language !== data.defaultLanguage);
+  const filteredLanguages = data?.languages && data?.languages.filter((language) => language !== languageCode);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange} modal={true}>
@@ -83,7 +67,7 @@ function PreviewTemplateDialog({}) {
           />
           <TemplateDetail
             name={t('formBaseLanguage')}
-            content={data?.defaultLanguage}
+            content={languageCode}
             noContentErrorMessage={t('formBaseLanguageErr')}
           />
 
@@ -188,7 +172,11 @@ function PreviewTemplateDialog({}) {
               Cancel
             </Button>
           </DialogClose>
-          <Button title={t('useTemplate')} type='submit' className='px-6'>
+          <Button
+            onClick={() => createFormFromTemplateMutation.mutate()}
+            title={t('useTemplate')}
+            type='submit'
+            className='px-6'>
             {t('useTemplate')}
           </Button>
         </DialogFooter>
