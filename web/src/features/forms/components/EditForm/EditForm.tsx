@@ -44,7 +44,6 @@ import {
   ZEditQuestionType,
   ZTranslatedString,
 } from '../../types';
-import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormDetails from './EditFormDetails';
 
 export const ZEditFormType = z
@@ -381,7 +380,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       description: ensureTranslatedStringCorrectness(formData.description, formData.languages),
       formType: formData.formType,
       questions: editQuestions,
-      icon: formData.icon ?? ''
+      icon: formData.icon ?? '',
     },
     mode: 'all',
   });
@@ -475,8 +474,9 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
 
   return (
     <Layout
+      enableBackButton
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs formCode={code} formName={name[languageCode] ?? ''} />}
+      enableBreadcrumbs={false}
       title={`${code} - ${name[languageCode]}`}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(saveForm)} className='flex flex-col flex-1'>

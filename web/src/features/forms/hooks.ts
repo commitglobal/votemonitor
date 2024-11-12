@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { create } from 'zustand';
 import { FormFull } from './models/form';
-import { formsKeys, useFormTemplateDetails } from './queries';
+import { formsKeys } from './queries';
 
 export interface PreviewTemplateDialogProps {
   isOpen: boolean;
@@ -23,18 +23,22 @@ export const usePreviewTemplateDialog = create<PreviewTemplateDialogProps>((set)
   dismiss: () => set({ isOpen: false }),
 }));
 
+type FormFromTemplateDto = {
+  templateId: string;
+  languageCode: string;
+};
+
 export const useCreateFormFromTemplate = () => {
-  const { isOpen, templateId, languageCode, trigger, dismiss } = usePreviewTemplateDialog();
-  const { data: templateDetails } = useFormTemplateDetails(templateId);
+  const { trigger, dismiss, isOpen } = usePreviewTemplateDialog();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const createFormFromTemplateMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: ({ templateId, languageCode }: FormFromTemplateDto) => {
       return authApi.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromTemplate`, {
         templateId,
         defaultLanguage: languageCode,
-        languages: templateDetails?.languages,
+        languages: [languageCode],
       });
     },
     onSuccess: (response) => {
@@ -53,8 +57,18 @@ export const useCreateFormFromTemplate = () => {
         variant: 'destructive',
       }),
 
-    onSettled: () => dismiss(),
+    onSettled: () => {
+      if (isOpen) dismiss();
+    },
   });
 
-  return { createFormFromTemplateMutation };
+  const createForm = (dto: FormFromTemplateDto) => {
+    return createFormFromTemplateMutation.mutate(dto);
+  };
+
+  const openFormTemplatePreview = (dto: FormFromTemplateDto) => {
+    trigger(dto.templateId, dto.languageCode);
+  };
+
+  return { openFormTemplatePreview, createForm };
 };

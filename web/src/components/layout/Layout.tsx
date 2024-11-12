@@ -1,12 +1,13 @@
-import type { ReactNode } from 'react';
 import type { FunctionComponent } from '@/common/types';
-import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
+import type { ReactNode } from 'react';
 import BackButton from './Breadcrumbs/BackButton';
+import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
 
 interface LayoutProps {
   title: string;
   subtitle?: string;
   enableBreadcrumbs?: boolean;
+  enableBackButton?: boolean;
   breadcrumbs?: ReactNode;
   backButton?: ReactNode;
   actions?: ReactNode;
@@ -21,6 +22,7 @@ const Layout = ({
   breadcrumbs,
   children,
   enableBreadcrumbs = true,
+  enableBackButton,
 }: LayoutProps): FunctionComponent => {
   return (
     <>
@@ -29,6 +31,7 @@ const Layout = ({
           {enableBreadcrumbs && (breadcrumbs || <Breadcrumbs />)}
           <h1 className='flex flex-row items-center gap-3 text-3xl font-bold tracking-tight text-gray-900'>
             {enableBreadcrumbs && (backButton || <BackButton />)}
+            {enableBackButton && (backButton || <BackButton />)}
             {title}
           </h1>
           {subtitle ?? <h3 className='text-lg font-light'>{subtitle}</h3>}

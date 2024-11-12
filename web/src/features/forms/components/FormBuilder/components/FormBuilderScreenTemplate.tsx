@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
 import { FormBase } from '@/features/forms/models/form';
 import { useFormTemplates } from '@/features/forms/queries';
 import { cn, mapFormType } from '@/lib/utils';
@@ -16,11 +17,11 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import PreviewTemplateDialog from './PreviewTemplateDialog';
-import { usePreviewTemplateDialog } from '@/features/forms/hooks';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
   const previewTemplateDialog = usePreviewTemplateDialog();
+  const { createForm } = useCreateFormFromTemplate();
   const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
@@ -105,7 +106,10 @@ export const FormBuilderScreenTemplate: FC = () => {
               onClick={() => previewTemplateDialog.trigger(row.original.id, row.original.defaultLanguage)}>
               Preview template
             </DropdownMenuItem>
-            <DropdownMenuItem>Use template</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => createForm({ templateId: row.original.id, languageCode: row.original.defaultLanguage })}>
+              Use template
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),

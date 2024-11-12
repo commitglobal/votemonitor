@@ -39,7 +39,7 @@ function PreviewTemplateDialog() {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form.template' });
   const { isOpen, templateId, languageCode, trigger, dismiss } = usePreviewTemplateDialog();
   const { data } = useFormTemplateDetails(templateId);
-  const { createFormFromTemplateMutation } = useCreateFormFromTemplate();
+  const { createForm } = useCreateFormFromTemplate();
 
   const onOpenChange = (open: boolean) => {
     if (open) trigger(templateId, languageCode);
@@ -173,7 +173,7 @@ function PreviewTemplateDialog() {
             </Button>
           </DialogClose>
           <Button
-            onClick={() => createFormFromTemplateMutation.mutate()}
+            onClick={() => createForm({ templateId, languageCode })}
             title={t('useTemplate')}
             type='submit'
             className='px-6'>

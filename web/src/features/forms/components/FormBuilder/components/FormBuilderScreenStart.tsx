@@ -67,6 +67,8 @@ export const FormBuilderScreenStart: FC = () => {
     <Layout
       title={t('title')}
       subtitle={t('subtitle')}
+      enableBackButton
+      enableBreadcrumbs={false}
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
         <FormBuilderChoice type='scratch' />
