@@ -2,7 +2,7 @@
 
 namespace Feature.FormTemplates.AddTranslations;
 
-public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+public class Endpoint(IRepository<FormTemplate> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
     public override void Configure()
     {

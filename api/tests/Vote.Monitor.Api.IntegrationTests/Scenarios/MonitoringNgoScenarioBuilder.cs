@@ -11,7 +11,8 @@ public class MonitoringNgoScenarioBuilder
     public readonly ElectionRoundScenarioBuilder ParentBuilder;
     private readonly HttpClient _platformAdmin;
     public NgoScenarioBuilder NgoScenario { get; }
-    public Guid FormId => _forms.First().Value.Id;
+    public Guid FormId => _forms.First().Value.FormId;
+    public CreateFormRequest Form => _forms.First().Value.Form;
 
     public MonitoringNgoScenarioBuilder(Guid electionRoundId,
         Guid monitoringNgoId,
@@ -33,8 +34,7 @@ public class MonitoringNgoScenarioBuilder
         var formRequest = Dummy.Form();
         var admin = NgoScenario.Admin;
 
-        var ngoForm =
-            admin.PostWithResponse<CreateFormRequest>(
+        var ngoForm = admin.PostWithResponse<CreateFormRequest>(
                 $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms",
                 formRequest);
 

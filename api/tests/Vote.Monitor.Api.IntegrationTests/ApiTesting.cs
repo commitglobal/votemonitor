@@ -15,6 +15,8 @@ public class ApiTesting
         await _database.InitialiseAsync();
         _factory = new CustomWebApplicationFactory(_database.GetConnectionString(), _database.GetConnection()); 
     }
+    
+    public static string DbConnectionString => _database.GetConnectionString();
 
     public static async Task ResetState()
     {
@@ -22,8 +24,9 @@ public class ApiTesting
         {
             await _database.ResetAsync();
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            TestContext.Out.WriteLine(e.Message);
         }
     }
 

@@ -47,7 +47,13 @@ public class PostgresTestDatabase : ITestDatabase
             new RespawnerOptions
             {
                 TablesToIgnore =
-                    ["__EFMigrationsHistory", "AspNetRoles", "Language", "Countries"],
+                [
+                    "__EFMigrationsHistory",
+                    "AspNetRoles",
+                    "AspNetUsers",
+                    "Language",
+                    "Countries"
+                ],
                 DbAdapter = DbAdapter.Postgres
             });
     }

@@ -17,13 +17,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     private readonly DbConnection _connection;
     private readonly NpgsqlConnectionStringBuilder _connectionDetails;
 
-    public const string AdminEmail = "admin@example.com";
+    public const string AdminEmail = "integration@testing.com";
     public const string AdminPassword = "toTallyNotTestPassw0rd";
 
     public CustomWebApplicationFactory(string connectionString, DbConnection connection)
     {
         _connection = connection;
-        _connectionDetails =  new NpgsqlConnectionStringBuilder() { ConnectionString = connectionString };
+        _connectionDetails =  new NpgsqlConnectionStringBuilder { ConnectionString = connectionString };
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

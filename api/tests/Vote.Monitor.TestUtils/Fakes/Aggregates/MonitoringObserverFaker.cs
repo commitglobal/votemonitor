@@ -12,11 +12,13 @@ public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
         ObserverAggregate? observer = null, Guid? id = null, Guid? observerId = null)
     {
         UsePrivateConstructor();
-
+        electionRound ??= new ElectionRoundAggregateFaker().Generate();
         monitoringNgo ??= new MonitoringNgoAggregateFaker(electionRound: electionRound).Generate();
         observer ??= new ObserverAggregateFaker(observerId).Generate();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
+        RuleFor(fake => fake.ElectionRoundId, electionRound.Id);
+        RuleFor(fake => fake.ElectionRound, electionRound);
         RuleFor(fake => fake.MonitoringNgo, monitoringNgo);
         RuleFor(fake => fake.MonitoringNgoId, monitoringNgo.Id);
         RuleFor(fake => fake.Observer, observer);

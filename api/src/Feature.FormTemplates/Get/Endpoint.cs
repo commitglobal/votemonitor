@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 namespace Feature.FormTemplates.Get;
 
 public class Endpoint(
-    IReadRepository<Form> repository,
+    IReadRepository<FormTemplate> repository,
     ICurrentUserRoleProvider userRoleProvider,
     IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormTemplateFullModel>, NotFound>>
 {

@@ -9,7 +9,7 @@ namespace Feature.Forms.FromTemplate;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReadRepository<Form> formTemplateRepository,
+    IReadRepository<FormTemplate> formTemplateRepository,
     IRepository<MonitoringNgo> monitoringNgoRepository,
     IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {

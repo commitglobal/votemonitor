@@ -1,12 +1,15 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.CoalitionAggregate;
+using GetCoalitionFormSpecification = Feature.Forms.Specifications.GetCoalitionFormSpecification;
 
 namespace Feature.Forms.Get;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReadRepository<FormAggregate> repository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
+    IReadRepository<FormAggregate> formRepository,
+    IReadRepository<Coalition>coalitionRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -24,10 +27,13 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        FormAggregate? form = null;
-
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
-        form = await repository.FirstOrDefaultAsync(specification, ct);
+        var coalitionFormSpecification =
+            new GetCoalitionFormSpecification(req.ElectionRoundId, req.NgoId, req.Id);
+        var ngoFormSpecification =
+            new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
+        
+        var form = (await coalitionRepository.FirstOrDefaultAsync(coalitionFormSpecification, ct)) ??
+                   (await formRepository.FirstOrDefaultAsync(ngoFormSpecification, ct));
 
         if (form is null)
         {

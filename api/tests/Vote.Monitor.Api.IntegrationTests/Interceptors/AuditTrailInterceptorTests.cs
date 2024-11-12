@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
@@ -13,26 +14,27 @@ using Vote.Monitor.Domain.Entities.ObserverAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Api.IntegrationTests.Interceptors;
-using static DbTesting;
-public class AuditTrailInterceptorTests: BaseDbTestFixture
+
+using static ApiTesting;
+
+public class AuditTrailInterceptorTests : BaseDbTestFixture
 {
-    private  ITimeProvider _fakeTimeProvider;
-    private  ICurrentUserProvider _fakeCurrentUserProvider;
-    private  VoteMonitorContext _context;
+    private ITimeProvider _fakeTimeProvider;
+    private ICurrentUserProvider _fakeCurrentUserProvider;
+    private VoteMonitorContext _context;
 
     [SetUp]
     public void Init()
     {
-        _fakeTimeProvider = Substitute.For<ITimeProvider>();
-        var fakeSerializationService = Substitute.For<ISerializerService>();
         _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
-
+        _fakeTimeProvider = Substitute.For<ITimeProvider>();
+        
         var options = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseNpgsql(DbConnectionString)
             .Options;
 
         _context = new VoteMonitorContext(options,
-            fakeSerializationService,
+            new SerializerService(NullLogger<SerializerService>.Instance),
             _fakeTimeProvider,
             _fakeCurrentUserProvider);
     }
@@ -51,7 +53,7 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
     {
         //Arrange
         var userId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
@@ -80,7 +82,7 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
     {
         //Arrange
         var userId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
@@ -110,8 +112,8 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -146,8 +148,8 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -182,8 +184,8 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -216,8 +218,8 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -250,8 +252,8 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -265,11 +267,11 @@ public class AuditTrailInterceptorTests: BaseDbTestFixture
         var applicationUser = ApplicationUser.CreateObserver("test", "test", "email", "222", "password");
 
         var observer = Observer.Create(applicationUser);
-        var monitoringObserver = new MonitoringObserverFaker(electionRound: electionRound, monitoringNgo: monitoringNgo,
-                observer: observer)
-            .Generate();
+        var monitoringObserver =
+            new MonitoringObserverFaker(electionRound: electionRound, monitoringNgo: monitoringNgo, observer: observer)
+                .Generate();
 
-        await _context.Countries.AddAsync(CountriesList.AD.ToEntity());
+        // await _context.Countries.AddAsync(CountriesList.AD.ToEntity());
         await _context.ElectionRounds.AddAsync(electionRound);
         await _context.PollingStations.AddAsync(pollingStation);
         await _context.Ngos.AddAsync(ngo);

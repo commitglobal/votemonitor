@@ -7,7 +7,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests.Interceptors;
-using static DbTesting;
+using static ApiTesting;
 public class AuditingInterceptorTests : BaseDbTestFixture
 {
     private ITimeProvider _fakeTimeProvider;
@@ -44,7 +44,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
     {
         //Arrange
         var userId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
@@ -68,7 +68,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
     {
         //Arrange
         var userId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
@@ -94,8 +94,8 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
@@ -121,8 +121,8 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         //Arrange
         var userId = Guid.NewGuid();
         var anotherUserId = Guid.NewGuid();
-        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
-        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
+        var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
+        var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);

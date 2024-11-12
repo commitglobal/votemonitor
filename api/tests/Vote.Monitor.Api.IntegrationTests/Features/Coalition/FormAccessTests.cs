@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Feature.Forms;
 using Feature.Forms.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
+using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Models;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Core.Models;
@@ -131,10 +132,57 @@ public class FormAccessTests : BaseApiTestFixture
             .NgoByName(Ngos.Beta).Admin
             .GetResponse<PagedResponse<FormSlimModel>>($"/api/election-rounds/{electionRoundId}/forms");
         
+        var form = scenarioData
+            .NgoByName(Ngos.Beta).Admin
+            .GetResponse<FormFullModel>($"/api/election-rounds/{electionRoundId}/forms/{formId}");
+
         aliceForms.Forms.Should().BeEmpty();
         bobForms.Forms.Select(x=>x.Id).Should().HaveCount(1).And.BeEquivalentTo([formId]);
         betaForms.Items.Select(x=>x.Id).Should().HaveCount(1).And.BeEquivalentTo([formId]);
+        form.Should().NotBeNull();
     }
+    
+    [Test]
+    public async Task ShouldAllowMonitoringObserversToAddSubmissionsToCoalitionForms()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithNgo(Ngos.Alfa)
+            .WithNgo(Ngos.Beta)
+            .WithObserver(Observers.Alice)
+            .WithObserver(Observers.Bob)
+            .WithElectionRound(ElectionRounds.A,
+                er => er
+                    .WithPollingStation(PollingStations.Iasi)
+                    .WithPollingStation(PollingStations.Bacau)
+                    .WithMonitoringNgo(Ngos.Alfa, alfa => alfa.WithMonitoringObserver(Observers.Alice).WithForm())
+                    .WithMonitoringNgo(Ngos.Beta, alfa => alfa.WithMonitoringObserver(Observers.Bob))
+                    .WithCoalition(Coalitions.Youth, Ngos.Alfa, [Ngos.Beta]))
+            .Please();
+
+        // Act
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var coalitionId = scenarioData.ElectionRound.CoalitionId;
+        var formId = scenarioData.ElectionRound.MonitoringNgoByName(Ngos.Alfa).FormId;
+
+        scenarioData.NgoByName(Ngos.Alfa).Admin.PostWithoutResponse(
+            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+            new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
+
+        var pollingStationId = scenarioData.ElectionRound.PollingStationByName(PollingStations.Iasi);
+        var questions  = scenarioData.ElectionRound.MonitoringNgoByName(Ngos.Alfa).Form.Questions;
+        var submission = new FormSubmissionRequestFaker(formId, pollingStationId, questions).Generate();
+
+        var observer = scenarioData.ObserverByName(Observers.Bob);
+
+        var submissionId = await observer.PostAsJsonAsync(
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
+            submission);
+
+        // Assert
+        submissionId.Should().HaveStatusCode(HttpStatusCode.OK);
+    }
+    
     
     [Test]
     public async Task ShouldNotUpdateFormAccess_WhenCoalitionMember()

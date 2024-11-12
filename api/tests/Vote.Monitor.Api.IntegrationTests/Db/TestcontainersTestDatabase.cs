@@ -46,7 +46,13 @@ public class TestcontainersTestDatabase : ITestDatabase
             new RespawnerOptions
             {
                 TablesToIgnore =
-                    ["__EFMigrationsHistory", "AspNetRoles", "Language", "Countries"],
+                [
+                    "__EFMigrationsHistory",
+                    "AspNetRoles",
+                    "AspNetUsers",
+                    "Language",
+                    "Countries"
+                ],
                 DbAdapter = DbAdapter.Postgres
             });
     }
@@ -61,10 +67,9 @@ public class TestcontainersTestDatabase : ITestDatabase
         return _connectionString;
     }
 
-
     public async Task ResetAsync()
     {
-        await _respawner.ResetAsync(_connectionString);
+        await _respawner.ResetAsync(_connection);
     }
 
     public async Task DisposeAsync()

@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class Form : AuditableBaseEntity, IAggregateRoot
+public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public FormType FormType { get; set; }
@@ -21,7 +21,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     [JsonConstructor]
-    internal Form(Guid id,
+    internal FormTemplate(Guid id,
         FormType formType,
         string code,
         string defaultLanguage,
@@ -40,7 +40,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Languages = languages;
     }
 
-    private Form(FormType formType,
+    private FormTemplate(FormType formType,
         string code,
         string defaultLanguage,
         TranslatedString name,
@@ -59,7 +59,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList();
     }
 
-    public static Form Create(FormType formType,
+    public static FormTemplate Create(FormType formType,
         string code,
         string defaultLanguage,
         TranslatedString name,
@@ -162,7 +162,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = languageCode;
     }
 
-    public Form Duplicate() =>
+    public FormTemplate Duplicate() =>
         new(FormType, Code, DefaultLanguage, Name, Description, Languages, Questions);
 
     public FormAggregate.Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
@@ -206,7 +206,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
-    private Form()
+    private FormTemplate()
     {
     }
 #pragma warning restore CS8618

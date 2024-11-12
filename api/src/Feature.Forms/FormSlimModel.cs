@@ -27,6 +27,7 @@ public class FormSlimModel
     public required DateTime LastModifiedOn { get; init; }
 
     public string LastModifiedBy { get; init; }
+    public bool IsFormOwner { get; init; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
 }

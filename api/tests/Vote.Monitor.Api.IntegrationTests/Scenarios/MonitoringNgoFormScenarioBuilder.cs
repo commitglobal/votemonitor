@@ -8,7 +8,8 @@ public class MonitoringNgoFormScenarioBuilder
     public readonly MonitoringNgoScenarioBuilder ParentBuilder;
 
     private readonly CreateFormRequest _form;
-    public Guid Id => _form.Id;
+    public Guid FormId => _form.Id;
+    public CreateFormRequest Form => _form;
 
     private bool _formIsPublished  = false;
 

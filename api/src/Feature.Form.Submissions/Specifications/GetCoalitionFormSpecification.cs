@@ -11,7 +11,7 @@ public sealed class GetCoalitionFormSpecification : SingleResultSpecification<Co
             .Where(x => x.Memberships.Any(cm =>
                 cm.MonitoringNgo.MonitoringObservers.Any(o => o.ObserverId == observerId)))
             .Where(x => x.FormAccess.Any(fa =>
-                fa.MonitoringNgo.MonitoringObservers.Any(o => o.ObserverId == observerId && fa.FormId == formId)));
+                fa.MonitoringNgo.MonitoringObservers.Any(o => o.ObserverId == observerId) && fa.FormId == formId));
 
         Query.Include(x => x.FormAccess).ThenInclude(x => x.Form).ThenInclude(x => x.ElectionRound);
 
