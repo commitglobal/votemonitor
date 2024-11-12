@@ -278,9 +278,9 @@ const CitizenForm = () => {
       ...prevAttachments,
       [questionId]: prevAttachments[questionId]
         ? [
-          ...prevAttachments[questionId],
-          { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false },
-        ]
+            ...prevAttachments[questionId],
+            { fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false },
+          ]
         : [{ fileMetadata: cameraResult, id: Crypto.randomUUID(), uploaded: false }],
     }));
     setIsPreparingFile(false);
@@ -307,9 +307,9 @@ const CitizenForm = () => {
         ...prevAttachments,
         [questionId]: prevAttachments[questionId]
           ? [
-            ...prevAttachments[questionId],
-            { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
-          ]
+              ...prevAttachments[questionId],
+              { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
+            ]
           : [{ fileMetadata, id: Crypto.randomUUID(), uploaded: false }],
       }));
       setIsPreparingFile(false);
