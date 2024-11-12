@@ -59,7 +59,7 @@ public class ListEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = pollingStationId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -88,7 +88,7 @@ public class ListEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = pollingStationId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -123,7 +123,7 @@ public class ListEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = pollingStationId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

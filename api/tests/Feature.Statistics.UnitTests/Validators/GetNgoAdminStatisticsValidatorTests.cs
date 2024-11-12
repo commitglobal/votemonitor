@@ -37,7 +37,7 @@ public class GetNgoAdminStatisticsValidatorTests
         var request = new GetNgoAdminStatistics.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid()
         };
 
         // Act

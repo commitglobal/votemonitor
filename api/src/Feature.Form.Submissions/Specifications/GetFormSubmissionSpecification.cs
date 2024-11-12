@@ -9,7 +9,9 @@ public sealed class GetFormSubmissionSpecification : SingleResultSpecification<F
         Query.Where(x =>
             x.ElectionRoundId == electionRoundId
             && x.MonitoringObserver.ObserverId == observerId
+            && x.MonitoringObserver.ElectionRoundId == electionRoundId
             && x.PollingStationId == pollingStationId
+            && x.Form.ElectionRoundId == electionRoundId
             && x.FormId == formId);
     }
 
@@ -17,6 +19,7 @@ public sealed class GetFormSubmissionSpecification : SingleResultSpecification<F
     {
         Query.Where(x =>
             x.ElectionRoundId == electionRoundId
+            && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == electionRoundId
             && x.MonitoringObserver.MonitoringNgo.NgoId == ngoId
             && x.Id == submissionId);
     }

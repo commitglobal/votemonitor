@@ -5,16 +5,22 @@ import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { useContext } from 'react';
 
-import type { FunctionComponent } from '../common/types';
-const Index = (): FunctionComponent => {
+import { DataSources, type FunctionComponent } from '../common/types';
+import { z } from 'zod';
+const StatisticsDetails = (): FunctionComponent => {
   const { userRole } = useContext(AuthContext);
 
-  return userRole === 'PlatformAdmin' ? <PlatformAdminDashboard /> : <NgoAdminDashboard />
+  return userRole === 'PlatformAdmin' ? <PlatformAdminDashboard /> : <NgoAdminDashboard />;
 };
+
+export const ZDataSourceSearchSchema = z.object({
+  dataSource: z.nativeEnum(DataSources).optional(),
+});
 
 export const Route = createFileRoute('/')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },
-  component: Index
+  component: StatisticsDetails,
+  validateSearch: ZDataSourceSearchSchema,
 });

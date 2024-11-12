@@ -32,7 +32,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         WHERE
             MN."ElectionRoundId" = @electionRoundId
             AND MN."NgoId" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR U."Email" ILIKE @searchText OR U."PhoneNumber" ILIKE @searchText)
+            AND (@searchText IS NULL OR @searchText = '' OR (U."DisplayName") ILIKE @searchText OR U."Email" ILIKE @searchText OR U."PhoneNumber" ILIKE @searchText)
             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
             AND (@status IS NULL OR  mo."Status" = @status);
 
@@ -112,7 +112,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             WHERE
                 MN."ElectionRoundId" = @electionRoundId
                 AND MN."NgoId" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR U."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                AND (@searchText IS NULL OR @searchText = '' OR (U."DisplayName") ILIKE @searchText OR U."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
                 AND (@status IS NULL OR  mo."Status" = @status)
             GROUP BY
@@ -126,8 +126,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             ) T
 
         ORDER BY
-            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "FirstName" || ' ' || "LastName" END ASC,
-            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "FirstName" || ' ' || "LastName" END DESC,
+            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "DisplayName" END ASC,
+            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "DisplayName" END DESC,
 
             CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,
             CASE WHEN @sortExpression = 'FirstName DESC' THEN "FirstName" END DESC,
@@ -160,7 +160,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             tagsFilter = req.Tags ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             status = req.Status?.ToString(),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;

@@ -202,7 +202,10 @@
       "englishTitle": "Election event English title",
       "country": "Country",
       "startDate": "Start date",
-      "status": "Status"
+      "status": "Status",
+      "coalition": {
+        "cardTitle": "Details on assigned organization(s)"
+      }
     },
     "pollingStations": {
       "tabTitle": "Polling Stations",
@@ -277,5 +280,9 @@
       "goToNextPage": "Go to next page",
       "goToLastPage": "Go to last page"
     }
+  },
+  "responses": {
+    "title": "",
+    "subtitle":""
   }
 }

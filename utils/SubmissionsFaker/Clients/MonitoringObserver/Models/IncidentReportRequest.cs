@@ -3,7 +3,7 @@ namespace SubmissionsFaker.Clients.MonitoringObserver.Models;
 public class IncidentReportRequest
 {
     public string ObserverToken { get; set; }
-    public Guid IncidentReportId { get; set; }
+    public Guid Id { get; set; }
     public string FormId { get; set; }
 
     public string LocationType { get; set; }

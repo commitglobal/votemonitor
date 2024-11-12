@@ -31,7 +31,7 @@ public class ListFormsOverviewValidatorTests
         // Arrange
         var request = new IncidentReportsAggregateFilter
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act
@@ -48,7 +48,7 @@ public class ListFormsOverviewValidatorTests
         var request = new IncidentReportsAggregateFilter
         {
             ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid()
         };
 
         // Act

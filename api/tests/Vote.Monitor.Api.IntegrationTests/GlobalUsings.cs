@@ -1,13 +1,3 @@
-﻿// Global using directives
-
-global using Bogus;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.TestHost;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.Extensions.DependencyInjection;
-global using Testcontainers.PostgreSql;
-global using Vote.Monitor.Domain;
-global using Xunit.Abstractions;
-global using FastEndpoints;
+﻿global using Bogus;
 global using FluentAssertions;
-global using Xunit;
+global using NUnit.Framework;

@@ -3,7 +3,6 @@ using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
-using Vote.Monitor.Form.Module.Mappers;
 
 namespace Feature.Forms.FromForm;
 

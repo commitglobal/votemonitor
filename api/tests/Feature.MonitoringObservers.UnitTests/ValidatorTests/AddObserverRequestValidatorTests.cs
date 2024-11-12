@@ -49,9 +49,9 @@ public class AddObserverRequestValidatorTests
                     Tags = ["tag1", "tag2"],
                     FirstName = "firstName",
                     LastName = "lastName",
-                    PhoneNumber = "phoneNumber",
+                    PhoneNumber = "phoneNumber"
                 }
-            ],
+            ]
         };
 
         // Act

@@ -38,7 +38,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   WHERE
                       MN."ElectionRoundId" = @electionRoundId
                       AND MN."NgoId" = @ngoId
-                      AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                      AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
 
                   SELECT "MonitoringObserverId",
@@ -51,7 +51,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          "NumberOfCompletedForms",
                          "FollowUpStatus"
                   FROM (SELECT MO."Id" AS "MonitoringObserverId",
-                               U."FirstName" || ' ' || U."LastName" AS "ObserverName",
+                               U."DisplayName" AS "ObserverName",
                                U."PhoneNumber",
                                U."Email",
                                MO."Tags",
@@ -87,8 +87,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                  INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                         WHERE MN."ElectionRoundId" = @electionRoundId
                           AND MN."NgoId" = @ngoId
-                          AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR
-                               u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                          AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                           AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)) T
                   WHERE (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
                   ORDER BY
@@ -123,7 +122,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            needsFollowUp = req.FollowUpStatus?.ToString(),
+            needsFollowUp = req.FollowUpStatus?.ToString()
         };
 
         int totalRowCount = 0;

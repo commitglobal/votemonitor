@@ -45,7 +45,7 @@ public class Endpoint(
             ElectionRoundId = attachment.ElectionRoundId,
             CitizenReportId = attachment.CitizenReportId,
             FormId = attachment.FormId,
-            QuestionId = attachment.QuestionId,
+            QuestionId = attachment.QuestionId
         });
     }
 }

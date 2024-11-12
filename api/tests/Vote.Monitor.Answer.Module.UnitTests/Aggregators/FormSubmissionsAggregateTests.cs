@@ -235,7 +235,7 @@ public class FormSubmissionsAggregateTests
         [
             new DateAnswerFaker(_dateQuestion.Id),
             new TextAnswerFaker(_textQuestion.Id),
-            new NumberAnswerFaker(_numberQuestion.Id),
+            new NumberAnswerFaker(_numberQuestion.Id)
         ];
 
         var formSubmission1 = FormSubmission.Create(_electionRound, pollingStation, monitoringObserver, _form,
@@ -269,12 +269,12 @@ public class FormSubmissionsAggregateTests
 
         List<BaseAnswer> submission1Answers =
         [
-            new SingleSelectAnswerFaker(_singleSelectQuestion.Id, _singleSelectQuestion.Options[1].Select()),
+            new SingleSelectAnswerFaker(_singleSelectQuestion.Id, _singleSelectQuestion.Options[1].Select())
         ];
 
         List<BaseAnswer> submission2Answers =
         [
-            new SingleSelectAnswerFaker(Guid.NewGuid(), _singleSelectQuestion.Options[2].Select()),
+            new SingleSelectAnswerFaker(Guid.NewGuid(), _singleSelectQuestion.Options[2].Select())
         ];
 
         List<BaseAnswer> submission3Answers = [];

@@ -49,7 +49,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
+            ngoId = req.NgoId
         };
         IEnumerable<MonitoringObserverModel> monitoringObservers = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))

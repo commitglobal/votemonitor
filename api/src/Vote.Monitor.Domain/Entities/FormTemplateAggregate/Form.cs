@@ -40,7 +40,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Languages = languages;
     }
 
-    private Form(FormType formTemplateType,
+    private Form(FormType formType,
         string code,
         string defaultLanguage,
         TranslatedString name,
@@ -49,7 +49,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         IEnumerable<BaseQuestion> questions)
     {
         Id = Guid.NewGuid();
-        FormType = formTemplateType;
+        FormType = formType;
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
@@ -59,14 +59,14 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList();
     }
 
-    public static Form Create(FormType formTemplateType,
+    public static Form Create(FormType formType,
         string code,
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) =>
-        new(formTemplateType, code, defaultLanguage, name, description, languages, questions);
+        new(formType, code, defaultLanguage, name, description, languages, questions);
 
     public PublishResult Publish()
     {
@@ -92,7 +92,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
-        FormType formTemplateType,
+        FormType formType,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions)
     {
@@ -100,7 +100,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Name = name;
         Description = description;
-        FormType = formTemplateType;
+        FormType = formType;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;

@@ -67,7 +67,7 @@ public class ListRequestValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            FormId = Guid.NewGuid(),
+            FormId = Guid.NewGuid()
         };
 
         // Act

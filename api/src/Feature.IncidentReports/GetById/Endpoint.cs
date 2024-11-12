@@ -35,6 +35,7 @@ public class Endpoint(
             .ThenInclude(x => x.ApplicationUser)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
+                && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
                 && x.Id == req.IncidentReportId)
             .Select(incidentReport => new
@@ -59,7 +60,7 @@ public class Endpoint(
                 LocationDescription = incidentReport.LocationDescription,
 
                 PollingStation = incidentReport.PollingStation,
-                IsCompleted = incidentReport.IsCompleted,
+                IsCompleted = incidentReport.IsCompleted
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -80,7 +81,7 @@ public class Endpoint(
                 return attachment with
                 {
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
+                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
                 };
             }).ToArray();
 

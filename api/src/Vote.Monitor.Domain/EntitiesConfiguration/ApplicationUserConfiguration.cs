@@ -13,6 +13,11 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
         builder.Property(u => u.RefreshTokenExpiryTime);
         builder.Property(u => u.InvitationToken).HasMaxLength(256);
 
+        builder
+            .Property(p => p.DisplayName)
+            .HasComputedColumnSql("\"FirstName\" || ' ' || \"LastName\"", stored: true)
+            .ValueGeneratedOnAddOrUpdate();
+        
         builder.OwnsOne(u => u.Preferences, b =>
         {
             b.ToJson();

@@ -26,6 +26,9 @@ export type CurrentElectionRoundState = {
 
   isMonitoringNgoForCitizenReporting: boolean;
   setIsMonitoringNgoForCitizenReporting(isMonitoringNgoForCitizenReporting: boolean): void;
+
+  isCoalitionLeader: boolean;
+  setIsCoalitionLeader(isCoalitionLeader: boolean): void;
 }
 
 export type CurrentElectionRoundStoreType = ZustandStore<CurrentElectionRoundState>;
@@ -43,7 +46,10 @@ export const CurrentElectionRoundStoreProvider = ({ children }: PropsWithChildre
           setCurrentElectionRoundId: (electionRoundId: string) => set({ currentElectionRoundId: electionRoundId }),
 
           isMonitoringNgoForCitizenReporting: false,
-          setIsMonitoringNgoForCitizenReporting: (isMonitoringNgoForCitizenReporting: boolean) => set({ isMonitoringNgoForCitizenReporting })
+          setIsMonitoringNgoForCitizenReporting: (isMonitoringNgoForCitizenReporting: boolean) => set({ isMonitoringNgoForCitizenReporting }),
+
+          isCoalitionLeader: false,
+          setIsCoalitionLeader: (isCoalitionLeader: boolean) => set({ isCoalitionLeader }),
         }),
         {
           name: 'current-election-round', // name of the item in the storage (must be unique),

@@ -16,11 +16,11 @@ public class IncidentReportingFormSeeder
         progressTask.MaxValue(1);
 
         progressTask.StartTask();
-        var openingForm = await ngoAdminApi.CreateForm(electionRoundId,
+        var incidentReportingForm = await ngoAdminApi.CreateForm(electionRoundId,
             IncidentReportingFormData.IncidentReporting with { FormType = "IncidentReporting" }, ngoAdminToken.Token);
-        await ngoAdminApi.UpdateForm(electionRoundId, openingForm.Id, IncidentReportingFormData.IncidentReporting,
+        await ngoAdminApi.UpdateForm(electionRoundId, incidentReportingForm.Id, IncidentReportingFormData.IncidentReporting,
             ngoAdminToken.Token);
-        await ngoAdminApi.PublishForm(electionRoundId, openingForm.Id, ngoAdminToken.Token);
+        await ngoAdminApi.PublishForm(electionRoundId, incidentReportingForm.Id, ngoAdminToken.Token);
         progressTask.Increment(1);
 
         progressTask.Increment(progressTask.MaxValue);
@@ -30,7 +30,7 @@ public class IncidentReportingFormSeeder
         [
             new UpdateFormResponse
             {
-                Id = openingForm.Id,
+                Id = incidentReportingForm.Id,
                 Questions = IncidentReportingFormData.IncidentReporting.Questions,
             },
             // ...

@@ -39,6 +39,7 @@ public class Endpoint(
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringNgo.NgoId == req.NgoId
+                        && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.FormId)
             .Where(x => x.Status == FormStatus.Published)
             .Where(x => x.FormType != FormType.CitizenReporting && x.FormType != FormType.IncidentReporting)
@@ -75,6 +76,8 @@ public class Endpoint(
             .ThenInclude(x => x.ApplicationUser)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                        && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId)
             .Where(x => string.IsNullOrWhiteSpace(req.Level1Filter) ||
                         EF.Functions.ILike(x.PollingStation.Level1, req.Level1Filter))
@@ -105,22 +108,26 @@ public class Endpoint(
                 ? context.Notes.Count(n =>
                     n.MonitoringObserverId == x.MonitoringObserverId
                     && n.FormId == x.FormId
+                    && x.Form.ElectionRoundId == req.ElectionRoundId
                     && n.PollingStationId == x.PollingStationId
                     && n.ElectionRoundId == x.ElectionRoundId) > 0
                 : context.Notes.Count(n =>
                     n.MonitoringObserverId == x.MonitoringObserverId
                     && n.FormId == x.FormId
+                    && x.Form.ElectionRoundId == req.ElectionRoundId
                     && n.PollingStationId == x.PollingStationId
                     && n.ElectionRoundId == x.ElectionRoundId) == 0))
             .Where(x => req.HasAttachments == null || (req.HasAttachments.Value
                 ? context.Attachments.Count(a =>
                     a.MonitoringObserverId == x.MonitoringObserverId
                     && a.FormId == x.FormId
+                    && x.Form.ElectionRoundId == req.ElectionRoundId
                     && a.PollingStationId == x.PollingStationId
                     && a.ElectionRoundId == x.ElectionRoundId) > 0
                 : context.Attachments.Count(a =>
                     a.MonitoringObserverId == x.MonitoringObserverId
                     && a.FormId == x.FormId
+                    && x.Form.ElectionRoundId == req.ElectionRoundId
                     && a.PollingStationId == x.PollingStationId
                     && a.ElectionRoundId == x.ElectionRoundId) == 0))
             .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
@@ -241,7 +248,7 @@ public class Endpoint(
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 IsCompletedFilter = req.IsCompletedFilter,
                 MonitoringObserverStatus = req.MonitoringObserverStatus,
-                PollingStationNumberFilter = req.PollingStationNumberFilter,
+                PollingStationNumberFilter = req.PollingStationNumberFilter
             }
         });
     }
@@ -258,6 +265,7 @@ public class Endpoint(
             .ThenInclude(x => x.Observer)
             .ThenInclude(x => x.ApplicationUser)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
+                        && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId)
             .Where(x => string.IsNullOrWhiteSpace(req.Level1Filter) ||
                         EF.Functions.ILike(x.PollingStation.Level1, req.Level1Filter))

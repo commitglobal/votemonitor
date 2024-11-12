@@ -42,7 +42,7 @@ public class ListValidatorTests
         {
             Tags = [
                 "a tag",
-                emptyTag,
+                emptyTag
             ]
         };
 

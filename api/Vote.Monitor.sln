@@ -164,6 +164,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Att
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Notifications", "src\Feature.Citizen.Notifications\Feature.Citizen.Notifications.csproj", "{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Coalitions", "src\Feature.Coalitions\Feature.Coalitions.csproj", "{5F573792-C095-44F5-8DDD-05257CA41C9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -470,6 +472,10 @@ Global
 		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F573792-C095-44F5-8DDD-05257CA41C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F573792-C095-44F5-8DDD-05257CA41C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F573792-C095-44F5-8DDD-05257CA41C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F573792-C095-44F5-8DDD-05257CA41C9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -550,6 +556,7 @@ Global
 		{0567FED6-2464-462D-BE59-3A4FA50BF438} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{DF354318-6856-4925-96A0-0C458E530091} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{A43F29F9-5765-4143-AB9A-C3ECFCDD402F} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{5F573792-C095-44F5-8DDD-05257CA41C9E} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

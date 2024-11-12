@@ -21,8 +21,9 @@ public interface ICitizenApi
     //     [AliasAs("QuestionId")] string questionId,
     //     [AliasAs("Attachment")] StreamPart attachment);
 
-    [Post("/api/election-rounds/{electionRoundId}/citizen-report-notes")]
+    [Post("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/notes")]
     Task SubmitNote(
         [AliasAs("electionRoundId")] string electionRoundId,
+        [AliasAs("citizenReportId")] string citizenReportId,
         [Body] CitizenReportNoteRequest note);
 }

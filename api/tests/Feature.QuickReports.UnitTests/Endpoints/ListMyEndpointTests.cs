@@ -58,7 +58,7 @@ public class ListMyEndpointTests
         ];
 
         List<QuickReportAttachment> quickReport2Attachments = [
-            new QuickReportAttachmentFaker(quickReportId: quickReport2.Id).Generate(),
+            new QuickReportAttachmentFaker(quickReportId: quickReport2.Id).Generate()
         ];
         List<QuickReportAttachment> attachments = [.. quickReport1Attachments, .. quickReport2Attachments];
 
@@ -70,7 +70,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -113,7 +113,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -155,7 +155,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         _ = await _endpoint.ExecuteAsync(request, default);
 
@@ -195,7 +195,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

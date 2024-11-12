@@ -30,7 +30,7 @@ public class Endpoint(VoteMonitorContext context) : EndpointWithoutRequest<Respo
                 CountryName = x.Country.Name,
                 CountryFullName = x.Country.FullName,
                 StartDate = x.StartDate,
-                Title = x.Title,
+                Title = x.Title
             })
             .ToListAsync(ct);
         

@@ -30,7 +30,7 @@ public class ListEndpointTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            IncidentReportId = Guid.NewGuid(),
+            IncidentReportId = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

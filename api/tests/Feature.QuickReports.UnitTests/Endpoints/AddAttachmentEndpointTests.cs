@@ -152,7 +152,7 @@ public class CreateEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             QuickReportId = _quickReportId,
             Id = _attachmentId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -183,7 +183,7 @@ public class CreateEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             QuickReportId = _quickReportId,
             Id = _attachmentId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

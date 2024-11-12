@@ -26,6 +26,7 @@ public class Endpoint(IAuthorizationService authorizationService,
 
         var tags = await context
             .MonitoringObservers
+            .Where(x=>x.ElectionRoundId == request.ElectionRoundId)
             .Where(x => x.MonitoringNgo.NgoId == request.NgoId
                         && x.MonitoringNgo.ElectionRoundId == request.ElectionRoundId)
             .Where(x => x.Tags.Any())

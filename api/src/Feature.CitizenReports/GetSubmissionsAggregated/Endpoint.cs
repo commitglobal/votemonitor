@@ -37,6 +37,7 @@ public class Endpoint(
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringNgo.NgoId == req.NgoId
+                        && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.FormId)
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
@@ -58,6 +59,8 @@ public class Endpoint(
             .Include(x => x.Attachments)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
+                        && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId)
             .Where(x => string.IsNullOrWhiteSpace(req.Level1Filter) ||
                         EF.Functions.ILike(x.Location.Level1, req.Level1Filter))
@@ -131,7 +134,7 @@ public class Endpoint(
                 Level5Filter = req.Level5Filter,
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 QuestionsAnswered = req.QuestionsAnswered,
-                FollowUpStatus = req.FollowUpStatus,
+                FollowUpStatus = req.FollowUpStatus
             }
         });
     }

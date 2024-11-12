@@ -45,8 +45,7 @@ public class Endpoint(
                     AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
                     AND (@searchText IS NULL
                           OR @searchText = ''
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
+                          OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
                       )
@@ -168,7 +167,7 @@ public class Endpoint(
                       PS."Level5",
                       PS."Number" "PollingStationNumber",
                       IR."MonitoringObserverId",
-                      U."FirstName" || ' ' || U."LastName" AS "ObserverName",
+                      U."DisplayName" AS "ObserverName",
                       U."Email",
                       U."PhoneNumber",
                       MO."Status",
@@ -193,8 +192,7 @@ public class Endpoint(
                     AND (
                       @searchText IS NULL
                           OR @searchText = ''
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
+                          OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
                       )
@@ -235,8 +233,8 @@ public class Endpoint(
                       CASE WHEN @sortExpression = 'Level5 DESC' THEN PS."Level5" END DESC,
                       CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN PS."Number" END ASC,
                       CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN PS."Number" END DESC,
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."FirstName" || ' ' || U."LastName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."FirstName" || ' ' || U."LastName" END DESC
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."DisplayName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."DisplayName" END DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;

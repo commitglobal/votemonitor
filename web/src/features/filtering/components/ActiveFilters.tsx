@@ -2,18 +2,16 @@ import { DateTimeFormat } from '@/common/formats';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
+import {
+  mapFormSubmissionFollowUpStatus,
+  mapIncidentCategory,
+  mapQuickReportFollowUpStatus
+} from '@/features/responses/utils/helpers';
+import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
-import {
-  mapFormSubmissionFollowUpStatus,
-  mapIncidentCategory,
-  mapQuickReportFollowUpStatus,
-  mapQuickReportLocationType,
-} from '@/features/responses/utils/helpers';
-import { QuickReportFollowUpStatus } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -32,6 +30,7 @@ export const HIDDEN_FILTERS = [
   FILTER_KEY.Tab,
   FILTER_KEY.SortOrder,
   FILTER_KEY.SortColumnName,
+  FILTER_KEY.DataSource,
 ];
 
 const FILTER_LABELS = new Map<string, string>([

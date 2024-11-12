@@ -26,7 +26,7 @@ public class ListByObserverValidatorTests
         // Arrange
         var request = new ListByObserver.Request
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act
@@ -43,7 +43,7 @@ public class ListByObserverValidatorTests
         var request = new ListByObserver.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid()
         };
 
         // Act

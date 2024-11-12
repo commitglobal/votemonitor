@@ -189,6 +189,12 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("\"FirstName\" || ' ' || \"LastName\"", true);
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -650,6 +656,90 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasIndex("FormId");
 
                     b.ToTable("CitizenReportNotes");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.Coalition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LeaderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("LeaderId");
+
+                    b.ToTable("Coalitions");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.CoalitionFormAccess", b =>
+                {
+                    b.Property<Guid>("CoalitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CoalitionId", "MonitoringNgoId", "FormId");
+
+                    b.HasIndex("FormId");
+
+                    b.HasIndex("MonitoringNgoId");
+
+                    b.ToTable("CoalitionFormAccess");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.CoalitionMembership", b =>
+                {
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CoalitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("MonitoringNgoId", "CoalitionId");
+
+                    b.HasIndex("CoalitionId");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("MonitoringNgoId", "ElectionRoundId")
+                        .IsUnique();
+
+                    b.HasIndex("MonitoringNgoId", "CoalitionId", "ElectionRoundId")
+                        .IsUnique();
+
+                    b.ToTable("CoalitionMemberships");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CountryAggregate.Country", b =>
@@ -6290,6 +6380,79 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("Form");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.Coalition", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "Leader")
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Leader");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.CoalitionFormAccess", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.CoalitionAggregate.Coalition", "Coalition")
+                        .WithMany("FormAccess")
+                        .HasForeignKey("CoalitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.FormAggregate.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "MonitoringNgo")
+                        .WithMany()
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coalition");
+
+                    b.Navigation("Form");
+
+                    b.Navigation("MonitoringNgo");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.CoalitionMembership", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.CoalitionAggregate.Coalition", "Coalition")
+                        .WithMany("Memberships")
+                        .HasForeignKey("CoalitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "MonitoringNgo")
+                        .WithMany("Memberships")
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coalition");
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("MonitoringNgo");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.CountryAggregate.Country", "Country")
@@ -6766,6 +6929,13 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("Notes");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CoalitionAggregate.Coalition", b =>
+                {
+                    b.Navigation("FormAccess");
+
+                    b.Navigation("Memberships");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
                 {
                     b.Navigation("MonitoringNgos");
@@ -6780,6 +6950,8 @@ namespace Vote.Monitor.Domain.Migrations
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", b =>
                 {
+                    b.Navigation("Memberships");
+
                     b.Navigation("MonitoringObservers");
                 });
 

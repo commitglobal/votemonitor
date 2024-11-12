@@ -1,68 +1,80 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { getRouteApi } from '@tanstack/react-router';
+import { cn } from '@/lib/utils';
+import { Route } from '@/routes/responses';
 import { type ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CitizenReportsTab } from '../CitizenReportsTab/CitizenReportsTab';
 import FormSubmissionsTab from '../FormSubmissionsTab/FormSubmissionsTab';
-import { QuickReportsTab } from '../QuickReportsTab/QuickReportsTab';
-import { cn } from '@/lib/utils';
 import IncidentReportsTab from '../IncidentReportsTab/IncidentReportsTab';
-import { useTranslation } from 'react-i18next';
-
-const routeApi = getRouteApi('/responses/');
+import { QuickReportsTab } from '../QuickReportsTab/QuickReportsTab';
+import { useNavigate } from '@tanstack/react-router';
+import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
 
 export default function ResponsesDashboard(): ReactElement {
   const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const { tab } = search;
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { keyPrefix: 'responses' });
 
   const setPrevSearch = useSetPrevSearch();
 
   return (
-    <Layout title='Responses' subtitle='View all form answers and other reports submitted by your observers.'>
-      <Tabs
-        defaultValue={tab ?? 'form-answers'}
-        onValueChange={(tab) => {
-          void navigate({
-            search() {
-              const newSearch = { tab };
-              setPrevSearch(newSearch);
-              return newSearch;
-            },
-          });
-        }}>
-        <TabsList
-          className={cn('grid bg-gray-200 mb-4 grid-cols-3 w-[600px]', {
-            'grid-cols-4 w-[800px]': isMonitoringNgoForCitizenReporting,
-          })}>
-          <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
-          <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
-          {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
-          <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
-        </TabsList>
+    <>
+      <header className='container py-4'>
+        <div className='flex flex-col gap-1 text-gray-400'>
+          <h1 className='flex flex-row items-center gap-3 text-3xl font-bold tracking-tight text-gray-900'>
+            {t('title')}
+          </h1>
+          <div className='flex flex-row w-ful justify-between'>
+            <h3 className='text-lg font-light'>{t('subtitle')}</h3>
+            <DataSourceSwitcher />
+          </div>
+        </div>
+      </header>
+      <main className='container flex flex-col flex-1'>
+        <Tabs
+          defaultValue={tab ?? 'form-answers'}
+          onValueChange={(tab) => {
+            void navigate({
+              search() {
+                const newSearch = { tab };
+                setPrevSearch(newSearch);
+                return newSearch;
+              },
+            });
+          }}>
+          <TabsList
+            className={cn('grid bg-gray-200 mb-4 grid-cols-3 w-[600px]', {
+              'grid-cols-4 w-[800px]': isMonitoringNgoForCitizenReporting,
+            })}>
+            <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
+            <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
+            {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
+            <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value='form-answers'>
-          <FormSubmissionsTab />
-        </TabsContent>
-
-        <TabsContent value='quick-reports'>
-          <QuickReportsTab />
-        </TabsContent>
-
-        <TabsContent value='incident-reports'>
-          <IncidentReportsTab />
-        </TabsContent>
-
-        {isMonitoringNgoForCitizenReporting && (
-          <TabsContent value='citizen-reports'>
-            <CitizenReportsTab />
+          <TabsContent value='form-answers'>
+            <FormSubmissionsTab />
           </TabsContent>
-        )}
-      </Tabs>
-    </Layout>
+
+          <TabsContent value='quick-reports'>
+            <QuickReportsTab />
+          </TabsContent>
+
+          <TabsContent value='incident-reports'>
+            <IncidentReportsTab />
+          </TabsContent>
+
+          {isMonitoringNgoForCitizenReporting && (
+            <TabsContent value='citizen-reports'>
+              <CitizenReportsTab />
+            </TabsContent>
+          )}
+        </Tabs>
+      </main>
+    </>
   );
 }

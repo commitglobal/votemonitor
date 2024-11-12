@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 

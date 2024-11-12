@@ -547,7 +547,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
             }).ToArray(),
             QuickReportsHistogram = quickReportsHistogram.ToArray(),
             IncidentReportsHistogram = incidentReportsHistogram.ToArray(),
-            CitizenReportsHistogram = citizenReportsHistogram.ToArray(),
+            CitizenReportsHistogram = citizenReportsHistogram.ToArray()
         };
     }
 }

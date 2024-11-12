@@ -401,7 +401,7 @@ await AnsiConsole.Progress()
 
         foreach (var notesChunk in citizenReportNoteRequests.Chunk(Consts.CHUNK_SIZE))
         {
-            var tasks = notesChunk.Select(n => citizenReportApi.SubmitNote(electionRound.Id, n));
+            var tasks = notesChunk.Select(n => citizenReportApi.SubmitNote(electionRound.Id, n.CitizenReportId, n));
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);
         }

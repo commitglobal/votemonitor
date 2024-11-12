@@ -72,8 +72,8 @@ public class Endpoint(
                                F."LanguagesTranslationStatus",
                                F."Icon",
                                COALESCE(F."LastModifiedOn", F."CreatedOn")                as "LastModifiedOn",
-                               COALESCE(UPDATER."FirstName" || ' ' || UPDATER."LastName",
-                                        CREATOR."FirstName" || ' ' || CREATOR."LastName") AS "LastModifiedBy"
+                               COALESCE(UPDATER."DisplayName",
+                                        CREATOR."DisplayName") AS "LastModifiedBy"
                         FROM "Forms" F
                                  INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
                                  INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"

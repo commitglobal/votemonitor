@@ -44,6 +44,7 @@ using Feature.IncidentReports.Attachments;
 using Feature.IncidentReports.Notes;
 using Feature.Locations;
 using Feature.Monitoring;
+using Feature.NgoCoalitions;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
@@ -166,6 +167,7 @@ builder.Services.AddIncidentReportsFeature();
 builder.Services.AddIncidentReportsNotesFeature();
 builder.Services.AddIncidentReportAttachmentsFeature();
 builder.Services.AddCitizenNotificationsFeature();
+builder.Services.AddCoalitionsFeature();
 
 builder.Services.AddAuthorization();
 

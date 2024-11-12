@@ -21,6 +21,7 @@ export function useElectionRoundStatistics(
 
       return response.data;
     },
+    refetchOnMount: false,
     staleTime: STALE_TIME,
   });
 }

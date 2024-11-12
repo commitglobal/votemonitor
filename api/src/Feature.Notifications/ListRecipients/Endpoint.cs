@@ -126,7 +126,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                            LEFT JOIN "PollingStations" ps ON OA."PollingStationId" = ps."Id"
                   WHERE (@searchText IS NULL
                       OR @searchText = ''
-                      OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText
+                      OR (U."DisplayName") ILIKE @searchText
                       OR U."Email" ILIKE @searchText
                       OR u."PhoneNumber" ILIKE @searchText
                       OR mo."Id"::text ILIKE @searchText)
@@ -253,7 +253,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM "ObserverPSI"),
                        "FilteredObservers" AS
                            (SELECT DISTINCT OA."MonitoringObserverId",
-                                            U."FirstName" || ' ' || U."LastName" "ObserverName",
+                                            U."DisplayName" "ObserverName",
                                             U."PhoneNumber",
                                             U."Email",
                                             MO."Tags",
@@ -264,7 +264,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                                      LEFT JOIN "PollingStations" ps ON OA."PollingStationId" = ps."Id"
                             WHERE (@searchText IS NULL
                                 OR @searchText = ''
-                                OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText
+                                OR (U."DisplayName") ILIKE @searchText
                                 OR U."Email" ILIKE @searchText
                                 OR u."PhoneNumber" ILIKE @searchText
                                 OR mo."Id"::text ILIKE @searchText)
@@ -337,7 +337,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
 
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;

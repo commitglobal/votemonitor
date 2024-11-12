@@ -257,7 +257,7 @@ public class PSIFormSubmissionsAggregateTests
         [
             new DateAnswerFaker(_dateQuestion.Id),
             new TextAnswerFaker(_textQuestion.Id),
-            new NumberAnswerFaker(_numberQuestion.Id),
+            new NumberAnswerFaker(_numberQuestion.Id)
         ];
 
         var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,

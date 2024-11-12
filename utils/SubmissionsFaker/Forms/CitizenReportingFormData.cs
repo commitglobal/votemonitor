@@ -20,7 +20,7 @@ public class CitizenReportingFormData
             { "EN", "test form" },
             { "RO", "formular de test" }
         },
-        FormType = "Opening",
+        FormType = "CitizenReporting",
         Questions =
         [
             new NumberQuestionRequest

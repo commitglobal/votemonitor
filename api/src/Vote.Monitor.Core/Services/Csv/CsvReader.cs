@@ -9,7 +9,7 @@ public class CsvReader<T> : ICsvReader<T>
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            PrepareHeaderForMatch = args => args.Header.ToLower(),
+            PrepareHeaderForMatch = args => args.Header.ToLower()
         };
 
         using var reader = new StreamReader(stream);
@@ -24,7 +24,7 @@ public class CsvReader<T> : ICsvReader<T>
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            PrepareHeaderForMatch = args => args.Header.ToLower(),
+            PrepareHeaderForMatch = args => args.Header.ToLower()
         };
 
         using var reader = new StreamReader(stream);

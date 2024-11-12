@@ -229,7 +229,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             hasAttachments = req.HasAttachments,
             hasNotes = req.HasNotes,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;

@@ -6,7 +6,7 @@ public sealed class ListObserverQuickReportsSpecification : Specification<QuickR
 {
     public ListObserverQuickReportsSpecification(Guid electionRoundId, Guid observerId)
     {
-        Query.Where(qr => qr.ElectionRoundId == electionRoundId && qr.MonitoringObserver.ObserverId == observerId)
+        Query.Where(qr => qr.ElectionRoundId == electionRoundId && qr.MonitoringObserver.ObserverId == observerId && qr.MonitoringObserver.ElectionRoundId == electionRoundId)
             .Include(x => x.PollingStation)
             .Include(x => x.MonitoringObserver)
             .ThenInclude(x => x.Observer)

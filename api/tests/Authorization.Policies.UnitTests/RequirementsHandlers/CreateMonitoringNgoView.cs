@@ -13,7 +13,7 @@ public class CreateMonitoringNgoView
             NgoId = Guid.NewGuid(),
             NgoStatus = NgoStatus.Activated,
             MonitoringNgoId = Guid.NewGuid(),
-            MonitoringNgoStatus = MonitoringNgoStatus.Active,
+            MonitoringNgoStatus = MonitoringNgoStatus.Active
         };
     }
     internal MonitoringNgoView DeactivatedNgo()
@@ -25,7 +25,7 @@ public class CreateMonitoringNgoView
             NgoId = Guid.NewGuid(),
             NgoStatus = NgoStatus.Deactivated,
             MonitoringNgoId = Guid.NewGuid(),
-            MonitoringNgoStatus = MonitoringNgoStatus.Active,
+            MonitoringNgoStatus = MonitoringNgoStatus.Active
         };
     }
     internal MonitoringNgoView SuspendedMonitoringNgo()

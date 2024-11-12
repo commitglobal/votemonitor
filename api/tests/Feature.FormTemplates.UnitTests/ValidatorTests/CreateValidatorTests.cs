@@ -219,7 +219,7 @@ public class CreateValidatorTests
             Code = "A code",
             FormType = FormType.ClosingAndCounting,
             Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
-            Description = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
+            Description = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
         };
 
         // Act

@@ -39,7 +39,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        WHERE mn."ElectionRoundId" = @electionRoundId
                            AND mn."NgoId" = @ngoId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
-                           AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                           AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                            AND (@formType IS NULL OR 'PSI' = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
                            AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -71,7 +71,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        WHERE mn."ElectionRoundId" = @electionRoundId
                            AND mn."NgoId" = @ngoId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
-                           AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                           AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                            AND (@formType IS NULL OR f."FormType" = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
                            AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -190,7 +190,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          ps."Level5",
                          ps."Number",
                          s."MonitoringObserverId",
-                         u."FirstName" || ' ' || u."LastName" AS "ObserverName",
+                         u."DisplayName" AS "ObserverName",
                          u."Email",
                          u."PhoneNumber",
                          mo."Status",
@@ -216,8 +216,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                     AND mn."NgoId" = @ngoId
                     AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                     AND (@searchText IS NULL OR @searchText = '' 
-                         OR u."FirstName" ILIKE @searchText 
-                         OR u."LastName" ILIKE @searchText 
+                         OR u."DisplayName" ILIKE @searchText 
                          OR u."Email" ILIKE @searchText 
                          OR u."PhoneNumber" ILIKE @searchText)
                     AND (@formType IS NULL OR s."FormType" = @formType)
@@ -257,8 +256,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'Level5 DESC' THEN ps."Level5" END DESC,
                       CASE WHEN @sortExpression = 'Number ASC' THEN ps."Number" END ASC,
                       CASE WHEN @sortExpression = 'Number DESC' THEN ps."Number" END DESC,
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN u."FirstName" || ' ' || u."LastName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."FirstName" || ' ' || u."LastName" END DESC,
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN u."DisplayName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."DisplayName" END DESC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN s."NumberOfFlaggedAnswers" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN s."NumberOfFlaggedAnswers" END DESC,
                       CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN s."NumberOfQuestionsAnswered" END ASC,

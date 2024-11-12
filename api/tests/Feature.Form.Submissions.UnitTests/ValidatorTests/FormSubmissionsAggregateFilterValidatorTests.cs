@@ -29,7 +29,7 @@ public class FormSubmissionsAggregateFilterValidatorTests
         // Arrange
         var request = new FormSubmissionsAggregateFilter
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act

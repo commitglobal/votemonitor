@@ -5,7 +5,6 @@ import { QuickReportFollowUpStatus, type FunctionComponent } from '@/common/type
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
@@ -17,10 +16,9 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
-import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
-import { MediaFilesCell } from '../MediaFilesCell/MediaFilesCell';
-import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 import { SubmissionType } from '../../models/common';
+import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();

@@ -173,7 +173,7 @@ public class CreateEndpointTests
             PollingStationId = pollingStationId,
             FormId = formId,
             QuestionId = questionId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -208,7 +208,7 @@ public class CreateEndpointTests
             PollingStationId = pollingStationId,
             FormId = formId,
             QuestionId = questionId,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

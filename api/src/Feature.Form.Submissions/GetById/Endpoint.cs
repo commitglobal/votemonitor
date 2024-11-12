@@ -106,7 +106,7 @@ public class Endpoint(
                          ps."Level5",
                          ps."Number",
                          s."MonitoringObserverId",
-                         u."FirstName" || ' ' || u."LastName" "ObserverName",
+                         u."DisplayName" "ObserverName",
                          u."Email",
                          u."PhoneNumber",
                          mo."Tags",
@@ -135,7 +135,7 @@ public class Endpoint(
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            submissionId = req.SubmissionId,
+            submissionId = req.SubmissionId
         };
 
         Response submission = null;

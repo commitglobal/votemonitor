@@ -8,20 +8,21 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
 #pragma warning disable CS8618 // Required by Entity Framework
     protected ApplicationUser()
     {
-
     }
 #pragma warning restore CS8618
 
     public UserRole Role { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+    public string DisplayName { get; private set; }
     public string? RefreshToken { get; private set; }
     public DateTime RefreshTokenExpiryTime { get; private set; }
     public UserStatus Status { get; private set; }
     public UserPreferences Preferences { get; private set; }
     public string? InvitationToken { get; private set; } = null;
 
-    private ApplicationUser(UserRole role, string firstName, string lastName, string email, string phoneNumber, string password)
+    private ApplicationUser(UserRole role, string firstName, string lastName, string email, string? phoneNumber,
+        string password)
     {
         Role = role;
         FirstName = firstName.Trim();
@@ -30,7 +31,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         UserName = email.Trim();
         NormalizedEmail = email.Trim().ToUpperInvariant();
         NormalizedUserName = email.Trim().ToUpperInvariant();
-        PhoneNumber = phoneNumber.Trim();
+        PhoneNumber = phoneNumber?.Trim();
 
         Status = UserStatus.Active;
         Preferences = UserPreferences.Defaults;
@@ -46,18 +47,21 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         }
     }
 
-    public static ApplicationUser Invite(string firstName, string lastName, string email, string phoneNumber) =>
+    public static ApplicationUser Invite(string firstName, string lastName, string email, string? phoneNumber) =>
         new(UserRole.Observer, firstName, lastName, email, phoneNumber, string.Empty);
 
-    public static ApplicationUser CreatePlatformAdmin(string firstName, string lastName, string email, string phoneNumber, string password) =>
-         new(UserRole.PlatformAdmin, firstName, lastName, email, phoneNumber, password);
+    public static ApplicationUser CreatePlatformAdmin(string firstName, string lastName, string email, string password) =>
+        new(UserRole.PlatformAdmin, firstName, lastName, email, null, password);
 
-    public static ApplicationUser CreateNgoAdmin(string firstName, string lastName, string email, string phoneNumber, string password) =>
-         new(UserRole.NgoAdmin, firstName, lastName, email, phoneNumber, password);
-    public static ApplicationUser CreateObserver(string firstName, string lastName, string email, string phoneNumber, string password) =>
-         new(UserRole.Observer, firstName, lastName, email, phoneNumber, password);
+    public static ApplicationUser CreateNgoAdmin(string firstName, string lastName, string email, string? phoneNumber,
+        string password) =>
+        new(UserRole.NgoAdmin, firstName, lastName, email, phoneNumber, password);
 
-    public void UpdateDetails(string firstName, string lastName, string phoneNumber)
+    public static ApplicationUser CreateObserver(string firstName, string lastName, string email, string? phoneNumber,
+        string password) =>
+        new(UserRole.Observer, firstName, lastName, email, phoneNumber, password);
+
+    public void UpdateDetails(string firstName, string lastName, string? phoneNumber)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -69,6 +73,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         RefreshToken = refreshToken;
         RefreshTokenExpiryTime = refreshTokenExpiryTime;
     }
+
     public void AcceptInvite(string password)
     {
         InvitationToken = null;
@@ -93,6 +98,4 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
     }
-
-
 }

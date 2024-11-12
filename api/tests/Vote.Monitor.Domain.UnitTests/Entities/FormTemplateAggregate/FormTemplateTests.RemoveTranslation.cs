@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Helpers;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
@@ -81,7 +80,7 @@ public partial class FormTests
             new DateQuestionFaker(languages).Generate(),
             new RatingQuestionFaker(languageList: languages).Generate(),
             new SingleSelectQuestionFaker(languageList: languages).Generate(),
-            new MultiSelectQuestionFaker(languageList: languages).Generate(),
+            new MultiSelectQuestionFaker(languageList: languages).Generate()
         ];
 
         var formTemplate = Form.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,

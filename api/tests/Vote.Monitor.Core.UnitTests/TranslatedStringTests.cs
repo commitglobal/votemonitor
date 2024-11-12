@@ -40,7 +40,7 @@ public class TranslatedStringTests
             new object[] { new TranslatedString { { "EN", "Some text" }, { "RO", "Other text" } }, new TranslatedString { { "EN", "Some text" }, { "RO", "Other different text" } } },
             new object[] { new TranslatedString { { "EN", "Some text" } }, new TranslatedString { { "EN", "Some text" }, { "RO", "Other different text" } } },
             new object[] {  new TranslatedString { { "EN", "Some text" }, { "RO", "Other text" } }, new TranslatedString { { "EN", "Some text" } }  },
-            new object[] {  new TranslatedString { { "EN", "Some text" } }, new TranslatedString { { "RO", "Other different text" } }  },
+            new object[] {  new TranslatedString { { "EN", "Some text" } }, new TranslatedString { { "RO", "Other different text" } }  }
         };
 
 }
