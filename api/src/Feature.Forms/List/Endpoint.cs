@@ -69,11 +69,11 @@ public class Endpoint(
                               1
                       )
                   SELECT
-                      COUNT(*) COUNT
+                      COUNT (DISTINCT "Id") COUNT
                   FROM
                       (
                           SELECT
-                              1
+                              F."Id"
                           FROM
                               "CoalitionFormAccess" CFA
                                   JOIN "Forms" F ON CFA."FormId" = F."Id"
@@ -115,10 +115,10 @@ public class Endpoint(
                               @status IS NULL
                                   OR F."Status" = @status
                               )
-                          UNION ALL
+                          UNION
                           -- If not a coalition leader, get published forms specific to the MonitoringNgo
                           SELECT
-                              1
+                              F."Id"
                           FROM
                               "Forms" F
                           WHERE
@@ -126,12 +126,6 @@ public class Endpoint(
                             AND F."MonitoringNgoId" = (
                               SELECT
                                   "MonitoringNgoId"
-                              FROM
-                                  "MonitoringNgoData"
-                          )
-                            AND NOT (
-                              SELECT
-                                  "IsCoalitionLeader"
                               FROM
                                   "MonitoringNgoData"
                           )
@@ -188,7 +182,7 @@ public class Endpoint(
                           LIMIT
                               1
                       )
-                  SELECT
+                  SELECT 
                       F."Id",
                       F."Code",
                       F."Name",
@@ -267,7 +261,7 @@ public class Endpoint(
                               @status IS NULL
                                   OR F."Status" = @status
                               )
-                          UNION ALL
+                          UNION
                           -- If not a coalition leader, get published forms specific to the MonitoringNgo
                           SELECT
                               F."Id",
@@ -293,12 +287,6 @@ public class Endpoint(
                             AND F."MonitoringNgoId" = (
                               SELECT
                                   "MonitoringNgoId"
-                              FROM
-                                  "MonitoringNgoData"
-                          )
-                            AND NOT (
-                              SELECT
-                                  "IsCoalitionLeader"
                               FROM
                                   "MonitoringNgoData"
                           )

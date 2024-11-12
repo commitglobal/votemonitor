@@ -38,8 +38,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
         SELECT
             "Id",
-            "FirstName",
-            "LastName",
+            "DisplayName",
             "PhoneNumber",
             "Email",
             "Tags",
@@ -48,8 +47,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         FROM (
             SELECT
                 MO."Id",
-                U."FirstName",
-                U."LastName",
+                U."DisplayName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
@@ -117,8 +115,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 AND (@status IS NULL OR  mo."Status" = @status)
             GROUP BY
                 MO."Id",
-                U."FirstName",
-                U."LastName",
+                U."DisplayName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
@@ -126,14 +123,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             ) T
 
         ORDER BY
-            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "DisplayName" END ASC,
-            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "DisplayName" END DESC,
-
-            CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,
-            CASE WHEN @sortExpression = 'FirstName DESC' THEN "FirstName" END DESC,
-
-            CASE WHEN @sortExpression = 'LastName ASC' THEN "LastName" END ASC,
-            CASE WHEN @sortExpression = 'LastName DESC' THEN "LastName" END DESC,
+            CASE WHEN @sortExpression = 'DisplayName ASC' THEN "DisplayName" END ASC,
+            CASE WHEN @sortExpression = 'DisplayName DESC' THEN "DisplayName" END DESC,
 
             CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
             CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
@@ -178,26 +169,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return "ObserverName ASC";
+            return "DisplayName ASC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
-        if (string.Equals(sortColumnName, "name", StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.DisplayName), StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"ObserverName {sortOrder}";
+            return $"DisplayName {sortOrder}";
         }
-
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.FirstName), StringComparison.InvariantCultureIgnoreCase))
-        {
-            return $"{nameof(MonitoringObserverModel.FirstName)} {sortOrder}";
-        }
-
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.LastName), StringComparison.InvariantCultureIgnoreCase))
-        {
-            return $"{nameof(MonitoringObserverModel.LastName)} {sortOrder}";
-        }
-
+        
         if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Email), StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(MonitoringObserverModel.Email)} {sortOrder}";
