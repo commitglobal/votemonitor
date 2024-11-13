@@ -36,7 +36,6 @@ export interface FormSubmissionByEntry {
   tags: string[];
   timeSubmitted: string;
   followUpStatus: FormSubmissionFollowUpStatus;
-  isCompleted: boolean;
 }
 
 export interface FormSubmissionByObserver {

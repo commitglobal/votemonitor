@@ -66,14 +66,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn:(row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn: (row)=> row.level1,
     id: 'level1',
@@ -236,14 +228,6 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn: (row) => row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <span>{row.original.isCompleted.toString()}</span>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
@@ -1128,14 +1112,6 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn: (row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn:(row)=> row.pollingStationLevel1,
     id: 'pollingStationLevel1',
@@ -1301,14 +1277,6 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn:(row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location type' column={column} />,

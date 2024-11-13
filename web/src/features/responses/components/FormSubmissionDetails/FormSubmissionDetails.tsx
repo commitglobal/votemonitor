@@ -124,11 +124,6 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 </div>
               </div>
             )}
-
-            <div>
-              <p className='font-bold'>Is completed:</p>
-              {formSubmission.isCompleted.toString()}
-            </div>
           </CardContent>
         </Card>
         {formSubmission.formType === ZFormType.Enum.PSI ? (

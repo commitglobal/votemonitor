@@ -138,11 +138,6 @@ export default function IncidentReportDetails(): FunctionComponent {
                 </div>
               </div>
             )}
-
-            <div>
-              <p className='font-bold'>Is completed:</p>
-              {incidentReport.isCompleted.toString()}
-            </div>
           </CardContent>
         </Card>
 

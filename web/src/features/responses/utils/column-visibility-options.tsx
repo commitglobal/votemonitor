@@ -16,7 +16,6 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   formCode: true,
   formName: true,
   formType: true,
-  isCompleted: true,
   number: true,
   level1: false,
   level2: false,
@@ -71,7 +70,6 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   formCode: true,
   formType: true,
   formName: true,
-  isCompleted: true,
   level1: false,
   level2: false,
   level3: false,
@@ -120,7 +118,6 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const formSubmissionsByObserverColumnVisibilityOptions: ColumnOption<FormSubmissionByObserver>[] = [
@@ -272,7 +269,6 @@ const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReport
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentReportByObserver>[] = [
@@ -310,7 +306,6 @@ export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormS
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
@@ -328,7 +323,6 @@ export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<Incid
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'locationType', label: 'Location type', enableHiding: true },
   { id: 'pollingStationLevel1', label: 'Location - L1', enableHiding: true },
   { id: 'pollingStationLevel2', label: 'Location - L2', enableHiding: true },
@@ -349,7 +343,6 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   timeSubmitted: true,
   formCode: true,
   formName: true,
-  isCompleted: true,
   locationType: true,
   locationDescription: false,
   pollingStationNumber: true,
@@ -401,7 +394,6 @@ export const observerIncidentReportsColumns: TableColumnVisibilityState<Incident
   timeSubmitted: true,
   formCode: true,
   formName: true,
-  isCompleted: true,
   locationType: true,
   locationDescription: false,
   pollingStationLevel1: false,
