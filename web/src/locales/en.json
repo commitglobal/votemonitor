@@ -297,7 +297,15 @@
       "reuse": {
         "title": "Reuse a previous form",
         "description": "Reuse or modify a form from a past election event you have monitored",
-        "buttonText": "Reuse previous form"
+        "buttonText": "Reuse previous form",
+        "reuseForm": "REuse form",
+        "formBaseLanguage": "Base language",
+        "formBaseLanguageErr": "No base language specified",
+        "formDescription": "Description",
+        "formDescriptionErr": "This template has no description",
+        "formOtherLanguages": "Other languages",
+        "formQuestions": "Questions",
+        "formQuestionsErr": "No questions included in this template"
       }
     }
   },

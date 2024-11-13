@@ -16,7 +16,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import PreviewTemplateDialog from './PreviewTemplateDialog';
+import { PreviewTemplateDialog } from './PreviewDialogs';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });

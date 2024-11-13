@@ -7,19 +7,19 @@ import { create } from 'zustand';
 import { FormFull } from './models/form';
 import { formsKeys } from './queries';
 
-export interface PreviewTemplateDialogProps {
+export interface PreviewDialogProps {
   isOpen: boolean;
-  templateId: string;
+  id: string;
   languageCode: string;
   trigger: (templateId: string, languageCode: string) => void;
   dismiss: VoidFunction;
 }
 
-export const usePreviewTemplateDialog = create<PreviewTemplateDialogProps>((set) => ({
+export const usePreviewTemplateDialog = create<PreviewDialogProps>((set) => ({
   isOpen: false,
-  templateId: '',
+  id: '',
   languageCode: '',
-  trigger: (templateId: string, languageCode: string) => set({ templateId, languageCode, isOpen: true }),
+  trigger: (templateId: string, languageCode: string) => set({ id: templateId, languageCode, isOpen: true }),
   dismiss: () => set({ isOpen: false }),
 }));
 
