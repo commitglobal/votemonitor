@@ -1,9 +1,16 @@
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
-import { useFormTemplateDetails } from '@/features/forms/queries';
+import { formDetailsQueryOptions, useFormTemplateDetails } from '@/features/forms/queries';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
-import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import {
+  useCreateFormFromForm,
+  useCreateFormFromFormDialog,
+  useCreateFormFromTemplate,
+  usePreviewTemplateDialog,
+} from '@/features/forms/hooks';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { FC, ReactNode } from 'react';
 import { FormQuestions } from '../../FormQuestions';
 
@@ -119,4 +126,61 @@ export const PreviewTemplateDialog = () => {
   );
 };
 
-export const PreviewFormReuseDialog = () => {};
+export const PreviewFormReuseDialog = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form.template' });
+  const { isOpen, id: formId, languageCode, trigger, dismiss } = useCreateFormFromFormDialog();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+
+  const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
+  const { createForm } = useCreateFormFromForm();
+
+  const onOpenChange = (open: boolean) => {
+    if (open) trigger(formId, languageCode);
+    else dismiss();
+  };
+
+  const filteredLanguages = formData?.languages && formData?.languages.filter((language) => language !== languageCode);
+
+  return (
+    <PreviewFormOrTemplateDialog
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      title={languageCode ? `Preview ${formData?.name[languageCode]}` : ''}
+      details={
+        <>
+          <TemplateDetail
+            name={t('formDescription')}
+            content={formData?.description?.[languageCode]}
+            noContentErrorMessage={t('formDescriptionErr')}
+          />
+          <TemplateDetail
+            name={t('formBaseLanguage')}
+            content={languageCode}
+            noContentErrorMessage={t('formBaseLanguageErr')}
+          />
+
+          {filteredLanguages && filteredLanguages?.length > 0 && (
+            <TemplateDetail name={t('formOtherLanguages')} content={filteredLanguages?.join(', ')} />
+          )}
+        </>
+      }
+      questionsList={
+        <FormQuestions
+          questions={formData?.questions}
+          languageCode={languageCode}
+          title={t('formQuestions')}
+          noContentMessage={t('formQuestionsErr')}
+        />
+      }
+      confirmBtn={
+        <Button
+          onClick={() => createForm({ formId, languageCode })}
+          title={t('useTemplate')}
+          type='submit'
+          className='px-6'>
+          {t('useTemplate')}
+        </Button>
+      }
+    />
+  );
+};

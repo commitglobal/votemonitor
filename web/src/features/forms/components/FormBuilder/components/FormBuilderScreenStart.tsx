@@ -73,7 +73,7 @@ export const FormBuilderScreenStart: FC = () => {
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
         <FormBuilderChoice type='scratch' />
         <FormBuilderChoice type='template' />
-        <FormBuilderChoice type='reuse' />
+        {/* <FormBuilderChoice type='reuse' /> */}
       </div>
     </Layout>
   );

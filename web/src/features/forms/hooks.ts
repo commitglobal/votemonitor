@@ -72,3 +72,62 @@ export const useCreateFormFromTemplate = () => {
 
   return { openFormTemplatePreview, createForm };
 };
+
+export const useCreateFormFromFormDialog = create<PreviewDialogProps>((set) => ({
+  isOpen: false,
+  id: '',
+  languageCode: '',
+  trigger: (formId: string, languageCode: string) => set({ id: formId, languageCode, isOpen: true }),
+  dismiss: () => set({ isOpen: false }),
+}));
+
+type FormReuseDto = {
+  formId: string;
+  languageCode: string;
+};
+
+export const useCreateFormFromForm = () => {
+  const { trigger, dismiss, isOpen } = useCreateFormFromFormDialog();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const createFormFromFormMutation = useMutation({
+    mutationFn: ({ formId, languageCode }: FormReuseDto) => {
+      return authApi.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromForm`, {
+        formId,
+        defaultLanguage: languageCode,
+        languages: [languageCode],
+        formElectionRoundId: currentElectionRoundId,
+      });
+    },
+    onSuccess: (response) => {
+      toast({
+        title: 'Success',
+        description: 'Form created from template',
+      });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
+      navigate({ to: '/forms/$formId/edit', params: { formId: response.data.id } });
+    },
+
+    onError: (err) =>
+      toast({
+        title: 'Error creating form from template',
+        description: 'Please contact tech support',
+        variant: 'destructive',
+      }),
+
+    onSettled: () => {
+      if (isOpen) dismiss();
+    },
+  });
+
+  const createForm = (dto: FormReuseDto) => {
+    return createFormFromFormMutation.mutate(dto);
+  };
+
+  const openReuseFormPreview = (dto: FormReuseDto) => {
+    trigger(dto.formId, dto.languageCode);
+  };
+
+  return { openReuseFormPreview, createForm };
+};
