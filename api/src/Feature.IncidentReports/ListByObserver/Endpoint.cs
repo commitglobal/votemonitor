@@ -38,7 +38,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   WHERE
                       MN."ElectionRoundId" = @electionRoundId
                       AND MN."NgoId" = @ngoId
-                      AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                      AND (@searchText IS NULL 
+                               OR @searchText = '' 
+                               OR u."DisplayName" ILIKE @searchText 
+                               OR u."Email" ILIKE @searchText 
+                               OR u."PhoneNumber" ILIKE @searchText
+                               OR MO."Id"::TEXT ILIKE @searchText)
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
 
                   SELECT "MonitoringObserverId",
@@ -87,7 +92,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                  INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                         WHERE MN."ElectionRoundId" = @electionRoundId
                           AND MN."NgoId" = @ngoId
-                          AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                          AND (@searchText IS NULL 
+                                   OR @searchText = '' 
+                                   OR u."DisplayName" ILIKE @searchText 
+                                   OR u."Email" ILIKE @searchText 
+                                   OR u."PhoneNumber" ILIKE @searchText
+                                   OR MO."Id"::TEXT ILIKE @searchText)
                           AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)) T
                   WHERE (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
                   ORDER BY

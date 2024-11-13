@@ -3,7 +3,7 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
-namespace Feature.Forms;
+namespace Feature.Forms.Models;
 
 public class FormSlimModel
 {
@@ -28,6 +28,8 @@ public class FormSlimModel
 
     public string LastModifiedBy { get; init; }
     public bool IsFormOwner { get; init; }
+    
+    public FormAccessModel[] FormAccess { get; init; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
 }

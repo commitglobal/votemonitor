@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Dapper;
+using Feature.Forms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -37,7 +38,6 @@ public class Endpoint(
                           SELECT
                               MN."ElectionRoundId",
                               MN."Id" AS "MonitoringNgoId",
-                              MN."FormsVersion",
                               -- Check if MonitoringNgo is a coalition leader
                               EXISTS (
                                   SELECT
@@ -106,6 +106,7 @@ public class Endpoint(
                                   OR F."Code" ILIKE @searchText
                                   OR F."Name" ->> F."DefaultLanguage" ILIKE @searchText
                                   OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
+                                  OR F."Id"::TEXT ILIKE @searchText
                               )
                             AND (
                               @type IS NULL
@@ -116,7 +117,6 @@ public class Endpoint(
                                   OR F."Status" = @status
                               )
                           UNION
-                          -- If not a coalition leader, get published forms specific to the MonitoringNgo
                           SELECT
                               F."Id"
                           FROM
@@ -135,6 +135,7 @@ public class Endpoint(
                                   OR F."Code" ILIKE @searchText
                                   OR F."Name" ->> F."DefaultLanguage" ILIKE @searchText
                                   OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
+                                  OR F."Id"::TEXT ILIKE @searchText
                               )
                             AND (
                               @type IS NULL
@@ -151,7 +152,6 @@ public class Endpoint(
                           SELECT
                               MN."ElectionRoundId",
                               MN."Id" AS "MonitoringNgoId",
-                              MN."FormsVersion",
                               -- Check if MonitoringNgo is a coalition leader
                               EXISTS (
                                   SELECT
@@ -196,7 +196,23 @@ public class Endpoint(
                       F."Icon",
                       F."LastModifiedOn",
                       F."LastModifiedBy",
-                      F."IsFormOwner"
+                      F."IsFormOwner",
+                      CASE WHEN f."IsFormOwner" THEN COALESCE(
+                              (SELECT JSONB_AGG(
+                                              JSONB_BUILD_OBJECT(
+                                                      'NgoId',
+                                                      N."Id",
+                                                      'Name',
+                                                      N."Name"
+                                              )
+                                      )
+                               FROM "CoalitionFormAccess" cfa
+                                        inner join "Coalitions" c on c."Id" = cfa."CoalitionId"
+                                        inner join "MonitoringNgos" mn on cfa."MonitoringNgoId" = mn."Id"
+                                        inner join "Ngos" n on mn."NgoId" = n."Id"
+                               WHERE c."ElectionRoundId" = @electionRoundId
+                                 AND cfa."FormId" = F."Id"),
+                              '[]'::JSONB) ELSE '[]'::jsonb END AS "FormAccess"
                   FROM
                       (
                           SELECT
@@ -233,18 +249,8 @@ public class Endpoint(
                               )
                             AND C."ElectionRoundId" = @electionRoundId
                             AND (
-                              (
-                                  SELECT
-                                      "IsInACoalition"
-                                  FROM
-                                      "MonitoringNgoData"
-                              )
-                                  OR (
-                                  SELECT
-                                      "IsCoalitionLeader"
-                                  FROM
-                                      "MonitoringNgoData"
-                              )
+                              (SELECT "IsInACoalition" FROM "MonitoringNgoData") 
+                              OR (SELECT "IsCoalitionLeader" FROM "MonitoringNgoData")
                               )
                             AND (
                               @searchText IS NULL
@@ -252,6 +258,7 @@ public class Endpoint(
                                   OR F."Code" ILIKE @searchText
                                   OR F."Name" ->> F."DefaultLanguage" ILIKE @searchText
                                   OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
+                                  OR F."Id"::TEXT ILIKE @searchText
                               )
                             AND (
                               @type IS NULL
@@ -262,7 +269,6 @@ public class Endpoint(
                                   OR F."Status" = @status
                               )
                           UNION
-                          -- If not a coalition leader, get published forms specific to the MonitoringNgo
                           SELECT
                               F."Id",
                               F."Code",
@@ -277,34 +283,24 @@ public class Endpoint(
                               F."Icon",
                               COALESCE(F."LastModifiedOn", F."CreatedOn") AS "LastModifiedOn",
                               COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy",
-                              false as "IsFormOwner"
+                              true as "IsFormOwner"
                           FROM
                               "Forms" F
                                   INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
                                   LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                           WHERE
                               F."ElectionRoundId" = @electionRoundId
-                            AND F."MonitoringNgoId" = (
-                              SELECT
-                                  "MonitoringNgoId"
-                              FROM
-                                  "MonitoringNgoData"
-                          )
+                            AND F."MonitoringNgoId" = (SELECT "MonitoringNgoId" FROM "MonitoringNgoData")
                             AND (
                               @searchText IS NULL
                                   OR @searchText = ''
                                   OR F."Code" ILIKE @searchText
                                   OR F."Name" ->> F."DefaultLanguage" ILIKE @searchText
                                   OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
+                                  OR F."Id"::TEXT ILIKE @searchText
                               )
-                            AND (
-                              @type IS NULL
-                                  OR F."FormType" = @type
-                              )
-                            AND (
-                              @status IS NULL
-                                  OR F."Status" = @status
-                              )
+                            AND (@type IS NULL OR F."FormType" = @type)
+                            AND (@status IS NULL OR F."Status" = @status)
                       ) F
                   WHERE
                       (
@@ -313,6 +309,7 @@ public class Endpoint(
                               OR F."Code" ILIKE @searchText
                               OR F."Name" ->> F."DefaultLanguage" ILIKE @searchText
                               OR F."Description" ->> F."DefaultLanguage" ILIKE @searchText
+                              OR F."Id"::TEXT ILIKE @searchText
                           )
                     AND (
                       @type IS NULL

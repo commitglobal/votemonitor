@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Form.Module.Mappers;
 using Vote.Monitor.Form.Module.Models;
 
-namespace Feature.Forms;
+namespace Feature.Forms.Models;
 
 public class FormFullModel
 {

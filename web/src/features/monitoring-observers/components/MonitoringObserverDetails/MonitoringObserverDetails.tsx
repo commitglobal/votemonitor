@@ -37,7 +37,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
   return (
     <Layout
       backButton={<MonitorObserverBackButton />}
-      title={`${monitoringObserver.firstName} ${monitoringObserver.lastName}`}>
+      title={`${monitoringObserver.displayName}`}>
       <Tabs defaultValue='details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-4 bg-gray-200 w-[800px] mb-4'>
           <TabsTrigger value='details'>Observer details</TabsTrigger>

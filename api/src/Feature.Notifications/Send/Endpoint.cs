@@ -134,7 +134,7 @@ public class Endpoint(
                   LEFT JOIN "NotificationTokens" NT ON NT."ObserverId" = OA."ObserverId"
                   WHERE (@searchText IS NULL
                          OR @searchText = ''
-                         OR (U."DisplayName") ILIKE @searchText
+                         OR U."DisplayName" ILIKE @searchText
                          OR U."Email" ILIKE @searchText
                          OR u."PhoneNumber" ILIKE @searchText
                          OR mo."Id"::text ILIKE @searchText)

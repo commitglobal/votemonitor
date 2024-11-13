@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Feature.Forms;
 using Feature.Forms.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Fakers;
@@ -115,8 +114,8 @@ public class FormAccessTests : BaseApiTestFixture
         var coalitionId = scenarioData.ElectionRound.CoalitionId;
         var formId = scenarioData.ElectionRound.MonitoringNgoByName(Ngos.Alfa).FormId;
 
-        scenarioData.NgoByName(Ngos.Alfa).Admin.PostWithoutResponse(
-            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+        scenarioData.NgoByName(Ngos.Alfa).Admin
+            .PutWithoutResponse($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
             new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
 
         // Assert
@@ -165,8 +164,8 @@ public class FormAccessTests : BaseApiTestFixture
         var coalitionId = scenarioData.ElectionRound.CoalitionId;
         var formId = scenarioData.ElectionRound.MonitoringNgoByName(Ngos.Alfa).FormId;
 
-        scenarioData.NgoByName(Ngos.Alfa).Admin.PostWithoutResponse(
-            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+        scenarioData.NgoByName(Ngos.Alfa).Admin
+            .PutWithoutResponse($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
             new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
 
         var pollingStationId = scenarioData.ElectionRound.PollingStationByName(PollingStations.Iasi);
@@ -183,6 +182,35 @@ public class FormAccessTests : BaseApiTestFixture
         submissionId.Should().HaveStatusCode(HttpStatusCode.OK);
     }
     
+    [Test]
+    public void ShouldGrantFormAccess_WhenFormIsSharedWithOtherCoalitionMembers()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithNgo(Ngos.Alfa)
+            .WithNgo(Ngos.Beta)
+            .WithNgo(Ngos.Delta)
+            .WithElectionRound(ElectionRounds.A,
+                er => er
+                    .WithCoalition(Coalitions.Youth, Ngos.Alfa, [Ngos.Beta, Ngos.Delta], c=>c.WithForm(sharedWithMembers:[Ngos.Beta])))
+            .Please();
+
+        // Act
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var coalitionId = scenarioData.ElectionRound.CoalitionId;
+        var formId = scenarioData.ElectionRound.Coalition.FormId;
+
+        scenarioData.NgoByName(Ngos.Alfa).Admin
+            .PutWithoutResponse($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+            new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Delta) } });
+        
+        // Assert
+        var deltaForms = scenarioData
+            .NgoByName(Ngos.Delta).Admin
+            .GetResponse<PagedResponse<FormSlimModel>>($"/api/election-rounds/{electionRoundId}/forms");
+
+        deltaForms.Items.Should().HaveCount(1);
+    }
     
     [Test]
     public async Task ShouldNotUpdateFormAccess_WhenCoalitionMember()
@@ -197,8 +225,8 @@ public class FormAccessTests : BaseApiTestFixture
         var coalitionId = scenarioData.ElectionRound.CoalitionId;
         var formId = scenarioData.ElectionRound.Coalition.FormId;
 
-        var response = await scenarioData.NgoByName(Ngos.Beta).Admin.PostAsJsonAsync(
-            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+        var response = await scenarioData.NgoByName(Ngos.Beta).Admin
+            .PutAsJsonAsync($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
             new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
 
         response.Should().HaveStatusCode(HttpStatusCode.NotFound);
@@ -224,8 +252,8 @@ public class FormAccessTests : BaseApiTestFixture
         var coalitionId = scenarioData.ElectionRound.CoalitionId;
         var formId = scenarioData.ElectionRound.Coalition.FormId;
 
-        var response = await scenarioData.ObserverByName(Observers.Alice).PostAsJsonAsync(
-            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+        var response = await scenarioData.ObserverByName(Observers.Alice)
+            .PutAsJsonAsync($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
             new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
 
         response.Should().HaveStatusCode(HttpStatusCode.Forbidden);
@@ -245,8 +273,8 @@ public class FormAccessTests : BaseApiTestFixture
         var coalitionId = scenarioData.ElectionRound.CoalitionId;
         var formId = scenarioData.ElectionRound.Coalition.FormId;
 
-        var response = await CreateClient().PostAsJsonAsync(
-            $"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
+        var response = await CreateClient()
+            .PutAsJsonAsync($"/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access",
             new { NgoMembersIds = new[] { scenarioData.NgoIdByName(Ngos.Beta) } });
 
         response.Should().HaveStatusCode(HttpStatusCode.Unauthorized);

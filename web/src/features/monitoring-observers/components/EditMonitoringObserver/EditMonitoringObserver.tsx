@@ -97,7 +97,7 @@ export default function EditObserver() {
 
   return (
     <Layout
-      title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}
+      title={`Edit ${monitoringObserver.displayName}`}
       backButton={<MonitorObserverBackButton />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>

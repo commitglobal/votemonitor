@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Feature.Forms;
+using Feature.Forms.Models;
 using Feature.NgoCoalitions.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;

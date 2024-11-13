@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
+using Feature.Forms.Models;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;

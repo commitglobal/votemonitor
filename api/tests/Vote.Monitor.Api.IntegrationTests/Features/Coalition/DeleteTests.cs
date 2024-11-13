@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Feature.Form.Submissions.ListEntries;
-using Feature.Forms;
+using Feature.Forms.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Core.Models;

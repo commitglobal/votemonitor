@@ -32,7 +32,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         WHERE
             MN."ElectionRoundId" = @electionRoundId
             AND MN."NgoId" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR (U."DisplayName") ILIKE @searchText OR U."Email" ILIKE @searchText OR U."PhoneNumber" ILIKE @searchText)
+            AND (@searchText IS NULL 
+                     OR @searchText = '' 
+                     OR U."DisplayName" ILIKE @searchText 
+                     OR U."Email" ILIKE @searchText 
+                     OR U."PhoneNumber" ILIKE @searchText
+                     OR MO."Id"::TEXT ILIKE @searchText)
             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
             AND (@status IS NULL OR  mo."Status" = @status);
 
@@ -110,7 +115,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             WHERE
                 MN."ElectionRoundId" = @electionRoundId
                 AND MN."NgoId" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR (U."DisplayName") ILIKE @searchText OR U."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                AND (@searchText IS NULL 
+                         OR @searchText = '' 
+                         OR U."DisplayName" ILIKE @searchText 
+                         OR U."Email" ILIKE @searchText 
+                         OR u."PhoneNumber" ILIKE @searchText
+                         OR MO."Id"::TEXT ILIKE @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
                 AND (@status IS NULL OR  mo."Status" = @status)
             GROUP BY

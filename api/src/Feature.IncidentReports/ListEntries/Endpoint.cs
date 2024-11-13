@@ -48,6 +48,7 @@ public class Endpoint(
                           OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
+                          OR MO."Id"::TEXT ILIKE @searchText
                       )
                     AND (@level1 IS NULL OR PS."Level1" = @level1)
                     AND (@level2 IS NULL OR PS."Level2" = @level2)
@@ -195,6 +196,7 @@ public class Endpoint(
                           OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
+                          OR MO."Id"::TEXT ILIKE @searchText
                       )
                     AND (@level1 IS NULL OR PS."Level1" = @level1)
                     AND (@level2 IS NULL OR PS."Level2" = @level2)

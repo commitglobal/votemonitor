@@ -4,7 +4,6 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Authorization.Policies;
 using CsvHelper;
 using Dapper;
-using Feature.MonitoringObservers.Parser;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 

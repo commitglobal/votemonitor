@@ -39,7 +39,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        WHERE mn."ElectionRoundId" = @electionRoundId
                            AND mn."NgoId" = @ngoId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
-                           AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                           AND (@searchText IS NULL 
+                                    OR @searchText = '' 
+                                    OR u."DisplayName" ILIKE @searchText 
+                                    OR u."Email" ILIKE @searchText
+                                    OR u."PhoneNumber" ILIKE @searchText
+                                    OR mo."Id"::TEXT ILIKE  @searchText)
                            AND (@formType IS NULL OR 'PSI' = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
                            AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -71,7 +76,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        WHERE mn."ElectionRoundId" = @electionRoundId
                            AND mn."NgoId" = @ngoId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
-                           AND (@searchText IS NULL OR @searchText = '' OR u."DisplayName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                           AND (@searchText IS NULL 
+                                    OR @searchText = '' 
+                                    OR u."DisplayName" ILIKE @searchText 
+                                    OR u."Email" ILIKE @searchText 
+                                    OR u."PhoneNumber" ILIKE @searchText
+                                    OR mo."Id"::TEXT ILIKE  @searchText)
                            AND (@formType IS NULL OR f."FormType" = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
                            AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -218,7 +228,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                     AND (@searchText IS NULL OR @searchText = '' 
                          OR u."DisplayName" ILIKE @searchText 
                          OR u."Email" ILIKE @searchText 
-                         OR u."PhoneNumber" ILIKE @searchText)
+                         OR u."PhoneNumber" ILIKE @searchText
+                         OR mo."Id"::TEXT ILIKE  @searchText)
                     AND (@formType IS NULL OR s."FormType" = @formType)
                     AND (@level1 IS NULL OR ps."Level1" = @level1)
                     AND (@level2 IS NULL OR ps."Level2" = @level2)

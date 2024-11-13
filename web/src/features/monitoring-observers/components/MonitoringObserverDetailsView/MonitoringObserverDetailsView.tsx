@@ -44,7 +44,7 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
         <div className='flex flex-col gap-1'>
           <p className='font-bold text-gray-700'>Name</p>
           <p className='font-normal text-gray-900'>
-            {monitoringObserver.firstName} {monitoringObserver.lastName}
+            {monitoringObserver.displayName}
           </p>
         </div>
         <div className='flex flex-col gap-1'>

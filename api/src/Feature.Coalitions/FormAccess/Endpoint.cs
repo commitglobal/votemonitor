@@ -13,7 +13,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access");
+        Put("/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}/forms/{formId}:access");
         DontAutoTag();
         Options(x => x.WithTags("coalitions"));
         Policies(PolicyNames.NgoAdminsOnly);
@@ -62,7 +62,7 @@ public class Endpoint(
             .Distinct()
             .ToList();
 
-        var monitoringNgosWithAccessToForm = await context.MonitoringNgos
+        var coalitionMonitoringNgoIds = await context.MonitoringNgos
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && requestNgoMembers.Contains(x.NgoId)
                         && coalitionMembersIds.Contains(x.Id))
@@ -71,11 +71,11 @@ public class Endpoint(
 
         var ngosWithRevokedAccess =
             coalition.FormAccess
-                .Where(x => !monitoringNgosWithAccessToForm.Contains(x.MonitoringNgoId))
+                .Where(x => !coalitionMonitoringNgoIds.Contains(x.MonitoringNgoId))
                 .ToList();
 
-        var ngosWithFormAccess =
-            monitoringNgosWithAccessToForm.Where(x => coalition.FormAccess.All(fa => fa.MonitoringNgoId != x))
+        var ngosGainedFormAccess =
+            coalitionMonitoringNgoIds.Where(x => coalition.FormAccess.All(fa => fa.MonitoringNgoId != x))
                 .Select(id => CoalitionFormAccess.Create(coalition.Id, id, req.FormId))
                 .ToList();
         
@@ -83,12 +83,16 @@ public class Endpoint(
         {
             context.CoalitionFormAccess.RemoveRange(ngosWithRevokedAccess);
             
-            await Task.WhenAll(ngosWithRevokedAccess.Select(memberId => cleanupService.CleanupFormSubmissionsAsync(req.ElectionRoundId, req.CoalitionId, memberId.MonitoringNgoId, form.Id)));
+            foreach (var memberId in ngosWithRevokedAccess)
+            {
+                await cleanupService.CleanupFormSubmissionsAsync(
+                    req.ElectionRoundId, req.CoalitionId, memberId.MonitoringNgoId, form.Id);
+            }
         }
 
-        if (ngosWithFormAccess.Any())
+        if (ngosGainedFormAccess.Any())
         {
-            await context.CoalitionFormAccess.AddRangeAsync(ngosWithFormAccess, ct);
+            await context.CoalitionFormAccess.AddRangeAsync(ngosGainedFormAccess, ct);
         }
 
         await context.SaveChangesAsync(ct);

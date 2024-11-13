@@ -245,6 +245,11 @@ export const citizenReportsDefaultColumns: TableColumnVisibilityState<CitizenRep
   notesCount: false,
   mediaFilesCount: false,
   followUpStatus: true,
+  level1: true,
+  level2: true,
+  level3: true,
+  level4: true,
+  level5: true,
   // delete,
   formDefaultLanguage: false,
 };

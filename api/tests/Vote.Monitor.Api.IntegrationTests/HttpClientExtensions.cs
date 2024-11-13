@@ -34,6 +34,22 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
     }
+    
+    public static void PutWithoutResponse(
+        this HttpClient client,
+        [StringSyntax("Uri")] string? requestUri,
+        object value)
+    {
+        var response = client.PutAsJsonAsync(requestUri, value, new JsonSerializerOptions()).GetAwaiter().GetResult();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TestContext.Out.WriteLine(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        }
+
+        response.EnsureSuccessStatusCode();
+    }
+
     public static TResponse PostWithResponse<TResponse>(
         this HttpClient client,
         [StringSyntax("Uri")] string? requestUri,

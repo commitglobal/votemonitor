@@ -12,6 +12,8 @@ export enum MonitoringObserverStatus {
 
 export interface MonitoringObserver {
   id: string;
+  firstName: string;
+  lastName: string;
   displayName: string;
   email: string;
   status: MonitoringObserverStatus;

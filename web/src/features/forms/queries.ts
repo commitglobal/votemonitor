@@ -3,6 +3,8 @@ import { DataTableParameters, PageResponse } from '@/common/types';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { FormBase, FormFull } from './models/form';
 import { buildURLSearchParams } from '@/lib/utils';
+import { queryClient } from '@/main';
+const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formsKeys = {
   all: (electionRoundId: string) => ['forms', electionRoundId] as const,
@@ -11,6 +13,7 @@ export const formsKeys = {
     [...formsKeys.lists(electionRoundId), { ...params }] as const,
   details: (electionRoundId: string) => [...formsKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) => [...formsKeys.details(electionRoundId), id] as const,
+  baseDetails: (electionRoundId: string, id: string) => [...formsKeys.details(electionRoundId), 'base', id] as const,
 };
 
 export const formDetailsQueryOptions = (electionRoundId: string, formId: string) => {
@@ -58,8 +61,13 @@ export function useForms(
         throw new Error('Failed to fetch forms');
       }
 
+      response.data.items.forEach((form) => {
+        queryClient.setQueryData(formsKeys.baseDetails(electionRoundId, form.id), form);
+      });
+
       return response.data;
     },
     enabled: !!electionRoundId,
+    staleTime: STALE_TIME
   });
 }
