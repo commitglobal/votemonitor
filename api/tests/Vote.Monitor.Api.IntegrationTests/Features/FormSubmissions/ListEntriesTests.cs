@@ -14,21 +14,16 @@ using static ApiTesting;
 
 public class ListEntriesTests : BaseApiTestFixture
 {
-    private readonly DateTime _now = DateTime.UtcNow.AddDays(1000);
-    private ScenarioData _scenarioData;
-    private Guid _electionRoundId;
-    private Guid _alfaFormId;
-    private Guid _coalitionFormId;
-    private Guid _psIasiId;
-    private Guid _psBacauId;
-    private Guid _psClujId;
-    private List<BaseQuestionRequest> _alfaFormQuestions;
-    private List<BaseQuestionRequest> _coalitionFormQuestions;
+    private static readonly DateTime _now = DateTime.UtcNow.AddDays(1000);
+    private readonly DateTime _firstSubmissionAt = _now.AddDays(-5);
+    private readonly DateTime _secondSubmissionAt = _now.AddDays(-3);
+    private readonly DateTime _thirdSubmissionAt = _now.AddDays(-1);
 
-    [SetUp]
-    public void Setup()
+    [Test]
+    public void ShouldNotIncludeCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceNgo()
     {
-        _scenarioData = ScenarioBuilder.New(CreateClient)
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithObserver(ScenarioObserver.Alice)
             .WithObserver(ScenarioObserver.Bob)
             .WithNgo(ScenarioNgos.Alfa)
@@ -45,59 +40,50 @@ public class ListEntriesTests : BaseApiTestFixture
                 ))
             .Please();
 
-        var firstSubmissionAt = _now.AddDays(-5);
-        var secondSubmissionAt = _now.AddDays(-3);
-        var thirdSubmissionAt = _now.AddDays(-1);
-
         ApiTimeProvider.UtcNow
-            .Returns(firstSubmissionAt, secondSubmissionAt, thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
-        _electionRoundId = _scenarioData.ElectionRoundId;
-        _alfaFormId = _scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
-        _coalitionFormId = _scenarioData.ElectionRound.Coalition.FormId;
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
 
-        _psIasiId = _scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
-        _psBacauId = _scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
-        _psClujId = _scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
+        var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
+        var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
+        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
 
-        _alfaFormQuestions = _scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
-        _coalitionFormQuestions = _scenarioData.ElectionRound.Coalition.Form.Questions;
-    }
+        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
+        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
 
-    [Test]
-    public void ShouldNotIncludeCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceNgo()
-    {
-        // Arrange
         var iasiSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psIasiId, _coalitionFormQuestions).Generate();
-        var clujSubmission = new FormSubmissionRequestFaker(_alfaFormId, _psClujId, _alfaFormQuestions).Generate();
+            new FormSubmissionRequestFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
+        var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
         var bacauSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psBacauId, _coalitionFormQuestions).Generate();
+            new FormSubmissionRequestFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
 
-        var alice = _scenarioData.ElectionRound
+        var alice = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Alfa)
             .ObserverByName(ScenarioObserver.Alice);
 
-        var bob = _scenarioData.ElectionRound
+        var bob = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Beta)
             .ObserverByName(ScenarioObserver.Bob);
 
         var firstSubmission = alice.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             clujSubmission);
 
         var secondSubmission = alice.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             iasiSubmission);
 
         var thirdSubmission = bob.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             bacauSubmission);
 
         // Act
-        var alfaNgoFormSubmissions = _scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+        var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{_electionRoundId}/form-submissions:byEntry?dataSource=Ngo");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Ngo");
 
         // Assert
         alfaNgoFormSubmissions.Items
@@ -111,36 +97,67 @@ public class ListEntriesTests : BaseApiTestFixture
     public void ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
-        var iasiSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psIasiId, _coalitionFormQuestions).Generate();
-        var clujSubmission = new FormSubmissionRequestFaker(_alfaFormId, _psClujId, _alfaFormQuestions).Generate();
-        var bacauSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psBacauId, _coalitionFormQuestions).Generate();
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
+                    .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
+                    .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
+                ))
+            .Please();
 
-        var alice = _scenarioData.ElectionRound
+        ApiTimeProvider.UtcNow
+            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
+
+        var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
+        var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
+        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
+
+        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
+        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
+
+        var iasiSubmission =
+            new FormSubmissionRequestFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
+        var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
+        var bacauSubmission =
+            new FormSubmissionRequestFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
+
+        var alice = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Alfa)
             .ObserverByName(ScenarioObserver.Alice);
 
-        var bob = _scenarioData.ElectionRound
+        var bob = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Beta)
             .ObserverByName(ScenarioObserver.Bob);
 
         var firstSubmission = alice.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             clujSubmission);
 
         var secondSubmission = alice.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             iasiSubmission);
 
         var thirdSubmission = bob.Client.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             bacauSubmission);
 
         // Act
-        var alfaNgoFormSubmissions = _scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+        var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{_electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
 
         // Assert
         alfaNgoFormSubmissions.Items
@@ -161,31 +178,61 @@ public class ListEntriesTests : BaseApiTestFixture
     public void ShouldAlwaysGetOnlyNgoResponses_WhenGettingSubmissionsAsCoalitionMember(DataSource dataSource)
     {
         // Arrange
-        var iasiSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psIasiId, _coalitionFormQuestions).Generate();
-        var clujSubmission = new FormSubmissionRequestFaker(_alfaFormId, _psClujId, _alfaFormQuestions).Generate();
-        var bacauSubmission =
-            new FormSubmissionRequestFaker(_coalitionFormId, _psBacauId, _coalitionFormQuestions).Generate();
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
+                    .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
+                    .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
+                ))
+            .Please();
 
-        var alice = _scenarioData.ObserverByName(ScenarioObserver.Alice);
-        var bob = _scenarioData.ObserverByName(ScenarioObserver.Bob);
+        ApiTimeProvider.UtcNow
+            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
+
+        var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
+        var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
+        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
+
+        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
+        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
+        var iasiSubmission =
+            new FormSubmissionRequestFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
+        var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
+        var bacauSubmission =
+            new FormSubmissionRequestFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
+
+        var alice = scenarioData.ObserverByName(ScenarioObserver.Alice);
+        var bob = scenarioData.ObserverByName(ScenarioObserver.Bob);
 
         var firstSubmission = alice.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             clujSubmission);
 
         var secondSubmission = bob.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             iasiSubmission);
 
         var thirdSubmission = bob.PostWithResponse<ResponseWithId>(
-            $"/api/election-rounds/{_electionRoundId}/form-submissions",
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
             bacauSubmission);
 
         // Act
-        var betaNgoFormSubmissions = _scenarioData.NgoByName(ScenarioNgos.Beta).Admin
+        var betaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Beta).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{_electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
 
         // Assert
         betaNgoFormSubmissions.Items
@@ -195,9 +242,8 @@ public class ListEntriesTests : BaseApiTestFixture
             .And.BeEquivalentTo([secondSubmission.Id, thirdSubmission.Id]);
     }
     
-    
     [TestCaseSource(typeof(DataSourcesTestCases))]
-    public void ShouldAGetOnlyNgoResponses_WhenGettingSubmissionsAndNotInCoalition(DataSource dataSource)
+    public void ShouldAGetOnlyNgoResponses_WhenGettingSubmissions_AsIndependentNgo(DataSource dataSource)
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -209,21 +255,23 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Alice))
-                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
+                .WithMonitoringNgo(ScenarioNgos.Alfa,
+                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Alice))
+                .WithMonitoringNgo(ScenarioNgos.Beta,
+                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
             .Please();
-        
+
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
         var betaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).FormId;
-        
+
         var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
         var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
-        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj); 
-        
+        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
+
         var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
         var betaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).Form.Questions;
-        
+
         var iasiSubmission =
             new FormSubmissionRequestFaker(alfaFormId, psIasiId, alfaFormQuestions).Generate();
         var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
@@ -249,7 +297,7 @@ public class ListEntriesTests : BaseApiTestFixture
         var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
-        
+
         var betaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Beta).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
@@ -259,8 +307,8 @@ public class ListEntriesTests : BaseApiTestFixture
             .Select(x => x.SubmissionId)
             .Should()
             .HaveCount(2)
-            .And.BeEquivalentTo([firstSubmission.Id, secondSubmission.Id]);        
-        
+            .And.BeEquivalentTo([firstSubmission.Id, secondSubmission.Id]);
+
         betaNgoFormSubmissions.Items
             .Select(x => x.SubmissionId)
             .Should()

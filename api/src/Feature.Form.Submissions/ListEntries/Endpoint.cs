@@ -138,7 +138,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                      Inner join "MonitoringNgos" mn on mnd."MonitoringNgoId" = mn."Id"
                                                      INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
                                             WHERE MND."CoalitionId" IS NOT NULL
-                                              and mnd."IsCoalitionLeader"
                                               -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
                                               AND (
                                                 (
@@ -375,7 +374,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                      INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
                                                      inner join "MonitoringNgos" mn on mn."Id" = mnd."MonitoringNgoId"
                                             WHERE MND."CoalitionId" IS NOT NULL
-                                              and mnd."IsCoalitionLeader"
                                               -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
                                               AND (
                                                 (
