@@ -74,7 +74,6 @@ export default function FormSubmissionsTab(): FunctionComponent {
       ['formId', search.formId],
       ['fromDateFilter', search.submissionsFromDate?.toISOString()],
       ['toDateFilter', search.submissionsToDate?.toISOString()],
-      ['isCompletedFilter', search.formIsCompleted],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);

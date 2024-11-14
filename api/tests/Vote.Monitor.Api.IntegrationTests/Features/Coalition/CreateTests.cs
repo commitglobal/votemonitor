@@ -19,7 +19,7 @@ public class CreateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A)
+            .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
         var coalitionName = Guid.NewGuid().ToString();
@@ -50,7 +50,7 @@ public class CreateTests : BaseApiTestFixture
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
             .WithNgo(Ngos.Delta)
-            .WithElectionRound(ElectionRounds.A,
+            .WithElectionRound(ScenarioElectionRound.A,
                 electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa).WithMonitoringNgo(Ngos.Beta))
             .Please();
 
@@ -83,7 +83,7 @@ public class CreateTests : BaseApiTestFixture
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
             .WithNgo(Ngos.Delta)
-            .WithElectionRound(ElectionRounds.A,
+            .WithElectionRound(ScenarioElectionRound.A,
                 electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa).WithMonitoringNgo(Ngos.Beta))
             .Please();
 
@@ -115,7 +115,7 @@ public class CreateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A,
+            .WithElectionRound(ScenarioElectionRound.A,
                 electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa, ngo => ngo.WithForm("A")))
             .Please();
 
@@ -142,7 +142,7 @@ public class CreateTests : BaseApiTestFixture
     public async Task NgoAdmin_CannotCreateCoalition()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithElectionRound(ElectionRounds.A)
+            .WithElectionRound(ScenarioElectionRound.A)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
             .Please();
@@ -165,10 +165,10 @@ public class CreateTests : BaseApiTestFixture
     public async Task Observer_CannotCreateCoalition()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithObserver(Observers.Alice)
+            .WithObserver(ScenarioObserver.Alice)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A)
+            .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -191,7 +191,7 @@ public class CreateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A)
+            .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;

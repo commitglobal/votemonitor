@@ -1,3 +1,4 @@
+using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Models;
 
 namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
@@ -6,7 +7,7 @@ public class MonitoringNgoScenarioBuilder
 {
     public Guid ElectionRoundId { get; }
     private readonly Dictionary<string, MonitoringNgoFormScenarioBuilder> _forms = new();
-    private readonly Dictionary<string, HttpClient> _monitoringObservers = new();
+    private readonly Dictionary<ScenarioObserver, HttpClient> _monitoringObservers = new();
     public readonly Guid MonitoringNgoId;
     public readonly ElectionRoundScenarioBuilder ParentBuilder;
     private readonly HttpClient _platformAdmin;
@@ -51,17 +52,17 @@ public class MonitoringNgoScenarioBuilder
         return this;
     }
 
-    public MonitoringNgoScenarioBuilder WithMonitoringObserver(string observerEmail)
+    public MonitoringNgoScenarioBuilder WithMonitoringObserver(ScenarioObserver observer)
     {
-        var observer = ParentBuilder.ParentBuilder.ObserverByName(observerEmail);
-        var observerId = ParentBuilder.ParentBuilder.ObserverIdByName(observerEmail);
+        var observerClient = ParentBuilder.ParentBuilder.ObserverByName(observer);
+        var observerId = ParentBuilder.ParentBuilder.ObserverIdByName(observer);
 
         _platformAdmin
             .PostWithResponse<ResponseWithId>(
                 $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/monitoring-ngos/{MonitoringNgoId}/monitoring-observers"
                 , new { observerId = observerId });
 
-        _monitoringObservers.Add(observerEmail, observer);
+        _monitoringObservers.Add(observer, observerClient);
         return this;
     }
 }

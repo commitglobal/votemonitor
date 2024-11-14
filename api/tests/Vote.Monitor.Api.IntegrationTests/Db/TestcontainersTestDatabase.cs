@@ -37,8 +37,7 @@ public class TestcontainersTestDatabase : ITestDatabase
             .UseNpgsql(_connectionString)
             .Options;
 
-        var context = new VoteMonitorContext(options, new SerializerService(NullLogger<SerializerService>.Instance),
-            new CurrentUtcTimeProvider(), new NoopCurrentUserProvider());
+        var context = new VoteMonitorContext(options);
 
         context.Database.Migrate();
 

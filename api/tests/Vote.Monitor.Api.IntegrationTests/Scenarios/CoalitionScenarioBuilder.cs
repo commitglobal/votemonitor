@@ -1,4 +1,5 @@
 ﻿using Feature.NgoCoalitions.Models;
+using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Models;
 
 namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
@@ -23,10 +24,10 @@ public class CoalitionScenarioBuilder
 
     public Guid CoalitionId => _coalition.Id;
 
-    public CoalitionScenarioBuilder WithForm(string? formCode = null, string[]? sharedWithMembers = null,
+    public CoalitionScenarioBuilder WithForm(string? formCode = null, ScenarioNgo[]? sharedWithMembers = null,
         Action<CoalitionFormScenarioBuilder>? cfg = null)
     {
-        sharedWithMembers ??= Array.Empty<string>();
+        sharedWithMembers ??= Array.Empty<ScenarioNgo>();
         formCode ??= Guid.NewGuid().ToString();
         
         var formRequest = Dummy.Form();
@@ -44,7 +45,7 @@ public class CoalitionScenarioBuilder
 
         var members = sharedWithMembers.Select(member => ParentBuilder.ParentBuilder.NgoIdByName(member))
             .ToList();
-        _coalitionLeaderAdminAdmin.PostWithoutResponse(
+        _coalitionLeaderAdminAdmin.PutWithoutResponse(
             $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/coalitions/{CoalitionId}/forms/{ngoForm.Id}:access",
             new
             {
@@ -59,9 +60,9 @@ public class CoalitionScenarioBuilder
         return this;
     }
 
-    public CoalitionScenarioBuilder WithMonitoringObserver(string ngo, string observerEmail)
+    public CoalitionScenarioBuilder WithMonitoringObserver(ScenarioNgo ngo, ScenarioObserver observer)
     {
-        var observerId = ParentBuilder.ParentBuilder.ObserverIdByName(observerEmail);
+        var observerId = ParentBuilder.ParentBuilder.ObserverIdByName(observer);
 
         _platformAdmin
             .PostWithResponse<ResponseWithId>(
@@ -71,7 +72,8 @@ public class CoalitionScenarioBuilder
         return this;
     }
 
-    public CoalitionFormScenarioBuilder Form => _forms.First().Value;
+    public CreateFormRequest Form => _forms.First().Value.Form;
+    public CoalitionFormScenarioBuilder FormData => _forms.First().Value;
     public Guid FormId => _forms.First().Value.FormId;
-    public CoalitionFormScenarioBuilder FormByCode(string formCode) => _forms[formCode];
+    public CreateFormRequest FormByCode(string formCode) => _forms[formCode].Form;
 }

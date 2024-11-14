@@ -1,5 +1,7 @@
 using Feature.NgoCoalitions.Models;
+using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Models;
+using ListMonitoringNgos = Feature.Monitoring.List.Response;
 
 namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
 
@@ -7,16 +9,16 @@ public class ElectionRoundScenarioBuilder
 {
     public Guid ElectionRoundId { get; }
 
-    private readonly Dictionary<string, Guid> _pollingStations = new();
-    private readonly Dictionary<string, MonitoringNgoScenarioBuilder> _monitoringNgos = new();
-    private readonly Dictionary<string, CoalitionScenarioBuilder> _coalitions = new();
+    private readonly Dictionary<ScenarioPollingStation, Guid> _pollingStations = new();
+    private readonly Dictionary<ScenarioNgo, MonitoringNgoScenarioBuilder> _monitoringNgos = new();
+    private readonly Dictionary<ScenarioCoalition, CoalitionScenarioBuilder> _coalitions = new();
 
     private readonly HttpClient _platformAdmin;
     public readonly ScenarioBuilder ParentBuilder;
 
-    public ElectionRoundScenarioBuilder WithPollingStation(string name)
+    public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation)
     {
-        var pollingStation = _platformAdmin.PostWithResponse<ResponseWithId>(
+        var createdPollingStation = _platformAdmin.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{ElectionRoundId}/polling-stations",
             new
             {
@@ -27,7 +29,7 @@ public class ElectionRoundScenarioBuilder
                 Tags = new { }
             });
 
-        _pollingStations[name] = pollingStation.Id;
+        _pollingStations[pollingStation] = createdPollingStation.Id;
         return this;
     }
 
@@ -40,7 +42,7 @@ public class ElectionRoundScenarioBuilder
         _platformAdmin = platformAdmin;
     }
 
-    public ElectionRoundScenarioBuilder WithMonitoringNgo(string ngo,
+    public ElectionRoundScenarioBuilder WithMonitoringNgo(ScenarioNgo ngo,
         Action<MonitoringNgoScenarioBuilder>? cfg = null)
     {
         var monitoringNgo = _platformAdmin.PostWithResponse<ResponseWithId>(
@@ -58,7 +60,7 @@ public class ElectionRoundScenarioBuilder
         return this;
     }
 
-    public ElectionRoundScenarioBuilder WithCoalition(string name, string leader, string[] members,
+    public ElectionRoundScenarioBuilder WithCoalition(ScenarioCoalition name, ScenarioNgo leader, ScenarioNgo[] members,
         Action<CoalitionScenarioBuilder>? cfg = null)
     {
         var coalition = _platformAdmin.PostWithResponse<CoalitionModel>(
@@ -69,22 +71,37 @@ public class ElectionRoundScenarioBuilder
                 LeaderId = ParentBuilder.NgoIdByName(leader),
                 NgoMembersIds = members.Select(member => ParentBuilder.NgoIdByName(member)).ToArray(),
             });
+        
+        var response = _platformAdmin.GetResponse<ListMonitoringNgos>($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/monitoring-ngos");
 
+        foreach (var monitoringNgo in response.MonitoringNgos)
+        {
+            var ngo = ParentBuilder.NgoById(monitoringNgo.NgoId);
+            
+            var monitoringNgoScenarioBuilder = new MonitoringNgoScenarioBuilder(ElectionRoundId, monitoringNgo.Id, this,
+                _platformAdmin,
+                ngo.builder);
+
+
+            _monitoringNgos.TryAdd(ngo.ngo, monitoringNgoScenarioBuilder);
+        }
+        
         var coalitionScenarioBuilder = new CoalitionScenarioBuilder(_platformAdmin, ParentBuilder.NgoByName(leader).Admin, this, coalition);
         cfg?.Invoke(coalitionScenarioBuilder);
+        
         _coalitions.Add(name, coalitionScenarioBuilder);
         return this;
     }
 
     public MonitoringNgoScenarioBuilder MonitoringNgo => _monitoringNgos.First().Value;
-    public MonitoringNgoScenarioBuilder MonitoringNgoByName(string name) => _monitoringNgos[name];
-    public Guid MonitoringNgoIdByName(string name) => _monitoringNgos[name].MonitoringNgoId;
+    public MonitoringNgoScenarioBuilder MonitoringNgoByName(ScenarioNgo ngo) => _monitoringNgos[ngo];
+    public Guid MonitoringNgoIdByName(ScenarioNgo ngo) => _monitoringNgos[ngo].MonitoringNgoId;
     public CoalitionScenarioBuilder Coalition => _coalitions.First().Value;
     public Guid CoalitionId => _coalitions.First().Value.CoalitionId;
-    public CoalitionScenarioBuilder CoalitionByName(string name) => _coalitions[name];
-    public Guid CoalitionIdByName(string name) => _coalitions[name].CoalitionId;
+    public CoalitionScenarioBuilder CoalitionByName(ScenarioCoalition coalition) => _coalitions[coalition];
+    public Guid CoalitionIdByName(ScenarioCoalition coalition) => _coalitions[coalition].CoalitionId;
 
     public Guid PollingStation => _pollingStations.First().Value;
 
-    public Guid PollingStationByName(string pollingStationName) => _pollingStations[pollingStationName];
+    public Guid PollingStationByName(ScenarioPollingStation pollingStation) => _pollingStations[pollingStation];
 }

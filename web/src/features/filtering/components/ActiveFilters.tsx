@@ -54,7 +54,6 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
-  [FILTER_KEY.FormIsCompleted, FILTER_LABEL.FormCompleted],
   [FILTER_KEY.QuickReportIncidentCategory, FILTER_LABEL.QuickReportIncidentCategory],
   [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
   [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],

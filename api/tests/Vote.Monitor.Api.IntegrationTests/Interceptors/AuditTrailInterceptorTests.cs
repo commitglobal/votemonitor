@@ -28,15 +28,15 @@ public class AuditTrailInterceptorTests : BaseDbTestFixture
     {
         _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
         _fakeTimeProvider = Substitute.For<ITimeProvider>();
-        
+
         var options = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseNpgsql(DbConnectionString)
+            .AddInterceptors(new AuditTrailInterceptor(new SerializerService(NullLogger<SerializerService>.Instance),
+                _fakeCurrentUserProvider,
+                _fakeTimeProvider))
             .Options;
 
-        _context = new VoteMonitorContext(options,
-            new SerializerService(NullLogger<SerializerService>.Instance),
-            _fakeTimeProvider,
-            _fakeCurrentUserProvider);
+        _context = new VoteMonitorContext(options);
     }
 
     [TearDown]

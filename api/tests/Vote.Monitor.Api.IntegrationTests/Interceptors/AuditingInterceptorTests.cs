@@ -18,17 +18,14 @@ public class AuditingInterceptorTests : BaseDbTestFixture
     public void Init()
     {
         _fakeTimeProvider = Substitute.For<ITimeProvider>();
-        var fakeSerializationService = Substitute.For<ISerializerService>();
         _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
 
         var options = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseNpgsql(DbConnectionString)
+            .AddInterceptors(new AuditingInterceptor(_fakeCurrentUserProvider,_fakeTimeProvider))
             .Options;
 
-        _context = new VoteMonitorContext(options,
-            fakeSerializationService,
-            _fakeTimeProvider,
-            _fakeCurrentUserProvider);
+        _context = new VoteMonitorContext(options);
     }
 
     [TearDown]

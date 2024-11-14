@@ -1,6 +1,5 @@
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
-import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
 import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
@@ -18,7 +17,6 @@ export const FormSubmissionsFiltersByEntry: FC = () => {
     <FilteringContainer>
       <FormTypeFilter />
       <FormSubmissionsFormFilter />
-      <FormSubmissionsCompletionFilter />
       <FormSubmissionsFlaggedAnswersFilter />
       <FormSubmissionsFollowUpFilter />
       <FormSubmissionsQuestionsAnsweredFilter />

@@ -19,7 +19,7 @@ public class UpdateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -47,7 +47,7 @@ public class UpdateTests : BaseApiTestFixture
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
             .WithNgo(Ngos.Delta)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -80,7 +80,7 @@ public class UpdateTests : BaseApiTestFixture
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
             .WithNgo(Ngos.Delta)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -111,37 +111,37 @@ public class UpdateTests : BaseApiTestFixture
     public async Task ShouldKeepObserverDatatForNgoForms_WhenNgoIsKicked()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithObserver(Observers.Alice)
-            .WithObserver(Observers.Bob)
-            .WithObserver(Observers.Charlie)
-            .WithObserver(Observers.Dave)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithObserver(ScenarioObserver.Charlie)
+            .WithObserver(ScenarioObserver.Dave)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A, er => er
-                .WithPollingStation(PollingStations.Iasi)
-                .WithPollingStation(PollingStations.Bacau)
-                .WithPollingStation(PollingStations.Cluj)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(Ngos.Alfa, ngo => ngo
-                    .WithMonitoringObserver(Observers.Alice)
-                    .WithMonitoringObserver(Observers.Bob)
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithMonitoringObserver(ScenarioObserver.Bob)
                     .WithForm("A", form => form
                         .Publish()
-                        .WithSubmission(Observers.Alice, PollingStations.Iasi)
-                        .WithSubmission(Observers.Alice, PollingStations.Bacau)
-                        .WithSubmission(Observers.Bob, PollingStations.Bacau)
-                        .WithSubmission(Observers.Bob, PollingStations.Cluj))
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)
+                        .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau)
+                        .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Cluj))
                 )
                 .WithMonitoringNgo(Ngos.Beta, ngo => ngo
-                    .WithMonitoringObserver(Observers.Charlie)
-                    .WithMonitoringObserver(Observers.Dave)
+                    .WithMonitoringObserver(ScenarioObserver.Charlie)
+                    .WithMonitoringObserver(ScenarioObserver.Dave)
                     .WithForm("A", form => form
                         .Publish()
-                        .WithSubmission(Observers.Charlie, PollingStations.Iasi)
-                        .WithSubmission(Observers.Charlie, PollingStations.Bacau)
-                        .WithSubmission(Observers.Dave, PollingStations.Bacau)
-                        .WithSubmission(Observers.Dave, PollingStations.Cluj))
+                        .WithSubmission(ScenarioObserver.Charlie, ScenarioPollingStation.Iasi)
+                        .WithSubmission(ScenarioObserver.Charlie, ScenarioPollingStation.Bacau)
+                        .WithSubmission(ScenarioObserver.Dave, ScenarioPollingStation.Bacau)
+                        .WithSubmission(ScenarioObserver.Dave, ScenarioPollingStation.Cluj))
                 )
-                .WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+                .WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -172,25 +172,25 @@ public class UpdateTests : BaseApiTestFixture
     [Test]
     public async Task ShouldRemoveDataForSharedFormsOfKickedNgos()
     {
-         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithObserver(Observers.Alice)
-            .WithObserver(Observers.Bob)
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
             .WithNgo(Ngos.Alfa, ngo => ngo.WithAdmin(Ngos.Alfa.Anya))
             .WithNgo(Ngos.Beta, ngo => ngo.WithAdmin(Ngos.Beta.Dana))
-            .WithElectionRound(ElectionRounds.A, er => er
-                .WithPollingStation(PollingStations.Iasi)
-                .WithPollingStation(PollingStations.Bacau)
-                .WithPollingStation(PollingStations.Cluj)
-                .WithMonitoringNgo(Ngos.Alfa, ngo => ngo.WithMonitoringObserver(Observers.Alice))
-                .WithMonitoringNgo(Ngos.Beta, ngo => ngo.WithMonitoringObserver(Observers.Bob))
-                .WithCoalition(Coalitions.Youth, Ngos.Alfa, [Ngos.Beta],
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(Ngos.Alfa, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Alice))
+                .WithMonitoringNgo(Ngos.Beta, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob))
+                .WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, [Ngos.Beta],
                     cfg => cfg
                         .WithForm("Common", [Ngos.Beta],
                             form => form
-                                .WithSubmission(Observers.Alice, PollingStations.Iasi)
-                                .WithSubmission(Observers.Alice, PollingStations.Bacau)
-                                .WithSubmission(Observers.Bob, PollingStations.Iasi)
-                                .WithSubmission(Observers.Bob, PollingStations.Bacau))
+                                .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                                .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)
+                                .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)
+                                .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau))
                 )
             )
             .Please();
@@ -218,10 +218,12 @@ public class UpdateTests : BaseApiTestFixture
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry");
 
         var submission1 =
-            scenarioData.ElectionRound.Coalition.Form.GetSubmissionId(Observers.Alice, PollingStations.Iasi);
+            scenarioData.ElectionRound.Coalition.FormData.GetSubmissionId(ScenarioObserver.Alice,
+                ScenarioPollingStation.Iasi);
         var submission2 =
-            scenarioData.ElectionRound.Coalition.Form.GetSubmissionId(Observers.Alice, PollingStations.Bacau);
-      
+            scenarioData.ElectionRound.Coalition.FormData.GetSubmissionId(ScenarioObserver.Alice,
+                ScenarioPollingStation.Bacau);
+
         alfaNgoSubmissions.Items
             .Should()
             .HaveCount(2)
@@ -240,7 +242,7 @@ public class UpdateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -264,8 +266,8 @@ public class UpdateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithObserver(Observers.Alice)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithObserver(ScenarioObserver.Alice)
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -289,7 +291,7 @@ public class UpdateTests : BaseApiTestFixture
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(Ngos.Alfa)
             .WithNgo(Ngos.Beta)
-            .WithElectionRound(ElectionRounds.A, er => er.WithCoalition(Coalitions.Youth, Ngos.Alfa, []))
+            .WithElectionRound(ScenarioElectionRound.A, er => er.WithCoalition(ScenarioCoalition.Youth, Ngos.Alfa, []))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;

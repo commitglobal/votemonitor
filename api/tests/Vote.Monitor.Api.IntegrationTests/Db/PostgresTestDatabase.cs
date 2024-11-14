@@ -38,8 +38,7 @@ public class PostgresTestDatabase : ITestDatabase
             .UseNpgsql(_connectionString)
             .Options;
 
-        var context = new VoteMonitorContext(options, new SerializerService(NullLogger<SerializerService>.Instance),
-            new CurrentUtcTimeProvider(), new CurrentUserProvider());
+        var context = new VoteMonitorContext(options);
 
         context.Database.Migrate();
 

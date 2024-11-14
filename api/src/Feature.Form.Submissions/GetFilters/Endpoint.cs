@@ -27,24 +27,64 @@ public class Endpoint(
         }
 
         var sql = """
-                  WITH "CombinedTimestamps" AS (
+                  WITH
+                  "MonitoringNgoDetails" AS (
+                  	SELECT
+                  		MN."ElectionRoundId",
+                  		MN."Id" AS "MonitoringNgoId",
+                  		-- Check if MonitoringNgo is a coalition leader
+                  		EXISTS (
+                  			SELECT
+                  				1
+                  			FROM
+                  				"CoalitionMemberships" CM
+                  				JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
+                  			WHERE
+                  				CM."MonitoringNgoId" = MN."Id"
+                  				AND CM."ElectionRoundId" = MN."ElectionRoundId"
+                  				AND C."LeaderId" = MN."Id"
+                  		) AS "IsCoalitionLeader"
+                  	FROM
+                  		"MonitoringNgos" MN
+                  	WHERE
+                  		MN."ElectionRoundId" = @electionRoundId
+                  		AND MN."NgoId" = @ngoId
+                  	LIMIT
+                  		1
+                  ),
+                  -- if ngo is coalition leader they need to see all the responses
+                  "AvailableMonitoringObservers" AS (
+                  	SELECT
+                  		MO."Id",
+                  		MO."MonitoringNgoId",
+                  		U."DisplayName"
+                  	FROM
+                  		"Coalitions" C
+                  		INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
+                  		INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
+                  		INNER JOIN "MonitoringNgos" MN ON MN."Id" = CM."MonitoringNgoId"
+                  		INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                  	WHERE
+                  		CM."ElectionRoundId" = MN."ElectionRoundId"
+                  		AND (
+                  			(SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails")
+                  			OR MN."NgoId" = @ngoId
+                  		)
+                  ),
+                  "CombinedTimestamps" AS (
                       -- First subquery for FormSubmissions
                       SELECT MIN(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "FirstSubmissionTimestamp",
                              MAX(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "LastSubmissionTimestamp"
                       FROM "FormSubmissions" FS
-                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                      INNER JOIN "AvailableMonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
                       WHERE FS."ElectionRoundId" = @electionRoundId
-                        AND MN."NgoId" = @ngoId
                       UNION ALL
                       -- Second subquery for PollingStationInformation
                       SELECT MIN(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "FirstSubmissionTimestamp",
                              MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LastSubmissionTimestamp"
                       FROM "PollingStationInformation" PSI
-                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      WHERE PSI."ElectionRoundId" = @electionRoundId
-                        AND MN."NgoId" = @ngoId)
+                      INNER JOIN "AvailableMonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
+                      WHERE PSI."ElectionRoundId" = @electionRoundId)
                         
                   -- Final query to get the overall min and max
                   SELECT MIN("FirstSubmissionTimestamp") AS "FirstSubmissionTimestamp",
@@ -89,12 +129,11 @@ public class Endpoint(
                   			INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
                   			INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
                   			INNER JOIN "MonitoringNgos" MN ON MN."Id" = CM."MonitoringNgoId"
-                  			INNER JOIN "MonitoringNgoDetails" MND ON MND."MonitoringNgoId" = MN."Id"
                   			INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
                   		WHERE
                   			CM."ElectionRoundId" = MN."ElectionRoundId"
                   			AND (
-                  				MND."IsCoalitionLeader"
+                  				(SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails")
                   				OR MN."NgoId" = @ngoId
                   			)
                   	)

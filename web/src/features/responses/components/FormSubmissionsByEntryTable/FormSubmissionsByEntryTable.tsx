@@ -1,4 +1,4 @@
-import type { FunctionComponent } from '@/common/types';
+import type { FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
@@ -14,6 +14,27 @@ import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
 type FormSubmissionsByEntryTableProps = {
   searchText: string;
 };
+
+export interface FormSubmissionsSearchRequest{
+  searchText: string | undefined;
+  formTypeFilter: string | undefined;
+  hasFlaggedAnswers: boolean | undefined;
+  level1Filter: string | undefined;
+  level2Filter: string | undefined;
+  level3Filter: string | undefined;
+  level4Filter: string | undefined;
+  level5Filter: string | undefined;
+  pollingStationNumberFilter: string | undefined;
+  followUpStatus: FormSubmissionFollowUpStatus | undefined;
+  questionsAnswered: QuestionsAnswered | undefined;
+  hasNotes: boolean | undefined;
+  hasAttachments: boolean | undefined;
+  tagsFilter: string[] | undefined;
+  formId: string | undefined;
+  fromDateFilter: string | undefined;
+  toDateFilter: string | undefined;
+}
+
 
 export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEntryTableProps): FunctionComponent {
   const navigate = useNavigate();
@@ -42,11 +63,9 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       ['formId', debouncedSearch.formId],
       ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
       ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
-      ['isCompletedFilter', debouncedSearch.formIsCompleted],
-      ['']
     ].filter(([_, value]) => value);
 
-    return Object.fromEntries(params) as FormSubmissionsSearchParams;
+    return Object.fromEntries(params) as FormSubmissionsSearchRequest;
   }, [searchText, debouncedSearch]);
 
   const navigateToFormSubmission = useCallback(

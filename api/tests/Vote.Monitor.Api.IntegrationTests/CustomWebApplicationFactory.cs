@@ -1,13 +1,15 @@
 ﻿using System.Data.Common;
+using Authorization.Policies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Serilog;
+using Vote.Monitor.Api.IntegrationTests.Services;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Api.IntegrationTests;
@@ -15,15 +17,17 @@ namespace Vote.Monitor.Api.IntegrationTests;
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly DbConnection _connection;
+    private readonly ITimeProvider _timeProvider;
     private readonly NpgsqlConnectionStringBuilder _connectionDetails;
 
     public const string AdminEmail = "integration@testing.com";
     public const string AdminPassword = "toTallyNotTestPassw0rd";
 
-    public CustomWebApplicationFactory(string connectionString, DbConnection connection)
+    public CustomWebApplicationFactory(string connectionString, DbConnection connection, ITimeProvider timeProvider)
     {
         _connection = connection;
         _connectionDetails =  new NpgsqlConnectionStringBuilder { ConnectionString = connectionString };
+        _timeProvider = timeProvider;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -53,24 +57,27 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         
         builder.ConfigureTestServices((services) =>
         {
+            services.RemoveAll<ITimeProvider>();
+            services.AddSingleton<ITimeProvider>(_ => _timeProvider);
+            
             services
                 .RemoveAll<DbContextOptions<VoteMonitorContext>>()
                 .AddDbContext<VoteMonitorContext>((sp, options) =>
                 {
-                    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-                    options.UseNpgsql(_connection);
+                    options.UseNpgsql(_connection)
+                        .AddInterceptors(new AuditingInterceptor(new CurrentUserProvider(), _timeProvider));
                 });
-            
+
             services.AddLogging(logging =>
             {
                 Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
 
                 var loggerConfiguration = new LoggerConfiguration()
-                    .WriteTo.NUnitOutput()
                     .Enrich.FromLogContext()
                     .Enrich.WithMachineName()
                     .Enrich.WithEnvironmentUserName()
-                    .Destructure.ToMaximumDepth(3);
+                    .Destructure.ToMaximumDepth(3)
+                    .WriteTo.NUnitOutput();
 
                 var logger = Log.Logger = loggerConfiguration.CreateLogger();
 

@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Api.IntegrationTests.Fakers;
+﻿using Vote.Monitor.Api.IntegrationTests.Consts;
+using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Models;
 
 namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
@@ -18,23 +19,24 @@ public class CoalitionFormScenarioBuilder
         _form = form;
     }
 
-    public CoalitionFormScenarioBuilder WithSubmission(string observerEmail, string pollingStationName)
+    public CoalitionFormScenarioBuilder WithSubmission(ScenarioObserver observer, ScenarioPollingStation pollingStation)
     {
-        var pollingStationId = _parentBuilder.ParentBuilder.PollingStationByName(pollingStationName);
+        var pollingStationId = _parentBuilder.ParentBuilder.PollingStationByName(pollingStation);
         var submission = new FormSubmissionRequestFaker(_form.Id, pollingStationId, _form.Questions).Generate();
 
-        var observer = _parentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observerEmail);
+        var observerClient = _parentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observer);
 
-        var submissionId = observer.PostWithResponse<ResponseWithId>(
+        var submissionId = observerClient.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{_parentBuilder.ParentBuilder.ElectionRoundId}/form-submissions",
             submission).Id;
 
-        _submissions.Add($"{observerEmail}_{pollingStationName}", submissionId);
+        _submissions.Add($"{observer}_{pollingStation}", submissionId);
         return this;
     }
 
-    public Guid GetSubmissionId(string observerEmail, string pollingStationName) =>
-        _submissions[$"{observerEmail}_{pollingStationName}"];
+    public Guid GetSubmissionId(ScenarioObserver observer, ScenarioPollingStation pollingStation) =>
+        _submissions[$"{observer}_{pollingStation}"];
 
     public Guid FormId => _form.Id;
+    public CreateFormRequest Form => _form;
 }

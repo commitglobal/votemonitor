@@ -1,6 +1,5 @@
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
-import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
 import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
 import { FormSubmissionsFormFilter } from '@/features/filtering/components/FormSubmissionsFormFilter';
 import { FormSubmissionsFromDateFilter } from '@/features/filtering/components/FormSubmissionsFromDateFilter';
@@ -17,7 +16,7 @@ export const FormSubmissionsFiltersByForm: FC = () => {
   return (
     <FilteringContainer>
       <FormSubmissionsFormFilter />
-      <FormSubmissionsCompletionFilter />
+      <FormTypeFilter />
       <FormSubmissionsFlaggedAnswersFilter />
       <FormSubmissionsFollowUpFilter />
       <FormSubmissionsQuestionsAnsweredFilter />

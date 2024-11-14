@@ -35,18 +35,8 @@ namespace Vote.Monitor.Domain;
 
 public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
-    private readonly ISerializerService _serializerService;
-    private readonly ITimeProvider _timeProvider;
-    private readonly ICurrentUserProvider _currentUserProvider;
-
-    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
-        ISerializerService serializerService,
-        ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider) : base(options)
+    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options) : base(options)
     {
-        _serializerService = serializerService;
-        _timeProvider = timeProvider;
-        _currentUserProvider = currentUserProvider;
     }
 
     public DbSet<Country> Countries { get; set; }
@@ -165,9 +155,9 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new IncidentReportConfiguration());
         builder.ApplyConfiguration(new IncidentReportNoteConfiguration());
         builder.ApplyConfiguration(new IncidentReportAttachmentConfiguration());
-        
+
         builder.ApplyConfiguration(new LocationConfiguration());
-        
+
         builder.ApplyConfiguration(new CoalitionConfiguration());
         builder.ApplyConfiguration(new CoalitionMembershipConfiguration());
         builder.ApplyConfiguration(new CoalitionFormAccessConfiguration());
@@ -176,12 +166,5 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.ConfigureSmartEnum();
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider,
-            _timeProvider));
     }
 }

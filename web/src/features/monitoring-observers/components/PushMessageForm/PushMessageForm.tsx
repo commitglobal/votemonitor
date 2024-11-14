@@ -32,7 +32,6 @@ import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
-import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
 import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
 import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
 import { QuickReportsFollowUpFilter } from '@/features/filtering/components/QuickReportsFollowUpFilter';
@@ -89,7 +88,6 @@ function PushMessageForm(): FunctionComponent {
       formId: debouncedSearch.formId,
       fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
       toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
-      isCompletedFilter: toBoolean(debouncedSearch.formIsCompleted),
       monitoringObserverStatus: debouncedSearch.monitoringObserverStatus,
       quickReportIncidentCategory: debouncedSearch.incidentCategory,
       quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
@@ -208,7 +206,6 @@ function PushMessageForm(): FunctionComponent {
                   <MonitoringObserverStatusSelect />
                   <FormTypeFilter />
                   <FormSubmissionsFormFilter />
-                  <FormSubmissionsCompletionFilter />
                   <FormSubmissionsQuestionsAnsweredFilter />
                   <FormSubmissionsFollowUpFilter />
 

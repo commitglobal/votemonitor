@@ -1,3 +1,4 @@
+using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Models;
 
@@ -38,20 +39,20 @@ public class MonitoringNgoFormScenarioBuilder
         return this;
     }
 
-    public MonitoringNgoFormScenarioBuilder WithSubmission(string observerEmail,
-        string pollingStationName)
+    public MonitoringNgoFormScenarioBuilder WithSubmission(ScenarioObserver observer,
+        ScenarioPollingStation pollingStation)
     {
         if (!_formIsPublished)
         {
             throw new ArgumentException("Form is not published");
         }
         
-        var pollingStationId = ParentBuilder.ParentBuilder.PollingStationByName(pollingStationName);
+        var pollingStationId = ParentBuilder.ParentBuilder.PollingStationByName(pollingStation);
         var submission = new FormSubmissionRequestFaker(_form.Id, pollingStationId, _form.Questions).Generate();
 
-        var observer = ParentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observerEmail);
+        var observerClient = ParentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observer);
 
-        observer.PostWithResponse<ResponseWithId>(
+        observerClient.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/form-submissions",
             submission);
         return this;
