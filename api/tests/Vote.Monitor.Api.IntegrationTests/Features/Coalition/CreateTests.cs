@@ -17,8 +17,8 @@ public class CreateTests : BaseApiTestFixture
     public async Task PlatformAdmin_ShouldCreateCoalition()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
             .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
@@ -30,28 +30,28 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = coalitionName,
-                LeaderId = scenarioData.NgoIdByName(Ngos.Alfa),
-                NgoMembersIds = new[] { scenarioData.NgoByName(Ngos.Beta).NgoId }
+                LeaderId = scenarioData.NgoIdByName(ScenarioNgos.Alfa),
+                NgoMembersIds = new[] { scenarioData.NgoByName(ScenarioNgos.Beta).NgoId }
             });
 
         coalition.Should().NotBeNull();
         coalition.Name.Should().Be(coalitionName);
         coalition.Members.Should().HaveCount(2);
 
-        coalition.LeaderId.Should().Be(scenarioData.NgoByName(Ngos.Alfa).NgoId);
+        coalition.LeaderId.Should().Be(scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId);
         coalition.Members.Select(x => x.Id).Should()
-            .Contain([scenarioData.NgoByName(Ngos.Alfa).NgoId, scenarioData.NgoByName(Ngos.Beta).NgoId]);
+            .Contain([scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId, scenarioData.NgoByName(ScenarioNgos.Beta).NgoId]);
     }
 
     [Test]
     public async Task ShouldAddMembersAsMonitoringNgos_WhenTheyAreNotMonitoring()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
-            .WithNgo(Ngos.Delta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithNgo(ScenarioNgos.Delta)
             .WithElectionRound(ScenarioElectionRound.A,
-                electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa).WithMonitoringNgo(Ngos.Beta))
+                electionRound => electionRound.WithMonitoringNgo(ScenarioNgos.Alfa).WithMonitoringNgo(ScenarioNgos.Beta))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -61,8 +61,8 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Alfa).NgoId,
-                NgoMembersIds = new[] { scenarioData.NgoByName(Ngos.Delta).NgoId }
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId,
+                NgoMembersIds = new[] { scenarioData.NgoByName(ScenarioNgos.Delta).NgoId }
             });
 
         var monitoringNgos = await scenarioData.PlatformAdmin.GetResponseAsync<ListMonitoringNgosResponse>(
@@ -71,8 +71,8 @@ public class CreateTests : BaseApiTestFixture
         monitoringNgos.MonitoringNgos.Should().HaveCount(3);
         monitoringNgos.MonitoringNgos.Select(x => x.NgoId).Should()
             .Contain([
-                scenarioData.NgoByName(Ngos.Alfa).NgoId, scenarioData.NgoByName(Ngos.Beta).NgoId,
-                scenarioData.NgoByName(Ngos.Delta).NgoId
+                scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId, scenarioData.NgoByName(ScenarioNgos.Beta).NgoId,
+                scenarioData.NgoByName(ScenarioNgos.Delta).NgoId
             ]);
     }
 
@@ -80,11 +80,11 @@ public class CreateTests : BaseApiTestFixture
     public async Task ShouldAddLeaderAsMonitoringNgos_WhenTheyAreNotMonitoring()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
-            .WithNgo(Ngos.Delta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithNgo(ScenarioNgos.Delta)
             .WithElectionRound(ScenarioElectionRound.A,
-                electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa).WithMonitoringNgo(Ngos.Beta))
+                electionRound => electionRound.WithMonitoringNgo(ScenarioNgos.Alfa).WithMonitoringNgo(ScenarioNgos.Beta))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -94,7 +94,7 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Delta).NgoId,
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Delta).NgoId,
                 NgoMembersIds = Array.Empty<Guid>()
             });
 
@@ -104,8 +104,8 @@ public class CreateTests : BaseApiTestFixture
         monitoringNgos.MonitoringNgos.Should().HaveCount(3);
         monitoringNgos.MonitoringNgos.Select(x => x.NgoId).Should()
             .Contain([
-                scenarioData.NgoByName(Ngos.Alfa).NgoId, scenarioData.NgoByName(Ngos.Beta).NgoId,
-                scenarioData.NgoByName(Ngos.Delta).NgoId
+                scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId, scenarioData.NgoByName(ScenarioNgos.Beta).NgoId,
+                scenarioData.NgoByName(ScenarioNgos.Delta).NgoId
             ]);
     }
 
@@ -113,10 +113,10 @@ public class CreateTests : BaseApiTestFixture
     public async Task ShouldNotGiveAccessToNgoFormsForCoalitionMembers()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
             .WithElectionRound(ScenarioElectionRound.A,
-                electionRound => electionRound.WithMonitoringNgo(Ngos.Alfa, ngo => ngo.WithForm("A")))
+                electionRound => electionRound.WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A")))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -126,12 +126,12 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Beta).NgoId,
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Beta).NgoId,
                 NgoMembersIds = Array.Empty<Guid>()
             });
 
         var formResult = await scenarioData
-            .NgoByName(Ngos.Beta).Admin
+            .NgoByName(ScenarioNgos.Beta).Admin
             .GetResponseAsync<PagedResponse<FormSlimModel>>(
                 $"/api/election-rounds/{electionRoundId}/forms");
 
@@ -143,19 +143,19 @@ public class CreateTests : BaseApiTestFixture
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithElectionRound(ScenarioElectionRound.A)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
 
-        var coalitionResponseMessage = await scenarioData.NgoByName(Ngos.Alfa).Admin.PostAsJsonAsync(
+        var coalitionResponseMessage = await scenarioData.NgoByName(ScenarioNgos.Alfa).Admin.PostAsJsonAsync(
             $"/api/election-rounds/{electionRoundId}/coalitions",
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Alfa).NgoId,
-                NgoMembersIds = new[] { scenarioData.NgoByName(Ngos.Beta).NgoId }
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId,
+                NgoMembersIds = new[] { scenarioData.NgoByName(ScenarioNgos.Beta).NgoId }
             });
 
         coalitionResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -166,8 +166,8 @@ public class CreateTests : BaseApiTestFixture
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithObserver(ScenarioObserver.Alice)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
             .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
@@ -178,8 +178,8 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Alfa).NgoId,
-                NgoMembersIds = new[] { scenarioData.NgoByName(Ngos.Beta).NgoId }
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId,
+                NgoMembersIds = new[] { scenarioData.NgoByName(ScenarioNgos.Beta).NgoId }
             });
 
         coalitionResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -189,8 +189,8 @@ public class CreateTests : BaseApiTestFixture
     public async Task UnauthorizedClients_CannotCreateCoalition()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)
-            .WithNgo(Ngos.Alfa)
-            .WithNgo(Ngos.Beta)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
             .WithElectionRound(ScenarioElectionRound.A)
             .Please();
 
@@ -201,8 +201,8 @@ public class CreateTests : BaseApiTestFixture
             new
             {
                 CoalitionName = Guid.NewGuid().ToString(),
-                LeaderId = scenarioData.NgoByName(Ngos.Alfa).NgoId,
-                NgoMembersIds = new[] { scenarioData.NgoByName(Ngos.Beta).NgoId }
+                LeaderId = scenarioData.NgoByName(ScenarioNgos.Alfa).NgoId,
+                NgoMembersIds = new[] { scenarioData.NgoByName(ScenarioNgos.Beta).NgoId }
             });
 
         coalitionResponseMessage.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

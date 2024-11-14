@@ -179,8 +179,6 @@ public class Endpoint(
                          OR OA."LastModifiedOn" >= @fromDate::timestamp)
                     AND (@toDate IS NULL
                          OR OA."LastModifiedOn" <= @toDate::timestamp)
-                    AND (@isCompleted IS NULL
-                         OR OA."IsCompleted" = @isCompleted)
                     AND (@hasQuickReports IS NULL
                          OR (@hasQuickReports = TRUE
                              AND OA."QuickReportId" IS NOT NULL)
@@ -214,7 +212,6 @@ public class Endpoint(
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            isCompleted = req.IsCompletedFilter,
 
             hasQuickReports = req.HasQuickReports,
             quickReportFollowUpStatus = req.QuickReportFollowUpStatus?.ToString(),

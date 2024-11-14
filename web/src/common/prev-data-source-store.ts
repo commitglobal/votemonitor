@@ -10,7 +10,7 @@ type PrevDataSourceStore = {
 const usePrevDataSourceStore = create(
   persist<PrevDataSourceStore>(
     (set) => ({
-      dataSource: DataSources.MyNgo,
+      dataSource: DataSources.Ngo,
       setDataSource: (dataSource: DataSources) => {
         set({ dataSource });
       },

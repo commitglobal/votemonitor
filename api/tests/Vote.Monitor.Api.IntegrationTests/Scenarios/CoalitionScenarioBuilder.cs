@@ -24,12 +24,13 @@ public class CoalitionScenarioBuilder
 
     public Guid CoalitionId => _coalition.Id;
 
-    public CoalitionScenarioBuilder WithForm(string? formCode = null, ScenarioNgo[]? sharedWithMembers = null,
+    public CoalitionScenarioBuilder WithForm(string? formCode = null,
+        ScenarioNgo[]? sharedWithMembers = null,
         Action<CoalitionFormScenarioBuilder>? cfg = null)
     {
         sharedWithMembers ??= Array.Empty<ScenarioNgo>();
         formCode ??= Guid.NewGuid().ToString();
-        
+
         var formRequest = Dummy.Form();
         var ngoForm =
             _coalitionLeaderAdminAdmin.PostWithResponse<CreateFormRequest>(
@@ -47,10 +48,7 @@ public class CoalitionScenarioBuilder
             .ToList();
         _coalitionLeaderAdminAdmin.PutWithoutResponse(
             $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/coalitions/{CoalitionId}/forms/{ngoForm.Id}:access",
-            new
-            {
-                NgoMembersIds = members
-            });
+            new { NgoMembersIds = members });
 
         var coalitionFormScenarioBuilder = new CoalitionFormScenarioBuilder(this, ngoForm);
         cfg?.Invoke(coalitionFormScenarioBuilder);
@@ -62,12 +60,7 @@ public class CoalitionScenarioBuilder
 
     public CoalitionScenarioBuilder WithMonitoringObserver(ScenarioNgo ngo, ScenarioObserver observer)
     {
-        var observerId = ParentBuilder.ParentBuilder.ObserverIdByName(observer);
-
-        _platformAdmin
-            .PostWithResponse<ResponseWithId>(
-                $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/monitoring-ngos/{ParentBuilder.MonitoringNgoIdByName(ngo)}/monitoring-observers",
-                new { observerId = observerId });
+        ParentBuilder.ParentBuilder.ElectionRound.MonitoringNgoByName(ngo).WithMonitoringObserver(observer);
 
         return this;
     }

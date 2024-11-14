@@ -50,7 +50,7 @@ public class MonitoringNgoFormScenarioBuilder
         var pollingStationId = ParentBuilder.ParentBuilder.PollingStationByName(pollingStation);
         var submission = new FormSubmissionRequestFaker(_form.Id, pollingStationId, _form.Questions).Generate();
 
-        var observerClient = ParentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observer);
+        var observerClient = ParentBuilder.ParentBuilder.ParentBuilder.ClientFor(observer);
 
         observerClient.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/form-submissions",

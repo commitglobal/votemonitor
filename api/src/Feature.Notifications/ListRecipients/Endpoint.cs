@@ -147,7 +147,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                     AND (@hasNotes IS NULL OR (OA."NotesCount" = 0 AND @hasNotes = FALSE) OR (OA."NotesCount" > 0 AND @hasNotes = TRUE))
                     AND (@fromDate IS NULL OR OA."LastModifiedOn" >= @fromDate::timestamp)
                     AND (@toDate IS NULL OR OA."LastModifiedOn" <= @toDate::timestamp)
-                    AND (@isCompleted IS NULL OR OA."IsCompleted" = @isCompleted)
                     AND (@hasQuickReports IS NULL OR (@hasQuickReports = TRUE AND OA."QuickReportId" IS NOT NULL) OR (@hasQuickReports = FALSE AND OA."QuickReportId" IS NULL))
                     AND (@quickReportFollowUpStatus IS NULL OR OA."QuickReportFollowUpStatus" = @quickReportFollowUpStatus)
                     AND (@quickReportIncidentCategory IS NULL OR OA."IncidentCategory" = @quickReportIncidentCategory);
@@ -285,7 +284,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                               AND (@hasNotes IS NULL OR (OA."NotesCount" = 0 AND @hasNotes = FALSE) OR (OA."NotesCount" > 0 AND @hasNotes = TRUE))
                               AND (@fromDate IS NULL OR OA."LastModifiedOn" >= @fromDate::timestamp)
                               AND (@toDate IS NULL OR OA."LastModifiedOn" <= @toDate::timestamp)
-                              AND (@isCompleted IS NULL OR OA."IsCompleted" = @isCompleted)
                               AND (@hasQuickReports IS NULL OR (@hasQuickReports = TRUE AND OA."QuickReportId" IS NOT NULL)
                                 OR (@hasQuickReports = FALSE AND OA."QuickReportId" IS NULL))
                               AND (@quickReportFollowUpStatus IS NULL OR OA."QuickReportFollowUpStatus" = @quickReportFollowUpStatus)
@@ -328,7 +326,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            isCompleted = req.IsCompletedFilter,
 
             hasQuickReports = req.HasQuickReports,
             quickReportFollowUpStatus = req.QuickReportFollowUpStatus?.ToString(),

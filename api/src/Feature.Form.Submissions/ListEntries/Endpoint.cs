@@ -26,24 +26,76 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         }
 
         var sql = """
+                  WITH
+                  "MonitoringNgoDetails" AS (
+                  	SELECT
+                  		MN."ElectionRoundId",
+                  		MN."Id" AS "MonitoringNgoId",
+                  		-- Check if MonitoringNgo is a coalition leader
+                  		EXISTS (
+                  			SELECT
+                  				1
+                  			FROM
+                  				"CoalitionMemberships" CM
+                  				JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
+                  			WHERE
+                  				CM."MonitoringNgoId" = MN."Id"
+                  				AND CM."ElectionRoundId" = MN."ElectionRoundId"
+                  				AND C."LeaderId" = MN."Id"
+                  		) AS "IsCoalitionLeader"
+                  	FROM
+                  		"MonitoringNgos" MN
+                  	WHERE
+                  		MN."ElectionRoundId" = @electionRoundId
+                  		AND MN."NgoId" = @ngoId
+                  	LIMIT
+                  		1
+                  ),
+                  -- if ngo is coalition leader they need to see all the responses
+                  "AvailableMonitoringObservers" AS (
+                  	SELECT
+                  		MO."Id",
+                  		CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."DisplayName" END AS "DisplayName",
+                  		CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."Email" END AS "Email",
+                  		CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."PhoneNumber" END AS "PhoneNumber",
+                  		CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN '{}'::text[] ELSE MO."Tags" END AS "Tags",
+                  		mo."Status" AS "Status"
+                  	FROM
+                  		"Coalitions" C
+                  		INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
+                  		INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
+                  		INNER JOIN "MonitoringNgos" MN ON MN."Id" = CM."MonitoringNgoId"
+                  		INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                  	WHERE
+                  		CM."ElectionRoundId" = MN."ElectionRoundId"
+                  		AND C."ElectionRoundId" = @electionRoundId
+                  		AND (
+                            (@dataSource = 'Ngo' AND MN."NgoId" = @ngoId)
+                            OR 
+                            (
+                                @dataSource = 'Coalition' 
+                                AND 
+                                (
+                                    (SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") 
+                                    OR MN."NgoId" = @ngoId
+                                )
+                            )
+                        )
+                  )
                   SELECT SUM(count)
                   FROM
                       (SELECT count(*) AS count
                        FROM "PollingStationInformation" psi
                        INNER JOIN "PollingStationInformationForms" psif ON psif."Id" = psi."PollingStationInformationFormId"
                        INNER JOIN "PollingStations" ps ON ps."Id" = psi."PollingStationId"
-                       INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
-                       INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                       INNER JOIN "Observers" o ON o."Id" = mo."ObserverId"
-                       INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
-                       WHERE mn."ElectionRoundId" = @electionRoundId
-                           AND mn."NgoId" = @ngoId
+                       INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
+                       WHERE psi."ElectionRoundId" = @electionRoundId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                            AND (@searchText IS NULL 
                                     OR @searchText = '' 
-                                    OR u."DisplayName" ILIKE @searchText 
-                                    OR u."Email" ILIKE @searchText
-                                    OR u."PhoneNumber" ILIKE @searchText
+                                    OR mo."DisplayName" ILIKE @searchText 
+                                    OR mo."Email" ILIKE @searchText
+                                    OR mo."PhoneNumber" ILIKE @searchText
                                     OR mo."Id"::TEXT ILIKE  @searchText)
                            AND (@formType IS NULL OR 'PSI' = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
@@ -64,23 +116,18 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
                            AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
                            AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
-                           AND (@isCompleted is NULL OR PSI."IsCompleted" = @isCompleted)
                        UNION ALL SELECT count(*) AS count
                        FROM "FormSubmissions" fs
                        INNER JOIN "Forms" f ON f."Id" = fs."FormId"
                        INNER JOIN "PollingStations" ps ON ps."Id" = fs."PollingStationId"
-                       INNER JOIN "MonitoringObservers" mo ON mo."Id" = fs."MonitoringObserverId"
-                       INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                       INNER JOIN "Observers" o ON o."Id" = mo."ObserverId"
-                       INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
-                       WHERE mn."ElectionRoundId" = @electionRoundId
-                           AND mn."NgoId" = @ngoId
+                       INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = fs."MonitoringObserverId"
+                       WHERE fs."ElectionRoundId" = @electionRoundId
                            AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                            AND (@searchText IS NULL 
                                     OR @searchText = '' 
-                                    OR u."DisplayName" ILIKE @searchText 
-                                    OR u."Email" ILIKE @searchText 
-                                    OR u."PhoneNumber" ILIKE @searchText
+                                    OR mo."DisplayName" ILIKE @searchText 
+                                    OR mo."Email" ILIKE @searchText 
+                                    OR mo."PhoneNumber" ILIKE @searchText
                                     OR mo."Id"::TEXT ILIKE  @searchText)
                            AND (@formType IS NULL OR f."FormType" = @formType)
                            AND (@level1 IS NULL OR ps."Level1" = @level1)
@@ -106,10 +153,64 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
                            AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                            AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
-                           AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                   ) c;
 
-                  WITH polling_station_submissions AS (
+                  WITH
+                  "MonitoringNgoDetails" AS (
+                  	SELECT
+                  		MN."ElectionRoundId",
+                  		MN."Id" AS "MonitoringNgoId",
+                  		-- Check if MonitoringNgo is a coalition leader
+                  		EXISTS (
+                  			SELECT
+                  				1
+                  			FROM
+                  				"CoalitionMemberships" CM
+                  				JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
+                  			WHERE
+                  				CM."MonitoringNgoId" = MN."Id"
+                  				AND CM."ElectionRoundId" = MN."ElectionRoundId"
+                  				AND C."LeaderId" = MN."Id"
+                  		) AS "IsCoalitionLeader"
+                  	FROM
+                  		"MonitoringNgos" MN
+                  	WHERE
+                  		MN."ElectionRoundId" = @electionRoundId
+                  		AND MN."NgoId" = @ngoId
+                  	LIMIT
+                  		1
+                  ),
+                  -- if ngo is coalition leader they need to see all the responses
+                  "AvailableMonitoringObservers" AS (
+                  	SELECT
+                  		MO."Id",
+                        CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."DisplayName" END AS "DisplayName",
+                        CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."Email" END AS "Email",
+                        CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN MO."Id"::text ELSE U."PhoneNumber" END AS "PhoneNumber",
+                        CASE WHEN ((SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") AND MN."NgoId" <> @ngoId) THEN '{}'::text[] ELSE MO."Tags" END AS "Tags",
+                        mo."Status" AS "Status"
+                  	FROM
+                  		"Coalitions" C
+                  		INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
+                  		INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
+                  		INNER JOIN "MonitoringNgos" MN ON MN."Id" = CM."MonitoringNgoId"
+                  		INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                  	WHERE
+                  		CM."ElectionRoundId" = MN."ElectionRoundId"
+                  		AND C."ElectionRoundId" = @electionRoundId
+                  		AND (
+                            (@dataSource = 'Ngo' AND MN."NgoId" = @ngoId)
+                            OR 
+                            (
+                                @dataSource = 'Coalition' 
+                                AND 
+                                (
+                                    (SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") 
+                                    OR MN."NgoId" = @ngoId
+                                )
+                            )
+                        )
+                  ), polling_station_submissions AS (
                       SELECT psi."Id" AS "SubmissionId",
                              'PSI' AS "FormType",
                              'PSI' AS "FormCode",
@@ -126,16 +227,19 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              psi."IsCompleted"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "PollingStationInformationForms" psif ON psif."Id" = psi."PollingStationInformationFormId"
-                      INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
-                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                      WHERE mn."ElectionRoundId" = @electionRoundId
-                        AND mn."NgoId" = @ngoId
+                      INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
+                      WHERE psi."ElectionRoundId" = @electionRoundId
+                        AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                        AND (@searchText IS NULL OR @searchText = '' 
+                            OR mo."DisplayName" ILIKE @searchText 
+                            OR mo."Email" ILIKE @searchText 
+                            OR mo."PhoneNumber" ILIKE @searchText
+                            OR mo."Id"::TEXT ILIKE  @searchText)
                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                         AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                         AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
                         AND (@fromDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @fromDate::timestamp)
                         AND (@toDate is NULL OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @toDate::timestamp)
-                        AND (@isCompleted is NULL OR psi."IsCompleted" = @isCompleted)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND psif."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND psif."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered")
@@ -171,16 +275,19 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              fs."IsCompleted"
                       FROM "FormSubmissions" fs
                       INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                      INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
-                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                      WHERE mn."ElectionRoundId" = @electionRoundId
-                        AND mn."NgoId" = @ngoId
+                      INNER JOIN "AvailableMonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
+                      WHERE fs."ElectionRoundId" = @electionRoundId
+                        AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                        AND (@searchText IS NULL OR @searchText = '' 
+                            OR mo."DisplayName" ILIKE @searchText 
+                            OR mo."Email" ILIKE @searchText 
+                            OR mo."PhoneNumber" ILIKE @searchText
+                            OR mo."Id"::TEXT ILIKE  @searchText)
                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
                         AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                         AND (@formId IS NULL OR fs."FormId" = @formId)
                         AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                         AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)
-                        AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                         AND (@questionsAnswered IS NULL 
                              OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                              OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
@@ -200,9 +307,9 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          ps."Level5",
                          ps."Number",
                          s."MonitoringObserverId",
-                         u."DisplayName" AS "ObserverName",
-                         u."Email",
-                         u."PhoneNumber",
+                         mo."DisplayName" AS "ObserverName",
+                         mo."Email",
+                         mo."PhoneNumber",
                          mo."Status",
                          mo."Tags",
                          s."NumberOfQuestionsAnswered",
@@ -218,19 +325,9 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       SELECT * FROM form_submissions
                   ) s
                   INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
-                  INNER JOIN "MonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                  INNER JOIN "Observers" o ON o."Id" = mo."ObserverId"
-                  INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
-                  WHERE mn."ElectionRoundId" = @electionRoundId
-                    AND mn."NgoId" = @ngoId
-                    AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
-                    AND (@searchText IS NULL OR @searchText = '' 
-                         OR u."DisplayName" ILIKE @searchText 
-                         OR u."Email" ILIKE @searchText 
-                         OR u."PhoneNumber" ILIKE @searchText
-                         OR mo."Id"::TEXT ILIKE  @searchText)
-                    AND (@formType IS NULL OR s."FormType" = @formType)
+                  INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"
+                  WHERE 
+                    (@formType IS NULL OR s."FormType" = @formType)
                     AND (@level1 IS NULL OR ps."Level1" = @level1)
                     AND (@level2 IS NULL OR ps."Level2" = @level2)
                     AND (@level3 IS NULL OR ps."Level3" = @level3)
@@ -267,8 +364,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'Level5 DESC' THEN ps."Level5" END DESC,
                       CASE WHEN @sortExpression = 'Number ASC' THEN ps."Number" END ASC,
                       CASE WHEN @sortExpression = 'Number DESC' THEN ps."Number" END DESC,
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN u."DisplayName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."DisplayName" END DESC,
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN mo."DisplayName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN mo."DisplayName" END DESC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN s."NumberOfFlaggedAnswers" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN s."NumberOfFlaggedAnswers" END DESC,
                       CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN s."NumberOfQuestionsAnswered" END ASC,
@@ -308,7 +405,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            isCompleted = req.IsCompletedFilter,
+            dataSource = req.DataSource?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

@@ -24,7 +24,7 @@ public class CoalitionFormScenarioBuilder
         var pollingStationId = _parentBuilder.ParentBuilder.PollingStationByName(pollingStation);
         var submission = new FormSubmissionRequestFaker(_form.Id, pollingStationId, _form.Questions).Generate();
 
-        var observerClient = _parentBuilder.ParentBuilder.ParentBuilder.ObserverByName(observer);
+        var observerClient = _parentBuilder.ParentBuilder.ParentBuilder.ClientFor(observer);
 
         var submissionId = observerClient.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{_parentBuilder.ParentBuilder.ElectionRoundId}/form-submissions",

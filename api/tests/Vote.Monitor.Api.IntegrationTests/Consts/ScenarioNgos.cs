@@ -7,7 +7,7 @@ public enum ScenarioNgo
     Delta
 }
 
-public class Ngos
+public class ScenarioNgos
 {
     public static AlfaDetails Alfa => new();
     public static BetaDetails Beta => new BetaDetails();

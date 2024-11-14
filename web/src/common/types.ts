@@ -284,6 +284,6 @@ export interface Coalition {
 }
 
 export enum DataSources {
-  MyNgo = 'myNgo',
+  Ngo = 'ngo',
   Coalition = 'coalition',
 }

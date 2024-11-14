@@ -37,7 +37,7 @@ export function DataSourceSwitcher(): FunctionComponent {
 
   useEffect(() => {
     if (search.dataSource === undefined) {
-      navigateHandler(prevDataSource ?? DataSources.MyNgo);
+      navigateHandler(prevDataSource ?? DataSources.Ngo);
       return;
     }
 
@@ -49,7 +49,7 @@ export function DataSourceSwitcher(): FunctionComponent {
       <Switch
         id='data-source'
         checked={isCoalition}
-        onCheckedChange={(checked) => navigateHandler(checked ? DataSources.Coalition : DataSources.MyNgo)}
+        onCheckedChange={(checked) => navigateHandler(checked ? DataSources.Coalition : DataSources.Ngo)}
         className='data-[state=checked]:bg-primary'
       />
       <Label htmlFor='data-source' className={`text-md ${isCoalition ? 'font-bold' : ''}`}>

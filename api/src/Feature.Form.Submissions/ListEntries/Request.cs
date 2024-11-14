@@ -11,6 +11,8 @@ public class Request : BaseSortPaginatedRequest
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+    
+    [QueryParam] public DataSource DataSource { get; set; }
 
     [QueryParam] public string? SearchText { get; set; }
 
@@ -43,6 +45,4 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
-
-    [QueryParam] public bool? IsCompletedFilter  { get; set; }
 }

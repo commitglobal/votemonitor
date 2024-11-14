@@ -130,7 +130,6 @@ public class Endpoint(
                     && x.Form.ElectionRoundId == req.ElectionRoundId
                     && a.PollingStationId == x.PollingStationId
                     && a.ElectionRoundId == x.ElectionRoundId) == 0))
-            .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
             .AsNoTracking()
             .AsSplitQuery()
             .ToListAsync(ct);
@@ -246,7 +245,6 @@ public class Endpoint(
                 TagsFilter = req.TagsFilter,
                 FollowUpStatus = req.FollowUpStatus,
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
-                IsCompletedFilter = req.IsCompletedFilter,
                 MonitoringObserverStatus = req.MonitoringObserverStatus,
                 PollingStationNumberFilter = req.PollingStationNumberFilter
             }

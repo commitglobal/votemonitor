@@ -60,7 +60,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
                       AND (@hasNotes is NULL OR (TRUE AND @hasNotes = false) OR (FALSE AND @hasNotes = true))
                       AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
-                      AND (@isCompleted is NULL OR psi."IsCompleted" = @isCompleted)
                   GROUP BY
                       F."Id"
                   UNION ALL
@@ -112,7 +111,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
                       AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                       AND (@formId IS NULL OR fs."FormId" = @formId)
-                      AND (@isCompleted is NULL OR FS."IsCompleted" = @isCompleted)
                       AND (@questionsAnswered is null 
                                   OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
                                   OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered") 
@@ -145,7 +143,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
-            isCompleted = req.IsCompletedFilter
         };
 
         IEnumerable<AggregatedFormOverview> aggregatedFormOverviews;

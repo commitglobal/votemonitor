@@ -55,9 +55,7 @@ public class Endpoint(
                   -- if ngo is coalition leader they need to see all the responses
                   "AvailableMonitoringObservers" AS (
                   	SELECT
-                  		MO."Id",
-                  		MO."MonitoringNgoId",
-                  		U."DisplayName"
+                  		MO."Id"
                   	FROM
                   		"Coalitions" C
                   		INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
@@ -66,10 +64,19 @@ public class Endpoint(
                   		INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
                   	WHERE
                   		CM."ElectionRoundId" = MN."ElectionRoundId"
+                  		AND C."ElectionRoundId" = @electionRoundId
                   		AND (
-                  			(SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails")
-                  			OR MN."NgoId" = @ngoId
-                  		)
+                            (@dataSource = 'Ngo' AND MN."NgoId" = @ngoId)
+                            OR 
+                            (
+                                @dataSource = 'Coalition' 
+                                AND 
+                                (
+                                    (SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") 
+                                    OR MN."NgoId" = @ngoId
+                                )
+                            )
+                        )
                   ),
                   "CombinedTimestamps" AS (
                       -- First subquery for FormSubmissions
@@ -121,9 +128,7 @@ public class Endpoint(
                   	-- if ngo is coalition leader they need to see all the responses
                   	"AvailableMonitoringObservers" AS (
                   		SELECT
-                  			MO."Id",
-                  			MO."MonitoringNgoId",
-                  			U."DisplayName"
+                  			MO."Id"
                   		FROM
                   			"Coalitions" C
                   			INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
@@ -132,10 +137,19 @@ public class Endpoint(
                   			INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
                   		WHERE
                   			CM."ElectionRoundId" = MN."ElectionRoundId"
-                  			AND (
-                  				(SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails")
-                  				OR MN."NgoId" = @ngoId
-                  			)
+                  			AND C."ElectionRoundId" = @electionRoundId
+                  		    AND (
+                                (@dataSource = 'Ngo' AND MN."NgoId" = @ngoId)
+                                OR 
+                                (
+                                    @dataSource = 'Coalition' 
+                                    AND 
+                                    (
+                                        (SELECT "IsCoalitionLeader" FROM "MonitoringNgoDetails") 
+                                        OR MN."NgoId" = @ngoId
+                                    )
+                                )
+                            )
                   	)
                   SELECT DISTINCT
                   	F."Id" AS "FormId",
@@ -156,7 +170,6 @@ public class Endpoint(
                   	"PollingStationInformation" PSI
                   	INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId"
                   	INNER JOIN "AvailableMonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                  	INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE
                   	PSI."ElectionRoundId" = @electionRoundId
                   """;
@@ -164,7 +177,8 @@ public class Endpoint(
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId
+            ngoId = req.NgoId,
+            dataSource = req.DataSource.ToString()
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;

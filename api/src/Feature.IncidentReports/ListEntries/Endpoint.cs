@@ -100,8 +100,7 @@ public class Endpoint(
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
                       ))
                     AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
-                    AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted);
+                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp);
                       
                       
                   WITH
@@ -150,7 +149,6 @@ public class Endpoint(
                             )
                             AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
                             AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
-                            AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -267,7 +265,6 @@ public class Endpoint(
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            iscompleted = req.IsCompletedFilter
         };
 
         int totalRowCount;

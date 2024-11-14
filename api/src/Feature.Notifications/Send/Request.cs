@@ -49,7 +49,6 @@ public class Request
     public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
-    public bool? IsCompletedFilter { get; set; }
     public QuickReportFollowUpStatus? QuickReportFollowUpStatus { get; set; }
     public IncidentCategory? QuickReportIncidentCategory { get; set; }
     public bool? HasQuickReports { get; set; }
