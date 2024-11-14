@@ -158,12 +158,12 @@ public class UpdateTests : BaseApiTestFixture
         var alfaNgoSubmissions = await scenarioData
             .NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponseAsync<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
 
         var betaNgoSubmissions = await scenarioData
             .NgoByName(ScenarioNgos.Beta).Admin
             .GetResponseAsync<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
 
         alfaNgoSubmissions.Items.Should().HaveCount(4);
         betaNgoSubmissions.Items.Should().HaveCount(4);
@@ -210,12 +210,12 @@ public class UpdateTests : BaseApiTestFixture
         var alfaNgoSubmissions = await scenarioData
             .NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponseAsync<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
 
         var betaNgoSubmissions = await scenarioData
             .NgoByName(ScenarioNgos.Beta).Admin
             .GetResponseAsync<PagedResponse<FormSubmissionEntry>>(
-                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry");
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition");
 
         var submission1 =
             scenarioData.ElectionRound.Coalition.FormData.GetSubmissionId(ScenarioObserver.Alice,

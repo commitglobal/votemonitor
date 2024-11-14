@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Authorization.Policies;
+using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
@@ -7,22 +8,23 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests.Interceptors;
+
 using static ApiTesting;
+
 public class AuditingInterceptorTests : BaseDbTestFixture
 {
+    private ICurrentUserProvider _currentUserProvider;
     private ITimeProvider _fakeTimeProvider;
-    private ICurrentUserProvider _fakeCurrentUserProvider;
     private VoteMonitorContext _context;
 
     [SetUp]
     public void Init()
     {
         _fakeTimeProvider = Substitute.For<ITimeProvider>();
-        _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
-
+        _currentUserProvider = Substitute.For<ICurrentUserProvider>();
         var options = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseNpgsql(DbConnectionString)
-            .AddInterceptors(new AuditingInterceptor(_fakeCurrentUserProvider,_fakeTimeProvider))
+            .AddInterceptors(new AuditingInterceptor(_currentUserProvider, _fakeTimeProvider))
             .Options;
 
         _context = new VoteMonitorContext(options);
@@ -32,7 +34,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
     public void Cleanup()
     {
         _fakeTimeProvider = null!;
-        _fakeCurrentUserProvider = null!;
+        _currentUserProvider = null!;
         _context.Dispose();
     }
 
@@ -44,7 +46,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
-        _fakeCurrentUserProvider.GetUserId().Returns(userId);
+        _currentUserProvider.GetUserId().Returns(userId);
         //Act 
         var testEntity = new Ngo(string.Empty);
 
@@ -68,7 +70,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
-        _fakeCurrentUserProvider.GetUserId().Returns(userId);
+        _currentUserProvider.GetUserId().Returns(userId);
 
         //Act 
         var testEntity = new Ngo(string.Empty);
@@ -95,7 +97,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
+        _currentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var testEntity = new Ngo(string.Empty);
 
@@ -122,7 +124,7 @@ public class AuditingInterceptorTests : BaseDbTestFixture
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0, DateTimeKind.Utc);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
+        _currentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var testEntity = new Ngo(string.Empty);
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Serilog;
-using Vote.Monitor.Api.IntegrationTests.Services;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 
@@ -65,7 +65,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 .AddDbContext<VoteMonitorContext>((sp, options) =>
                 {
                     options.UseNpgsql(_connection)
-                        .AddInterceptors(new AuditingInterceptor(new CurrentUserProvider(), _timeProvider));
+                        .AddInterceptors(new AuditingInterceptor(sp.GetRequiredService<ICurrentUserProvider>(), _timeProvider));
                 });
 
             services.AddLogging(logging =>

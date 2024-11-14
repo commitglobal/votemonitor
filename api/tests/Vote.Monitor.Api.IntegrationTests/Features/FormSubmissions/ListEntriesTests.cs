@@ -194,4 +194,77 @@ public class ListEntriesTests : BaseApiTestFixture
             .HaveCount(2)
             .And.BeEquivalentTo([secondSubmission.Id, thirdSubmission.Id]);
     }
+    
+    
+    [TestCaseSource(typeof(DataSourcesTestCases))]
+    public void ShouldAGetOnlyNgoResponses_WhenGettingSubmissionsAndNotInCoalition(DataSource dataSource)
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Alice))
+                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
+            .Please();
+        
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var betaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).FormId;
+        
+        var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
+        var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
+        var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj); 
+        
+        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
+        var betaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).Form.Questions;
+        
+        var iasiSubmission =
+            new FormSubmissionRequestFaker(alfaFormId, psIasiId, alfaFormQuestions).Generate();
+        var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
+        var bacauSubmission =
+            new FormSubmissionRequestFaker(betaFormId, psBacauId, betaFormQuestions).Generate();
+
+        var alice = scenarioData.ObserverByName(ScenarioObserver.Alice);
+        var bob = scenarioData.ObserverByName(ScenarioObserver.Bob);
+
+        var firstSubmission = alice.PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
+            clujSubmission);
+
+        var secondSubmission = alice.PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
+            iasiSubmission);
+
+        var thirdSubmission = bob.PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{electionRoundId}/form-submissions",
+            bacauSubmission);
+
+        // Act
+        var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+            .GetResponse<PagedResponse<FormSubmissionEntry>>(
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
+        
+        var betaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Beta).Admin
+            .GetResponse<PagedResponse<FormSubmissionEntry>>(
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource={dataSource}");
+
+        // Assert
+        alfaNgoFormSubmissions.Items
+            .Select(x => x.SubmissionId)
+            .Should()
+            .HaveCount(2)
+            .And.BeEquivalentTo([firstSubmission.Id, secondSubmission.Id]);        
+        
+        betaNgoFormSubmissions.Items
+            .Select(x => x.SubmissionId)
+            .Should()
+            .HaveCount(1)
+            .And.BeEquivalentTo([thirdSubmission.Id]);
+    }
 }

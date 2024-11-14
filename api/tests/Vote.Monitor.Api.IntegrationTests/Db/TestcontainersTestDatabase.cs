@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
-using Vote.Monitor.Api.IntegrationTests.Services;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
