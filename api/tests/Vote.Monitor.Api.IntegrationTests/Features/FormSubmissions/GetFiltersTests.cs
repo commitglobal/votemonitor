@@ -17,7 +17,7 @@ public class GetFiltersTests : BaseApiTestFixture
     private readonly DateTime _firstSubmissionAt = _now.AddDays(-5);
     private readonly DateTime _secondSubmissionAt = _now.AddDays(-3);
     private readonly DateTime _thirdSubmissionAt = _now.AddDays(-1);
-    
+
     [Test]
     public void ShouldIncludeCoalitionMembersResponses_WhenGettingFiltersAsCoalitionLeader_And_DataSourceCoalition()
     {
@@ -39,9 +39,9 @@ public class GetFiltersTests : BaseApiTestFixture
                 ))
             .Please();
 
-       var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-       var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
-       
+        var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+        var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
+
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
@@ -55,7 +55,7 @@ public class GetFiltersTests : BaseApiTestFixture
 
         var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
-        
+
         var iasiSubmission =
             new FormSubmissionRequestFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
         var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
@@ -95,9 +95,10 @@ public class GetFiltersTests : BaseApiTestFixture
         alfaNgoFilters.TimestampsFilterOptions.LastSubmissionTimestamp.Should()
             .BeCloseTo(_thirdSubmissionAt, TimeSpan.FromMicroseconds(100));
     }
-    
+
     [Test]
-    public void ShouldIncludeCoalitionMembersResponses_AndIgnoreMembersOwnFormsSubmissions_WhenGettingFiltersAsCoalitionLeader_And_DataSourceCoalition()
+    public void
+        ShouldIncludeCoalitionMembersResponses_AndIgnoreMembersOwnFormsSubmissions_WhenGettingFiltersAsCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -118,8 +119,8 @@ public class GetFiltersTests : BaseApiTestFixture
                 ))
             .Please();
 
-       var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-       
+        var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
@@ -133,10 +134,11 @@ public class GetFiltersTests : BaseApiTestFixture
 
         var betaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).Form.Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
-        
+
         var iasiSubmission = new FormSubmissionRequestFaker(betaFormId, psIasiId, betaFormQuestions).Generate();
         var clujSubmission = new FormSubmissionRequestFaker(betaFormId, psClujId, betaFormQuestions).Generate();
-        var bacauSubmission = new FormSubmissionRequestFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
+        var bacauSubmission =
+            new FormSubmissionRequestFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
 
         var bob = scenarioData.ObserverByName(ScenarioObserver.Bob);
 
@@ -167,7 +169,7 @@ public class GetFiltersTests : BaseApiTestFixture
 
         alfaNgoFilters.TimestampsFilterOptions.FirstSubmissionTimestamp.Should()
             .BeCloseTo(_thirdSubmissionAt, TimeSpan.FromMicroseconds(100));
-        
+
         alfaNgoFilters.TimestampsFilterOptions.LastSubmissionTimestamp.Should()
             .BeCloseTo(_thirdSubmissionAt, TimeSpan.FromMicroseconds(100));
     }
@@ -193,9 +195,9 @@ public class GetFiltersTests : BaseApiTestFixture
                 ))
             .Please();
 
-       var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-       var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
-       
+        var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+        var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
+
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
@@ -209,7 +211,7 @@ public class GetFiltersTests : BaseApiTestFixture
 
         var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
-        
+
         var iasiSubmission =
             new FormSubmissionRequestFaker(alfaFormId, psIasiId, alfaFormQuestions).Generate();
         var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
@@ -271,9 +273,9 @@ public class GetFiltersTests : BaseApiTestFixture
                 ))
             .Please();
 
-       var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-       var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
-       
+        var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+        var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
+
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
@@ -287,7 +289,7 @@ public class GetFiltersTests : BaseApiTestFixture
 
         var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
-        
+
         var iasiSubmission =
             new FormSubmissionRequestFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
         var clujSubmission = new FormSubmissionRequestFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
@@ -327,13 +329,13 @@ public class GetFiltersTests : BaseApiTestFixture
         betaNgoFilters.TimestampsFilterOptions.LastSubmissionTimestamp.Should()
             .BeCloseTo(_thirdSubmissionAt, TimeSpan.FromMicroseconds(100));
     }
-    
-    
+
+
     [TestCaseSource(typeof(DataSourcesTestCases))]
     public void ShouldIncludeOnlyNgoResponses_WhenGettingFiltersAsIndependentNgo(DataSource dataSource)
     {
         // Arrange
-         var scenarioData = ScenarioBuilder.New(CreateClient)
+        var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithObserver(ScenarioObserver.Alice)
             .WithObserver(ScenarioObserver.Bob)
             .WithNgo(ScenarioNgos.Alfa)
@@ -347,9 +349,9 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
             .Please();
-         
-         ApiTimeProvider.UtcNow
-             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+
+        ApiTimeProvider.UtcNow
+            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
         var betaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).FormId;
@@ -384,7 +386,7 @@ public class GetFiltersTests : BaseApiTestFixture
 
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
         var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
-        
+
         // Act
         var aflaNgoFilters = alfaNgoAdmin
             .GetResponse<GetFiltersResponse>(

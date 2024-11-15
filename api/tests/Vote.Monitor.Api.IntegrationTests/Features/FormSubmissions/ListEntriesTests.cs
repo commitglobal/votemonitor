@@ -1,5 +1,4 @@
 ﻿using Feature.Form.Submissions.ListEntries;
-using NSubstitute;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Models;
@@ -13,11 +12,6 @@ using static ApiTesting;
 
 public class ListEntriesTests : BaseApiTestFixture
 {
-    private static readonly DateTime _now = DateTime.UtcNow.AddDays(1000);
-    private readonly DateTime _firstSubmissionAt = _now.AddDays(-5);
-    private readonly DateTime _secondSubmissionAt = _now.AddDays(-3);
-    private readonly DateTime _thirdSubmissionAt = _now.AddDays(-1);
-
     [Test]
     public void ShouldNotIncludeCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceNgo()
     {
@@ -38,9 +32,6 @@ public class ListEntriesTests : BaseApiTestFixture
                     .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
                 ))
             .Please();
-
-        ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
@@ -93,8 +84,7 @@ public class ListEntriesTests : BaseApiTestFixture
     }
 
     [Test]
-    public void
-        ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceCoalition()
+    public void ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -115,9 +105,6 @@ public class ListEntriesTests : BaseApiTestFixture
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
                 ))
             .Please();
-
-        ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
@@ -196,9 +183,6 @@ public class ListEntriesTests : BaseApiTestFixture
                     .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
                 ))
             .Please();
-
-        ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;

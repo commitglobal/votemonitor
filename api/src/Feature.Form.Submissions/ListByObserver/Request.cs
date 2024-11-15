@@ -10,12 +10,11 @@ public class Request : BaseSortPaginatedRequest
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    [QueryParam] 
-    public string[]? TagsFilter { get; set; } = [];
+    [QueryParam] public string[]? TagsFilter { get; set; } = [];
 
-    [QueryParam]
-    public string? SearchText { get; set; }
+    [QueryParam] public string? SearchText { get; set; }
 
-    [QueryParam]
-    public SubmissionFollowUpStatus? FollowUpStatus { get; set; }
+    [QueryParam] public SubmissionFollowUpStatus? FollowUpStatus { get; set; }
+
+    [QueryParam] public DataSource DataSource { get; set; }
 }

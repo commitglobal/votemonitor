@@ -385,13 +385,6 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Completed forms' column={column} />,
-    accessorFn: (row)=> row.numberOfCompletedForms,
-    id: 'numberOfCompletedForms',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
     accessorFn: (row)=> row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',

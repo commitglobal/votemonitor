@@ -43,7 +43,6 @@ export interface FormSubmissionByObserver {
   observerName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
-  numberOfCompletedForms: number;
   numberOfFormsSubmitted: number;
   numberOfLocations: number;
   phoneNumber: string;

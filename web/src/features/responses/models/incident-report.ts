@@ -47,7 +47,6 @@ export interface IncidentReportByObserver {
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfIncidentsSubmitted: number;
-  numberOfCompletedForms: number;
   phoneNumber: string;
   tags: string[];
   followUpStatus?: IncidentReportFollowUpStatus;
