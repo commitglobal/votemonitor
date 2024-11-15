@@ -1,11 +1,8 @@
 ﻿using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
-using Vote.Monitor.Core.Services.Serialization;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Api.IntegrationTests.Db;

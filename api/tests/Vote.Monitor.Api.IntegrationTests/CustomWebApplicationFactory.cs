@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using Authorization.Policies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

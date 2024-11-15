@@ -37,7 +37,7 @@ public class MonitoringNgoScenarioBuilder
         Action<MonitoringNgoFormScenarioBuilder>? cfAction = null)
     {
         formCode ??= Guid.NewGuid().ToString();
-        var formRequest = Dummy.Form();
+        var formRequest = Dummy.Form(formCode);
         var admin = NgoScenario.Admin;
 
         var ngoForm = admin.PostWithResponse<CreateFormRequest>(

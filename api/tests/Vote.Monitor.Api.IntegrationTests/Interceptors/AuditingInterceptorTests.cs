@@ -1,8 +1,6 @@
-﻿using Authorization.Policies;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.NgoAggregate;

@@ -31,7 +31,7 @@ public class CoalitionScenarioBuilder
         sharedWithMembers ??= Array.Empty<ScenarioNgo>();
         formCode ??= Guid.NewGuid().ToString();
 
-        var formRequest = Dummy.Form();
+        var formRequest = Dummy.Form("A");
         var ngoForm =
             _coalitionLeaderAdminAdmin.PostWithResponse<CreateFormRequest>(
                 $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms",
@@ -42,8 +42,7 @@ public class CoalitionScenarioBuilder
                 null)
             .GetAwaiter().GetResult()
             .EnsureSuccessStatusCode();
-
-
+        
         var members = sharedWithMembers.Select(member => ParentBuilder.ParentBuilder.NgoIdByName(member))
             .ToList();
         _coalitionLeaderAdminAdmin.PutWithoutResponse(

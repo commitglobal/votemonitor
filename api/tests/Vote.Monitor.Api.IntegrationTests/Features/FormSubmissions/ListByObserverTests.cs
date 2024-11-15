@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using Vote.Monitor.Api.IntegrationTests.Consts;
+﻿using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Form.Module.Requests;
 

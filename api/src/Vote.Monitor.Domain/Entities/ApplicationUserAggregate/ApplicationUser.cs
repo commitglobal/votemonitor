@@ -84,7 +84,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
 
     public void NewInvite()
     {
-        InvitationToken = Guid.NewGuid().ToString();
+        InvitationToken = Guid.NewGuid().ToString("N");
     }
 
     public void Activate()

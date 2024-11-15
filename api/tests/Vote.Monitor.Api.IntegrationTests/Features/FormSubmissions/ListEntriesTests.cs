@@ -6,7 +6,6 @@ using Vote.Monitor.Api.IntegrationTests.Models;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Api.IntegrationTests.TestCases;
 using Vote.Monitor.Core.Models;
-using Vote.Monitor.Form.Module.Requests;
 
 namespace Vote.Monitor.Api.IntegrationTests.Features.FormSubmissions;
 
@@ -94,7 +93,8 @@ public class ListEntriesTests : BaseApiTestFixture
     }
 
     [Test]
-    public void ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceCoalition()
+    public void
+        ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -107,10 +107,12 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Beta,
+                    ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
+                        .WithForm("A", form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
-                    .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
                 ))
             .Please();
 
@@ -241,7 +243,7 @@ public class ListEntriesTests : BaseApiTestFixture
             .HaveCount(2)
             .And.BeEquivalentTo([secondSubmission.Id, thirdSubmission.Id]);
     }
-    
+
     [TestCaseSource(typeof(DataSourcesTestCases))]
     public void ShouldAGetOnlyNgoResponses_WhenGettingSubmissions_AsIndependentNgo(DataSource dataSource)
     {

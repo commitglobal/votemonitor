@@ -8,10 +8,10 @@ namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
 
 public class Dummy
 {
-    public static CreateFormRequest Form() => new()
+    public static CreateFormRequest Form(string code) => new()
     {
         Id = Guid.Empty,
-        Code = "A2",
+        Code = code,
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
         Name = new TranslatedString { { "EN", "test form" }, { "RO", "formular de test" } },

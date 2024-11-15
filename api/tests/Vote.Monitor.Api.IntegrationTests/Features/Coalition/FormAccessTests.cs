@@ -30,7 +30,7 @@ public class FormAccessTests : BaseApiTestFixture
             .Please();
 
         // Act
-        var formRequest = Dummy.Form();
+        var formRequest = Dummy.Form("A");
         var electionRoundId = scenarioData.ElectionRoundId;
         var ngoForm =
             scenarioData.NgoByName(ScenarioNgos.Alfa).Admin.PostWithResponse<CreateFormRequest>(
@@ -72,7 +72,7 @@ public class FormAccessTests : BaseApiTestFixture
             .Please();
 
         // Act
-        var formRequest = Dummy.Form();
+        var formRequest = Dummy.Form("A");
         var electionRoundId = scenarioData.ElectionRoundId;
         var ngoForm =
             scenarioData.NgoByName(ScenarioNgos.Alfa).Admin.PostWithResponse<CreateFormRequest>(
