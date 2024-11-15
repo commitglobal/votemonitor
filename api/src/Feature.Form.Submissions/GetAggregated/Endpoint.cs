@@ -28,8 +28,7 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req,
         CancellationToken ct)
     {
-        var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -246,7 +245,8 @@ public class Endpoint(
                 FollowUpStatus = req.FollowUpStatus,
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 MonitoringObserverStatus = req.MonitoringObserverStatus,
-                PollingStationNumberFilter = req.PollingStationNumberFilter
+                PollingStationNumberFilter = req.PollingStationNumberFilter,
+                DataSource = req.DataSource
             }
         });
     }

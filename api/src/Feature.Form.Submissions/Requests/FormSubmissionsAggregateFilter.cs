@@ -13,6 +13,8 @@ public class FormSubmissionsAggregateFilter
 
     public Guid? FormId { get; set; }
 
+    [QueryParam] public DataSource DataSource { get; set; }
+
     [QueryParam] public string? Level1Filter { get; set; }
 
     [QueryParam] public string? Level2Filter { get; set; }

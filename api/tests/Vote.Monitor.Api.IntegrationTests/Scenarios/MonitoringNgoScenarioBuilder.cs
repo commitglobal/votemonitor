@@ -14,6 +14,7 @@ public class MonitoringNgoScenarioBuilder
     public NgoScenarioBuilder NgoScenario { get; }
     public Guid FormId => _forms.First().Value.FormId;
     public CreateFormRequest Form => _forms.First().Value.Form;
+    public MonitoringNgoFormScenarioBuilder FormData => _forms.First().Value;
 
     public (Guid ObserverId, Guid MonitoringObserverId , HttpClient Client, string FullName, string Email, string PhoneNumber) Observer => _monitoringObservers.First().Value;
 

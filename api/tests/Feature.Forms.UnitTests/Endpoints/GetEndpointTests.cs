@@ -2,6 +2,7 @@
 using Feature.Forms.Models;
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
+using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
@@ -10,11 +11,12 @@ public class GetEndpointTests
 {
     private readonly IAuthorizationService _authorizationService = Substitute.For<IAuthorizationService>();
     private readonly IReadRepository<Form> _repository = Substitute.For<IReadRepository<Form>>();
+    private readonly IReadRepository<Coalition> _coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
     private readonly Get.Endpoint _endpoint;
 
     public GetEndpointTests()
     {
-        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository);
+        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository, _coalitionRepository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -25,7 +27,8 @@ public class GetEndpointTests
     {
         // Arrange
         _authorizationService
-            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
         // Act

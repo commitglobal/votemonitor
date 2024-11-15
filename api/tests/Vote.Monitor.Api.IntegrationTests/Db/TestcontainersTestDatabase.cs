@@ -18,6 +18,8 @@ public class TestcontainersTestDatabase : ITestDatabase
     {
         _container = new PostgreSqlBuilder()
             .WithAutoRemove(true)
+            .WithExposedPort(33747)
+            .WithPortBinding(33747, 5432)
             .Build();
     }
 

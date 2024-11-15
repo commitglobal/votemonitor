@@ -11,7 +11,7 @@ using static ApiTesting;
 public class ListByObserverTests : BaseApiTestFixture
 {
     [Test]
-    public void ShouldNotIncludeCoalitionMembersResponses_WhenGettingSubmissionsAsCoalitionLeader_And_DataSourceNgo()
+    public void ShouldExcludeCoalitionMembersResponses_WhenCoalitionLeader_And_DataSourceNgo()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -58,8 +58,7 @@ public class ListByObserverTests : BaseApiTestFixture
     }
 
     [Test]
-    public void
-        ShouldIncludeAnonymizedCoalitionMembersResponses_WhenGettingObserversAsCoalitionLeader_And_DataSourceCoalition()
+    public void ShouldAnonymizeCoalitionMembersResponses_WhenCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -75,7 +74,8 @@ public class ListByObserverTests : BaseApiTestFixture
                     ngo => ngo
                         .WithMonitoringObserver(ScenarioObserver.Alice)
                         .WithForm("A",
-                        form => form.Publish().WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
+                            form => form.Publish()
+                                .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A", form => form
@@ -127,9 +127,8 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.PhoneNumber.Should().Be(bob.MonitoringObserverId.ToString());
     }
 
-
     [TestCaseSource(typeof(DataSourcesTestCases))]
-    public void ShouldAlwaysGetOnlyNgoResponses_WhenGettingSubmissionsAsCoalitionMember(DataSource dataSource)
+    public void ShouldReturnNgoResponses_WhenCoalitionMember(DataSource dataSource)
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -149,8 +148,8 @@ public class ListByObserverTests : BaseApiTestFixture
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
-                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta], form=>form
-                        .WithSubmission(ScenarioObserver.Alice,ScenarioPollingStation.Cluj)
+                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta], form => form
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj)
                         .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau))
                 ))
             .Please();
@@ -170,7 +169,7 @@ public class ListByObserverTests : BaseApiTestFixture
         betaNgoObservers.Items
             .Should()
             .HaveCount(1);
-        
+
         var bobData = betaNgoObservers.Items.First();
 
         bobData.NumberOfFormsSubmitted.Should().Be(2);
@@ -180,7 +179,7 @@ public class ListByObserverTests : BaseApiTestFixture
     }
 
     [TestCaseSource(typeof(DataSourcesTestCases))]
-    public void ShouldAGetOnlyNgoResponses_WhenGettingObservers_AsIndependentNgo(DataSource dataSource)
+    public void ShouldReturnNgoResponses_WhenIndependentNgo(DataSource dataSource)
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -195,22 +194,25 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Alfa,
                     ngo => ngo
                         .WithMonitoringObserver(ScenarioObserver.Alice)
-                        .WithForm("A", form => form.Publish().WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi).WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
+                        .WithForm("A",
+                            form => form.Publish().WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                                .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo
                         .WithMonitoringObserver(ScenarioObserver.Bob)
-                        .WithForm("A", form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))))
+                        .WithForm("A",
+                            form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alice = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Alfa)
             .ObserverByName(ScenarioObserver.Alice);
-        
+
         var bob = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Beta)
             .ObserverByName(ScenarioObserver.Bob);
-        
+
         // Act
         var alfaNgoObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<ObserverSubmissionOverview>>(
@@ -221,22 +223,22 @@ public class ListByObserverTests : BaseApiTestFixture
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byObserver?dataSource={dataSource}");
 
         // Assert
-       var aliceData =  alfaNgoObservers.Items
+        var aliceData = alfaNgoObservers.Items
             .Should()
             .ContainSingle()
             .Subject;
-       
-       aliceData.NumberOfFormsSubmitted.Should().Be(2);
-       aliceData.MonitoringObserverId.Should().Be(alice.MonitoringObserverId);
-       aliceData.PhoneNumber.Should().Be(alice.PhoneNumber);
-       aliceData.ObserverName.Should().Be(alice.FullName);
-       aliceData.Email.Should().Be(alice.Email);
+
+        aliceData.NumberOfFormsSubmitted.Should().Be(2);
+        aliceData.MonitoringObserverId.Should().Be(alice.MonitoringObserverId);
+        aliceData.PhoneNumber.Should().Be(alice.PhoneNumber);
+        aliceData.ObserverName.Should().Be(alice.FullName);
+        aliceData.Email.Should().Be(alice.Email);
 
         var bobData = betaObservers.Items
             .Should()
             .ContainSingle()
             .Subject;
-        
+
         bobData.NumberOfFormsSubmitted.Should().Be(1);
         bobData.MonitoringObserverId.Should().Be(bob.MonitoringObserverId);
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);

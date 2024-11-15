@@ -31,7 +31,7 @@ public class CoalitionScenarioBuilder
         sharedWithMembers ??= Array.Empty<ScenarioNgo>();
         formCode ??= Guid.NewGuid().ToString();
 
-        var formRequest = Dummy.Form("A");
+        var formRequest = Dummy.Form(formCode);
         var ngoForm =
             _coalitionLeaderAdminAdmin.PostWithResponse<CreateFormRequest>(
                 $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms",

@@ -10,7 +10,7 @@ namespace Feature.Forms.Get;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IReadRepository<FormAggregate> formRepository,
-    IReadRepository<Coalition>coalitionRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
+    IReadRepository<Coalition> coalitionRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -32,7 +32,7 @@ public class Endpoint(
             new GetCoalitionFormSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var ngoFormSpecification =
             new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
-        
+
         var form = (await coalitionRepository.FirstOrDefaultAsync(coalitionFormSpecification, ct)) ??
                    (await formRepository.FirstOrDefaultAsync(ngoFormSpecification, ct));
 

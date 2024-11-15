@@ -38,4 +38,5 @@ public class SubmissionsFilterModel
     public bool? HasAttachments { get; set; }
     public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     public bool? IsCompletedFilter { get; set; }
+    public DataSource DataSource { get; set; }
 }

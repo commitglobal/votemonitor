@@ -26,162 +26,20 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         }
 
         var sql = """
-                  WITH "MonitoringNgoDetails" AS (SELECT MN."ElectionRoundId",
-                                                         MN."Id"                               AS "MonitoringNgoId",
-                                                         -- Check if MonitoringNgo is a coalition leader
-                                                         EXISTS (SELECT 1
-                                                                 FROM "CoalitionMemberships" CM
-                                                                          JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
-                                                                 WHERE CM."MonitoringNgoId" = MN."Id"
-                                                                   AND CM."ElectionRoundId" = MN."ElectionRoundId"
-                                                                   AND C."LeaderId" = MN."Id") AS "IsCoalitionLeader",
-                                                         -- Get coalition id
-                                                         (SELECT C."Id"
-                                                          FROM "CoalitionMemberships" CM
-                                                                   JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
-                                                          WHERE CM."MonitoringNgoId" = MN."Id"
-                                                            AND CM."ElectionRoundId" = MN."ElectionRoundId"
-                                                          LIMIT 1)                             AS "CoalitionId"
-                                                  FROM "MonitoringNgos" MN
-                                                  WHERE MN."ElectionRoundId" = @electionRoundId
-                                                    AND MN."NgoId" = @ngoId
-                                                  LIMIT 1),
-                       -- if ngo is coalition leader they need to see all the responses
-                       "AvailableMonitoringObservers" AS (SELECT MO."Id",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."DisplayName"
-                                                                     END     AS "DisplayName",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."Email"
-                                                                     END     AS "Email",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."PhoneNumber"
-                                                                     END     AS "PhoneNumber",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN '{}'::TEXT[]
-                                                                     ELSE MO."Tags"
-                                                                     END     AS "Tags",
-                                                                 MO."Status" AS "Status"
-                                                          FROM "Coalitions" C
-                                                                   INNER JOIN "MonitoringNgoDetails" MND ON MND."CoalitionId" = C."Id"
-                                                                   INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
-                                                                   INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
-                                                                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                                                                   INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
-                                                          WHERE MND."CoalitionId" IS NOT NULL
-                                                            -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
-                                                            AND (
-                                                              (
-                                                                  (
-                                                                      @dataSource = 'Ngo'
-                                                                          OR @dataSource = 'Coalition'
-                                                                      )
-                                                                      AND NOT EXISTS (SELECT 1
-                                                                                      FROM "MonitoringNgoDetails")
-                                                                      AND MN."NgoId" = @ngoId
-                                                                  )
-                                                                  -- Case 2: `@dataSource` is "Coalition" and they are a coalition leader
-                                                                  OR (
-                                                                  @dataSource = 'Coalition'
-                                                                      AND EXISTS (SELECT 1
-                                                                                  FROM "MonitoringNgoDetails"
-                                                                                  WHERE "IsCoalitionLeader")
-                                                                  )
-                                                                  -- Case 3: `@dataSource` is "Ngo" and they are a coalition leader, apply `MN."NgoId" = @ngoId`
-                                                                  OR (
-                                                                  @dataSource = 'Ngo'
-                                                                      AND EXISTS (SELECT 1
-                                                                                  FROM "MonitoringNgoDetails"
-                                                                                  WHERE "IsCoalitionLeader")
-                                                                      AND MN."NgoId" = @ngoId
-                                                                  )
-                                                                  -- Case 4: For all other cases, apply `MN."NgoId" = @ngoId`
-                                                                  OR MN."NgoId" = @ngoId
-                                                              )
-                                                          UNION
-                                                          SELECT MO."Id",
-                                                                 U."DisplayName" AS "DisplayName",
-                                                                 U."Email"       AS "Email",
-                                                                 U."PhoneNumber" AS "PhoneNumber",
-                                                                 MO."Tags"       AS "Tags",
-                                                                 MO."Status"     AS "Status"
-                                                          FROM "MonitoringObservers" MO
-                                                                   INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
-                                                                   INNER JOIN "MonitoringNgoDetails" MND
-                                                                              ON MND."MonitoringNgoId" = MO."MonitoringNgoId"
-                                                                   INNER JOIN "MonitoringNgos" MN on mn."Id" = mo."MonitoringNgoId"
-                                                          WHERE MND."CoalitionId" IS NULL
-                                                            and mn."NgoId" = @ngoId),
-                       "AvailableForms" AS (SELECT F."Id"
-                                            FROM "CoalitionFormAccess" CFA
-                                                     INNER JOIN "Coalitions" C ON CFA."CoalitionId" = C."Id"
-                                                     inner join "MonitoringNgoDetails" mnd on mnd."CoalitionId" = c."Id"
-                                                     Inner join "MonitoringNgos" mn on mnd."MonitoringNgoId" = mn."Id"
-                                                     INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
-                                            WHERE MND."CoalitionId" IS NOT NULL
-                                              -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
-                                              AND (
-                                                (
-                                                    (@dataSource = 'Ngo' OR @dataSource = 'Coalition')
-                                                        AND NOT EXISTS (SELECT 1
-                                                                        FROM "MonitoringNgoDetails")
-                                                        AND MN."NgoId" = @ngoId
-                                                    )
-                                                    -- Case 2: `@dataSource` is "Coalition" and they are a coalition leader
-                                                    OR (@dataSource = 'Coalition' AND EXISTS (SELECT 1
-                                                                                              FROM "MonitoringNgoDetails"
-                                                                                              WHERE "IsCoalitionLeader")
-                                                    )
-                                                    -- Case 3: `@dataSource` is "Ngo" and they are a coalition leader, apply `MN."NgoId" = @ngoId`
-                                                    OR (
-                                                    @dataSource = 'Ngo'
-                                                        AND EXISTS (SELECT 1
-                                                                    FROM "MonitoringNgoDetails"
-                                                                    WHERE "IsCoalitionLeader")
-                                                        AND MN."NgoId" = @ngoId
-                                                    )
-                                                    -- Case 4: For all other cases, apply `MN."NgoId" = @ngoId`
-                                                    OR MN."NgoId" = @ngoId
-                                                )
-                                            UNION
-                                            SELECT F."Id"
-                                            FROM "Forms" F
-                                                     INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
-                                            WHERE f."ElectionRoundId" = @electionRoundId
-                                              AND MN."NgoId" = @ngoId)
                   SELECT SUM(count)
                   FROM (SELECT count(*) AS count
                         FROM "PollingStationInformation" psi
                                  INNER JOIN "PollingStationInformationForms" psif ON psif."Id" = psi."PollingStationInformationFormId"
                                  INNER JOIN "PollingStations" ps ON ps."Id" = psi."PollingStationId"
-                                 INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
+                                 INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) mo ON mo."MonitoringObserverId" = psi."MonitoringObserverId"
                         WHERE psi."ElectionRoundId" = @electionRoundId
-                          AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                          AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                           AND (@searchText IS NULL
                             OR @searchText = ''
                             OR mo."DisplayName" ILIKE @searchText
                             OR mo."Email" ILIKE @searchText
                             OR mo."PhoneNumber" ILIKE @searchText
-                            OR mo."Id"::TEXT ILIKE @searchText)
+                            OR mo."MonitoringObserverId"::TEXT ILIKE @searchText)
                           AND (@formType IS NULL OR 'PSI' = @formType)
                           AND (@level1 IS NULL OR ps."Level1" = @level1)
                           AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -205,17 +63,17 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         SELECT count(*) AS count
                         FROM "FormSubmissions" fs
                                  INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                                 INNER JOIN "AvailableForms" AF ON AF."Id" = fs."FormId"
+                                 INNER JOIN "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource)  AF ON AF."FormId" = fs."FormId"
                                  INNER JOIN "PollingStations" ps ON ps."Id" = fs."PollingStationId"
-                                 INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = fs."MonitoringObserverId"
+                                 INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo ON mo."MonitoringObserverId" = fs."MonitoringObserverId"
                         WHERE fs."ElectionRoundId" = @electionRoundId
-                          AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                          AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                           AND (@searchText IS NULL
                             OR @searchText = ''
                             OR mo."DisplayName" ILIKE @searchText
                             OR mo."Email" ILIKE @searchText
                             OR mo."PhoneNumber" ILIKE @searchText
-                            OR mo."Id"::TEXT ILIKE @searchText)
+                            OR mo."MonitoringObserverId"::TEXT ILIKE @searchText)
                           AND (@formType IS NULL OR f."FormType" = @formType)
                           AND (@level1 IS NULL OR ps."Level1" = @level1)
                           AND (@level2 IS NULL OR ps."Level2" = @level2)
@@ -262,149 +120,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           AND (@fromDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @fromDate::timestamp)
                           AND (@toDate is NULL OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @toDate::timestamp)) c;
                   
-                  WITH "MonitoringNgoDetails" AS (SELECT MN."ElectionRoundId",
-                                                         MN."Id"                               AS "MonitoringNgoId",
-                                                         -- Check if MonitoringNgo is a coalition leader
-                                                         EXISTS (SELECT 1
-                                                                 FROM "CoalitionMemberships" CM
-                                                                          JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
-                                                                 WHERE CM."MonitoringNgoId" = MN."Id"
-                                                                   AND CM."ElectionRoundId" = MN."ElectionRoundId"
-                                                                   AND C."LeaderId" = MN."Id") AS "IsCoalitionLeader",
-                                                         -- Get coalition id
-                                                         (SELECT C."Id"
-                                                          FROM "CoalitionMemberships" CM
-                                                                   JOIN "Coalitions" C ON CM."CoalitionId" = C."Id"
-                                                          WHERE CM."MonitoringNgoId" = MN."Id"
-                                                            AND CM."ElectionRoundId" = MN."ElectionRoundId"
-                                                          LIMIT 1)                             AS "CoalitionId"
-                                                  FROM "MonitoringNgos" MN
-                                                  WHERE MN."ElectionRoundId" = @electionRoundId
-                                                    AND MN."NgoId" = @ngoId
-                                                  LIMIT 1),
-                       -- if ngo is coalition leader they need to see all the responses
-                       "AvailableMonitoringObservers" AS (SELECT MO."Id",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."DisplayName"
-                                                                     END     AS "DisplayName",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."Email"
-                                                                     END     AS "Email",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN MO."Id"::TEXT
-                                                                     ELSE U."PhoneNumber"
-                                                                     END     AS "PhoneNumber",
-                                                                 CASE
-                                                                     WHEN (
-                                                                         (SELECT "IsCoalitionLeader"
-                                                                          FROM "MonitoringNgoDetails")
-                                                                             AND MN."NgoId" <> @ngoId
-                                                                         ) THEN '{}'::TEXT[]
-                                                                     ELSE MO."Tags"
-                                                                     END     AS "Tags",
-                                                                 MO."Status" AS "Status"
-                                                          FROM "Coalitions" C
-                                                                   INNER JOIN "MonitoringNgoDetails" MND ON MND."CoalitionId" = C."Id"
-                                                                   INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId"
-                                                                   INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId"
-                                                                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                                                                   INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
-                                                          WHERE MND."CoalitionId" IS NOT NULL
-                                                            -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
-                                                            AND (
-                                                              (
-                                                                  (
-                                                                      @dataSource = 'Ngo'
-                                                                          OR @dataSource = 'Coalition'
-                                                                      )
-                                                                      AND NOT EXISTS (SELECT 1
-                                                                                      FROM "MonitoringNgoDetails")
-                                                                      AND MN."NgoId" = @ngoId
-                                                                  )
-                                                                  -- Case 2: `@dataSource` is "Coalition" and they are a coalition leader
-                                                                  OR (
-                                                                  @dataSource = 'Coalition'
-                                                                      AND EXISTS (SELECT 1
-                                                                                  FROM "MonitoringNgoDetails"
-                                                                                  WHERE "IsCoalitionLeader")
-                                                                  )
-                                                                  -- Case 3: `@dataSource` is "Ngo" and they are a coalition leader, apply `MN."NgoId" = @ngoId`
-                                                                  OR (
-                                                                  @dataSource = 'Ngo'
-                                                                      AND EXISTS (SELECT 1
-                                                                                  FROM "MonitoringNgoDetails"
-                                                                                  WHERE "IsCoalitionLeader")
-                                                                      AND MN."NgoId" = @ngoId
-                                                                  )
-                                                                  -- Case 4: For all other cases, apply `MN."NgoId" = @ngoId`
-                                                                  OR MN."NgoId" = @ngoId
-                                                              )
-                                                          UNION
-                                                          SELECT MO."Id",
-                                                                 U."DisplayName" AS "DisplayName",
-                                                                 U."Email"       AS "Email",
-                                                                 U."PhoneNumber" AS "PhoneNumber",
-                                                                 MO."Tags"       AS "Tags",
-                                                                 MO."Status"     AS "Status"
-                                                          FROM "MonitoringObservers" MO
-                                                                   INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
-                                                                   INNER JOIN "MonitoringNgoDetails" MND
-                                                                              ON MND."MonitoringNgoId" = MO."MonitoringNgoId"
-                                                                   INNER JOIN "MonitoringNgos" MN on mn."Id" = mo."MonitoringNgoId"
-                                                          WHERE MND."CoalitionId" IS NULL
-                                                            and mn."NgoId" = @ngoId),
-                       "AvailableForms" AS (SELECT F."Id"
-                                            FROM "CoalitionFormAccess" CFA
-                                                     INNER JOIN "Coalitions" C ON CFA."CoalitionId" = C."Id"
-                                                     inner join "MonitoringNgoDetails" mnd on mnd."CoalitionId" = c."Id"
-                                                     INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
-                                                     inner join "MonitoringNgos" mn on mn."Id" = mnd."MonitoringNgoId"
-                                            WHERE MND."CoalitionId" IS NOT NULL
-                                              -- Case 1: `@dataSource` is "Ngo" or "Coalition" and they are not in a coalition
-                                              AND (
-                                                (
-                                                    (@dataSource = 'Ngo' OR @dataSource = 'Coalition')
-                                                        AND NOT EXISTS (SELECT 1
-                                                                        FROM "MonitoringNgoDetails")
-                                                        AND MN."NgoId" = @ngoId
-                                                    )
-                                                    -- Case 2: `@dataSource` is "Coalition" and they are a coalition leader
-                                                    OR (@dataSource = 'Coalition' AND EXISTS (SELECT 1
-                                                                                              FROM "MonitoringNgoDetails"
-                                                                                              WHERE "IsCoalitionLeader")
-                                                    )
-                                                    -- Case 3: `@dataSource` is "Ngo" and they are a coalition leader, apply `MN."NgoId" = @ngoId`
-                                                    OR (
-                                                    @dataSource = 'Ngo'
-                                                        AND EXISTS (SELECT 1
-                                                                    FROM "MonitoringNgoDetails"
-                                                                    WHERE "IsCoalitionLeader")
-                                                        AND MN."NgoId" = @ngoId
-                                                    )
-                                                    -- Case 4: For all other cases, apply `MN."NgoId" = @ngoId`
-                                                    OR MN."NgoId" = @ngoId
-                                                )
-                                            UNION
-                                            SELECT F."Id"
-                                            FROM "Forms" F
-                                                     INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
-                                            WHERE f."ElectionRoundId" = @electionRoundId
-                                              AND MN."NgoId" = @ngoId),
-                       polling_station_submissions AS (SELECT psi."Id" AS                                     "SubmissionId",
+                  WITH polling_station_submissions AS (SELECT psi."Id" AS                                     "SubmissionId",
                                                               'PSI'    AS                                     "FormType",
                                                               'PSI'    AS                                     "FormCode",
                                                               psi."PollingStationId",
@@ -421,16 +137,16 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                        FROM "PollingStationInformation" psi
                                                                 INNER JOIN "PollingStationInformationForms" psif
                                                                            ON psif."Id" = psi."PollingStationInformationFormId"
-                                                                INNER JOIN "AvailableMonitoringObservers" mo
-                                                                           ON mo."Id" = psi."MonitoringObserverId"
+                                                                INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo
+                                                                           ON mo."MonitoringObserverId" = psi."MonitoringObserverId"
                                                        WHERE psi."ElectionRoundId" = @electionRoundId
-                                                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                                                         AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                                          AND (@searchText IS NULL OR @searchText = ''
                                                            OR mo."DisplayName" ILIKE @searchText
                                                            OR mo."Email" ILIKE @searchText
                                                            OR mo."PhoneNumber" ILIKE @searchText
-                                                           OR mo."Id"::TEXT ILIKE @searchText)
-                                                         AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                                                           OR mo."MonitoringObserverId"::TEXT ILIKE @searchText)
+                                                         AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                                          AND (@monitoringObserverStatus IS NULL OR
                                                               mo."Status" = @monitoringObserverStatus)
                                                          AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
@@ -470,16 +186,16 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                    fs."IsCompleted"
                                             FROM "FormSubmissions" fs
                                                      INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                                                     INNER JOIN "AvailableMonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
-                                                     INNER JOIN "AvailableForms" AF ON AF."Id" = fs."FormId"
+                                                     INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo ON fs."MonitoringObserverId" = mo."MonitoringObserverId"
+                                                     INNER JOIN "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource)  AF ON AF."FormId" = fs."FormId"
                                             WHERE fs."ElectionRoundId" = @electionRoundId
-                                              AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                                              AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                               AND (@searchText IS NULL OR @searchText = ''
                                                 OR mo."DisplayName" ILIKE @searchText
                                                 OR mo."Email" ILIKE @searchText
                                                 OR mo."PhoneNumber" ILIKE @searchText
-                                                OR mo."Id"::TEXT ILIKE @searchText)
-                                              AND (@monitoringObserverId IS NULL OR mo."Id" = @monitoringObserverId)
+                                                OR mo."MonitoringObserverId"::TEXT ILIKE @searchText)
+                                              AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                               AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
                                               AND (@formId IS NULL OR fs."FormId" = @formId)
                                               AND (@fromDate is NULL OR
@@ -522,7 +238,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         SELECT *
                         FROM form_submissions) s
                            INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
-                           INNER JOIN "AvailableMonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"
+                           INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) mo ON mo."MonitoringObserverId" = s."MonitoringObserverId"
                   WHERE (@formType IS NULL OR s."FormType" = @formType)
                     AND (@level1 IS NULL OR ps."Level1" = @level1)
                     AND (@level2 IS NULL OR ps."Level2" = @level2)

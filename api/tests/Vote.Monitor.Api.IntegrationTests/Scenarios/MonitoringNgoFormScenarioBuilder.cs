@@ -48,7 +48,7 @@ public class MonitoringNgoFormScenarioBuilder
         }
         
         var pollingStationId = ParentBuilder.ParentBuilder.PollingStationByName(pollingStation);
-        var submission = new FormSubmissionRequestFaker(_form.Id, pollingStationId, _form.Questions).Generate();
+        var submission = new FakeSubmission(_form.Id, pollingStationId, _form.Questions).Generate();
 
         var observerClient = ParentBuilder.ParentBuilder.ParentBuilder.ClientFor(observer);
 

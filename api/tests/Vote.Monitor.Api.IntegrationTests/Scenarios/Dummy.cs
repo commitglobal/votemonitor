@@ -14,8 +14,8 @@ public class Dummy
         Code = code,
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
-        Name = new TranslatedString { { "EN", "test form" }, { "RO", "formular de test" } },
-        Description = new TranslatedString { { "EN", "test form" }, { "RO", "formular de test" } },
+        Name = new TranslatedString { { "EN", code }, { "RO", code } },
+        Description = new TranslatedString { { "EN", code }, { "RO", code } },
         FormType = FormType.Opening,
         Questions =
         [
@@ -138,8 +138,7 @@ public class Dummy
                 Helptext =
                     new TranslatedString
                     {
-                        { "EN", "Please select as many you want" },
-                        { "RO", "Vă rugăm să selectați câte doriți" }
+                        { "EN", "Please select as many you want" }, { "RO", "Vă rugăm să selectați câte doriți" }
                     },
                 Options = new List<SelectOptionRequest>
                 {
