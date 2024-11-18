@@ -172,8 +172,7 @@ namespace Vote.Monitor.Domain.Migrations
               INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."MonitoringNgoId" = MO."MonitoringNgoId" 
               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId" 
             WHERE 
-              MND."CoalitionId" IS NULL 
-              AND MN."NgoId" = ngoId;
+            (MND."CoalitionId" IS NULL or MND."IsCoalitionLeader" = false) AND MN."NgoId" = ngoId;
             END;
             $$ LANGUAGE plpgsql;
             
@@ -201,20 +200,15 @@ namespace Vote.Monitor.Domain.Migrations
                     MND."CoalitionId" IS NOT NULL
                     AND (
                         (
-                            (dataSource = 'Ngo' OR dataSource = 'Coalition')
-                            AND NOT EXISTS (SELECT 1 FROM "GetMonitoringNgoDetails"(electionRoundId, ngoId))
-                            AND MN."NgoId" = ngoId
-                        )
-                        OR (
                             dataSource = 'Coalition'
                             AND EXISTS (SELECT 1 FROM "GetMonitoringNgoDetails"(electionRoundId, ngoId) WHERE "IsCoalitionLeader")
                         )
                         OR (
                             dataSource = 'Ngo'
-                            AND EXISTS (SELECT 1 FROM "GetMonitoringNgoDetails"(electionRoundId, ngoId) WHERE "IsCoalitionLeader")
-                            AND MN."NgoId" = ngoId
+                            --AND EXISTS (SELECT 1 FROM "GetMonitoringNgoDetails"(electionRoundId, ngoId) WHERE "IsCoalitionLeader")
+                            AND MN."NgoId" = ngoId AND mn."Id" = cfa."MonitoringNgoId"
                         )
-                        OR MN."NgoId" = ngoId
+                        OR MN."NgoId" = ngoId AND mn."Id" = cfa."MonitoringNgoId"
                     )
                 UNION
                 SELECT F."Id" AS "FormId"
@@ -222,9 +216,8 @@ namespace Vote.Monitor.Domain.Migrations
                   INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."MonitoringNgoId" = F."MonitoringNgoId" 
                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MND."MonitoringNgoId" 
                 WHERE 
-                  MND."CoalitionId" IS NULL 
-                  AND F."ElectionRoundId" = electionRoundId
-                  AND MN."NgoId" = ngoId;
+                    (MND."CoalitionId" IS NULL or MND."IsCoalitionLeader" = false) AND MN."NgoId" = ngoId
+                    AND F."ElectionRoundId" = electionRoundId;
             END;
             $$ LANGUAGE plpgsql;
             """);

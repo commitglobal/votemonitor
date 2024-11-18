@@ -23,16 +23,16 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
-                    .WithMonitoringObserver(ScenarioObserver.Alice)
-                    .WithForm("A", form => form.Publish()
-                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
                     .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta], form => form
                         .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
                         .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Cluj)
                     )
+                    .WithForm("A", [ScenarioNgos.Alfa],
+                        form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau))
                 ))
             .Please();
 
@@ -70,15 +70,10 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa,
-                    ngo => ngo
-                        .WithMonitoringObserver(ScenarioObserver.Alice)
-                        .WithForm("A",
-                            form => form.Publish()
-                                .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Alice))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
-                        .WithForm("A", form => form
+                        .WithForm("B", form => form
                             .Publish()
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
@@ -86,6 +81,8 @@ public class ListByObserverTests : BaseApiTestFixture
                         .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
                         .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau)
                     )
+                    .WithForm("A", [ScenarioNgos.Alfa],
+                        form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau))
                 ))
             .Please();
 

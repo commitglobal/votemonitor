@@ -31,30 +31,29 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
-                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
                     .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
+                    .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
+                    .WithForm("A", [ScenarioNgos.Alfa])
                 ))
             .Please();
 
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-        var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
 
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
-        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
-        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
+        var alfaFormId = scenarioData.ElectionRound.Coalition.FormByCode("A").Id;
+        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormByCode("Shared").Id;
 
         var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
         var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
         var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
 
-        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
-        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
+        var alfaFormQuestions = scenarioData.ElectionRound.Coalition.FormByCode("A").Questions;
+        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.FormByCode("Shared").Questions;
 
         var iasiSubmission =
             new FakeSubmission(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
@@ -187,30 +186,31 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
+                    .WithForm("A", [ScenarioNgos.Alfa])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
                     .WithMonitoringObserver(ScenarioNgo.Beta, ScenarioObserver.Bob)
                 ))
             .Please();
 
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-        var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
 
         ApiTimeProvider.UtcNow
             .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
-        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
-        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
+
+        var alfaFormId = scenarioData.ElectionRound.Coalition.FormByCode("A").Id;
+        var coalitionFormId = scenarioData.ElectionRound.Coalition.FormByCode("Shared").Id;
 
         var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
         var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
         var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
 
-        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
-        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
+        var alfaFormQuestions = scenarioData.ElectionRound.Coalition.FormByCode("A").Questions;
+        var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.FormByCode("Shared").Questions;
 
         var iasiSubmission =
             new FakeSubmission(alfaFormId, psIasiId, alfaFormQuestions).Generate();

@@ -43,7 +43,7 @@ public class Endpoint(
                     FROM 
                       "FormSubmissions" FS 
                       INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId" 
-                      inner join "AvailableForms" af on fs."FormId" = af."Id" 
+                      inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on fs."FormId" = af."FormId" 
                     WHERE 
                       FS."ElectionRoundId" = @electionRoundId 
                     UNION ALL 
@@ -90,7 +90,7 @@ public class Endpoint(
                   FROM 
                     "PollingStationInformation" PSI 
                     INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId" 
-                    inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on PSI."FormId" = af."FormId" 
+                    inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on F."Id" = af."FormId" 
                   WHERE 
                     PSI."ElectionRoundId" = @electionRoundId
                   """;

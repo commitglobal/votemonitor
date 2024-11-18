@@ -26,13 +26,13 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
-                    .WithMonitoringObserver(ScenarioObserver.Alice)
-                    .WithForm("A",
-                        form => form.Publish().WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)))
+                    .WithMonitoringObserver(ScenarioObserver.Alice))
                 .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                     .WithForm("B",
                         form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithForm("A", [ScenarioNgos.Alfa],
+                        form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi))
                     .WithForm("Common", [ScenarioNgos.Alfa, ScenarioNgos.Beta],
                         commonForm => commonForm.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj)
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))
@@ -88,26 +88,27 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A",
                             form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
+                    .WithForm("A", [ScenarioNgos.Alfa])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
                 ))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
-        var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var alfaFormId = scenarioData.ElectionRound.Coalition.FormByCode("A").Id;
         var coalitionFormId = scenarioData.ElectionRound.Coalition.FormId;
 
         var psIasiId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
         var psBacauId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Bacau);
         var psClujId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Cluj);
 
-        var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
+        var alfaFormQuestions = scenarioData.ElectionRound.Coalition.FormByCode("A").Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
 
         var iasiSubmission =

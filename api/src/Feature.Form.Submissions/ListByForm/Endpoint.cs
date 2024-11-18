@@ -40,7 +40,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       "PollingStationInformationForms" F
                           LEFT JOIN "PollingStationInformation" PSI ON PSI."ElectionRoundId" = F."ElectionRoundId"
                           LEFT JOIN "PollingStations" PS ON PSI."PollingStationId" = PS."Id"
-                          left join "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) amo on psi."MonitoringObserverId" = amo."MonitoringObserverId"
+                          LEFT JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) amo on psi."MonitoringObserverId" = amo."MonitoringObserverId"
                   WHERE
                       F."ElectionRoundId" = @electionRoundId
                     AND (
@@ -141,13 +141,15 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       F."FormType" AS "FormType",
                       F."Name" as "FormName",
                       F."DefaultLanguage",
-                      COUNT(DISTINCT FS."Id") as "NumberOfSubmissions",
+                      COUNT(CASE WHEN AMO."MonitoringObserverId" is not null THEN 1 END) as "NumberOfSubmissions",
                       SUM(FS."NumberOfFlaggedAnswers") as "NumberOfFlaggedAnswers",
                       (
                           SELECT
                               COUNT(1)
                           FROM
-                              "Attachments"
+                              "Attachments" A
+                          INNER JOIN 
+                              "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO ON AMO."MonitoringObserverId" = A."MonitoringObserverId"
                           WHERE
                               "FormId" = F."Id"
                             AND "IsCompleted" = TRUE
@@ -157,16 +159,18 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           SELECT
                               COUNT(1)
                           FROM
-                              "Notes"
+                              "Notes" N
+                          INNER JOIN 
+                              "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO ON AMO."MonitoringObserverId" = N."MonitoringObserverId"
                           WHERE
                               "FormId" = F."Id"
                       ) AS "NumberOfNotes"
-                  FROM
-                      "Forms" F
-                          inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on af."FormId" = f."Id"
-                          LEFT JOIN "FormSubmissions" FS ON FS."FormId" = F."Id"
-                          LEFT JOIN "PollingStations" ps ON ps."Id" = FS."PollingStationId"
-                          LEFT JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO ON AMO."MonitoringObserverId" = FS."MonitoringObserverId"
+                  FROM 
+                      "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af 
+                        inner join "Forms" F on af."FormId" = f."Id"
+                        LEFT JOIN "FormSubmissions" FS ON FS."FormId" = F."Id"
+                        LEFT JOIN "PollingStations" ps ON ps."Id" = FS."PollingStationId"
+                        LEFT JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO ON AMO."MonitoringObserverId" = FS."MonitoringObserverId"
                   WHERE
                       F."Status" = 'Published'
                     AND F."FormType" NOT IN ('CitizenReporting', 'IncidentReporting')
