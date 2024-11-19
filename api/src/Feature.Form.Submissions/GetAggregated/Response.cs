@@ -1,5 +1,4 @@
-﻿using Feature.Form.Submissions.Models;
-using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 

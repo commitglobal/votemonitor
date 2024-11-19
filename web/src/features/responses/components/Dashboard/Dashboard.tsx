@@ -47,13 +47,13 @@ export default function ResponsesDashboard(): ReactElement {
             });
           }}>
           <TabsList
-            className={cn('grid bg-gray-200 mb-4 grid-cols-3 w-[600px]', {
-              'grid-cols-4 w-[800px]': isMonitoringNgoForCitizenReporting,
+            className={cn('grid bg-gray-200 mb-4 grid-cols-2 w-[400px]', {
+              'grid-cols-3 w-[600px]': isMonitoringNgoForCitizenReporting,
             })}>
             <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
             <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
             {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
-            <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
+            {/* <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value='form-answers'>
@@ -64,9 +64,9 @@ export default function ResponsesDashboard(): ReactElement {
             <QuickReportsTab />
           </TabsContent>
 
-          <TabsContent value='incident-reports'>
+          {/* <TabsContent value='incident-reports'>
             <IncidentReportsTab />
-          </TabsContent>
+          </TabsContent> */}
 
           {isMonitoringNgoForCitizenReporting && (
             <TabsContent value='citizen-reports'>

@@ -1,4 +1,7 @@
-﻿namespace Feature.IncidentReports.GetById;
+﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
+
+namespace Feature.IncidentReports.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -55,10 +58,8 @@ public class Endpoint(
                                incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
                 TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
                 FollowUpStatus = incidentReport.FollowUpStatus,
-
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
-
                 PollingStation = incidentReport.PollingStation,
                 IsCompleted = incidentReport.IsCompleted
             })
@@ -97,15 +98,12 @@ public class Endpoint(
             Notes = incidentReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
             Questions = incidentReport.FormQuestions.Select(QuestionsMapper.ToModel).ToArray(),
-
             MonitoringObserverId = incidentReport.MonitoringObserverId,
             ObserverName = incidentReport.ObserverName,
             TimeSubmitted = incidentReport.TimeSubmitted,
             FollowUpStatus = incidentReport.FollowUpStatus,
-
             LocationType = incidentReport.LocationType,
             LocationDescription = incidentReport.LocationDescription,
-
             PollingStationId = incidentReport.PollingStation?.Id,
             PollingStationLevel1 = incidentReport.PollingStation?.Level1,
             PollingStationLevel2 = incidentReport.PollingStation?.Level2,

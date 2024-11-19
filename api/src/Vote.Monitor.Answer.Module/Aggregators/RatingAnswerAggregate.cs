@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -23,6 +24,22 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         if (answer is not RatingAnswer ratingAnswer)
+        {
+            throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
+        }
+        _numberOfAnswersAggregated++;
+
+        _answersHistogram.IncrementFor(ratingAnswer.Value);
+
+        Min = Math.Min(ratingAnswer.Value, Min);
+        Max = Math.Max(ratingAnswer.Value, Max);
+
+        Average = Average.RecomputeAverage(ratingAnswer.Value, _numberOfAnswersAggregated);
+    }
+
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        if (answer is not RatingAnswerModel ratingAnswer)
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }

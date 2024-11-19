@@ -35,10 +35,7 @@ public record FormSubmissionEntry
     public int MediaFilesCount { get; init; }
     public int NotesCount { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
 
     public bool IsCompleted { get; set; }

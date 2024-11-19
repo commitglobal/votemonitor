@@ -18,7 +18,7 @@ public class MonitoringNgoScenarioBuilder
 
     public (Guid ObserverId, Guid MonitoringObserverId , HttpClient Client, string FullName, string Email, string PhoneNumber) Observer => _monitoringObservers.First().Value;
 
-    public (Guid ObserverId, Guid MonitoringObserverId , HttpClient Client, string FullName, string Email, string PhoneNumber) ObserverByName(ScenarioObserver name) =>
+    public (Guid ObserverId, Guid MonitoringObserverId, HttpClient Client, string DisplayName, string Email, string PhoneNumber) ObserverByName(ScenarioObserver name) =>
         _monitoringObservers[name];
 
     public MonitoringNgoScenarioBuilder(Guid electionRoundId,
@@ -46,10 +46,7 @@ public class MonitoringNgoScenarioBuilder
                 formRequest);
 
         admin
-            .PostAsync($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms/{ngoForm.Id}:publish",
-                null)
-            .GetAwaiter().GetResult()
-            .EnsureSuccessStatusCode();
+            .PostWithoutResponse($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms/{ngoForm.Id}:publish");
 
         var monitoringNgoFormScenarioBuilder = new MonitoringNgoFormScenarioBuilder(this, ngoForm);
         cfAction?.Invoke(monitoringNgoFormScenarioBuilder);

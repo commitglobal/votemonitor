@@ -7,6 +7,9 @@ namespace Vote.Monitor.Api.IntegrationTests;
 
 public static class HttpClientExtensions
 {
+    private static readonly JsonSerializerOptions _jsonSerializerOptions =
+        new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
     public static HttpClient NewForAuthenticatedUser(this Func<HttpClient> clientFactory, string email,
         string password)
     {
@@ -34,7 +37,21 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
     }
-    
+
+    public static void PostWithoutResponse(
+        this HttpClient client,
+        [StringSyntax("Uri")] string? requestUri)
+    {
+        var response = client.PostAsync(requestUri, null).GetAwaiter().GetResult();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TestContext.Out.WriteLine(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        }
+
+        response.EnsureSuccessStatusCode();
+    }
+
     public static void PutWithoutResponse(
         this HttpClient client,
         [StringSyntax("Uri")] string? requestUri,
@@ -64,7 +81,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = response.Content.ReadFromJsonAsync<TResponse>().GetAwaiter().GetResult();
+        var result = response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions).GetAwaiter().GetResult();
         return result!;
     }
 
@@ -82,7 +99,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = response.Content.ReadFromJsonAsync<TResponse>().GetAwaiter().GetResult();
+        var result = response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions).GetAwaiter().GetResult();
         return result!;
     }
 
@@ -99,7 +116,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = response.Content.ReadFromJsonAsync<TResponse>().GetAwaiter().GetResult();
+        var result = response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions).GetAwaiter().GetResult();
         return result!;
     }
 
@@ -119,7 +136,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions, cancellationToken);
         return result!;
     }
 
@@ -138,7 +155,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions, cancellationToken);
         return result!;
     }
 
@@ -156,7 +173,7 @@ public static class HttpClientExtensions
 
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions, cancellationToken);
         return result!;
     }
 }

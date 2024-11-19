@@ -1,4 +1,4 @@
-namespace Feature.Form.Submissions.Models;
+namespace Vote.Monitor.Core.Models;
 
 public class ObservationBreakModel
 {

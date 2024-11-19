@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
@@ -9,7 +10,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
-public record Responder(Guid ResponderId, string FirstName, string LastName, string Email, string PhoneNumber);
+public record Responder(Guid ResponderId, string DisplayName, string Email, string PhoneNumber);
 
 public class FormSubmissionsAggregate
 {
@@ -38,7 +39,7 @@ public class FormSubmissionsAggregate
     /// </summary>
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
 
-    public FormSubmissionsAggregate(Form form)
+    public FormSubmissionsAggregate(Domain.Entities.FormAggregate.Form form)
     {
         ElectionRoundId = form.ElectionRoundId;
         MonitoringNgoId = form.MonitoringNgoId;
@@ -76,10 +77,31 @@ public class FormSubmissionsAggregate
             .AsReadOnly();
     }
 
+    public FormSubmissionsAggregate AggregateAnswers(FormSubmissionView formSubmission)
+    {
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, formSubmission.ObserverName,
+            formSubmission.Email, formSubmission.PhoneNumber));
+
+        SubmissionCount++;
+        TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
+        TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;
+
+        foreach (var answer in formSubmission.Answers)
+        {
+            if (!Aggregates.TryGetValue(answer.QuestionId, out var aggregate))
+            {
+                continue;
+            }
+
+            aggregate.Aggregate(formSubmission.SubmissionId, formSubmission.MonitoringObserverId, answer);
+        }
+
+        return this;
+    }
     public FormSubmissionsAggregate AggregateAnswers(FormSubmission formSubmission)
     {
         var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName,
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.DisplayName,
             observer.Email, observer.PhoneNumber));
 
         SubmissionCount++;
@@ -102,7 +124,7 @@ public class FormSubmissionsAggregate
     public FormSubmissionsAggregate AggregateAnswers(IncidentReport incidentReport)
     {
         var observer = incidentReport.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(incidentReport.MonitoringObserverId, observer.FirstName, observer.LastName,
+        _responders.Add(new Responder(incidentReport.MonitoringObserverId, observer.DisplayName,
             observer.Email, observer.PhoneNumber));
 
         SubmissionCount++;
@@ -125,7 +147,7 @@ public class FormSubmissionsAggregate
     public FormSubmissionsAggregate AggregateAnswers(PollingStationInformation formSubmission)
     {
         var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName,
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.DisplayName,
             observer.Email, observer.PhoneNumber));
 
         SubmissionCount++;

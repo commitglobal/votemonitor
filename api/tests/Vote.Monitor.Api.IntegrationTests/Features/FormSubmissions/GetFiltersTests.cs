@@ -110,7 +110,7 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(ScenarioNgos.Alfa)
-                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithForm("A"))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
@@ -265,7 +265,7 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A"))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
@@ -345,9 +345,9 @@ public class GetFiltersTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(ScenarioNgos.Alfa,
-                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Alice))
+                    ngo => ngo.WithForm("A").WithMonitoringObserver(ScenarioObserver.Alice))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
-                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
+                    ngo => ngo.WithForm("A").WithMonitoringObserver(ScenarioObserver.Bob)))
             .Please();
 
         ApiTimeProvider.UtcNow

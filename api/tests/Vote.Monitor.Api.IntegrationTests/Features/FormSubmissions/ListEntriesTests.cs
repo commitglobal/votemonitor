@@ -29,7 +29,7 @@ public class ListEntriesTests : BaseApiTestFixture
                     .WithMonitoringObserver(ScenarioObserver.Alice))
                 .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                     .WithForm("B",
-                        form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
+                        form => form.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("A", [ScenarioNgos.Alfa],
                         form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi))
@@ -92,7 +92,7 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A",
-                            form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
+                            form => form.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithForm("A", [ScenarioNgos.Alfa])
@@ -150,7 +150,7 @@ public class ListEntriesTests : BaseApiTestFixture
             .And.BeEquivalentTo([firstSubmission.Id, secondSubmission.Id, thirdSubmission.Id]);
 
         alfaNgoFormSubmissions.Items.Select(x => x.ObserverName).Should()
-            .BeEquivalentTo(alice.FullName, alice.FullName, bob.MonitoringObserverId.ToString());
+            .BeEquivalentTo(alice.DisplayName, alice.DisplayName, bob.MonitoringObserverId.ToString());
         alfaNgoFormSubmissions.Items.Select(x => x.Email).Should()
             .BeEquivalentTo(alice.Email, alice.Email, bob.MonitoringObserverId.ToString());
         alfaNgoFormSubmissions.Items.Select(x => x.PhoneNumber).Should()
@@ -170,7 +170,7 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A"))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta])
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
@@ -236,9 +236,9 @@ public class ListEntriesTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
                 .WithMonitoringNgo(ScenarioNgos.Alfa,
-                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Alice))
+                    ngo => ngo.WithForm("A").WithMonitoringObserver(ScenarioObserver.Alice))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
-                    ngo => ngo.WithForm("A", form => form.Publish()).WithMonitoringObserver(ScenarioObserver.Bob)))
+                    ngo => ngo.WithForm("B").WithMonitoringObserver(ScenarioObserver.Bob)))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;

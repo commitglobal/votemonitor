@@ -38,11 +38,8 @@ public class CoalitionScenarioBuilder
                 formRequest);
 
         _coalitionLeaderAdminAdmin
-            .PostAsync($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms/{ngoForm.Id}:publish",
-                null)
-            .GetAwaiter().GetResult()
-            .EnsureSuccessStatusCode();
-        
+            .PostWithoutResponse($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms/{ngoForm.Id}:publish");
+
         var members = sharedWithMembers.Select(member => ParentBuilder.ParentBuilder.NgoIdByName(member))
             .ToList();
         _coalitionLeaderAdminAdmin.PutWithoutResponse(
@@ -68,4 +65,7 @@ public class CoalitionScenarioBuilder
     public CoalitionFormScenarioBuilder FormData => _forms.First().Value;
     public Guid FormId => _forms.First().Value.FormId;
     public CreateFormRequest FormByCode(string formCode) => _forms[formCode].Form;
+
+    public Guid GetSubmissionId(string formCode, ScenarioObserver observer, ScenarioPollingStation pollingStation) =>
+        _forms[formCode].GetSubmissionId(observer, pollingStation);
 }

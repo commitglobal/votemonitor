@@ -142,7 +142,7 @@ public class UpdateTests : BaseApiTestFixture
                     .WithMonitoringObserver(ScenarioObserver.Charlie)
                     .WithMonitoringObserver(ScenarioObserver.Dave)
                     .WithForm("B", form => form
-                        .Publish()
+                        
                         .WithSubmission(ScenarioObserver.Charlie, ScenarioPollingStation.Iasi)
                         .WithSubmission(ScenarioObserver.Charlie, ScenarioPollingStation.Bacau)
                         .WithSubmission(ScenarioObserver.Dave, ScenarioPollingStation.Bacau)

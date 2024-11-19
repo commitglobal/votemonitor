@@ -1,7 +1,8 @@
-﻿using Feature.CitizenReports.Models;
-using Vote.Monitor.Answer.Module.Mappers;
+﻿using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Form.Module.Mappers;
+using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
+using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetById;
 

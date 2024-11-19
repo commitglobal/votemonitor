@@ -3,6 +3,7 @@
 namespace Vote.Monitor.Core.Models;
 
 [JsonConverter(typeof(SmartEnumValueConverter<DataSource, string>))]
+[SmartEnumStringComparer(StringComparison.InvariantCultureIgnoreCase)]
 public sealed class DataSource : SmartEnum<DataSource, string>
 {
     public static readonly DataSource Ngo = new(nameof(Ngo), nameof(Ngo));

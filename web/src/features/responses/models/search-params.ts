@@ -17,7 +17,7 @@ export const ResponsesPageSearchParamsSchema = z.object({
     .enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports'])
     .catch('form-answers')
     .optional(),
-});
+}).merge(ZDataSourceSearchSchema);
 
 export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema.merge(
   z.object({
@@ -49,7 +49,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     submissionsFromDate: z.coerce.date().optional(),
     submissionsToDate: z.coerce.date().optional(),
   })
-).merge(ZDataSourceSearchSchema);
+);
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;
 

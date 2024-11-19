@@ -1,4 +1,4 @@
-import { usePrevDataSource, useSetPrevDataSource } from '@/common/prev-data-source-store';
+import { useDataSource, useSetDataSource } from '@/common/data-source-store';
 import { DataSources, type FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -15,8 +15,8 @@ export function DataSourceSwitcher(): FunctionComponent {
     strict: false,
   });
 
-  const prevDataSource = usePrevDataSource();
-  const setPrevDataSource = useSetPrevDataSource();
+  const prevDataSource = useDataSource();
+  const setPrevDataSource = useSetDataSource();
 
   const navigateHandler = useCallback(
     (dataSource: DataSources) => {

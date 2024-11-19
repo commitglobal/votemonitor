@@ -74,7 +74,7 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("B", form => form
-                            .Publish()
+                            
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta], form => form
@@ -114,7 +114,7 @@ public class ListByObserverTests : BaseApiTestFixture
         aliceData.NumberOfFormsSubmitted.Should().Be(2);
         bobData.NumberOfFormsSubmitted.Should().Be(1);
 
-        aliceData.ObserverName.Should().Be(alice.FullName);
+        aliceData.ObserverName.Should().Be(alice.DisplayName);
         bobData.ObserverName.Should().Be(bob.MonitoringObserverId.ToString());
 
         aliceData.Email.Should().Be(alice.Email);
@@ -137,11 +137,11 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithPollingStation(ScenarioPollingStation.Iasi)
                 .WithPollingStation(ScenarioPollingStation.Bacau)
                 .WithPollingStation(ScenarioPollingStation.Cluj)
-                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A", form => form.Publish()))
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithForm("A"))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A", form => form
-                            .Publish()
+                            
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
@@ -170,7 +170,7 @@ public class ListByObserverTests : BaseApiTestFixture
         var bobData = betaNgoObservers.Items.First();
 
         bobData.NumberOfFormsSubmitted.Should().Be(2);
-        bobData.ObserverName.Should().Be(bob.FullName);
+        bobData.ObserverName.Should().Be(bob.DisplayName);
         bobData.Email.Should().Be(bob.Email);
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);
     }
@@ -192,13 +192,13 @@ public class ListByObserverTests : BaseApiTestFixture
                     ngo => ngo
                         .WithMonitoringObserver(ScenarioObserver.Alice)
                         .WithForm("A",
-                            form => form.Publish().WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                            form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
                                 .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Bacau)))
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo
                         .WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A",
-                            form => form.Publish().WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))))
+                            form => form.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))))
             .Please();
 
         var electionRoundId = scenarioData.ElectionRoundId;
@@ -228,7 +228,7 @@ public class ListByObserverTests : BaseApiTestFixture
         aliceData.NumberOfFormsSubmitted.Should().Be(2);
         aliceData.MonitoringObserverId.Should().Be(alice.MonitoringObserverId);
         aliceData.PhoneNumber.Should().Be(alice.PhoneNumber);
-        aliceData.ObserverName.Should().Be(alice.FullName);
+        aliceData.ObserverName.Should().Be(alice.DisplayName);
         aliceData.Email.Should().Be(alice.Email);
 
         var bobData = betaObservers.Items
@@ -239,7 +239,7 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.NumberOfFormsSubmitted.Should().Be(1);
         bobData.MonitoringObserverId.Should().Be(bob.MonitoringObserverId);
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);
-        bobData.ObserverName.Should().Be(bob.FullName);
+        bobData.ObserverName.Should().Be(bob.DisplayName);
         bobData.Email.Should().Be(bob.Email);
     }
 }

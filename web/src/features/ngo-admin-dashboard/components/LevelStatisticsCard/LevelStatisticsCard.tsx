@@ -159,7 +159,7 @@ export default function LevelStatistics({ level, levelStats }: LevelStatisticsPr
         />
         <LevelStatisticsCard cardName={t('timeSpentObserving')} levelsStats={timeSpentObservingData} level={level} />
         <LevelStatisticsCard cardName={t('quickReports')} levelsStats={quickReportsData} level={level} />
-        <LevelStatisticsCard cardName={t('incidentReports')} levelsStats={incidentReportsData} level={level} />
+        {/* <LevelStatisticsCard cardName={t('incidentReports')} levelsStats={incidentReportsData} level={level} /> */}
       </div>
     </div>
   );

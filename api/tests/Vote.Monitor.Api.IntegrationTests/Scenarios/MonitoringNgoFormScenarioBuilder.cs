@@ -12,8 +12,6 @@ public class MonitoringNgoFormScenarioBuilder
     public Guid FormId => _form.Id;
     public CreateFormRequest Form => _form;
 
-    private bool _formIsPublished  = false;
-
     public MonitoringNgoFormScenarioBuilder(
         MonitoringNgoScenarioBuilder parentBuilder,
         CreateFormRequest form)
@@ -21,32 +19,10 @@ public class MonitoringNgoFormScenarioBuilder
         ParentBuilder = parentBuilder;
         _form = form;
     }
-
-
-    public MonitoringNgoFormScenarioBuilder Publish(string? adminEmail = null)
-    {
-        var admin = adminEmail is not null
-            ? ParentBuilder.NgoScenario.AdminByName(adminEmail)
-            : ParentBuilder.NgoScenario.Admin;
-        
-        _formIsPublished = true;
-
-        admin
-            .PostAsync($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms/{_form.Id}:publish", null)
-            .GetAwaiter().GetResult()
-            .EnsureSuccessStatusCode();
-
-        return this;
-    }
-
+    
     public MonitoringNgoFormScenarioBuilder WithSubmission(ScenarioObserver observer,
         ScenarioPollingStation pollingStation)
-    {
-        if (!_formIsPublished)
-        {
-            throw new ArgumentException("Form is not published");
-        }
-        
+    { 
         var pollingStationId = ParentBuilder.ParentBuilder.PollingStationByName(pollingStation);
         var submission = new FakeSubmission(_form.Id, pollingStationId, _form.Questions).Generate();
 

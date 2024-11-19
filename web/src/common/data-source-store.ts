@@ -2,13 +2,13 @@ import { DataSources } from './types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type PrevDataSourceStore = {
+type DataSourceStore = {
   dataSource: DataSources;
   setDataSource: (dataSource: DataSources) => void;
 };
 
-const usePrevDataSourceStore = create(
-  persist<PrevDataSourceStore>(
+const useDataSourceStore = create(
+  persist<DataSourceStore>(
     (set) => ({
       dataSource: DataSources.Ngo,
       setDataSource: (dataSource: DataSources) => {
@@ -19,5 +19,5 @@ const usePrevDataSourceStore = create(
   )
 );
 
-export const usePrevDataSource = () => usePrevDataSourceStore((state) => state.dataSource);
-export const useSetPrevDataSource = () => usePrevDataSourceStore((state) => state.setDataSource);
+export const useDataSource = () => useDataSourceStore((state) => state.dataSource);
+export const useSetDataSource = () => useDataSourceStore((state) => state.setDataSource);

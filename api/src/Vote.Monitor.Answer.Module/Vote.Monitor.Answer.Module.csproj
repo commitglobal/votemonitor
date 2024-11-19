@@ -13,10 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Form.Module\Vote.Monitor.Form.Module.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Requests\" />
     <Folder Include="Validators\" />
   </ItemGroup>

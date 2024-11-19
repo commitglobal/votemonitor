@@ -374,7 +374,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   </CardContent>
                 </Card>
               )}
-              <Card
+              {/* <Card
                 className={cn('transition-all duration-300 ease-in-out', {
                   'col-span-full': expandedCharts.has('incidentReportsCard'),
                 })}>
@@ -408,7 +408,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                     total={getTotal(statistics?.incidentReportsHistogram)}
                   />
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
             <div>
               <Tabs defaultValue='level-1'>

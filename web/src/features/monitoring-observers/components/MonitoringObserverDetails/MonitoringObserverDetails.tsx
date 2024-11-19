@@ -43,7 +43,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
           <TabsTrigger value='details'>Observer details</TabsTrigger>
           <TabsTrigger value='responses'>Form responses</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
-          <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
+          {/* <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger> */}
         </TabsList>
         <TabsContent value='details'>
           <MonitoringObserverDetailsView />
@@ -54,9 +54,9 @@ export default function MonitoringObserverDetails(): FunctionComponent {
         <TabsContent value='quick-reports'>
           <MonitoringObserverQuickReports />
         </TabsContent>
-        <TabsContent value='incident-reports'>
+        {/* <TabsContent value='incident-reports'>
           <MonitoringObserverIncidentReports />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </Layout>
   );

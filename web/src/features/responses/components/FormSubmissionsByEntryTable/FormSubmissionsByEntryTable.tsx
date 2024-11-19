@@ -1,21 +1,23 @@
-import type { FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
-import { CardContent } from '@/components/ui/card';
+import type { DataSources, FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
-import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { useFormSubmissionsByEntryColumns } from '../../store/column-visibility';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
+import { useDataSource } from '@/common/data-source-store';
 
 type FormSubmissionsByEntryTableProps = {
   searchText: string;
 };
 
 export interface FormSubmissionsSearchRequest{
+  dataSource: DataSources;
   searchText: string | undefined;
   formTypeFilter: string | undefined;
   hasFlaggedAnswers: boolean | undefined;
@@ -43,30 +45,32 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const columnsVisibility = useFormSubmissionsByEntryColumns();
+  const dataSource = useDataSource();
 
   const queryParams = useMemo(() => {
-    const params = [
-      ['searchText', searchText],
-      ['formTypeFilter', debouncedSearch.formTypeFilter],
-      ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level2Filter', debouncedSearch.level2Filter],
-      ['level3Filter', debouncedSearch.level3Filter],
-      ['level4Filter', debouncedSearch.level4Filter],
-      ['level5Filter', debouncedSearch.level5Filter],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['followUpStatus', debouncedSearch.followUpStatus],
-      ['questionsAnswered', debouncedSearch.questionsAnswered],
-      ['hasNotes', debouncedSearch.hasNotes],
-      ['hasAttachments', debouncedSearch.hasAttachments],
-      ['tagsFilter', debouncedSearch.tagsFilter],
-      ['formId', debouncedSearch.formId],
-      ['fromDateFilter', debouncedSearch.submissionsFromDate?.toISOString()],
-      ['toDateFilter', debouncedSearch.submissionsToDate?.toISOString()],
-    ].filter(([_, value]) => value);
+    const params: FormSubmissionsSearchRequest = {
+      dataSource: dataSource,
+      searchText: searchText,
+      formTypeFilter: debouncedSearch.formTypeFilter,
+      hasFlaggedAnswers: toBoolean(debouncedSearch.hasFlaggedAnswers),
+      level1Filter: debouncedSearch.level1Filter,
+      level2Filter: debouncedSearch.level2Filter,
+      level3Filter: debouncedSearch.level3Filter,
+      level4Filter: debouncedSearch.level4Filter,
+      level5Filter: debouncedSearch.level5Filter,
+      pollingStationNumberFilter: debouncedSearch.pollingStationNumberFilter,
+      followUpStatus: debouncedSearch.followUpStatus,
+      questionsAnswered: debouncedSearch.questionsAnswered,
+      hasNotes: toBoolean(debouncedSearch.hasNotes),
+      hasAttachments: toBoolean(debouncedSearch.hasAttachments),
+      tagsFilter: debouncedSearch.tagsFilter,
+      formId: debouncedSearch.formId,
+      fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
+      toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
+    };
 
-    return Object.fromEntries(params) as FormSubmissionsSearchRequest;
-  }, [searchText, debouncedSearch]);
+    return params;
+  }, [searchText, debouncedSearch, dataSource]);
 
   const navigateToFormSubmission = useCallback(
     (submissionId: string) => {

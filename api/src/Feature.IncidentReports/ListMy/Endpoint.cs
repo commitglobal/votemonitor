@@ -1,4 +1,7 @@
-﻿namespace Feature.IncidentReports.ListMy;
+﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
+
+namespace Feature.IncidentReports.ListMy;
 
 public class Endpoint(
     IAuthorizationService authorizationService,

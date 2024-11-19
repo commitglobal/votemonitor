@@ -179,10 +179,6 @@
       "indicatorTitle": "citizen reports were signalled between {{interval}}"
     },
 
-    "incidentReports": {
-      "cardTitle": "Incident reports",
-      "indicatorTitle": "incidents reports were signalled between {{interval}}"
-    },
     "pollingStationsLevelsCards": {
       "onFieldObservers": "On field observers",
       "questionsAnswered": "Questions answered",
@@ -190,8 +186,7 @@
       "visitedPollingStations": "Visited polling stations",
       "pollingStationsCoverage": "Polling station coverage (%)",
       "timeSpentObserving": "Time spent observing (hours)",
-      "quickReports": "Quick reports",
-      "incidentReports": "Incident reports"
+      "quickReports": "Quick reports"
     }
   },
   "electionEvent": {

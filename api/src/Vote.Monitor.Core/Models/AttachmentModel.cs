@@ -1,9 +1,9 @@
-﻿namespace Feature.Form.Submissions.Models;
+﻿namespace Vote.Monitor.Core.Models;
 
 public class AttachmentModel
 {
-    public Guid QuestionId { get; set; }
     public Guid SubmissionId { get; set; }
+    public Guid QuestionId { get; set; }
     public Guid MonitoringObserverId { get; set; }
     public string FilePath { get; set; }
     public string UploadedFileName { get; set; }

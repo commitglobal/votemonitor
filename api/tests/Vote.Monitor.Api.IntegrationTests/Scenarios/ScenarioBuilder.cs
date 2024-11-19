@@ -61,7 +61,7 @@ public class ScenarioBuilder
     public ScenarioBuilder WithNgo(ScenarioNgo ngo, Action<NgoScenarioBuilder>? cfg = null)
     {
         var createdNgo =
-            PlatformAdmin.PostWithResponse<NgoModel>("/api/ngos", new { name = $"{ngo}-Guid.NewGuid()"});
+            PlatformAdmin.PostWithResponse<NgoModel>("/api/ngos", new { name = $"{ngo}-{Guid.NewGuid()}"});
 
         var ngoScenarioBuilder = new NgoScenarioBuilder(PlatformAdmin, _clientFactory, createdNgo.Id);
         ngoScenarioBuilder.WithAdmin();

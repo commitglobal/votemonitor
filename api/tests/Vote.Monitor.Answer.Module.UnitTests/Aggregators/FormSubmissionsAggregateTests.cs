@@ -15,7 +15,7 @@ namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
 
 public class FormSubmissionsAggregateTests
 {
-    private readonly Form _form;
+    private readonly Domain.Entities.FormAggregate.Form _form;
     private readonly TextQuestion _textQuestion = new TextQuestionFaker().Generate();
     private readonly NumberQuestion _numberQuestion = new NumberQuestionFaker().Generate();
     private readonly DateQuestion _dateQuestion = new DateQuestionFaker().Generate();
@@ -43,7 +43,7 @@ public class FormSubmissionsAggregateTests
             _multiSelectQuestion
         ];
 
-        _form = Form.Create(_electionRound, monitoringNgo, FormType.Opening, "F1", new TranslatedStringFaker(),
+        _form = Domain.Entities.FormAggregate.Form.Create(_electionRound, monitoringNgo, FormType.Opening, "F1", new TranslatedStringFaker(),
             new TranslatedStringFaker(), "EN", [], null, questions);
     }
 
@@ -146,9 +146,9 @@ public class FormSubmissionsAggregateTests
         aggregate.Responders.Should().HaveCount(2);
         var observer1 = monitoringObserver1.Observer.ApplicationUser;
         var observer2 = monitoringObserver2.Observer.ApplicationUser;
-        var responder1 = new Responder(monitoringObserver1.Id, observer1.FirstName, observer1.LastName, observer1.Email,
+        var responder1 = new Responder(monitoringObserver1.Id, observer1.DisplayName, observer1.Email,
             observer1.PhoneNumber);
-        var responder2 = new Responder(monitoringObserver2.Id, observer2.FirstName, observer2.LastName, observer2.Email,
+        var responder2 = new Responder(monitoringObserver2.Id, observer2.DisplayName, observer2.Email,
             observer2.PhoneNumber);
         aggregate.Responders.Should().Contain([responder1, responder2]);
     }
