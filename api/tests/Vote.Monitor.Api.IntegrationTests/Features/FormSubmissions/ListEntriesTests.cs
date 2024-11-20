@@ -47,11 +47,7 @@ public class ListEntriesTests : BaseApiTestFixture
         var alice = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Alfa)
             .ObserverByName(ScenarioObserver.Alice);
-
-        var bob = scenarioData.ElectionRound
-            .MonitoringNgoByName(ScenarioNgos.Beta)
-            .ObserverByName(ScenarioObserver.Bob);
-
+        
         // Act
         var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<FormSubmissionEntry>>(
@@ -112,10 +108,10 @@ public class ListEntriesTests : BaseApiTestFixture
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
 
         var iasiSubmission =
-            new FakeSubmission(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
-        var clujSubmission = new FakeSubmission(alfaFormId, psClujId, alfaFormQuestions).Generate();
+            new SubmissionFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
+        var clujSubmission = new SubmissionFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
         var bacauSubmission =
-            new FakeSubmission(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
+            new SubmissionFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
 
         var alice = scenarioData.ElectionRound
             .MonitoringNgoByName(ScenarioNgos.Alfa)
@@ -189,10 +185,10 @@ public class ListEntriesTests : BaseApiTestFixture
         var alfaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
         var coalitionFormQuestions = scenarioData.ElectionRound.Coalition.Form.Questions;
         var iasiSubmission =
-            new FakeSubmission(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
-        var clujSubmission = new FakeSubmission(alfaFormId, psClujId, alfaFormQuestions).Generate();
+            new SubmissionFaker(coalitionFormId, psIasiId, coalitionFormQuestions).Generate();
+        var clujSubmission = new SubmissionFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
         var bacauSubmission =
-            new FakeSubmission(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
+            new SubmissionFaker(coalitionFormId, psBacauId, coalitionFormQuestions).Generate();
 
         var alice = scenarioData.ObserverByName(ScenarioObserver.Alice);
         var bob = scenarioData.ObserverByName(ScenarioObserver.Bob);
@@ -253,10 +249,10 @@ public class ListEntriesTests : BaseApiTestFixture
         var betaFormQuestions = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).Form.Questions;
 
         var iasiSubmission =
-            new FakeSubmission(alfaFormId, psIasiId, alfaFormQuestions).Generate();
-        var clujSubmission = new FakeSubmission(alfaFormId, psClujId, alfaFormQuestions).Generate();
+            new SubmissionFaker(alfaFormId, psIasiId, alfaFormQuestions).Generate();
+        var clujSubmission = new SubmissionFaker(alfaFormId, psClujId, alfaFormQuestions).Generate();
         var bacauSubmission =
-            new FakeSubmission(betaFormId, psBacauId, betaFormQuestions).Generate();
+            new SubmissionFaker(betaFormId, psBacauId, betaFormQuestions).Generate();
 
         var alice = scenarioData.ObserverByName(ScenarioObserver.Alice);
         var bob = scenarioData.ObserverByName(ScenarioObserver.Bob);

@@ -22,7 +22,7 @@ public class CoalitionFormScenarioBuilder
     public CoalitionFormScenarioBuilder WithSubmission(ScenarioObserver observer, ScenarioPollingStation pollingStation)
     {
         var pollingStationId = _parentBuilder.ParentBuilder.PollingStationByName(pollingStation);
-        var submission = new FakeSubmission(_form.Id, pollingStationId, _form.Questions).Generate();
+        var submission = new SubmissionFaker(_form.Id, pollingStationId, _form.Questions).Generate();
 
         var observerClient = _parentBuilder.ParentBuilder.ParentBuilder.ClientFor(observer);
 

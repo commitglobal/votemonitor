@@ -144,11 +144,6 @@ public class GetByIdTests : BaseApiTestFixture
         var electionRoundId = scenarioData.ElectionRoundId;
         var aliceSubmissionId = scenarioData.ElectionRound.Coalition.GetSubmissionId("Common", ScenarioObserver.Alice, ScenarioPollingStation.Cluj);
 
-        var alice = scenarioData.ElectionRound
-            .MonitoringNgoByName(ScenarioNgos.Alfa)
-            .ObserverByName(ScenarioObserver.Alice);
-
-
         // Act
         var aliceSubmissionResponse = await scenarioData.NgoByName(ScenarioNgos.Beta).Admin
             .GetAsync($"/api/election-rounds/{electionRoundId}/form-submissions/{aliceSubmissionId}");

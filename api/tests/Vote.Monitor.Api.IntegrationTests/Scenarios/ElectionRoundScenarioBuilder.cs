@@ -1,5 +1,6 @@
 using Feature.NgoCoalitions.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
+using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Models;
 using ListMonitoringNgos = Feature.Monitoring.List.Response;
 
@@ -12,6 +13,7 @@ public class ElectionRoundScenarioBuilder
     private readonly Dictionary<ScenarioPollingStation, Guid> _pollingStations = new();
     private readonly Dictionary<ScenarioNgo, MonitoringNgoScenarioBuilder> _monitoringNgos = new();
     private readonly Dictionary<ScenarioCoalition, CoalitionScenarioBuilder> _coalitions = new();
+    private readonly Dictionary<string, Guid> _quickReports = new();
 
     private readonly HttpClient _platformAdmin;
     public readonly ScenarioBuilder ParentBuilder;
@@ -71,13 +73,15 @@ public class ElectionRoundScenarioBuilder
                 LeaderId = ParentBuilder.NgoIdByName(leader),
                 NgoMembersIds = members.Select(member => ParentBuilder.NgoIdByName(member)).ToArray(),
             });
-        
-        var response = _platformAdmin.GetResponse<ListMonitoringNgos>($"/api/election-rounds/{ParentBuilder.ElectionRoundId}/monitoring-ngos");
+
+        var response =
+            _platformAdmin.GetResponse<ListMonitoringNgos>(
+                $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/monitoring-ngos");
 
         foreach (var monitoringNgo in response.MonitoringNgos)
         {
             var ngo = ParentBuilder.NgoById(monitoringNgo.NgoId);
-            
+
             var monitoringNgoScenarioBuilder = new MonitoringNgoScenarioBuilder(ElectionRoundId, monitoringNgo.Id, this,
                 _platformAdmin,
                 ngo.builder);
@@ -85,11 +89,26 @@ public class ElectionRoundScenarioBuilder
 
             _monitoringNgos.TryAdd(ngo.ngo, monitoringNgoScenarioBuilder);
         }
-        
-        var coalitionScenarioBuilder = new CoalitionScenarioBuilder(_platformAdmin, ParentBuilder.NgoByName(leader).Admin, this, coalition);
+
+        var coalitionScenarioBuilder =
+            new CoalitionScenarioBuilder(_platformAdmin, ParentBuilder.NgoByName(leader).Admin, this, coalition);
         cfg?.Invoke(coalitionScenarioBuilder);
-        
+
         _coalitions.Add(name, coalitionScenarioBuilder);
+        return this;
+    }
+
+    public ElectionRoundScenarioBuilder WithQuickReport(ScenarioObserver observer,
+        ScenarioPollingStation pollingStation)
+    {
+        var observerClient = ParentBuilder.ClientFor(observer);
+        var pollingStationId = PollingStationByName(pollingStation);
+
+        var quickReport = observerClient.PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/quick-reports",
+            new QuickReportRequestFaker(pollingStationId).Generate());
+
+        _quickReports.Add($"{observer}_{pollingStation}", quickReport.Id);
         return this;
     }
 
@@ -104,4 +123,7 @@ public class ElectionRoundScenarioBuilder
     public Guid PollingStation => _pollingStations.First().Value;
 
     public Guid PollingStationByName(ScenarioPollingStation pollingStation) => _pollingStations[pollingStation];
+
+    public Guid GetQuickReportId(ScenarioObserver observer, ScenarioPollingStation pollingStation) =>
+        _quickReports[$"{observer}_{pollingStation}"];
 }

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Vote.Monitor.Answer.Module.Models;
+﻿using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;

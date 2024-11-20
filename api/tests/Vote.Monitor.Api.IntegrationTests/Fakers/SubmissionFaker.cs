@@ -3,9 +3,9 @@ using Vote.Monitor.Form.Module.Requests;
 
 namespace Vote.Monitor.Api.IntegrationTests.Fakers;
 
-public sealed class FakeSubmission : Faker<FormSubmissionRequest>
+public sealed class SubmissionFaker : Faker<FormSubmissionRequest>
 {
-    public FakeSubmission(Guid formId, Guid pollingStationId, List<BaseQuestionRequest> questions)
+    public SubmissionFaker(Guid formId, Guid pollingStationId, List<BaseQuestionRequest> questions)
     {
         Rules((f, x) =>
         {

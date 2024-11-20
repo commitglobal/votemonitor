@@ -11,8 +11,9 @@ public class CoalitionScenarioBuilder
     public readonly ElectionRoundScenarioBuilder ParentBuilder;
     private readonly CoalitionModel _coalition;
     private readonly Dictionary<string, CoalitionFormScenarioBuilder> _forms = new();
-
-    public CoalitionScenarioBuilder(HttpClient platformAdmin, HttpClient coalitionLeaderAdmin,
+    
+    public CoalitionScenarioBuilder(HttpClient platformAdmin,
+        HttpClient coalitionLeaderAdmin,
         ElectionRoundScenarioBuilder parentBuilder,
         CoalitionModel coalition)
     {
@@ -60,6 +61,15 @@ public class CoalitionScenarioBuilder
 
         return this;
     }
+
+
+    public CoalitionScenarioBuilder WithQuickReport(ScenarioObserver observer, ScenarioPollingStation pollingStation)
+    {
+        var observerClient = ParentBuilder.WithQuickReport(observer, pollingStation);
+        return this;
+    }
+    
+    
 
     public CreateFormRequest Form => _forms.First().Value.Form;
     public CoalitionFormScenarioBuilder FormData => _forms.First().Value;

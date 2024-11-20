@@ -12,5 +12,5 @@ public class AttachmentModel
     public string PresignedUrl { get; set; }
     public int UrlValidityInSeconds { get; set; }
 
-    public DateTime TimeSubmitted { get; init; }
+    public DateTime TimeSubmitted { get; set; }
 }

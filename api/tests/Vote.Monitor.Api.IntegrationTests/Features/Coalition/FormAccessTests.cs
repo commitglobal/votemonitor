@@ -170,7 +170,7 @@ public class FormAccessTests : BaseApiTestFixture
 
         var pollingStationId = scenarioData.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi);
         var questions  = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).Form.Questions;
-        var submission = new FakeSubmission(formId, pollingStationId, questions).Generate();
+        var submission = new SubmissionFaker(formId, pollingStationId, questions).Generate();
 
         var observer = scenarioData.ObserverByName(ScenarioObserver.Bob);
 

@@ -53,8 +53,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\QuickReports\" />
-  </ItemGroup>
-
 </Project>

@@ -16,8 +16,8 @@ public class ApiTesting
     {
         _database = await TestDatabaseFactory.CreateAsync();
         _apiTimeProvider = Substitute.For<ITimeProvider>();
-        _apiTimeProvider.UtcNow.Returns(DateTime.UtcNow);
-        _apiTimeProvider.UtcNowDate.Returns(DateOnly.FromDateTime(DateTime.UtcNow));
+        _apiTimeProvider.UtcNow.Returns(_ => DateTime.UtcNow);
+        _apiTimeProvider.UtcNowDate.Returns(_ => DateOnly.FromDateTime(DateTime.UtcNow));
         
         await _database.InitialiseAsync();
         _factory = new CustomWebApplicationFactory(_database.GetConnectionString(), _database.GetConnection(), _apiTimeProvider); 

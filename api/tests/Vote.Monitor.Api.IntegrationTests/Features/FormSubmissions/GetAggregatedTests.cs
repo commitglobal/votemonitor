@@ -70,10 +70,6 @@ public class GetAggregatedTests : BaseApiTestFixture
             .MonitoringNgoByName(ScenarioNgos.Alfa)
             .ObserverByName(ScenarioObserver.Alice);
 
-        var bob = scenarioData.ElectionRound
-            .MonitoringNgoByName(ScenarioNgos.Beta)
-            .ObserverByName(ScenarioObserver.Bob);
-
         // Act
         var aggregatedFormResponses = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<GetAggregatedResponse>(
