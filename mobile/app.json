@@ -46,9 +46,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Refresh token",
+      "message": "fix resources link color",
       "updateCritical": 48,
-      "updateVersion": 71
+      "updateVersion": 72
     },
     "owner": "commit-global",
     "runtimeVersion": {
