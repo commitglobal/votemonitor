@@ -51,7 +51,7 @@ const tagsStyles = {
     marginVertical: 16,
   },
   a: {
-    color: "hsl(272, 56%, 12%)",
+    color: "hsl(272, 56%, 45%)",
     fontWeight: "700",
     textDecoration: "none",
     // for some reason textDecoration: "none" doesn't seem to work
