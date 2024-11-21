@@ -43,7 +43,7 @@ const Header = (): FunctionComponent => {
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
   const router = useRouter();
-  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId, isCoalitionLeader, setIsCoalitionLeader } =
+  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId, setIsCoalitionLeader } =
     useCurrentElectionRoundStore((s) => s);
 
   const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {

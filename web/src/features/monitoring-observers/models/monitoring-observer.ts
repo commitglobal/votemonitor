@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import { FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
-import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
 import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
 import { IncidentCategory, QuickReportLocationType } from '@/features/responses/models/quick-report';
 import { z } from 'zod';
