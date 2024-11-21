@@ -42,6 +42,7 @@ export function MonitoringObserverQuickReportsTable({
       dataSource: DataSources.Ngo,
       monitoringObserverId: debouncedSearch.monitoringObserverId,
       coalitionMemberId: undefined,
+      searchText: searchText
     };
 
     return params;
