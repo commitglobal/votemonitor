@@ -8,7 +8,7 @@ export function FormSubmissionsFiltersByObserver(): FunctionComponent {
   return (
     <FilteringContainer>
       <FormSubmissionsFollowUpFilter />
-      <MonitoringObserverTagsSelect isFilteringFormSubmissions />
+      <MonitoringObserverTagsSelect  />
       <FormSubmissionsFlaggedAnswersFilter />
     </FilteringContainer>
   );

@@ -39,6 +39,7 @@ import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMo
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
 import CreateMonitoringObserverDialog from './CreateMonitoringObserverDialog';
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
 
 function MonitoringObserversList() {
   const navigate = useNavigate();
@@ -136,8 +137,7 @@ function MonitoringObserversList() {
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
-  const { filteringIsActive, navigateHandler } = useFilteringContainer();
-  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const { filteringIsExpanded, setFilteringIsExpanded, navigateHandler } = useFilteringContainer();
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -208,11 +208,6 @@ function MonitoringObserversList() {
     },
   });
 
-  const changeIsFiltering = () => {
-    setFiltersExpanded((prev) => {
-      return !prev;
-    });
-  };
 
   function handleResendInviteToObserver(id?: string): void {
     setMonitoringObserverId(id);
@@ -339,16 +334,12 @@ function MonitoringObserversList() {
         <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <>
             <Input onChange={handleSearchInput} value={searchText} className='max-w-md' placeholder='Search' />
-            <FunnelIcon
-              onClick={changeIsFiltering}
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
-            />
+            <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
             <Cog8ToothIcon className='w-[20px] text-purple-900' />
           </>
         </div>
         <Separator />
-        {filtersExpanded && <MonitoringObserversListFilters />}
+        {filteringIsExpanded && <MonitoringObserversListFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable

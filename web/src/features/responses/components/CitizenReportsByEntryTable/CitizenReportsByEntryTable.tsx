@@ -8,21 +8,20 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useCitizenReports } from '../../hooks/citizen-reports';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
+import { useCitizenReportsColumnsVisibility } from '../../store/column-visibility';
 import { citizenReportsByEntryColumnDefs } from '../../utils/column-defs';
 
-type CitizenReportsByEntryTableProps = {
-};
+type CitizenReportsByEntryTableProps = {};
 
 export function CitizenReportsByEntryTable(props: CitizenReportsByEntryTableProps): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const columnsVisibility = useCitizenReportsColumnsVisibility();
 
   const queryParams = useMemo(() => {
-    const params = [
-      ['followUpStatus', debouncedSearch.citizenReportFollowUpStatus],
-    ].filter(([_, value]) => value);
+    const params = [['followUpStatus', debouncedSearch.citizenReportFollowUpStatus]].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
   }, [debouncedSearch]);
@@ -41,6 +40,7 @@ export function CitizenReportsByEntryTable(props: CitizenReportsByEntryTableProp
         useQuery={(params) => useCitizenReports(currentElectionRoundId, params)}
         queryParams={queryParams}
         onRowClick={navigateToCitizenReport}
+        columnVisibility={columnsVisibility}
       />
     </CardContent>
   );

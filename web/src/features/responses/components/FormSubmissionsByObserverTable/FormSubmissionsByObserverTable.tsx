@@ -26,7 +26,7 @@ export function FormSubmissionsByObserverTable({ searchText }: FormSubmissionsBy
     const params = [
       ['followUpStatus', debouncedSearch.followUpStatus],
       ['searchText', searchText],
-      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['tagsFilter', debouncedSearch.tags],
       ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
     ].filter(([_, value]) => value);
 

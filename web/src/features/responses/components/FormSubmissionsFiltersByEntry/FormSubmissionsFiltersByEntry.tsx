@@ -24,7 +24,7 @@ export const FormSubmissionsFiltersByEntry: FC = () => {
       <FormSubmissionsQuestionsAnsweredFilter />
       <FormSubmissionsQuestionNotesFilter />
       <FormSubmissionsMediaFilesFilter />
-      <MonitoringObserverTagsSelect isFilteringFormSubmissions />
+      <MonitoringObserverTagsSelect />
       <PollingStationsFilters />
       <FormSubmissionsFromDateFilter />
       <FormSubmissionsToDateFilter />

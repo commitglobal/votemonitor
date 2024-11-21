@@ -44,13 +44,14 @@ import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
 import { FormFilters } from './FormFilters/FormFilters';
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
   const [searchText, setSearchText] = useState('');
-  const { filteringIsActive } = useFilteringContainer();
+  const { filteringIsExpanded, setFilteringIsExpanded } = useFilteringContainer();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -347,7 +348,6 @@ export default function FormsDashboard(): ReactElement {
     return defaultColumns;
   }, [currentElectionRoundId, isMonitoringNgoForCitizenReporting]);
 
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -526,18 +526,12 @@ export default function FormsDashboard(): ReactElement {
         <div className='flex justify-end gap-4 px-6'>
           <>
             <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
-            <FunnelIcon
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-              onClick={() => {
-                setIsFiltering((prev) => !prev);
-              }}
-            />
+            <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
           </>
         </div>
 
         <Separator />
-        {isFiltering && <FormFilters />}
+        {filteringIsExpanded && <FormFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable

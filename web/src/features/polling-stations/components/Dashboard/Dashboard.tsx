@@ -15,15 +15,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FilteringIcon } from '@/features/filtering/components/FilteringIcon';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
 import { ExportedDataType } from '@/features/responses/models/data-export';
-import { FunnelIcon } from '@heroicons/react/24/outline';
+import i18n from '@/i18n';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useCallback, useMemo, useState, type ReactElement } from 'react';
-import i18n from '@/i18n';
+import { useCallback, useMemo, type ReactElement } from 'react';
 
-function usePollingStations(electionRoundId: string, queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
+function usePollingStations(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseQueryResult<PageResponse<PollingStation>, Error> {
   return useQuery({
     queryKey: ['pollingStations', electionRoundId, queryParams],
     queryFn: async () => {
@@ -36,7 +40,8 @@ function usePollingStations(electionRoundId: string, queryParams: DataTableParam
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<PollingStation>>(`/election-rounds/${electionRoundId}/polling-stations:list`,
+      const response = await authApi.get<PageResponse<PollingStation>>(
+        `/election-rounds/${electionRoundId}/polling-stations:list`,
         {
           params: searchParams,
         }
@@ -48,13 +53,15 @@ function usePollingStations(electionRoundId: string, queryParams: DataTableParam
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 
 export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level1')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level1')} column={column} />
+    ),
     accessorKey: 'level1',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -62,14 +69,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { level1 },
       },
-    }) => (
-      <p>
-        {level1}
-      </p>
-    ),
+    }) => <p>{level1}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level2')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level2')} column={column} />
+    ),
     accessorKey: 'level2',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -77,14 +82,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { level2 },
       },
-    }) => (
-      <p>
-        {level2}
-      </p>
-    ),
+    }) => <p>{level2}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level3')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level3')} column={column} />
+    ),
     accessorKey: 'level3',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -92,14 +95,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { level3 },
       },
-    }) => (
-      <p>
-        {level3}
-      </p>
-    ),
+    }) => <p>{level3}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level4')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level4')} column={column} />
+    ),
     accessorKey: 'level4',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -107,14 +108,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { level4 },
       },
-    }) => (
-      <p>
-        {level4}
-      </p>
-    ),
+    }) => <p>{level4}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level5')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level5')} column={column} />
+    ),
     accessorKey: 'level5',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -122,14 +121,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { level5 },
       },
-    }) => (
-      <p>
-        {level5}
-      </p>
-    ),
+    }) => <p>{level5}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.number')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.number')} column={column} />
+    ),
     accessorKey: 'number',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -137,14 +134,15 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { number },
       },
-    }) => (
-      <p>
-        {number}
-      </p>
-    ),
+    }) => <p>{number}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('translation:electionEvent.pollingStations.headers.address')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        title={i18n.t('translation:electionEvent.pollingStations.headers.address')}
+        column={column}
+      />
+    ),
     accessorKey: 'address',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -152,14 +150,12 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       row: {
         original: { address },
       },
-    }) => (
-      <p>
-        {address}
-      </p>
-    ),
+    }) => <p>{address}</p>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.tags')} column={column} />,
+    header: ({ column }) => (
+      <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.tags')} column={column} />
+    ),
     accessorKey: 'tags',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -170,7 +166,6 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
     }) => <TableTagList tags={Object.entries(tags).map(([key, value]) => `${key} : ${value}`)} />,
   },
 ];
-
 
 export default function PollingStationsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -184,14 +179,6 @@ export default function PollingStationsDashboard(): ReactElement {
     pollingStationNumberFilter?: string;
   };
 
-  const [isFiltering, setFiltering] = useState(Object.keys(search).some(k => k === 'level1Filter' || k === 'level2Filter' || k === 'level3Filter' || k === 'level4Filter' || k === 'level5Filter'));
-
-  const changeIsFiltering = () => {
-    setFiltering((prev) => {
-      return !prev;
-    });
-  };
-
   const onClearFilter = useCallback(
     (filter: string | string[]) => () => {
       const filters = Array.isArray(filter)
@@ -202,9 +189,10 @@ export default function PollingStationsDashboard(): ReactElement {
     [navigate]
   );
 
-
   const debouncedSearch = useDebounce(search, 300);
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+
+  const { filteringIsExpanded, setFilteringIsExpanded } = useFilteringContainer();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -228,49 +216,59 @@ export default function PollingStationsDashboard(): ReactElement {
           <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
           </div>
-
         </div>
         <Separator />
         <div className='flex flex-row justify-end gap-4 px-6 filters'>
-          <>
-            <FunnelIcon
-              onClick={changeIsFiltering}
-              className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-            />
-          </>
+          <FilteringIcon filteringIsExpanded={filteringIsExpanded} setFilteringIsExpanded={setFilteringIsExpanded} />
         </div>
         <Separator />
-        {isFiltering && (<div className='grid items-center grid-cols-6 gap-4 mb-4'>
+        {filteringIsExpanded && (
+          <div className='grid items-center grid-cols-6 gap-4 mb-4'>
+            <PollingStationsFilters />
 
-          <PollingStationsFilters />
-
-          <Button
-            onClick={() => {
-              void navigate({});
-            }}
-            variant='ghost-primary'>
-            {i18n.t('electionEvent.pollingStations.resetFilters')}
-          </Button>
-        </div>)}
+            <Button
+              onClick={() => {
+                void navigate({});
+              }}
+              variant='ghost-primary'>
+              {i18n.t('electionEvent.pollingStations.resetFilters')}
+            </Button>
+          </div>
+        )}
         {Object.entries(search).length > 0 && (
           <div className='flex flex-wrap gap-2 col-span-full'>
-
-
             {search.level1Filter && (
-              <FilterBadge label={`Location - L1: ${search.level1Filter}`} onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])} />
+              <FilterBadge
+                label={`Location - L1: ${search.level1Filter}`}
+                onClear={onClearFilter([
+                  'level1Filter',
+                  'level2Filter',
+                  'level3Filter',
+                  'level4Filter',
+                  'level5Filter',
+                ])}
+              />
             )}
 
             {search.level2Filter && (
-              <FilterBadge label={`Location - L2: ${search.level2Filter}`} onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])} />
+              <FilterBadge
+                label={`Location - L2: ${search.level2Filter}`}
+                onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+              />
             )}
 
             {search.level3Filter && (
-              <FilterBadge label={`Location - L3: ${search.level3Filter}`} onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])} />
+              <FilterBadge
+                label={`Location - L3: ${search.level3Filter}`}
+                onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+              />
             )}
 
             {search.level4Filter && (
-              <FilterBadge label={`Location - L4: ${search.level4Filter}`} onClear={onClearFilter(['level4Filter', 'level5Filter'])} />
+              <FilterBadge
+                label={`Location - L4: ${search.level4Filter}`}
+                onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+              />
             )}
 
             {search.level5Filter && (
@@ -278,10 +276,13 @@ export default function PollingStationsDashboard(): ReactElement {
             )}
           </div>
         )}
-
       </CardHeader>
       <CardContent className='flex flex-col items-baseline gap-6'>
-        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={(params) => usePollingStations(currentElectionRoundId, params)} queryParams={queryParams} />
+        <QueryParamsDataTable
+          columns={pollingStationColDefs}
+          useQuery={(params) => usePollingStations(currentElectionRoundId, params)}
+          queryParams={queryParams}
+        />
       </CardContent>
     </Card>
   );

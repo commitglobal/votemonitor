@@ -20,14 +20,14 @@ export function IncidentReportsByObserverTable({ searchText }: IncidentReportsBy
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const columnsVisibility = useIncidentReportsByObserverColumns();
 
   const queryParams = useMemo(() => {
     const params = [
       ['followUpStatus', debouncedSearch.followUpStatus],
       ['searchText', searchText],
-      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['tagsFilter', debouncedSearch.tags],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
