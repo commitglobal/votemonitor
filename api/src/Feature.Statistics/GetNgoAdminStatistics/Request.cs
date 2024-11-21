@@ -11,5 +11,5 @@ public class Request
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    [FromQuery] public DataSource DataSource { get; set; } // = DataSource.Ngo;
+    [FromQuery] public DataSource DataSource { get; set; }
 }

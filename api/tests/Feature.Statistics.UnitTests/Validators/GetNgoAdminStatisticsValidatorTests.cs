@@ -1,4 +1,6 @@
-﻿namespace Feature.Statistics.UnitTests.Validators;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Feature.Statistics.UnitTests.Validators;
 
 public class GetNgoAdminStatisticsValidatorTests
 {
@@ -47,7 +49,10 @@ public class GetNgoAdminStatisticsValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new GetNgoAdminStatistics.Request { ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid() };
+        var request = new GetNgoAdminStatistics.Request
+        {
+            ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid(), DataSource = DataSource.Ngo
+        };
 
         // Act
         var result = _validator.TestValidate(request);
