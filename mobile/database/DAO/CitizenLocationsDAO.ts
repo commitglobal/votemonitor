@@ -56,3 +56,20 @@ export const getCitizenLocationByLocationId = async (locationId: string) => {
 
   return data?.length ? data[0] : null;
 };
+
+export const deleteAllCitizenLocations = (electionRoundId: string) => {
+  return database.write(async () => {
+    const data = await database
+      .get(DB_TABLE_NAMES.CITIZEN_LOCATIONS)
+      .query(Q.where("election_round_id", electionRoundId))
+      .fetch();
+
+    if (!data.length) {
+      return;
+    }
+
+    const deleted = data.map((item) => item.prepareDestroyPermanently());
+
+    await database.batch(deleted);
+  });
+};

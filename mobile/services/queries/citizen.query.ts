@@ -1,12 +1,16 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getCitizenElectionRounds } from "../api/citizen/get-citizen-election-rounds";
 import { getCitizenReportingForms } from "../api/citizen/get-citizen-reporting-forms";
-import { getCitizenElectionRoundLocations } from "../api/citizen/get-election-round-locations";
+import {
+  getCitizenElectionRoundLocations,
+  getCitizenElectionRoundLocationsVersion,
+} from "../api/citizen/get-election-round-locations";
 import * as CitizenLocationsDB from "../../database/DAO/CitizenLocationsDAO";
 import * as Sentry from "@sentry/react-native";
 import { CitizenLocationVM } from "../../common/models/citizen-locations.model";
 import { ElectionRoundsAllFormsAPIResponse } from "../definitions.api";
 import { useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const citizenQueryKeys = {
   all: ["citizen"] as const,
@@ -19,6 +23,8 @@ export const citizenQueryKeys = {
   locationsByParentId: (parentId: number, electionRoundId: string) =>
     [...citizenQueryKeys.all, "locations", electionRoundId, parentId] as const,
   selectedElectionRound: () => [...citizenQueryKeys.all, "selected-election-round"] as const,
+  locationCacheKey: (electionRoundId: string) =>
+    [...citizenQueryKeys.all, "locationCacheKey", electionRoundId] as const,
 };
 
 // Gets election rounds which can be monitored by citizens
@@ -60,12 +66,29 @@ export const useGetCitizenLocations = (electionRoundId: string) => {
     queryFn: electionRoundId
       ? async () => {
           try {
-            // TODO: add cache busting
+            const localVersionKey = await AsyncStorage.getItem(
+              citizenQueryKeys.locationCacheKey(electionRoundId).join(),
+            );
+
+            let serverVersionKey;
+            try {
+              serverVersionKey = (await getCitizenElectionRoundLocationsVersion(electionRoundId))
+                ?.cacheKey;
+            } catch (err) {
+              // Possible offline or backend has issues, let it pass
+              serverVersionKey = localVersionKey ?? "";
+            }
+
             const exists = await CitizenLocationsDB.getOne(electionRoundId);
 
-            if (!exists) {
+            if (!localVersionKey || !exists || serverVersionKey !== localVersionKey) {
               const data = await getCitizenElectionRoundLocations(electionRoundId);
+              await CitizenLocationsDB.deleteAllCitizenLocations(electionRoundId);
               await CitizenLocationsDB.addCitizenLocationsBulk(electionRoundId, data.nodes);
+              await AsyncStorage.setItem(
+                citizenQueryKeys.locationCacheKey(electionRoundId).join(),
+                serverVersionKey,
+              );
 
               return `[Citizen Locations] ADDED TO DB`;
             } else {
