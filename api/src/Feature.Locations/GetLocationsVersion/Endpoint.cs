@@ -1,9 +1,8 @@
 ﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.Locations.GetLocationsVersion;
 
-public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -15,17 +14,11 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             s.Summary = "Gets current version of locations for an election round";
             s.Description = "Cache key changes every time any location changes";
         });
+        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var requirement = new MonitoringObserverRequirement(req.ElectionRoundId);
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
-        if (!authorizationResult.Succeeded)
-        {
-            return TypedResults.NotFound();
-        }
-
         var electionRound = await context.ElectionRounds
             .Where(x => x.Id == req.ElectionRoundId)
             .Select(x => new { x.LocationsVersion, x.Id })

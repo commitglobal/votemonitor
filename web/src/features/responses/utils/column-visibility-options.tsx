@@ -16,13 +16,14 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   formCode: true,
   formName: true,
   formType: true,
-  number: true,
   level1: false,
   level2: false,
   level3: false,
   level4: false,
   level5: false,
+  number: false,
   observerName: false,
+  ngoName: false,
   tags: false,
   numberOfQuestionsAnswered: true,
   numberOfFlaggedAnswers: true,
@@ -41,6 +42,7 @@ export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState
   observerName: true,
   phoneNumber: true,
   tags: true,
+  ngoName: true,
   numberOfLocations: true,
   numberOfFormsSubmitted: true,
   numberOfFlaggedAnswers: true,
@@ -88,6 +90,7 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   phoneNumber: false,
   pollingStationId: false,
   tags: false,
+  ngoName: false,
 };
 
 export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
@@ -111,6 +114,7 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
@@ -122,6 +126,7 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
 const formSubmissionsByObserverColumnVisibilityOptions: ColumnOption<FormSubmissionByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfLocations', label: 'Locations', enableHiding: false },
   { id: 'numberOfFormsSubmitted', label: 'Forms', enableHiding: false },
@@ -154,6 +159,8 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'timestamp', label: 'Time submitted', enableHiding: true },
   { id: 'quickReportLocationType', label: 'Location type', enableHiding: true },
   { id: 'incidentCategory', label: 'Incident category', enableHiding: true },
+  { id: 'observerName', label: 'Observer', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
@@ -165,7 +172,7 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'pollingStationDetails', label: 'Polling station details', enableHiding: true },
-  { id: 'observerName', label: 'Observer', enableHiding: true },
+
 ];
 
 export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport> = {
@@ -176,6 +183,8 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   description: true,
   numberOfAttachments: true,
   observerName: true,
+  email: false,
+  ngoName: false,
   level1: false,
   level2: false,
   level3: false,
@@ -183,7 +192,6 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   level5: false,
   number: false,
   pollingStationDetails: false,
-  email: false,
   followUpStatus: true,
   address: false,
 
@@ -215,8 +223,9 @@ export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport
   id: false,
   monitoringObserverId: false,
   pollingStationId: false,
+  observerName: true,
   email: false,
-  observerName: false,
+  ngoName: false,
 };
 
 export const citizenReportsColumnVisibilityOptions: ColumnOption<CitizenReportByEntry>[] = [
@@ -262,6 +271,7 @@ const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReport
   { id: 'pollingStationNumber', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
@@ -272,6 +282,7 @@ const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReport
 const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentReportByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfIncidentsSubmitted', label: 'Number of submissions', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
@@ -342,7 +353,7 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   formName: true,
   locationType: true,
   locationDescription: false,
-  pollingStationNumber: true,
+  pollingStationNumber: false,
   pollingStationLevel1: false,
   pollingStationLevel2: false,
   pollingStationLevel3: false,
@@ -359,6 +370,7 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   formDefaultLanguage: false,
   monitoringObserverId: false,
   phoneNumber: false,
+  ngoName: false,
   pollingStationId: false,
 };
 
@@ -366,6 +378,7 @@ export const incidentReportsByObserverDefaultColumns: TableColumnVisibilityState
   observerName: true,
   phoneNumber: true,
   tags: true,
+  ngoName: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
   numberOfIncidentsSubmitted: true,
@@ -410,6 +423,7 @@ export const observerIncidentReportsColumns: TableColumnVisibilityState<Incident
   phoneNumber: false,
   pollingStationId: false,
   tags: false,
+  ngoName: false,
 };
 
 export const incidentReportsDefaultColumns: Record<IncidentReportsViewBy, VisibilityState> = {

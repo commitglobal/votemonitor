@@ -48,6 +48,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
 
     submissionsFromDate: z.coerce.date().optional(),
     submissionsToDate: z.coerce.date().optional(),
+    coalitionMemberId: z.string().optional()
   })
 );
 

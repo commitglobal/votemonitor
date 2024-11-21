@@ -74,7 +74,6 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("B", form => form
-                            
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithForm("Shared", [ScenarioNgos.Alfa, ScenarioNgos.Beta], form => form
@@ -141,7 +140,6 @@ public class ListByObserverTests : BaseApiTestFixture
                 .WithMonitoringNgo(ScenarioNgos.Beta,
                     ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
                         .WithForm("A", form => form
-                            
                             .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
                 .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
                     .WithMonitoringObserver(ScenarioNgo.Alfa, ScenarioObserver.Alice)
@@ -241,5 +239,62 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);
         bobData.ObserverName.Should().Be(bob.DisplayName);
         bobData.Email.Should().Be(bob.Email);
+    }
+
+    [Test]
+    public void ShouldAllowFilteringResponsesByNgoId_WhenCoalitionLeader_And_DataSourceCoalition()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Alice))
+                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
+                    .WithForm("B",
+                        form => form.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
+                .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithForm("A", [ScenarioNgos.Alfa],
+                        form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi))
+                    .WithForm("Common", [ScenarioNgos.Alfa, ScenarioNgos.Beta],
+                        commonForm => commonForm
+                            .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Cluj))
+                    .WithForm("Beta only", [ScenarioNgos.Beta],
+                        betaForm => betaForm.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))
+                )
+            )
+            .Please();
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var betaNgoId = scenarioData.NgoIdByName(ScenarioNgos.Beta);
+        var bob = scenarioData.ElectionRound
+            .MonitoringNgoByName(ScenarioNgos.Beta)
+            .ObserverByName(ScenarioObserver.Bob);
+        
+        // Act
+        var alfaNgoObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+            .GetResponse<PagedResponse<ObserverSubmissionOverview>>(
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byObserver?dataSource=Coalition&coalitionMemberId={betaNgoId}");
+
+        // Assert
+        alfaNgoObservers.TotalCount.Should().Be(1);
+        var bobData = alfaNgoObservers.Items
+            .Should()
+            .ContainSingle()
+            .Subject;
+        
+        bobData.NumberOfFormsSubmitted.Should().Be(4);
+        bobData.MonitoringObserverId.Should().Be(bob.MonitoringObserverId);
+        bobData.PhoneNumber.Should().Be(bob.MonitoringObserverId.ToString());
+        bobData.ObserverName.Should().Be(bob.MonitoringObserverId.ToString());
+        bobData.Email.Should().Be(bob.MonitoringObserverId.ToString());
     }
 }

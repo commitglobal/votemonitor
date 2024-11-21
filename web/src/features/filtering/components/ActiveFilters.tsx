@@ -5,13 +5,16 @@ import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submi
 import {
   mapFormSubmissionFollowUpStatus,
   mapIncidentCategory,
-  mapQuickReportFollowUpStatus
+  mapQuickReportFollowUpStatus,
 } from '@/features/responses/utils/helpers';
 import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
+import { useDataSource } from '@/common/data-source-store';
+import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
+import { DataSources } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -57,6 +60,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.QuickReportIncidentCategory, FILTER_LABEL.QuickReportIncidentCategory],
   [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
   [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],
+  [FILTER_KEY.CoalitionMemberId, FILTER_LABEL.CoalitionMemberId],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
@@ -105,13 +109,19 @@ function defaultLocalizator(value: any): string {
 
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: formSubmissionsFilters } = useFormSubmissionsFilters(currentElectionRoundId);
+  const dataSource = useDataSource();
+  const { data: formSubmissionsFilters } = useFormSubmissionsFilters(currentElectionRoundId, dataSource);
+  const { data: coalition } = useCoalitionDetails(currentElectionRoundId);
 
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
       {Object.entries(queryParams)
-        .filter(([key, value]) => !!value)
-        .filter(([key, value]) => isNotNilOrWhitespace(value?.toString()))
+        .filter(([filterId, value]) => !!value)
+        .filter(([filterId, value]) => isNotNilOrWhitespace(value?.toString()))
+        .filter(
+          ([filterId, value]) =>
+            filterId !== FILTER_KEY.CoalitionMemberId || (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
+        )
         .map(([filterId, value]) => {
           let key = '';
           const isArray = Array.isArray(value);
@@ -127,6 +137,15 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
 
             if (form) {
               return <ActiveFilter key={key} filterId={filterId} value={`${form.formCode} - ${form.formName}`} />;
+            }
+          }
+
+          if (filterId === FILTER_KEY.CoalitionMemberId) {
+            key = `active-filter-${filterId}`;
+            const ngo = coalition?.members.find((ngo) => ngo.id === value);
+
+            if (ngo) {
+              return <ActiveFilter key={key} filterId={filterId} value={ngo.name} />;
             }
           }
 

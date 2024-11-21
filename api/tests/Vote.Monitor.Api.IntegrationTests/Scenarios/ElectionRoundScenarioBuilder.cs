@@ -69,7 +69,7 @@ public class ElectionRoundScenarioBuilder
             $"/api/election-rounds/{ElectionRoundId}/coalitions",
             new
             {
-                CoalitionName = Guid.NewGuid().ToString(),
+                CoalitionName = name + Guid.NewGuid().ToString(),
                 LeaderId = ParentBuilder.NgoIdByName(leader),
                 NgoMembersIds = members.Select(member => ParentBuilder.NgoIdByName(member)).ToArray(),
             });
@@ -91,7 +91,7 @@ public class ElectionRoundScenarioBuilder
         }
 
         var coalitionScenarioBuilder =
-            new CoalitionScenarioBuilder(_platformAdmin, ParentBuilder.NgoByName(leader).Admin, this, coalition);
+            new CoalitionScenarioBuilder(ParentBuilder.NgoByName(leader).Admin, this, coalition);
         cfg?.Invoke(coalitionScenarioBuilder);
 
         _coalitions.Add(name, coalitionScenarioBuilder);

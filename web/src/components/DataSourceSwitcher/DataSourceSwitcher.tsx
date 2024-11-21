@@ -5,6 +5,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { omit } from '../../lib/utils';
 
 export function DataSourceSwitcher(): FunctionComponent {
   const isCoalitionLeader = useCurrentElectionRoundStore((s) => s.isCoalitionLeader);
@@ -15,8 +17,8 @@ export function DataSourceSwitcher(): FunctionComponent {
     strict: false,
   });
 
-  const prevDataSource = useDataSource();
-  const setPrevDataSource = useSetDataSource();
+  const dataSource = useDataSource();
+  const setDataSource = useSetDataSource();
 
   const navigateHandler = useCallback(
     (dataSource: DataSources) => {
@@ -26,22 +28,26 @@ export function DataSourceSwitcher(): FunctionComponent {
             ...prev,
             dataSource,
           };
-          setPrevDataSource(dataSource);
+          setDataSource(dataSource);
+          if (dataSource === DataSources.Ngo) {
+            return omit(newSearch, FILTER_KEY.CoalitionMemberId);
+          }
+
           return newSearch;
         },
       });
     },
-    [navigate, setPrevDataSource]
+    [navigate, dataSource]
   );
   const [isCoalition, setIsCoalition] = useState(false);
 
   useEffect(() => {
     if (search.dataSource === undefined) {
-      navigateHandler(prevDataSource ?? DataSources.Ngo);
+      navigateHandler(dataSource ?? DataSources.Ngo);
       return;
     }
 
-    setIsCoalition((search.dataSource ?? prevDataSource) === DataSources.Coalition);
+    setIsCoalition((search.dataSource ?? dataSource) === DataSources.Coalition);
   }, [search.dataSource]);
 
   return isCoalitionLeader ? (

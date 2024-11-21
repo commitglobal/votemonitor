@@ -11,7 +11,7 @@ public class Request : BaseSortPaginatedRequest
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    [QueryParam] public DataSource DataSource { get; set; }
+    [QueryParam] public DataSource DataSource { get; set; } = DataSource.Ngo;
     [QueryParam] public string? Level1Filter { get; set; }
     [QueryParam] public string? Level2Filter { get; set; }
     [QueryParam] public string? Level3Filter { get; set; }
@@ -22,4 +22,5 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public IncidentCategory? IncidentCategory { get; set; }
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
+    [QueryParam] public Guid? CoalitionMemberId { get; set; }
 }

@@ -54,6 +54,7 @@ export const SubmissionsAggregatedByFormSchema = z.object({
   hasAttachments: z.string().catch('').optional(),
   submissionsFromDate: z.coerce.date().optional(),
   submissionsToDate: z.coerce.date().optional(),
+  coalitionMemberId: z.string().optional()
 }).merge(ZDataSourceSearchSchema);
 
 export type SubmissionsAggregatedByFormParams = z.infer<typeof SubmissionsAggregatedByFormSchema>;

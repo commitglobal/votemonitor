@@ -64,6 +64,7 @@ export interface QuickReport {
   description: string;
   email: string;
   observerName: string;
+  ngoName: string;
   level1: string;
   level2: string;
   level3: string;

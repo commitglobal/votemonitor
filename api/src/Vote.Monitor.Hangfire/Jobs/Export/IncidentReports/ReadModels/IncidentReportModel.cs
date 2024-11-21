@@ -26,9 +26,9 @@ public class IncidentReportModel
     public string? Level4 { get; set; } = string.Empty;
     public string? Level5 { get; set; } = string.Empty;
     public string? Number { get; set; } = string.Empty;
+    public string NgoName { get; set; } = default!;
     public Guid MonitoringObserverId { get; set; }
-    public string FirstName { get; set; } = default!;
-    public string LastName { get; set; } = default!;
+    public string DisplayName { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
     public bool IsCompleted { get; set; } = default!;

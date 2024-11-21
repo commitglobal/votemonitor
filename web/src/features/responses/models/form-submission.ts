@@ -15,6 +15,8 @@ import { Attachment, Note } from './common';
 export interface FormSubmissionByEntry {
   email: string;
   observerName: string;
+  ngoName: string;
+  phoneNumber: string;
   formCode: string;
   formType: FormType;
   formName: TranslatedString;
@@ -31,7 +33,6 @@ export interface FormSubmissionByEntry {
   mediaFilesCount: number;
   notesCount: number;
   number: string;
-  phoneNumber: string;
   submissionId: string;
   tags: string[];
   timeSubmitted: string;
@@ -41,6 +42,7 @@ export interface FormSubmissionByEntry {
 export interface FormSubmissionByObserver {
   email: string;
   observerName: string;
+  ngoName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfFormsSubmitted: number;

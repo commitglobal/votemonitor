@@ -41,7 +41,7 @@ public class Endpoint(
                                   select f.* from "GetAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()}) af
                                   inner join "Forms" f on f."Id" = af."FormId"
                                   """)
-            .Where(x=>x.Id == req.FormId)
+            .Where(x => x.Id == req.FormId)
             .Where(x => x.Status == FormStatus.Published)
             .Where(x => x.FormType != FormType.CitizenReporting && x.FormType != FormType.IncidentReporting)
             .AsNoTracking()
@@ -88,13 +88,15 @@ public class Endpoint(
                              			PSI."FollowUpStatus",
                              			PSIF."DefaultLanguage",
                              			PSIF."Name",
-                             			PSI."IsCompleted"
+                             			PSI."IsCompleted",
+                             			PSI."Answers"
                              		FROM
                              			"PollingStationInformation" PSI
                              			INNER JOIN "PollingStationInformationForms" PSIF ON PSIF."Id" = PSI."PollingStationInformationFormId"
                              			INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
                              		WHERE
                              			PSI."ElectionRoundId" = @ELECTIONROUNDID
+                             			AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                              			AND (
                              				@MONITORINGOBSERVERSTATUS IS NULL
                              				OR MO."Status" = @MONITORINGOBSERVERSTATUS
@@ -216,7 +218,8 @@ public class Endpoint(
                              			FS."FollowUpStatus",
                              			F."DefaultLanguage",
                              			F."Name",
-                             			FS."IsCompleted"
+                             			FS."IsCompleted",
+                             			FS."Answers"
                              		FROM
                              			"FormSubmissions" FS
                              			INNER JOIN "Forms" F ON F."Id" = FS."FormId"
@@ -224,6 +227,7 @@ public class Endpoint(
                              			INNER JOIN "GetAvailableForms" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) AF ON AF."FormId" = FS."FormId"
                              		WHERE
                              			FS."ElectionRoundId" = @ELECTIONROUNDID
+                                        AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                              			AND (
                              				@MONITORINGOBSERVERSTATUS IS NULL
                              				OR MO."Status" = @MONITORINGOBSERVERSTATUS
@@ -276,13 +280,17 @@ public class Endpoint(
                              	MO."PhoneNumber",
                              	MO."Status",
                              	MO."Tags",
+                             	MO."NgoName",
                              	S."NumberOfQuestionsAnswered",
                              	S."NumberOfFlaggedAnswers",
                              	S."MediaFilesCount",
                              	S."NotesCount",
                              	S."FollowUpStatus",
                              	S."IsCompleted",
-                             	MO."Status" "MonitoringObserverStatus"
+                             	MO."Status" "MonitoringObserverStatus",
+                             	S."Notes",
+                             	S."Attachments",
+                             	S."Answers"
                              FROM
                              	(
                              		SELECT
@@ -298,7 +306,8 @@ public class Endpoint(
                              	INNER JOIN "PollingStations" PS ON PS."Id" = S."PollingStationId"
                              	INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = S."MonitoringObserverId"
                              WHERE
-                             	(
+                                (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
+                             	AND (
                              		@LEVEL1 IS NULL
                              		OR PS."Level1" = @LEVEL1
                              	)
@@ -370,6 +379,7 @@ public class Endpoint(
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
             level3 = req.Level3Filter,
@@ -438,7 +448,8 @@ public class Endpoint(
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 MonitoringObserverStatus = req.MonitoringObserverStatus,
                 PollingStationNumberFilter = req.PollingStationNumberFilter,
-                DataSource = req.DataSource
+                DataSource = req.DataSource!,
+                CoalitionMemberId = req.CoalitionMemberId,
             }
         });
     }

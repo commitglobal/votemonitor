@@ -291,4 +291,55 @@ public class ListEntriesTests : BaseApiTestFixture
             .HaveCount(1)
             .And.BeEquivalentTo([thirdSubmission.Id]);
     }
+
+    [Test]
+    public void ShouldAllowFilteringResponsesByNgoId_WhenCoalitionLeader_And_DataSourceCoalition()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Alice))
+                .WithMonitoringNgo(ScenarioNgos.Beta, ngo => ngo.WithMonitoringObserver(ScenarioObserver.Bob)
+                    .WithForm("B",
+                        form => form.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)))
+                .WithCoalition(ScenarioCoalition.Youth, ScenarioNgos.Alfa, [ScenarioNgos.Beta], cfg => cfg
+                    .WithForm("A", [ScenarioNgos.Alfa],
+                        form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi))
+                    .WithForm("Common", [ScenarioNgos.Alfa, ScenarioNgos.Beta],
+                        commonForm => commonForm
+                            .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Bacau)
+                            .WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Cluj))
+                    .WithForm("Beta only", [ScenarioNgos.Beta],
+                        betaForm => betaForm.WithSubmission(ScenarioObserver.Bob, ScenarioPollingStation.Iasi))
+                )
+            )
+            .Please();
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var betaNgoId = scenarioData.NgoIdByName(ScenarioNgos.Beta);
+
+        var bob = scenarioData.ElectionRound
+            .MonitoringNgoByName(ScenarioNgos.Beta)
+            .ObserverByName(ScenarioObserver.Bob);
+        
+        // Act
+        var alfaNgoFormSubmissions = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+            .GetResponse<PagedResponse<FormSubmissionEntry>>(
+                $"/api/election-rounds/{electionRoundId}/form-submissions:byEntry?dataSource=Coalition&coalitionMemberId={betaNgoId}");
+        
+        // Assert 
+        alfaNgoFormSubmissions.TotalCount.Should().Be(4);
+        alfaNgoFormSubmissions.Items.Should().HaveCount(4);
+        alfaNgoFormSubmissions.Items
+            .Should()
+            .AllSatisfy(submission => submission.MonitoringObserverId.Should().Be(bob.MonitoringObserverId));
+    }
 }

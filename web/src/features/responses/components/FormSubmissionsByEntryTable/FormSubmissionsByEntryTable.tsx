@@ -1,8 +1,8 @@
-import type { DataSources, FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
+import { DataSources, FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { toBoolean } from '@/lib/utils';
+import { getValueOrDefault, toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -10,7 +10,6 @@ import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
 import { useFormSubmissionsByEntryColumns } from '../../store/column-visibility';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
-import { useDataSource } from '@/common/data-source-store';
 
 type FormSubmissionsByEntryTableProps = {
   searchText: string;
@@ -35,8 +34,8 @@ export interface FormSubmissionsSearchRequest{
   formId: string | undefined;
   fromDateFilter: string | undefined;
   toDateFilter: string | undefined;
+  coalitionMemberId: string | undefined;
 }
-
 
 export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEntryTableProps): FunctionComponent {
   const navigate = useNavigate();
@@ -45,11 +44,10 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const columnsVisibility = useFormSubmissionsByEntryColumns();
-  const dataSource = useDataSource();
 
   const queryParams = useMemo(() => {
     const params: FormSubmissionsSearchRequest = {
-      dataSource: dataSource,
+      dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
       searchText: searchText,
       formTypeFilter: debouncedSearch.formTypeFilter,
       hasFlaggedAnswers: toBoolean(debouncedSearch.hasFlaggedAnswers),
@@ -67,10 +65,11 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       formId: debouncedSearch.formId,
       fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
       toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
+      coalitionMemberId: debouncedSearch.coalitionMemberId
     };
 
     return params;
-  }, [searchText, debouncedSearch, dataSource]);
+  }, [searchText, debouncedSearch]);
 
   const navigateToFormSubmission = useCallback(
     (submissionId: string) => {

@@ -66,14 +66,19 @@ namespace Vote.Monitor.Domain.Migrations
               dataSource TEXT
             ) RETURNS TABLE (
               "MonitoringObserverId" UUID, 
+              "NgoId" UUID,
+              "MonitoringNgoId" UUID,
               "DisplayName" TEXT,
               "Email" TEXT, 
               "PhoneNumber" TEXT,
               "Tags" TEXT[],
-              "Status" TEXT
+              "Status" TEXT,
+              "NgoName" varchar(256)
             ) AS $$ BEGIN RETURN QUERY 
             SELECT 
-              MO."Id" as "MonitoringObserverId", 
+              MO."Id" as "MonitoringObserverId",
+              MN."NgoId",
+              MO."MonitoringNgoId",
               CASE WHEN (
                 (
                   SELECT 
@@ -109,13 +114,15 @@ namespace Vote.Monitor.Domain.Migrations
                 ) 
                 AND MN."NgoId" <> ngoId
               ) THEN '{}'::TEXT[] ELSE MO."Tags" END AS "Tags", 
-              MO."Status" AS "Status" 
+              MO."Status" AS "Status",
+              N."Name" as "NgoName"
             FROM 
               "Coalitions" C 
               INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."CoalitionId" = C."Id" 
               INNER JOIN "CoalitionMemberships" CM ON C."Id" = CM."CoalitionId" 
               INNER JOIN "MonitoringObservers" MO ON MO."MonitoringNgoId" = CM."MonitoringNgoId" 
               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId" 
+              INNER JOIN "Ngos" N on MN."NgoId" = N."Id"
               INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId" 
             WHERE 
               MND."CoalitionId" IS NOT NULL 
@@ -161,21 +168,24 @@ namespace Vote.Monitor.Domain.Migrations
             UNION 
             SELECT 
               MO."Id" as "MonitoringObserverId", 
+              MN."NgoId",
+              MO."MonitoringNgoId",
               U."DisplayName" AS "DisplayName", 
               U."Email"::TEXT AS "Email", 
               U."PhoneNumber" AS "PhoneNumber", 
               MO."Tags" AS "Tags", 
-              MO."Status" AS "Status" 
+              MO."Status" AS "Status",
+              N."Name" as "NgoName"
             FROM 
               "MonitoringObservers" MO 
               INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId" 
               INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."MonitoringNgoId" = MO."MonitoringNgoId" 
               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId" 
+              INNER JOIN "Ngos" N on MN."NgoId" = N."Id"
             WHERE 
             (MND."CoalitionId" IS NULL or MND."IsCoalitionLeader" = false) AND MN."NgoId" = ngoId;
             END;
             $$ LANGUAGE plpgsql;
-            
             """);
             
             migrationBuilder.Sql(
@@ -217,7 +227,12 @@ namespace Vote.Monitor.Domain.Migrations
                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MND."MonitoringNgoId" 
                 WHERE 
                     (MND."CoalitionId" IS NULL or MND."IsCoalitionLeader" = false) AND MN."NgoId" = ngoId
-                    AND F."ElectionRoundId" = electionRoundId;
+                    AND F."ElectionRoundId" = electionRoundId
+                UNION
+                SELECT F."Id" AS "FormId"
+                FROM "PollingStationInformationForms" F
+                WHERE 
+                    F."ElectionRoundId" = electionRoundId;
             END;
             $$ LANGUAGE plpgsql;
             """);

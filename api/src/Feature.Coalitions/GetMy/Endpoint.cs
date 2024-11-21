@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Feature.NgoCoalitions.GetMy;
 
 public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
-    : Endpoint<Request, Results<Ok<CoalitionModel?>, NotFound>>
+    : Endpoint<Request, Results<Ok<CoalitionModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -19,7 +19,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<CoalitionModel?>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<CoalitionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var result =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -39,6 +39,11 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                                                && m.MonitoringNgo.ElectionRoundId == req.ElectionRoundId))
             .Select(c => CoalitionModel.FromEntity(c))
             .FirstOrDefaultAsync(ct);
+
+        if (coalition is null)
+        {
+            return TypedResults.NotFound();
+        }
 
         return TypedResults.Ok(coalition);
     }

@@ -6,18 +6,15 @@ namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
 
 public class CoalitionScenarioBuilder
 {
-    private readonly HttpClient _platformAdmin;
     private readonly HttpClient _coalitionLeaderAdminAdmin;
     public readonly ElectionRoundScenarioBuilder ParentBuilder;
     private readonly CoalitionModel _coalition;
     private readonly Dictionary<string, CoalitionFormScenarioBuilder> _forms = new();
     
-    public CoalitionScenarioBuilder(HttpClient platformAdmin,
-        HttpClient coalitionLeaderAdmin,
+    public CoalitionScenarioBuilder(HttpClient coalitionLeaderAdmin,
         ElectionRoundScenarioBuilder parentBuilder,
         CoalitionModel coalition)
     {
-        _platformAdmin = platformAdmin;
         _coalitionLeaderAdminAdmin = coalitionLeaderAdmin;
         ParentBuilder = parentBuilder;
         _coalition = coalition;

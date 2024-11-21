@@ -33,7 +33,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
   },
-
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorFn: (row)=> row.timeSubmitted,
@@ -42,7 +41,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
-
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorFn: (row)=> row.formCode,
@@ -119,6 +117,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{row.original.observerName}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
@@ -357,6 +363,14 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     id: 'phoneNumber',
     enableSorting: true,
     enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
@@ -613,6 +627,14 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorFn: (row) => row.observerName,
     enableSorting: false,
     enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location type' column={column} />,
@@ -1170,6 +1192,14 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     cell: ({ row }) => <div>{row.original.observerName}</div>,
   },
   {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
     accessorFn:(row)=> row.tags,
     id: 'tags',
@@ -1416,6 +1446,14 @@ export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObse
     id: 'phoneNumber',
     enableSorting: true,
     enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,

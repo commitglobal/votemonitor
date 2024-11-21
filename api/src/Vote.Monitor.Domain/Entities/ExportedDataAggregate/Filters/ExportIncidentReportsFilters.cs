@@ -32,4 +32,6 @@ public class ExportIncidentReportsFilters
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
     public bool? IsCompletedFilter { get; set; }
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; set; }
 }

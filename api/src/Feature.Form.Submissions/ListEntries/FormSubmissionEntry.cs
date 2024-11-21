@@ -29,6 +29,7 @@ public record FormSubmissionEntry
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
+    public string NgoName { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }
     public int NumberOfFlaggedAnswers { get; init; }

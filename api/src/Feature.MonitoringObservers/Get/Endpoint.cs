@@ -34,21 +34,18 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             WITH
                 MONITORINGOBSERVER AS (
                     SELECT
-                        MO."Id",
-                        U."FirstName",
-                        U."LastName",
-                        U."PhoneNumber",
-                        U."Email",
-                        MO."Tags",
-                        MO."Status"
+                        "MonitoringObserverId" as "Id",
+                        "DisplayName",
+                        "PhoneNumber",
+                        "Email",
+                        "Tags",
+                        "Status",
+                        "NgoName"
                     FROM
-                        "MonitoringObservers" MO
-                        INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                        INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                        INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                        "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Ngo')
                     WHERE
-                        MO."Id" = @id
-                        AND MO."ElectionRoundId" = @electionRoundId
+                        "MonitoringObserverId" = @id
+                    LIMIT 1
                 ),
                 LATESTTIMESTAMPS AS (
                     SELECT
@@ -105,8 +102,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 )
             SELECT
                 MO."Id",
-                MO."FirstName",
-                MO."LastName",
+                MO."DisplayName",
                 MO."PhoneNumber",
                 MO."Email",
                 MO."Tags",
@@ -117,8 +113,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 LATESTTIMESTAMPS LT
             GROUP BY
                 MO."Id",
-                MO."FirstName",
-                MO."LastName",
+                MO."DisplayName",
                 MO."PhoneNumber",
                 MO."Email",
                 MO."Tags",

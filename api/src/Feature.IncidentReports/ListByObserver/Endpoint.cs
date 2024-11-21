@@ -31,19 +31,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         var sql = """
                   SELECT COUNT(*) count
                   FROM
-                      "MonitoringObservers" MO
-                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                   WHERE
-                      MN."ElectionRoundId" = @electionRoundId
-                      AND MN."NgoId" = @ngoId
-                      AND (@searchText IS NULL 
+                      (@searchText IS NULL 
                                OR @searchText = '' 
-                               OR u."DisplayName" ILIKE @searchText 
-                               OR u."Email" ILIKE @searchText 
-                               OR u."PhoneNumber" ILIKE @searchText
-                               OR MO."Id"::TEXT ILIKE @searchText)
+                               OR mo."DisplayName" ILIKE @searchText 
+                               OR mo."Email" ILIKE @searchText 
+                               OR mo."PhoneNumber" ILIKE @searchText
+                               OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
 
                   SELECT "MonitoringObserverId",
@@ -54,43 +49,40 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          "NumberOfFlaggedAnswers",
                          "NumberOfIncidentsSubmitted",
                          "FollowUpStatus"
-                  FROM (SELECT MO."Id" AS "MonitoringObserverId",
-                               U."DisplayName" AS "ObserverName",
-                               U."PhoneNumber",
-                               U."Email",
+                  FROM (SELECT MO."MonitoringObserverId" AS "MonitoringObserverId",
+                               mo."DisplayName" AS "ObserverName",
+                               mo."PhoneNumber",
+                               mo."Email",
                                MO."Tags",
+                               MO."NgoName",
                                COALESCE(
                                        (SELECT SUM("NumberOfFlaggedAnswers")
                                         FROM "IncidentReports" IR
-                                        WHERE IR."MonitoringObserverId" = MO."Id"),
+                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"),
                                        0
                                ) AS "NumberOfFlaggedAnswers",
                                (SELECT COUNT(1)
                                 FROM "IncidentReports" IR
-                                WHERE IR."MonitoringObserverId" = MO."Id" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
+                                WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
                                (
                                    CASE
                                        WHEN EXISTS (SELECT 1
                                                     FROM "IncidentReports" IR
                                                     WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
-                                                      AND IR."MonitoringObserverId" = MO."Id"
+                                                      AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
                                                       AND IR."ElectionRoundId" = @electionRoundId)
                                            THEN 'NeedsFollowUp'
                                        ELSE NULL
                                        END
                                    ) AS "FollowUpStatus"
-                        FROM "MonitoringObservers" MO
-                                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                                 INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                                 INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                        WHERE MN."ElectionRoundId" = @electionRoundId
-                          AND MN."NgoId" = @ngoId
-                          AND (@searchText IS NULL 
+                        FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                        WHERE 
+                            (@searchText IS NULL 
                                    OR @searchText = '' 
-                                   OR u."DisplayName" ILIKE @searchText 
-                                   OR u."Email" ILIKE @searchText 
-                                   OR u."PhoneNumber" ILIKE @searchText
-                                   OR MO."Id"::TEXT ILIKE @searchText)
+                                   OR MO."DisplayName" ILIKE @searchText 
+                                   OR MO."Email" ILIKE @searchText 
+                                   OR MO."PhoneNumber" ILIKE @searchText
+                                   OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
                           AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)) T
                   WHERE (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
                   ORDER BY

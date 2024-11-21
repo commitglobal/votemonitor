@@ -29,6 +29,7 @@ export const enum FILTER_KEY {
   QuickReportFollowUpStatus ='quickReportFollowUpStatus',
   HasQuickReports ='hasQuickReports',
   DataSource ='dataSource',
+  CoalitionMemberId = 'coalitionMemberId',
 }
 
 export const enum FILTER_LABEL {
@@ -55,4 +56,5 @@ export const enum FILTER_LABEL {
   QuickReportIncidentCategory ='Incident category',
   QuickReportFollowUpStatus ='Quick report follow up status',
   HasQuickReports ='Has quick reports',
+  CoalitionMemberId = 'NGO'
 }

@@ -14,7 +14,7 @@ const StatisticsDetails = (): FunctionComponent => {
 };
 
 export const ZDataSourceSearchSchema = z.object({
-  dataSource: z.nativeEnum(DataSources).optional(),
+  dataSource: z.nativeEnum(DataSources).catch(DataSources.Ngo).optional(),
 });
 
 export const Route = createFileRoute('/')({

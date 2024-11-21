@@ -43,6 +43,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           LEFT JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) amo on psi."MonitoringObserverId" = amo."MonitoringObserverId"
                   WHERE
                       F."ElectionRoundId" = @electionRoundId
+                    AND (@COALITIONMEMBERID IS NULL OR amo."NgoId" = @COALITIONMEMBERID)
                     AND (
                       @level1 IS NULL
                           OR ps."Level1" = @level1
@@ -173,6 +174,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                         LEFT JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO ON AMO."MonitoringObserverId" = FS."MonitoringObserverId"
                   WHERE
                       F."Status" = 'Published'
+                    AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
                     AND F."FormType" NOT IN ('CitizenReporting', 'IncidentReporting')
                     AND (
                       @level1 IS NULL
@@ -311,6 +313,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId= req.CoalitionMemberId,
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
             level3 = req.Level3Filter,

@@ -185,9 +185,9 @@ public class QuickReportsDataTableGeneratorTests
             quickReport.Timestamp.ToString("s"),
             quickReport.FollowUpStatus.Value,
             quickReport.IncidentCategory.Value,
+            quickReport.NgoName,
             quickReport.MonitoringObserverId.ToString(),
-            quickReport.FirstName,
-            quickReport.LastName,
+            quickReport.DisplayName,
             quickReport.Email,
             quickReport.PhoneNumber,
             quickReport.QuickReportLocationType.Value

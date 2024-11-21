@@ -6,14 +6,13 @@ import { MonitoringObserverFormSubmissions } from '../MonitoringObserverFormSubm
 
 import type { FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 import { MonitoringObserverQuickReports } from '../MonitoringObserverQuickReports/MonitoringObserverQuickReports';
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { MonitoringObserverIncidentReports } from '../MonitoringObserverIncidentReports/MonitoringObserverIncidentReports';
-import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
   const { monitoringObserverId, tab } = Route.useParams();
@@ -39,7 +38,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
       backButton={<MonitorObserverBackButton />}
       title={`${monitoringObserver.displayName}`}>
       <Tabs defaultValue='details' value={currentTab} onValueChange={handleTabChange}>
-        <TabsList className='grid grid-cols-4 bg-gray-200 w-[800px] mb-4'>
+        <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
           <TabsTrigger value='details'>Observer details</TabsTrigger>
           <TabsTrigger value='responses'>Form responses</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>

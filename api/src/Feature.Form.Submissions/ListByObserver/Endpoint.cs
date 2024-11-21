@@ -33,7 +33,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   FROM
                       "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                   WHERE
-                      (
+                    (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
+                   AND   (
                           @searchText IS NULL
                               OR @searchText = ''
                               OR mo."MonitoringObserverId"::TEXT ILIKE @searchText
@@ -53,6 +54,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       "PhoneNumber",
                       "Email",
                       "Tags",
+                      "NgoName",
                       "NumberOfFlaggedAnswers",
                       "NumberOfLocations",
                       "NumberOfFormsSubmitted",
@@ -65,6 +67,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                               Mo."PhoneNumber",
                               Mo."Email",
                               MO."Tags",
+                              MO."NgoName",
                               COALESCE(
                                       (
                                           SELECT
@@ -139,7 +142,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           FROM
                               "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                           WHERE
-                              (
+                            (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
+                            AND (
                                   @searchText IS NULL
                                       OR @searchText = ''
                                       OR mo."MonitoringObserverId"::TEXT ILIKE @searchText
@@ -179,6 +183,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter ?? [],

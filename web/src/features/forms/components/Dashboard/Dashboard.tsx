@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZTranslationStatus } from '@/common/types';
+import { ZFormType, ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -271,11 +271,9 @@ export default function FormsDashboard(): ReactElement {
                   </Tooltip>
                 </TooltipProvider>
               ) : (
-                <>None</>
+                <>{row.original.formType === ZFormType.Enum.CitizenReporting ? 'Citizens' : 'None'}</>
               )
-            ) : (
-              null
-            ),
+            ) : null,
         })
       );
       defaultColumns.push({

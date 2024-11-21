@@ -16,5 +16,6 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] public SubmissionFollowUpStatus? FollowUpStatus { get; set; }
 
-    [QueryParam] public DataSource DataSource { get; set; }
+    [QueryParam] public DataSource DataSource { get; set; } = DataSource.Ngo;
+    [QueryParam] public Guid? CoalitionMemberId { get; set; }
 }

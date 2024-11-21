@@ -67,6 +67,7 @@ public class Endpoint(
                          AMO."PhoneNumber",
                          AMO."Email",
                          AMO."Tags",
+                         AMO."NgoName",
                          qr."PollingStationId",
                          ps."Level1",
                          ps."Level2",

@@ -1,7 +1,10 @@
 ﻿namespace SubmissionsFaker;
 
-public class Consts
+public static class SeederVars
 {
+    public const string PlatformAdminUsername = "john.doe@example.com";
+    public const string PlatformAdminPassword = "string";
+    
     public const int CHUNK_SIZE = 2;
     public const int NUMBER_OF_POLLING_STATIONS_TO_VISIT = 2000; // should be greater than NUMBER_OF_SUBMISSIONS
     public const int NUMBER_OF_OBSERVERS = 10;

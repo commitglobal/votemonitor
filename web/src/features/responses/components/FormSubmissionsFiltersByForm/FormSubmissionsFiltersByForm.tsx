@@ -11,11 +11,17 @@ import { FC } from 'react';
 import { FormSubmissionsFlaggedAnswersFilter } from '../../../filtering/components/FormSubmissionsFlaggedAnswersFilter';
 import { FormSubmissionsMediaFilesFilter } from '../../../filtering/components/FormSubmissionsMediaFilesFilter';
 import { FormSubmissionsQuestionNotesFilter } from '../../../filtering/components/FormSubmissionsQuestionNotesFilter';
+import { useDataSource } from '@/common/data-source-store';
+import { DataSources } from '@/common/types';
+import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 
 export const FormSubmissionsFiltersByForm: FC = () => {
+  const dataSource = useDataSource();
+
   return (
     <FilteringContainer>
       <FormSubmissionsFormFilter />
+      {dataSource === DataSources.Coalition ? <CoalitionMemberFilter /> : null}
       <FormTypeFilter />
       <FormSubmissionsFlaggedAnswersFilter />
       <FormSubmissionsFollowUpFilter />

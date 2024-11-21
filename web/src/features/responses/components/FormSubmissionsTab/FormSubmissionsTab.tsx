@@ -17,10 +17,10 @@ import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
-import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
+import { FormSubmissionsByEntryTable, FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColumnsVisibilitySelector/FormSubmissionsColumnsVisibilitySelector';
 
-import { FunctionComponent } from '@/common/types';
+import { DataSources, FunctionComponent } from '@/common/types';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { FormSubmissionsByObserverTable } from '../FormSubmissionsByObserverTable/FormSubmissionsByObserverTable';
@@ -30,6 +30,7 @@ import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObs
 
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
+import { getValueOrDefault, toBoolean } from '@/lib/utils';
 
 const viewBy: Record<FormSubmissionsViewBy, string> = {
   byEntry: 'View by entry',
@@ -56,27 +57,29 @@ export default function FormSubmissionsTab(): FunctionComponent {
   };
 
   const formSubmissionsFilter = useMemo(() => {
-    const params = [
-      ['searchText', search.searchText],
-      ['formTypeFilter', search.formTypeFilter],
-      ['hasFlaggedAnswers', search.hasFlaggedAnswers],
-      ['level1Filter', search.level1Filter],
-      ['level2Filter', search.level2Filter],
-      ['level3Filter', search.level3Filter],
-      ['level4Filter', search.level4Filter],
-      ['level5Filter', search.level5Filter],
-      ['pollingStationNumberFilter', search.pollingStationNumberFilter],
-      ['followUpStatus', search.followUpStatus],
-      ['questionsAnswered', search.questionsAnswered],
-      ['hasNotes', search.hasNotes],
-      ['hasAttachments', search.hasAttachments],
-      ['tagsFilter', search.tagsFilter],
-      ['formId', search.formId],
-      ['fromDateFilter', search.submissionsFromDate?.toISOString()],
-      ['toDateFilter', search.submissionsToDate?.toISOString()],
-    ].filter(([_, value]) => value);
+    const params: FormSubmissionsSearchRequest = {
+      dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
+      searchText: searchText,
+      formTypeFilter: search.formTypeFilter,
+      hasFlaggedAnswers: toBoolean(search.hasFlaggedAnswers),
+      level1Filter: search.level1Filter,
+      level2Filter: search.level2Filter,
+      level3Filter: search.level3Filter,
+      level4Filter: search.level4Filter,
+      level5Filter: search.level5Filter,
+      pollingStationNumberFilter: search.pollingStationNumberFilter,
+      followUpStatus: search.followUpStatus,
+      questionsAnswered: search.questionsAnswered,
+      hasNotes: toBoolean(search.hasNotes),
+      hasAttachments: toBoolean(search.hasAttachments),
+      tagsFilter: search.tagsFilter,
+      formId: search.formId,
+      fromDateFilter: search.submissionsFromDate?.toISOString(),
+      toDateFilter: search.submissionsToDate?.toISOString(),
+      coalitionMemberId: search.coalitionMemberId
+    };
 
-    return Object.fromEntries(params);
+    return params;
   }, [searchText, search]);
 
   useEffect(() => {

@@ -72,10 +72,10 @@ export default function FormSubmissionDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                search
+                
                 className='flex gap-1 font-bold text-purple-500'
-                to='/monitoring-observers/view/$monitoringObserverId/$tab'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
+                to='/responses'
+                search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}

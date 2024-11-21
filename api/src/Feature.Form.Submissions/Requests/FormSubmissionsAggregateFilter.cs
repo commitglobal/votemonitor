@@ -13,7 +13,7 @@ public class FormSubmissionsAggregateFilter
 
     public Guid? FormId { get; set; }
 
-    [QueryParam] public DataSource DataSource { get; set; }
+    [QueryParam] public DataSource DataSource { get; set; } = DataSource.Ngo;
 
     [QueryParam] public string? Level1Filter { get; set; }
 
@@ -39,4 +39,5 @@ public class FormSubmissionsAggregateFilter
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
+    [QueryParam] public Guid? CoalitionMemberId { get; set; }
 }

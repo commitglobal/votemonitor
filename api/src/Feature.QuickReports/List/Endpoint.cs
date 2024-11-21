@@ -32,6 +32,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
+            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
@@ -72,10 +73,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   AND Qr."MonitoringObserverId" = QRA."MonitoringObserverId"
                   AND qra."IsDeleted" = FALSE
                   AND qra."IsCompleted" = TRUE) AS "NumberOfAttachments",
+            AMO."MonitoringObserverId",
             AMO."DisplayName" "ObserverName",
             AMO."PhoneNumber",
             AMO."Email",
             AMO."Tags",
+            AMO."NgoName",
             QR."PollingStationDetails",
             PS."Id" AS "PollingStationId",
             PS."Level1",
@@ -91,6 +94,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
+            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
@@ -129,6 +133,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
             dataSource = req.DataSource.ToString(),
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,

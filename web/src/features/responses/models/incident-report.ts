@@ -19,6 +19,7 @@ export enum IncidentReportLocationType {
 export interface IncidentReportByEntry {
   incidentReportId: string;
   observerName: string;
+  ngoName: string;
   formCode: string;
   formName: TranslatedString;
   formDefaultLanguage: string;
@@ -44,6 +45,7 @@ export interface IncidentReportByEntry {
 
 export interface IncidentReportByObserver {
   observerName: string;
+  ngoName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfIncidentsSubmitted: number;

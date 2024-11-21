@@ -105,6 +105,7 @@ public class Endpoint(
                          AMO."Email",
                          AMO."PhoneNumber",
                          AMO."Tags",
+                         AMO."NgoName",
                          s."Attachments",
                          s."Notes",
                          s."Answers",

@@ -34,6 +34,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) mo ON mo."MonitoringObserverId" = psi."MonitoringObserverId"
                         WHERE psi."ElectionRoundId" = @electionRoundId
                           AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
+                          AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                           AND (@searchText IS NULL
                             OR @searchText = ''
                             OR mo."DisplayName" ILIKE @searchText
@@ -68,6 +69,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo ON mo."MonitoringObserverId" = fs."MonitoringObserverId"
                         WHERE fs."ElectionRoundId" = @electionRoundId
                           AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
+                          AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                           AND (@searchText IS NULL
                             OR @searchText = ''
                             OR mo."DisplayName" ILIKE @searchText
@@ -140,6 +142,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                                 INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo
                                                                            ON mo."MonitoringObserverId" = psi."MonitoringObserverId"
                                                        WHERE psi."ElectionRoundId" = @electionRoundId
+                                                         AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                                                          AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                                          AND (@searchText IS NULL OR @searchText = ''
                                                            OR mo."DisplayName" ILIKE @searchText
@@ -189,6 +192,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)  mo ON fs."MonitoringObserverId" = mo."MonitoringObserverId"
                                                      INNER JOIN "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource)  AF ON AF."FormId" = fs."FormId"
                                             WHERE fs."ElectionRoundId" = @electionRoundId
+                                              AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                                               AND (@monitoringObserverId IS NULL OR mo."MonitoringObserverId" = @monitoringObserverId)
                                               AND (@searchText IS NULL OR @searchText = ''
                                                 OR mo."DisplayName" ILIKE @searchText
@@ -225,6 +229,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          mo."PhoneNumber",
                          mo."Status",
                          mo."Tags",
+                         MO."NgoName",
                          s."NumberOfQuestionsAnswered",
                          s."NumberOfFlaggedAnswers",
                          s."MediaFilesCount",
@@ -294,6 +299,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             monitoringObserverId = req.MonitoringObserverId,

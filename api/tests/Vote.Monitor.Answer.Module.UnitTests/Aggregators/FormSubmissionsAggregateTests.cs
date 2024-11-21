@@ -94,7 +94,6 @@ public class FormSubmissionsAggregateTests
             .Should().Be(_multiSelectQuestion.Id);
 
         aggregate.ElectionRoundId.Should().Be(_form.ElectionRoundId);
-        aggregate.MonitoringNgoId.Should().Be(_form.MonitoringNgoId);
         aggregate.FormId.Should().Be(_form.Id);
     }
 
