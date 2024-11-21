@@ -73,7 +73,8 @@ namespace Vote.Monitor.Domain.Migrations
               "PhoneNumber" TEXT,
               "Tags" TEXT[],
               "Status" TEXT,
-              "NgoName" varchar(256)
+              "NgoName" varchar(256),
+              "IsOwnObserver" BOOLEAN
             ) AS $$ BEGIN RETURN QUERY 
             SELECT 
               MO."Id" as "MonitoringObserverId",
@@ -115,7 +116,11 @@ namespace Vote.Monitor.Domain.Migrations
                 AND MN."NgoId" <> ngoId
               ) THEN '{}'::TEXT[] ELSE MO."Tags" END AS "Tags", 
               MO."Status" AS "Status",
-              N."Name" as "NgoName"
+              N."Name" as "NgoName",
+              CASE 
+                   WHEN mn."NgoId" = ngoId THEN true
+                   ELSE false
+              END AS "IsOwnObserver"
             FROM 
               "Coalitions" C 
               INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."CoalitionId" = C."Id" 
@@ -175,7 +180,8 @@ namespace Vote.Monitor.Domain.Migrations
               U."PhoneNumber" AS "PhoneNumber", 
               MO."Tags" AS "Tags", 
               MO."Status" AS "Status",
-              N."Name" as "NgoName"
+              N."Name" as "NgoName",
+              TRUE as "IsOwnObserver"
             FROM 
               "MonitoringObservers" MO 
               INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId" 

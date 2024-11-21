@@ -55,6 +55,7 @@ public class ListByObserverTests : BaseApiTestFixture
             .And.BeEquivalentTo([alice.MonitoringObserverId]);
 
         alfaNgoObservers.Items.First().NumberOfFormsSubmitted.Should().Be(2);
+        alfaNgoObservers.Items.First().IsOwnObserver.Should().BeTrue();
     }
 
     [Test]
@@ -95,19 +96,19 @@ public class ListByObserverTests : BaseApiTestFixture
             .ObserverByName(ScenarioObserver.Bob);
 
         // Act
-        var alfaNgoObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+        var coalitionObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<ObserverSubmissionOverview>>(
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byObserver?dataSource=Coalition");
 
         // Assert
-        alfaNgoObservers.Items
+        coalitionObservers.Items
             .Should()
             .HaveCount(2);
 
-        var aliceData = alfaNgoObservers.Items
+        var aliceData = coalitionObservers.Items
             .First(x => x.MonitoringObserverId == alice.MonitoringObserverId);
 
-        var bobData = alfaNgoObservers.Items
+        var bobData = coalitionObservers.Items
             .First(x => x.MonitoringObserverId == bob.MonitoringObserverId);
 
         aliceData.NumberOfFormsSubmitted.Should().Be(2);
@@ -121,6 +122,8 @@ public class ListByObserverTests : BaseApiTestFixture
 
         aliceData.PhoneNumber.Should().Be(alice.PhoneNumber);
         bobData.PhoneNumber.Should().Be(bob.MonitoringObserverId.ToString());
+        aliceData.IsOwnObserver.Should().BeTrue();
+        bobData.IsOwnObserver.Should().BeFalse();
     }
 
     [TestCaseSource(typeof(DataSourcesTestCases))]
@@ -171,6 +174,8 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.ObserverName.Should().Be(bob.DisplayName);
         bobData.Email.Should().Be(bob.Email);
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);
+        bobData.IsOwnObserver.Should().BeTrue();
+
     }
 
     [TestCaseSource(typeof(DataSourcesTestCases))]
@@ -228,6 +233,7 @@ public class ListByObserverTests : BaseApiTestFixture
         aliceData.PhoneNumber.Should().Be(alice.PhoneNumber);
         aliceData.ObserverName.Should().Be(alice.DisplayName);
         aliceData.Email.Should().Be(alice.Email);
+        aliceData.IsOwnObserver.Should().BeTrue();
 
         var bobData = betaObservers.Items
             .Should()
@@ -239,10 +245,11 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.PhoneNumber.Should().Be(bob.PhoneNumber);
         bobData.ObserverName.Should().Be(bob.DisplayName);
         bobData.Email.Should().Be(bob.Email);
+        bobData.IsOwnObserver.Should().BeTrue();
     }
 
     [Test]
-    public void ShouldAllowFilteringResponsesByNgoId_WhenCoalitionLeader_And_DataSourceCoalition()
+    public void ShouldAllowFilteringObserversByNgoId_WhenCoalitionLeader_And_DataSourceCoalition()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -280,13 +287,13 @@ public class ListByObserverTests : BaseApiTestFixture
             .ObserverByName(ScenarioObserver.Bob);
         
         // Act
-        var alfaNgoObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+        var coalitionObservers = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
             .GetResponse<PagedResponse<ObserverSubmissionOverview>>(
                 $"/api/election-rounds/{electionRoundId}/form-submissions:byObserver?dataSource=Coalition&coalitionMemberId={betaNgoId}");
 
         // Assert
-        alfaNgoObservers.TotalCount.Should().Be(1);
-        var bobData = alfaNgoObservers.Items
+        coalitionObservers.TotalCount.Should().Be(1);
+        var bobData = coalitionObservers.Items
             .Should()
             .ContainSingle()
             .Subject;
@@ -296,5 +303,6 @@ public class ListByObserverTests : BaseApiTestFixture
         bobData.PhoneNumber.Should().Be(bob.MonitoringObserverId.ToString());
         bobData.ObserverName.Should().Be(bob.MonitoringObserverId.ToString());
         bobData.Email.Should().Be(bob.MonitoringObserverId.ToString());
+        bobData.IsOwnObserver.Should().BeFalse();
     }
 }

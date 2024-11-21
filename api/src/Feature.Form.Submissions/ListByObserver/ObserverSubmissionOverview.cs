@@ -17,4 +17,6 @@ public record ObserverSubmissionOverview
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus? FollowUpStatus { get; init; }
+
+    public bool IsOwnObserver { get; set; }
 }

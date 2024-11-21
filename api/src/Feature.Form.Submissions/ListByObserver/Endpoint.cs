@@ -58,7 +58,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       "NumberOfFlaggedAnswers",
                       "NumberOfLocations",
                       "NumberOfFormsSubmitted",
-                      "FollowUpStatus"
+                      "FollowUpStatus",
+                      "IsOwnObserver"
                   FROM
                       (
                           SELECT
@@ -68,6 +69,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                               Mo."Email",
                               MO."Tags",
                               MO."NgoName",
+                              MO."IsOwnObserver",
                               COALESCE(
                                       (
                                           SELECT

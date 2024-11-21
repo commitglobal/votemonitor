@@ -43,7 +43,7 @@ export default function IncidentReportsTab(): FunctionComponent {
 
   const { viewBy: byFilter } = search;
 
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const [filtersExpanded, setFiltersExpanded] = useState(filteringIsActive);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -94,7 +94,7 @@ export default function IncidentReportsTab(): FunctionComponent {
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' });
                     void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' } });
-                    setIsFiltering(false);
+                    setFiltersExpanded(false);
                   }}
                   value={byFilter}>
                   {Object.entries(viewBy).map(([value, label]) => (
@@ -112,12 +112,12 @@ export default function IncidentReportsTab(): FunctionComponent {
 
         <div className='flex justify-end gap-4 px-6'>
           <>
-            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+            <Input className='max-w-md' onChange={handleSearchInput} value={searchText} placeholder='Search' />
             <FunnelIcon
               className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
               onClick={() => {
-                setIsFiltering((prev) => !prev);
+                setFiltersExpanded((prev) => !prev);
               }}
             />
           </>
@@ -127,7 +127,7 @@ export default function IncidentReportsTab(): FunctionComponent {
 
         <Separator />
 
-        {isFiltering && (
+        {filtersExpanded && (
           <div className='grid items-center grid-cols-6 gap-4'>
             {byFilter === 'byEntry' && <IncidentReportsFiltersByEntry />}
             {byFilter === 'byObserver' && <IncidentReportsFiltersByObserver />}
