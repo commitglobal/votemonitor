@@ -7,6 +7,8 @@ namespace Feature.DataExport.Start;
 
 public class IncidentReportsFilters
 {
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; set; }
     public string? SearchText { get; set; }
 
     public string? Level1Filter { get; set; }
@@ -62,7 +64,9 @@ public class IncidentReportsFilters
             LocationType = LocationType,
             FromDateFilter = FromDateFilter,
             ToDateFilter = ToDateFilter,
-            IsCompletedFilter = IsCompletedFilter
+            IsCompletedFilter = IsCompletedFilter,
+            DataSource = DataSource,
+            CoalitionMemberId = CoalitionMemberId
         };
     }
 }

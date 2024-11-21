@@ -28,56 +28,78 @@ public class Endpoint(
 
         var sql = """
                   WITH "CombinedTimestamps" AS (
-                      -- First subquery for FormSubmissions
-                      SELECT MIN(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "FirstSubmissionTimestamp",
-                             MAX(COALESCE(FS."LastModifiedOn", FS."CreatedOn")) AS "LastSubmissionTimestamp"
-                      FROM "FormSubmissions" FS
-                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      WHERE FS."ElectionRoundId" = @electionRoundId
-                        AND MN."NgoId" = @ngoId
-                      UNION ALL
+                    -- First subquery for FormSubmissions
+                    SELECT 
+                      MIN(
+                        COALESCE(
+                          FS."LastModifiedOn", FS."CreatedOn"
+                        )
+                      ) AS "FirstSubmissionTimestamp", 
+                      MAX(
+                        COALESCE(
+                          FS."LastModifiedOn", FS."CreatedOn"
+                        )
+                      ) AS "LastSubmissionTimestamp" 
+                    FROM 
+                      "FormSubmissions" FS 
+                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId" 
+                      inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on fs."FormId" = af."FormId" 
+                    WHERE 
+                      FS."ElectionRoundId" = @electionRoundId 
+                    UNION ALL 
                       -- Second subquery for PollingStationInformation
-                      SELECT MIN(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "FirstSubmissionTimestamp",
-                             MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LastSubmissionTimestamp"
-                      FROM "PollingStationInformation" PSI
-                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                               INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      WHERE PSI."ElectionRoundId" = @electionRoundId
-                        AND MN."NgoId" = @ngoId)
-                        
-                  -- Final query to get the overall min and max
-                  SELECT MIN("FirstSubmissionTimestamp") AS "FirstSubmissionTimestamp",
-                         MAX("LastSubmissionTimestamp")  AS "LastSubmissionTimestamp"
-                  FROM "CombinedTimestamps";
-
+                    SELECT 
+                      MIN(
+                        COALESCE(
+                          PSI."LastModifiedOn", PSI."CreatedOn"
+                        )
+                      ) AS "FirstSubmissionTimestamp", 
+                      MAX(
+                        COALESCE(
+                          PSI."LastModifiedOn", PSI."CreatedOn"
+                        )
+                      ) AS "LastSubmissionTimestamp" 
+                    FROM 
+                      "PollingStationInformation" PSI 
+                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId" 
+                    WHERE 
+                      PSI."ElectionRoundId" = @electionRoundId
+                  ) -- Final query to get the overall min and max
+                  SELECT 
+                    MIN("FirstSubmissionTimestamp") AS "FirstSubmissionTimestamp", 
+                    MAX("LastSubmissionTimestamp") AS "LastSubmissionTimestamp" 
+                  FROM 
+                    "CombinedTimestamps";
                   -- =====================================================================================
-
-                  SELECT DISTINCT F."Id" AS                       "FormId",
-                                  F."Name" ->> F."DefaultLanguage" "FormName",
-                                  F."Code"                        "FormCode"
-                  FROM "FormSubmissions" FS
-                           INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                  WHERE FS."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
-                  UNION ALL
-                  SELECT DISTINCT F."Id" AS                       "FormId",
-                                  F."Name" ->> F."DefaultLanguage" "FormName",
-                                  F."Code"                        "FormCode"
-                  FROM "PollingStationInformation" PSI
-                           INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId"
-                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                  WHERE PSI."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
+                  SELECT 
+                    DISTINCT F."Id" AS "FormId", 
+                    F."Name" ->> F."DefaultLanguage" "FormName", 
+                    F."Code" "FormCode" 
+                  FROM 
+                    "FormSubmissions" FS 
+                    INNER JOIN "Forms" F ON F."Id" = FS."FormId" 
+                    INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId" 
+                    inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on fs."FormId" = af."FormId" 
+                  WHERE 
+                    FS."ElectionRoundId" = @electionRoundId 
+                  UNION ALL 
+                  SELECT 
+                    DISTINCT F."Id" AS "FormId", 
+                    F."Name" ->> F."DefaultLanguage" "FormName", 
+                    F."Code" "FormCode" 
+                  FROM 
+                    "PollingStationInformation" PSI 
+                    INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId" 
+                    inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on F."Id" = af."FormId" 
+                  WHERE 
+                    PSI."ElectionRoundId" = @electionRoundId
                   """;
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            dataSource = req.DataSource.ToString()
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
@@ -93,7 +115,7 @@ public class Endpoint(
         return TypedResults.Ok(new Response
         {
             TimestampsFilterOptions = timestampFilterOptions,
-            FormFilterOptions = formFilterOptions,
+            FormFilterOptions = formFilterOptions
         });
     }
 }

@@ -10,5 +10,9 @@ public class NgoElectionRoundView
     public string Country { get; set; }
     public Guid CountryId { get; set; }
     public bool IsMonitoringNgoForCitizenReporting { get; set; }
+    public bool IsCoalitionLeader { get; set; }
     public ElectionRoundStatus Status { get; set; }
+
+    public Guid? CoalitionId { get; set; }
+    public string? CoalitionName { get; set; }
 }

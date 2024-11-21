@@ -14,7 +14,7 @@ public static class ConfigurationExtensions
             Database = config[$"{section}:Database"]!,
             Username = config[$"{section}:UserId"],
             Password = config[$"{section}:Password"],
-            IncludeErrorDetail = true,
+            IncludeErrorDetail = true
         };
 
         return connectionStringBuilder.ToString();

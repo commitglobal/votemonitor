@@ -1,4 +1,4 @@
-﻿namespace Feature.Locations.GetLocationsVersion;
+namespace Feature.Locations.GetLocationsVersion;
 
 public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {

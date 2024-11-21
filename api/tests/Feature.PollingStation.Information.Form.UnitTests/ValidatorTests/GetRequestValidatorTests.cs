@@ -26,7 +26,7 @@ public class GetRequestValidatorTests
         // Arrange
         var request = new Get.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
 
         // Act

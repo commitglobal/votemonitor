@@ -186,10 +186,6 @@
       "cardTitle": "Citizen reports",
       "indicatorTitle": "citizen reports were signalled between {{interval}}"
     },
-    "incidentReports": {
-      "cardTitle": "Incident reports",
-      "indicatorTitle": "incidents reports were signalled between {{interval}}"
-    },
     "pollingStationsLevelsCards": {
       "onFieldObservers": "On field observers",
       "questionsAnswered": "Questions answered",
@@ -197,8 +193,7 @@
       "visitedPollingStations": "Visited polling stations",
       "pollingStationsCoverage": "Polling station coverage (%)",
       "timeSpentObserving": "Time spent observing (hours)",
-      "quickReports": "Quick reports",
-      "incidentReports": "Incident reports"
+      "quickReports": "Quick reports"
     }
   },
   "electionEvent": {
@@ -209,7 +204,13 @@
       "englishTitle": "Election event English title",
       "country": "Country",
       "startDate": "Start date",
-      "status": "Status"
+      "status": "Status",
+      "coalition": {
+        "cardTitle": "Details on assigned organization(s)",
+        "coalitionName": "Coalition",
+        "leaderName": "Coalition coordinator",
+        "members": "Coalition members (NGOs)"
+      }
     },
     "pollingStations": {
       "tabTitle": "Polling Stations",
@@ -255,7 +256,8 @@
         "language": "Language",
         "questions": "Questions",
         "status": "Status",
-        "updatedOn": "Updated on"
+        "updatedOn": "Updated on",
+        "sharedWith": "Shared with"
       },
       "createDialogTitle": "Create form",
       "resetFilters": "Reset filters"
@@ -352,5 +354,10 @@
       "Some": "Some",
       "All": "All"
     }
+  },
+  "responses": {
+    "title": "Responses",
+    "subtitle":"View all form answers and other reports submitted by your observers.",
+    "subtitleCoalitionLeader": "View all form answers and other reports submitted by coalition observers."
   }
 }

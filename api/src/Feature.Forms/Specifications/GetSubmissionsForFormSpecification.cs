@@ -8,6 +8,8 @@ public sealed class GetSubmissionsForFormSpecification : Specification<FormSubmi
     {
         Query.Where(x => x.ElectionRoundId == electionRoundId
                          && x.MonitoringObserver.MonitoringNgo.NgoId == ngoId
+                         && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == electionRoundId
+                         && x.Form.ElectionRoundId == electionRoundId
                          && x.FormId == formId);
     }
 }

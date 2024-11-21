@@ -45,7 +45,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                       CN."Title",
                       CN."Body",
                       CN."CreatedOn" AS "SentAt",
-                      U."FirstName" || ' ' || U."LastName" AS "Sender"
+                      U."DisplayName" AS "Sender"
                   FROM
                       "CitizenNotifications" CN
                       INNER JOIN "ElectionRounds" ER ON CN."ElectionRoundId" = ER."Id"
@@ -64,7 +64,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
+            pageSize = req.PageSize
         };
 
         int totalRowCount;

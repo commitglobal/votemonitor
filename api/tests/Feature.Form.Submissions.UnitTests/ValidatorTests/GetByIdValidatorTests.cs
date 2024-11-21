@@ -26,7 +26,7 @@ public class GetByIdValidatorTests
         // Arrange
         var request = new GetById.Request
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act

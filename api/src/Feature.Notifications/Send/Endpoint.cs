@@ -134,7 +134,7 @@ public class Endpoint(
                   LEFT JOIN "NotificationTokens" NT ON NT."ObserverId" = OA."ObserverId"
                   WHERE (@searchText IS NULL
                          OR @searchText = ''
-                         OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText
+                         OR U."DisplayName" ILIKE @searchText
                          OR U."Email" ILIKE @searchText
                          OR u."PhoneNumber" ILIKE @searchText
                          OR mo."Id"::text ILIKE @searchText)
@@ -179,8 +179,6 @@ public class Endpoint(
                          OR OA."LastModifiedOn" >= @fromDate::timestamp)
                     AND (@toDate IS NULL
                          OR OA."LastModifiedOn" <= @toDate::timestamp)
-                    AND (@isCompleted IS NULL
-                         OR OA."IsCompleted" = @isCompleted)
                     AND (@hasQuickReports IS NULL
                          OR (@hasQuickReports = TRUE
                              AND OA."QuickReportId" IS NOT NULL)
@@ -214,11 +212,10 @@ public class Endpoint(
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            isCompleted = req.IsCompletedFilter,
 
             hasQuickReports = req.HasQuickReports,
             quickReportFollowUpStatus = req.QuickReportFollowUpStatus?.ToString(),
-            quickReportIncidentCategory = req.QuickReportIncidentCategory?.ToString(),
+            quickReportIncidentCategory = req.QuickReportIncidentCategory?.ToString()
         };
 
         IEnumerable<NotificationRecipient> result = [];
@@ -254,7 +251,7 @@ public class Endpoint(
 
         return TypedResults.Ok(new Response
         {
-            Status = "Success",
+            Status = "Success"
         });
     }
 }

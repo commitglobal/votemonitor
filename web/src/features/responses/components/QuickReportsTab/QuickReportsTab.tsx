@@ -1,5 +1,6 @@
+import { useDataSource } from '@/common/data-source-store';
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
+import { DataSources, QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { FilterBadge } from '@/components/ui/badge';
@@ -12,17 +13,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import { getValueOrDefault } from '@/lib/utils';
+import { Route } from '@/routes/responses';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useQuickReports } from '../../hooks/quick-reports';
 import { ExportedDataType } from '../../models/data-export';
-import { IncidentCategoryList, QuickReportLocationType } from '../../models/quick-report';
+import { IncidentCategory, IncidentCategoryList, QuickReportLocationType } from '../../models/quick-report';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '../../store/column-visibility';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
@@ -31,38 +36,60 @@ import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocati
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
-const routeApi = getRouteApi('/responses/');
-
+export interface QuickReportFilterRequest {
+  dataSource: DataSources;
+  searchText: string | undefined;
+  level1Filter: string | undefined;
+  level2Filter: string | undefined;
+  level3Filter: string | undefined;
+  level4Filter: string | undefined;
+  level5Filter: string | undefined;
+  pollingStationNumberFilter: string | undefined;
+  quickReportFollowUpStatus: QuickReportFollowUpStatus | undefined;
+  quickReportLocationType: QuickReportLocationType | undefined;
+  incidentCategory: IncidentCategory | undefined;
+  coalitionMemberId: string | undefined;
+  monitoringObserverId: string | undefined;
+}
 export function QuickReportsTab(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
   const columnsVisibility = useQuickReportsColumnsVisibility();
   const toggleColumns = useQuickReportsToggleColumn();
   const { filteringIsActive } = useFilteringContainer();
 
-  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
-
-  const queryParams = useMemo(() => {
-    const params = [
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level2Filter', debouncedSearch.level2Filter],
-      ['level3Filter', debouncedSearch.level3Filter],
-      ['level4Filter', debouncedSearch.level4Filter],
-      ['level5Filter', debouncedSearch.level5Filter],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['quickReportFollowUpStatus', debouncedSearch.quickReportFollowUpStatus],
-      ['quickReportLocationType', debouncedSearch.quickReportLocationType],
-      ['incidentCategory', debouncedSearch.incidentCategory],
-    ].filter(([_, value]) => value);
-
-    return Object.fromEntries(params) as QuickReportsSearchParams;
-  }, [debouncedSearch]);
+  const [filtersExpanded, setFiltersExpanded] = useState(filteringIsActive);
+  const [searchText, setSearchText] = useState<string>(search.searchText ?? '');
 
   const setPrevSearch = useSetPrevSearch();
+  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
+    setSearchText(ev.currentTarget.value);
+  };
+
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const dataSource = useDataSource();
+
+  const queryParams = useMemo(() => {
+    const params: QuickReportFilterRequest = {
+      dataSource: getValueOrDefault(debouncedSearch.dataSource, DataSources.Ngo),
+      level1Filter: debouncedSearch.level1Filter,
+      level2Filter: debouncedSearch.level2Filter,
+      level3Filter: debouncedSearch.level3Filter,
+      level4Filter: debouncedSearch.level4Filter,
+      level5Filter: debouncedSearch.level5Filter,
+      pollingStationNumberFilter: debouncedSearch.pollingStationNumberFilter,
+      quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
+      quickReportLocationType: debouncedSearch.quickReportLocationType,
+      incidentCategory: debouncedSearch.incidentCategory,
+      coalitionMemberId: search.coalitionMemberId,
+      monitoringObserverId: undefined,
+      searchText: searchText,
+    };
+
+    return params;
+  }, [debouncedSearch, searchText]);
 
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
@@ -99,13 +126,16 @@ export function QuickReportsTab(): FunctionComponent {
         <Separator />
 
         <div className='flex justify-end gap-4 px-6 h-9'>
-          <FunnelIcon
-            className='w-[20px] text-purple-900 cursor-pointer'
-            fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-            onClick={() => {
-              setIsFiltering((prev) => !prev);
-            }}
-          />
+          <>
+            <Input className='max-w-md' onChange={handleSearchInput} value={searchText} placeholder='Search' />
+            <FunnelIcon
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={filteringIsActive ? '#5F288D' : 'rgba(0,0,0,0)'}
+              onClick={() => {
+                setFiltersExpanded((prev) => !prev);
+              }}
+            />
+          </>
 
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -131,8 +161,10 @@ export function QuickReportsTab(): FunctionComponent {
 
         <Separator />
 
-        {isFiltering && (
+        {filtersExpanded && (
           <div className='grid items-center grid-cols-6 gap-4'>
+            {dataSource === DataSources.Coalition ? <CoalitionMemberFilter /> : null}
+
             <Select
               onValueChange={(value) => {
                 void navigate({ search: (prev) => ({ ...prev, quickReportLocationType: value }) });
@@ -199,9 +231,9 @@ export function QuickReportsTab(): FunctionComponent {
             </Select>
 
             <PollingStationsFilters />
-            <ResetFiltersButton disabled={!isFiltering} params={{ tag: 'quick-reports' }} />
+            <ResetFiltersButton disabled={!filtersExpanded} params={{ tag: 'quick-reports' }} />
 
-            {isFiltering && (
+            {filtersExpanded && (
               <div className='flex flex-wrap gap-2 col-span-full'>
                 {search.quickReportFollowUpStatus && (
                   <FilterBadge

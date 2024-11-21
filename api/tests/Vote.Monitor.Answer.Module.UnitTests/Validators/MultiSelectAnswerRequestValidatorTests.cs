@@ -42,7 +42,7 @@ public class MultiSelectAnswerRequestValidatorTests
                 {
                     Text = "",
                     OptionId = Guid.Empty
-                },
+                }
             ]
         };
 

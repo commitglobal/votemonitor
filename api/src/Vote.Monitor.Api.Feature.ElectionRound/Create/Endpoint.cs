@@ -58,7 +58,7 @@ public class Endpoint(
             CountryIso3 = country.Iso3,
             CountryName = country.Name,
             CountryFullName = country.FullName,
-            CountryNumericCode = country.NumericCode,
+            CountryNumericCode = country.NumericCode
         });
     }
 }

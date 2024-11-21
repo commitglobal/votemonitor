@@ -27,7 +27,7 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
             CountryIso3 = x.Country.Iso3,
             CountryName = x.Country.Name,
             CountryFullName = x.Country.FullName,
-            CountryNumericCode = x.Country.NumericCode,
+            CountryNumericCode = x.Country.NumericCode
         });
     }
 }

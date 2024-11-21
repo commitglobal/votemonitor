@@ -72,10 +72,10 @@ export default function FormSubmissionDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                search
+                
                 className='flex gap-1 font-bold text-purple-500'
-                to='/monitoring-observers/view/$monitoringObserverId/$tab'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
+                to='/responses'
+                search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}
@@ -124,11 +124,6 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 </div>
               </div>
             )}
-
-            <div>
-              <p className='font-bold'>Is completed:</p>
-              {formSubmission.isCompleted.toString()}
-            </div>
           </CardContent>
         </Card>
         {formSubmission.formType === ZFormType.Enum.PSI ? (
@@ -177,7 +172,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={formSubmission.followUpStatus}
-                value={formSubmission.followUpStatus}>
+                value={formSubmission.followUpStatus}
+                disabled={!formSubmission.isOwnObserver}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

@@ -7,9 +7,9 @@ using Vote.Monitor.Domain.Entities.CitizenNotificationAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
+using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
@@ -30,24 +30,13 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
-using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
 namespace Vote.Monitor.Domain;
 
 public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
-    private readonly ISerializerService _serializerService;
-    private readonly ITimeProvider _timeProvider;
-    private readonly ICurrentUserProvider _currentUserProvider;
-
-    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
-        ISerializerService serializerService,
-        ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider) : base(options)
+    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options) : base(options)
     {
-        _serializerService = serializerService;
-        _timeProvider = timeProvider;
-        _currentUserProvider = currentUserProvider;
     }
 
     public DbSet<Country> Countries { get; set; }
@@ -58,7 +47,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ElectionRound> ElectionRounds { get; set; }
     public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
-    public DbSet<Form> FormTemplates { set; get; }
+    public DbSet<FormTemplate> FormTemplates { set; get; }
     public DbSet<Entities.FormAggregate.Form> Forms { set; get; }
     public DbSet<FormSubmission> FormSubmissions { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
@@ -86,6 +75,9 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<IncidentReport> IncidentReports { get; set; }
     public DbSet<IncidentReportNote> IncidentReportNotes { get; set; }
     public DbSet<IncidentReportAttachment> IncidentReportAttachments { get; set; }
+    public DbSet<Coalition> Coalitions { get; set; }
+    public DbSet<CoalitionMembership> CoalitionMemberships { get; set; }
+    public DbSet<CoalitionFormAccess> CoalitionFormAccess { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -163,19 +155,16 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new IncidentReportConfiguration());
         builder.ApplyConfiguration(new IncidentReportNoteConfiguration());
         builder.ApplyConfiguration(new IncidentReportAttachmentConfiguration());
-        
+
         builder.ApplyConfiguration(new LocationConfiguration());
+
+        builder.ApplyConfiguration(new CoalitionConfiguration());
+        builder.ApplyConfiguration(new CoalitionMembershipConfiguration());
+        builder.ApplyConfiguration(new CoalitionFormAccessConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.ConfigureSmartEnum();
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider,
-            _timeProvider));
     }
 }

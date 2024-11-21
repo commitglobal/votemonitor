@@ -43,7 +43,7 @@ const Header = (): FunctionComponent => {
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
   const router = useRouter();
-  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } =
+  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId, setIsCoalitionLeader } =
     useCurrentElectionRoundStore((s) => s);
 
   const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {
@@ -51,6 +51,8 @@ const Header = (): FunctionComponent => {
       setSelectedElection(electionRound);
       setCurrentElectionRoundId(electionRound.electionRoundId);
       setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
+      setIsCoalitionLeader(electionRound.isCoalitionLeader);
+      
       sleep(1);
 
       await queryClient.invalidateQueries({

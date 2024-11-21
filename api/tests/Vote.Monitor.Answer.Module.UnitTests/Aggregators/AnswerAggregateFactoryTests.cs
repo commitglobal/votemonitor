@@ -29,6 +29,6 @@ public class AnswerAggregateFactoryTests
             new object[] { new RatingQuestionFaker().Generate(), typeof(RatingAnswerAggregate) },
             new object[] { new NumberQuestionFaker().Generate(), typeof(NumberAnswerAggregate) },
             new object[] { new SingleSelectQuestionFaker().Generate(), typeof(SingleSelectAnswerAggregate) },
-            new object[] { new MultiSelectQuestionFaker().Generate(), typeof(MultiSelectAnswerAggregate) },
+            new object[] { new MultiSelectQuestionFaker().Generate(), typeof(MultiSelectAnswerAggregate) }
         };
 }

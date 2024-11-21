@@ -34,6 +34,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             .Where(x => req.MonitoringObserverIds.Contains(x.Id))
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
             .Where(x => x.MonitoringNgo.NgoId == req.NgoId)
+            .Where(x=>x.ElectionRoundId == req.ElectionRoundId)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.Tags, b => Array.Empty<string>()), cancellationToken: ct);
 
         return TypedResults.NoContent();

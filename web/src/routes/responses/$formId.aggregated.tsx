@@ -8,6 +8,7 @@ import { buildURLSearchParams, redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
+import { ZDataSourceSearchSchema } from '..';
 
 export function formAggregatedDetailsQueryOptions(
   electionRoundId: string,
@@ -51,10 +52,10 @@ export const SubmissionsAggregatedByFormSchema = z.object({
   questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
   hasNotes: z.string().catch('').optional(),
   hasAttachments: z.string().catch('').optional(),
-  formIsCompleted: z.string().catch('').optional(),
   submissionsFromDate: z.coerce.date().optional(),
   submissionsToDate: z.coerce.date().optional(),
-});
+  coalitionMemberId: z.string().optional()
+}).merge(ZDataSourceSearchSchema);
 
 export type SubmissionsAggregatedByFormParams = z.infer<typeof SubmissionsAggregatedByFormSchema>;
 

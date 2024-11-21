@@ -21,7 +21,7 @@ export function TextAggregateContent({
         <div key={`${responderId}-${index}`}>
           {responders && (
             <h3 className='font-bold'>
-              {responders[responderId]?.firstName ?? ''} {responders[responderId]?.lastName ?? ''}
+              {responders[responderId]?.displayName ?? ''}
               {':'}
             </h3>
           )}

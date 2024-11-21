@@ -1,6 +1,7 @@
-﻿using Feature.CitizenReports.Models;
-using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
+using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetSubmissionsAggregated;
 

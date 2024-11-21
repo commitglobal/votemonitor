@@ -138,11 +138,6 @@ export default function IncidentReportDetails(): FunctionComponent {
                 </div>
               </div>
             )}
-
-            <div>
-              <p className='font-bold'>Is completed:</p>
-              {incidentReport.isCompleted.toString()}
-            </div>
           </CardContent>
         </Card>
 
@@ -155,7 +150,8 @@ export default function IncidentReportDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={incidentReport.followUpStatus}
-                value={incidentReport.followUpStatus}>
+                value={incidentReport.followUpStatus}
+                disabled={!incidentReport.isOwnObserver}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

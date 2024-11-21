@@ -44,8 +44,8 @@ public class Endpoint(
         var guides = await context
             .ObserversGuides
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId && !x.IsDeleted)
-            .Where(x => isObserver || x.MonitoringNgo.NgoId == ngoId)
-            .Where(x => isNgoAdmin || x.MonitoringNgo.MonitoringObservers.Any(mo => mo.ObserverId == observerId))
+            .Where(x => isObserver || (x.MonitoringNgo.NgoId == ngoId && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId))
+            .Where(x => isNgoAdmin || x.MonitoringNgo.MonitoringObservers.Any(mo => mo.ObserverId == observerId) && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
             .OrderByDescending(x => x.CreatedOn)
             .Join(context.NgoAdmins, guide => guide.LastModifiedBy == Guid.Empty ? guide.CreatedBy : guide.LastModifiedBy, user => user.Id, (guide, ngoAdmin) => new
             {

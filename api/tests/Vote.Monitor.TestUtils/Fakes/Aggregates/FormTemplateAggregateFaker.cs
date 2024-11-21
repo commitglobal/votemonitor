@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
-public sealed class FormTemplateAggregateFaker : PrivateFaker<Form>
+public sealed class FormTemplateAggregateFaker : PrivateFaker<FormTemplate>
 {
     private readonly List<FormTemplateStatus> _statuses = [FormTemplateStatus.Drafted, FormTemplateStatus.Published];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

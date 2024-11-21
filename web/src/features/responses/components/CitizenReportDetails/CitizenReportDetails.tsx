@@ -14,6 +14,10 @@ import { citizenReportKeys } from '../../hooks/citizen-reports';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
 import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
+import { usePrevSearch } from '@/common/prev-search-store';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { DateTimeFormat } from '@/common/formats';
+import { format } from 'date-fns';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
@@ -23,6 +27,7 @@ export default function CitizenReportDetails(): FunctionComponent {
   );
 
   const router = useRouter();
+  const prevSearch = usePrevSearch();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationKey: citizenReportKeys.detail(currentElectionRoundId, citizenReportId),
@@ -62,8 +67,52 @@ export default function CitizenReportDetails(): FunctionComponent {
   }
 
   return (
-    <Layout title={`#${citizenReport.citizenReportId}`}>
+    <Layout
+      title={`#${citizenReport.citizenReportId}`}
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}>
       <div className='flex flex-col gap-4'>
+        <Card>
+          <CardContent className='flex flex-col gap-4 pt-6'>
+            <div>
+              <p className='font-bold'>Time submitted</p>
+              {citizenReport.timeSubmitted && <p>{format(citizenReport.timeSubmitted, DateTimeFormat)}</p>}
+            </div>
+
+            {citizenReport.level1 && (
+              <div className='flex gap-4'>
+                <div>
+                  <p className='font-bold'>Location - L1</p>
+                  {citizenReport.level1}
+                </div>
+                {citizenReport.level2 && (
+                  <div>
+                    <p className='font-bold'>Location - L2</p>
+                    {citizenReport.level2}
+                  </div>
+                )}
+                {citizenReport.level3 && (
+                  <div>
+                    <p className='font-bold'>Location - L3</p>
+                    {citizenReport.level3}
+                  </div>
+                )}
+                {citizenReport.level4 && (
+                  <div>
+                    <p className='font-bold'>Location - L4</p>
+                    {citizenReport.level4}
+                  </div>
+                )}
+                {citizenReport.level5 && (
+                  <div>
+                    <p className='font-bold'>Location - L5</p>
+                    {citizenReport.level5}
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className='flex justify-between mb-4'>

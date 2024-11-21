@@ -75,7 +75,7 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -109,7 +109,7 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

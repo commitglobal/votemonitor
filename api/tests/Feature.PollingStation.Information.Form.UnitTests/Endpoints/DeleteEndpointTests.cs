@@ -35,7 +35,7 @@ public class DeleteEndpointTests
         // Act
         var request = new Delete.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -59,7 +59,7 @@ public class DeleteEndpointTests
         // Act
         var request = new Delete.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

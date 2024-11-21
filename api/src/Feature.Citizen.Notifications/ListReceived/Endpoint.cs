@@ -43,7 +43,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
 
         var queryArgs = new
         {
-            electionRoundId = req.ElectionRoundId,
+            electionRoundId = req.ElectionRoundId
         };
 
         string? ngoName;

@@ -40,7 +40,7 @@ public class GetByIdValidatorTests
         var model = new GetById.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act

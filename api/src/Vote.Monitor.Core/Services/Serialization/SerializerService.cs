@@ -8,7 +8,7 @@ public class SerializerService(ILogger<SerializerService> logger) : ISerializerS
     private readonly JsonSerializerOptions _serializerOptions = new(JsonSerializerDefaults.Web)
     {
         WriteIndented = true,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles
     };
 
     public string Serialize<T>(T obj)

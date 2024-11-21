@@ -130,7 +130,7 @@ public class UpsertValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             DefaultLanguage = LanguagesList.EN.Iso1,
-            Languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1],
+            Languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1]
         };
 
         // Act

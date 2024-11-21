@@ -255,7 +255,7 @@ public class UpdateValidatorTests
             Code = "c!",
             Questions = [],
             Name = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate(),
-            Description = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate(),
+            Description = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate()
         };
 
         // Act

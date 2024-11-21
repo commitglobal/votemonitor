@@ -49,28 +49,22 @@ function MonitoringObserversList() {
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(() => {
     return [
       {
+        id: 'displayName',
         header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-        accessorKey: 'name',
+        accessorFn: (row)=> row.displayName,
         enableSorting: true,
         enableGlobalFilter: true,
-        cell: ({
-          row: {
-            original: { firstName, lastName },
-          },
-        }) => (
-          <p>
-            {firstName} {lastName}
-          </p>
-        ),
       },
       {
+        id: 'email',
         header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
-        accessorKey: 'email',
+        accessorFn: (row)=> row.email,
         enableSorting: true,
       },
       {
+        id: 'tags',
         header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-        accessorKey: 'tags',
+        accessorFn: (row)=> row.tags,
         cell: ({
           row: {
             original: { tags },
@@ -78,13 +72,15 @@ function MonitoringObserversList() {
         }) => <TableTagList tags={tags} />,
       },
       {
+        id: 'phoneNumber',
         header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
-        accessorKey: 'phoneNumber',
+        accessorFn: (row)=> row.phoneNumber,
         enableSorting: true,
       },
       {
+        id: 'status',
         header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
-        accessorKey: 'status',
+        accessorFn: (row)=> row.status,
         enableSorting: true,
         cell: ({
           row: {
@@ -93,8 +89,9 @@ function MonitoringObserversList() {
         }) => <Badge className={'badge-' + status}>{status}</Badge>,
       },
       {
+        id: 'latestActivityAt',
         header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
-        accessorKey: 'latestActivityAt',
+        accessorFn: (row)=> row.latestActivityAt,
         enableSorting: true,
         cell: ({
           row: {
@@ -103,8 +100,8 @@ function MonitoringObserversList() {
         }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
       },
       {
+        id: 'actions',
         header: '',
-        accessorKey: 'action',
         enableSorting: true,
         cell: ({ row }) => (
           <DropdownMenu>

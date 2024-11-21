@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Feature.Forms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Domain.Entities.FormAggregate;

@@ -126,7 +126,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                            LEFT JOIN "PollingStations" ps ON OA."PollingStationId" = ps."Id"
                   WHERE (@searchText IS NULL
                       OR @searchText = ''
-                      OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText
+                      OR U."DisplayName" ILIKE @searchText
                       OR U."Email" ILIKE @searchText
                       OR u."PhoneNumber" ILIKE @searchText
                       OR mo."Id"::text ILIKE @searchText)
@@ -147,7 +147,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                     AND (@hasNotes IS NULL OR (OA."NotesCount" = 0 AND @hasNotes = FALSE) OR (OA."NotesCount" > 0 AND @hasNotes = TRUE))
                     AND (@fromDate IS NULL OR OA."LastModifiedOn" >= @fromDate::timestamp)
                     AND (@toDate IS NULL OR OA."LastModifiedOn" <= @toDate::timestamp)
-                    AND (@isCompleted IS NULL OR OA."IsCompleted" = @isCompleted)
                     AND (@hasQuickReports IS NULL OR (@hasQuickReports = TRUE AND OA."QuickReportId" IS NOT NULL) OR (@hasQuickReports = FALSE AND OA."QuickReportId" IS NULL))
                     AND (@quickReportFollowUpStatus IS NULL OR OA."QuickReportFollowUpStatus" = @quickReportFollowUpStatus)
                     AND (@quickReportIncidentCategory IS NULL OR OA."IncidentCategory" = @quickReportIncidentCategory);
@@ -253,7 +252,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM "ObserverPSI"),
                        "FilteredObservers" AS
                            (SELECT DISTINCT OA."MonitoringObserverId",
-                                            U."FirstName" || ' ' || U."LastName" "ObserverName",
+                                            U."DisplayName" "ObserverName",
                                             U."PhoneNumber",
                                             U."Email",
                                             MO."Tags",
@@ -264,7 +263,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                                      LEFT JOIN "PollingStations" ps ON OA."PollingStationId" = ps."Id"
                             WHERE (@searchText IS NULL
                                 OR @searchText = ''
-                                OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText
+                                OR (U."DisplayName") ILIKE @searchText
                                 OR U."Email" ILIKE @searchText
                                 OR u."PhoneNumber" ILIKE @searchText
                                 OR mo."Id"::text ILIKE @searchText)
@@ -285,7 +284,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                               AND (@hasNotes IS NULL OR (OA."NotesCount" = 0 AND @hasNotes = FALSE) OR (OA."NotesCount" > 0 AND @hasNotes = TRUE))
                               AND (@fromDate IS NULL OR OA."LastModifiedOn" >= @fromDate::timestamp)
                               AND (@toDate IS NULL OR OA."LastModifiedOn" <= @toDate::timestamp)
-                              AND (@isCompleted IS NULL OR OA."IsCompleted" = @isCompleted)
                               AND (@hasQuickReports IS NULL OR (@hasQuickReports = TRUE AND OA."QuickReportId" IS NOT NULL)
                                 OR (@hasQuickReports = FALSE AND OA."QuickReportId" IS NULL))
                               AND (@quickReportFollowUpStatus IS NULL OR OA."QuickReportFollowUpStatus" = @quickReportFollowUpStatus)
@@ -328,7 +326,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            isCompleted = req.IsCompletedFilter,
 
             hasQuickReports = req.HasQuickReports,
             quickReportFollowUpStatus = req.QuickReportFollowUpStatus?.ToString(),
@@ -337,7 +334,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
 
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;

@@ -28,21 +28,27 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         await context.FormSubmissions
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                         && x.PollingStationId == req.PollingStationId)
             .ExecuteDeleteAsync(ct);
 
         await context.Notes
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                         && x.PollingStationId == req.PollingStationId)
             .ExecuteDeleteAsync(ct);
 
         await context.Attachments
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                         && x.PollingStationId == req.PollingStationId)
             .ExecuteUpdateAsync(x => x.SetProperty(a => a.IsDeleted, true), ct);
 

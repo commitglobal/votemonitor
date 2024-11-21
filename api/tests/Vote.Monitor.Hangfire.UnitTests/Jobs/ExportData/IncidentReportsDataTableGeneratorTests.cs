@@ -123,9 +123,9 @@ public class IncidentReportsDataTableGeneratorTests
         "Level4",
         "Level5",
         "Number",
+        "Ngo",
         "MonitoringObserverId",
-        "FirstName",
-        "LastName",
+        "Name",
         "Email",
         "PhoneNumber"
     ];
@@ -887,9 +887,9 @@ public class IncidentReportsDataTableGeneratorTests
             incidentReport.Level4 ?? "",
             incidentReport.Level5 ?? "",
             incidentReport.Number ?? "",
+            incidentReport.NgoName,
             incidentReport.MonitoringObserverId.ToString(),
-            incidentReport.FirstName,
-            incidentReport.LastName,
+            incidentReport.DisplayName,
             incidentReport.Email,
             incidentReport.PhoneNumber
         ];

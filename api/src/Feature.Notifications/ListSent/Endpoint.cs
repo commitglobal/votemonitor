@@ -35,7 +35,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       N."Title",
                       N."Body",
                       N."CreatedOn" AS "SentAt",
-                      U."FirstName" || ' ' || U."LastName" AS "Sender",
+                      U."DisplayName" AS "Sender",
                       COUNT(MON."NotificationId") AS "NumberOfTargetedObservers",
                       SUM(CASE WHEN MON."IsRead" = TRUE THEN 1 ELSE 0 END) AS "NumberOfReadNotifications"
                   FROM
@@ -59,7 +59,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
+            pageSize = req.PageSize
         };
 
         int totalRowCount;

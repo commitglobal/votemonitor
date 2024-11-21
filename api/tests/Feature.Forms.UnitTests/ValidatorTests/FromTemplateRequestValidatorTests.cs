@@ -129,7 +129,7 @@ public class FromTemplateRequestValidatorTests
             NgoId = Guid.NewGuid(),
             TemplateId = Guid.NewGuid(),
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
-            DefaultLanguage = LanguagesList.EN.Iso1,
+            DefaultLanguage = LanguagesList.EN.Iso1
         };
 
         // Act

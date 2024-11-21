@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -17,6 +18,16 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         if (answer is not SingleSelectAnswer singleSelectAnswer)
+        {
+            throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
+        }
+
+        _answersHistogram.IncrementFor(singleSelectAnswer.Selection.OptionId);
+    }
+
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        if (answer is not SingleSelectAnswerModel singleSelectAnswer)
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }
