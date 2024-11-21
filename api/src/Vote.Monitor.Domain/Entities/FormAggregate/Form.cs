@@ -36,7 +36,8 @@ public class Form : BaseForm
         defaultLanguage,
         languages,
         icon,
-        questions)
+        questions,
+        FormStatus.Drafted)
     {
         MonitoringNgoId = monitoringNgo.Id;
         MonitoringNgo = monitoringNgo;
@@ -61,7 +62,8 @@ public class Form : BaseForm
         defaultLanguage,
         languages,
         icon,
-        questions)
+        questions,
+        FormStatus.Drafted)
     {
         MonitoringNgoId = monitoringNgoId;
     }

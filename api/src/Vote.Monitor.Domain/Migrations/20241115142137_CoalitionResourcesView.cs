@@ -202,11 +202,24 @@ namespace Vote.Monitor.Domain.Migrations
                 dataSource TEXT
             )
             RETURNS TABLE (
-                "FormId" UUID
+                "FormId" UUID,
+                "FormCode" varchar(256),
+                "FormType" TEXT,
+                "FormName" jsonb,
+                "FormDefaultLanguage" varchar(256),
+                "FormQuestions" jsonb,
+                "FormStatus" TEXT
             ) AS $$
             BEGIN
                 RETURN QUERY
-                SELECT F."Id" as "FormId"
+                SELECT 
+                    F."Id" as "FormId",
+                    F."Code" AS "FormCode",
+                    F."FormType" AS "FormType",
+                    F."Name" AS "FormName",
+                    F."DefaultLanguage" AS "FormDefaultLanguage",
+                    F."Questions" AS "FormQuestions",
+                    F."Status" AS "FormStatus"
                 FROM "CoalitionFormAccess" CFA
                 INNER JOIN "Coalitions" C ON CFA."CoalitionId" = C."Id"
                 INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."CoalitionId" = C."Id"
@@ -227,7 +240,14 @@ namespace Vote.Monitor.Domain.Migrations
                         OR MN."NgoId" = ngoId AND mn."Id" = cfa."MonitoringNgoId"
                     )
                 UNION
-                SELECT F."Id" AS "FormId"
+                SELECT 
+                    F."Id" as "FormId",
+                    F."Code" AS "FormCode",
+                    F."FormType" AS "FormType",
+                    F."Name" AS "FormName",
+                    F."DefaultLanguage" AS "FormDefaultLanguage",
+                    F."Questions" AS "FormQuestions",
+                    F."Status" AS "FormStatus"
                 FROM "Forms" F
                   INNER JOIN "GetMonitoringNgoDetails"(electionRoundId, ngoId) MND ON MND."MonitoringNgoId" = F."MonitoringNgoId" 
                   INNER JOIN "MonitoringNgos" MN ON MN."Id" = MND."MonitoringNgoId" 
@@ -235,7 +255,14 @@ namespace Vote.Monitor.Domain.Migrations
                     (MND."CoalitionId" IS NULL or MND."IsCoalitionLeader" = false) AND MN."NgoId" = ngoId
                     AND F."ElectionRoundId" = electionRoundId
                 UNION
-                SELECT F."Id" AS "FormId"
+                SELECT 
+                    F."Id" as "FormId",
+                    F."Code" AS "FormCode",
+                    F."FormType" AS "FormType",
+                    F."Name" AS "FormName",
+                    F."DefaultLanguage" AS "FormDefaultLanguage",
+                    F."Questions" AS "FormQuestions",
+                    F."Status" AS "FormStatus"
                 FROM "PollingStationInformationForms" F
                 WHERE 
                     F."ElectionRoundId" = electionRoundId;

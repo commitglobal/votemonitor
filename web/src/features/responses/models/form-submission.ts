@@ -34,6 +34,7 @@ export interface FormSubmissionByEntry {
   notesCount: number;
   number: string;
   submissionId: string;
+  isOwnObserver: boolean;
   tags: string[];
   timeSubmitted: string;
   followUpStatus: FormSubmissionFollowUpStatus;

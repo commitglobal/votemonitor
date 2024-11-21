@@ -93,7 +93,6 @@ public class PSIFormSubmissionsAggregateTests
             .Which.QuestionId
             .Should().Be(_multiSelectQuestion.Id);
 
-        aggregate.ElectionRoundId.Should().Be(_form.ElectionRoundId);
         aggregate.FormId.Should().Be(_form.Id);
     }
 

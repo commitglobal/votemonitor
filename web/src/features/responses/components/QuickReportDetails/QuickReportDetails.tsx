@@ -83,10 +83,9 @@ export default function QuickReportDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                search
                 className='flex gap-1 font-bold text-purple-500'
-                to='/monitoring-observers/view/$monitoringObserverId/$tab'
-                params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
+                to='/responses'
+                search={{ searchText: quickReport.monitoringObserverId, tab: 'quick-reports', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {quickReport.observerName}
@@ -157,7 +156,8 @@ export default function QuickReportDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={quickReport.followUpStatus}
-                value={quickReport.followUpStatus}>
+                value={quickReport.followUpStatus}
+                disabled={!quickReport.isOwnObserver}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

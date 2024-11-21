@@ -42,7 +42,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
-        IEnumerable<BaseQuestion> questions) : this(electionRound.Id,
+        IEnumerable<BaseQuestion> questions,
+        FormStatus status) : this(electionRound.Id,
         formType,
         code,
         name,
@@ -50,7 +51,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         defaultLanguage,
         languages,
         icon,
-        questions)
+        questions,
+        status)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -65,7 +67,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
-        IEnumerable<BaseQuestion> questions)
+        IEnumerable<BaseQuestion> questions,
+        FormStatus status)
     {
         Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
@@ -76,7 +79,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Description = description;
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
-        Status = FormStatus.Drafted;
+        Status = status;
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
         Icon = icon;

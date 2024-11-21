@@ -68,6 +68,7 @@ public class Endpoint(
                          AMO."Email",
                          AMO."Tags",
                          AMO."NgoName",
+                         AMO."IsOwnObserver",
                          qr."PollingStationId",
                          ps."Level1",
                          ps."Level2",

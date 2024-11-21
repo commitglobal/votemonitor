@@ -150,7 +150,8 @@ export default function IncidentReportDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={incidentReport.followUpStatus}
-                value={incidentReport.followUpStatus}>
+                value={incidentReport.followUpStatus}
+                disabled={!incidentReport.isOwnObserver}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

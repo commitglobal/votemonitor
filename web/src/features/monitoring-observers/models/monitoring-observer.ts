@@ -20,6 +20,7 @@ export interface MonitoringObserver {
   status: MonitoringObserverStatus;
   phoneNumber: string;
   tags: string[];
+  isOwnObserver: boolean;
   latestActivityAt?: string;
 }
 

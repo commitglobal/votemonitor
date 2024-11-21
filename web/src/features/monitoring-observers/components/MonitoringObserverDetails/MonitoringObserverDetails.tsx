@@ -28,15 +28,13 @@ export default function MonitoringObserverDetails(): FunctionComponent {
   function handleTabChange(tab: string): void {
     setCurrentTab(tab);
     navigate({
-      params(prev) {
+      params(prev: any) {
         return { ...prev, tab };
       },
     });
   }
   return (
-    <Layout
-      backButton={<MonitorObserverBackButton />}
-      title={`${monitoringObserver.displayName}`}>
+    <Layout backButton={<MonitorObserverBackButton />} title={`${monitoringObserver.displayName}`}>
       <Tabs defaultValue='details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
           <TabsTrigger value='details'>Observer details</TabsTrigger>

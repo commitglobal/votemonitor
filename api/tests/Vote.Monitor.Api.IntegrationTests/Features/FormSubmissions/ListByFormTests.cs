@@ -52,13 +52,12 @@ public class ListByFormTests : BaseApiTestFixture
             .AggregatedForms
             .Should()
             .HaveCount(3);
-
-        var aFormData = forms.AggregatedForms.First(x => x.FormCode == "A");
-        aFormData.NumberOfSubmissions.Should().Be(1);
-
         var psiFormData = forms.AggregatedForms.First(x => x.FormCode == "PSI");
         psiFormData.NumberOfSubmissions.Should().Be(0);
-
+        
+        var aFormData = forms.AggregatedForms.First(x => x.FormCode == "A");
+        aFormData.NumberOfSubmissions.Should().Be(1);
+        
         var commonFormData = forms.AggregatedForms.First(x => x.FormCode == "Common");
         commonFormData.NumberOfSubmissions.Should().Be(1);
     }
@@ -105,10 +104,12 @@ public class ListByFormTests : BaseApiTestFixture
             .AggregatedForms
             .Should()
             .HaveCount(4);
-
-        // A form is not visible since it was not shared with anyone
+        
         var psiFormData = forms.AggregatedForms.First(x => x.FormCode == "PSI");
         psiFormData.NumberOfSubmissions.Should().Be(0);
+        
+        var aFormData = forms.AggregatedForms.First(x => x.FormCode == "A");
+        aFormData.NumberOfSubmissions.Should().Be(1);
 
         var commonFormData = forms.AggregatedForms.First(x => x.FormCode == "Common");
         commonFormData.NumberOfSubmissions.Should().Be(2);
@@ -160,7 +161,7 @@ public class ListByFormTests : BaseApiTestFixture
             .Should()
             .HaveCount(4);
 
-        // A form is not visible since it was not shared with anyone
+        // A form is not visible since it was not shared with Beta NGO
         forms.AggregatedForms.Should().HaveCount(4);
         var psiFormData = forms.AggregatedForms.First(x => x.FormCode == "PSI");
         psiFormData.NumberOfSubmissions.Should().Be(0);
@@ -217,8 +218,14 @@ public class ListByFormTests : BaseApiTestFixture
         // Assert
 
         // A form is not visible since it was not shared with anyone
-        response.AggregatedForms.Should().HaveCount(2);
+        response.AggregatedForms.Should().HaveCount(4);
 
+        var psiFormData = response.AggregatedForms.First(x => x.FormCode == "PSI");
+        psiFormData.NumberOfSubmissions.Should().Be(0);     
+        
+        var aFormData = response.AggregatedForms.First(x => x.FormCode == "A");
+        aFormData.NumberOfSubmissions.Should().Be(0);     
+        
         var commonFormData = response.AggregatedForms.First(x => x.FormCode == "Common");
         commonFormData.NumberOfSubmissions.Should().Be(3);
 

@@ -86,7 +86,10 @@ public class ListMyEndpointTests
         model[0].PollingStationId.Should().Be(quickReport1.PollingStationId);
         model[0].PollingStationDetails.Should().Be(quickReport1.PollingStationDetails);
 
-        model[0].Attachments.Should().BeEquivalentTo(quickReport1Attachments, cmp => cmp.ExcludingMissingMembers());
+        model[0].Attachments.Should().BeEquivalentTo(quickReport1Attachments, cmp => cmp
+            .ExcludingMissingMembers()
+            .Excluding(x=>x.UploadedFileName)
+            .Excluding(x=>x.FilePath));
 
         model[1].Id.Should().Be(quickReport2.Id);
         model[1].ElectionRoundId.Should().Be(quickReport2.ElectionRoundId);
@@ -96,7 +99,11 @@ public class ListMyEndpointTests
         model[1].PollingStationId.Should().Be(quickReport2.PollingStationId);
         model[1].PollingStationDetails.Should().Be(quickReport2.PollingStationDetails);
 
-        model[1].Attachments.Should().BeEquivalentTo(quickReport2Attachments, cmp => cmp.ExcludingMissingMembers());
+        model[1].Attachments.Should().BeEquivalentTo(quickReport2Attachments, cmp => cmp
+            .ExcludingMissingMembers()
+            .Excluding(x=>x.UploadedFileName)
+            .Excluding(x=>x.FilePath)
+        );
     }
 
     [Fact]

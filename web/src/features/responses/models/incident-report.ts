@@ -40,6 +40,7 @@ export interface IncidentReportByEntry {
   phoneNumber: string;
   tags: string[];
   timeSubmitted: string;
+  isOwnObserver: boolean;
   followUpStatus: IncidentReportFollowUpStatus;
 }
 

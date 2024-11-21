@@ -14,7 +14,6 @@ public record Responder(Guid ResponderId, string DisplayName, string Email, stri
 
 public class FormSubmissionsAggregate
 {
-    public Guid ElectionRoundId { get; }
     public Guid FormId { get; }
     public string FormCode { get; }
 
@@ -57,7 +56,6 @@ public class FormSubmissionsAggregate
 
     public FormSubmissionsAggregate(PollingStationInformationForm form)
     {
-        ElectionRoundId = form.ElectionRoundId;
         FormId = form.Id;
         FormCode = FormType.PSI;
         FormType = FormType.PSI;

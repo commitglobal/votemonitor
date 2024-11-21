@@ -172,7 +172,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={formSubmission.followUpStatus}
-                value={formSubmission.followUpStatus}>
+                value={formSubmission.followUpStatus}
+                disabled={!formSubmission.isOwnObserver}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

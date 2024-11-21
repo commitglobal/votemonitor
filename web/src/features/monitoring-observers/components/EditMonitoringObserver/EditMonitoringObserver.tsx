@@ -10,15 +10,15 @@ import TagsSelectFormField from '@/components/ui/tag-selector';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { monitoringObserverDetailsQueryOptions, Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
+import { Route, monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
-import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ export default function EditObserver() {
         request
       );
     },
-    onSuccess: (_, {electionRoundId}) => {
+    onSuccess: (_, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Observer successfully updated',
@@ -96,9 +96,7 @@ export default function EditObserver() {
   });
 
   return (
-    <Layout
-      title={`Edit ${monitoringObserver.displayName}`}
-      backButton={<MonitorObserverBackButton />}>
+    <Layout title={`Edit ${monitoringObserver.displayName}`} backButton={<MonitorObserverBackButton />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
@@ -120,7 +118,7 @@ export default function EditObserver() {
                   <FormItem>
                     <FormLabel className='text-left'>First name</FormLabel>
                     <FormControl>
-                      <Input {...field} {...fieldState} />
+                      <Input {...field} {...fieldState} disabled={!monitoringObserver.isOwnObserver} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +131,7 @@ export default function EditObserver() {
                   <FormItem className='w-[540px]'>
                     <FormLabel className='text-left'>Last name</FormLabel>
                     <FormControl>
-                      <Input {...field} {...fieldState} />
+                      <Input {...field} {...fieldState} disabled={!monitoringObserver.isOwnObserver} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,7 +144,7 @@ export default function EditObserver() {
                   <FormItem>
                     <FormLabel className='text-left'>Phone number</FormLabel>
                     <FormControl>
-                      <Input {...field} {...fieldState} />
+                      <Input {...field} {...fieldState} disabled={!monitoringObserver.isOwnObserver} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -164,6 +162,7 @@ export default function EditObserver() {
                         defaultValue={field.value}
                         onValueChange={field.onChange}
                         placeholder='Observer tags'
+                        disabled={!monitoringObserver.isOwnObserver}
                       />
                     </FormControl>
                     <FormMessage />
@@ -217,7 +216,7 @@ export default function EditObserver() {
                     }}>
                     Cancel
                   </Button>
-                  <Button type='submit' className='px-6'>
+                  <Button type='submit' className='px-6' disabled={!monitoringObserver.isOwnObserver}>
                     Save
                   </Button>
                 </div>

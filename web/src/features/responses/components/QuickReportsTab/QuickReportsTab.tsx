@@ -38,6 +38,7 @@ import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export interface QuickReportFilterRequest {
   dataSource: DataSources;
+  searchText: string | undefined;
   level1Filter: string | undefined;
   level2Filter: string | undefined;
   level3Filter: string | undefined;
@@ -64,8 +65,7 @@ export function QuickReportsTab(): FunctionComponent {
 
   const setPrevSearch = useSetPrevSearch();
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.currentTarget.value;
-    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+    setSearchText(ev.currentTarget.value);
   };
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
@@ -85,10 +85,11 @@ export function QuickReportsTab(): FunctionComponent {
       incidentCategory: debouncedSearch.incidentCategory,
       coalitionMemberId: search.coalitionMemberId,
       monitoringObserverId: undefined,
+      searchText: searchText,
     };
 
     return params;
-  }, [debouncedSearch]);
+  }, [debouncedSearch, searchText]);
 
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {

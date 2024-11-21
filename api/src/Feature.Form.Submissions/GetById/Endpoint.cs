@@ -106,6 +106,7 @@ public class Endpoint(
                          AMO."PhoneNumber",
                          AMO."Tags",
                          AMO."NgoName",
+                         AMO."IsOwnObserver",
                          s."Attachments",
                          s."Notes",
                          s."Answers",

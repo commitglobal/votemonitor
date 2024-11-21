@@ -41,7 +41,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                     "Email",
                     "Tags",
                     "Status",
-                    "NgoName"
+                    "NgoName",
+                    "IsOwnObserver"
                 FROM
                     "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition')
                 WHERE
@@ -105,7 +106,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             MO."PhoneNumber",
             MO."Email",
             MO."Tags",
-            MO."Status";
+            MO."Status",
+            MO."IsOwnObserver";
         """;
 
         var queryArgs = new

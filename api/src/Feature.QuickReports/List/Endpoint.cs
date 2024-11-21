@@ -36,6 +36,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
+            AND (@searchText IS NULL 
+               OR @searchText = '' 
+               OR AMO."DisplayName" ILIKE @searchText 
+               OR AMO."Email" ILIKE @searchText 
+               OR AMO."PhoneNumber" ILIKE @searchText
+               OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -98,6 +104,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
+            AND (@searchText IS NULL 
+                 OR @searchText = '' 
+                 OR AMO."DisplayName" ILIKE @searchText 
+                 OR AMO."Email" ILIKE @searchText 
+                 OR AMO."PhoneNumber" ILIKE @searchText
+                 OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -132,6 +144,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
+            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             ngoId = req.NgoId,
             coalitionMemberId = req.CoalitionMemberId,
             dataSource = req.DataSource.ToString(),

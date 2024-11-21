@@ -23,6 +23,7 @@ public class FormSubmissionView
     public string Level5 { get; init; } = default!;
     public string Number { get; init; } = default!;
     public Guid MonitoringObserverId { get; init; }
+    public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;

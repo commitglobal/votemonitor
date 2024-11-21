@@ -15,6 +15,7 @@ public record QuickReportDetailedModel
     public string Title { get; init; }
     public string Description { get; init; }
     public Guid MonitoringObserverId { get; init; }
+    public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; }
     public string Email { get; init; }
     public string PhoneNumber { get; init; }

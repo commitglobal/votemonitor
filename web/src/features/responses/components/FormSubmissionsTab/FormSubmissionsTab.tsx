@@ -52,8 +52,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
   const setPrevSearch = useSetPrevSearch();
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.currentTarget.value;
-    setSearchText(value);
+    setSearchText(ev.currentTarget.value);
   };
 
   const formSubmissionsFilter = useMemo(() => {

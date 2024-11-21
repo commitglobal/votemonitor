@@ -78,6 +78,7 @@ export interface QuickReport {
   timestamp: string;
   title: string;
   monitoringObserverId: string;
+  isOwnObserver: boolean;
   attachments: Attachment[];
   followUpStatus: QuickReportFollowUpStatus;
   incidentCategory: IncidentCategory;
