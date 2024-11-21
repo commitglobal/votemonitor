@@ -29,6 +29,7 @@ import { HistogramEntry } from '../../models/ngo-admin-statistics-models';
 import LevelStatistics from '../LevelStatisticsCard/LevelStatisticsCard';
 import useDashboardExpandedChartsStore from './dashboard-config.store';
 import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
+import { useDataSource } from '@/common/data-source-store';
 
 export default function NgoAdminDashboard(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'ngoAdminDashboard' });
@@ -47,9 +48,10 @@ export default function NgoAdminDashboard(): FunctionComponent {
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const dataSource = useDataSource();
 
-  const { data: statistics } = useElectionRoundStatistics(currentElectionRoundId);
-
+  const { data: statistics } = useElectionRoundStatistics(currentElectionRoundId, dataSource);
+  console.log(statistics)
   const getInterval = useCallback((histogram: HistogramEntry[] | undefined) => {
     if (histogram && histogram.some((x) => x)) {
       const data = histogram.map((x) => new Date(x.bucket).getTime());

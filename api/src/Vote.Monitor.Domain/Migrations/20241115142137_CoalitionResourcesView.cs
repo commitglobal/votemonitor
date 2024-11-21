@@ -73,6 +73,7 @@ namespace Vote.Monitor.Domain.Migrations
               "PhoneNumber" TEXT,
               "Tags" TEXT[],
               "Status" TEXT,
+              "AccountStatus" TEXT,
               "NgoName" varchar(256),
               "IsOwnObserver" BOOLEAN
             ) AS $$ BEGIN RETURN QUERY 
@@ -116,6 +117,7 @@ namespace Vote.Monitor.Domain.Migrations
                 AND MN."NgoId" <> ngoId
               ) THEN '{}'::TEXT[] ELSE MO."Tags" END AS "Tags", 
               MO."Status" AS "Status",
+              U."Status" AS "AccountStatus",
               N."Name" as "NgoName",
               CASE 
                    WHEN mn."NgoId" = ngoId THEN true
@@ -180,6 +182,7 @@ namespace Vote.Monitor.Domain.Migrations
               U."PhoneNumber" AS "PhoneNumber", 
               MO."Tags" AS "Tags", 
               MO."Status" AS "Status",
+              U."Status" AS "AccountStatus",
               N."Name" as "NgoName",
               TRUE as "IsOwnObserver"
             FROM 
