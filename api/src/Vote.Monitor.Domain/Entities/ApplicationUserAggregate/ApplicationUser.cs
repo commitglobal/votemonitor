@@ -33,7 +33,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         NormalizedUserName = email.Trim().ToUpperInvariant();
         PhoneNumber = phoneNumber?.Trim();
 
-        Status = UserStatus.Active;
+        Status = UserStatus.Pending;
         Preferences = UserPreferences.Defaults;
 
         if (string.IsNullOrEmpty(password.Trim()))
@@ -80,6 +80,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         var hasher = new PasswordHasher<ApplicationUser>();
         PasswordHash = hasher.HashPassword(this, password);
         EmailConfirmed = true;
+        Status = UserStatus.Active;
     }
 
     public void NewInvite()

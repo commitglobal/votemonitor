@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Vote.Monitor.Api.Feature.Auth.Services;
 
@@ -43,6 +45,33 @@ public static class HttpClientExtensions
         [StringSyntax("Uri")] string? requestUri)
     {
         var response = client.PostAsync(requestUri, null).GetAwaiter().GetResult();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TestContext.Out.WriteLine(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        }
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public static void PostFileWithoutResponse(
+        this HttpClient client,
+        [StringSyntax("Uri")] string requestUri,
+        string file,
+        string? fieldName="File",
+        string? fileName="data.csv")
+    {
+        // Create the request content
+        using var formData = new MultipartFormDataContent();
+
+        // Add the file content
+        using var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(file));
+
+        var fileContent = new StreamContent(fileStream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        formData.Add(fileContent, fieldName, fileName);
+
+        var response = client.PostAsync(requestUri, formData).GetAwaiter().GetResult();
 
         if (!response.IsSuccessStatusCode)
         {

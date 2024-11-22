@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.Monitoring;

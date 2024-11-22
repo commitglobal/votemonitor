@@ -1,13 +1,9 @@
 ﻿using System.Security.Claims;
 using Feature.QuickReports.Get;
-using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.ConnectionFactory;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
-using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
 namespace Feature.QuickReports.UnitTests.Endpoints;
 
