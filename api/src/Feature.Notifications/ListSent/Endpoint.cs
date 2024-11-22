@@ -49,7 +49,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       MN."NgoId" = @ngoId
                       AND N."ElectionRoundId" = @electionRoundId
                   GROUP BY
-                    N."Id", N."Title", N."Body", N."CreatedOn", U."FirstName", U."LastName"
+                    N."Id", N."Title", N."Body", N."CreatedOn", U."DisplayName"
                   ORDER BY N."CreatedOn" DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
