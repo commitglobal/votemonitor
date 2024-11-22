@@ -3,6 +3,7 @@ using NSubstitute;
 using NSubstitute.ClearExtensions;
 using Vote.Monitor.Api.IntegrationTests.Db;
 using Vote.Monitor.Core.Services.EmailTemplating;
+using Vote.Monitor.Core.Services.EmailTemplating.Props;
 using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.IntegrationTests;
@@ -14,7 +15,7 @@ public class ApiTesting
     private static CustomWebApplicationFactory _factory = null!;
     private static ITimeProvider _apiTimeProvider = null!;
     public static ITimeProvider ApiTimeProvider => _apiTimeProvider;
-    
+
     private static IEmailTemplateFactory _emailFactory = null!;
     public static IEmailTemplateFactory EmailFactory => _emailFactory;
     private static IJobService _jobService = null!;
@@ -30,6 +31,21 @@ public class ApiTesting
         _apiTimeProvider.UtcNowDate.Returns(_ => DateOnly.FromDateTime(DateTime.UtcNow));
 
         _emailFactory = Substitute.For<IEmailTemplateFactory>();
+        _emailFactory.GenerateConfirmAccountEmail(Arg.Any<ConfirmEmailProps>())
+            .Returns(new EmailModel("fake", "fake"));
+
+        _emailFactory.GenerateResetPasswordEmail(Arg.Any<ResetPasswordEmailProps>())
+            .Returns(new EmailModel("fake", "fake"));
+
+        _emailFactory.GenerateInvitationExistingUserEmail(Arg.Any<InvitationExistingUserEmailProps>())
+            .Returns(new EmailModel("fake", "fake"));
+
+        _emailFactory.GenerateNewUserInvitationEmail(Arg.Any<InvitationNewUserEmailProps>())
+            .Returns(new EmailModel("fake", "fake"));
+
+        _emailFactory.GenerateCitizenReportEmail(Arg.Any<CitizenReportEmailProps>())
+            .Returns(new EmailModel("fake", "fake"));
+
         _jobService = Substitute.For<IJobService>();
 
         await _database.InitialiseAsync();
@@ -44,15 +60,15 @@ public class ApiTesting
         try
         {
             await _database.ResetAsync();
-            _emailFactory.ClearSubstitute();
-            _jobService.ClearSubstitute();
+            _emailFactory.ClearReceivedCalls();
+            _jobService.ClearReceivedCalls();
         }
         catch (Exception e)
         {
             TestContext.Out.WriteLine(e.Message);
         }
     }
-    
+
     public static HttpClient CreateClient()
     {
         return _factory.CreateClient();

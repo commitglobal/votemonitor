@@ -69,8 +69,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<IJobService>();
 
             services.AddSingleton<ITimeProvider>(_ => _timeProvider);
-            services.AddSingleton(_emailFactory);
-            services.AddSingleton(_ => _jobService);
+            services.AddTransient<IEmailTemplateFactory>(_ => _emailFactory);
+            services.AddTransient<IJobService>(_ => _jobService);
 
             services
                 .RemoveAll<DbContextOptions<VoteMonitorContext>>()

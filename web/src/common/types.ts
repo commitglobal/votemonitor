@@ -270,6 +270,7 @@ export interface CoalitionMember {
 }
 export interface Coalition {
   id: string;
+  isInCoalition: boolean;
   name: string;
   leaderId: string;
   leaderName: string;

@@ -93,7 +93,6 @@ const Header = (): FunctionComponent => {
 
   useEffect(() => {
     if (!!electionRounds) {
-      debugger;
       const electionRound = electionRounds.find((x) => x.id === currentElectionRoundId);
       handleSelectElectionRound(electionRound ?? electionRounds[0]);
     }

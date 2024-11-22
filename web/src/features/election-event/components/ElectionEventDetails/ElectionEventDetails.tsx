@@ -56,7 +56,7 @@ export default function ElectionEventDetails() {
           </div>
         </CardContent>
       </Card>
-      {coalitionDetails && (
+      {coalitionDetails?.isInCoalition && (
         <Card>
           <CardHeader className='flex gap-2 flex-column'>
             <div className='flex flex-row items-center justify-between'>
