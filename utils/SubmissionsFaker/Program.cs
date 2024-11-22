@@ -134,7 +134,6 @@ await AnsiConsole.Progress()
                 .WithMonitoringNgo(ScenarioNgos.Beta))
             .Please();
 
-
         await scenarioData.PlatformAdminClient.CreatePSIForm(scenarioData.ElectionRoundId, PSIFormData.PSIForm);
         setupTask.Increment(1);
 
