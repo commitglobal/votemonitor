@@ -29,11 +29,11 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         }
 
         var coalition = await context.Coalitions
-            .Include(x=>x.Memberships)
-            .ThenInclude(x=>x.MonitoringNgo)
-            .ThenInclude(x=>x.Ngo)
-            .Include(x=>x.Leader)
-            .ThenInclude(x=>x.Ngo)
+            .Include(x => x.Memberships)
+            .ThenInclude(x => x.MonitoringNgo)
+            .ThenInclude(x => x.Ngo)
+            .Include(x => x.Leader)
+            .ThenInclude(x => x.Ngo)
             .Where(x => x.Memberships.Any(m => m.ElectionRoundId == req.ElectionRoundId
                                                && m.MonitoringNgo.NgoId == req.NgoId
                                                && m.MonitoringNgo.ElectionRoundId == req.ElectionRoundId))
@@ -42,7 +42,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
         if (coalition is null)
         {
-            return TypedResults.NotFound();
+            return TypedResults.Ok(new CoalitionModel { IsInCoalition = false });
         }
 
         return TypedResults.Ok(coalition);

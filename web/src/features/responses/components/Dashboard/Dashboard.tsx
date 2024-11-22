@@ -11,9 +11,12 @@ import IncidentReportsTab from '../IncidentReportsTab/IncidentReportsTab';
 import { QuickReportsTab } from '../QuickReportsTab/QuickReportsTab';
 import { useNavigate } from '@tanstack/react-router';
 import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function ResponsesDashboard(): ReactElement {
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const navigate = useNavigate();
   const search = Route.useSearch();
   const { tab } = search;
@@ -48,11 +51,11 @@ export default function ResponsesDashboard(): ReactElement {
           }}>
           <TabsList
             className={cn('grid bg-gray-200 mb-4 grid-cols-2 w-[400px]', {
-              'grid-cols-3 w-[600px]': isMonitoringNgoForCitizenReporting,
+              'grid-cols-3 w-[600px]': electionRound?.isMonitoringNgoForCitizenReporting,
             })}>
             <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
             <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
-            {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
+            {electionRound?.isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
             {/* <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger> */}
           </TabsList>
 
@@ -68,7 +71,7 @@ export default function ResponsesDashboard(): ReactElement {
             <IncidentReportsTab />
           </TabsContent> */}
 
-          {isMonitoringNgoForCitizenReporting && (
+          {electionRound?.isMonitoringNgoForCitizenReporting && (
             <TabsContent value='citizen-reports'>
               <CitizenReportsTab />
             </TabsContent>

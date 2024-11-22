@@ -3,7 +3,6 @@ using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Api.IntegrationTests.TestCases;
 using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests.Features.FormSubmissions;
 

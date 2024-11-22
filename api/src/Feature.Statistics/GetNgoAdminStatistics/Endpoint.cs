@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Feature.Statistics.GetNgoAdminStatistics.Models;
 using Microsoft.Extensions.Caching.Memory;
-using NPOI.POIFS.NIO;
 using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Statistics.GetNgoAdminStatistics;

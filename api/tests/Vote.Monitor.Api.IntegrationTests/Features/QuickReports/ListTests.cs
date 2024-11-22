@@ -1,9 +1,5 @@
-﻿using Feature.Form.Submissions.ListEntries;
-using Feature.QuickReports.Get;
-using Feature.QuickReports.List;
+﻿using Feature.QuickReports.List;
 using Vote.Monitor.Api.IntegrationTests.Consts;
-using Vote.Monitor.Api.IntegrationTests.Fakers;
-using Vote.Monitor.Api.IntegrationTests.Models;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Api.IntegrationTests.TestCases;
 using Vote.Monitor.Core.Models;

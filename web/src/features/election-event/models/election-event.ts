@@ -1,4 +1,4 @@
-import { ElectionRoundStatus } from "@/common/types";
+import { ElectionRoundStatus } from '@/common/types';
 
 export interface ElectionEvent {
   id: string;
@@ -14,4 +14,8 @@ export interface ElectionEvent {
   countryFullName: string;
   createdOn: string;
   lastModifiedOn: string;
+  monitoringNgoId: string;
+  country: string;
+  isMonitoringNgoForCitizenReporting: boolean;
+  isCoalitionLeader: boolean;
 }

@@ -109,7 +109,6 @@ function EditFormAccessDialog() {
   }
 
   const handleToggleAll = (checked: boolean) => {
-    console.log(checked);
     if (checked) {
       setNgosSharedWith(filteredNGOs.map((ngo) => ngo.id));
     } else {

@@ -1,5 +1,6 @@
 import { ZFormType } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { SelectFilter, SelectFilterOption } from '@/features/filtering/components/SelectFilter';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
@@ -13,7 +14,8 @@ export const FormTypeFilter: FC = () => {
     navigateHandler({ [FILTER_KEY.FormTypeFilter]: value });
   };
 
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const selectOptions = useMemo(() => {
     const options: SelectFilterOption[] = [
@@ -39,7 +41,7 @@ export const FormTypeFilter: FC = () => {
       },
     ];
 
-    if (isMonitoringNgoForCitizenReporting) {
+    if (electionRound?.isMonitoringNgoForCitizenReporting) {
       options.push({
         value: ZFormType.Values.IncidentReporting,
         label: mapFormType(ZFormType.Values.IncidentReporting),
@@ -51,7 +53,7 @@ export const FormTypeFilter: FC = () => {
     });
 
     return options;
-  }, [isMonitoringNgoForCitizenReporting]);
+  }, [electionRound?.isMonitoringNgoForCitizenReporting]);
 
   return (
     <SelectFilter

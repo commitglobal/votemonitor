@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+﻿using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers;
 
@@ -14,8 +12,6 @@ public class MonitoringObserverModel
     public string PhoneNumber { get; init; }
     public string[] Tags { get; init; }
     public DateTime? LatestActivityAt { get; init; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
     public MonitoringObserverStatus Status { get; init; }
 }
 

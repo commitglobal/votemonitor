@@ -30,6 +30,7 @@ import LevelStatistics from '../LevelStatisticsCard/LevelStatisticsCard';
 import useDashboardExpandedChartsStore from './dashboard-config.store';
 import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
 import { useDataSource } from '@/common/data-source-store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function NgoAdminDashboard(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'ngoAdminDashboard' });
@@ -47,11 +48,11 @@ export default function NgoAdminDashboard(): FunctionComponent {
   const incidentReportsChartRef = useRef(null);
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   const dataSource = useDataSource();
 
   const { data: statistics } = useElectionRoundStatistics(currentElectionRoundId, dataSource);
-  console.log(statistics)
+
   const getInterval = useCallback((histogram: HistogramEntry[] | undefined) => {
     if (histogram && histogram.some((x) => x)) {
       const data = histogram.map((x) => new Date(x.bucket).getTime());
@@ -339,7 +340,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   />
                 </CardContent>
               </Card>
-              {isMonitoringNgoForCitizenReporting && (
+              {electionRound?.isMonitoringNgoForCitizenReporting && (
                 <Card
                   className={cn('transition-all duration-300 ease-in-out', {
                     'col-span-full': expandedCharts.has('citizenReportsCard'),

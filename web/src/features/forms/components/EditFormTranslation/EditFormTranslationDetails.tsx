@@ -10,6 +10,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { mapFormType } from '@/lib/utils';
 import { useFormContext } from 'react-hook-form';
 import { EditFormType } from '../EditForm/EditForm';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export interface EditFormTranslationDetailsProps {
   languageCode: string;
@@ -18,8 +19,8 @@ export interface EditFormTranslationDetailsProps {
 function EditFormTranslationDetails({ languageCode }: EditFormTranslationDetailsProps) {
   const { t } = useTranslation();
   const form = useFormContext<EditFormType>();
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
-
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   return (
     <div className='md:inline-flex md:space-x-6'>
       <div className='space-y-4 md:w-1/2'>
@@ -39,7 +40,7 @@ function EditFormTranslationDetails({ languageCode }: EditFormTranslationDetails
                   <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
+                  {electionRound?.isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
                   <SelectItem value={ZFormType.Values.IncidentReporting}>{mapFormType(ZFormType.Values.IncidentReporting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectContent>
