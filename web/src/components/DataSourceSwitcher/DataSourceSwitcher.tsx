@@ -7,11 +7,14 @@ import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { omit } from '../../lib/utils';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export function DataSourceSwitcher(): FunctionComponent {
-  const isCoalitionLeader = useCurrentElectionRoundStore((s) => s.isCoalitionLeader);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const navigate = useNavigate();
-  
+
   const search: any = useSearch({
     strict: false,
   });
@@ -49,7 +52,7 @@ export function DataSourceSwitcher(): FunctionComponent {
     setIsCoalition((search.dataSource ?? dataSource) === DataSources.Coalition);
   }, [search.dataSource]);
 
-  return isCoalitionLeader ? (
+  return electionRound?.isCoalitionLeader ? (
     <div className='flex items-center space-x-4'>
       <Switch
         id='data-source'

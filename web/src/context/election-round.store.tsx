@@ -2,16 +2,16 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { createContext, PropsWithChildren, useContext, useId, useRef } from 'react';
-import { useStoreWithEqualityFn } from "zustand/traditional";
+import { useStoreWithEqualityFn } from 'zustand/traditional';
 // can't see how to properly type things without copy/pasting from zustand
-import type { StoreApi } from "zustand";
+import type { StoreApi } from 'zustand';
 
 export type ExtractState<S> = S extends {
   getState: () => infer T;
 }
   ? T
   : never;
-export type ReadonlyStoreApi<T> = Pick<StoreApi<T>, "getState" | "subscribe">;
+export type ReadonlyStoreApi<T> = Pick<StoreApi<T>, 'getState' | 'subscribe'>;
 export type WithReact<S extends ReadonlyStoreApi<unknown>> = S & {
   getServerState?: () => ExtractState<S>;
 };
@@ -19,17 +19,10 @@ export type WithReact<S extends ReadonlyStoreApi<unknown>> = S & {
 // not copied from zustand source
 export type ZustandStore<T> = WithReact<StoreApi<T>>;
 
-
 export type CurrentElectionRoundState = {
   currentElectionRoundId: string;
   setCurrentElectionRoundId(electionRoundId: string): void;
-
-  isMonitoringNgoForCitizenReporting: boolean;
-  setIsMonitoringNgoForCitizenReporting(isMonitoringNgoForCitizenReporting: boolean): void;
-
-  isCoalitionLeader: boolean;
-  setIsCoalitionLeader(isCoalitionLeader: boolean): void;
-}
+};
 
 export type CurrentElectionRoundStoreType = ZustandStore<CurrentElectionRoundState>;
 
@@ -44,30 +37,20 @@ export const CurrentElectionRoundStoreProvider = ({ children }: PropsWithChildre
         (set) => ({
           currentElectionRoundId: '',
           setCurrentElectionRoundId: (electionRoundId: string) => set({ currentElectionRoundId: electionRoundId }),
-    
-          isMonitoringNgoForCitizenReporting: false,
-          setIsMonitoringNgoForCitizenReporting: (isMonitoringNgoForCitizenReporting: boolean) => set({ isMonitoringNgoForCitizenReporting }),
-    
-          isCoalitionLeader: false,
-          setIsCoalitionLeader: (isCoalitionLeader: boolean) => set({ isCoalitionLeader }),
         }),
         {
-          name: 'current-election-round', // name of the item in the storage (must be unique)
+          name: 'current-election-round'
         }
       )
     );
   }
   return (
-    <CurrentElectionRoundContext.Provider value={storeRef.current}>
-      {children}
-    </CurrentElectionRoundContext.Provider>
+    <CurrentElectionRoundContext.Provider value={storeRef.current}>{children}</CurrentElectionRoundContext.Provider>
   );
 };
 
-export function useCurrentElectionRoundStore<U>(
-  selector: (state: ExtractState<CurrentElectionRoundStoreType>) => U,
-) {
+export function useCurrentElectionRoundStore<U>(selector: (state: ExtractState<CurrentElectionRoundStoreType>) => U) {
   const store = useContext(CurrentElectionRoundContext);
-  if (!store) throw "Missing StoreProvider";
+  if (!store) throw 'Missing StoreProvider';
   return useStoreWithEqualityFn(store, selector);
 }

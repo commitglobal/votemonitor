@@ -186,19 +186,6 @@ export enum ElectionRoundStatus {
   Archived = 'Archived',
 }
 
-export type ElectionRoundMonitoring = {
-  monitoringNgoId: string;
-  electionRoundId: string;
-  title: string;
-  englishTitle: string;
-  startDate: string;
-  country: string;
-  countryId: string;
-  isMonitoringNgoForCitizenReporting: boolean;
-  isCoalitionLeader: boolean;
-  status: ElectionRoundStatus;
-};
-
 export type LevelNode = {
   id: number;
   name: string;

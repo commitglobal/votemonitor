@@ -19,7 +19,6 @@ import { LanguageBadge } from '@/components/ui/language-badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
@@ -45,6 +44,8 @@ import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslatio
 import CreateForm from './CreateForm';
 import { FormFilters } from './FormFilters/FormFilters';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -70,8 +71,9 @@ export default function FormsDashboard(): ReactElement {
   const confirm = useConfirm();
 
   const { data: languages } = useLanguages();
-  const { currentElectionRoundId, isMonitoringNgoForCitizenReporting, isCoalitionLeader } =
-    useCurrentElectionRoundStore((s) => s);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+  
   const columnHelper = createColumnHelper<FormBase>();
 
   const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
@@ -210,7 +212,7 @@ export default function FormsDashboard(): ReactElement {
       }),
     ];
 
-    if (isMonitoringNgoForCitizenReporting) {
+    if (electionRound?.isMonitoringNgoForCitizenReporting) {
       defaultColumns.splice(
         1,
         0,
@@ -245,7 +247,7 @@ export default function FormsDashboard(): ReactElement {
       );
     }
 
-    if (isCoalitionLeader) {
+    if (electionRound?.isCoalitionLeader) {
       defaultColumns.push(
         columnHelper.display({
           id: 'sharedWith',
@@ -513,7 +515,7 @@ export default function FormsDashboard(): ReactElement {
     }
 
     return defaultColumns;
-  }, [currentElectionRoundId, isMonitoringNgoForCitizenReporting, isCoalitionLeader]);
+  }, [currentElectionRoundId, electionRound?.isMonitoringNgoForCitizenReporting, electionRound?.isCoalitionLeader]);
 
   const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 

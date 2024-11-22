@@ -46,14 +46,14 @@ public class GetMonitoringTests : BaseApiTestFixture
 
         alfaNgoElectionRounds
             .ElectionRounds
-            .First(x => x.ElectionRoundId == electionRoundAId)
+            .First(x => x.Id == electionRoundAId)
             .IsCoalitionLeader
             .Should()
             .BeTrue();
 
         alfaNgoElectionRounds
             .ElectionRounds
-            .First(x => x.ElectionRoundId == electionRoundCId)
+            .First(x => x.Id == electionRoundCId)
             .IsCoalitionLeader
             .Should()
             .BeFalse();
@@ -64,21 +64,21 @@ public class GetMonitoringTests : BaseApiTestFixture
 
         betaNgoElectionRounds
             .ElectionRounds
-            .First(x => x.ElectionRoundId == electionRoundAId)
+            .First(x => x.Id == electionRoundAId)
             .IsCoalitionLeader
             .Should()
             .BeFalse();
 
         betaNgoElectionRounds
             .ElectionRounds
-            .First(x => x.ElectionRoundId == electionRoundBId)
+            .First(x => x.Id == electionRoundBId)
             .IsCoalitionLeader
             .Should()
             .BeFalse();
 
         betaNgoElectionRounds
             .ElectionRounds
-            .First(x => x.ElectionRoundId == electionRoundCId)
+            .First(x => x.Id == electionRoundCId)
             .IsCoalitionLeader
             .Should()
             .BeFalse();
