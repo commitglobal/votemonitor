@@ -26,6 +26,7 @@ public class Endpoint(VoteMonitorContext context)
             .Include(x => x.ElectionRound)
             .ThenInclude(x => x.MonitoringNgoForCitizenReporting)
             .Where(x => x.NgoId == req.NgoId)
+            .OrderBy(x => x.ElectionRound.StartDate)
             .Select(x => new NgoElectionRoundView
             {
                 MonitoringNgoId = x.Id,

@@ -10,9 +10,8 @@ import { omit } from '../../lib/utils';
 
 export function DataSourceSwitcher(): FunctionComponent {
   const isCoalitionLeader = useCurrentElectionRoundStore((s) => s.isCoalitionLeader);
-
   const navigate = useNavigate();
-
+  
   const search: any = useSearch({
     strict: false,
   });
