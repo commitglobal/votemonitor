@@ -180,6 +180,12 @@ export const MultiSelectAnswerSchema = BaseAnswerSchema.extend({
 });
 export type MultiSelectAnswer = z.infer<typeof MultiSelectAnswerSchema>;
 
+export enum ElectionRoundStatus {
+  NotStarted = 'NotStarted',
+  Started = 'Started',
+  Archived = 'Archived',
+}
+
 export type ElectionRoundMonitoring = {
   monitoringNgoId: string;
   electionRoundId: string;
@@ -190,6 +196,7 @@ export type ElectionRoundMonitoring = {
   countryId: string;
   isMonitoringNgoForCitizenReporting: boolean;
   isCoalitionLeader: boolean;
+  status: ElectionRoundStatus;
 };
 
 export type LevelNode = {

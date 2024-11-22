@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,12 +20,13 @@ import { sleep } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { PauseCircleIcon, PlayCircleIcon, StopCircleIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { Fragment, useContext, useEffect, useState } from 'react';
-import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
+import { sortBy } from 'lodash';
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
+import { ElectionRoundStatus, type ElectionRoundMonitoring, type FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
 
 const navigation = [
@@ -43,8 +46,12 @@ const Header = (): FunctionComponent => {
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
   const router = useRouter();
-  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId, setIsCoalitionLeader } =
-    useCurrentElectionRoundStore((s) => s);
+  const {
+    setCurrentElectionRoundId,
+    setIsMonitoringNgoForCitizenReporting,
+    currentElectionRoundId,
+    setIsCoalitionLeader,
+  } = useCurrentElectionRoundStore((s) => s);
 
   const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {
     if (electionRound && selectedElectionRound?.electionRoundId != electionRound.electionRoundId) {
@@ -52,7 +59,7 @@ const Header = (): FunctionComponent => {
       setCurrentElectionRoundId(electionRound.electionRoundId);
       setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
       setIsCoalitionLeader(electionRound.isCoalitionLeader);
-      
+
       sleep(1);
 
       await queryClient.invalidateQueries({
@@ -90,6 +97,22 @@ const Header = (): FunctionComponent => {
     }
   }, [electionRounds]);
 
+  const activeElections = useMemo(() => {
+    return sortBy(
+      [...(electionRounds ?? [])].filter((er) => er.status !== ElectionRoundStatus.Archived),
+      (er) => new Date(er.startDate).getTime(),
+      (er) => er.title
+    );
+  }, [electionRounds]);
+
+  const archivedElections = useMemo(() => {
+    return sortBy(
+      [...(electionRounds ?? [])].filter((er) => er.status === ElectionRoundStatus.Archived),
+      (er) => new Date(er.startDate).getTime(),
+      (er) => er.title
+    );
+  }, [electionRounds]);
+
   return (
     <Disclosure as='nav' className='mb-10 bg-white shadow-sm'>
       {({ open }) => (
@@ -125,12 +148,12 @@ const Header = (): FunctionComponent => {
 
               <div className='items-center hidden gap-2 md:flex'>
                 {status === 'pending' ? (
-                  <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
+                  <Skeleton className='w-[360px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
-                        <span className='election-text'>{selectedElectionRound?.title}</span>
+                      <Badge className='w-[360px] bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
+                        <div className='election-text'>{selectedElectionRound?.title}</div>
                         <ChevronDownIcon className='w-[20px] ml-2' />
                       </Badge>
                     </DropdownMenuTrigger>
@@ -141,11 +164,38 @@ const Header = (): FunctionComponent => {
                           const electionRound = electionRounds?.find((er) => er.electionRoundId === value);
                           handleSelectElectionRound(electionRound);
                         }}>
-                        {electionRounds?.map((electionRound) => (
+                        <DropdownMenuLabel> Upcomming elections </DropdownMenuLabel>
+
+                        {activeElections?.map((electionRound) => (
                           <DropdownMenuRadioItem
                             key={electionRound.electionRoundId}
                             value={electionRound.electionRoundId}>
-                            {electionRound.title}
+                            <div className='flex items-center gap-2'>
+                              {electionRound?.status === ElectionRoundStatus.NotStarted ? (
+                                <PauseCircleIcon className='w-4 h-4 text-slate-700' />
+                              ) : null}
+                              {electionRound?.status === ElectionRoundStatus.Started ? (
+                                <PlayCircleIcon className='w-4 h-4 text-green-700' />
+                              ) : null}
+                              <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                {electionRound.title}
+                              </div>
+                            </div>
+                          </DropdownMenuRadioItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel> Archived elections </DropdownMenuLabel>
+                        {archivedElections?.map((electionRound) => (
+                          <DropdownMenuRadioItem
+                            key={electionRound.electionRoundId}
+                            value={electionRound.electionRoundId}>
+                            <div className='flex items-center gap-2'>
+                              <StopCircleIcon className='w-4 h-4 text-yellow-700' />
+
+                              <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                {electionRound.title}
+                              </div>
+                            </div>
                           </DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>

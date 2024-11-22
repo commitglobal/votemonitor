@@ -114,6 +114,24 @@ await AnsiConsole.Progress()
                     .WithQuickReport(ScenarioObserver.Bob, ScenarioPollingStation.Bacau)
                     .WithQuickReport(ScenarioObserver.Bob, ScenarioPollingStation.Cluj)
                 ))
+            .WithElectionRound(ScenarioElectionRound.B, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
+                .WithMonitoringNgo(ScenarioNgos.Beta))
+            .WithElectionRound(ScenarioElectionRound.C, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
+                .WithMonitoringNgo(ScenarioNgos.Beta))       
+            .WithElectionRound(ScenarioElectionRound.D, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Bacau)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa)
+                .WithMonitoringNgo(ScenarioNgos.Beta))
             .Please();
 
 
