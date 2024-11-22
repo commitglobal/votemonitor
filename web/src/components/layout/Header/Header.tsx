@@ -153,8 +153,12 @@ const Header = (): FunctionComponent => {
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='w-[360px] bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
-                        <div className='election-text'>{selectedElectionRound?.title}</div>
-                        <ChevronDownIcon className='w-[20px] ml-2' />
+                        <div className='flex items-center justify-between gap-2 w-full'>
+                          <div className='truncate max-w-[300px]' title={selectedElectionRound?.title}>
+                            {selectedElectionRound?.title}
+                          </div>
+                          <ChevronDownIcon className='w-[20px] ml-2' />
+                        </div>
                       </Badge>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>

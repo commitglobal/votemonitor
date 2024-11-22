@@ -51,17 +51,18 @@ public class ExportFormSubmissionsJob(
                 .Where(x => x.ElectionRoundId == electionRoundId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(ct);
+            var filters = exportedData.FormSubmissionsFilters ?? new ExportFormSubmissionsFilters();
 
             var publishedForms = await context
                 .Forms
-                .Where(x => x.ElectionRoundId == electionRoundId
-                            && x.MonitoringNgo.NgoId == ngoId
-                            && x.Status == FormStatus.Published)
+                .FromSqlInterpolated(
+                    @$"SELECT f.* FROM ""Forms"" f 
+                       INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
+                .Where(x=>x.Status == FormStatus.Published)
                 .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var filters = exportedData.FormSubmissionsFilters ?? new ExportFormSubmissionsFilters();
             var submissions = await GetSubmissions(electionRoundId, ngoId, filters, ct);
 
             foreach (var submission in submissions)

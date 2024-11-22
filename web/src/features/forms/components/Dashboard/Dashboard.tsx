@@ -291,7 +291,9 @@ export default function FormsDashboard(): ReactElement {
                 View
               </DropdownMenuItem>
               {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                <DropdownMenuItem onClick={() => editFormAccessDialog.trigger(row.original.id)}>Form access</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => editFormAccessDialog.trigger(row.original.id)}>
+                  Form access
+                </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
                 <DropdownMenuItem
@@ -314,7 +316,7 @@ export default function FormsDashboard(): ReactElement {
                   Add translations
                 </DropdownMenuItem>
               ) : null}
-   
+
               {row.depth === 0 && row.original.status === FormStatus.Published ? (
                 <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
               ) : null}
@@ -335,8 +337,8 @@ export default function FormsDashboard(): ReactElement {
                           row.original.status === FormStatus.Published ? (
                             <>
                               Please note that this form is published and may contain associated data. Deleting this
-                              form could result in the loss of any submitted answers from your observers. Once
-                              deleted, <b>the associated data cannot be retrieved</b>
+                              form could result in the loss of any submitted answers from your observers. Once deleted,
+                              <b>the associated data cannot be retrieved</b>
                             </>
                           ) : (
                             'This action is permanent and cannot be undone. Once deleted, this form cannot be retrieved.'
@@ -404,13 +406,13 @@ export default function FormsDashboard(): ReactElement {
 
                 {row.depth === 0 ? (
                   <DropdownMenuItem
-                    disabled={row.original.status !== FormStatus.Drafted}
+                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                     onClick={() => navigateToEdit(row.original.id)}>
                     Edit
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem
-                    disabled={row.original.status !== FormStatus.Drafted}
+                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                     onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
                     Edit
                   </DropdownMenuItem>
@@ -418,23 +420,36 @@ export default function FormsDashboard(): ReactElement {
 
                 {row.depth === 0 ? (
                   <DropdownMenuItem
-                    disabled={row.original.status !== FormStatus.Drafted}
+                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                     onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
                     Add translations
                   </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                  <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner}
+                    onClick={() => handleObsoleteForm(row.original)}>
+                    Obsolete
+                  </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
-                  <DropdownMenuItem onClick={() => handlePublishForm(row.original)}>Publish</DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner}
+                    onClick={() => handlePublishForm(row.original)}>
+                    Publish
+                  </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 ? (
-                  <DropdownMenuItem onClick={() => handleDuplicateForm(row.original)}>Duplicate</DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner}
+                    onClick={() => handleDuplicateForm(row.original)}>
+                    Duplicate
+                  </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 ? (
                   <DropdownMenuItem
                     className='text-red-600'
+                    disabled={!row.original.isFormOwner}
                     onClick={async () => {
                       if (
                         await confirm({
@@ -465,6 +480,7 @@ export default function FormsDashboard(): ReactElement {
                 ) : (
                   <DropdownMenuItem
                     className='text-red-600'
+                    disabled={!row.original.isFormOwner}
                     onClick={async () => {
                       const languageCode = row.original.defaultLanguage;
                       const language = languages?.find((l) => languageCode === l.code);
