@@ -9,13 +9,14 @@ import type { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 
 import { DateTimeFormat } from '@/common/formats';
-import type { FunctionComponent } from '@/common/types';
+import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { format } from 'date-fns';
 import { useCallback } from 'react';
 import { useCitizenNotifications } from '../hooks/citizen-notifications-queries';
 import { CitizenNotificationModel } from '../models/citizen-notification';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 function CitizenNotificationsDashboard(): FunctionComponent {
   const pushMessagesColDefs: ColumnDef<CitizenNotificationModel>[] = [
@@ -68,6 +69,7 @@ function CitizenNotificationsDashboard(): FunctionComponent {
 
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const navigateToPushMessage = useCallback(
     (notificationId: string) => {
@@ -82,8 +84,8 @@ function CitizenNotificationsDashboard(): FunctionComponent {
         <div className='flex flex-row items-center justify-between px-6'>
           <CardTitle className='text-xl'>Push messages</CardTitle>
           <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
-            <Link to='/citizen-notifications/new'>
-              <Button>
+            <Link to='/citizen-notifications/new' disabled={electionRound?.status === ElectionRoundStatus.Archived}>
+              <Button disabled={electionRound?.status === ElectionRoundStatus.Archived}>
                 <Plus className='mr-2' width={18} height={18} />
                 Create new message
               </Button>

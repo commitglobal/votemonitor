@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Feature.NgoCoalitions.Models;
-using Feature.NgoCoalitions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Converters;
 
@@ -12,8 +11,6 @@ public static class CoalitionsFeatureInstaller
     {
         SqlMapper.AddTypeHandler(typeof(CoalitionMember[]), new JsonToObjectConverter<CoalitionMember[]>());
 
-        services.AddScoped<IFormSubmissionsCleanupService, FormSubmissionsCleanupService>();
-        
         return services;
     }
 }

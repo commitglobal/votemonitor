@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { IncidentReportFollowUpStatus, type FunctionComponent } from '@/common/types';
+import { IncidentReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,10 +17,13 @@ import { mapIncidentReportFollowUpStatus, mapIncidentReportLocationType } from '
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { format } from 'date-fns';
 import { DateTimeFormat } from '@/common/formats';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function IncidentReportDetails(): FunctionComponent {
   const { incidentReportId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const { data: incidentReport } = useSuspenseQuery(
     incidentReportDetailsQueryOptions(currentElectionRoundId, incidentReportId)
   );
@@ -151,7 +154,7 @@ export default function IncidentReportDetails(): FunctionComponent {
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={incidentReport.followUpStatus}
                 value={incidentReport.followUpStatus}
-                disabled={!incidentReport.isOwnObserver}>
+                disabled={!incidentReport.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
-import type { FunctionComponent } from '@/common/types';
+import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { citizenNotificationsKeys } from '../hooks/citizen-notifications-queries';
 import { Button } from '@/components/ui/button';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -27,6 +28,8 @@ const createPushMessageSchema = z.object({
 function CitizenNotificationMessageForm(): FunctionComponent {
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -113,7 +116,7 @@ function CitizenNotificationMessageForm(): FunctionComponent {
                 />
               </div>
               <div className='flex flex-row-reverse w-full'>
-                <Button>Send notification</Button>
+                <Button disabled={electionRound?.status === ElectionRoundStatus.Archived}>Send notification</Button>
               </div>
             </form>
           </Form>

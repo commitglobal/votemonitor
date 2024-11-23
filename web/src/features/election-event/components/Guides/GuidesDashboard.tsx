@@ -30,6 +30,8 @@ import { observerGuidesKeys, useObserverGuides } from '../../hooks/observer-guid
 import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
 import AddGuideDialog from './AddGuideDialog';
 import EditGuideDialog from './EditGuideDialog';
+import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
+import { ElectionRoundStatus } from '@/common/types';
 
 export interface GuidesDashboardProps {
   guidePageType: GuidePageType;
@@ -45,6 +47,7 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
   const [newGuideType, setNewGuideType] = useState<GuideType | undefined>(undefined);
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   async function handleDeleteGuide(guideId: string, guideName: string): Promise<void> {
     if (
@@ -222,7 +225,7 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
               : i18n.t('electionEvent.guides.citizenGuidesCardTitle')}
           </CardTitle>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild disabled={electionRound?.status === ElectionRoundStatus.Archived}>
               <Button className='bg-purple-900 hover:bg-purple-600'>
                 <svg
                   className='mr-1.5'
