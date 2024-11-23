@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { Attachment } from '@/features/responses/models/common';
-import { getFileCategory } from '@/lib/utils';
+import { getFileCategory, redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
@@ -32,6 +32,9 @@ export const Route = createFileRoute('/citizen-report-attachments/$electionRound
   component: AttachmentDetails,
   loader: ({ context: { queryClient }, params: { electionRoundId, citizenReportId, attachmentId } }) =>
     queryClient.ensureQueryData(citizenReportAttachmentQueryOptions(electionRoundId, citizenReportId, attachmentId)),
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });
 
 function AttachmentDetails() {

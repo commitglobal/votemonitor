@@ -17,6 +17,7 @@ import { Route as ResetPasswordIndexImport } from './routes/reset-password/index
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
+import { Route as MonitoringObserversImportIndexImport } from './routes/monitoring-observers-import/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
@@ -87,6 +88,12 @@ const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
   path: '/monitoring-observers/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const MonitoringObserversImportIndexRoute =
+  MonitoringObserversImportIndexImport.update({
+    path: '/monitoring-observers-import/',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const LoginIndexRoute = LoginIndexImport.update({
   path: '/login/',
@@ -372,6 +379,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers-import/': {
+      preLoaderRoute: typeof MonitoringObserversImportIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/': {
       preLoaderRoute: typeof MonitoringObserversIndexImport
       parentRoute: typeof rootRoute
@@ -500,6 +511,7 @@ export const routeTree = rootRoute.addChildren([
   ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute,
   LoginIndexRoute,
+  MonitoringObserversImportIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,

@@ -5,6 +5,7 @@ import Layout from '@/components/layout/Layout';
 import { useCallback, type ReactElement } from 'react';
 import CreateElectionRound from '@/features/election-round/components/CreateElectionRound';
 import { useElectionRounds } from '@/features/election-round/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 function ElectionRounds(): ReactElement {
   const navigate = useNavigate();
@@ -29,4 +30,7 @@ function ElectionRounds(): ReactElement {
 
 export const Route = createFileRoute('/election-rounds/')({
   component: ElectionRounds,
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });
