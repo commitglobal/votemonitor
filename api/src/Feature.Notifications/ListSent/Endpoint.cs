@@ -48,6 +48,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   WHERE
                       MN."NgoId" = @ngoId
                       AND N."ElectionRoundId" = @electionRoundId
+                      AND MN."ElectionRoundId" = @electionRoundId
+                      AND MN."NgoId" = @ngoId
                   GROUP BY
                     N."Id", N."Title", N."Body", N."CreatedOn", U."DisplayName"
                   ORDER BY N."CreatedOn" DESC
