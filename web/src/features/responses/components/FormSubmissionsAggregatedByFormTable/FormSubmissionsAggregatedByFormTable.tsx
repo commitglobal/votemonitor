@@ -29,7 +29,7 @@ export function FormSubmissionsAggregatedByFormTable({
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
       void navigate({
-        to: '/responses/$formId/aggregated',
+        to: '/responses/form-submissions/$formId/aggregated',
         params: { formId },
         search: {
           hasFlaggedAnswers: search.hasFlaggedAnswers,

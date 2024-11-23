@@ -9,7 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
-import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/$submissionId';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/form-submissions/$submissionId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
@@ -18,6 +18,8 @@ import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../..
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
+import { usePrevSearch } from '@/common/prev-search-store';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -27,6 +29,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
   const { data: formSubmission } = useSuspenseQuery(
     formSubmissionDetailsQueryOptions(currentElectionRoundId, submissionId)
   );
+  const prevSearch = usePrevSearch();
 
   const router = useRouter();
 
@@ -68,14 +71,16 @@ export default function FormSubmissionDetails(): FunctionComponent {
   }
 
   return (
-    <Layout title={`#${formSubmission.submissionId}`}>
+    <Layout
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
+      breadcrumbs={<></>}
+      title={`#${formSubmission.submissionId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
           <CardContent className='flex flex-col gap-4 pt-6'>
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                
                 className='flex gap-1 font-bold text-purple-500'
                 to='/responses'
                 search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
@@ -176,7 +181,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={formSubmission.followUpStatus}
                 value={formSubmission.followUpStatus}
-                disabled={!formSubmission.isOwnObserver|| electionRound?.status === ElectionRoundStatus.Archived}>
+                disabled={!formSubmission.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

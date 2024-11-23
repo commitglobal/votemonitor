@@ -20,7 +20,7 @@ export function formSubmissionDetailsQueryOptions(electionRoundId: string, submi
   });
 }
 
-export const Route = createFileRoute('/responses/$submissionId')({
+export const Route = createFileRoute('/responses/form-submissions/$submissionId')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },

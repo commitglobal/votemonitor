@@ -8,7 +8,7 @@ import { buildURLSearchParams, redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
-import { ZDataSourceSearchSchema } from '..';
+import { ZDataSourceSearchSchema } from '../..';
 
 export function formAggregatedDetailsQueryOptions(
   electionRoundId: string,
@@ -60,7 +60,7 @@ export const SubmissionsAggregatedByFormSchema = z.object({
 export type SubmissionsAggregatedByFormParams = z.infer<typeof SubmissionsAggregatedByFormSchema>;
 
 
-export const Route = createFileRoute('/responses/$formId/aggregated')({
+export const Route = createFileRoute('/responses/form-submissions/$formId/aggregated')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },

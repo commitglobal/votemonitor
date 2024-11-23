@@ -15,7 +15,7 @@ import type {
   FormSubmissionByObserver,
   FormSubmissionsFilters,
 } from '../models/form-submission';
-import { SubmissionsAggregatedByFormParams } from '@/routes/responses/$formId.aggregated';
+import { SubmissionsAggregatedByFormParams } from '@/routes/responses/form-submissions/$formId.aggregated';
 
 const STALE_TIME = 1000 * 60; // one minute
 
