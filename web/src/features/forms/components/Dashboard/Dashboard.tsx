@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZFormType, ZTranslationStatus } from '@/common/types';
+import { ElectionRoundStatus, ZFormType, ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -54,6 +54,8 @@ export default function FormsDashboard(): ReactElement {
   const [searchText, setSearchText] = useState('');
   const { filteringIsActive } = useFilteringContainer();
   const router = useRouter();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -71,9 +73,7 @@ export default function FormsDashboard(): ReactElement {
   const confirm = useConfirm();
 
   const { data: languages } = useLanguages();
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
-  
+
   const columnHelper = createColumnHelper<FormBase>();
 
   const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
@@ -293,19 +293,25 @@ export default function FormsDashboard(): ReactElement {
                 View
               </DropdownMenuItem>
               {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                <DropdownMenuItem onClick={() => editFormAccessDialog.trigger(row.original.id)}>
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => editFormAccessDialog.trigger(row.original.id)}>
                   Form access
                 </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
                   onClick={() => navigateToEdit(row.original.id)}>
                   Edit
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
                   onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
                   Edit
                 </DropdownMenuItem>
@@ -313,24 +319,39 @@ export default function FormsDashboard(): ReactElement {
 
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
                   onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
                   Add translations
                 </DropdownMenuItem>
               ) : null}
 
               {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handleObsoleteForm(row.original)}>
+                  Obsolete
+                </DropdownMenuItem>
               ) : null}
               {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
-                <DropdownMenuItem onClick={() => handlePublishForm(row.original)}>Publish</DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handlePublishForm(row.original)}>
+                  Publish
+                </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
-                <DropdownMenuItem onClick={() => handleDuplicateForm(row.original)}>Duplicate</DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handleDuplicateForm(row.original)}>
+                  Duplicate
+                </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
                 <DropdownMenuItem
                   className='text-red-600'
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
                   onClick={async () => {
                     if (
                       await confirm({
@@ -361,6 +382,7 @@ export default function FormsDashboard(): ReactElement {
               ) : (
                 <DropdownMenuItem
                   className='text-red-600'
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
                   onClick={async () => {
                     const languageCode = row.original.defaultLanguage;
                     const language = languages?.find((l) => languageCode === l.code);
@@ -408,13 +430,21 @@ export default function FormsDashboard(): ReactElement {
 
                 {row.depth === 0 ? (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
                     onClick={() => navigateToEdit(row.original.id)}>
                     Edit
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
                     onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
                     Edit
                   </DropdownMenuItem>
@@ -422,28 +452,32 @@ export default function FormsDashboard(): ReactElement {
 
                 {row.depth === 0 ? (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
                     onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
                     Add translations
                   </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 && row.original.status === FormStatus.Published ? (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner}
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
                     onClick={() => handleObsoleteForm(row.original)}>
                     Obsolete
                   </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner}
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
                     onClick={() => handlePublishForm(row.original)}>
                     Publish
                   </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 ? (
                   <DropdownMenuItem
-                    disabled={!row.original.isFormOwner}
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
                     onClick={() => handleDuplicateForm(row.original)}>
                     Duplicate
                   </DropdownMenuItem>
@@ -451,7 +485,7 @@ export default function FormsDashboard(): ReactElement {
                 {row.depth === 0 ? (
                   <DropdownMenuItem
                     className='text-red-600'
-                    disabled={!row.original.isFormOwner}
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
                     onClick={async () => {
                       if (
                         await confirm({

@@ -1,10 +1,9 @@
 ﻿using Feature.NgoCoalitions.Models;
-using Feature.NgoCoalitions.Services;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 
 namespace Feature.NgoCoalitions.Update;
 
-public class Endpoint(VoteMonitorContext context, IFormSubmissionsCleanupService cleanupService)
+public class Endpoint(VoteMonitorContext context)
     : Endpoint<Request, Results<Ok<CoalitionModel>, NotFound, ProblemDetails>>
 {
     public override void Configure()
@@ -49,25 +48,8 @@ public class Endpoint(VoteMonitorContext context, IFormSubmissionsCleanupService
             context.MonitoringNgos.Add(monitoringNgo);
         }
 
-        var oldMembers = coalition.Memberships;
-
         coalition.Update(req.CoalitionName,
             coalitionMembers.Select(x => CoalitionMembership.Create(req.ElectionRoundId, req.CoalitionId, x.Id)));
-
-        var removedMembers = oldMembers
-            .Where(cm=>cm.MonitoringNgo.Id != coalition.LeaderId)
-            .Where(cm => coalitionMembers.All(x => x.Id != cm.MonitoringNgo.Id))
-            .Select(x => x.MonitoringNgo.Id)
-            .ToList();
-
-        // Delete orphaned data
-        if (removedMembers.Any())
-        {
-            foreach (var memberId in removedMembers)
-            {
-                await cleanupService.CleanupFormSubmissionsAsync(req.ElectionRoundId, req.CoalitionId, memberId);
-            }
-        }
 
         await context.SaveChangesAsync(ct);
         return TypedResults.Ok(CoalitionModel.FromEntity(coalition));

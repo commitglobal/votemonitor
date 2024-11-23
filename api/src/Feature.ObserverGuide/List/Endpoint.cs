@@ -35,8 +35,7 @@ public class Endpoint(
 
         var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin();
         var isObserver = currentUserRoleProvider.IsObserver();
-
-
+        
         var observerId = currentUserProvider.GetUserId();
         var ngoId = currentUserProvider.GetNgoId();
 

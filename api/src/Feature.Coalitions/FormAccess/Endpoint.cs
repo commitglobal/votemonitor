@@ -1,5 +1,4 @@
 ﻿using Authorization.Policies.Requirements;
-using Feature.NgoCoalitions.Services;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 
@@ -7,7 +6,6 @@ namespace Feature.NgoCoalitions.FormAccess;
 
 public class Endpoint(
     VoteMonitorContext context,
-    IFormSubmissionsCleanupService cleanupService,
     IAuthorizationService authorizationService)
     : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
@@ -69,26 +67,10 @@ public class Endpoint(
             .Select(x => x.Id)
             .ToListAsync(ct);
 
-        var ngosWithRevokedAccess =
-            coalition.FormAccess
-                .Where(x => !coalitionMonitoringNgoIds.Contains(x.MonitoringNgoId))
-                .ToList();
-
         var ngosGainedFormAccess =
             coalitionMonitoringNgoIds.Where(x => coalition.FormAccess.All(fa => fa.MonitoringNgoId != x))
                 .Select(id => CoalitionFormAccess.Create(coalition.Id, id, req.FormId))
                 .ToList();
-        
-        if (ngosWithRevokedAccess.Any())
-        {
-            context.CoalitionFormAccess.RemoveRange(ngosWithRevokedAccess);
-            
-            foreach (var memberId in ngosWithRevokedAccess)
-            {
-                await cleanupService.CleanupFormSubmissionsAsync(
-                    req.ElectionRoundId, req.CoalitionId, memberId.MonitoringNgoId, form.Id);
-            }
-        }
 
         if (ngosGainedFormAccess.Any())
         {

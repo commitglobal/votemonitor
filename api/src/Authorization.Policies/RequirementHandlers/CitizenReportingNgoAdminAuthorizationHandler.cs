@@ -36,8 +36,7 @@ internal class CitizenReportingNgoAdminAuthorizationHandler(
             return;
         }
 
-        if (result.ElectionRoundStatus == ElectionRoundStatus.Archived
-            || result.NgoStatus == NgoStatus.Deactivated
+        if (result.NgoStatus == NgoStatus.Deactivated
             || result.MonitoringNgoStatus == MonitoringNgoStatus.Suspended)
         {
             context.Fail();

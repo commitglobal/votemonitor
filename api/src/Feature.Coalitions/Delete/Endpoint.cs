@@ -1,8 +1,6 @@
-﻿using Feature.NgoCoalitions.Services;
+﻿namespace Feature.NgoCoalitions.Delete;
 
-namespace Feature.NgoCoalitions.Delete;
-
-public class Endpoint(VoteMonitorContext context, IFormSubmissionsCleanupService cleanupService)
+public class Endpoint(VoteMonitorContext context)
     : Endpoint<Request, Results<NoContent, NotFound, Conflict>>
 {
     public override void Configure()
@@ -23,20 +21,6 @@ public class Endpoint(VoteMonitorContext context, IFormSubmissionsCleanupService
         if (coalition == null)
         {
             return TypedResults.NotFound();
-        }
-
-        // members data should be purged but coalition leader keeps their data
-        var membersToRemove = coalition
-            .Memberships
-            .Where(x => x.MonitoringNgoId != coalition.LeaderId)
-            .Select(x => x.MonitoringNgoId)
-            .ToList();
-
-        // Delete orphaned data
-        if (membersToRemove.Any())
-        {
-            await Task.WhenAll(membersToRemove.Select(monitoringNgoId =>
-                cleanupService.CleanupFormSubmissionsAsync(req.ElectionRoundId, req.CoalitionId, monitoringNgoId)));
         }
 
         context.Coalitions.Remove(coalition);

@@ -1,5 +1,10 @@
 import { authApi } from '@/common/auth-api';
-import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, type FunctionComponent } from '@/common/types';
+import {
+  CitizenReportFollowUpStatus,
+  ElectionRoundStatus,
+  FormSubmissionFollowUpStatus,
+  type FunctionComponent,
+} from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -18,10 +23,13 @@ import { usePrevSearch } from '@/common/prev-search-store';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { DateTimeFormat } from '@/common/formats';
 import { format } from 'date-fns';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const { data: citizenReport } = useSuspenseQuery(
     citizenReportDetailsQueryOptions(currentElectionRoundId, citizenReportId)
   );
@@ -122,6 +130,7 @@ export default function CitizenReportDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={citizenReport.followUpStatus}
+                disabled={electionRound?.status === ElectionRoundStatus.Archived}
                 value={citizenReport.followUpStatus}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />

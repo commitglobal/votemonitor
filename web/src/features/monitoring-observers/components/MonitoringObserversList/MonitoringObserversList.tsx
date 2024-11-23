@@ -39,32 +39,35 @@ import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMo
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
 import CreateMonitoringObserverDialog from './CreateMonitoringObserverDialog';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { ElectionRoundStatus } from '@/common/types';
 
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
   const search = Route.useSearch();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = useMemo(() => {
     return [
       {
         id: 'displayName',
         header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-        accessorFn: (row)=> row.displayName,
+        accessorFn: (row) => row.displayName,
         enableSorting: true,
         enableGlobalFilter: true,
       },
       {
         id: 'email',
         header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
-        accessorFn: (row)=> row.email,
+        accessorFn: (row) => row.email,
         enableSorting: true,
       },
       {
         id: 'tags',
         header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-        accessorFn: (row)=> row.tags,
+        accessorFn: (row) => row.tags,
         cell: ({
           row: {
             original: { tags },
@@ -74,13 +77,13 @@ function MonitoringObserversList() {
       {
         id: 'phoneNumber',
         header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
-        accessorFn: (row)=> row.phoneNumber,
+        accessorFn: (row) => row.phoneNumber,
         enableSorting: true,
       },
       {
         id: 'status',
         header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
-        accessorFn: (row)=> row.status,
+        accessorFn: (row) => row.status,
         enableSorting: true,
         cell: ({
           row: {
@@ -91,7 +94,7 @@ function MonitoringObserversList() {
       {
         id: 'latestActivityAt',
         header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
-        accessorFn: (row)=> row.latestActivityAt,
+        accessorFn: (row) => row.latestActivityAt,
         enableSorting: true,
         cell: ({
           row: {
@@ -110,9 +113,16 @@ function MonitoringObserversList() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
               <DropdownMenuItem
-                disabled={row.original.status !== MonitoringObserverStatus.Pending}
+                disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                onClick={() => navigateToEdit(row.original.id)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={
+                  row.original.status !== MonitoringObserverStatus.Pending ||
+                  electionRound?.status === ElectionRoundStatus.Archived
+                }
                 onClick={() => handleResendInviteToObserver(row.original.id)}>
                 Resend invitation email
               </DropdownMenuItem>
@@ -269,6 +279,7 @@ function MonitoringObserversList() {
             />
             <Button
               className='bg-purple-900 hover:bg-purple-600'
+              disabled={electionRound?.status === ElectionRoundStatus.Archived}
               onClick={() => importMonitoringObserversDialog.trigger()}>
               <svg
                 className='mr-1.5'
@@ -287,7 +298,7 @@ function MonitoringObserversList() {
               </svg>
               Import observer list
             </Button>
-            <Button variant='secondary' onClick={() => createMonitoringObserverDialog.trigger()}>
+            <Button variant='secondary' disabled={electionRound?.status === ElectionRoundStatus.Archived} onClick={() => createMonitoringObserverDialog.trigger()}>
               <Plus className='mr-2' width={18} height={18} />
               {i18n.t('observers.addObserver.addBtnText')}
             </Button>
@@ -312,7 +323,7 @@ function MonitoringObserversList() {
               </svg>
               Export monitoring observer list
             </Button>
-            <Button className='bg-yellow-400 hover:bg-yellow-600' onClick={() => handleResendInviteToObserver()}>
+            <Button className='bg-yellow-400 hover:bg-yellow-600' disabled={electionRound?.status === ElectionRoundStatus.Archived} onClick={() => handleResendInviteToObserver()}>
               <PaperAirplaneIcon className='w-6 h-6 text-white' />
               Resend invites
             </Button>

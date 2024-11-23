@@ -7,12 +7,13 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 
 import { DateTimeFormat } from '@/common/formats';
-import type { FunctionComponent } from '@/common/types';
+import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function MonitoringObserverDetailsView(): FunctionComponent {
   const { monitoringObserverId } = Route.useParams();
@@ -20,6 +21,8 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
   const monitoringObserverQuery = useSuspenseQuery(
     monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId)
   );
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const monitoringObserver = monitoringObserverQuery.data;
 
   const navigate = useNavigate();
@@ -35,7 +38,10 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
       <CardHeader className='flex gap-2 flex-column'>
         <div className='flex flex-row items-center justify-between'>
           <CardTitle className='text-xl'>Monitoring observer details</CardTitle>
-          <Button onClick={navigateToEdit} variant='ghost-primary' disabled={!monitoringObserver.isOwnObserver}>
+          <Button
+            onClick={navigateToEdit}
+            variant='ghost-primary'
+            disabled={!monitoringObserver.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
             <PencilIcon className='w-[18px] mr-2 text-purple-900' />
             <span className='text-base text-purple-900'>Edit</span>
           </Button>
