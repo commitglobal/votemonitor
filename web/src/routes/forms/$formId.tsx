@@ -1,5 +1,6 @@
 import type { FunctionComponent } from '@/common/types';
 import { formDetailsQueryOptions } from '@/features/forms/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 
 function Details(): FunctionComponent {
@@ -26,5 +27,8 @@ export const Route = createFileRoute('/forms/$formId')({
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId))
-  }
+  },
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });

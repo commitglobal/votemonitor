@@ -2,16 +2,14 @@ import { DataSources, type FunctionComponent } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { QuickReportFilterRequest } from '@/features/responses/components/QuickReportsTab/QuickReportsTab';
 import { useQuickReports } from '@/features/responses/hooks/quick-reports';
 import { observerQuickReportsColumnDefs } from '@/features/responses/utils/column-defs';
-import { getRouteApi } from '@tanstack/react-router';
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
-import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { QuickReportFilterRequest } from '@/features/responses/components/QuickReportsTab/QuickReportsTab';
-
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
 type QuickReportsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -22,9 +20,9 @@ export function MonitoringObserverQuickReportsTable({
   columnsVisibility,
   searchText,
 }: QuickReportsTableByEntryProps): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const { monitoringObserverId } = routeApi.useParams();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const { monitoringObserverId } = Route.useParams();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 

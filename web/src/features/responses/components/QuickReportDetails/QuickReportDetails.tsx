@@ -71,14 +71,7 @@ export default function QuickReportDetails(): FunctionComponent {
   return (
     <Layout
       backButton={<NavigateBack to='/responses' search={prevSearch} />}
-      breadcrumbs={
-        <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
-          <Link className='crumb' to='/responses' preload='intent' search={prevSearch as any}>
-            responses
-          </Link>
-          <Link className='crumb'>{quickReport.id}</Link>
-        </div>
-      }
+      breadcrumbs={<></>}
       title={quickReport.id}>
       <div className='flex flex-col gap-4'>
         <Card>
@@ -160,7 +153,7 @@ export default function QuickReportDetails(): FunctionComponent {
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={quickReport.followUpStatus}
                 value={quickReport.followUpStatus}
-                disabled={!quickReport.isOwnObserver|| electionRound?.status === ElectionRoundStatus.Archived}>
+                disabled={!quickReport.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

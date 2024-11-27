@@ -76,8 +76,9 @@ export default function CitizenReportDetails(): FunctionComponent {
 
   return (
     <Layout
-      title={`#${citizenReport.citizenReportId}`}
-      backButton={<NavigateBack to='/responses' search={prevSearch} />}>
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
+      breadcrumbs={<></>}
+      title={`#${citizenReport.citizenReportId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
           <CardContent className='flex flex-col gap-4 pt-6'>

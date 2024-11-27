@@ -4,7 +4,7 @@ import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
 import BackButton from './Breadcrumbs/BackButton';
 
 interface LayoutProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   enableBreadcrumbs?: boolean;
   breadcrumbs?: ReactNode;

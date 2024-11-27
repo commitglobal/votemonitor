@@ -52,7 +52,7 @@ export function TextAggregateContent({
               <Link
                 search
                 className='flex gap-1 font-bold text-purple-500'
-                to='/responses/$submissionId'
+                to='/responses/form-submissions/$submissionId'
                 params={{ submissionId }}
                 preload={false}
                 target='_blank'>

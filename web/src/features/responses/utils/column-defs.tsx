@@ -196,7 +196,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
-          to='/responses/$submissionId'>
+          to='/responses/form-submissions/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -340,7 +340,7 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
-          to='/responses/$submissionId'>
+          to='/responses/form-submissions/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -504,7 +504,7 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ formId: row.original.formId }}
-          to='/responses/$formId/aggregated'>
+          to='/responses/form-submissions/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -562,7 +562,7 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
           </Link>
         ) : (
           <Link
-            to='/responses/$submissionId'
+            to='/responses/form-submissions/$submissionId'
             params={{ submissionId: row.original.submissionId }}
             preload='intent'
             target='_blank'>
@@ -1573,7 +1573,7 @@ export const incidentReportsByFormColumnDefs: ColumnDef<IncidentReportByForm & R
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ formId: row.original.formId }}
-          to='/responses/$formId/aggregated'>
+          to='/responses/form-submissions/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
