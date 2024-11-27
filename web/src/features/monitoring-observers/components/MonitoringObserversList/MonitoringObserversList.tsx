@@ -3,7 +3,6 @@ import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
   DropdownMenu,
@@ -16,14 +15,17 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
+import { ElectionRoundStatus } from '@/common/types';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
@@ -35,12 +37,8 @@ import { Plus } from 'lucide-react';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
 import { monitoringObserversKeys, useMonitoringObservers } from '../../hooks/monitoring-observers-queries';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
-import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
-import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
 import CreateMonitoringObserverDialog from './CreateMonitoringObserverDialog';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
-import { ElectionRoundStatus } from '@/common/types';
 
 function MonitoringObserversList() {
   const navigate = useNavigate();
@@ -137,11 +135,9 @@ function MonitoringObserversList() {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
 
-  const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const createMonitoringObserverDialog = useDialog();
   const importMonitoringObserversDialog = useDialog();
-  const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
   const { filteringIsActive, navigateHandler } = useFilteringContainer();
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -262,43 +258,35 @@ function MonitoringObserversList() {
           <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>
             Monitoring observers list
           </CardTitle>
-          <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
-            {!!importErrorsFileId && (
-              <ImportMonitoringObserversErrorsDialog
-                fileId={importErrorsFileId}
-                {...importMonitoringObserverErrorsDialog.dialogProps}
-              />
-            )}
+          <div className='flex md:flex-row-reverse gap-4 table-actions'>
+            <Link to={'/monitoring-observers/import'}>
+              <Button
+                className='bg-purple-900 hover:bg-purple-600'
+                disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                onClick={() => importMonitoringObserversDialog.trigger()}>
+                <svg
+                  className='mr-1.5'
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='18'
+                  height='18'
+                  viewBox='0 0 18 18'
+                  fill='none'>
+                  <path
+                    d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
+                    stroke='white'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+                Import observer list
+              </Button>
+            </Link>
 
-            <ImportMonitoringObserversDialog
-              {...importMonitoringObserversDialog.dialogProps}
-              onImportError={(fileId) => {
-                setImportErrorsFileId(fileId);
-                importMonitoringObserverErrorsDialog.trigger();
-              }}
-            />
             <Button
-              className='bg-purple-900 hover:bg-purple-600'
+              variant='secondary'
               disabled={electionRound?.status === ElectionRoundStatus.Archived}
-              onClick={() => importMonitoringObserversDialog.trigger()}>
-              <svg
-                className='mr-1.5'
-                xmlns='http://www.w3.org/2000/svg'
-                width='18'
-                height='18'
-                viewBox='0 0 18 18'
-                fill='none'>
-                <path
-                  d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
-                  stroke='white'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-              Import observer list
-            </Button>
-            <Button variant='secondary' disabled={electionRound?.status === ElectionRoundStatus.Archived} onClick={() => createMonitoringObserverDialog.trigger()}>
+              onClick={() => createMonitoringObserverDialog.trigger()}>
               <Plus className='mr-2' width={18} height={18} />
               {i18n.t('observers.addObserver.addBtnText')}
             </Button>
@@ -323,7 +311,10 @@ function MonitoringObserversList() {
               </svg>
               Export monitoring observer list
             </Button>
-            <Button className='bg-yellow-400 hover:bg-yellow-600' disabled={electionRound?.status === ElectionRoundStatus.Archived} onClick={() => handleResendInviteToObserver()}>
+            <Button
+              className='bg-yellow-400 hover:bg-yellow-600'
+              disabled={electionRound?.status === ElectionRoundStatus.Archived}
+              onClick={() => handleResendInviteToObserver()}>
               <PaperAirplaneIcon className='w-6 h-6 text-white' />
               Resend invites
             </Button>

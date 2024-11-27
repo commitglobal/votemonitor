@@ -17,7 +17,6 @@ import { Route as ResetPasswordIndexImport } from './routes/reset-password/index
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
-import { Route as MonitoringObserversImportIndexImport } from './routes/monitoring-observers-import/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
@@ -27,6 +26,7 @@ import { Route as ResetPasswordSuccessImport } from './routes/reset-password/suc
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
+import { Route as MonitoringObserversImportImport } from './routes/monitoring-observers/import'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
@@ -89,12 +89,6 @@ const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MonitoringObserversImportIndexRoute =
-  MonitoringObserversImportIndexImport.update({
-    path: '/monitoring-observers-import/',
-    getParentRoute: () => rootRoute,
-  } as any)
-
 const LoginIndexRoute = LoginIndexImport.update({
   path: '/login/',
   getParentRoute: () => rootRoute,
@@ -137,6 +131,11 @@ const ObserverGuidesNewRoute = ObserverGuidesNewImport.update({
 
 const NgosNgoIdRoute = NgosNgoIdImport.update({
   path: '/ngos/$ngoId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MonitoringObserversImportRoute = MonitoringObserversImportImport.update({
+  path: '/monitoring-observers/import',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -343,6 +342,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversCreateNewMessageImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers/import': {
+      preLoaderRoute: typeof MonitoringObserversImportImport
+      parentRoute: typeof rootRoute
+    }
     '/ngos/$ngoId': {
       preLoaderRoute: typeof NgosNgoIdImport
       parentRoute: typeof rootRoute
@@ -377,10 +380,6 @@ declare module '@tanstack/react-router' {
     }
     '/login/': {
       preLoaderRoute: typeof LoginIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers-import/': {
-      preLoaderRoute: typeof MonitoringObserversImportIndexImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/': {
@@ -502,6 +501,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
+  MonitoringObserversImportRoute,
   NgosNgoIdRoute,
   ObserverGuidesNewRoute,
   ObserversObserverIdRoute,
@@ -511,7 +511,6 @@ export const routeTree = rootRoute.addChildren([
   ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute,
   LoginIndexRoute,
-  MonitoringObserversImportIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,

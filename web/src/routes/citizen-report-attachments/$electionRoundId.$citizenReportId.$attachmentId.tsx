@@ -4,7 +4,7 @@ import { getFileCategory, redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import ReactPlayer from 'react-player';
+import ReactPlayer from 'react-player/lazy';
 
 export const citizenReportAttachmentQueryOptions = (
   electionRoundId: string,
