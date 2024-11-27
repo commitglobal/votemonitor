@@ -1,7 +1,3 @@
-"use client"
-
-// * * This is just a demostration of delete modal, actual functionality may vary
-
 import {
     AlertDialog,
     AlertDialogCancel,
