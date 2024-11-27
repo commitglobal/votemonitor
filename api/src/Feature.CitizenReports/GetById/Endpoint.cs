@@ -1,7 +1,8 @@
-﻿using Feature.CitizenReports.Models;
-using Vote.Monitor.Answer.Module.Mappers;
+﻿using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Form.Module.Mappers;
+using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
+using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetById;
 
@@ -37,6 +38,7 @@ public class Endpoint(
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
+                && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                 && x.Id == req.CitizenReportId)
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -64,7 +66,7 @@ public class Endpoint(
                 return attachment with
                 {
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
+                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
                 };
             }).ToArray();
 
@@ -89,7 +91,7 @@ public class Endpoint(
             LocationLevel2 = citizenReport.Location.Level2,
             LocationLevel3 = citizenReport.Location.Level3,
             LocationLevel4 = citizenReport.Location.Level4,
-            LocationLevel5 = citizenReport.Location.Level5,
+            LocationLevel5 = citizenReport.Location.Level5
         };
 
         return TypedResults.Ok(response);

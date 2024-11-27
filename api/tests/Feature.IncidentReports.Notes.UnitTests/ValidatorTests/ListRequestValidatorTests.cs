@@ -39,7 +39,7 @@ public class ListRequestValidatorTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            IncidentReportId = Guid.NewGuid(),
+            IncidentReportId = Guid.NewGuid()
         };
 
         // Act

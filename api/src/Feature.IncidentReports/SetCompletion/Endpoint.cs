@@ -23,6 +23,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
         await context.IncidentReports
             .Where(x => x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsCompleted, req.IsCompleted), cancellationToken: ct);

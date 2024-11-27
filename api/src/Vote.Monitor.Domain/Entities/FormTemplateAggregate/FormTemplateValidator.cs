@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Validation;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class FormTemplateValidator : Validator<Form>
+public class FormTemplateValidator : Validator<FormTemplate>
 {
     public FormTemplateValidator()
     {

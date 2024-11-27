@@ -46,7 +46,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             {
                 electionRoundId = req.ElectionRoundId,
                 observerId = req.ObserverId,
-                pollingStationId = req.PollingStationId,
+                pollingStationId = req.PollingStationId
             };
 
             hasSubmissionsForPollingStation = await dbConnection.QuerySingleAsync<bool>(sql, queryParams);

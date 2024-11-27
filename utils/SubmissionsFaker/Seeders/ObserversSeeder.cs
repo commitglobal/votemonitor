@@ -9,22 +9,21 @@ namespace SubmissionsFaker.Seeders;
 public class ObserversSeeder
 {
     public static async Task<List<CreateResponse>> Seed(IPlatformAdminApi platformAdminApi,
-        LoginResponse platformAdminToken,
         List<ApplicationUser> observers,
-        string electionRoundId,
-        string monitoringNgoId,
+        Guid electionRoundId,
+        Guid monitoringNgoId,
         ProgressTask progressTask)
     {
         progressTask.StartTask();
 
         var observerIds = new List<CreateResponse>();
 
-        foreach (var observersChunk in observers.Chunk(Consts.CHUNK_SIZE))
+        foreach (var observersChunk in observers.Chunk(SeederVars.CHUNK_SIZE))
         {
             var tasks = new List<Task<CreateResponse>>();
             foreach (var observer in observersChunk)
             {
-                var createTask = platformAdminApi.CreateObserver(observer, platformAdminToken.Token);
+                var createTask = platformAdminApi.CreateObserver(observer);
                 tasks.Add(createTask);
             }
 
@@ -33,12 +32,12 @@ public class ObserversSeeder
             observerIds.AddRange(observersChunkIds);
         }
 
-        foreach (var observersIdsChunk in observerIds.Chunk(Consts.CHUNK_SIZE))
+        foreach (var observersIdsChunk in observerIds.Chunk(SeederVars.CHUNK_SIZE))
         {
             var tasks = new List<Task<CreateResponse>>();
             foreach (var observer in observersIdsChunk)
             {
-                var assignTask = platformAdminApi.AssignObserverToMonitoring(electionRoundId, monitoringNgoId, new AssignObserverRequest(observer.Id), platformAdminToken.Token);
+                var assignTask = platformAdminApi.AssignObserverToMonitoring(electionRoundId, monitoringNgoId, new AssignObserverRequest(observer.Id));
                 tasks.Add(assignTask);
             }
 

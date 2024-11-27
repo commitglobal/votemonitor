@@ -18,7 +18,8 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public string[] Tags { get; private set; }
 
-    private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags, MonitoringObserverStatus status)
+    private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags,
+        MonitoringObserverStatus status)
     {
         Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
@@ -40,11 +41,23 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public static MonitoringObserver Create(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
     {
-        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags, MonitoringObserverStatus.Pending);
+        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags,
+            MonitoringObserverStatus.Pending);
     }
-    public static MonitoringObserver CreateForExisting(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
+
+    public static MonitoringObserver CreateForExisting(Guid electionRoundId,
+        Guid monitoringNgoId,
+        Guid observerId,
+        string[] tags,
+        UserStatus accountStatus)
     {
-        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags, MonitoringObserverStatus.Active);
+        MonitoringObserverStatus status = accountStatus == UserStatus.Active
+            ? MonitoringObserverStatus.Active
+            : accountStatus == UserStatus.Pending
+                ? MonitoringObserverStatus.Pending
+                : MonitoringObserverStatus.Suspended;
+
+        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags, status);
     }
 
     public void Update(MonitoringObserverStatus status, string[] tags)
@@ -60,7 +73,6 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringObserver()
     {
-
     }
 #pragma warning restore CS8618
 }

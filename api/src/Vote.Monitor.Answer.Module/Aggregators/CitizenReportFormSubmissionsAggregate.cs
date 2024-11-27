@@ -23,7 +23,7 @@ public class CitizenReportFormSubmissionsAggregate
     /// </summary>
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
 
-    public CitizenReportFormSubmissionsAggregate(Form form)
+    public CitizenReportFormSubmissionsAggregate(Domain.Entities.FormAggregate.Form form)
     {
         ElectionRoundId = form.ElectionRoundId;
         MonitoringNgoId = form.MonitoringNgoId;

@@ -6,6 +6,6 @@ public sealed class GetMonitoringObserverSpecification : SingleResultSpecificati
 {
     public GetMonitoringObserverSpecification(Guid electionRoundId, Guid observerId)
     {
-        Query.Where(o => o.ElectionRoundId == electionRoundId && o.ObserverId == observerId);
+        Query.Where(o => o.ElectionRoundId == electionRoundId && o.ObserverId == observerId && o.MonitoringNgo.ElectionRoundId == electionRoundId);
     }
 }

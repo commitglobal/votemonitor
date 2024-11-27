@@ -33,7 +33,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                     CN."Title",
                     CN."Body",
                     CN."CreatedOn" "SentAt",
-                    U."FirstName" || ' ' || U."LastName" "Sender"
+                    U."DisplayName" "Sender"
                   FROM
                     "CitizenNotifications" CN
                     INNER JOIN "NgoAdmins" NA ON CN."SenderId" = NA."Id"
@@ -49,7 +49,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            id = req.Id,
+            id = req.Id
         };
 
         CitizenNotificationModel? notification;

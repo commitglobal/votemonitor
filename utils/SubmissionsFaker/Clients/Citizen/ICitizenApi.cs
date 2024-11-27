@@ -8,7 +8,7 @@ public interface ICitizenApi
 {
     [Post("/api/election-rounds/{electionRoundId}/citizen-reports")]
     Task SubmitForm(
-        [AliasAs("electionRoundId")] string electionRoundId,
+        [AliasAs("electionRoundId")] Guid electionRoundId,
         [Body] CitizenReportRequest citizenReport);
 
     // [Multipart]
@@ -21,8 +21,9 @@ public interface ICitizenApi
     //     [AliasAs("QuestionId")] string questionId,
     //     [AliasAs("Attachment")] StreamPart attachment);
 
-    [Post("/api/election-rounds/{electionRoundId}/citizen-report-notes")]
+    [Post("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/notes")]
     Task SubmitNote(
-        [AliasAs("electionRoundId")] string electionRoundId,
+        [AliasAs("electionRoundId")] Guid electionRoundId,
+        [AliasAs("citizenReportId")] Guid citizenReportId,
         [Body] CitizenReportNoteRequest note);
 }

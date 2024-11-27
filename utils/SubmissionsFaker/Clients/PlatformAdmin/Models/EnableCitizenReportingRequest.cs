@@ -1,3 +1,3 @@
 namespace SubmissionsFaker.Clients.PlatformAdmin.Models;
 
-public record EnableCitizenReportingRequest(string NgoId);
+public record EnableCitizenReportingRequest(Guid NgoId);

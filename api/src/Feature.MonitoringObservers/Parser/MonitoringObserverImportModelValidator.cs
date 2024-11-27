@@ -10,7 +10,5 @@ internal class MonitoringObserverImportModelValidator : Validator<MonitoringObse
         RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress();
-
-        RuleFor(x => x.PhoneNumber).MinimumLength(3);
     }
 }

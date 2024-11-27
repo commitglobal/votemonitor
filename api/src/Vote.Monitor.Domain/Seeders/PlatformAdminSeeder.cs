@@ -18,8 +18,7 @@ public class PlatformAdminSeeder(UserManager<ApplicationUser> userManager,
 
         if (await userManager.FindByEmailAsync(seedOption.Email) is not ApplicationUser adminUser)
         {
-            adminUser = ApplicationUser.CreatePlatformAdmin(seedOption.FirstName, seedOption.LastName, seedOption.Email,
-                seedOption.PhoneNumber, seedOption.Password);
+            adminUser = ApplicationUser.CreatePlatformAdmin(seedOption.FirstName, seedOption.LastName, seedOption.Email, seedOption.Password);
 
             logger.LogInformation("Seeding PlatformAdmin {user}", seedOption.Email);
 

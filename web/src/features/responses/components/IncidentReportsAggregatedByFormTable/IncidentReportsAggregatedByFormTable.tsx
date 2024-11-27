@@ -29,7 +29,6 @@ export function IncidentReportsAggregatedByFormTable(): FunctionComponent {
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['followUpStatus', debouncedSearch.incidentReportFollowUpStatus],
       ['locationType', debouncedSearch.incidentReportLocationType],
-      ['isCompletedFilter', debouncedSearch.formIsCompleted],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as IncidentReportsSearchParams;

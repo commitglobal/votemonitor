@@ -53,7 +53,7 @@ internal class S3FileStorageService(IAmazonS3 client,
         {
             BucketName = _options.BucketName,
             Key = GetFileKey(uploadPath, fileName),
-            Expires = DateTime.UtcNow.AddSeconds(_options.PresignedUrlValidityInSeconds),
+            Expires = DateTime.UtcNow.AddSeconds(_options.PresignedUrlValidityInSeconds)
         };
 
         try
@@ -80,7 +80,7 @@ internal class S3FileStorageService(IAmazonS3 client,
             {
                 BucketName = _options.BucketName,
                 Key = fileKey,
-                ContentType = contentType,
+                ContentType = contentType
             };
 
             var response = await client.InitiateMultipartUploadAsync(request, ct);
@@ -95,7 +95,7 @@ internal class S3FileStorageService(IAmazonS3 client,
                     PartNumber = partNumber,
                     Key = fileKey,
                     Verb = HttpVerb.PUT,
-                    Expires = DateTime.UtcNow.AddHours(24),
+                    Expires = DateTime.UtcNow.AddHours(24)
                 });
 
                 presignedUrls.Add(partNumber, partPresignedUrl);

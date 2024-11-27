@@ -28,7 +28,7 @@ public class DeleteValidatorTests
         var model = new Delete.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         var result = _validator.TestValidate(model);

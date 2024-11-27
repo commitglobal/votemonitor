@@ -12,6 +12,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { EditFormType } from './EditForm';
 import { changeLanguageCode, mapFormType } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export interface EditFormDetailsProps {
   languageCode: string;
@@ -20,7 +21,8 @@ export interface EditFormDetailsProps {
 function EditFormDetails({ languageCode }: EditFormDetailsProps) {
   const { t } = useTranslation();
   const form = useFormContext<EditFormType>();
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   const formType = useWatch({ control: form.control, name: 'formType' });
   const icon = useWatch({ control: form.control, name: 'icon' });
 
@@ -141,7 +143,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
                   <SelectItem value={ZFormType.Values.ClosingAndCounting}>
                     {mapFormType(ZFormType.Values.ClosingAndCounting)}
                   </SelectItem>
-                  {isMonitoringNgoForCitizenReporting && (
+                  {electionRound?.isMonitoringNgoForCitizenReporting && (
                     <SelectItem value={ZFormType.Values.CitizenReporting}>
                       {mapFormType(ZFormType.Values.CitizenReporting)}
                     </SelectItem>
@@ -157,7 +159,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
           )}
         />
 
-        {formType === ZFormType.Values.CitizenReporting && isMonitoringNgoForCitizenReporting ? (
+        {formType === ZFormType.Values.CitizenReporting && electionRound?.isMonitoringNgoForCitizenReporting ? (
           <>
             <FormField
               control={form.control}

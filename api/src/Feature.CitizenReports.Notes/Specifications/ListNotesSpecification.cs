@@ -6,8 +6,11 @@ public sealed class ListNotesSpecification : Specification<CitizenReportNoteAggr
 {
     public ListNotesSpecification(Guid electionRoundId, Guid citizenReportId)
     {
-        Query.Where(x => x.ElectionRoundId == electionRoundId && x.FormId == citizenReportId);
-        
+        Query.Where(x =>
+            x.ElectionRoundId == electionRoundId && x.FormId == citizenReportId &&
+            x.Form.ElectionRoundId == electionRoundId
+        );
+
         Query.Select(note => CitizenReportNoteModel.FromEntity(note));
     }
 }

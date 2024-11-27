@@ -1,9 +1,12 @@
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 
 public class ExportQuickReportsFilters
 {
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; set; }
     public string? Level1Filter { get; set; }
     public string? Level2Filter { get; set; }
     public string? Level3Filter { get; set; }

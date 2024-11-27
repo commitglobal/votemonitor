@@ -2,11 +2,24 @@
 
 public sealed class GetPollingStationSpecification : Specification<PollingStationAggregate>
 {
-    public GetPollingStationSpecification(Guid electionRoundId, string address, Dictionary<string, string> tags)
+    public GetPollingStationSpecification(Guid electionRoundId,
+        string level1,
+        string level2,
+        string level3,
+        string level4,
+        string level5,
+        string number,
+        string address)
     {
         Query
             .Where(x => x.ElectionRoundId == electionRoundId)
-            .Search(x => x.Address, "%" + address + "%", !string.IsNullOrEmpty(address))
-            .Where(x => EF.Functions.JsonContains(x.Tags, tags), tags.Any());
+            .Where(x => x.Level1 == level1)
+            .Where(x => x.Level2 == level2)
+            .Where(x => x.Level3 == level3)
+            .Where(x => x.Level4 == level4)
+            .Where(x => x.Level5 == level5)
+            .Where(x => x.Address == address)
+            .Where(x => x.Number == number);
+
     }
 }

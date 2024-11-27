@@ -53,7 +53,7 @@ public class UnUntagValidatorTests
         {
             MonitoringObserverIds = [
                 Guid.NewGuid(),
-                Guid.Empty,
+                Guid.Empty
             ]
         };
 
@@ -106,7 +106,7 @@ public class UnUntagValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             MonitoringNgoId = Guid.NewGuid(),
             MonitoringObserverIds = [
-                Guid.NewGuid(),
+                Guid.NewGuid()
             ],
             Tags = ["a Untag"]
         };

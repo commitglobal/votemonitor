@@ -5,9 +5,9 @@ using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
-public class FormTemplateConfiguration : IEntityTypeConfiguration<Form>
+public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
 {
-    public void Configure(EntityTypeBuilder<Form> builder)
+    public void Configure(EntityTypeBuilder<FormTemplate> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(x => x.FormType).IsRequired();

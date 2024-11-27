@@ -53,7 +53,7 @@ public class AssignObserverRequestValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             MonitoringNgoId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid()
         };
 
         // Act

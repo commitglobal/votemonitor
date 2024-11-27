@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NSubstitute;
-using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
@@ -11,11 +8,8 @@ namespace Vote.Monitor.TestUtils;
 
 public class TestContext : VoteMonitorContext
 {
-    public TestContext(DbContextOptions<VoteMonitorContext> options,
-        ISerializerService serializerService,
-        ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider)
-        : base(options, serializerService, timeProvider, currentUserProvider)
+    public TestContext(DbContextOptions<VoteMonitorContext> options)
+        : base(options)
     {
 
     }
@@ -32,17 +26,10 @@ public class TestContext : VoteMonitorContext
 
     public static TestContext Fake()
     {
-        var timeProvider = Substitute.For<ITimeProvider>();
-        var serializationService = Substitute.For<ISerializerService>();
-        var currentUserIdProvider = Substitute.For<ICurrentUserProvider>();
-
         var dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
 
-        var context = new TestContext(dbContextOptions.Options,
-            serializationService,
-            timeProvider,
-            currentUserIdProvider);
+        var context = new TestContext(dbContextOptions.Options);
 
         return context;
     }

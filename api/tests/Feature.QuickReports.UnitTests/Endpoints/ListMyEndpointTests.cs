@@ -58,7 +58,7 @@ public class ListMyEndpointTests
         ];
 
         List<QuickReportAttachment> quickReport2Attachments = [
-            new QuickReportAttachmentFaker(quickReportId: quickReport2.Id).Generate(),
+            new QuickReportAttachmentFaker(quickReportId: quickReport2.Id).Generate()
         ];
         List<QuickReportAttachment> attachments = [.. quickReport1Attachments, .. quickReport2Attachments];
 
@@ -70,7 +70,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -86,7 +86,10 @@ public class ListMyEndpointTests
         model[0].PollingStationId.Should().Be(quickReport1.PollingStationId);
         model[0].PollingStationDetails.Should().Be(quickReport1.PollingStationDetails);
 
-        model[0].Attachments.Should().BeEquivalentTo(quickReport1Attachments, cmp => cmp.ExcludingMissingMembers());
+        model[0].Attachments.Should().BeEquivalentTo(quickReport1Attachments, cmp => cmp
+            .ExcludingMissingMembers()
+            .Excluding(x=>x.UploadedFileName)
+            .Excluding(x=>x.FilePath));
 
         model[1].Id.Should().Be(quickReport2.Id);
         model[1].ElectionRoundId.Should().Be(quickReport2.ElectionRoundId);
@@ -96,7 +99,11 @@ public class ListMyEndpointTests
         model[1].PollingStationId.Should().Be(quickReport2.PollingStationId);
         model[1].PollingStationDetails.Should().Be(quickReport2.PollingStationDetails);
 
-        model[1].Attachments.Should().BeEquivalentTo(quickReport2Attachments, cmp => cmp.ExcludingMissingMembers());
+        model[1].Attachments.Should().BeEquivalentTo(quickReport2Attachments, cmp => cmp
+            .ExcludingMissingMembers()
+            .Excluding(x=>x.UploadedFileName)
+            .Excluding(x=>x.FilePath)
+        );
     }
 
     [Fact]
@@ -113,7 +120,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -155,7 +162,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         _ = await _endpoint.ExecuteAsync(request, default);
 
@@ -195,7 +202,7 @@ public class ListMyEndpointTests
         var request = new ListMy.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

@@ -70,7 +70,7 @@ public class UpdateValidatorTests
         {
             Tags = [
                 "a tag",
-                emptyTag,
+                emptyTag
             ]
         };
 

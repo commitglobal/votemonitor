@@ -4,6 +4,7 @@
 public sealed class UserStatus : SmartEnum<UserStatus, string>
 {
     public static readonly UserStatus Active = new(nameof(Active), nameof(Active));
+    public static readonly UserStatus Pending = new(nameof(Pending), nameof(Pending));
     public static readonly UserStatus Deactivated = new(nameof(Deactivated), nameof(Deactivated));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>

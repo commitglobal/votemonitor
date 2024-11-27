@@ -1,11 +1,13 @@
 ﻿using Feature.Forms.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Forms.FetchAll;
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<NgoFormsResponseModel>, NotFound>>
+
+public class Endpoint(VoteMonitorContext context)
+    : Endpoint<Request, Results<Ok<NgoFormsResponseModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -20,17 +22,25 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         });
     }
 
-    public override async Task<Results<Ok<NgoFormsResponseModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<NgoFormsResponseModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var monitoringNgo = await context.MonitoringObservers
             .Include(x => x.MonitoringNgo)
+            .ThenInclude(x => x.Memberships.Where(m => m.ElectionRoundId == req.ElectionRoundId))
+            .ThenInclude(cm => cm.Coalition)
             .Where(x => x.ObserverId == req.ObserverId)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId)
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
             .Select(x => new
             {
                 x.MonitoringNgo.ElectionRoundId,
                 x.MonitoringNgoId,
-                x.MonitoringNgo.FormsVersion
+                x.MonitoringNgo.FormsVersion,
+                IsCoalitionLeader =
+                    x.MonitoringNgo.Memberships.Any(m =>
+                        m.ElectionRoundId == req.ElectionRoundId && m.Coalition.LeaderId == x.MonitoringNgoId),
+                IsInACoalition = x.MonitoringNgo.Memberships.Count != 0
             })
             .FirstOrDefaultAsync(ct);
 
@@ -39,28 +49,35 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
             return TypedResults.NotFound();
         }
 
-        var cacheKey = $"election-rounds/{req.ElectionRoundId}/monitoring-ngo/{monitoringNgo.MonitoringNgoId}/forms/{monitoringNgo.FormsVersion}";
-
-        var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
+        List<FormFullModel> resultForms = new List<FormFullModel>();
+        if (monitoringNgo.IsInACoalition || monitoringNgo.IsCoalitionLeader)
         {
-            var forms = await context.Forms
+            resultForms.AddRange(await context.CoalitionFormAccess
+                .Include(x => x.Form)
+                .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId && x.Coalition.ElectionRoundId == req.ElectionRoundId)
+                .Where(x => x.Form.FormType != FormType.CitizenReporting)
+                .Select(f => FormFullModel.FromEntity(f.Form))
+                .AsNoTracking()
+                .ToListAsync(ct));
+        }
+
+        if (!monitoringNgo.IsCoalitionLeader)
+        {
+            resultForms.AddRange(await context.Forms
                 .Where(x => x.Status == FormStatus.Published)
                 .Where(x => x.ElectionRoundId == req.ElectionRoundId)
                 .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId)
-                .Where(x=>x.FormType != FormType.CitizenReporting)
-                .OrderBy(x => x.Code)
-                .ToListAsync(cancellationToken: ct);
+                .Where(x => x.FormType != FormType.CitizenReporting)
+                .Select(f => FormFullModel.FromEntity(f))
+                .AsNoTracking()
+                .ToListAsync(cancellationToken: ct));
+        }
 
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-            return new NgoFormsResponseModel
-            {
-                ElectionRoundId = monitoringNgo.ElectionRoundId,
-                Version = monitoringNgo.FormsVersion.ToString(),
-                Forms = forms.Select(FormFullModel.FromEntity).ToList()
-            };
+        return TypedResults.Ok(new NgoFormsResponseModel
+        {
+            ElectionRoundId = monitoringNgo.ElectionRoundId,
+            Version = DeterministicGuid.Create(resultForms.Select(x => x.Id)).ToString(),
+            Forms = resultForms
         });
-
-        return TypedResults.Ok(cachedResponse!);
     }
 }

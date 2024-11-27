@@ -31,7 +31,7 @@ public class ListEndpointTests
         {
             ElectionRoundId = incidentReportAttachment.ElectionRoundId,
             IncidentReportId = incidentReportAttachment.IncidentReportId,
-            FormId = incidentReportAttachment.FormId,
+            FormId = incidentReportAttachment.FormId
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -59,7 +59,7 @@ public class ListEndpointTests
         {
             ElectionRoundId = Guid.NewGuid(),
             IncidentReportId = Guid.NewGuid(),
-            FormId = Guid.NewGuid(),
+            FormId = Guid.NewGuid()
         };
 
         var result = await _endpoint.ExecuteAsync(request, default);

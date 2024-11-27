@@ -13,7 +13,7 @@ public partial class FormTests
             new DateQuestionFaker(_languages).Generate(),
             new RatingQuestionFaker(languageList: _languages).Generate(),
             new SingleSelectQuestionFaker(languageList: _languages).Generate(),
-            new MultiSelectQuestionFaker(languageList: _languages).Generate(),
+            new MultiSelectQuestionFaker(languageList: _languages).Generate()
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,

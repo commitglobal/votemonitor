@@ -55,6 +55,8 @@ public class Endpoint(
         await context.QuickReportAttachments
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
+                        && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.QuickReportId == req.Id)
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(qra => qra.IsDeleted, true)

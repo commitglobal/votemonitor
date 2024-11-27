@@ -44,6 +44,7 @@ using Feature.IncidentReports.Attachments;
 using Feature.IncidentReports.Notes;
 using Feature.Locations;
 using Feature.Monitoring;
+using Feature.NgoCoalitions;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
@@ -166,6 +167,7 @@ builder.Services.AddIncidentReportsFeature();
 builder.Services.AddIncidentReportsNotesFeature();
 builder.Services.AddIncidentReportAttachmentsFeature();
 builder.Services.AddCitizenNotificationsFeature();
+builder.Services.AddCoalitionsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -218,6 +220,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DataSource, string>());
         x.Serializer.Options.Converters.Add(new JsonBooleanStringConverter());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

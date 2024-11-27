@@ -127,7 +127,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 {
                     electionRoundId = req.ElectionRoundId,
                     observerId = req.ObserverId,
-                    pollingStationId = req.PollingStationId,
+                    pollingStationId = req.PollingStationId
                 };
 
                 await connection.ExecuteAsync(deletePSISubmissionsSql, queryParams, transaction);

@@ -33,7 +33,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
   },
-
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorFn: (row)=> row.timeSubmitted,
@@ -42,7 +41,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
-
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorFn: (row)=> row.formCode,
@@ -64,14 +62,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn:(row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
@@ -127,6 +117,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{row.original.observerName}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
@@ -198,7 +196,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
-          to='/responses/$submissionId'>
+          to='/responses/form-submissions/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -236,14 +234,6 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn: (row) => row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <span>{row.original.isCompleted.toString()}</span>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
@@ -350,7 +340,7 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
-          to='/responses/$submissionId'>
+          to='/responses/form-submissions/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -375,6 +365,14 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
   },
   {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
     accessorFn: (row)=> row.tags,
     id: 'tags',
@@ -397,13 +395,6 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     header: ({ column }) => <DataTableColumnHeader title='Forms' column={column} />,
     accessorFn: (row)=> row.numberOfFormsSubmitted,
     id: 'numberOfFormsSubmitted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed forms' column={column} />,
-    accessorFn: (row)=> row.numberOfCompletedForms,
-    id: 'numberOfCompletedForms',
     enableSorting: true,
     enableGlobalFilter: true,
   },
@@ -513,7 +504,7 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ formId: row.original.formId }}
-          to='/responses/$formId/aggregated'>
+          to='/responses/form-submissions/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -571,7 +562,7 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
           </Link>
         ) : (
           <Link
-            to='/responses/$submissionId'
+            to='/responses/form-submissions/$submissionId'
             params={{ submissionId: row.original.submissionId }}
             preload='intent'
             target='_blank'>
@@ -636,6 +627,14 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorFn: (row) => row.observerName,
     enableSorting: false,
     enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location type' column={column} />,
@@ -947,6 +946,41 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
     enableGlobalFilter: true,
   },
   {
+    header: ({ column }) => <DataTableColumnHeader title='Level 1' column={column} />,
+    accessorFn:(row)=> row.level1,
+    id: 'level1',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Level 2' column={column} />,
+    accessorFn:(row)=> row.level2,
+    id: 'level2',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Level 3' column={column} />,
+    accessorFn:(row)=> row.level3,
+    id: 'level3',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Level 4' column={column} />,
+    accessorFn:(row)=> row.level4,
+    id: 'level4',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Level 5' column={column} />,
+    accessorFn:(row)=> row.level5,
+    id: 'level5',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
     accessorFn:(row)=> row.notesCount,
     id: 'notesCount',
@@ -1093,14 +1127,6 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn: (row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn:(row)=> row.pollingStationLevel1,
     id: 'pollingStationLevel1',
@@ -1164,6 +1190,14 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{row.original.observerName}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
@@ -1266,14 +1300,6 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Completed' column={column} />,
-    accessorFn:(row)=> row.isCompleted,
-    id: 'isCompleted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.isCompleted.toString()}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location type' column={column} />,
@@ -1422,6 +1448,14 @@ export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObse
     enableGlobalFilter: true,
   },
   {
+    header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
+    accessorFn: (row)=> row.ngoName,
+    id: 'ngoName',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.ngoName}</div>,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
     accessorFn:(row)=> row.tags,
     id: 'tags',
@@ -1539,7 +1573,7 @@ export const incidentReportsByFormColumnDefs: ColumnDef<IncidentReportByForm & R
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ formId: row.original.formId }}
-          to='/responses/$formId/aggregated'>
+          to='/responses/form-submissions/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>

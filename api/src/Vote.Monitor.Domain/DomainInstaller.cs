@@ -14,25 +14,35 @@ public static class DomainInstaller
 {
     public const string SectionKey = "Domain";
 
-    public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config, bool isProductionEnvironment)
+    public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config,
+        bool isProductionEnvironment)
     {
         var connectionString = config.GetNpgsqlConnectionString("DbConnectionConfig");
 
         NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
-        services.AddDbContext<VoteMonitorContext>(options =>
+        services.AddScoped<AuditingInterceptor>(sp =>
+            new AuditingInterceptor(sp.GetRequiredService<ICurrentUserProvider>(),
+                sp.GetRequiredService<ITimeProvider>()));
+
+        services.AddScoped<AuditTrailInterceptor>(sp =>
+            new AuditTrailInterceptor(sp.GetRequiredService<ISerializerService>(),
+                sp.GetRequiredService<ICurrentUserProvider>(), sp.GetRequiredService<ITimeProvider>()));
+
+        services.AddDbContext<VoteMonitorContext>((sp, options) =>
         {
             options.UseNpgsql(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(5),
-                    errorCodesToAdd: null
-                ).UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-            });
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorCodesToAdd: null
+                    )
+                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            }).AddInterceptors(sp.GetRequiredService<AuditTrailInterceptor>(),
+                sp.GetRequiredService<AuditingInterceptor>());
 
             options.EnableSensitiveDataLogging(!isProductionEnvironment);
-            
         });
         services.AddSingleton<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -65,7 +75,8 @@ public static class DomainInstaller
             .AddDefaultTokenProviders()
             .Services;
 
-    public static async Task InitializeDatabasesAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
+    public static async Task InitializeDatabasesAsync(this IServiceProvider services,
+        CancellationToken cancellationToken = default)
     {
         // Create a new scope to retrieve scoped services
         using var scope = services.CreateScope();

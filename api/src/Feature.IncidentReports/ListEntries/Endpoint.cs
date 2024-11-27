@@ -45,10 +45,10 @@ public class Endpoint(
                     AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
                     AND (@searchText IS NULL
                           OR @searchText = ''
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
+                          OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
+                          OR MO."Id"::TEXT ILIKE @searchText
                       )
                     AND (@level1 IS NULL OR PS."Level1" = @level1)
                     AND (@level2 IS NULL OR PS."Level2" = @level2)
@@ -100,8 +100,7 @@ public class Endpoint(
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
                       ))
                     AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
-                    AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted);
+                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp);
                       
                       
                   WITH
@@ -150,7 +149,6 @@ public class Endpoint(
                             )
                             AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
                             AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
-                            AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -168,7 +166,7 @@ public class Endpoint(
                       PS."Level5",
                       PS."Number" "PollingStationNumber",
                       IR."MonitoringObserverId",
-                      U."FirstName" || ' ' || U."LastName" AS "ObserverName",
+                      U."DisplayName" AS "ObserverName",
                       U."Email",
                       U."PhoneNumber",
                       MO."Status",
@@ -193,10 +191,10 @@ public class Endpoint(
                     AND (
                       @searchText IS NULL
                           OR @searchText = ''
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
+                          OR U."DisplayName" ILIKE @searchText
                           OR U."Email" ILIKE @searchText
                           OR U."PhoneNumber" ILIKE @searchText
+                          OR MO."Id"::TEXT ILIKE @searchText
                       )
                     AND (@level1 IS NULL OR PS."Level1" = @level1)
                     AND (@level2 IS NULL OR PS."Level2" = @level2)
@@ -235,8 +233,8 @@ public class Endpoint(
                       CASE WHEN @sortExpression = 'Level5 DESC' THEN PS."Level5" END DESC,
                       CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN PS."Number" END ASC,
                       CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN PS."Number" END DESC,
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."FirstName" || ' ' || U."LastName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."FirstName" || ' ' || U."LastName" END DESC
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."DisplayName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."DisplayName" END DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
@@ -267,7 +265,6 @@ public class Endpoint(
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            iscompleted = req.IsCompletedFilter
         };
 
         int totalRowCount;

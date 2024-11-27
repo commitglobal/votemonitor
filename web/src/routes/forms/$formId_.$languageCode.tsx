@@ -1,5 +1,6 @@
 import PreviewForm from '@/features/forms/components/PreviewForm/PreviewForm';
 import { formDetailsQueryOptions } from '@/features/forms/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/forms/$formId/$languageCode')({
@@ -8,6 +9,9 @@ export const Route = createFileRoute('/forms/$formId/$languageCode')({
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId));
+  },
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
 });
 

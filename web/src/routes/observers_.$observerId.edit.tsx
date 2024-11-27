@@ -1,11 +1,15 @@
 import EditObserver from '@/features/observers/components/EditObserver/EditObserver';
 import { createFileRoute } from '@tanstack/react-router';
 import { observerDetailsQueryOptions } from './observers/$observerId';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 export const Route = createFileRoute('/observers/$observerId/edit')({
   component: Edit,
   loader: ({ context: { queryClient }, params: { observerId } }) =>
     queryClient.ensureQueryData(observerDetailsQueryOptions(observerId)),
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });
 
 function Edit() {

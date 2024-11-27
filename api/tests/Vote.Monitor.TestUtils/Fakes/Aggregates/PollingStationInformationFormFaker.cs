@@ -27,7 +27,7 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate()),
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true),
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true)
         ];
 
         SelectOption[] multiSelectOptions =
@@ -35,7 +35,7 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate()),
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true),
             SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true)
         ];
 
         questions ??=

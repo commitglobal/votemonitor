@@ -21,7 +21,6 @@ export const PushMessageTargetedObserversSearchParamsSchema = z.object({
   questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
   formId: z.string().optional(),
   formTypeFilter: ZFormType.optional(),
-  formIsCompleted: z.string().optional(),
   followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),

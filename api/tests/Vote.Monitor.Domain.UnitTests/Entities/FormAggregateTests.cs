@@ -26,7 +26,7 @@ public class FormAggregateTests
             SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate())
         ];
 
         List<SelectOption> multiSelectOptions =
@@ -34,7 +34,7 @@ public class FormAggregateTests
             SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
             SelectOption.Create(regularOptionId, new TranslatedStringFaker(languages).Generate()),
-            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true)
         ];
 
         var singleSelectQuestion =
@@ -44,7 +44,7 @@ public class FormAggregateTests
         var questions = new BaseQuestion[]
         {
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -59,8 +59,8 @@ public class FormAggregateTests
             new MultiSelectAnswer(multiSelectQuestion.Id, [
                 SelectedOption.Create(flaggedOptionId1, ""),
                 SelectedOption.Create(flaggedOptionId2, ""),
-                SelectedOption.Create(regularOptionId, ""),
-            ]),
+                SelectedOption.Create(regularOptionId, "")
+            ])
         ];
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, false);
@@ -88,7 +88,7 @@ public class FormAggregateTests
             SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate())
         ];
 
         List<SelectOption> multiSelectOptions =
@@ -96,7 +96,7 @@ public class FormAggregateTests
             SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
             SelectOption.Create(regularOptionId, new TranslatedStringFaker(languages).Generate()),
-            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true)
         ];
 
         var singleSelectQuestion =
@@ -106,7 +106,7 @@ public class FormAggregateTests
         var questions = new BaseQuestion[]
         {
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -127,8 +127,8 @@ public class FormAggregateTests
             new MultiSelectAnswer(multiSelectQuestion.Id, [
                 SelectedOption.Create(flaggedOptionId1, ""),
                 SelectedOption.Create(flaggedOptionId2, ""),
-                SelectedOption.Create(regularOptionId, ""),
-            ]),
+                SelectedOption.Create(regularOptionId, "")
+            ])
         ];
 
         form.FillIn(submission, updatedAnswers, false);
@@ -161,7 +161,7 @@ public class FormAggregateTests
             ratingQuestion,
             numberQuestion,
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -175,7 +175,7 @@ public class FormAggregateTests
             new TextAnswerFaker(textQuestion.Id),
             new NumberAnswerFaker(numberQuestion.Id),
             new RatingAnswerFaker(ratingQuestion.Id),
-            new DateAnswerFaker(dateQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id)
         ];
 
         // Act
@@ -209,7 +209,7 @@ public class FormAggregateTests
             ratingQuestion,
             numberQuestion,
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -231,7 +231,7 @@ public class FormAggregateTests
             new TextAnswerFaker(textQuestion.Id),
             new NumberAnswerFaker(numberQuestion.Id),
             new RatingAnswerFaker(ratingQuestion.Id),
-            new DateAnswerFaker(dateQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id)
         ];
 
         form.FillIn(submission, updatedAnswers, false);
@@ -264,7 +264,7 @@ public class FormAggregateTests
             ratingQuestion,
             numberQuestion,
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -278,7 +278,7 @@ public class FormAggregateTests
             new TextAnswerFaker(textQuestion.Id),
             new NumberAnswerFaker(numberQuestion.Id),
             new RatingAnswerFaker(ratingQuestion.Id),
-            new DateAnswerFaker(dateQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id)
         ];
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);
@@ -316,7 +316,7 @@ public class FormAggregateTests
             ratingQuestion,
             numberQuestion,
             singleSelectQuestion,
-            multiSelectQuestion,
+            multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
@@ -329,7 +329,7 @@ public class FormAggregateTests
             new TextAnswerFaker(textQuestion.Id),
             new NumberAnswerFaker(numberQuestion.Id),
             new RatingAnswerFaker(ratingQuestion.Id),
-            new DateAnswerFaker(dateQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id)
         ];
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers, false);

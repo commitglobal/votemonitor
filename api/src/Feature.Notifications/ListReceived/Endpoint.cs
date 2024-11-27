@@ -34,7 +34,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             N."Id",
             N."Title",
             N."Body",
-            U."FirstName" || ' ' || U."LastName" "Sender",
+            U."DisplayName" "Sender",
             N."CreatedOn" "SentAt",
             MON."IsRead"
         FROM
@@ -53,7 +53,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
-            observerId = req.ObserverId,
+            observerId = req.ObserverId
         };
 
         string? ngoName;

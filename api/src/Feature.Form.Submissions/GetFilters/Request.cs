@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Microsoft.AspNetCore.Mvc;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 
 namespace Feature.Form.Submissions.GetFilters;
 
@@ -8,4 +10,6 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+
+    [FromQuery] public DataSource DataSource { get; set; } = DataSource.Ngo;
 }

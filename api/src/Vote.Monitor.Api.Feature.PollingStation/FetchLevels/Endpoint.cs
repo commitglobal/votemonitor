@@ -41,7 +41,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
                     x.Level2,
                     x.Level3,
                     x.Level4,
-                    x.Level5,
+                    x.Level5
                 })
                 .Distinct()
                 .ToListAsync(cancellationToken: ct);

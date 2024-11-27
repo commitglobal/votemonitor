@@ -60,7 +60,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
                     ElectionRoundId = attachment.ElectionRoundId,
                     PollingStationId = attachment.PollingStationId,
                     FormId = attachment.FormId,
-                    QuestionId = attachment.QuestionId,
+                    QuestionId = attachment.QuestionId
                 };
             });
 

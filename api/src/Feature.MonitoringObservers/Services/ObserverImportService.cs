@@ -101,21 +101,12 @@ public class ObserverImportService(
                     existingAccount.NewInvite();
                     var newObserver = ObserverAggregate.Create(existingAccount);
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(electionRoundId,
-                        monitoringNgo.Id, newObserver.Id, observer.Tags ?? []);
+                        monitoringNgo.Id, newObserver.Id, observer.Tags ?? [], existingAccount.Status);
                     await context.Observers.AddAsync(newObserver, ct);
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
-                    var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
-                    string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken",
-                        existingAccount.InvitationToken!);
-
-                    var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName,
-                        CdnUrl: _apiConfig.WebAppUrl,
-                        AcceptUrl: acceptInviteUrl,
-                        NgoName: ngoName,
-                        ElectionRoundDetails: electionRoundName);
-
-                    var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
+                    var email = GenerateCreateAccountEmail(existingAccount.InvitationToken!, fullName, ngoName,
+                        electionRoundName);
                     jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
@@ -123,13 +114,16 @@ public class ObserverImportService(
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(electionRoundId,
                         monitoringNgo.Id,
                         existingObserver.Id,
-                        observer.Tags ?? []);
+                        observer.Tags ?? [],
+                        existingObserver.ApplicationUser.Status);
 
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
-                    var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(FullName: fullName,
-                        CdnUrl: _apiConfig.WebAppUrl, NgoName: ngoName, ElectionRoundDetails: electionRoundName);
 
-                    var email = emailFactory.GenerateInvitationExistingUserEmail(invitationExistingUserEmailProps);
+                    var email = existingObserver.ApplicationUser.Status == UserStatus.Pending
+                        ? GenerateCreateAccountEmail(existingObserver.ApplicationUser.InvitationToken!,
+                            existingObserver.ApplicationUser.DisplayName, ngoName, electionRoundName)
+                        : GenerateNotificationEmail(fullName, ngoName, electionRoundName);
+
                     jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
             }
@@ -151,20 +145,39 @@ public class ObserverImportService(
                     newObserver.Id, observer.Tags ?? []);
                 await context.Observers.AddAsync(newObserver, ct);
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
-                var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
-                string acceptInviteUrl =
-                    QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", user.InvitationToken!);
 
-                var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName,
-                    CdnUrl: _apiConfig.WebAppUrl, AcceptUrl: acceptInviteUrl, NgoName: ngoName,
-                    ElectionRoundDetails: electionRoundName);
-
-                var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
+                var email = GenerateCreateAccountEmail(user.InvitationToken!, fullName, ngoName, electionRoundName);
                 jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
             }
         }
 
         await context.SaveChangesAsync(ct);
+    }
+
+    private EmailModel GenerateNotificationEmail(string fullName, string ngoName, string electionRoundName)
+    {
+        var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(FullName: fullName,
+            CdnUrl: _apiConfig.WebAppUrl, NgoName: ngoName, ElectionRoundDetails: electionRoundName);
+
+        var email = emailFactory.GenerateInvitationExistingUserEmail(invitationExistingUserEmailProps);
+        return email;
+    }
+
+    private EmailModel GenerateCreateAccountEmail(string invitationToken, string fullName, string ngoName,
+        string electionRoundName)
+    {
+        var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
+        string acceptInviteUrl =
+            QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", invitationToken);
+
+        var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName,
+            CdnUrl: _apiConfig.WebAppUrl,
+            AcceptUrl: acceptInviteUrl,
+            NgoName: ngoName,
+            ElectionRoundDetails: electionRoundName);
+
+        var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
+        return email;
     }
 
 

@@ -31,7 +31,7 @@ public class IncidentReportsAggregateFilterValidatorTests
         // Arrange
         var request = new IncidentReportsAggregateFilter
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act

@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
+using Feature.Forms.Models;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
@@ -9,7 +10,7 @@ namespace Feature.Forms.FromTemplate;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReadRepository<Form> formTemplateRepository,
+    IReadRepository<FormTemplate> formTemplateRepository,
     IRepository<MonitoringNgo> monitoringNgoRepository,
     IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {

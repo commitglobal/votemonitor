@@ -1,13 +1,30 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
 using Authorization.Policies;
 using CsvHelper;
 using Dapper;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers.Export;
 
 public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request>
 {
+    private class MonitoringObserverExportModel
+    {
+        public Guid Id { get; init; }
+        public string FirstName { get; init; }
+        public string LastName { get; init; }
+        public string Email { get; init; }
+        public string PhoneNumber { get; init; }
+        public string[] Tags { get; init; }
+        public DateTime? LatestActivityAt { get; init; }
+
+        [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
+        public MonitoringObserverStatus Status { get; init; }
+    }
+
     public override void Configure()
     {
         Get("api/election-rounds/{electionRoundId}/monitoring-observers:export");
@@ -28,33 +45,29 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var sql = """
-            SELECT
-                MO."Id",
-                U."FirstName",
-                U."LastName",
-                U."PhoneNumber",
-                U."Email",
-                MO."Tags",
-                MO."Status"
-            FROM
-                "MonitoringObservers" MO
-                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-            WHERE
-                MN."ElectionRoundId" = @electionRoundId
-                AND MN."NgoId" = @ngoId
-        """;
+                      SELECT
+                          MO."Id",
+                          U."FirstName",
+                          U."LastName",
+                          U."PhoneNumber",
+                          U."Email",
+                          MO."Tags",
+                          MO."Status"
+                      FROM
+                          "MonitoringObservers" MO
+                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                          INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                      WHERE
+                          MN."ElectionRoundId" = @electionRoundId
+                          AND MN."NgoId" = @ngoId
+                  """;
 
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-        };
-        IEnumerable<MonitoringObserverModel> monitoringObservers = [];
+        var queryArgs = new { electionRoundId = req.ElectionRoundId, ngoId = req.NgoId };
+        IEnumerable<MonitoringObserverExportModel> monitoringObservers = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            monitoringObservers = await dbConnection.QueryAsync<MonitoringObserverModel>(sql, queryArgs);
+            monitoringObservers = await dbConnection.QueryAsync<MonitoringObserverExportModel>(sql, queryArgs);
         }
 
         var monitoringObserverModels = monitoringObservers.ToArray();
@@ -84,7 +97,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         }
     }
 
-    private void WriteData(MonitoringObserverModel[] monitoringObservers, CsvWriter csvWriter, List<string> availableTags)
+    private void WriteData(MonitoringObserverExportModel[] monitoringObservers, CsvWriter csvWriter,
+        List<string> availableTags)
     {
         foreach (var monitoringObserver in monitoringObservers)
         {
@@ -107,12 +121,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     private static void WriteHeader(CsvWriter csvWriter, List<string> availableTags)
     {
-        csvWriter.WriteField(nameof(MonitoringObserverModel.Id));
-        csvWriter.WriteField(nameof(MonitoringObserverModel.FirstName));
-        csvWriter.WriteField(nameof(MonitoringObserverModel.LastName));
-        csvWriter.WriteField(nameof(MonitoringObserverModel.PhoneNumber));
-        csvWriter.WriteField(nameof(MonitoringObserverModel.Email));
-        csvWriter.WriteField(nameof(MonitoringObserverModel.Status));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.Id));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.FirstName));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.LastName));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.PhoneNumber));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.Email));
+        csvWriter.WriteField(nameof(MonitoringObserverExportModel.Status));
 
         foreach (var tag in availableTags)
         {
@@ -133,5 +147,4 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
         return result;
     }
-
 }

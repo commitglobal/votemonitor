@@ -51,7 +51,7 @@ public class GetValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act

@@ -2,5 +2,5 @@
 
 public class Result
 {
-    public List<NgoElectionRoundView> ElectionRounds { get; set; }
+    public List<ElectionRoundModel> ElectionRounds { get; set; }
 }

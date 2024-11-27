@@ -9,17 +9,16 @@ namespace SubmissionsFaker.Seeders;
 public class FormsSeeder
 {
     public static async Task<List<UpdateFormResponse>> Seed(INgoAdminApi ngoAdminApi,
-        LoginResponse ngoAdminToken,
-        string electionRoundId,
+        Guid electionRoundId,
         ProgressTask progressTask)
     {
         progressTask
             .MaxValue(2)
             .StartTask();
 
-        var form = await ngoAdminApi.CreateForm(electionRoundId, FormData.OpeningForm, ngoAdminToken.Token);
-        await ngoAdminApi.UpdateForm(electionRoundId, form.Id, FormData.OpeningForm, ngoAdminToken.Token);
-        await ngoAdminApi.PublishForm(electionRoundId, form.Id, ngoAdminToken.Token);
+        var openingForm = FormData.OpeningForm("Opening");
+        var form = await ngoAdminApi.CreateForm(electionRoundId, openingForm);
+        await ngoAdminApi.PublishForm(electionRoundId, form.Id);
         progressTask.Increment(1);
 
         progressTask.Increment(progressTask.MaxValue);
@@ -30,7 +29,7 @@ public class FormsSeeder
             new UpdateFormResponse
             {
                 Id = form.Id,
-                Questions = FormData.OpeningForm.Questions
+                Questions = openingForm.Questions
             },
             // ...
         ];

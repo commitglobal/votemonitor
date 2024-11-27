@@ -2,7 +2,7 @@
 
 namespace Feature.FormTemplates.Draft;
 
-public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IRepository<FormTemplate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {

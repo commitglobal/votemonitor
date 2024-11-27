@@ -51,8 +51,7 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
 
             if (ngoAdminResult is not null)
             {
-                if (ngoAdminResult.ElectionRoundStatus == ElectionRoundStatus.Archived ||
-                    ngoAdminResult.NgoStatus == NgoStatus.Deactivated ||
+                if (ngoAdminResult.NgoStatus == NgoStatus.Deactivated ||
                     ngoAdminResult.MonitoringNgoStatus == MonitoringNgoStatus.Suspended)
                 {
                     context.Fail();

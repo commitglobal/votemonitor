@@ -13,7 +13,6 @@ public record FormSubmissionModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
-
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
     public bool IsCompleted { get; init; }
 

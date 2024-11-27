@@ -13,7 +13,6 @@ public record ObserverIncidentReportsOverview
     public string[] Tags { get; init; } = [];
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfIncidentsSubmitted { get; init; }
-    public int NumberOfCompletedForms { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus? FollowUpStatus { get; init; }

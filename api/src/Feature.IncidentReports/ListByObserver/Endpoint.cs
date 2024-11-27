@@ -31,14 +31,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         var sql = """
                   SELECT COUNT(*) count
                   FROM
-                      "MonitoringObservers" MO
-                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                   WHERE
-                      MN."ElectionRoundId" = @electionRoundId
-                      AND MN."NgoId" = @ngoId
-                      AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                      (@searchText IS NULL 
+                               OR @searchText = '' 
+                               OR mo."DisplayName" ILIKE @searchText 
+                               OR mo."Email" ILIKE @searchText 
+                               OR mo."PhoneNumber" ILIKE @searchText
+                               OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
                       AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
 
                   SELECT "MonitoringObserverId",
@@ -48,47 +48,41 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          "Tags",
                          "NumberOfFlaggedAnswers",
                          "NumberOfIncidentsSubmitted",
-                         "NumberOfCompletedForms",
                          "FollowUpStatus"
-                  FROM (SELECT MO."Id" AS "MonitoringObserverId",
-                               U."FirstName" || ' ' || U."LastName" AS "ObserverName",
-                               U."PhoneNumber",
-                               U."Email",
+                  FROM (SELECT MO."MonitoringObserverId" AS "MonitoringObserverId",
+                               mo."DisplayName" AS "ObserverName",
+                               mo."PhoneNumber",
+                               mo."Email",
                                MO."Tags",
+                               MO."NgoName",
                                COALESCE(
                                        (SELECT SUM("NumberOfFlaggedAnswers")
                                         FROM "IncidentReports" IR
-                                        WHERE IR."MonitoringObserverId" = MO."Id"),
+                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"),
                                        0
                                ) AS "NumberOfFlaggedAnswers",
-                               COALESCE(
-                                     (SELECT COUNT(*)
-                                      FROM "IncidentReports" IR
-                                      WHERE IR."MonitoringObserverId" = MO."Id"),
-                                     0
-                               ) AS "NumberOfCompletedForms",
                                (SELECT COUNT(1)
                                 FROM "IncidentReports" IR
-                                WHERE IR."MonitoringObserverId" = MO."Id" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
+                                WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
                                (
                                    CASE
                                        WHEN EXISTS (SELECT 1
                                                     FROM "IncidentReports" IR
                                                     WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
-                                                      AND IR."MonitoringObserverId" = MO."Id"
+                                                      AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
                                                       AND IR."ElectionRoundId" = @electionRoundId)
                                            THEN 'NeedsFollowUp'
                                        ELSE NULL
                                        END
                                    ) AS "FollowUpStatus"
-                        FROM "MonitoringObservers" MO
-                                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                                 INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                                 INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                        WHERE MN."ElectionRoundId" = @electionRoundId
-                          AND MN."NgoId" = @ngoId
-                          AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR
-                               u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                        FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                        WHERE 
+                            (@searchText IS NULL 
+                                   OR @searchText = '' 
+                                   OR MO."DisplayName" ILIKE @searchText 
+                                   OR MO."Email" ILIKE @searchText 
+                                   OR MO."PhoneNumber" ILIKE @searchText
+                                   OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
                           AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)) T
                   WHERE (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
                   ORDER BY
@@ -100,13 +94,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
                       CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
                       CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
-                      
-                      CASE WHEN @sortExpression = 'NumberOfCompletedForms ASC' THEN "NumberOfCompletedForms" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfCompletedForms DESC' THEN "NumberOfCompletedForms" END DESC,
-                      
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
-                      
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted ASC' THEN "NumberOfIncidentsSubmitted" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted DESC' THEN "NumberOfIncidentsSubmitted" END DESC
                   
@@ -123,7 +112,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            needsFollowUp = req.FollowUpStatus?.ToString(),
+            needsFollowUp = req.FollowUpStatus?.ToString()
         };
 
         int totalRowCount = 0;
@@ -171,12 +160,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(ObserverIncidentReportsOverview.Tags)} {sortOrder}";
-        }
-
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfCompletedForms),
-                StringComparison.InvariantCultureIgnoreCase))
-        {
-            return $"{nameof(ObserverIncidentReportsOverview.NumberOfCompletedForms)} {sortOrder}";
         }
         
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfFlaggedAnswers),

@@ -7,13 +7,13 @@ public class LanguagesTranslationStatusTests
     private readonly LanguagesTranslationStatus _first = new LanguagesTranslationStatus
     {
         ["Ro"] = TranslationStatus.Translated,
-        ["En"] = TranslationStatus.MissingTranslations,
+        ["En"] = TranslationStatus.MissingTranslations
     };
 
     private readonly LanguagesTranslationStatus _second = new LanguagesTranslationStatus
     {
         ["Ro"] = TranslationStatus.Translated,
-        ["En"] = TranslationStatus.MissingTranslations,
+        ["En"] = TranslationStatus.MissingTranslations
     };
 
 

@@ -23,6 +23,6 @@ public class CitizenReportModel
         Answers = entity.Answers
             .Select(AnswerMapper.ToModel)
             .ToList(),
-        FollowUpStatus = entity.FollowUpStatus,
+        FollowUpStatus = entity.FollowUpStatus
     };
 }

@@ -23,6 +23,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, NoContent>
     {
         await context.QuickReports
             .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                        && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);

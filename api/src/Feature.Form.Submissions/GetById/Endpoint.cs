@@ -1,11 +1,12 @@
-﻿using Vote.Monitor.Core.Services.FileStorage.Contracts;
+﻿using Vote.Monitor.Answer.Module.Models;
+using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Feature.Form.Submissions.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
-    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<FormSubmissionView>, NotFound>>
 {
     public override void Configure()
     {
@@ -17,7 +18,7 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<FormSubmissionView>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -49,11 +50,8 @@ public class Endpoint(
                       psi."Breaks",
                       psi."IsCompleted"
                       FROM "PollingStationInformation" psi
-                      INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
-                      INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                      WHERE mn."ElectionRoundId" = @electionRoundId
-                          AND mn."NgoId" = @ngoId
-                          AND psi."Id" = @submissionId
+                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
+                      WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
                   UNION ALL
                   SELECT 
                           fs."Id" AS "SubmissionId",
@@ -88,12 +86,9 @@ public class Endpoint(
                           '[]'::jsonb AS "Breaks",
                           fs."IsCompleted"
                   FROM "FormSubmissions" fs
-                  INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = FS."MonitoringObserverId"
                   INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                  WHERE mn."ElectionRoundId" = @electionRoundId
-                      AND mn."NgoId" = @ngoId
-                      AND fs."Id" = @submissionId)
+                  WHERE fs."Id" = @submissionId and fs."ElectionRoundId" = @electionRoundId)
                   SELECT s."SubmissionId",
                          s."TimeSubmitted",
                          s."FormCode",
@@ -106,10 +101,12 @@ public class Endpoint(
                          ps."Level5",
                          ps."Number",
                          s."MonitoringObserverId",
-                         u."FirstName" || ' ' || u."LastName" "ObserverName",
-                         u."Email",
-                         u."PhoneNumber",
-                         mo."Tags",
+                         AMO."DisplayName" "ObserverName",
+                         AMO."Email",
+                         AMO."PhoneNumber",
+                         AMO."Tags",
+                         AMO."NgoName",
+                         AMO."IsOwnObserver",
                          s."Attachments",
                          s."Notes",
                          s."Answers",
@@ -122,27 +119,21 @@ public class Endpoint(
                          s."IsCompleted"
                   FROM submissions s
                   INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
-                  INNER JOIN "MonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                  INNER JOIN "Observers" o ON o."Id" = mo."ObserverId"
-                  INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
-                  WHERE mn."ElectionRoundId" = @electionRoundId
-                      AND mn."NgoId" = @ngoId
-                  ORDER BY "TimeSubmitted" desc
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = s."MonitoringObserverId"
                   """;
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            submissionId = req.SubmissionId,
+            submissionId = req.SubmissionId
         };
 
-        Response submission = null;
+        FormSubmissionView submission = null;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            submission = await dbConnection.QueryFirstOrDefaultAsync<Response>(sql, queryArgs);
+            submission = await dbConnection.QueryFirstOrDefaultAsync<FormSubmissionView>(sql, queryArgs);
         }
 
         if (submission is null)

@@ -54,7 +54,7 @@ public class RemoveObserverValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             MonitoringNgoId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act

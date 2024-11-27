@@ -1,5 +1,7 @@
 ﻿using Feature.IncidentReports.Requests;
 using Vote.Monitor.Answer.Module.Aggregators;
+using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 
@@ -33,6 +35,7 @@ public class Endpoint(
         var form = await context
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
+                        && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringNgo.NgoId == req.NgoId
                         && x.Id == req.FormId)
             .AsNoTracking()
@@ -56,6 +59,8 @@ public class Endpoint(
             .Include(x => x.MonitoringObserver).ThenInclude(x => x.Observer).ThenInclude(x => x.ApplicationUser)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
+                        && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.FormId == req.FormId)
             .Where(x => x.PollingStation != null
                         && (string.IsNullOrWhiteSpace(req.Level1Filter)

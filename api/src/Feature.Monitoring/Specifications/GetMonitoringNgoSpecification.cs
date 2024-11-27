@@ -14,7 +14,7 @@ public sealed class GetMonitoringNgoSpecification : SingleResultSpecification<Mo
             NgoId = x.NgoId,
             Name = x.Ngo.Name,
             NgoStatus = x.Ngo.Status,
-            MonitoringNgoStatus = x.Status,
+            MonitoringNgoStatus = x.Status
         });
     }
 }

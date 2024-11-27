@@ -70,7 +70,7 @@ public class CustomSentryUserFactory : ISentryUserFactory
             : new SentryUser
             {
                 Id = identifier,
-                Other = extraData,
+                Other = extraData
             };
     }
 

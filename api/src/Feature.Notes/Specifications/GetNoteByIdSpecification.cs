@@ -7,6 +7,9 @@ public sealed class GetNoteByIdSpecification : SingleResultSpecification<NoteAgg
     public GetNoteByIdSpecification(Guid electionRoundId, Guid observerId, Guid id)
     {
         Query
-            .Where(x => x.ElectionRoundId == electionRoundId && x.MonitoringObserver.ObserverId == observerId && x.Id == id);
+            .Where(x => x.ElectionRoundId == electionRoundId
+                        && x.MonitoringObserver.ObserverId == observerId
+                        && x.Id == id
+                        && x.MonitoringObserver.ElectionRoundId == electionRoundId);
     }
 }

@@ -14,7 +14,7 @@ public sealed class CitizenReportsFaker : Faker<CitizenReportRequest>
         {
             var form = f.PickRandom(forms);
             
-            x.CitizenReportId = f.Random.Guid().ToString();
+            x.CitizenReportId = f.Random.Guid();
             x.FormId = form.Id;
             x.LocationId = f.PickRandom(locations).LocationId!.Value;
             

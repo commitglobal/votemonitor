@@ -26,7 +26,7 @@ public class DeleteRequestValidatorTests
         // Arrange
         var request = new Delete.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
 
         // Act

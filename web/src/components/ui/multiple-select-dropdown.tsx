@@ -138,8 +138,9 @@ export const MultiSelectDropdown = React.forwardRef<HTMLButtonElement, MultiSele
             ref={ref}
             {...props}
             onClick={handleTogglePopover}
+            variant={'select'}
             className={cn(
-              'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit',
+              'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit font-normal',
               className
             )}>
             {selectedValues.length > 0 ? (
@@ -159,7 +160,7 @@ export const MultiSelectDropdown = React.forwardRef<HTMLButtonElement, MultiSele
               </>
             ) : (
               <div className='flex items-center justify-between w-full mx-auto'>
-                <span className='mx-3 text-sm text-muted-foreground'>{placeholder}</span>
+                <span className='mx-3'>{placeholder}</span>
                 <ChevronDown className='h-4 mx-2 cursor-pointer text-muted-foreground' />
               </div>
             )}

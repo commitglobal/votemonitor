@@ -5,22 +5,14 @@ namespace SubmissionsFaker.Forms;
 
 public class FormData
 {
-    public static UpdateForm OpeningForm = new()
+    public static UpdateForm OpeningForm(string code) => new()
     {
-        FormType = "Opening",
-        Code = "A2",
+        Code = code,
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
-        Name = new TranslatedString
-        {
-            { "EN", "test form" },
-            { "RO", "formular de test" }
-        },
-        Description = new TranslatedString
-        {
-            { "EN", "test form" },
-            { "RO", "formular de test" }
-        },
+        Name = new TranslatedString { { "EN", code }, { "RO", code } },
+        Description = new TranslatedString { { "EN", code }, { "RO", code } },
+        FormType = "Opening",
         Questions =
         [
             new NumberQuestionRequest
@@ -34,44 +26,26 @@ public class FormData
                 },
                 Helptext = new TranslatedString
                 {
-                    { "EN", "Please enter a number" },
-                    { "RO", "Vă rugăm să introduceți numărul dvs" }
+                    { "EN", "Please enter a number" }, { "RO", "Vă rugăm să introduceți numărul dvs" }
                 },
-                InputPlaceholder = new TranslatedString
-                {
-                    { "EN", "number" },
-                    { "RO", "numar" }
-                }
+                InputPlaceholder = new TranslatedString { { "EN", "number" }, { "RO", "numar" } }
             },
             new TextQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "A2",
-                Text = new TranslatedString
-                {
-                    { "EN", "How are you today" },
-                    { "RO", "Cum te simți azi" }
-                },
+                Text = new TranslatedString { { "EN", "How are you today" }, { "RO", "Cum te simți azi" } },
                 Helptext = new TranslatedString
                 {
-                    { "EN", "Please enter how are you" },
-                    { "RO", "Vă rugăm să introduceți cum sunteți" }
+                    { "EN", "Please enter how are you" }, { "RO", "Vă rugăm să introduceți cum sunteți" }
                 },
-                InputPlaceholder = new TranslatedString
-                {
-                    { "EN", "mood" },
-                    { "RO", "dispozitie" }
-                }
+                InputPlaceholder = new TranslatedString { { "EN", "mood" }, { "RO", "dispozitie" } }
             },
             new DateQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "A3",
-                Text = new TranslatedString
-                {
-                    { "EN", "Time of arrival" },
-                    { "RO", "Timpul sosirii" }
-                },
+                Text = new TranslatedString { { "EN", "Time of arrival" }, { "RO", "Timpul sosirii" } },
                 Helptext = new TranslatedString
                 {
                     { "EN", "Please enter exact hour when did you arrive" },
@@ -84,13 +58,11 @@ public class FormData
                 Code = "C1",
                 Text = new TranslatedString
                 {
-                    { "EN", "Please rate this form" },
-                    { "RO", "Vă rugăm să evaluați acest formular" }
+                    { "EN", "Please rate this form" }, { "RO", "Vă rugăm să evaluați acest formular" }
                 },
                 Helptext = new TranslatedString
                 {
-                    { "EN", "Please give us a rating" },
-                    { "RO", "Vă rugăm să ne dați o evaluare" }
+                    { "EN", "Please give us a rating" }, { "RO", "Vă rugăm să ne dați o evaluare" }
                 },
                 Scale = "OneTo10"
             },
@@ -98,143 +70,106 @@ public class FormData
             {
                 Id = Guid.NewGuid(),
                 Code = "B1",
-                Text = new TranslatedString
-                {
-                    { "EN", "The overall conduct of the opening of this PS was:" },
-                    { "RO", "Conducerea generală a deschiderii acestui PS a fost:" }
-                },
-                Helptext = new TranslatedString
-                {
-                    { "EN", "Please select a single option" },
-                    { "RO", "Vă rugăm să selectați o singură opțiune" }
-                },
+                Text =
+                    new TranslatedString
+                    {
+                        { "EN", "The overall conduct of the opening of this PS was:" },
+                        { "RO", "Conducerea generală a deschiderii acestui PS a fost:" }
+                    },
+                Helptext =
+                    new TranslatedString
+                    {
+                        { "EN", "Please select a single option" },
+                        { "RO", "Vă rugăm să selectați o singură opțiune" }
+                    },
                 Options = new List<SelectOptionRequest>
                 {
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Very good" },
-                            { "RO", "Foarte bun" }
-                        },
+                        Text = new TranslatedString { { "EN", "Very good" }, { "RO", "Foarte bun" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Good" },
-                            { "RO", "bun" }
-                        },
+                        Text = new TranslatedString { { "EN", "Good" }, { "RO", "bun" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bad" },
-                            { "RO", "Rea" }
-                        },
+                        Text = new TranslatedString { { "EN", "Bad" }, { "RO", "Rea" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Very bad" },
-                            { "RO", "Foarte rea" }
-                        },
+                        Text = new TranslatedString { { "EN", "Very bad" }, { "RO", "Foarte rea" } },
                         IsFreeText = false,
                         IsFlagged = true
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Other" },
-                            { "RO", "Alta" }
-                        },
+                        Text = new TranslatedString { { "EN", "Other" }, { "RO", "Alta" } },
                         IsFreeText = true,
                         IsFlagged = true
-                    },
+                    }
                 }
             },
             new MultiSelectQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "B2",
-                Text = new TranslatedString
-                {
-                    { "EN", "What party/bloc proxies were present at the opening of this PS" },
-                    { "RO", "Ce împuterniciri de partid/bloc au fost prezenți la deschiderea acestui PS" }
-                },
-                Helptext = new TranslatedString
-                {
-                    { "EN", "Please select as many you want" },
-                    { "RO", "Vă rugăm să selectați câte doriți" }
-                },
+                Text =
+                    new TranslatedString
+                    {
+                        { "EN", "What party/bloc proxies were present at the opening of this PS" },
+                        { "RO", "Ce împuterniciri de partid/bloc au fost prezenți la deschiderea acestui PS" }
+                    },
+                Helptext =
+                    new TranslatedString
+                    {
+                        { "EN", "Please select as many you want" }, { "RO", "Vă rugăm să selectați câte doriți" }
+                    },
                 Options = new List<SelectOptionRequest>
                 {
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 1" },
-                            { "RO", "Bloc 1" }
-                        },
+                        Text = new TranslatedString { { "EN", "Bloc 1" }, { "RO", "Bloc 1" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 2" },
-                            { "RO", "Bloc 2" }
-                        },
+                        Text = new TranslatedString { { "EN", "Bloc 2" }, { "RO", "Bloc 2" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 3" },
-                            { "RO", "Bloc 3" }
-                        },
+                        Text = new TranslatedString { { "EN", "Bloc 3" }, { "RO", "Bloc 3" } },
                         IsFreeText = false,
                         IsFlagged = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Party 1" },
-                            { "RO", "Party 1" }
-                        },
+                        Text = new TranslatedString { { "EN", "Party 1" }, { "RO", "Party 1" } },
                         IsFreeText = false,
                         IsFlagged = true
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Other" },
-                            { "RO", "Other" }
-                        },
+                        Text = new TranslatedString { { "EN", "Other" }, { "RO", "Other" } },
                         IsFreeText = true,
                         IsFlagged = true
                     }

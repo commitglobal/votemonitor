@@ -93,8 +93,6 @@ public class PSIFormSubmissionsAggregateTests
             .Which.QuestionId
             .Should().Be(_multiSelectQuestion.Id);
 
-        aggregate.ElectionRoundId.Should().Be(_form.ElectionRoundId);
-        aggregate.MonitoringNgoId.Should().Be(Guid.Empty);
         aggregate.FormId.Should().Be(_form.Id);
     }
 
@@ -156,9 +154,9 @@ public class PSIFormSubmissionsAggregateTests
         aggregate.Responders.Should().HaveCount(2);
         var observer1 = monitoringObserver1.Observer.ApplicationUser;
         var observer2 = monitoringObserver2.Observer.ApplicationUser;
-        var responder1 = new Responder(monitoringObserver1.Id, observer1.FirstName, observer1.LastName, observer1.Email,
+        var responder1 = new Responder(monitoringObserver1.Id, observer1.DisplayName, observer1.Email,
             observer1.PhoneNumber);
-        var responder2 = new Responder(monitoringObserver2.Id, observer2.FirstName, observer2.LastName, observer2.Email,
+        var responder2 = new Responder(monitoringObserver2.Id, observer2.DisplayName, observer2.Email,
             observer2.PhoneNumber);
         aggregate.Responders.Should().Contain([responder1, responder2]);
     }
@@ -257,7 +255,7 @@ public class PSIFormSubmissionsAggregateTests
         [
             new DateAnswerFaker(_dateQuestion.Id),
             new TextAnswerFaker(_textQuestion.Id),
-            new NumberAnswerFaker(_numberQuestion.Id),
+            new NumberAnswerFaker(_numberQuestion.Id)
         ];
 
         var formSubmission1 = PollingStationInformation.Create(_userId, _electionRound, pollingStation,

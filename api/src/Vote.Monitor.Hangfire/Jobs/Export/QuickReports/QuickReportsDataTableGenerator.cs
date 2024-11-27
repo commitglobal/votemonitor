@@ -25,25 +25,25 @@ public class QuickReportsDataTableGenerator
 
         var row = new List<object>
         {
-           quickReport.Id.ToString(),
-           quickReport.Timestamp.ToString("s"),
-           quickReport.FollowUpStatus.Value,
-           quickReport.IncidentCategory.Value,
-           quickReport.MonitoringObserverId.ToString(),
-           quickReport.FirstName,
-           quickReport.LastName,
-           quickReport.Email,
-           quickReport.PhoneNumber,
-           quickReport.QuickReportLocationType.Value,
-           quickReport.Level1 ?? "",
-           quickReport.Level2 ?? "",
-           quickReport.Level3 ?? "",
-           quickReport.Level4 ?? "",
-           quickReport.Level5 ?? "",
-           quickReport.Number ?? "",
-           quickReport.PollingStationDetails ?? "",
-           quickReport.Title,
-           quickReport.Description
+            quickReport.Id.ToString(),
+            quickReport.Timestamp.ToString("s"),
+            quickReport.FollowUpStatus.Value,
+            quickReport.IncidentCategory.Value,
+            quickReport.NgoName,
+            quickReport.MonitoringObserverId.ToString(),
+            quickReport.DisplayName,
+            quickReport.Email,
+            quickReport.PhoneNumber,
+            quickReport.QuickReportLocationType.Value,
+            quickReport.Level1 ?? "",
+            quickReport.Level2 ?? "",
+            quickReport.Level3 ?? "",
+            quickReport.Level4 ?? "",
+            quickReport.Level5 ?? "",
+            quickReport.Number ?? "",
+            quickReport.PollingStationDetails ?? "",
+            quickReport.Title,
+            quickReport.Description
         };
 
         _dataTable.Add(row);
@@ -81,7 +81,8 @@ public class QuickReportsDataTableGenerator
             var quickReport = _quickReports[i];
             var row = _dataTable[i];
 
-            var attachmentsUrls = PadListToTheRight(quickReport.AttachmentUrls, longestAttachmentUrlsColumnHeader.Count, string.Empty);
+            var attachmentsUrls = PadListToTheRight(quickReport.AttachmentUrls, longestAttachmentUrlsColumnHeader.Count,
+                string.Empty);
 
             row.AddRange(attachmentsUrls);
         }

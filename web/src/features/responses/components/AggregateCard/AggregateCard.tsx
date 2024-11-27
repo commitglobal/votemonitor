@@ -67,35 +67,36 @@ export function AggregateCard({
         </CardTitle>
         <p className='text-gray-500'>{aggregate.answersAggregated} answers</p>
       </CardHeader>
+      {aggregate.answersAggregated > 0 ? (
+        <CardContent>
+          {isDateAggregate(aggregate) && <DateAggregateContent ref={chartRef} aggregate={aggregate} />}
 
-      <CardContent>
-        {isDateAggregate(aggregate) && <DateAggregateContent ref={chartRef} aggregate={aggregate} />}
+          {isMultiSelectAggregate(aggregate) && (
+            <MultiSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
+          )}
 
-        {isMultiSelectAggregate(aggregate) && (
-          <MultiSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
-        )}
+          {isNumberAggregate(aggregate) && <NumberAggregateContent aggregate={aggregate} />}
 
-        {isNumberAggregate(aggregate) && <NumberAggregateContent aggregate={aggregate} />}
+          {isRatingAggregate(aggregate) && <RatingAggregateContent ref={chartRef} aggregate={aggregate} />}
 
-        {isRatingAggregate(aggregate) && <RatingAggregateContent ref={chartRef} aggregate={aggregate} />}
+          {isSingleSelectAggregate(aggregate) && (
+            <SingleSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
+          )}
 
-        {isSingleSelectAggregate(aggregate) && (
-          <SingleSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
-        )}
+          {isTextAggregate(aggregate) && (
+            <TextAggregateContent aggregate={aggregate} responders={responders} submissionType={submissionType} />
+          )}
 
-        {isTextAggregate(aggregate) && (
-          <TextAggregateContent aggregate={aggregate} responders={responders} submissionType={submissionType} />
-        )}
-
-        {(notes.length > 0 || attachments.length > 0) && (
-          <ResponseExtraDataSection
-            attachments={questionAttachments}
-            notes={questionNotes}
-            aggregateDisplay={true}
-            submissionType={submissionType}
-          />
-        )}
-      </CardContent>
+          {(notes.length > 0 || attachments.length > 0) && (
+            <ResponseExtraDataSection
+              attachments={questionAttachments}
+              notes={questionNotes}
+              aggregateDisplay={true}
+              submissionType={submissionType}
+            />
+          )}
+        </CardContent>
+      ) : null}
     </Card>
   );
 }

@@ -79,7 +79,7 @@ public class UpsertEndpointTests
 
         var request = new Upsert.Request
         {
-            ElectionRoundId = electionRoundId,
+            ElectionRoundId = electionRoundId
         };
 
         _electionRoundRepository

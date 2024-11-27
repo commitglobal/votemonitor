@@ -25,6 +25,10 @@ public sealed class GetObserverElectionSpecification : Specification<ElectionRou
             CountryName = x.Country.Name,
             CountryFullName = x.Country.FullName,
             CountryNumericCode = x.Country.NumericCode,
+            CoalitionId = null,
+            CoalitionName = null,
+            IsCoalitionLeader = false,
+            IsMonitoringNgoForCitizenReporting = false
         });
     }
 }

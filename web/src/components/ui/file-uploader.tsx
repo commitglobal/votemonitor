@@ -137,7 +137,7 @@ export function FileUploader(props: FileUploaderProps) {
 
   return (
     <div className="relative flex flex-col gap-6 overflow-hidden">
-      <Dropzone
+     {!files?.length || (files?.length ?? 0) < maxFileCount ?<Dropzone
         onDrop={onDrop}
         accept={accept}
         maxSize={maxSize}
@@ -194,7 +194,7 @@ export function FileUploader(props: FileUploaderProps) {
             )}
           </div>
         )}
-      </Dropzone>
+      </Dropzone> : null}
       {files?.length ? (
           <div className="flex flex-col gap-4 max-h-48">
             {files?.map((file, index) => (

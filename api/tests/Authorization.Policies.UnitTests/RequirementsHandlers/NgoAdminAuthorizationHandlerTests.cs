@@ -74,7 +74,7 @@ public class NgoAdminAuthorizationHandlerTests
                 NgoId = _ngoId,
                 NgoStatus = NgoStatus.Deactivated,
                 NgoAdminId = _ngoAdminId,
-                UserStatus = UserStatus.Active,
+                UserStatus = UserStatus.Active
             });
 
         // Act
@@ -99,7 +99,7 @@ public class NgoAdminAuthorizationHandlerTests
                 NgoId = _ngoId,
                 NgoStatus = NgoStatus.Activated,
                 NgoAdminId = _ngoAdminId,
-                UserStatus = UserStatus.Deactivated,
+                UserStatus = UserStatus.Deactivated
             });
 
         // Act
@@ -124,7 +124,7 @@ public class NgoAdminAuthorizationHandlerTests
                 NgoId = _ngoId,
                 NgoStatus = NgoStatus.Activated,
                 NgoAdminId = _ngoAdminId,
-                UserStatus = UserStatus.Active,
+                UserStatus = UserStatus.Active
             });
 
         // Act

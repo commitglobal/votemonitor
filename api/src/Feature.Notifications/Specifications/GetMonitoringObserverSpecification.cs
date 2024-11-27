@@ -8,8 +8,9 @@ public sealed class GetMonitoringObserverSpecification : Specification<Monitorin
     {
         Query
             .Where(x =>
-            x.ElectionRoundId == electionRoundId
-            && x.MonitoringNgo.NgoId == ngoId
-            && monitoringObserverIds.Contains(x.Id));
+                x.ElectionRoundId == electionRoundId
+                && x.MonitoringNgo.NgoId == ngoId
+                && x.MonitoringNgo.ElectionRoundId == electionRoundId
+                && monitoringObserverIds.Contains(x.Id));
     }
 }

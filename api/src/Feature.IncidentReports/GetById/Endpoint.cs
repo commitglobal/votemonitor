@@ -1,4 +1,7 @@
-﻿namespace Feature.IncidentReports.GetById;
+﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
+
+namespace Feature.IncidentReports.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -35,6 +38,7 @@ public class Endpoint(
             .ThenInclude(x => x.ApplicationUser)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
+                && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
                 && x.Id == req.IncidentReportId)
             .Select(incidentReport => new
@@ -54,12 +58,10 @@ public class Endpoint(
                                incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
                 TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
                 FollowUpStatus = incidentReport.FollowUpStatus,
-
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
-
                 PollingStation = incidentReport.PollingStation,
-                IsCompleted = incidentReport.IsCompleted,
+                IsCompleted = incidentReport.IsCompleted
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -80,7 +82,7 @@ public class Endpoint(
                 return attachment with
                 {
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
+                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
                 };
             }).ToArray();
 
@@ -96,15 +98,12 @@ public class Endpoint(
             Notes = incidentReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
             Questions = incidentReport.FormQuestions.Select(QuestionsMapper.ToModel).ToArray(),
-
             MonitoringObserverId = incidentReport.MonitoringObserverId,
             ObserverName = incidentReport.ObserverName,
             TimeSubmitted = incidentReport.TimeSubmitted,
             FollowUpStatus = incidentReport.FollowUpStatus,
-
             LocationType = incidentReport.LocationType,
             LocationDescription = incidentReport.LocationDescription,
-
             PollingStationId = incidentReport.PollingStation?.Id,
             PollingStationLevel1 = incidentReport.PollingStation?.Level1,
             PollingStationLevel2 = incidentReport.PollingStation?.Level2,

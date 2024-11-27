@@ -30,7 +30,7 @@ public class ListEntriesValidatorTests
         // Arrange
         var request = new Request
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act
@@ -47,7 +47,7 @@ public class ListEntriesValidatorTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid()
         };
 
         // Act

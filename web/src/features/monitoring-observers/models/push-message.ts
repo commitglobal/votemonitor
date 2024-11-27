@@ -41,7 +41,6 @@ export interface SendPushNotificationRequest {
   questionsAnswered?: QuestionsAnswered;
   formId?: string;
   formTypeFilter?: FormType;
-  formIsCompleted?: boolean;
   followUpStatus?: FormSubmissionFollowUpStatus;
   monitoringObserverId?: string;
   hasFlaggedAnswers?: boolean;

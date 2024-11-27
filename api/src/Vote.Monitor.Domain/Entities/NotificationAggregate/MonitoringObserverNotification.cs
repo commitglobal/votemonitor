@@ -20,7 +20,7 @@ public class MonitoringObserverNotification
     public static MonitoringObserverNotification Create(Guid monitoringObserverId, Guid notificationId) =>
         new(monitoringObserverId, notificationId);
 
-    public MonitoringObserverNotification()
+    private MonitoringObserverNotification()
     {
     }
 }

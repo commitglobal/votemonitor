@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Create;
 
-public class Endpoint(IRepository<Form> repository) :
+public class Endpoint(IRepository<FormTemplate> repository) :
         Endpoint<Request, Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -27,7 +27,7 @@ public class Endpoint(IRepository<Form> repository) :
             .ToList()
             .AsReadOnly();
         
-        var formTemplate = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form.Create(req.FormType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages, questions);
+        var formTemplate = Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate.Create(req.FormType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages, questions);
 
         await repository.AddAsync(formTemplate, ct);
 

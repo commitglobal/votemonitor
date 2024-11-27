@@ -10,6 +10,8 @@ public sealed class GetObserverAttachmentsSpecification : Specification<Attachme
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.PollingStationId == pollingStationId
                         && x.MonitoringObserver.ObserverId == observerId
+                        && x.MonitoringObserver.ElectionRoundId == electionRoundId
+                        && x.Form.ElectionRoundId == electionRoundId
                         && x.FormId == formId
                         && x.IsDeleted == false
                         && x.IsCompleted == true);

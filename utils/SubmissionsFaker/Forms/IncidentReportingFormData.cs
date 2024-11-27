@@ -5,10 +5,11 @@ namespace SubmissionsFaker.Forms;
 
 public class IncidentReportingFormData
 {
-    public static UpdateForm IncidentReporting = new()
+    public static UpdateForm IncidentReporting(string code) => new()
     {
-        Code = "A2",
+        Code = code,
         DefaultLanguage = "RO",
+        FormType = "IncidentReporting",
         Languages = new List<string> { "RO", "EN" },
         Name = new TranslatedString
         {
@@ -20,7 +21,6 @@ public class IncidentReportingFormData
             { "EN", "test form" },
             { "RO", "formular de test" }
         },
-        FormType = "IncidentReporting",
         Questions =
         [
             new NumberQuestionRequest

@@ -9,6 +9,7 @@ public sealed class ListCitizenReportAttachmentsSpecification : Specification<Ci
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.FormId == formId
+                        && x.Form.ElectionRoundId == electionRoundId
                         && x.CitizenReportId == citizenReportId
                         && !x.IsDeleted
                         && x.IsCompleted);

@@ -33,7 +33,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                       N."Title",
                       N."Body",
                       N."CreatedOn" "SentAt",
-                      U."FirstName" || ' ' || U."LastName" "Sender",
+                      U."DisplayName" "Sender",
                       (
                           SELECT
                               JSONB_AGG(
@@ -41,7 +41,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                                       'Id',
                                       "MonitoringObserverId",
                                       'Name',
-                                      MOU."FirstName" || ' ' || MOU."LastName",
+                                      MOU."DisplayName",
                                       'HasReadNotification',
                                       MON."IsRead"
                                   )
@@ -68,7 +68,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            id = req.Id,
+            id = req.Id
         };
 
         NotificationDetailedModel notification;

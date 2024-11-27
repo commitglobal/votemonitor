@@ -1,3 +1,5 @@
+using Vote.Monitor.Core.Models;
+
 namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
 public class ListRequestValidatorTests
@@ -30,6 +32,19 @@ public class ListRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
+    [Fact]
+    public void Validation_ShouldFail_When_DataSource_Empty()
+    {
+        // Arrange
+        var request = new List.Request { DataSource = null! };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.DataSource);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(101)]
@@ -37,11 +52,7 @@ public class ListRequestValidatorTests
     public void Validation_ShouldFail_When_PageSize_InvalidValues(int pageSize)
     {
         // Arrange
-        var request = new List.Request
-        {
-            PageSize = pageSize,
-            PageNumber = 1
-        };
+        var request = new List.Request { PageSize = pageSize, PageNumber = 1 };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -56,11 +67,7 @@ public class ListRequestValidatorTests
     public void Validation_ShouldFail_When_PageNumber_InvalidValues(int pageNumber)
     {
         // Arrange
-        var request = new List.Request
-        {
-            PageSize = 10,
-            PageNumber = pageNumber
-        };
+        var request = new List.Request { PageSize = 10, PageNumber = pageNumber };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -75,8 +82,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid(), DataSource = DataSource.Coalition
         };
 
         // Act

@@ -62,7 +62,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_ElectionRoundArchived_Failure()
+    public async Task HandleRequirementAsync_ElectionRoundArchived_Success()
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
@@ -78,7 +78,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         await _handler.HandleAsync(_context);
 
         // Assert
-        _context.HasSucceeded.Should().BeFalse();
+        _context.HasSucceeded.Should().BeTrue();
     }
 
     [Fact]

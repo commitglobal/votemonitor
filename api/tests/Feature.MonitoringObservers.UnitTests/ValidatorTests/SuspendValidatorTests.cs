@@ -51,7 +51,7 @@ public class SuspendValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
 
         // Act

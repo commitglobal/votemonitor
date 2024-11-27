@@ -9,13 +9,14 @@ import type { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 
 import { DateTimeFormat } from '@/common/formats';
-import type { FunctionComponent } from '@/common/types';
+import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { format } from 'date-fns';
 import { useCallback } from 'react';
 import { usePushMessages } from '../../hooks/push-messages-queries';
 import type { PushMessageModel } from '../../models/push-message';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 function PushMessages(): FunctionComponent {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
@@ -77,6 +78,7 @@ function PushMessages(): FunctionComponent {
 
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const navigateToPushMessage = useCallback(
     (id: string) => {
@@ -91,8 +93,11 @@ function PushMessages(): FunctionComponent {
         <div className='flex flex-row justify-between items-center pr-6'>
           <CardTitle className='text-2xl font-semibold leading-none tracking-tight'>Push messages</CardTitle>
           <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-            <Link to='/monitoring-observers/create-new-message' search={{ pageSize: 25 }}>
-              <Button>
+            <Link
+              to='/monitoring-observers/create-new-message'
+              search={{ pageSize: 25 }}
+              disabled={electionRound?.status === ElectionRoundStatus.Archived}>
+              <Button disabled={electionRound?.status === ElectionRoundStatus.Archived}>
                 <Plus className='mr-2' width={18} height={18} />
                 Create new message
               </Button>

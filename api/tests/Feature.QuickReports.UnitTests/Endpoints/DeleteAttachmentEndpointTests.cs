@@ -28,7 +28,7 @@ public class DeleteAttachmentEndpointTests
         var request = new DeleteAttachment.Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id,
+            ObserverId = fakeMonitoringObserver.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

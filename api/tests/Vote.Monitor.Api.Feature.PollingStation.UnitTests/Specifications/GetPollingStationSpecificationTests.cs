@@ -17,8 +17,14 @@ public class GetPollingStationSpecificationTests
             .Union(new PollingStationAggregateFaker(electionRound: electionRound).Generate(500))
             .ToList();
 
-        var spec = new GetPollingStationSpecification(electionRound.Id, pollingStation.Address, new Dictionary<string, string>());
-
+        var spec = new GetPollingStationSpecification(electionRound.Id,
+            pollingStation.Level1,
+            pollingStation.Level2,
+            pollingStation.Level3,
+            pollingStation.Level4,
+            pollingStation.Level5,
+            pollingStation.Number,
+            pollingStation.Address);
         // Act
         var result = spec.Evaluate(testCollection).ToList();
 
@@ -40,7 +46,14 @@ public class GetPollingStationSpecificationTests
             .Union(new PollingStationAggregateFaker(electionRound).Generate(500))
             .ToList();
 
-        var spec = new GetPollingStationSpecification(electionRound.Id, pollingStation.Address[..(pollingStation.Address.Length / 2)], new Dictionary<string, string>());
+        var spec = new GetPollingStationSpecification(electionRound.Id,
+            pollingStation.Level1,
+            pollingStation.Level2,
+            pollingStation.Level3,
+            pollingStation.Level4,
+            pollingStation.Level5,
+            pollingStation.Number,
+            pollingStation.Address);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Form = Vote.Monitor.Domain.Entities.FormTemplateAggregate.Form;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
 
@@ -10,7 +10,7 @@ public partial class FormTests
     public void Clone_ShouldReturnClonedForm_WhenStatusIsPublishedAndLanguagesAreValid()
     {
         // Arrange
-        var template = Form.Create(FormType.Opening,
+        var template = FormTemplate.Create(FormType.Opening,
             "A",
             LanguagesList.RO.Iso1,
             new TranslatedStringFaker(_languages),
@@ -50,7 +50,7 @@ public partial class FormTests
     {
         // Arrange
         // Arrange
-        var template = Form.Create(FormType.Opening,
+        var template = FormTemplate.Create(FormType.Opening,
             "A",
             LanguagesList.RO.Iso1,
             new TranslatedStringFaker(_languages),
@@ -81,7 +81,7 @@ public partial class FormTests
     public void Clone_ShouldThrowValidationException_WhenDefaultLanguageIsUnsupported()
     {
         // Arrange
-        var template = Form.Create(FormType.Opening,
+        var template = FormTemplate.Create(FormType.Opening,
             "A",
             LanguagesList.RO.Iso1,
             new TranslatedStringFaker(_languages),
@@ -114,7 +114,7 @@ public partial class FormTests
     public void Clone_ShouldThrowValidationException_WhenOneOrMoreLanguagesAreUnsupported()
     {
         // Arrange
-        var template = Form.Create(FormType.Opening,
+        var template = FormTemplate.Create(FormType.Opening,
             "A",
             LanguagesList.RO.Iso1,
             new TranslatedStringFaker(_languages),

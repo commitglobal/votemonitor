@@ -14,17 +14,15 @@ import {
   observerQuickReportsColumns,
   quickReportsColumnVisibilityOptions
 } from '@/features/responses/utils/column-visibility-options';
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';
 import { MonitoringObserverQuickReportsFilters } from '../MonitoringObserverQuickReportsFilters/MonitoringObserverQuickReportsFilters';
 import { MonitoringObserverQuickReportsTable } from '../MonitoringObserverQuickReportsTable/MonitoringObserverQuickReportsTable';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
-
 export function MonitoringObserverQuickReports(): FunctionComponent {
-  const search = routeApi.useSearch();
+  const search = Route.useSearch();
 
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).length !== 0);
   const [columnsVisibility, setColumnsVisibility] = useState(observerQuickReportsColumns);
@@ -33,8 +31,7 @@ export function MonitoringObserverQuickReports(): FunctionComponent {
   const debouncedSearchText = useDebounce(searchText, 300);
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.currentTarget.value;
-    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+    setSearchText(ev.currentTarget.value);
   };
 
   return (

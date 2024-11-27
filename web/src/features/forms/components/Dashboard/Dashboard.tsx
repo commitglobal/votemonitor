@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZTranslationStatus } from '@/common/types';
+import { ElectionRoundStatus, ZFormType, ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -19,7 +19,6 @@ import { LanguageBadge } from '@/components/ui/language-badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/components/ui/use-toast';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
@@ -34,7 +33,7 @@ import {
   PhotoIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -44,6 +43,9 @@ import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
 import { FormFilters } from './FormFilters/FormFilters';
+import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -51,6 +53,9 @@ export default function FormsDashboard(): ReactElement {
   const debouncedSearch = useDebounce(search, 300);
   const [searchText, setSearchText] = useState('');
   const { filteringIsActive } = useFilteringContainer();
+  const router = useRouter();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -63,10 +68,12 @@ export default function FormsDashboard(): ReactElement {
   }, [searchText, debouncedSearch]);
 
   const addTranslationsDialog = useAddTranslationsDialog();
+  const editFormAccessDialog = useEditFormAccessDialog();
+
   const confirm = useConfirm();
 
   const { data: languages } = useLanguages();
-  const { currentElectionRoundId, isMonitoringNgoForCitizenReporting } = useCurrentElectionRoundStore((s) => s);
+
   const columnHelper = createColumnHelper<FormBase>();
 
   const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
@@ -96,7 +103,6 @@ export default function FormsDashboard(): ReactElement {
         ),
         enableResizing: false,
       }),
-
       columnHelper.display({
         id: 'code',
         enableSorting: true,
@@ -204,112 +210,9 @@ export default function FormsDashboard(): ReactElement {
             <></>
           ),
       }),
-      columnHelper.display({
-        header: '',
-        id: 'action',
-        enableSorting: false,
-        enableResizing: false,
-        cell: ({ row }) => (
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigateToForm(row.original.id, row.original.defaultLanguage)}>
-                View
-              </DropdownMenuItem>
-
-              {row.depth === 0 ? (
-                <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
-                  onClick={() => navigateToEdit(row.original.id)}>
-                  Edit
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
-                  onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
-                  Edit
-                </DropdownMenuItem>
-              )}
-
-              {row.depth === 0 ? (
-                <DropdownMenuItem
-                  disabled={row.original.status !== FormStatus.Drafted}
-                  onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
-                  Add translations
-                </DropdownMenuItem>
-              ) : null}
-              {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
-              ) : null}
-              {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
-                <DropdownMenuItem onClick={() => handlePublishForm(row.original)}>Publish</DropdownMenuItem>
-              ) : null}
-              {row.depth === 0 ? (
-                <DropdownMenuItem onClick={() => handleDuplicateForm(row.original)}>Duplicate</DropdownMenuItem>
-              ) : null}
-              {row.depth === 0 ? (
-                <DropdownMenuItem
-                  className='text-red-600'
-                  onClick={async () => {
-                    if (
-                      await confirm({
-                        title: `Delete form ${row.original.code}?`,
-                        body:
-                          row.original.status === FormStatus.Published ? (
-                            <>
-                              Please note that this form is published and may contain associated data. Deleting this
-                              form could result in the loss of any submitted answers from your observers. Once deleted,{' '}
-                              <b>the associated data cannot be retrieved</b>
-                            </>
-                          ) : (
-                            'This action is permanent and cannot be undone. Once deleted, this form cannot be retrieved.'
-                          ),
-                        actionButton: 'Delete',
-                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
-                        cancelButton: 'Cancel',
-                      })
-                    ) {
-                      deleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: row.original.id });
-                    }
-                  }}>
-                  Delete form
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  className='text-red-600'
-                  onClick={async () => {
-                    const languageCode = row.original.defaultLanguage;
-                    const language = languages?.find((l) => languageCode === l.code);
-                    const fullName = language ? `${language.name} / ${language.nativeName}` : '';
-
-                    if (
-                      await confirm({
-                        title: `Delete translation ${fullName}?`,
-                        body: 'This action is permanent and cannot be undone. Once deleted, this translation cannot be retrieved.',
-                        actionButton: 'Delete',
-                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
-                        cancelButton: 'Cancel',
-                      })
-                    ) {
-                      deleteTranslationMutation.mutate({
-                        electionRoundId: currentElectionRoundId,
-                        formId: row.original.id,
-                        languageCode,
-                      });
-                    }
-                  }}>
-                  Delete translation
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      }),
     ];
 
-    if (isMonitoringNgoForCitizenReporting) {
+    if (electionRound?.isMonitoringNgoForCitizenReporting) {
       defaultColumns.splice(
         1,
         0,
@@ -344,8 +247,309 @@ export default function FormsDashboard(): ReactElement {
       );
     }
 
+    if (electionRound?.isCoalitionLeader) {
+      defaultColumns.push(
+        columnHelper.display({
+          id: 'sharedWith',
+          enableSorting: false,
+          header: ({ column }) => (
+            <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.sharedWith')} column={column} />
+          ),
+          cell: ({ row }) =>
+            row.depth === 0 ? (
+              row.original.formAccess.length ? (
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                        {row.original.formAccess.length}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {row.original.formAccess.map((fa) => (
+                        <div key={fa.ngoId}>{fa.name}</div>
+                      ))}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <>{row.original.formType === ZFormType.Enum.CitizenReporting ? 'Citizens' : 'None'}</>
+              )
+            ) : null,
+        })
+      );
+      defaultColumns.push({
+        header: '',
+        id: 'action',
+        enableSorting: false,
+        enableResizing: false,
+        cell: ({ row }) => (
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigateToForm(row.original.id, row.original.defaultLanguage)}>
+                View
+              </DropdownMenuItem>
+              {row.depth === 0 && row.original.status === FormStatus.Published ? (
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => editFormAccessDialog.trigger(row.original.id)}>
+                  Form access
+                </DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 ? (
+                <DropdownMenuItem
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
+                  onClick={() => navigateToEdit(row.original.id)}>
+                  Edit
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
+                  onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
+                  Edit
+                </DropdownMenuItem>
+              )}
+
+              {row.depth === 0 ? (
+                <DropdownMenuItem
+                  disabled={
+                    row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
+                  }
+                  onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
+                  Add translations
+                </DropdownMenuItem>
+              ) : null}
+
+              {row.depth === 0 && row.original.status === FormStatus.Published ? (
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handleObsoleteForm(row.original)}>
+                  Obsolete
+                </DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handlePublishForm(row.original)}>
+                  Publish
+                </DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 ? (
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => handleDuplicateForm(row.original)}>
+                  Duplicate
+                </DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 ? (
+                <DropdownMenuItem
+                  className='text-red-600'
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={async () => {
+                    if (
+                      await confirm({
+                        title: `Delete form ${row.original.code}?`,
+                        body:
+                          row.original.status === FormStatus.Published ? (
+                            <>
+                              Please note that this form is published and may contain associated data. Deleting this
+                              form could result in the loss of any submitted answers from your observers. Once deleted,
+                              <b>the associated data cannot be retrieved</b>
+                            </>
+                          ) : (
+                            'This action is permanent and cannot be undone. Once deleted, this form cannot be retrieved.'
+                          ),
+                        actionButton: 'Delete',
+                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                        cancelButton: 'Cancel',
+                      })
+                    ) {
+                      deleteFormMutation.mutate({
+                        electionRoundId: currentElectionRoundId,
+                        formId: row.original.id,
+                      });
+                    }
+                  }}>
+                  Delete form
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  className='text-red-600'
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={async () => {
+                    const languageCode = row.original.defaultLanguage;
+                    const language = languages?.find((l) => languageCode === l.code);
+                    const fullName = language ? `${language.name} / ${language.nativeName}` : '';
+
+                    if (
+                      await confirm({
+                        title: `Delete translation ${fullName}?`,
+                        body: 'This action is permanent and cannot be undone. Once deleted, this translation cannot be retrieved.',
+                        actionButton: 'Delete',
+                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                        cancelButton: 'Cancel',
+                      })
+                    ) {
+                      deleteTranslationMutation.mutate({
+                        electionRoundId: currentElectionRoundId,
+                        formId: row.original.id,
+                        languageCode,
+                      });
+                    }
+                  }}>
+                  Delete translation
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      });
+    } else {
+      defaultColumns.push(
+        columnHelper.display({
+          header: '',
+          id: 'action',
+          enableSorting: false,
+          enableResizing: false,
+          cell: ({ row }) => (
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => navigateToForm(row.original.id, row.original.defaultLanguage)}>
+                  View
+                </DropdownMenuItem>
+
+                {row.depth === 0 ? (
+                  <DropdownMenuItem
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
+                    onClick={() => navigateToEdit(row.original.id)}>
+                    Edit
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
+                    onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
+                    Edit
+                  </DropdownMenuItem>
+                )}
+
+                {row.depth === 0 ? (
+                  <DropdownMenuItem
+                    disabled={
+                      !row.original.isFormOwner ||
+                      electionRound?.status === ElectionRoundStatus.Archived ||
+                      row.original.status !== FormStatus.Drafted
+                    }
+                    onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
+                    Add translations
+                  </DropdownMenuItem>
+                ) : null}
+                {row.depth === 0 && row.original.status === FormStatus.Published ? (
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
+                    onClick={() => handleObsoleteForm(row.original)}>
+                    Obsolete
+                  </DropdownMenuItem>
+                ) : null}
+                {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
+                    onClick={() => handlePublishForm(row.original)}>
+                    Publish
+                  </DropdownMenuItem>
+                ) : null}
+                {row.depth === 0 ? (
+                  <DropdownMenuItem
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
+                    onClick={() => handleDuplicateForm(row.original)}>
+                    Duplicate
+                  </DropdownMenuItem>
+                ) : null}
+                {row.depth === 0 ? (
+                  <DropdownMenuItem
+                    className='text-red-600'
+                    disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
+                    onClick={async () => {
+                      if (
+                        await confirm({
+                          title: `Delete form ${row.original.code}?`,
+                          body:
+                            row.original.status === FormStatus.Published ? (
+                              <>
+                                Please note that this form is published and may contain associated data. Deleting this
+                                form could result in the loss of any submitted answers from your observers. Once
+                                deleted, <b>the associated data cannot be retrieved</b>
+                              </>
+                            ) : (
+                              'This action is permanent and cannot be undone. Once deleted, this form cannot be retrieved.'
+                            ),
+                          actionButton: 'Delete',
+                          actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                          cancelButton: 'Cancel',
+                        })
+                      ) {
+                        deleteFormMutation.mutate({
+                          electionRoundId: currentElectionRoundId,
+                          formId: row.original.id,
+                        });
+                      }
+                    }}>
+                    Delete form
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    className='text-red-600'
+                    disabled={!row.original.isFormOwner}
+                    onClick={async () => {
+                      const languageCode = row.original.defaultLanguage;
+                      const language = languages?.find((l) => languageCode === l.code);
+                      const fullName = language ? `${language.name} / ${language.nativeName}` : '';
+
+                      if (
+                        await confirm({
+                          title: `Delete translation ${fullName}?`,
+                          body: 'This action is permanent and cannot be undone. Once deleted, this translation cannot be retrieved.',
+                          actionButton: 'Delete',
+                          actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                          cancelButton: 'Cancel',
+                        })
+                      ) {
+                        deleteTranslationMutation.mutate({
+                          electionRoundId: currentElectionRoundId,
+                          formId: row.original.id,
+                          languageCode,
+                        });
+                      }
+                    }}>
+                    Delete translation
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ),
+        })
+      );
+    }
+
     return defaultColumns;
-  }, [currentElectionRoundId, isMonitoringNgoForCitizenReporting]);
+  }, [currentElectionRoundId, electionRound?.isMonitoringNgoForCitizenReporting, electionRound?.isCoalitionLeader]);
 
   const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
@@ -397,6 +601,7 @@ export default function FormsDashboard(): ReactElement {
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
     },
   });
 
@@ -412,6 +617,7 @@ export default function FormsDashboard(): ReactElement {
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
     },
 
     onError: (error) => {
@@ -445,6 +651,7 @@ export default function FormsDashboard(): ReactElement {
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
     },
 
     onError: () => {
@@ -468,6 +675,7 @@ export default function FormsDashboard(): ReactElement {
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
     },
 
     onError: (error) => {
@@ -489,6 +697,7 @@ export default function FormsDashboard(): ReactElement {
         description: 'Form deleted',
       });
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
     },
   });
 
@@ -548,6 +757,7 @@ export default function FormsDashboard(): ReactElement {
           getRowClassName={getRowClassName}
         />
         <AddTranslationsDialog />
+        <EditFormAccessDialog />
       </CardContent>
     </Card>
   );

@@ -1,29 +1,35 @@
 import { authApi } from '@/common/auth-api';
-import { FormSubmissionFollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
+import { DateTimeFormat } from '@/common/formats';
+import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
-import { formSubmissionDetailsQueryOptions, Route } from '@/routes/responses/$submissionId';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/form-submissions/$submissionId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
-import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
-import { format } from 'date-fns';
-import { DateTimeFormat } from '@/common/formats';
+import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
+import { usePrevSearch } from '@/common/prev-search-store';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const { data: formSubmission } = useSuspenseQuery(
     formSubmissionDetailsQueryOptions(currentElectionRoundId, submissionId)
   );
+  const prevSearch = usePrevSearch();
 
   const router = useRouter();
 
@@ -65,17 +71,19 @@ export default function FormSubmissionDetails(): FunctionComponent {
   }
 
   return (
-    <Layout title={`#${formSubmission.submissionId}`}>
+    <Layout
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
+      breadcrumbs={<></>}
+      title={`#${formSubmission.submissionId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
           <CardContent className='flex flex-col gap-4 pt-6'>
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                search
                 className='flex gap-1 font-bold text-purple-500'
-                to='/monitoring-observers/view/$monitoringObserverId/$tab'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
+                to='/responses'
+                search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}
@@ -124,11 +132,6 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 </div>
               </div>
             )}
-
-            <div>
-              <p className='font-bold'>Is completed:</p>
-              {formSubmission.isCompleted.toString()}
-            </div>
           </CardContent>
         </Card>
         {formSubmission.formType === ZFormType.Enum.PSI ? (
@@ -177,7 +180,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={formSubmission.followUpStatus}
-                value={formSubmission.followUpStatus}>
+                value={formSubmission.followUpStatus}
+                disabled={!formSubmission.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

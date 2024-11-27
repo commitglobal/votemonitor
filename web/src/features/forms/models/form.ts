@@ -12,6 +12,11 @@ export const FormStatusList: FormStatus[] = [
     FormStatus.Obsolete
 ]
 
+export interface FormAccessModel {
+  ngoId: string;
+  name: string;
+}
+
 export interface FormBase {
     id: string;
     formType: FormType;
@@ -20,12 +25,14 @@ export interface FormBase {
     icon?: string;
     name: TranslatedString;
     description?: TranslatedString;
+    isFormOwner: boolean;
     status: FormStatus;
     languages: string[];
     lastModifiedOn: string;
     lastModifiedBy: string;
     numberOfQuestions: number;
     languagesTranslationStatus: LanguagesTranslationStatus;
+    formAccess: FormAccessModel[]
 }
 
 export interface FormFull extends FormBase {

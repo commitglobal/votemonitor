@@ -52,8 +52,8 @@ public sealed partial class Fake
                     x.LocationDescription = f.Lorem.Sentence(10);
                 }
             })
-            .RuleFor(x => x.FirstName, f => f.Name.FirstName())
-            .RuleFor(x => x.LastName, f => f.Name.LastName())
+            .RuleFor(x => x.NgoName, f => f.Company.CompanyName())
+            .RuleFor(x => x.DisplayName, f => f.Name.FirstName())
             .RuleFor(x => x.Email, f => f.Internet.Email())
             .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
             .RuleFor(x => x.MonitoringObserverId, f => f.Random.Guid())

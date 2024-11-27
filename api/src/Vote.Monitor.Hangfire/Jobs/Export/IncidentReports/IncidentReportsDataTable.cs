@@ -30,17 +30,12 @@ public class IncidentReportsDataTable
             "Level4",
             "Level5",
             "Number",
+            "Ngo",
             "MonitoringObserverId",
-            "FirstName",
-            "LastName",
+            "Name",
             "Email",
             "PhoneNumber"
         ]);
-    }
-
-    public static IncidentReportsDataTable FromForm(PollingStationInformationForm psiForm)
-    {
-        return new IncidentReportsDataTable(psiForm.Id, psiForm.DefaultLanguage, psiForm.Questions);
     }
 
     public static IncidentReportsDataTable FromForm(Form form)

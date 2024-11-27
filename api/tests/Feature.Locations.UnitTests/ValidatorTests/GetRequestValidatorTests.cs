@@ -26,7 +26,7 @@ public class GetRequestValidatorTests
         // Arrange
         var request = new Get.Request
         {
-            Id = Guid.Empty,
+            Id = Guid.Empty
         };
 
         // Act

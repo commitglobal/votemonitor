@@ -9,6 +9,7 @@ interface FilteringContainerProps {
 
 export const FilteringContainer: FC<FilteringContainerProps> = ({ children }) => {
   const { filteringIsActive, queryParams, resetFilters } = useFilteringContainer();
+
   return (
     <div className='grid items-center grid-cols-6 gap-4'>
       {children}

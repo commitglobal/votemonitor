@@ -80,12 +80,12 @@ public class UpsertValidatorTests
             new Request.BreakRequest
             {
                 Start = DateTime.UtcNow.AddDays(-1),
-                End = DateTime.UtcNow,
+                End = DateTime.UtcNow
             },
             new Request.BreakRequest
             {
                 Start = DateTime.UtcNow,
-                End = DateTime.UtcNow.AddDays(-1),
+                End = DateTime.UtcNow.AddDays(-1)
             }
         ]};
 
@@ -108,7 +108,7 @@ public class UpsertValidatorTests
             new Request.BreakRequest
             {
                 Start = DateTime.UtcNow.AddDays(-1),
-                End = DateTime.UtcNow,
+                End = DateTime.UtcNow
             },
             new Request.BreakRequest
             {

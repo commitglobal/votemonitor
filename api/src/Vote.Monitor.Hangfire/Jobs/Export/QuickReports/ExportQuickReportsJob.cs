@@ -2,6 +2,7 @@
 using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
@@ -88,85 +89,128 @@ public class ExportQuickReportsJob(
     }
 
     private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId,
-        ExportQuickReportsFilters? filters, CancellationToken ct)
+        ExportQuickReportsFilters filters, CancellationToken ct)
     {
-        var sql = """
-                  SELECT
-                      QR."Id",
-                      QR."QuickReportLocationType",
-                      QR."IncidentCategory",
-                      QR."MonitoringObserverId",
-                      COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS "Timestamp",
-                      QR."Title",
-                      QR."Description",
-                      QR."FollowUpStatus",
-                      COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "QuickReportId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
-                      FROM "QuickReportAttachments" qra
-                      WHERE qra."ElectionRoundId" = @electionRoundId AND qra."QuickReportId" = qr."Id"),'[]'::JSONB) AS "Attachments",
-                      O."FirstName",
-                      O."LastName",
-                      O."Email",
-                      O."PhoneNumber",
-                      QR."PollingStationDetails",
-                      PS."Id" AS "PollingStationId",
-                      PS."Level1",
-                      PS."Level2",
-                      PS."Level3",
-                      PS."Level4",
-                      PS."Level5",
-                      PS."Number",
-                      PS."Address"
-                  FROM
-                      "QuickReports" QR
-                      INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      INNER JOIN "AspNetUsers" O ON MO."ObserverId" = O."Id"
-                      LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-                  WHERE
-                      QR."ElectionRoundId" = @electionRoundId
-                      AND MN."NgoId" = @ngoId
-                      AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
-                      AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
-                      AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
-                      AND (
-                          @level1 IS NULL
-                          OR PS."Level1" = @level1
-                      )
-                      AND (
-                          @level2 IS NULL
-                          OR PS."Level2" = @level2
-                      )
-                      AND (
-                          @level3 IS NULL
-                          OR PS."Level3" = @level3
-                      )
-                      AND (
-                          @level4 IS NULL
-                          OR PS."Level4" = @level4
-                      )
-                      AND (
-                          @level5 IS NULL
-                          OR PS."Level5" = @level5
-                      )
-                      AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
-                      AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp)
-                  ORDER BY COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
-                  """;
+        var sql = 
+            """
+            SELECT
+            	QR."Id",
+            	QR."QuickReportLocationType",
+            	QR."IncidentCategory",
+            	QR."MonitoringObserverId",
+            	COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS "Timestamp",
+            	QR."Title",
+            	QR."Description",
+            	QR."FollowUpStatus",
+            	COALESCE(
+            		(
+            			SELECT
+            				JSONB_AGG(
+            					JSONB_BUILD_OBJECT(
+            						'QuickReportId',
+            						"QuickReportId",
+            						'FileName',
+            						"FileName",
+            						'MimeType',
+            						"MimeType",
+            						'FilePath',
+            						"FilePath",
+            						'UploadedFileName',
+            						"UploadedFileName",
+            						'TimeSubmitted',
+            						COALESCE("LastModifiedOn", "CreatedOn")
+            					)
+            				)
+            			FROM
+            				"QuickReportAttachments" QRA
+            			WHERE
+            				QRA."ElectionRoundId" = @ELECTIONROUNDID
+            				AND QRA."QuickReportId" = QR."Id"
+            		),
+            		'[]'::JSONB
+            	) AS "Attachments",
+            	MO."NgoName",
+            	MO."DisplayName",
+            	MO."Email",
+            	MO."PhoneNumber",
+            	QR."PollingStationDetails",
+            	PS."Id" AS "PollingStationId",
+            	PS."Level1",
+            	PS."Level2",
+            	PS."Level3",
+            	PS."Level4",
+            	PS."Level5",
+            	PS."Number",
+            	PS."Address"
+            FROM
+            	"QuickReports" QR
+            	INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
+            	LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
+            WHERE
+            	(
+            		@COALITIONMEMBERID IS NULL
+            		OR MO."NgoId" = @COALITIONMEMBERID
+            	)
+            	AND (
+            		@FOLLOWUPSTATUS IS NULL
+            		OR QR."FollowUpStatus" = @FOLLOWUPSTATUS
+            	)
+            	AND (
+            		@QUICKREPORTLOCATIONTYPE IS NULL
+            		OR QR."QuickReportLocationType" = @QUICKREPORTLOCATIONTYPE
+            	)
+            	AND (
+            		@INCIDENTCATEGORY IS NULL
+            		OR QR."IncidentCategory" = @INCIDENTCATEGORY
+            	)
+            	AND (
+            		@LEVEL1 IS NULL
+            		OR PS."Level1" = @LEVEL1
+            	)
+            	AND (
+            		@LEVEL2 IS NULL
+            		OR PS."Level2" = @LEVEL2
+            	)
+            	AND (
+            		@LEVEL3 IS NULL
+            		OR PS."Level3" = @LEVEL3
+            	)
+            	AND (
+            		@LEVEL4 IS NULL
+            		OR PS."Level4" = @LEVEL4
+            	)
+            	AND (
+            		@LEVEL5 IS NULL
+            		OR PS."Level5" = @LEVEL5
+            	)
+            	AND (
+            		@FROMDATE IS NULL
+            		OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @FROMDATE::TIMESTAMP
+            	)
+            	AND (
+            		@TODATE IS NULL
+            		OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @TODATE::TIMESTAMP
+            	)
+            ORDER BY
+            	COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
+            """;
 
         var queryArgs = new
         {
             electionRoundId,
             ngoId,
-            level1 = filters?.Level1Filter,
-            level2 = filters?.Level2Filter,
-            level3 = filters?.Level3Filter,
-            level4 = filters?.Level4Filter,
-            level5 = filters?.Level5Filter,
-            followUpStatus = filters?.QuickReportFollowUpStatus?.ToString(),
-            quickReportLocationType = filters?.QuickReportLocationType?.ToString(),
-            incidentCategory = filters?.IncidentCategory?.ToString(),
-            fromDate = filters?.FromDateFilter?.ToString("O"),
-            toDate = filters?.ToDateFilter?.ToString("O"),
+            dataSource = filters.DataSource.ToString(),
+            coalitionMemberId = filters.CoalitionMemberId,
+            level1 = filters.Level1Filter,
+            level2 = filters.Level2Filter,
+            level3 = filters.Level3Filter,
+            level4 = filters.Level4Filter,
+            level5 = filters.Level5Filter,
+            followUpStatus = filters.QuickReportFollowUpStatus?.ToString(),
+            quickReportLocationType = filters.QuickReportLocationType?.ToString(),
+            incidentCategory = filters.IncidentCategory?.ToString(),
+            fromDate = filters.FromDateFilter?.ToString("O"),
+            toDate = filters.ToDateFilter?.ToString("O"),
         };
 
         IEnumerable<QuickReportModel> quickReports = [];

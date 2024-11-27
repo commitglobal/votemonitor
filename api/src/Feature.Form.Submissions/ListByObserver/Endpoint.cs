@@ -28,169 +28,171 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         }
 
         var sql = """
-                  SELECT COUNT(*) count
+                  SELECT
+                      COUNT(*) count
                   FROM
-                      "MonitoringObservers" MO
-                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                      INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                   WHERE
-                      MN."ElectionRoundId" = @electionRoundId
-                      AND MN."NgoId" = @ngoId
-                      AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
-                      AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
-
-                  SELECT 
+                    (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
+                   AND   (
+                          @searchText IS NULL
+                              OR @searchText = ''
+                              OR mo."MonitoringObserverId"::TEXT ILIKE @searchText
+                              OR mo."DisplayName" ILIKE @searchText
+                              OR mo."Email" ILIKE @searchText
+                              OR mo."PhoneNumber" ILIKE @searchText
+                          )
+                    AND (
+                      @tagsFilter IS NULL
+                          OR cardinality(@tagsFilter) = 0
+                          OR mo."Tags" && @tagsFilter
+                      );
+               
+                  SELECT
                       "MonitoringObserverId",
                       "ObserverName",
                       "PhoneNumber",
                       "Email",
                       "Tags",
-                      "NumberOfCompletedForms",
+                      "NgoName",
                       "NumberOfFlaggedAnswers",
                       "NumberOfLocations",
                       "NumberOfFormsSubmitted",
-                      "FollowUpStatus"
-                  FROM (
-                      SELECT
-                          MO."Id" "MonitoringObserverId",
-                          U."FirstName" || ' ' || U."LastName" "ObserverName",
-                          U."PhoneNumber",
-                          U."Email",
-                          MO."Tags",
-                          COALESCE(
-                           (
-                               SELECT
-                                   count(*)
-                               FROM
-                                   "FormSubmissions" FS
-                               WHERE
-                                   FS."MonitoringObserverId" = MO."Id" and fs."IsCompleted" = true
-                           ),
-                           0
-                       ) AS "NumberOfCompletedForms",
-                          COALESCE(
+                      "FollowUpStatus",
+                      "IsOwnObserver"
+                  FROM
+                      (
+                          SELECT
+                              MO."MonitoringObserverId" "MonitoringObserverId",
+                              Mo."DisplayName" "ObserverName",
+                              Mo."PhoneNumber",
+                              Mo."Email",
+                              MO."Tags",
+                              MO."NgoName",
+                              MO."IsOwnObserver",
+                              COALESCE(
+                                      (
+                                          SELECT
+                                              SUM("NumberOfFlaggedAnswers")
+                                          FROM
+                                              "FormSubmissions" FS
+                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
+                                          WHERE
+                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
+                                      ),
+                                      0
+                              ) AS "NumberOfFlaggedAnswers",
                               (
                                   SELECT
-                                      SUM("NumberOfFlaggedAnswers")
+                                      COUNT(*)
                                   FROM
-                                      "FormSubmissions" FS
-                                  WHERE
-                                      FS."MonitoringObserverId" = MO."Id"
-                              ),
-                              0
-                          ) AS "NumberOfFlaggedAnswers",
-                          (
-                              SELECT
-                                  COUNT(*)
-                              FROM
-                                  (
+                                      (
+                                          SELECT
+                                              PSI."PollingStationId"
+                                          FROM
+                                              "PollingStationInformation" PSI
+                                          WHERE
+                                              PSI."MonitoringObserverId" = MO."MonitoringObserverId"
+                                            AND PSI."ElectionRoundId" = @electionRoundId
+                                          UNION
+                                          SELECT
+                                              FS."PollingStationId"
+                                          FROM
+                                              "FormSubmissions" FS
+                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
+                                          WHERE
+                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
+                                            AND FS."ElectionRoundId" = @electionRoundId
+                                      ) TMP
+                              ) AS "NumberOfLocations",
+                              (
+                                  SELECT
+                                      COUNT(*)
+                                  FROM
+                                      (
+                                          SELECT
+                                              PSI."Id"
+                                          FROM
+                                              "PollingStationInformation" PSI
+                                          WHERE
+                                              PSI."MonitoringObserverId" = MO."MonitoringObserverId"
+                                            AND PSI."ElectionRoundId" = @electionRoundId
+                                          UNION
+                                          SELECT
+                                              FS."Id"
+                                          FROM
+                                              "FormSubmissions" FS
+                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
+                                          WHERE
+                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
+                                            AND FS."ElectionRoundId" = @electionRoundId
+                                      ) TMP
+                              ) AS "NumberOfFormsSubmitted",
+                              (
+                                  CASE WHEN EXISTS (
                                       SELECT
-                                          PSI."PollingStationId"
-                                      FROM
-                                          "PollingStationInformation" PSI
-                                      WHERE
-                                          PSI."MonitoringObserverId" = MO."Id"
-                                          AND PSI."ElectionRoundId" = @electionRoundId
-                                      UNION
-                                      SELECT
-                                          FS."PollingStationId"
+                                          1
                                       FROM
                                           "FormSubmissions" FS
+                                              inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
                                       WHERE
-                                          FS."MonitoringObserverId" = MO."Id"
-                                          AND FS."ElectionRoundId" = @electionRoundId
-                                  ) TMP
-                          ) AS "NumberOfLocations",
-                          (
-                              SELECT
-                                  COUNT(*)
-                              FROM
-                                  (
-                                      SELECT
-                                          PSI."Id"
-                                      FROM
-                                          "PollingStationInformation" PSI
-                                      WHERE
-                                          PSI."MonitoringObserverId" = MO."Id"
-                                          AND PSI."ElectionRoundId" = @electionRoundId
-                                      UNION
-                                      SELECT
-                                          FS."Id"
-                                      FROM
-                                          "FormSubmissions" FS
-                                      WHERE
-                                          FS."MonitoringObserverId" = MO."Id"
-                                          AND FS."ElectionRoundId" = @electionRoundId
-                                  ) TMP
-                          ) AS "NumberOfFormsSubmitted",
-                          (
-                             CASE 
-                                 WHEN EXISTS (
-                                     SELECT 1 
-                                     FROM 
-                                         "FormSubmissions" FS 
-                                     WHERE 
-                                         FS."FollowUpStatus" = 'NeedsFollowUp'
-                                         AND FS."MonitoringObserverId" = MO."Id"
-                                         AND FS."ElectionRoundId" = @electionRoundId
-                                     ) 
-                                 THEN 'NeedsFollowUp'
-                                 ELSE NULL
-                             END 
-                         ) AS "FollowUpStatus"
-                      FROM
-                          "MonitoringObservers" MO
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                      WHERE
-                          MN."ElectionRoundId" = @electionRoundId
-                          AND MN."NgoId" = @ngoId
-                          AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
-                          AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
+                                          FS."FollowUpStatus" = 'NeedsFollowUp'
+                                        AND FS."MonitoringObserverId" = MO."MonitoringObserverId"
+                                        AND FS."ElectionRoundId" = @electionRoundId
+                                  ) THEN 'NeedsFollowUp' ELSE NULL END
+                                  ) AS "FollowUpStatus"
+                          FROM
+                              "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                          WHERE
+                            (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
+                            AND (
+                                  @searchText IS NULL
+                                      OR @searchText = ''
+                                      OR mo."MonitoringObserverId"::TEXT ILIKE @searchText
+                                      OR mo."DisplayName" ILIKE @searchText
+                                      OR mo."Email" ILIKE @searchText
+                                      OR mo."PhoneNumber" ILIKE @searchText
+                                  )
+                            AND (
+                              @tagsFilter IS NULL
+                                  OR cardinality(@tagsFilter) = 0
+                                  OR mo."Tags" && @tagsFilter
+                              )
                       ) T
                   WHERE
-                      (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
+                      (
+                          @needsFollowUp IS NULL
+                              OR T."FollowUpStatus" = 'NeedsFollowUp'
+                          )
                   ORDER BY
                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
-                  
                       CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
                       CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
-                  
                       CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
                       CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
-                  
                       CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
                       CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
-                    
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
-                    
                       CASE WHEN @sortExpression = 'NumberOfLocations ASC' THEN "NumberOfLocations" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN "NumberOfLocations" END DESC,
-                    
                       CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN "NumberOfFormsSubmitted" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC,
-                      
-                      CASE WHEN @sortExpression = 'NumberOfCompletedForms ASC' THEN "NumberOfCompletedForms" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfCompletedForms DESC' THEN "NumberOfCompletedForms" END DESC
-
-                  OFFSET @offset ROWS
-                  FETCH NEXT @pageSize ROWS ONLY;
+                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            datasource = req.DataSource?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-            needsFollowUp = req.FollowUpStatus?.ToString(),
+            needsFollowUp = req.FollowUpStatus?.ToString()
         };
 
         int totalRowCount = 0;
@@ -256,12 +258,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted)} {sortOrder}";
-        }
-
-        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfCompletedForms),
-                StringComparison.InvariantCultureIgnoreCase))
-        {
-            return $"{nameof(ObserverSubmissionOverview.NumberOfCompletedForms)} {sortOrder}";
         }
 
         return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";

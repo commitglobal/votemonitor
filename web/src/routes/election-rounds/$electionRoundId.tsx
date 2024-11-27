@@ -1,6 +1,7 @@
 
 import { authApi } from '@/common/auth-api';
 import { ElectionRound } from '@/features/election-round/models/ElectionRound';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -23,7 +24,10 @@ export const electionRoundQueryOptions = (electionRoundId: string) => {
 
 export const Route = createFileRoute('/election-rounds/$electionRoundId')({
   component: ElectionRoundDetails,
-  loader: ({ context: { queryClient }, params: { electionRoundId } }) => queryClient.ensureQueryData(electionRoundQueryOptions(electionRoundId))
+  loader: ({ context: { queryClient }, params: { electionRoundId } }) => queryClient.ensureQueryData(electionRoundQueryOptions(electionRoundId)),
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });
 
 function ElectionRoundDetails() {

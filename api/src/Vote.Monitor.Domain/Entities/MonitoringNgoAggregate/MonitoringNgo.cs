@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+﻿using Vote.Monitor.Domain.Entities.CoalitionAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.ObserverAggregate;
 
@@ -15,6 +16,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
     public MonitoringNgoStatus Status { get; private set; }
+    public virtual List<CoalitionMembership> Memberships { get; internal set; } = [];
 
     internal MonitoringNgo(ElectionRound electionRound, Ngo ngo)
     {

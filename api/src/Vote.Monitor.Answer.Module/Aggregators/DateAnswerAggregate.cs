@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -12,6 +13,16 @@ public class DateAnswerAggregate(DateQuestion question, int displayOrder) : Base
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         if (answer is not DateAnswer dateAnswer)
+        {
+            throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
+        }
+
+        _answersHistogram.IncrementFor(GetBucketName(dateAnswer.Date));
+    }
+
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        if (answer is not DateAnswerModel dateAnswer)
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }

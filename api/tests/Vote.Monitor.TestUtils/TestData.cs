@@ -24,6 +24,6 @@ public class TestData
         new List<object[]>
         {
             new object[] { Guid.Empty },
-            new object[] { null as Guid? },
+            new object[] { null as Guid? }
         };
 }

@@ -39,7 +39,7 @@ export function CitizenReportsTab(): FunctionComponent {
 
   const setPrevSearch = useSetPrevSearch();
   useEffect(() => {
-    if (byFilter === 'byObserver') {
+    if (byFilter === 'byEntry') {
       setPrevSearch({ [FILTER_KEY.ViewBy]: 'byEntry' });
       void navigate({ search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
     }

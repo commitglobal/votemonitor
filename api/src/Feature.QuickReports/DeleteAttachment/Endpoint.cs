@@ -32,6 +32,8 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             .QuickReportAttachments
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
+                        && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.QuickReportId == req.QuickReportId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(setters => setters

@@ -28,9 +28,9 @@ public class FormSubmissionsDataTable
             "Level4",
             "Level5",
             "Number",
+            "Ngo",
             "MonitoringObserverId",
-            "FirstName",
-            "LastName",
+            "Name",
             "Email",
             "PhoneNumber"
         ]);

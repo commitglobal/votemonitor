@@ -1,4 +1,7 @@
-﻿namespace Feature.IncidentReports.ListMy;
+﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
+
+namespace Feature.IncidentReports.ListMy;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -35,6 +38,7 @@ public class Endpoint(
             .ThenInclude(x => x.ApplicationUser)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
+                && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                 && x.MonitoringObserver.ObserverId == req.ObserverId)
             .Select(incidentReport => new
             {
@@ -55,7 +59,7 @@ public class Endpoint(
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
 
-                PollingStation = incidentReport.PollingStation,
+                PollingStation = incidentReport.PollingStation
             })
             .AsSplitQuery()
             .ToListAsync(ct);
@@ -75,7 +79,7 @@ public class Endpoint(
                     return attachment with
                     {
                         PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                        UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
+                        UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
                     };
                 }).ToArray();
 

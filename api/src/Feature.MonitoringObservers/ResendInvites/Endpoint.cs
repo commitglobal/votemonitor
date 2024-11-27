@@ -12,12 +12,13 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers.ResendInvites;
 
-public class Endpoint(IAuthorizationService authorizationService,
+public class Endpoint(
+    IAuthorizationService authorizationService,
     VoteMonitorContext context,
     IJobService jobService,
     IEmailTemplateFactory emailFactory,
     IOptions<ApiConfiguration> apiConfig
-    ) : Endpoint<Request, Results<NoContent, NotFound>>
+) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     private readonly ApiConfiguration _apiConfig = apiConfig.Value;
 
@@ -55,31 +56,33 @@ public class Endpoint(IAuthorizationService authorizationService,
             .FirstAsync(ct);
 
         var pendingInviteMonitoringObservers = await context.MonitoringObservers
-            .Include(x=>x.Observer)
-            .ThenInclude(x=>x.ApplicationUser)
-             .Where(x => x.MonitoringNgo.NgoId == req.NgoId)
-             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
-             .Where(x => x.Status == MonitoringObserverStatus.Pending)
-             .Where(x => req.Ids.Count == 0 || req.Ids.Contains(x.Id))
-             .Select(x => new
-             {
-                 InvitationToken = x.Observer.ApplicationUser.InvitationToken,
-                 FullName = x.Observer.ApplicationUser.FirstName + " " + x.Observer.ApplicationUser.LastName,
-                 Email = x.Observer.ApplicationUser.Email
-             }).ToListAsync(ct);
+            .Include(x => x.Observer)
+            .ThenInclude(x => x.ApplicationUser)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => x.MonitoringNgo.NgoId == req.NgoId && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => x.Status == MonitoringObserverStatus.Pending)
+            .Where(x => req.Ids.Count == 0 || req.Ids.Contains(x.Id))
+            .Select(x => new
+            {
+                InvitationToken = x.Observer.ApplicationUser.InvitationToken,
+                FullName = x.Observer.ApplicationUser.FirstName + " " + x.Observer.ApplicationUser.LastName,
+                Email = x.Observer.ApplicationUser.Email
+            }).ToListAsync(ct);
 
         foreach (var monitoringObserver in pendingInviteMonitoringObservers)
         {
             var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
 
-            string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", monitoringObserver.InvitationToken!);
+            string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken",
+                monitoringObserver.InvitationToken!);
 
             var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: monitoringObserver.FullName,
                 CdnUrl: _apiConfig.WebAppUrl,
                 AcceptUrl: acceptInviteUrl,
                 NgoName: ngoName,
                 ElectionRoundDetails: electionRoundName);
-            
+
             var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
             jobService.EnqueueSendEmail(monitoringObserver.Email!, email.Subject, email.Body);
         }

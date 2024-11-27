@@ -51,7 +51,7 @@ public class Endpoint(
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
+            ngoId = req.NgoId
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
@@ -67,7 +67,7 @@ public class Endpoint(
         return TypedResults.Ok(new Response
         {
             TimestampsFilterOptions = timestampFilterOptions,
-            FormFilterOptions = formFilterOptions,
+            FormFilterOptions = formFilterOptions
         });
     }
 }

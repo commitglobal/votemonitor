@@ -180,16 +180,11 @@ export const MultiSelectAnswerSchema = BaseAnswerSchema.extend({
 });
 export type MultiSelectAnswer = z.infer<typeof MultiSelectAnswerSchema>;
 
-export type ElectionRoundMonitoring = {
-  monitoringNgoId: string;
-  electionRoundId: string;
-  title: string;
-  englishTitle: string;
-  startDate: string;
-  country: string;
-  countryId: string;
-  isMonitoringNgoForCitizenReporting: boolean;
-};
+export enum ElectionRoundStatus {
+  NotStarted = 'NotStarted',
+  Started = 'Started',
+  Archived = 'Archived',
+}
 
 export type LevelNode = {
   id: number;
@@ -235,7 +230,15 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
-export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'IncidentReporting','Other']);
+export const ZFormType = z.enum([
+  'PSI',
+  'Opening',
+  'Voting',
+  'ClosingAndCounting',
+  'CitizenReporting',
+  'IncidentReporting',
+  'Other',
+]);
 
 export type FormType = z.infer<typeof ZFormType>;
 
@@ -244,7 +247,6 @@ export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
 
 const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
 export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
-
 
 export interface Country {
   id: string;
@@ -260,4 +262,23 @@ export interface Language {
   code: string;
   name: string;
   nativeName: string;
+}
+
+export interface CoalitionMember {
+  id: string;
+  name: string;
+}
+export interface Coalition {
+  id: string;
+  isInCoalition: boolean;
+  name: string;
+  leaderId: string;
+  leaderName: string;
+  numberOfMembers: number;
+  members: CoalitionMember[];
+}
+
+export enum DataSources {
+  Ngo = 'ngo',
+  Coalition = 'coalition',
 }

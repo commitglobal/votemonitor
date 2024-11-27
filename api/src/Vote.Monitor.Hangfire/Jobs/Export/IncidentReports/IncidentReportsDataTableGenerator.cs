@@ -57,9 +57,9 @@ public class IncidentReportsDataTableGenerator
                 incidentReport.Level5 ?? "",
                 incidentReport.Number ?? "",
 
+                incidentReport.NgoName,
                 incidentReport.MonitoringObserverId.ToString(),
-                incidentReport.FirstName,
-                incidentReport.LastName,
+                incidentReport.DisplayName,
                 incidentReport.Email,
                 incidentReport.PhoneNumber
             };

@@ -19,6 +19,7 @@ export enum IncidentReportLocationType {
 export interface IncidentReportByEntry {
   incidentReportId: string;
   observerName: string;
+  ngoName: string;
   formCode: string;
   formName: TranslatedString;
   formDefaultLanguage: string;
@@ -39,16 +40,16 @@ export interface IncidentReportByEntry {
   phoneNumber: string;
   tags: string[];
   timeSubmitted: string;
+  isOwnObserver: boolean;
   followUpStatus: IncidentReportFollowUpStatus;
-  isCompleted: boolean;
 }
 
 export interface IncidentReportByObserver {
   observerName: string;
+  ngoName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfIncidentsSubmitted: number;
-  numberOfCompletedForms: number;
   phoneNumber: string;
   tags: string[];
   followUpStatus?: IncidentReportFollowUpStatus;

@@ -18,7 +18,9 @@ export default function PushMessageDetails(): FunctionComponent {
   const { data: pushMessage } = useSuspenseQuery(pushMessageDetailsQueryOptions(currentElectionRoundId, id));
 
   return (
-    <Layout backButton={<NavigateBack to='/monitoring-observers/$tab' params={{ tab: 'push-messages' }} />} title=''>
+    <Layout backButton={<NavigateBack to='/monitoring-observers/$tab' params={{ tab: 'push-messages' }} />} 
+    breadcrumbs={<></>}
+    title={id}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>

@@ -13,8 +13,8 @@
     <PackageReference Include="Figgle" Version="0.5.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="PolyJson" Version="1.4.0" />
-    <PackageReference Include="Refit" Version="7.0.0" />
-    <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+    <PackageReference Include="Refit" Version="8.0.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
   </ItemGroup>
 

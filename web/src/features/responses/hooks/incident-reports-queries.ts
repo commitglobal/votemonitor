@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import type { DataTableParameters, PageResponse } from '@/common/types';
+import type { DataSources, DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
@@ -15,7 +15,8 @@ export const incidentReportsByEntryKeys = {
   details: (electionRoundId: string) => [...incidentReportsByEntryKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) =>
     [...incidentReportsByEntryKeys.details(electionRoundId), id] as const,
-  filters: (electionRoundId: string) => [...incidentReportsByEntryKeys.all(electionRoundId), 'filters'] as const,
+  filters: (electionRoundId: string, dataSource: DataSources) =>
+    [...incidentReportsByEntryKeys.all(electionRoundId), dataSource, 'filters'] as const,
 };
 
 export const incidentReportsByObserverKeys = {
@@ -154,12 +155,12 @@ export function useIncidentReportsByForm(
   });
 }
 
-export function useIncidentReportsFilters(electionRoundId: string) {
+export function useIncidentReportsFilters(electionRoundId: string, dataSource: DataSources) {
   return useQuery({
-    queryKey: incidentReportsByEntryKeys.filters(electionRoundId),
+    queryKey: incidentReportsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
       const response = await authApi.get<IncidentReportsFilters>(
-        `/election-rounds/${electionRoundId}/incident-reports:filters`
+        `/election-rounds/${electionRoundId}/incident-reports:filters?dataSource=${dataSource}`
       );
 
       return response.data;

@@ -8,8 +8,9 @@ namespace Feature.DataExport.Start;
 
 public class FormSubmissionsFilters
 {
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
     public string? SearchText { get; set; }
-
+    public Guid? CoalitionMemberId { get; set; }
     public FormType? FormTypeFilter { get; set; }
 
     public string? Level1Filter { get; set; }
@@ -39,7 +40,7 @@ public class FormSubmissionsFilters
     public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     public DateTime? FromDateFilter { get; set; }
     public DateTime? ToDateFilter { get; set; }
-    
+
     public bool? IsCompletedFilter { get; set; }
 
     public ExportFormSubmissionsFilters ToFilter()
@@ -65,7 +66,9 @@ public class FormSubmissionsFilters
             QuestionsAnswered = QuestionsAnswered,
             FromDateFilter = FromDateFilter,
             ToDateFilter = ToDateFilter,
-            IsCompletedFilter = IsCompletedFilter
+            IsCompletedFilter = IsCompletedFilter,
+            DataSource = DataSource,
+            CoalitionMemberId = CoalitionMemberId
         };
     }
 }

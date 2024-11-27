@@ -1,15 +1,15 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
 import { usePrevSearch } from '@/common/prev-search-store';
-import { QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
+import { QuickReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
 import { Route, quickReportDetailsQueryOptions } from '@/routes/responses/quick-reports/$quickReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -17,14 +17,15 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
-import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
-import { MediaFilesCell } from '../MediaFilesCell/MediaFilesCell';
-import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 import { SubmissionType } from '../../models/common';
+import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+
   const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(currentElectionRoundId, quickReportId));
   const quickReport = quickReportQuery.data;
   const { invalidate } = useRouter();
@@ -70,14 +71,7 @@ export default function QuickReportDetails(): FunctionComponent {
   return (
     <Layout
       backButton={<NavigateBack to='/responses' search={prevSearch} />}
-      breadcrumbs={
-        <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
-          <Link className='crumb' to='/responses' preload='intent' search={prevSearch as any}>
-            responses
-          </Link>
-          <Link className='crumb'>{quickReport.id}</Link>
-        </div>
-      }
+      breadcrumbs={<></>}
       title={quickReport.id}>
       <div className='flex flex-col gap-4'>
         <Card>
@@ -85,10 +79,9 @@ export default function QuickReportDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                search
                 className='flex gap-1 font-bold text-purple-500'
-                to='/monitoring-observers/view/$monitoringObserverId/$tab'
-                params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
+                to='/responses'
+                search={{ searchText: quickReport.monitoringObserverId, tab: 'quick-reports', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {quickReport.observerName}
@@ -159,7 +152,8 @@ export default function QuickReportDetails(): FunctionComponent {
               <Select
                 onValueChange={handleFollowUpStatusChange}
                 defaultValue={quickReport.followUpStatus}
-                value={quickReport.followUpStatus}>
+                value={quickReport.followUpStatus}
+                disabled={!quickReport.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}>
                 <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>

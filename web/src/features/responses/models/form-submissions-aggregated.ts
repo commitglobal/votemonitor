@@ -12,8 +12,7 @@ import {
 
 export interface Responder {
   responderId: string;
-  firstName: string;
-  lastName: string;
+  displayName: string;
   email: string;
   phoneNumber: string;
 }

@@ -14,7 +14,6 @@ export function useFilteringContainer() {
 
   const setPrevSearch = useSetPrevSearch();
   const filteringIsActive = useMemo(() => {
-
     return Object.entries(queryParams)
       .filter(([key, _]) => !HIDDEN_FILTERS.includes(key))
       .some(([_, value]) => !!value);
@@ -27,6 +26,7 @@ export function useFilteringContainer() {
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {
             ...prev,
+            [FILTER_KEY.PageNumber]: 1,
             ...search,
           };
           setPrevSearch(newSearch);

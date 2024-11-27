@@ -120,9 +120,9 @@ public class FormSubmissionsDataTableGeneratorTests
         "Level4",
         "Level5",
         "Number",
+        "Ngo",
         "MonitoringObserverId",
-        "FirstName",
-        "LastName",
+        "Name",
         "Email",
         "PhoneNumber",
     ];
@@ -863,9 +863,9 @@ public class FormSubmissionsDataTableGeneratorTests
             submission.Level4,
             submission.Level5,
             submission.Number,
+            submission.NgoName,
             submission.MonitoringObserverId.ToString(),
-            submission.FirstName,
-            submission.LastName,
+            submission.DisplayName,
             submission.Email,
             submission.PhoneNumber,
         ];

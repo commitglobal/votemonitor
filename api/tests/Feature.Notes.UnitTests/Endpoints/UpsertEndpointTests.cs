@@ -79,7 +79,7 @@ public class UpsertEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = pollingStationId,
             ObserverId = fakeMonitoringObserver.Id,
-            Text = noteText,
+            Text = noteText
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

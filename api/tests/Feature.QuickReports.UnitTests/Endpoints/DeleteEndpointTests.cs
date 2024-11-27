@@ -32,7 +32,7 @@ public class DeleteEndpointTests
         {
             ElectionRoundId = electionRoundId,
             ObserverId = monitoringObserverId,
-            Id = attachmentId,
+            Id = attachmentId
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

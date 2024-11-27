@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import type {
+  DataSources,
   DataTableParameters,
   FormSubmissionFollowUpStatus,
   PageResponse,
@@ -14,7 +15,7 @@ import type {
   FormSubmissionByObserver,
   FormSubmissionsFilters,
 } from '../models/form-submission';
-import { SubmissionsAggregatedByFormParams } from '@/routes/responses/$formId.aggregated';
+import { SubmissionsAggregatedByFormParams } from '@/routes/responses/form-submissions/$formId.aggregated';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -27,7 +28,8 @@ export const formSubmissionsByEntryKeys = {
   detail: (electionRoundId: string, id: string) =>
     [...formSubmissionsByEntryKeys.details(electionRoundId), id] as const,
 
-  filters: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'filters'] as const,
+  filters: (electionRoundId: string, dataSource: DataSources) =>
+    [...formSubmissionsByEntryKeys.all(electionRoundId), dataSource, 'filters'] as const,
 };
 
 export const formSubmissionsByObserverKeys = {
@@ -124,12 +126,12 @@ export function useFormSubmissionsByObserver(
   });
 }
 
-export function useFormSubmissionsFilters(electionRoundId: string) {
+export function useFormSubmissionsFilters(electionRoundId: string, dataSource : DataSources) {
   return useQuery({
-    queryKey: formSubmissionsByEntryKeys.filters(electionRoundId),
+    queryKey: formSubmissionsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
       const response = await authApi.get<FormSubmissionsFilters>(
-        `/election-rounds/${electionRoundId}/form-submissions:filters`
+        `/election-rounds/${electionRoundId}/form-submissions:filters?dataSource=${dataSource}`
       );
 
       return response.data;

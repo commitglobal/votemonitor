@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
@@ -11,6 +12,7 @@ public class UpsertEndpointTests
     private readonly IReadRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IReadRepository<FormAggregate> _formRepository;
+    private readonly IReadRepository<Coalition> _coalitionRepository;
     private readonly IAuthorizationService _authorizationService;
 
     private readonly Upsert.Endpoint _endpoint;
@@ -20,12 +22,14 @@ public class UpsertEndpointTests
         _repository = Substitute.For<IRepository<FormSubmission>>();
         _pollingStationRepository = Substitute.For<IReadRepository<PollingStationAggregate>>();
         _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
+        _coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-
+        
         _endpoint = Factory.Create<Upsert.Endpoint>(_repository,
             _pollingStationRepository,
             _monitoringObserverRepository,
+            _coalitionRepository,
             _formRepository,
             _authorizationService);
 
@@ -65,7 +69,7 @@ public class UpsertEndpointTests
     {
         // Arrange
         _formRepository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoFormSpecification>())
             .ReturnsNull();
 
         // Act
@@ -91,7 +95,7 @@ public class UpsertEndpointTests
         // Arrange
         var form = new FormAggregateFaker(status: FormStatus.Published).Generate();
         _formRepository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoFormSpecification>())
             .Returns(form);
 
         var formSubmission = new FormSubmissionFaker().Generate();
@@ -202,7 +206,7 @@ public class UpsertEndpointTests
         // Arrange
         var form = new FormAggregateFaker().Generate();
         _formRepository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoFormSpecification>())
             .Returns(form);
 
         var request = new Upsert.Request();
@@ -227,7 +231,7 @@ public class UpsertEndpointTests
 
         var formSubmission = new FormAggregateFaker(electionRound: electionRound).Generate();
         _formRepository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoFormSpecification>())
             .Returns(formSubmission);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
@@ -277,7 +281,7 @@ public class UpsertEndpointTests
 
         var form = new FormAggregateFaker(electionRound, status: FormStatus.Published).Generate();
         _formRepository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoFormSpecification>())
             .Returns(form);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())

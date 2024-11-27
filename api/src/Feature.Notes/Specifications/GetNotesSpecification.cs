@@ -10,6 +10,8 @@ public sealed class GetNotesSpecification : Specification<NoteAggregate>
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.PollingStationId == pollingStationId
                         && x.MonitoringObserver.ObserverId == observerId
+                        && x.MonitoringObserver.ElectionRoundId == electionRoundId
+                        && x.Form.ElectionRoundId == electionRoundId
                         && x.FormId == formId);
     }
 }
