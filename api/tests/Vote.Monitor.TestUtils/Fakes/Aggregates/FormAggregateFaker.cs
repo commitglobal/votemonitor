@@ -32,7 +32,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, false),
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, false),
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true)
         ];
 
         SelectOption[] multiSelectOptions =
@@ -40,7 +40,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, false),
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, false),
             new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true)
         ];
 
         questions ??=

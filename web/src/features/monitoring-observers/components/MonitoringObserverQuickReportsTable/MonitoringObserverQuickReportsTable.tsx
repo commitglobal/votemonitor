@@ -1,16 +1,15 @@
-import type { FunctionComponent } from '@/common/types';
+import { DataSources, type FunctionComponent } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { QuickReportFilterRequest } from '@/features/responses/components/QuickReportsTab/QuickReportsTab';
 import { useQuickReports } from '@/features/responses/hooks/quick-reports';
 import { observerQuickReportsColumnDefs } from '@/features/responses/utils/column-defs';
-import { getRouteApi } from '@tanstack/react-router';
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
-import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
 type QuickReportsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -21,29 +20,30 @@ export function MonitoringObserverQuickReportsTable({
   columnsVisibility,
   searchText,
 }: QuickReportsTableByEntryProps): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const { monitoringObserverId } = routeApi.useParams();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const { monitoringObserverId } = Route.useParams();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const queryParams = useMemo(() => {
-    const params = [
-      ['formCodeFilter', searchText],
-      ['formTypeFilter', debouncedSearch.formTypeFilter],
-      ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['quickReportLocationType', debouncedSearch.quickReportLocationType],
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level2Filter', debouncedSearch.level2Filter],
-      ['level3Filter', debouncedSearch.level3Filter],
-      ['level4Filter', debouncedSearch.level4Filter],
-      ['level5Filter', debouncedSearch.level5Filter],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['monitoringObserverId', monitoringObserverId],
-      ['followUpStatus', debouncedSearch.quickReportFollowUpStatus],
-    ].filter(([_, value]) => value);
+    const params: QuickReportFilterRequest = {
+      quickReportLocationType: debouncedSearch.quickReportLocationType,
+      level1Filter: debouncedSearch.level1Filter,
+      level2Filter: debouncedSearch.level2Filter,
+      level3Filter: debouncedSearch.level3Filter,
+      level4Filter: debouncedSearch.level4Filter,
+      level5Filter: debouncedSearch.level5Filter,
+      pollingStationNumberFilter: debouncedSearch.pollingStationNumberFilter,
+      quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
+      incidentCategory: debouncedSearch.incidentCategory,
+      dataSource: DataSources.Ngo,
+      monitoringObserverId: debouncedSearch.monitoringObserverId,
+      coalitionMemberId: undefined,
+      searchText: searchText
+    };
 
-    return Object.fromEntries(params) as MonitoringObserverDetailsRouteSearch;
+    return params;
   }, [searchText, debouncedSearch, monitoringObserverId]);
 
   const navigateToQuickReport = useCallback(

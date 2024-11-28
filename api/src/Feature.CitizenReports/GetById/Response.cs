@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Feature.CitizenReports.Models;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Form.Module.Models;
+using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
+using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetById;
 

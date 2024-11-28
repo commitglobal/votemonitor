@@ -92,7 +92,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid()
         };
 
         // Act

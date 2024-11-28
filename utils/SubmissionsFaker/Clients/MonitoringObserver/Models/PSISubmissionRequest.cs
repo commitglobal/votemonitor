@@ -7,7 +7,7 @@ public class PSISubmissionRequest
     public DateTime DepartureTime { get; set; }
 
     public string ObserverToken { get; set; }
-    public string PollingStationId { get; set; }
+    public Guid PollingStationId { get; set; }
 
     public List<BaseAnswerRequest> Answers { get; set; } = [];
 

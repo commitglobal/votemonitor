@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Vote.Monitor.Answer.Module.Aggregators;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
@@ -49,5 +50,10 @@ public class TestAnswerAggregate : BaseAnswerAggregate
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         QuestionSpecificAggregateInvoked = true;
+    }
+
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        throw new NotImplementedException();
     }
 }

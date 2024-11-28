@@ -53,7 +53,7 @@ public class TagValidatorTests
         {
             MonitoringObserverIds = [
                 Guid.NewGuid(),
-                Guid.Empty,
+                Guid.Empty
             ]
         };
 
@@ -86,7 +86,7 @@ public class TagValidatorTests
         {
             Tags = [
                 "a tag",
-                emptyTag,
+                emptyTag
             ]
         };
 
@@ -106,7 +106,7 @@ public class TagValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             MonitoringNgoId = Guid.NewGuid(),
             MonitoringObserverIds = [
-                Guid.NewGuid(),
+                Guid.NewGuid()
             ],
             Tags = ["a tag"]
         };

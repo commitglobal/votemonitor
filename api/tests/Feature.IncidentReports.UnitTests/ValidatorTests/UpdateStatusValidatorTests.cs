@@ -30,7 +30,7 @@ public class UpdateStatusValidatorTests
         // Arrange
         var request = new Request
         {
-            NgoId = Guid.Empty,
+            NgoId = Guid.Empty
         };
 
         // Act
@@ -46,7 +46,7 @@ public class UpdateStatusValidatorTests
         // Arrange
         var request = new Request
         {
-            Id = Guid.Empty,
+            Id = Guid.Empty
         };
 
         // Act

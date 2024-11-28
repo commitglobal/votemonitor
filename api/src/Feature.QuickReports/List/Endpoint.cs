@@ -28,15 +28,20 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             COUNT(QR."Id") as "TotalNumberOfRows"
         FROM
             "QuickReports" QR
-            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
-            AND MN."NgoId" = @ngoId
+            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
+            AND (@searchText IS NULL 
+               OR @searchText = '' 
+               OR AMO."DisplayName" ILIKE @searchText 
+               OR AMO."Email" ILIKE @searchText 
+               OR AMO."PhoneNumber" ILIKE @searchText
+               OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -68,10 +73,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             QR."Description",
             QR."IncidentCategory",
             QR."FollowUpStatus",
-            COUNT(QRA."Id") FILTER(WHERE QRA."IsDeleted" = FALSE AND QRA."IsCompleted" = TRUE) AS "NumberOfAttachments",
-            O."FirstName" || ' ' ||O."LastName" "ObserverName",
-            O."Email",
-            O."PhoneNumber",
+            (SELECT COUNT(*)
+                FROM "QuickReportAttachments" QRA
+                WHERE QRA."QuickReportId" = QR."Id"
+                  AND Qr."MonitoringObserverId" = QRA."MonitoringObserverId"
+                  AND qra."IsDeleted" = FALSE
+                  AND qra."IsCompleted" = TRUE) AS "NumberOfAttachments",
+            AMO."MonitoringObserverId",
+            AMO."DisplayName" "ObserverName",
+            AMO."PhoneNumber",
+            AMO."Email",
+            AMO."Tags",
+            AMO."NgoName",
             QR."PollingStationDetails",
             PS."Id" AS "PollingStationId",
             PS."Level1",
@@ -83,17 +96,20 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             PS."Address"
         FROM
             "QuickReports" QR
-            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "AspNetUsers" O ON MO."ObserverId" = O."Id"
-            LEFT JOIN "QuickReportAttachments" QRA ON QR."Id" = QRA."QuickReportId"
+            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @datasource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
-            AND MN."NgoId" = @ngoId
+            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
+            AND (@searchText IS NULL 
+                 OR @searchText = '' 
+                 OR AMO."DisplayName" ILIKE @searchText 
+                 OR AMO."Email" ILIKE @searchText 
+                 OR AMO."PhoneNumber" ILIKE @searchText
+                 OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -116,11 +132,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             )
             AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
             AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp)
-        GROUP BY
-            QR."Id",
-            O."Id",
-            PS."Id",
-            MN."Id"
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END ASC,
             CASE WHEN @sortExpression = 'Timestamp DESC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END DESC
@@ -133,7 +144,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
+            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             ngoId = req.NgoId,
+            coalitionMemberId = req.CoalitionMemberId,
+            dataSource = req.DataSource.ToString(),
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             level1 = req.Level1Filter,

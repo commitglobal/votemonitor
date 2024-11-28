@@ -12,6 +12,7 @@ public class SubmissionModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; set; }
+
     public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; init; }
     public string Level1 { get; init; } = default!;
@@ -21,8 +22,8 @@ public class SubmissionModel
     public string Level5 { get; init; } = default!;
     public string Number { get; init; } = default!;
     public Guid MonitoringObserverId { get; init; }
-    public string FirstName { get; init; } = default!;
-    public string LastName { get; init; } = default!;
+    public string NgoName { get; init; } = default!;
+    public string DisplayName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
     public bool IsCompleted { get; init; } = default!;

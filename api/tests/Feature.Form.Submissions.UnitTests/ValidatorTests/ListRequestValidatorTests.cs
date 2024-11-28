@@ -1,4 +1,5 @@
 ﻿using Feature.Form.Submissions.ListEntries;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Form.Submissions.UnitTests.ValidatorTests;
 
@@ -34,13 +35,30 @@ public class ListRequestValidatorTests
     }
 
     [Fact]
+    public void Should_Have_Error_When_DataSource_Is_Empty()
+    {
+        // Arrange
+        var request = new Request()
+        {
+            DataSource = null!
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.DataSource);
+    }
+    
+    [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            NgoId = Guid.NewGuid()
+            NgoId = Guid.NewGuid(),
+            DataSource = DataSource.Coalition
         };
 
         // Act

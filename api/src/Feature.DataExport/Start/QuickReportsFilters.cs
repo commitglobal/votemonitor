@@ -1,3 +1,4 @@
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
@@ -5,6 +6,8 @@ namespace Feature.DataExport.Start;
 
 public class QuickReportsFilters
 {
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; set; }
     public string? Level1Filter { get; set; }
     public string? Level2Filter { get; set; }
     public string? Level3Filter { get; set; }
@@ -29,8 +32,9 @@ public class QuickReportsFilters
             QuickReportLocationType = QuickReportLocationType,
             IncidentCategory = IncidentCategory,
             FromDateFilter = FromDateFilter,
-            ToDateFilter = ToDateFilter
+            ToDateFilter = ToDateFilter,
+            DataSource = DataSource,
+            CoalitionMemberId = CoalitionMemberId
         };
-
     }
 }

@@ -11,7 +11,6 @@ export function useElectionRoundDetails(electionRoundId: string): ElectionEventR
   return useQuery({
     queryKey: electionRoundKeys.detail(electionRoundId!),
     queryFn: async () => {
-
       const response = await authApi.get<ElectionEvent>(`/election-rounds/${electionRoundId}`);
 
       return {

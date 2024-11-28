@@ -73,7 +73,7 @@ public class Endpoint(
             FileName = attachment.FileName,
             PresignedUrl = result!.Url,
             MimeType = attachment.MimeType,
-            UrlValidityInSeconds = result.UrlValidityInSeconds,
+            UrlValidityInSeconds = result.UrlValidityInSeconds
         });
     }
 }

@@ -5,7 +5,7 @@ import FormsDashboard from '@/features/forms/components/Dashboard/Dashboard';
 import LocationsDashboard from '@/features/locations/components/Dashboard/Dashboard';
 import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
 import { cn } from '@/lib/utils';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
@@ -13,17 +13,16 @@ import GuidesDashboard from '../Guides/GuidesDashboard';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import { GuidePageType } from '../../models/guide';
 import CitizenNotificationsDashboard from '@/features/CitizenNotifications/CitizenNotificationsDashboard/CitizenNotificationsDashboard';
+import { Route } from '@/routes/election-event/$tab';
 
-const routeApi = getRouteApi('/election-event/$tab');
 
 export default function ElectionEventDashboard(): ReactElement {
   const { t } = useTranslation();
-  const { tab } = routeApi.useParams();
+  const { tab } = Route.useParams();
   const [currentTab, setCurrentTab] = useState(tab);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate();
 
   function handleTabChange(tab: string): void {
     setCurrentTab(tab);
@@ -35,21 +34,20 @@ export default function ElectionEventDashboard(): ReactElement {
   }
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
-
   return (
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList
           className={cn('grid grid-cols-4 bg-gray-200', {
-            'grid-cols-7': isMonitoringNgoForCitizenReporting,
+            'grid-cols-7': electionEvent?.isMonitoringNgoForCitizenReporting,
           })}>
           <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
           <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
-          {isMonitoringNgoForCitizenReporting && (
+          {electionEvent?.isMonitoringNgoForCitizenReporting && (
             <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
           )}
           <TabsTrigger value='observer-guides'>{t('electionEvent.guides.observerGuidesTabTitle')}</TabsTrigger>
-          {isMonitoringNgoForCitizenReporting && (
+          {electionEvent?.isMonitoringNgoForCitizenReporting && (
             <>
               <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
               <TabsTrigger value='citizen-notifications'>
@@ -68,7 +66,7 @@ export default function ElectionEventDashboard(): ReactElement {
           <PollingStationsDashboard />
         </TabsContent>
 
-        {isMonitoringNgoForCitizenReporting && (
+        {electionEvent?.isMonitoringNgoForCitizenReporting && (
           <TabsContent value='locations'>
             <LocationsDashboard />
           </TabsContent>
@@ -78,7 +76,7 @@ export default function ElectionEventDashboard(): ReactElement {
           <GuidesDashboard guidePageType={GuidePageType.Observer} />
         </TabsContent>
 
-        {isMonitoringNgoForCitizenReporting && (
+        {electionEvent?.isMonitoringNgoForCitizenReporting && (
           <>
             <TabsContent value='citizen-guides'>
               <GuidesDashboard guidePageType={GuidePageType.Citizen} />

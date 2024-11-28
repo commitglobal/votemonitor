@@ -143,7 +143,7 @@ public class FromFormRequestValidatorTests
             FormElectionRoundId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
-            DefaultLanguage = LanguagesList.EN.Iso1,
+            DefaultLanguage = LanguagesList.EN.Iso1
         };
 
         // Act

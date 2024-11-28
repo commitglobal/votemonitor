@@ -30,7 +30,7 @@ export const MonitoringObserverTagsSelect: FC<MonitoringObserverTagsSelectProps>
       onValueChange={toggleTagsFilter}
       placeholder='Observer tags'
       defaultValue={currentTags}
-      className='text-slate-700'
+      className='text-slate-900'
       selectionDisplay={
         <div>
           <span className='text-sm font-normal text-slate-700'>Observer tags</span>

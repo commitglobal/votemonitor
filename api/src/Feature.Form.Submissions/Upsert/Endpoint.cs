@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Mappers;
+using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -10,6 +11,7 @@ public class Endpoint(
     IRepository<FormSubmission> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<Coalition> coalitionRepository,
     IReadRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
 {
@@ -37,8 +39,13 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var formSpecification = new GetFormSpecification(req.ElectionRoundId, req.FormId);
-        var form = await formRepository.FirstOrDefaultAsync(formSpecification, ct);
+        var coalitionFormSpecification =
+            new GetCoalitionFormSpecification(req.ElectionRoundId, req.ObserverId, req.FormId);
+        var ngoFormSpecification =
+            new GetMonitoringNgoFormSpecification(req.ElectionRoundId, req.ObserverId, req.FormId);
+
+        var form = (await coalitionRepository.FirstOrDefaultAsync(coalitionFormSpecification, ct)) ??
+                   (await formRepository.FirstOrDefaultAsync(ngoFormSpecification, ct));
         if (form is null)
         {
             return TypedResults.NotFound();

@@ -29,7 +29,7 @@ const coerceTabSlug = (slug: string) => {
   if (slug?.toLowerCase()?.trim() === 'details') return 'details';
   if (slug?.toLowerCase()?.trim() === 'responses') return 'responses';
   if (slug?.toLowerCase()?.trim() === 'quick-reports') return 'quick-reports';
-  if (slug?.toLowerCase()?.trim() === 'incident-reports') return 'incident-reports';
+  // if (slug?.toLowerCase()?.trim() === 'incident-reports') return 'incident-reports';
 
   return 'details';
 };

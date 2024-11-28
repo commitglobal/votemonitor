@@ -2,7 +2,7 @@ import { FormType, RatingScaleType, TranslatedString, UserPayload, ZFormType } f
 import { FormStatus } from '@/features/forms/models/form';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -528,3 +528,12 @@ export const toBoolean = (value: string | undefined): boolean | undefined => {
 
   return undefined;
 };
+
+export function getValueOrDefault<T>(value: T | undefined | null, defaultValue: T): T {
+  return value !== undefined && value !== null ? value : defaultValue;
+}
+
+export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
+  const { [key]: _, ...rest } = obj;
+  return rest;
+}

@@ -18,12 +18,13 @@ import { z } from 'zod';
 import { FormBase, NewFormRequest } from '../../models/form';
 import { formsKeys } from '../../queries';
 import { mapFormType, newTranslatedString } from '@/lib/utils';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 function CreateForm() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
-    const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
+    const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
     const newFormFormSchema = z.object({
         code: z.string().nonempty('Form code is required'),
@@ -109,7 +110,7 @@ function CreateForm() {
                                     <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                                     <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                                     <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                                    {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
+                                    {electionRound?.isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
                                     <SelectItem value={ZFormType.Values.IncidentReporting}>{mapFormType(ZFormType.Values.IncidentReporting)}</SelectItem>
                                     <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                                 </SelectContent>

@@ -10,6 +10,7 @@ public sealed class GetQuickReportAttachmentByIdSpecification : SingleResultSpec
         Query.Where(qr => qr.Id == id
                           && qr.QuickReportId == quickReportId
                           && qr.ElectionRoundId == electionRoundId
-                          && qr.MonitoringObserver.ObserverId == observerId);
+                          && qr.MonitoringObserver.ObserverId == observerId
+                          && qr.MonitoringObserver.ElectionRoundId == electionRoundId);
     }
 }

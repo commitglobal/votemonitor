@@ -19,9 +19,14 @@ public record ElectionRoundModel
     public required string EnglishTitle { get; init; }
     public required DateOnly StartDate { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<ElectionRoundStatus, string>))]
     public required ElectionRoundStatus Status { get; init; }
 
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
+    
+    public required bool IsMonitoringNgoForCitizenReporting { get; init; }
+    public required bool IsCoalitionLeader { get; init; }
+
+    public required Guid? CoalitionId { get; init; }
+    public required string? CoalitionName { get; init; }
 }

@@ -100,7 +100,7 @@ public class Endpoint(
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
                     MimeType = attachment.MimeType,
                     UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
-                    Id = attachment.Id,
+                    Id = attachment.Id
                 };
             });
         var attachments = await Task.WhenAll(tasks);

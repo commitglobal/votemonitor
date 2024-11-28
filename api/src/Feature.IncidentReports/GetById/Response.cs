@@ -3,6 +3,8 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Form.Module.Models;
+using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
+using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetById;
 

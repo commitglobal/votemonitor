@@ -54,7 +54,7 @@ public class DeleteRequestValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid()
         };
 
         // Act

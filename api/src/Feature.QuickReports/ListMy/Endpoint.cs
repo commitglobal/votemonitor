@@ -51,11 +51,11 @@ public class Endpoint(
 
                 return new QuickReportAttachmentModel
                 {
+                    Id = attachment.Id,
                     FileName = attachment.FileName,
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
                     MimeType = attachment.MimeType,
                     UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
-                    Id = attachment.Id,
                     QuickReportId = attachment.QuickReportId
                 };
             });

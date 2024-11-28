@@ -33,16 +33,15 @@ public class Endpoint(
                   SELECT MIN(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "FirstSubmissionTimestamp",
                          MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LastSubmissionTimestamp"
                   FROM "QuickReports" QR
-                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                  INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
                   WHERE QR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId;
                   """;
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            DataSource = req.DataSource.ToString()
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
@@ -55,7 +54,7 @@ public class Endpoint(
 
         return TypedResults.Ok(new Response
         {
-            TimestampsFilterOptions = timestampFilterOptions,
+            TimestampsFilterOptions = timestampFilterOptions
         });
     }
 }

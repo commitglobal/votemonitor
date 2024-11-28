@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -14,6 +15,21 @@ public class NumberAnswerAggregate(NumberQuestion question, int displayOrder) : 
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         if (answer is not NumberAnswer numberAnswer)
+        {
+            throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
+        }
+
+        _numberOfAnswersAggregated++;
+
+        Min = Math.Min(numberAnswer.Value, Min);
+        Max = Math.Max(numberAnswer.Value, Max);
+
+        Average = Average.RecomputeAverage(numberAnswer.Value, _numberOfAnswersAggregated);
+    }
+
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        if (answer is not NumberAnswerModel numberAnswer)
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }

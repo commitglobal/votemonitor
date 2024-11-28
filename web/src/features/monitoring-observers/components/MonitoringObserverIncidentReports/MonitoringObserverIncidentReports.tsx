@@ -33,8 +33,7 @@ export function MonitoringObserverIncidentReports(): FunctionComponent {
   const debouncedSearchText = useDebounce(searchText, 300);
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.currentTarget.value;
-    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+    setSearchText(ev.currentTarget.value);
   };
 
   return (

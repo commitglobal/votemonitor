@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,13 +20,15 @@ import { sleep } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { PauseCircleIcon, PlayCircleIcon, StopCircleIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { Fragment, useContext, useEffect, useState } from 'react';
-import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
+import { sortBy } from 'lodash';
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
+import { ElectionRoundStatus, type FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
+import { ElectionEvent } from '@/features/election-event/models/election-event';
 
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
@@ -41,16 +45,18 @@ const userNavigation: { name: string; to: string }[] = [];
 const Header = (): FunctionComponent => {
   const { userRole, signOut } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
+  const [selectedElectionRound, setSelectedElection] = useState<ElectionEvent>();
   const router = useRouter();
-  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } =
-    useCurrentElectionRoundStore((s) => s);
+  const {
+    setCurrentElectionRoundId,
+    currentElectionRoundId,
+  } = useCurrentElectionRoundStore((s) => s);
 
-  const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {
-    if (electionRound && selectedElectionRound?.electionRoundId != electionRound.electionRoundId) {
+  const handleSelectElectionRound = async (electionRound?: ElectionEvent): Promise<void> => {
+    if (electionRound && selectedElectionRound?.id != electionRound.id ) {
       setSelectedElection(electionRound);
-      setCurrentElectionRoundId(electionRound.electionRoundId);
-      setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
+      setCurrentElectionRoundId(electionRound.id);
+
       sleep(1);
 
       await queryClient.invalidateQueries({
@@ -74,7 +80,11 @@ const Header = (): FunctionComponent => {
   const { status, data: electionRounds } = useQuery({
     queryKey: electionRoundKeys.all,
     queryFn: async () => {
-      const response = await authApi.get<{ electionRounds: ElectionRoundMonitoring[] }>('/election-rounds:monitoring');
+      const response = await authApi.get<{ electionRounds: ElectionEvent[] }>('/election-rounds:monitoring');
+
+      (response.data.electionRounds ?? []).forEach((er) => {
+        queryClient.setQueryData(electionRoundKeys.detail(er.id), er);
+      });
       return response.data.electionRounds ?? [];
     },
     staleTime: 0,
@@ -83,9 +93,25 @@ const Header = (): FunctionComponent => {
 
   useEffect(() => {
     if (!!electionRounds) {
-      const electionRound = electionRounds.find((x) => x.electionRoundId === currentElectionRoundId);
+      const electionRound = electionRounds.find((x) => x.id === currentElectionRoundId);
       handleSelectElectionRound(electionRound ?? electionRounds[0]);
     }
+  }, [electionRounds]);
+
+  const activeElections = useMemo(() => {
+    return sortBy(
+      [...(electionRounds ?? [])].filter((er) => er.status !== ElectionRoundStatus.Archived),
+      (er) => new Date(er.startDate).getTime(),
+      (er) => er.title
+    );
+  }, [electionRounds]);
+
+  const archivedElections = useMemo(() => {
+    return sortBy(
+      [...(electionRounds ?? [])].filter((er) => er.status === ElectionRoundStatus.Archived),
+      (er) => new Date(er.startDate).getTime(),
+      (er) => er.title
+    );
   }, [electionRounds]);
 
   return (
@@ -123,27 +149,58 @@ const Header = (): FunctionComponent => {
 
               <div className='items-center hidden gap-2 md:flex'>
                 {status === 'pending' ? (
-                  <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
+                  <Skeleton className='w-[360px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
-                        <span className='election-text'>{selectedElectionRound?.title}</span>
-                        <ChevronDownIcon className='w-[20px] ml-2' />
+                      <Badge className='max-w-[360px] bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
+                        <div className='flex items-center justify-between gap-2 w-full'>
+                          <div className='truncate max-w-[300px]' title={selectedElectionRound?.title}>
+                            {selectedElectionRound?.title}
+                          </div>
+                          <ChevronDownIcon className='w-[20px] ml-2' />
+                        </div>
                       </Badge>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuRadioGroup
-                        value={selectedElectionRound?.electionRoundId ?? ''}
+                        value={selectedElectionRound?.id ?? ''}
                         onValueChange={(value) => {
-                          const electionRound = electionRounds?.find((er) => er.electionRoundId === value);
+                          const electionRound = electionRounds?.find((er) => er.id === value);
                           handleSelectElectionRound(electionRound);
                         }}>
-                        {electionRounds?.map((electionRound) => (
+                        <DropdownMenuLabel> Upcomming elections </DropdownMenuLabel>
+
+                        {activeElections?.map((electionRound) => (
                           <DropdownMenuRadioItem
-                            key={electionRound.electionRoundId}
-                            value={electionRound.electionRoundId}>
-                            {electionRound.title}
+                            key={electionRound.id}
+                            value={electionRound.id}>
+                            <div className='flex items-center gap-2'>
+                              {electionRound?.status === ElectionRoundStatus.NotStarted ? (
+                                <PauseCircleIcon className='w-4 h-4 text-slate-700' />
+                              ) : null}
+                              {electionRound?.status === ElectionRoundStatus.Started ? (
+                                <PlayCircleIcon className='w-4 h-4 text-green-700' />
+                              ) : null}
+                              <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                {electionRound.title}
+                              </div>
+                            </div>
+                          </DropdownMenuRadioItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel> Archived elections </DropdownMenuLabel>
+                        {archivedElections?.map((electionRound) => (
+                          <DropdownMenuRadioItem
+                            key={electionRound.id}
+                            value={electionRound.id}>
+                            <div className='flex items-center gap-2'>
+                              <StopCircleIcon className='w-4 h-4 text-yellow-700' />
+
+                              <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                {electionRound.title}
+                              </div>
+                            </div>
                           </DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>
