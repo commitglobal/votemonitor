@@ -8,17 +8,24 @@ export enum GuideType {
   Document = 'Document',
   Text = 'Text',
 }
-
+export interface GuideAccessModel {
+  ngoId: string;
+  name: string;
+}
 export interface GuideModel {
-  id: string;
+  id: string; // Guid equivalent in TypeScript
   title: string;
-  fileName?: string;
-  mimeType?: string;
-  presignedUrl?: string;
-  urlValidityInSeconds?: number;
-  websiteUrl?: string;
-  text?: string;
-  guideType: GuideType;
-  createdOn: string;
-  createdBy: string;
+  fileName: string;
+  mimeType: string;
+  guideType: string;
+  text: string;
+  websiteUrl: string;
+  lastModifiedOn: string; // ISO 8601 date string for DateTime
+  lastModifiedBy: string;
+  isGuideOwner: boolean;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+  filePath: string;
+  uploadedFileName: string;
+  guideAccess: GuideAccessModel[];
 }

@@ -32,7 +32,7 @@ export interface FormBase {
     lastModifiedBy: string;
     numberOfQuestions: number;
     languagesTranslationStatus: LanguagesTranslationStatus;
-    formAccess: FormAccessModel[]
+    formAccess: FormAccessModel[];
 }
 
 export interface FormFull extends FormBase {

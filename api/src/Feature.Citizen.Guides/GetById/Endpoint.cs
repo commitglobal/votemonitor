@@ -62,7 +62,7 @@ public class Endpoint(
                 guide.FilePath,
                 guide.Text,
                 guide.WebsiteUrl,
-                CreatedBy = user.FirstName + " " + user.LastName
+                CreatedBy = user.DisplayName
             })
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
@@ -79,10 +79,10 @@ public class Endpoint(
             FileName = guide.FileName,
             MimeType = guide.MimeType,
             GuideType = guide.GuideType,
-            CreatedOn = guide.CreatedOn,
+            LastModifiedOn = guide.CreatedOn,
             Text = guide.Text,
             WebsiteUrl = guide.WebsiteUrl,
-            CreatedBy = guide.CreatedBy
+            LastModifiedBy= guide.CreatedBy
         };
 
         if (guide.GuideType == CitizenGuideType.Document)

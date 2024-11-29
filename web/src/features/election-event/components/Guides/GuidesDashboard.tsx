@@ -11,7 +11,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { DocumentTextIcon, EllipsisVerticalIcon, LinkIcon, PaperClipIcon } from '@heroicons/react/24/outline';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
 import { authApi } from '@/common/auth-api';
@@ -24,7 +24,7 @@ import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { citizenGuidesKeys, useCitizenGuides } from '../../hooks/citizen-guides-hooks';
 import { observerGuidesKeys, useObserverGuides } from '../../hooks/observer-guides-hooks';
 import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
@@ -32,6 +32,8 @@ import AddGuideDialog from './AddGuideDialog';
 import EditGuideDialog from './EditGuideDialog';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import { ElectionRoundStatus } from '@/common/types';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import EditGuideAccessDialog, { useEditGuideAccessDialog } from './EditGuideAccessDialog';
 
 export interface GuidesDashboardProps {
   guidePageType: GuidePageType;
@@ -39,6 +41,7 @@ export interface GuidesDashboardProps {
 export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps) {
   const addGuideDialog = useDialog();
   const editGuideDialog = useDialog();
+  const editGuideAccessDialog = useEditGuideAccessDialog();
 
   const navigate = useNavigate();
 
@@ -100,120 +103,207 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
       });
     },
   });
+  const columnHelper = createColumnHelper<GuideModel>();
 
-  const guidesColDefs: ColumnDef<GuideModel>[] = [
-    {
-      header: '',
-      accessorKey: 'guideType',
-      enableSorting: false,
-      enableGlobalFilter: false,
-      maxSize: 25,
-      size: 10,
-      cell: ({
-        row: {
-          original: { guideType },
-        },
-      }) => (
-        <div>
-          {guideType === GuideType.Document ? (
-            <PaperClipIcon className='w-4 h-4 ml-auto opacity-50' />
-          ) : guideType === GuideType.Website ? (
-            <LinkIcon className='w-4 h-4 ml-auto opacity-50' />
+  const guidesColDefs: ColumnDef<GuideModel>[] = useMemo(() => {
+    const defaultColumns: ColumnDef<GuideModel>[] = [
+      {
+        header: '',
+        accessorKey: 'guideType',
+        enableSorting: false,
+        enableGlobalFilter: false,
+        maxSize: 25,
+        minSize: 25,
+        size: 16,
+        cell: ({
+          row: {
+            original: { guideType },
+          },
+        }) => (
+          <div className='w-[30px]'>
+            {guideType === GuideType.Document ? (
+              <PaperClipIcon className='w-4 h-4 opacity-50' />
+            ) : guideType === GuideType.Website ? (
+              <LinkIcon className='w-4 h-4 opacity-50' />
+            ) : (
+              <DocumentTextIcon className='w-4 h-4 opacity-50' />
+            )}
+          </div>
+        ),
+      },
+      {
+        header: ({ column }) => (
+          <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.title')} column={column} />
+        ),
+        accessorKey: 'title',
+        enableSorting: false,
+        enableGlobalFilter: false,
+        cell: ({
+          row: {
+            original: { id, guideType, title, websiteUrl, presignedUrl },
+          },
+        }) =>
+          guideType === GuideType.Website || guideType === GuideType.Document ? (
+            <Button type='button' variant='link'>
+              <Link to={websiteUrl || presignedUrl} target='_blank' preload={false}>
+                {title}
+              </Link>
+            </Button>
           ) : (
-            <DocumentTextIcon className='w-4 h-4 ml-auto opacity-50' />
-          )}
-        </div>
-      ),
-    },
-    {
-      header: ({ column }) => (
-        <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.title')} column={column} />
-      ),
-      accessorKey: 'title',
-      enableSorting: false,
-      enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { id, guideType, title, websiteUrl, presignedUrl },
-        },
-      }) =>
-        guideType === GuideType.Website || guideType === GuideType.Document ? (
-          <Button type='button' variant='link'>
-            <Link to={websiteUrl || presignedUrl} target='_blank' preload={false}>
+            <Link
+              to={
+                guidePageType === GuidePageType.Observer
+                  ? '/observer-guides/view/$guideId'
+                  : '/citizen-guides/view/$guideId'
+              }
+              params={{ guideId: id }}
+              preload={false}>
               {title}
             </Link>
-          </Button>
-        ) : (
-          <Link
-            to={
-              guidePageType === GuidePageType.Observer
-                ? '/observer-guides/view/$guideId'
-                : '/citizen-guides/view/$guideId'
-            }
-            params={{ guideId: id }}
-            preload={false}>
-            {title}
-          </Link>
+          ),
+      },
+      {
+        header: ({ column }) => (
+          <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.uploadedOn')} column={column} />
         ),
-    },
-    {
-      header: ({ column }) => (
-        <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.uploadedOn')} column={column} />
-      ),
-      accessorKey: 'createdOn',
-      enableSorting: false,
-      enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { createdOn },
-        },
-      }) => <p>{format(createdOn, DateTimeFormat)}</p>,
-    },
-    {
-      header: ({ column }) => (
-        <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.createdBy')} column={column} />
-      ),
-      accessorKey: 'createdBy',
-      enableSorting: false,
-      enableGlobalFilter: false,
-    },
-    {
-      header: '',
-      accessorKey: 'action',
-      enableSorting: false,
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => {
-                if (row.original.guideType !== GuideType.Text) {
-                  setGuide(row.original);
-                  editGuideDialog.trigger();
-                } else {
-                  navigate({
-                    to:
-                      guidePageType === GuidePageType.Observer
-                        ? '/observer-guides/edit/$guideId'
-                        : '/citizen-guides/edit/$guideId',
-                    params: { guideId: row.original.id },
-                  });
-                }
-              }}>
-              Update
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className='text-red-600'
-              onClick={async () => await handleDeleteGuide(row.original.id, row.original.title)}>
-              Delete guide
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ];
+        accessorKey: 'lastModifiedOn',
+        enableSorting: false,
+        enableGlobalFilter: false,
+        cell: ({
+          row: {
+            original: { lastModifiedOn },
+          },
+        }) => <p>{format(lastModifiedOn, DateTimeFormat)}</p>,
+      },
+      {
+        header: ({ column }) => (
+          <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.createdBy')} column={column} />
+        ),
+        accessorKey: 'lastModifiedBy',
+        enableSorting: false,
+        enableGlobalFilter: false,
+      },
+    ];
+
+    if (electionRound?.isCoalitionLeader) {
+      if (guidePageType === GuidePageType.Observer) {
+        defaultColumns.push(
+          columnHelper.display({
+            id: 'sharedWith',
+            enableSorting: false,
+            header: ({ column }) => <DataTableColumnHeader title='Shared with' column={column} />,
+            cell: ({ row }) =>
+              row.depth === 0 ? (
+                row.original.guideAccess.length ? (
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                          {row.original.guideAccess.length}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {row.original.guideAccess.map((ga) => (
+                          <div key={ga.ngoId}>{ga.name}</div>
+                        ))}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <>None</>
+                )
+              ) : null,
+          })
+        );
+      }
+
+      defaultColumns.push({
+        header: '',
+        accessorKey: 'action',
+        enableSorting: false,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                disabled={!row.original.isGuideOwner}
+                onClick={() => {
+                  if (row.original.guideType !== GuideType.Text) {
+                    setGuide(row.original);
+                    editGuideDialog.trigger();
+                  } else {
+                    navigate({
+                      to:
+                        guidePageType === GuidePageType.Observer
+                          ? '/observer-guides/edit/$guideId'
+                          : '/citizen-guides/edit/$guideId',
+                      params: { guideId: row.original.id },
+                    });
+                  }
+                }}>
+                Update
+              </DropdownMenuItem>
+              {guidePageType === GuidePageType.Observer ? (
+                <DropdownMenuItem
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => editGuideAccessDialog.trigger(row.original.id)}>
+                  Guide access
+                </DropdownMenuItem>
+              ) : null}
+              <DropdownMenuItem
+                className='text-red-600'
+                disabled={!row.original.isGuideOwner}
+                onClick={async () => await handleDeleteGuide(row.original.id, row.original.title)}>
+                Delete guide
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      });
+    } else {
+      defaultColumns.push({
+        header: '',
+        accessorKey: 'action',
+        enableSorting: false,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                disabled={!row.original.isGuideOwner}
+                onClick={() => {
+                  if (row.original.guideType !== GuideType.Text) {
+                    setGuide(row.original);
+                    editGuideDialog.trigger();
+                  } else {
+                    navigate({
+                      to:
+                        guidePageType === GuidePageType.Observer
+                          ? '/observer-guides/edit/$guideId'
+                          : '/citizen-guides/edit/$guideId',
+                      params: { guideId: row.original.id },
+                    });
+                  }
+                }}>
+                Update
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='text-red-600'
+                disabled={!row.original.isGuideOwner}
+                onClick={async () => await handleDeleteGuide(row.original.id, row.original.title)}>
+                Delete guide
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      });
+    }
+    return defaultColumns;
+  }, [currentElectionRoundId, electionRound?.isCoalitionLeader]);
 
   return (
     <Card className='w-full pt-0'>
@@ -298,6 +388,8 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
         {editGuideDialog.dialogProps.open && !!guide && (
           <EditGuideDialog {...editGuideDialog.dialogProps} guide={guide} guidePageType={guidePageType} />
         )}
+
+        <EditGuideAccessDialog />
       </CardContent>
     </Card>
   );

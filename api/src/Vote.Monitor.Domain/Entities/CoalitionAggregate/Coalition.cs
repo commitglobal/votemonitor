@@ -13,6 +13,7 @@ public class Coalition : AuditableBaseEntity, IAggregateRoot
     public MonitoringNgo Leader { get; private set; }
     public virtual List<CoalitionMembership> Memberships { get; internal set; } = [];
     public virtual List<CoalitionFormAccess> FormAccess { get; internal set; } = [];
+    public virtual List<CoalitionGuideAccess> GuideAccess { get; internal set; } = [];
 
     internal Coalition(ElectionRound electionRound, string name, MonitoringNgo leader,
         IEnumerable<MonitoringNgo> members)
@@ -24,7 +25,7 @@ public class Coalition : AuditableBaseEntity, IAggregateRoot
         Leader = leader;
         LeaderId = leader.Id;
         Memberships = members
-            .Select(member=>CoalitionMembership.Create(electionRound, this, member))
+            .Select(member => CoalitionMembership.Create(electionRound, this, member))
             .DistinctBy(x => x.MonitoringNgoId).ToList();
     }
 
@@ -47,5 +48,4 @@ public class Coalition : AuditableBaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
-
 }

@@ -1,6 +1,5 @@
 ﻿using Job.Contracts;
 using NSubstitute;
-using NSubstitute.ClearExtensions;
 using Vote.Monitor.Api.IntegrationTests.Db;
 using Vote.Monitor.Core.Services.EmailTemplating;
 using Vote.Monitor.Core.Services.EmailTemplating.Props;

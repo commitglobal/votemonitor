@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Vote.Monitor.Api.Feature.Auth.Services;
+using Vote.Monitor.Api.IntegrationTests.Models;
+using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests;
 
@@ -58,8 +60,8 @@ public static class HttpClientExtensions
         this HttpClient client,
         [StringSyntax("Uri")] string requestUri,
         string file,
-        string? fieldName="File",
-        string? fileName="data.csv")
+        string? fieldName = "File",
+        string? fileName = "data.csv")
     {
         // Create the request content
         using var formData = new MultipartFormDataContent();
@@ -79,6 +81,33 @@ public static class HttpClientExtensions
         }
 
         response.EnsureSuccessStatusCode();
+    }
+
+    public static ResponseWithId CreateObserverGuide(
+        this HttpClient client,
+        Guid electionRoundId,
+        string? title = "")
+    {
+        // Create the request content
+        using var formData = new MultipartFormDataContent();
+
+        // Add the file content
+
+        formData.Add(new StringContent(title ?? "Some useful guide"), "Title");
+        formData.Add(new StringContent("https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "WebsiteUrl");
+        formData.Add(new StringContent(ObserverGuideType.Website.ToString()), "GuideType");
+
+        var response = client.PostAsync($"/api/election-rounds/{electionRoundId}/observer-guide", formData).GetAwaiter()
+            .GetResult();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TestContext.Out.WriteLine(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        }
+
+        var result = response.Content.ReadFromJsonAsync<ResponseWithId>(_jsonSerializerOptions).GetAwaiter()
+            .GetResult();
+        return result!;
     }
 
     public static void PutWithoutResponse(

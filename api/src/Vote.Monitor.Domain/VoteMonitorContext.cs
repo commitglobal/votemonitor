@@ -78,6 +78,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Coalition> Coalitions { get; set; }
     public DbSet<CoalitionMembership> CoalitionMemberships { get; set; }
     public DbSet<CoalitionFormAccess> CoalitionFormAccess { get; set; }
+    public DbSet<CoalitionGuideAccess> CoalitionGuideAccess { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -161,6 +162,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CoalitionConfiguration());
         builder.ApplyConfiguration(new CoalitionMembershipConfiguration());
         builder.ApplyConfiguration(new CoalitionFormAccessConfiguration());
+        builder.ApplyConfiguration(new CoalitionGuideAccessConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
