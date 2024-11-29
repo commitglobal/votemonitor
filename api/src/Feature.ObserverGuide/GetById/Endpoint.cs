@@ -77,8 +77,8 @@ public class Endpoint(
             	G."GuideType",
             	G."Text",
             	G."WebsiteUrl",
-            	G."LastModifiedOn",
-            	G."LastModifiedBy",
+            	G."CreatedOn",
+            	G."CreatedBy",
             	G."IsGuideOwner",
             	G."FilePath",
             	G."UploadedFileName",
@@ -112,8 +112,8 @@ public class Endpoint(
             			G."GuideType",
             			G."Text",
             			G."WebsiteUrl",
-            			COALESCE(G."LastModifiedOn", G."CreatedOn") AS "LastModifiedOn",
-            			COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy",
+            			COALESCE(G."LastModifiedOn", G."CreatedOn") AS "CreatedOn",
+            			COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "CreatedBy",
             			EXISTS (
             				SELECT
             					1
@@ -138,6 +138,7 @@ public class Endpoint(
             					"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
             			)
             		    AND G."Id" = @guideId
+                        AND g."IsDeleted" = false
             			AND C."ElectionRoundId" = @electionRoundId
             			AND (
             				(
@@ -162,8 +163,8 @@ public class Endpoint(
             			G."GuideType",
             			G."Text",
             			G."WebsiteUrl",
-            			COALESCE(G."LastModifiedOn", G."CreatedOn") AS "LastModifiedOn",
-            			COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy",
+            			COALESCE(G."LastModifiedOn", G."CreatedOn") AS "CreatedOn",
+            			COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "CreatedBy",
             			TRUE AS "IsGuideOwner",
             			G."FilePath",
                         G."UploadedFileName"
@@ -175,6 +176,7 @@ public class Endpoint(
             		WHERE
             			MN."ElectionRoundId" = @electionRoundId
             		    AND G."Id" = @guideId
+                        AND g."IsDeleted" = false
             			AND G."MonitoringNgoId" = (
             				SELECT
             					"MonitoringNgoId"

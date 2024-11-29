@@ -89,8 +89,8 @@ public class Endpoint(IAuthorizationService authorizationService,
                         UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
                         MimeType = guide.MimeType,
                         GuideType = guide.GuideType,
-                        LastModifiedOn = guide.CreatedOn,
-                        LastModifiedBy= guide.CreatedBy,
+                        CreatedOn = guide.CreatedOn,
+                        CreatedBy= guide.CreatedBy,
                     };
                 }
 
@@ -101,10 +101,10 @@ public class Endpoint(IAuthorizationService authorizationService,
                     FileName = guide.FileName,
                     MimeType = guide.MimeType,
                     GuideType = guide.GuideType,
-                    LastModifiedOn = guide.CreatedOn,
+                    CreatedOn = guide.CreatedOn,
                     Text = guide.Text,
                     WebsiteUrl = guide.WebsiteUrl,
-                    LastModifiedBy = guide.CreatedBy,
+                    CreatedBy = guide.CreatedBy,
                 };
             });
 

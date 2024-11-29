@@ -20,8 +20,8 @@ export interface GuideModel {
   guideType: GuideType;
   text: string;
   websiteUrl: string;
-  lastModifiedOn: string; // ISO 8601 date string for DateTime
-  lastModifiedBy: string;
+  createdOn: string; // ISO 8601 date string for DateTime
+  createdBy: string;
   isGuideOwner: boolean;
   presignedUrl: string;
   urlValidityInSeconds: number;
