@@ -132,6 +132,7 @@ public class Endpoint(
             				FROM
             					"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
             			)
+                        AND g."IsDeleted" = false
             			AND C."ElectionRoundId" = @electionRoundId
             			AND (
             				(
@@ -168,6 +169,7 @@ public class Endpoint(
             			LEFT JOIN "AspNetUsers" UPDATER ON G."LastModifiedBy" = UPDATER."Id"
             		WHERE
             			MN."ElectionRoundId" = @electionRoundId
+            		    AND g."IsDeleted" = false
             			AND G."MonitoringNgoId" = (
             				SELECT
             					"MonitoringNgoId"
@@ -260,6 +262,7 @@ public class Endpoint(
             			"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
             	)
             	AND C."ElectionRoundId" = @electionRoundId
+                AND g."IsDeleted" = false
             	AND (
             		(
             			SELECT

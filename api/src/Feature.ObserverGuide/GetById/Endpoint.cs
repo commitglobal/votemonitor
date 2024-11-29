@@ -138,6 +138,7 @@ public class Endpoint(
             					"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
             			)
             		    AND G."Id" = @guideId
+                        AND g."IsDeleted" = false
             			AND C."ElectionRoundId" = @electionRoundId
             			AND (
             				(
@@ -175,6 +176,7 @@ public class Endpoint(
             		WHERE
             			MN."ElectionRoundId" = @electionRoundId
             		    AND G."Id" = @guideId
+                        AND g."IsDeleted" = false
             			AND G."MonitoringNgoId" = (
             				SELECT
             					"MonitoringNgoId"
