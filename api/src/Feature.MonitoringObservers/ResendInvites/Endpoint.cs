@@ -66,7 +66,7 @@ public class Endpoint(
             .Select(x => new
             {
                 InvitationToken = x.Observer.ApplicationUser.InvitationToken,
-                FullName = x.Observer.ApplicationUser.FirstName + " " + x.Observer.ApplicationUser.LastName,
+                FullName = x.Observer.ApplicationUser.DisplayName,
                 Email = x.Observer.ApplicationUser.Email
             }).ToListAsync(ct);
 

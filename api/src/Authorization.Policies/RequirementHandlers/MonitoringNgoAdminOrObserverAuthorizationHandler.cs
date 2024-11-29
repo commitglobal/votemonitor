@@ -1,6 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 

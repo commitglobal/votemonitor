@@ -1,4 +1,6 @@
-﻿namespace Feature.ObserverGuide.List;
+﻿using Feature.ObserverGuide.Model;
+
+namespace Feature.ObserverGuide.List;
 
 public record Response
 {
