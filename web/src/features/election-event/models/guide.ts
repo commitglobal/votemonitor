@@ -13,11 +13,11 @@ export interface GuideAccessModel {
   name: string;
 }
 export interface GuideModel {
-  id: string; // Guid equivalent in TypeScript
+  id: string;
   title: string;
   fileName: string;
   mimeType: string;
-  guideType: string;
+  guideType: GuideType;
   text: string;
   websiteUrl: string;
   lastModifiedOn: string; // ISO 8601 date string for DateTime

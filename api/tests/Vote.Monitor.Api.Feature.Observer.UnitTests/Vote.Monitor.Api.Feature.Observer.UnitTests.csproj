@@ -31,9 +31,6 @@
     <None Remove="Specifications\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Specifications\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
     <ProjectReference Include="..\..\src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
