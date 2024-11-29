@@ -79,10 +79,10 @@ public class Endpoint(
             FileName = guide.FileName,
             MimeType = guide.MimeType,
             GuideType = guide.GuideType,
-            LastModifiedOn = guide.CreatedOn,
+            CreatedOn = guide.CreatedOn,
             Text = guide.Text,
             WebsiteUrl = guide.WebsiteUrl,
-            LastModifiedBy= guide.CreatedBy
+            CreatedBy= guide.CreatedBy
         };
 
         if (guide.GuideType == CitizenGuideType.Document)

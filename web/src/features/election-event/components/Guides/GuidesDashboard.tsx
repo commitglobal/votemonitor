@@ -166,20 +166,20 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
         header: ({ column }) => (
           <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.uploadedOn')} column={column} />
         ),
-        accessorKey: 'lastModifiedOn',
+        accessorKey: 'createdOn',
         enableSorting: false,
         enableGlobalFilter: false,
         cell: ({
           row: {
-            original: { lastModifiedOn },
+            original: { createdOn },
           },
-        }) => <p>{format(lastModifiedOn, DateTimeFormat)}</p>,
+        }) => <p>{format(createdOn, DateTimeFormat)}</p>,
       },
       {
         header: ({ column }) => (
           <DataTableColumnHeader title={i18n.t('electionEvent.guides.headers.createdBy')} column={column} />
         ),
-        accessorKey: 'lastModifiedBy',
+        accessorKey: 'createdBy',
         enableSorting: false,
         enableGlobalFilter: false,
       },

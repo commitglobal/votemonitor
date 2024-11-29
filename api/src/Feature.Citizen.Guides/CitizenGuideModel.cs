@@ -13,8 +13,8 @@ public record CitizenGuideModel
     public string GuideType { get; init; }
     public string Text { get; init; }
     public string WebsiteUrl { get; init; }
-    public DateTime LastModifiedOn { get; init; }
-    public string LastModifiedBy { get; init; }
+    public DateTime CreatedOn { get; init; }
+    public string CreatedBy { get; init; }
     public string PresignedUrl { get; init; }
     public int UrlValidityInSeconds { get; init; }
     public string FilePath { get; init; }
