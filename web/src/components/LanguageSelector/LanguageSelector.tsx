@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '../ui/label';
 
 export const LanguageSelector: FC = () => {
-  const { t, i18n } = useTranslation(); // not passing any namespace will use the defaultNS (by default set to 'translation')
+  const {  i18n } = useTranslation(); // not passing any namespace will use the defaultNS (by default set to 'translation')
   const router = useRouter();
 
   const changeLanguage = (lng: string) => {
