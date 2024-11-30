@@ -47,7 +47,7 @@ public record QuickReportDetailedModel
             Title = quickReport.Title,
             Description = quickReport.Description,
             MonitoringObserverId = quickReport.MonitoringObserverId,
-            ObserverName = quickReport.MonitoringObserver.Observer.ApplicationUser.FirstName + " " + quickReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+            ObserverName = quickReport.MonitoringObserver.Observer.ApplicationUser.DisplayName,
             PollingStationId = quickReport.PollingStationId,
             Level1 = quickReport.PollingStation?.Level1,
             Level2 = quickReport.PollingStation?.Level2,

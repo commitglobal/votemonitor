@@ -1,10 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
+﻿namespace Feature.ObserverGuide.Model;
 
-namespace Feature.Citizen.Guides;
-
-public record CitizenGuideModel
+public record ObserverGuideModel
 {
     public Guid Id { get; init; }
     public string Title { get; init; }
@@ -15,9 +11,10 @@ public record CitizenGuideModel
     public string WebsiteUrl { get; init; }
     public DateTime CreatedOn { get; init; }
     public string CreatedBy { get; init; }
+    public bool IsGuideOwner { get; init; }
     public string PresignedUrl { get; init; }
     public int UrlValidityInSeconds { get; init; }
     public string FilePath { get; init; }
     public string UploadedFileName { get; init; }
-    public bool IsGuideOwner => true;
+    public GuideAccessModel[] GuideAccess { get; init; } = [];
 }

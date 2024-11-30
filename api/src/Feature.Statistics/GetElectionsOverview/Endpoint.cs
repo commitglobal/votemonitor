@@ -126,7 +126,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     WHERE
                         "ElectionRoundId" = ANY (@electionRoundIds)
                         AND "NumberOfQuestionsAnswered" > 0
-                ) AS ""NumberOfQuestionsAnswered"";
+                ) AS "NumberOfQuestionsAnswered";
             -----------------------------
             
             -- number of questions answered

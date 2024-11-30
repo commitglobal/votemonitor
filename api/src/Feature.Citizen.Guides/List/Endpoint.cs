@@ -66,7 +66,7 @@ public class Endpoint(IAuthorizationService authorizationService,
                 guide.FilePath,
                 guide.Text,
                 guide.WebsiteUrl,
-                CreatedBy = isNgoAdmin ? user.FirstName + " " + user.LastName : ""
+                CreatedBy = isNgoAdmin ? user.DisplayName : ""
             })
             .AsNoTracking()
             .ToListAsync(ct);
@@ -90,7 +90,7 @@ public class Endpoint(IAuthorizationService authorizationService,
                         MimeType = guide.MimeType,
                         GuideType = guide.GuideType,
                         CreatedOn = guide.CreatedOn,
-                        CreatedBy = guide.CreatedBy
+                        CreatedBy= guide.CreatedBy,
                     };
                 }
 
@@ -104,7 +104,7 @@ public class Endpoint(IAuthorizationService authorizationService,
                     CreatedOn = guide.CreatedOn,
                     Text = guide.Text,
                     WebsiteUrl = guide.WebsiteUrl,
-                    CreatedBy = guide.CreatedBy
+                    CreatedBy = guide.CreatedBy,
                 };
             });
 
