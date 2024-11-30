@@ -23,7 +23,7 @@ export const FormBuilderScreenReuse: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const createFormFromFormDialog = useCreateFormFromFormDialog();
-  const { createForm, openReuseFormPreview } = useCreateFormFromForm();
+  const { createForm } = useCreateFormFromForm();
 
   const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;

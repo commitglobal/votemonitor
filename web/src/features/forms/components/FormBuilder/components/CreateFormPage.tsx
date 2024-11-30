@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { FormBase, NewFormRequest } from '@/features/forms/models/form';
 import { formsKeys } from '@/features/forms/queries';
 import { cn, mapFormType, newTranslatedString } from '@/lib/utils';
@@ -26,7 +27,7 @@ export const CreateFormPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore((s) => s.isMonitoringNgoForCitizenReporting);
+  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
 
   const newFormFormSchema = z.object({
     code: z.string().nonempty('Form code is required'),
@@ -138,7 +139,7 @@ export const CreateFormPage: FC = () => {
                               <SelectItem value={ZFormType.Values.ClosingAndCounting}>
                                 {mapFormType(ZFormType.Values.ClosingAndCounting)}
                               </SelectItem>
-                              {isMonitoringNgoForCitizenReporting && (
+                              {electionRound?.isMonitoringNgoForCitizenReporting && (
                                 <SelectItem value={ZFormType.Values.CitizenReporting}>
                                   {mapFormType(ZFormType.Values.CitizenReporting)}
                                 </SelectItem>
