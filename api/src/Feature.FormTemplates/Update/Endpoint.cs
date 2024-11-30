@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Update;
 
-public class Endpoint(IRepository<Form> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<FormTemplate> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {

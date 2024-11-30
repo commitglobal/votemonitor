@@ -54,7 +54,7 @@ public class FormTestsTestData
     private static readonly SelectOption[] Options =
     [
         new(Guid.NewGuid(), Option1Text, false, false),
-        new(Guid.NewGuid(), Option2Text, false, true),
+        new(Guid.NewGuid(), Option2Text, false, true)
     ];
 
     private static readonly TextQuestion PartiallyTranslatedTextQuestion =
@@ -92,6 +92,6 @@ public class FormTestsTestData
                     PartiallyTranslatedSingleSelectQuestion,
                     PartiallyTranslatedMultiSelectQuestion
                 }
-            },
+            }
         };
 }

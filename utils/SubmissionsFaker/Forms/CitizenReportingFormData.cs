@@ -5,9 +5,10 @@ namespace SubmissionsFaker.Forms;
 
 public class CitizenReportingFormData
 {
-    public static UpdateForm CitizenReporting = new()
+    public static UpdateForm CitizenReporting(string code) => new()
     {
-        Code = "A2",
+        Code = code,
+        FormType = "CitizenReporting",
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
         Name = new TranslatedString
@@ -20,7 +21,6 @@ public class CitizenReportingFormData
             { "EN", "test form" },
             { "RO", "formular de test" }
         },
-        FormType = "Opening",
         Questions =
         [
             new NumberQuestionRequest

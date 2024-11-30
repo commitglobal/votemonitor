@@ -1,6 +1,7 @@
 import type { FunctionComponent } from '@/common/types';
 import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 import { pushMessageDetailsQueryOptions } from './push-messages.$id_.view';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 function Details(): FunctionComponent {
   const navigate = useNavigate({ from: '/monitoring-observers/push-messages/$id' });
@@ -23,5 +24,8 @@ export const Route = createFileRoute('/monitoring-observers/push-messages/$id')(
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(pushMessageDetailsQueryOptions(electionRoundId, id));
-  }
+  },
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
 });

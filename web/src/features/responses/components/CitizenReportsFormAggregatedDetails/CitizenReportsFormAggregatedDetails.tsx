@@ -1,3 +1,4 @@
+import { usePrevSearch } from '@/common/prev-search-store';
 import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
@@ -8,12 +9,11 @@ import {
   Route,
 } from '@/routes/responses/citizen-reports/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link, useRouter } from '@tanstack/react-router';
 import { SubmissionType } from '../../models/common';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
 
 export default function CitizenReportsFormAggregatedDetails(): FunctionComponent {
-  const { state } = useRouter();
+  const prevSearch = usePrevSearch();
 
   const { formId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
@@ -29,15 +29,8 @@ export default function CitizenReportsFormAggregatedDetails(): FunctionComponent
 
   return (
     <Layout
-      backButton={<NavigateBack search={state.resolvedLocation.search} to='/responses' />}
-      breadcrumbs={
-        <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
-          <Link search={state.resolvedLocation.search as any} className='crumb' to='/responses' preload='intent'>
-            responses
-          </Link>
-          <Link className='crumb'>{formId}</Link>
-        </div>
-      }
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
+      breadcrumbs={<></>}
       title={`${formCode} - ${mapFormType(formType)}`}>
       <div className='flex flex-col gap-10'>
         {Object.values(aggregates).map((aggregate) => {

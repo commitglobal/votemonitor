@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using FastEndpoints;
 using Feature.ObserverGuide.Create;
+using Feature.ObserverGuide.Model;
 using Feature.ObserverGuide.Specifications;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;

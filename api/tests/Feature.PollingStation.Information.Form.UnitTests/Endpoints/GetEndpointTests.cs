@@ -34,7 +34,7 @@ public class GetEndpointTests
         // Act
         var request = new Get.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -57,7 +57,7 @@ public class GetEndpointTests
         // Act
         var request = new Get.Request
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

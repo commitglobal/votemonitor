@@ -28,6 +28,10 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
             CountryName = x.Country.Name,
             CountryFullName = x.Country.FullName,
             CountryNumericCode = x.Country.NumericCode,
+            CoalitionId = null,
+            CoalitionName = null,
+            IsCoalitionLeader = false,
+            IsMonitoringNgoForCitizenReporting = false
         });
     }
 }

@@ -79,7 +79,7 @@ public class QuestionsMapperTests
             new(Guid.NewGuid(), _option1Text, false, false),
             new(Guid.NewGuid(), _option2Text, false, true),
             new(Guid.NewGuid(), _option3Text, true, false),
-            new(Guid.NewGuid(), _option4Text, true, true),
+            new(Guid.NewGuid(), _option4Text, true, true)
         ];
 
         _requestOptions =
@@ -111,7 +111,7 @@ public class QuestionsMapperTests
                 Text = _option4Text,
                 IsFlagged = true,
                 IsFreeText = true
-            },
+            }
         ];
     }
     
@@ -294,7 +294,7 @@ public class QuestionsMapperTests
             Id = Guid.NewGuid(),
             Code = _code,
             Text = _text,
-            Helptext = _helptext,
+            Helptext = _helptext
         };
         // Act
         var result = QuestionsMapper.ToEntity(dateQuestionRequest);

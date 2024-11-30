@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using PolyJson;
+using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -40,4 +41,13 @@ public abstract class BaseAnswerAggregate
 
 
     protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer);
+    
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    {
+        AnswersAggregated += 1;
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
+    }
+
+
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer);
 }

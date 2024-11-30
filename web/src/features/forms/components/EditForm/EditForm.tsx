@@ -29,8 +29,8 @@ import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhi
 import { queryClient } from '@/main';
 import { Route } from '@/routes/forms_.$formId.edit';
 import { useMutation } from '@tanstack/react-query';
-import { useBlocker, useNavigate } from '@tanstack/react-router';
-import { FC, useEffect, useState } from 'react';
+import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { UpdateFormRequest } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import {
@@ -220,6 +220,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
   const confirm = useConfirm();
   const [shouldExitEditor, setShouldExitEditor] = useState(false);
   const navigate = useNavigate();
+  const router = useRouter();
 
   const editQuestions = formData.questions.map((question) => {
     if (isNumberQuestion(question)) {
@@ -427,6 +428,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       });
 
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
+      router.invalidate();
 
       if (shouldExitEditor) {
         if (

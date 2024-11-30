@@ -16,11 +16,17 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
-import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
+import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
 import { FormSubmissionsFormFilter } from '@/features/filtering/components/FormSubmissionsFormFilter';
 import { FormSubmissionsFromDateFilter } from '@/features/filtering/components/FormSubmissionsFromDateFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '@/features/filtering/components/FormSubmissionsQuestionsAnsweredFilter';
 import { FormSubmissionsToDateFilter } from '@/features/filtering/components/FormSubmissionsToDateFilter';
+import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
+import { HasQuickReportsFilter } from '@/features/filtering/components/HasQuickReportsFilter';
+import { QuickReportsFollowUpFilter } from '@/features/filtering/components/QuickReportsFollowUpFilter';
+import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
@@ -31,20 +37,12 @@ import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/pu
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
-import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
-import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
-import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
-import { QuickReportsFollowUpFilter } from '@/features/filtering/components/QuickReportsFollowUpFilter';
-import { HasQuickReportsFilter } from '@/features/filtering/components/HasQuickReportsFilter';
-import { toBoolean } from '@/lib/utils';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
   messageBody: z
     .string()
     .min(1, { message: 'Your message must have a detailed description before sending.' })
-    .max(1000),
 });
 
 function PushMessageForm(): FunctionComponent {
@@ -89,7 +87,6 @@ function PushMessageForm(): FunctionComponent {
       formId: debouncedSearch.formId,
       fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
       toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
-      isCompletedFilter: toBoolean(debouncedSearch.formIsCompleted),
       monitoringObserverStatus: debouncedSearch.monitoringObserverStatus,
       quickReportIncidentCategory: debouncedSearch.incidentCategory,
       quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
@@ -208,7 +205,6 @@ function PushMessageForm(): FunctionComponent {
                   <MonitoringObserverStatusSelect />
                   <FormTypeFilter />
                   <FormSubmissionsFormFilter />
-                  <FormSubmissionsCompletionFilter />
                   <FormSubmissionsQuestionsAnsweredFilter />
                   <FormSubmissionsFollowUpFilter />
 

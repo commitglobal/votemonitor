@@ -1,5 +1,6 @@
 import EditForm from '@/features/forms/components/EditForm/EditForm';
 import { formDetailsQueryOptions } from '@/features/forms/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { z } from 'zod';
@@ -14,6 +15,9 @@ export const Route = createFileRoute('/forms/$formId/edit')({
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId));
+  },
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   validateSearch: (search) => editFormParamsSchema.parse(search),
 });

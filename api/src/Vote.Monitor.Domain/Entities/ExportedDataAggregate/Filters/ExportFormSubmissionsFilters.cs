@@ -8,6 +8,8 @@ namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 public class ExportFormSubmissionsFilters
 {
     public string? SearchText { get; set; }
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; set; }
     public FormType? FormTypeFilter { get; set; }
     public string? Level1Filter { get; set; }
     public string? Level2Filter { get; set; }

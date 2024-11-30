@@ -89,7 +89,7 @@ public class Endpoint(
         await monitoringObserverRepository.AddAsync(monitoringObserver, ct);
 
         var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(
-            FullName: observer.ApplicationUser.FirstName + " " + observer.ApplicationUser.LastName,
+            FullName: observer.ApplicationUser.DisplayName,
             CdnUrl: _apiConfiguration.WebAppUrl,
             NgoName: monitoringNgo.Ngo.Name,
             ElectionRoundDetails: electionRound.Title);

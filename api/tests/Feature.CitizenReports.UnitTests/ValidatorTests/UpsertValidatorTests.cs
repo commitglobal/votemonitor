@@ -95,7 +95,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
-            LocationId = Guid.NewGuid(),
+            LocationId = Guid.NewGuid()
         };
 
         // Act

@@ -19,6 +19,11 @@ export interface CitizenReportByEntry {
   timeSubmitted: Date;
   numberOfQuestionsAnswered: number;
   numberOfFlaggedAnswers: number;
+  level1: string;
+  level2: string;
+  level3: string;
+  level4: string;
+  level5: string;
   notesCount: number;
   mediaFilesCount: number;
   followUpStatus: CitizenReportFollowUpStatus;

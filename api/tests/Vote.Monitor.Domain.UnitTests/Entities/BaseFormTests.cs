@@ -99,6 +99,6 @@ public class BaseFormTests
             {
                 ValueOrUndefined<DateTime?>.Some(DateTime.Now),
                 ValueOrUndefined<DateTime?>.Some(DateTime.Now.AddDays(3)), Answers, new List<ObservationBreak>()
-            },
+            }
         };
 }

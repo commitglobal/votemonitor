@@ -8,7 +8,7 @@ public sealed class PISSubmissionFaker : Faker<PSISubmissionRequest>
 {
     public PISSubmissionFaker(UpsertPSIFormRequest psiForm, Guid pollingStationId, string observerToken)
     {
-        RuleFor(x => x.PollingStationId, pollingStationId.ToString());
+        RuleFor(x => x.PollingStationId, pollingStationId);
         RuleFor(x => x.ObserverToken, observerToken);
         Rules((f, x) =>
         {

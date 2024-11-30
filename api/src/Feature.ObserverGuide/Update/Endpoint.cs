@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
+using Feature.ObserverGuide.Model;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.Security;

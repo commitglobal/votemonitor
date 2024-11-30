@@ -1,6 +1,5 @@
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
-import { FormSubmissionsCompletionFilter } from '@/features/filtering/components/FormSubmissionsCompletionFilter';
 import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
@@ -12,13 +11,18 @@ import { FormSubmissionsMediaFilesFilter } from '../../../filtering/components/F
 import { FormSubmissionsQuestionNotesFilter } from '../../../filtering/components/FormSubmissionsQuestionNotesFilter';
 import { FormSubmissionsQuestionsAnsweredFilter } from '../../../filtering/components/FormSubmissionsQuestionsAnsweredFilter';
 import { FormSubmissionsToDateFilter } from '../../../filtering/components/FormSubmissionsToDateFilter';
+import { useDataSource } from '@/common/data-source-store';
+import { DataSources } from '@/common/types';
+import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 
 export const FormSubmissionsFiltersByEntry: FC = () => {
+  const dataSource = useDataSource();
+
   return (
     <FilteringContainer>
       <FormTypeFilter />
       <FormSubmissionsFormFilter />
-      <FormSubmissionsCompletionFilter />
+      {dataSource === DataSources.Coalition ? <CoalitionMemberFilter /> : null}
       <FormSubmissionsFlaggedAnswersFilter />
       <FormSubmissionsFollowUpFilter />
       <FormSubmissionsQuestionsAnsweredFilter />

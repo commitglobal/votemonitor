@@ -29,16 +29,14 @@ public record FormSubmissionEntry
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
+    public string NgoName { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }
     public int NumberOfFlaggedAnswers { get; init; }
     public int MediaFilesCount { get; init; }
     public int NotesCount { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
 
     public bool IsCompleted { get; set; }

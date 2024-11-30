@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 namespace Vote.Monitor.Api.Feature.Auth.ResetPassword;
@@ -22,8 +24,9 @@ public class Endpoint(ILogger<Endpoint> logger, UserManager<ApplicationUser> use
             // Don't reveal that the user does not exist or is not confirmed
             return TypedResults.Ok();
         }
-
-        var result = await userManager.ResetPasswordAsync(user, request.Token, request.Password);
+        
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+        var result = await userManager.ResetPasswordAsync(user, code, request.Password);
 
         if (!result.Succeeded)
         {

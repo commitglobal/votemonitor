@@ -107,7 +107,7 @@ public class ObserverCsvParserTests
             + Environment.NewLine + "Obs1,test,obs1@mail.com,2000000000,pa$$word"
             + Environment.NewLine + "Obs2,test,obs2@mail.com,3000000000,pa$$word",
              new List<ObserverImportModel>{
-                 new() {FirstName = "Obs1",LastName="test",Password="pa$$word", Email = "obs1@mail.com", PhoneNumber = "2000000000", },
+                 new() {FirstName = "Obs1",LastName="test",Password="pa$$word", Email = "obs1@mail.com", PhoneNumber = "2000000000" },
                  new() {FirstName = "Obs2",LastName="test",Password="pa$$word", Email = "obs2@mail.com", PhoneNumber = "3000000000" }
              }
          },

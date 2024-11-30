@@ -35,7 +35,7 @@ public class UpsertEndpointTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            CitizenReportId = Guid.NewGuid(),
+            CitizenReportId = Guid.NewGuid()
         };
 
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -63,7 +63,7 @@ public class UpsertEndpointTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            CitizenReportId = Guid.NewGuid(),
+            CitizenReportId = Guid.NewGuid()
         };
 
         var result = await _endpoint.ExecuteAsync(request, default);

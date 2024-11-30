@@ -16,14 +16,14 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   formCode: true,
   formName: true,
   formType: true,
-  isCompleted: true,
-  number: true,
   level1: false,
   level2: false,
   level3: false,
   level4: false,
   level5: false,
+  number: false,
   observerName: false,
+  ngoName: false,
   tags: false,
   numberOfQuestionsAnswered: true,
   numberOfFlaggedAnswers: true,
@@ -36,14 +36,15 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   monitoringObserverId: false,
   phoneNumber: false,
   pollingStationId: false,
+  isOwnObserver: false
 };
 
 export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState<FormSubmissionByObserver> = {
   observerName: true,
   phoneNumber: true,
   tags: true,
+  ngoName: true,
   numberOfLocations: true,
-  numberOfCompletedForms: true,
   numberOfFormsSubmitted: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
@@ -71,7 +72,6 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   formCode: true,
   formType: true,
   formName: true,
-  isCompleted: true,
   level1: false,
   level2: false,
   level3: false,
@@ -91,6 +91,8 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   phoneNumber: false,
   pollingStationId: false,
   tags: false,
+  ngoName: false,
+  isOwnObserver: false,
 };
 
 export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
@@ -114,20 +116,20 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const formSubmissionsByObserverColumnVisibilityOptions: ColumnOption<FormSubmissionByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
-  { id: 'numberOfCompletedForms', label: 'Completed forms', enableHiding: false },
   { id: 'numberOfLocations', label: 'Locations', enableHiding: false },
   { id: 'numberOfFormsSubmitted', label: 'Forms', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
@@ -159,6 +161,8 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'timestamp', label: 'Time submitted', enableHiding: true },
   { id: 'quickReportLocationType', label: 'Location type', enableHiding: true },
   { id: 'incidentCategory', label: 'Incident category', enableHiding: true },
+  { id: 'observerName', label: 'Observer', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
@@ -170,7 +174,7 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'pollingStationDetails', label: 'Polling station details', enableHiding: true },
-  { id: 'observerName', label: 'Observer', enableHiding: true },
+
 ];
 
 export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport> = {
@@ -181,6 +185,8 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   description: true,
   numberOfAttachments: true,
   observerName: true,
+  email: false,
+  ngoName: false,
   level1: false,
   level2: false,
   level3: false,
@@ -188,7 +194,6 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   level5: false,
   number: false,
   pollingStationDetails: false,
-  email: false,
   followUpStatus: true,
   address: false,
 
@@ -196,6 +201,8 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   id: false,
   monitoringObserverId: false,
   pollingStationId: false,
+  isOwnObserver: false,
+
 };
 
 export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport> = {
@@ -220,8 +227,10 @@ export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport
   id: false,
   monitoringObserverId: false,
   pollingStationId: false,
+  observerName: true,
   email: false,
-  observerName: false,
+  ngoName: false,
+  isOwnObserver: false,
 };
 
 export const citizenReportsColumnVisibilityOptions: ColumnOption<CitizenReportByEntry>[] = [
@@ -245,6 +254,11 @@ export const citizenReportsDefaultColumns: TableColumnVisibilityState<CitizenRep
   notesCount: false,
   mediaFilesCount: false,
   followUpStatus: true,
+  level1: true,
+  level2: true,
+  level3: true,
+  level4: true,
+  level5: true,
   // delete,
   formDefaultLanguage: false,
 };
@@ -262,20 +276,20 @@ const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReport
   { id: 'pollingStationNumber', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
 ];
 
 const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentReportByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
+  { id: 'ngoName', label: 'NGO', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfIncidentsSubmitted', label: 'Number of submissions', enableHiding: false },
-  { id: 'numberOfCompletedForms', label: 'Number completed forms', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
@@ -305,7 +319,6 @@ export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormS
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
@@ -323,7 +336,6 @@ export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<Incid
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
-  { id: 'isCompleted', label: 'Completed', enableHiding: true },
   { id: 'locationType', label: 'Location type', enableHiding: true },
   { id: 'pollingStationLevel1', label: 'Location - L1', enableHiding: true },
   { id: 'pollingStationLevel2', label: 'Location - L2', enableHiding: true },
@@ -344,10 +356,9 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   timeSubmitted: true,
   formCode: true,
   formName: true,
-  isCompleted: true,
   locationType: true,
   locationDescription: false,
-  pollingStationNumber: true,
+  pollingStationNumber: false,
   pollingStationLevel1: false,
   pollingStationLevel2: false,
   pollingStationLevel3: false,
@@ -364,14 +375,17 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   formDefaultLanguage: false,
   monitoringObserverId: false,
   phoneNumber: false,
+  ngoName: false,
   pollingStationId: false,
+  isOwnObserver: false,
+
 };
 
 export const incidentReportsByObserverDefaultColumns: TableColumnVisibilityState<IncidentReportByObserver> = {
   observerName: true,
   phoneNumber: true,
   tags: true,
-  numberOfCompletedForms: true,
+  ngoName: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
   numberOfIncidentsSubmitted: true,
@@ -396,7 +410,6 @@ export const observerIncidentReportsColumns: TableColumnVisibilityState<Incident
   timeSubmitted: true,
   formCode: true,
   formName: true,
-  isCompleted: true,
   locationType: true,
   locationDescription: false,
   pollingStationLevel1: false,
@@ -417,6 +430,8 @@ export const observerIncidentReportsColumns: TableColumnVisibilityState<Incident
   phoneNumber: false,
   pollingStationId: false,
   tags: false,
+  ngoName: false,
+  isOwnObserver: false,
 };
 
 export const incidentReportsDefaultColumns: Record<IncidentReportsViewBy, VisibilityState> = {

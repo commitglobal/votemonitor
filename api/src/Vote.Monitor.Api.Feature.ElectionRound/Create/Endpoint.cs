@@ -59,6 +59,10 @@ public class Endpoint(
             CountryName = country.Name,
             CountryFullName = country.FullName,
             CountryNumericCode = country.NumericCode,
+            CoalitionId = null,
+            CoalitionName = null,
+            IsCoalitionLeader = false,
+            IsMonitoringNgoForCitizenReporting = false
         });
     }
 }

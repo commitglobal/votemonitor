@@ -6,18 +6,18 @@ namespace Feature.Citizen.Guides;
 
 public record CitizenGuideModel
 {
-    public required Guid Id { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string? FileName { get; init; } = string.Empty;
-    public string? MimeType { get; init; } = string.Empty;
-    public string? PresignedUrl { get; init; } = string.Empty;
-    public int? UrlValidityInSeconds { get; init; }
-    public string? WebsiteUrl { get; init; }
-    public string? Text { get; init; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<CitizenGuideType, string>))]
-    public CitizenGuideType GuideType { get; init; }
-
+    public Guid Id { get; init; }
+    public string Title { get; init; }
+    public string FileName { get; init; }
+    public string MimeType { get; init; }
+    public string GuideType { get; init; }
+    public string Text { get; init; }
+    public string WebsiteUrl { get; init; }
     public DateTime CreatedOn { get; init; }
     public string CreatedBy { get; init; }
+    public string PresignedUrl { get; init; }
+    public int UrlValidityInSeconds { get; init; }
+    public string FilePath { get; init; }
+    public string UploadedFileName { get; init; }
+    public bool IsGuideOwner => true;
 }

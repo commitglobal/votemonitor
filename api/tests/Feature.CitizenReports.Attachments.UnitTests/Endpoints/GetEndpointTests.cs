@@ -58,7 +58,7 @@ public class GetEndpointTests
         {
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

@@ -27,9 +27,10 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn, ensureTranslatedStringCorrectness } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/forms_.$formId.edit-translation.$languageCode';
-import { useBlocker, useNavigate } from '@tanstack/react-router';
+import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { UpdateFormRequest } from '../../models/form';
+
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import {
   EditDateQuestionType,
@@ -51,6 +52,7 @@ export default function EditFormTranslation(): FunctionComponent {
   const confirm = useConfirm();
   const [shouldExitEditor, setShouldExitEditor] = useState(false);
   const navigate = useNavigate();
+  const router = useRouter();
 
   const formQuestions = formData.questions.map((question) => {
     if (isNumberQuestion(question)) {
@@ -237,6 +239,7 @@ export default function EditFormTranslation(): FunctionComponent {
       });
 
       void queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
 
       if (shouldExitEditor) {
         void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });

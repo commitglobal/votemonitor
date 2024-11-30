@@ -1,4 +1,5 @@
-﻿using Job.Contracts;
+﻿using System.Text;
+using Job.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -35,11 +36,13 @@ public class Endpoint(
 
         // For more information on how to enable account confirmation and password reset please
         // visit https://go.microsoft.com/fwlink/?LinkID=532713
-        string code = await userManager.GeneratePasswordResetTokenAsync(user);
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        
         var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "reset-password"));
         string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", code);
 
-        var emailProps = new ResetPasswordEmailProps(FullName: user.FirstName + " " + user.LastName, CdnUrl: _apiConfig.WebAppUrl, ResetPasswordUrl: passwordResetUrl);
+        var emailProps = new ResetPasswordEmailProps(FullName: user.DisplayName, CdnUrl: _apiConfig.WebAppUrl, ResetPasswordUrl: passwordResetUrl);
         var mail = emailFactory.GenerateResetPasswordEmail(emailProps);
 
         jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body);

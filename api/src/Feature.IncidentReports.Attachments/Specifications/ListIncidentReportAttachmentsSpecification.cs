@@ -8,6 +8,7 @@ public sealed class ListIncidentReportAttachmentsSpecification : Specification<I
     {
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
+                        && x.Form.ElectionRoundId == electionRoundId
                         && x.FormId == formId
                         && x.IncidentReportId == incidentReportId
                         && !x.IsDeleted

@@ -27,7 +27,7 @@ internal static class EmailTemplateLoader
         { EmailTemplateType.AttachmentFragment, "Fragments/attachment-fragment.html" },
         
         { EmailTemplateType.AnswerNotesFragment, "Fragments/answer-notes-fragment.html" },
-        { EmailTemplateType.NoteFragment, "Fragments/note-fragment.html" },
+        { EmailTemplateType.NoteFragment, "Fragments/note-fragment.html" }
     };
 
     public static string GetTemplate(EmailTemplateType templateType)

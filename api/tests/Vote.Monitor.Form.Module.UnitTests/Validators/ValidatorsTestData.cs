@@ -64,7 +64,7 @@ public class ValidatorsTestData
         new List<object?[]>
         {
             new object?[] { new DisplayLogicRequest{ParentQuestionId= Guid.NewGuid(), Condition = DisplayLogicCondition.GreaterEqual, Value = "1"} },
-            new object?[] { null },
+            new object?[] { null }
         };
 
 

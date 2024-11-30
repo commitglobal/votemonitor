@@ -51,7 +51,7 @@ public class ClearTagsValidatorTags
         {
             MonitoringObserverIds = [
                 Guid.NewGuid(),
-                Guid.Empty,
+                Guid.Empty
             ]
         };
 
@@ -71,7 +71,7 @@ public class ClearTagsValidatorTags
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),
             MonitoringObserverIds = [
-                Guid.NewGuid(),
+                Guid.NewGuid()
             ]
         };
 

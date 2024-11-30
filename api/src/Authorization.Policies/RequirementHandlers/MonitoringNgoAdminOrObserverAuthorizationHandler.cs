@@ -1,6 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 
@@ -51,8 +50,7 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
 
             if (ngoAdminResult is not null)
             {
-                if (ngoAdminResult.ElectionRoundStatus == ElectionRoundStatus.Archived ||
-                    ngoAdminResult.NgoStatus == NgoStatus.Deactivated ||
+                if (ngoAdminResult.NgoStatus == NgoStatus.Deactivated ||
                     ngoAdminResult.MonitoringNgoStatus == MonitoringNgoStatus.Suspended)
                 {
                     context.Fail();

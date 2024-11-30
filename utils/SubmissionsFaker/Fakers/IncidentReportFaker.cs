@@ -13,7 +13,7 @@ public sealed class IncidentReportFaker : Faker<IncidentReportRequest>
 
     public IncidentReportFaker(List<UpdateFormResponse> forms,List<PollingStationNode> pollingStations, List<LoginResponse> observers)
     {
-        RuleFor(x => x.IncidentReportId, f => f.Random.Guid());
+        RuleFor(x => x.Id, f => f.Random.Guid());
         RuleFor(x => x.ObserverToken, f => f.PickRandom(observers).Token);
         
         Rules((f, x) =>

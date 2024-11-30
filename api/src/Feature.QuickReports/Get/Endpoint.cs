@@ -1,17 +1,18 @@
 ﻿using Authorization.Policies.Requirements;
-using Feature.QuickReports.Specifications;
+using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
-using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.QuickReports.Get;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReadRepository<QuickReport> quickReportRepository,
-    IReadRepository<QuickReportAttachment> quickReportAttachmentRepository,
-    IFileStorageService fileStorageService)
+    INpgsqlConnectionFactory dbConnectionFactory,
+    IFileStorageService fileStorageService,
+    ICurrentUserRoleProvider userRoleProvider,
+    ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<QuickReportDetailedModel>, NotFound>>
 {
     public override void Configure()
@@ -26,43 +27,160 @@ public class Endpoint(
         });
     }
 
-    public override async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReport = await quickReportRepository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        if (userRoleProvider.IsObserver())
+        {
+            return await GetQuickReportAsObserverAsync(req.ElectionRoundId, userProvider.GetUserId()!.Value, req.Id,
+                ct);
+        }
 
-        if (quickReport is null)
+        if (userRoleProvider.IsNgoAdmin())
+        {
+            return await GetQuickReportAsNgoAdminAsync(req.ElectionRoundId, userProvider.GetNgoId()!.Value, req.Id, ct);
+        }
+
+        return TypedResults.NotFound();
+    }
+
+    private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsNgoAdminAsync(
+        Guid electionRoundId, Guid ngoId, Guid quickReportId, CancellationToken ct)
+    {
+        var sql = """
+                  SELECT qr."Id",
+                         qr."ElectionRoundId",
+                         qr."QuickReportLocationType",
+                         coalesce(qr."LastModifiedOn", qr."CreatedOn") as "Timestamp",
+                         qr."Title",
+                         qr."Description",
+                         qr."MonitoringObserverId",
+                         AMO."DisplayName" as "ObserverName",
+                         AMO."PhoneNumber",
+                         AMO."Email",
+                         AMO."Tags",
+                         AMO."NgoName",
+                         AMO."IsOwnObserver",
+                         qr."PollingStationId",
+                         ps."Level1",
+                         ps."Level2",
+                         ps."Level3",
+                         ps."Level4",
+                         ps."Level5",
+                         ps."Number",
+                         ps."Address",
+                         qr."PollingStationDetails",
+                         qr."IncidentCategory",
+                         qr."FollowUpStatus",
+                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "Id", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                                   FROM "QuickReportAttachments" qra
+                                   WHERE
+                                       qra."ElectionRoundId" = @electionRoundId
+                                     AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
+                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
+                         
+                  FROM "QuickReports" QR
+                           INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
+                           INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
+                           LEFT JOIN "PollingStations" ps on ps."Id" = qr."PollingStationId"
+                  WHERE qr."ElectionRoundId" = @electionRoundId
+                    and qr."Id" = @quickReportId
+                  """;
+
+        var queryArgs = new { electionRoundId, quickReportId, ngoId };
+
+        QuickReportDetailedModel submission = null;
+
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            submission = await dbConnection.QueryFirstOrDefaultAsync<QuickReportDetailedModel>(sql, queryArgs);
+        }
+
+        if (submission is null)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsSpecification(req.ElectionRoundId, quickReport.Id), ct);
+        await SetPresignUrls(submission);
 
-        var tasks = quickReportAttachments
-            .Select(async attachment =>
+        return TypedResults.Ok(submission);
+    }
+
+    private async Task SetPresignUrls(QuickReportDetailedModel submission)
+    {
+        foreach (var attachment in submission.Attachments)
+        {
+            var result =
+                await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
+            if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
             {
-                var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
-                    attachment.FilePath,
-                    attachment.UploadedFileName);
+                attachment.PresignedUrl = url;
+                attachment.UrlValidityInSeconds = urlValidityInSeconds;
+            }
+        }
+    }
 
-                return new QuickReportAttachmentModel
-                {
-                    FileName = attachment.FileName,
-                    PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    MimeType = attachment.MimeType,
-                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
-                    Id = attachment.Id,
-                    QuickReportId = attachment.QuickReportId
-                };
-            });
+    private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsObserverAsync(
+        Guid electionRoundId, Guid observerId, Guid quickReportId, CancellationToken ct)
+    {
+        var sql = """
+                  SELECT qr."Id",
+                         qr."ElectionRoundId",
+                         qr."QuickReportLocationType",
+                         coalesce(qr."LastModifiedOn", qr."CreatedOn") as "Timestamp",
+                         qr."Title",
+                         qr."Description",
+                         qr."PollingStationId",
+                         ps."Level1",
+                         ps."Level2",
+                         ps."Level3",
+                         ps."Level4",
+                         ps."Level5",
+                         ps."Number",
+                         ps."Address",
+                         qr."PollingStationDetails",
+                         qr."IncidentCategory",
+                         qr."FollowUpStatus",
+                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "Id", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                                   FROM "QuickReportAttachments" qra
+                                   WHERE
+                                       qra."ElectionRoundId" = @electionRoundId
+                                     AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
+                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
+                         
+                  FROM "QuickReports" QR
+                           INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
+                           INNER JOIN "AspNetUsers" u on u."Id" = mo."ObserverId"
+                           LEFT JOIN "PollingStations" ps on ps."Id" = qr."PollingStationId"
+                  WHERE qr."ElectionRoundId" = @electionRoundId
+                    and qr."Id" = @quickReportId
+                    and mo."ObserverId" = @observerId;
+                  """;
 
-        var attachments = await Task.WhenAll(tasks);
+        var queryArgs = new { electionRoundId, quickReportId, observerId };
 
-        return TypedResults.Ok(QuickReportDetailedModel.FromEntity(quickReport, attachments));
+        QuickReportDetailedModel? submission = null!;
+
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            submission = await dbConnection.QueryFirstOrDefaultAsync<QuickReportDetailedModel>(sql, queryArgs);
+        }
+
+        if (submission is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        await SetPresignUrls(submission);
+        
+        return TypedResults.Ok(submission);
     }
 }

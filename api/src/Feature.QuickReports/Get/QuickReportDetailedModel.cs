@@ -15,7 +15,11 @@ public record QuickReportDetailedModel
     public string Title { get; init; }
     public string Description { get; init; }
     public Guid MonitoringObserverId { get; init; }
+    public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; }
+    public string Email { get; init; }
+    public string PhoneNumber { get; init; }
+    public string[] Tags { get; init; } = [];
     public Guid? PollingStationId { get; init; }
     public string? Level1 { get; init; }
     public string? Level2 { get; init; }
@@ -27,11 +31,11 @@ public record QuickReportDetailedModel
     public string? PollingStationDetails { get; init; }
     
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
-    public IncidentCategory IncidentCategory { get; set; } 
+    public IncidentCategory IncidentCategory { get; init; } 
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
-    public QuickReportFollowUpStatus FollowUpStatus { get; set; }
-    public List<QuickReportAttachmentModel> Attachments { get; init; }
+    public QuickReportFollowUpStatus FollowUpStatus { get; init; }
+    public QuickReportAttachmentModel[] Attachments { get; init; }
 
     public static QuickReportDetailedModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
     {
@@ -43,7 +47,7 @@ public record QuickReportDetailedModel
             Title = quickReport.Title,
             Description = quickReport.Description,
             MonitoringObserverId = quickReport.MonitoringObserverId,
-            ObserverName = quickReport.MonitoringObserver.Observer.ApplicationUser.FirstName + " " + quickReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+            ObserverName = quickReport.MonitoringObserver.Observer.ApplicationUser.DisplayName,
             PollingStationId = quickReport.PollingStationId,
             Level1 = quickReport.PollingStation?.Level1,
             Level2 = quickReport.PollingStation?.Level2,
@@ -54,7 +58,7 @@ public record QuickReportDetailedModel
             Address = quickReport.PollingStation?.Address,
             PollingStationDetails = quickReport.PollingStationDetails,
             Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
-            Attachments = attachments.ToList(),
+            Attachments = attachments.ToArray(),
             FollowUpStatus = quickReport.FollowUpStatus,
             IncidentCategory = quickReport.IncidentCategory
         };

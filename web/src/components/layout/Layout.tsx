@@ -4,7 +4,7 @@ import BackButton from './Breadcrumbs/BackButton';
 import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
 
 interface LayoutProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   enableBreadcrumbs?: boolean;
   enableBackButton?: boolean;

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import { FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
 import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
-import { QuickReportLocationType } from '@/features/responses/models/quick-report';
+import { IncidentCategory, QuickReportLocationType } from '@/features/responses/models/quick-report';
 import { z } from 'zod';
 
 export enum MonitoringObserverStatus {
@@ -14,10 +14,12 @@ export interface MonitoringObserver {
   id: string;
   firstName: string;
   lastName: string;
+  displayName: string;
   email: string;
   status: MonitoringObserverStatus;
   phoneNumber: string;
   tags: string[];
+  isOwnObserver: boolean;
   latestActivityAt?: string;
 }
 
@@ -36,6 +38,7 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
 
   quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
   quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
+  incidentCategory: z.nativeEnum(IncidentCategory).optional(),
 
   incidentReportFollowUpStatus: z.nativeEnum(IncidentReportFollowUpStatus).optional(),
   incidentReportLocationType: z.nativeEnum(IncidentReportLocationType).optional(),

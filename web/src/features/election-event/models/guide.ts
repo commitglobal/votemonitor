@@ -8,17 +8,24 @@ export enum GuideType {
   Document = 'Document',
   Text = 'Text',
 }
-
+export interface GuideAccessModel {
+  ngoId: string;
+  name: string;
+}
 export interface GuideModel {
   id: string;
   title: string;
-  fileName?: string;
-  mimeType?: string;
-  presignedUrl?: string;
-  urlValidityInSeconds?: number;
-  websiteUrl?: string;
-  text?: string;
+  fileName: string;
+  mimeType: string;
   guideType: GuideType;
-  createdOn: string;
+  text: string;
+  websiteUrl: string;
+  createdOn: string; // ISO 8601 date string for DateTime
   createdBy: string;
+  isGuideOwner: boolean;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+  filePath: string;
+  uploadedFileName: string;
+  guideAccess: GuideAccessModel[];
 }
