@@ -34,7 +34,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';

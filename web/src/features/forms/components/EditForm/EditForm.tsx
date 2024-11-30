@@ -30,7 +30,7 @@ import { queryClient } from '@/main';
 import { Route } from '@/routes/forms_.$formId.edit';
 import { useMutation } from '@tanstack/react-query';
 import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { UpdateFormRequest } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import {

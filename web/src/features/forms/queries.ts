@@ -1,10 +1,9 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
+import { queryClient } from '@/main';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { FormBase, FormFull } from './models/form';
-import { buildURLSearchParams } from '@/lib/utils';
-import { queryClient } from '@/main';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formsKeys = {
@@ -69,7 +68,7 @@ export function useForms(
       return response.data;
     },
     enabled: !!electionRoundId,
-    staleTime: STALE_TIME
+    staleTime: STALE_TIME,
   });
 }
 
