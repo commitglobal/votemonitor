@@ -94,7 +94,7 @@ export function MonitoringObserversImport(): FunctionComponent {
   }
 
   return (
-    <Layout breadcrumbs={false} enableBreadcrumbs={false}>
+    <Layout enableBreadcrumbs={true} title='Import observer list'>
       <Card>
         <CardHeader>
           <CardTitle className='mb-3.5'>Import monitoring observer list</CardTitle>
