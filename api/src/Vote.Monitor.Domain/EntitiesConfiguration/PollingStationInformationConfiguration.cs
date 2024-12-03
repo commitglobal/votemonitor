@@ -40,7 +40,8 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
 
         builder.Property(x => x.ArrivalTime);
         builder.Property(x => x.DepartureTime);
-        builder.Property(x => x.MinutesMonitoring);
+
+        
         builder.Property(x => x.NumberOfQuestionsAnswered);
         builder.Property(x => x.NumberOfFlaggedAnswers);
 
@@ -52,5 +53,19 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
             .HasConversion<ObservationBreaksToJsonConverter, ObservationBreaksValueComparer>()
             .HasColumnType("jsonb")
             .HasDefaultValueSql("'[]'::JSONB");
+
+        builder
+            .Property(p => p.BreaksDurationInMinutes)
+            .HasComputedColumnSql(@"""ComputeBreaksDuration""(""Breaks"")", stored: true)
+            .ValueGeneratedOnAddOrUpdate();
+        
+        builder
+            .Property(p => p.MinutesMonitoring)
+            .HasComputedColumnSql(@"GREATEST(
+                EXTRACT(EPOCH FROM (""DepartureTime"" - ""ArrivalTime"")) / 60 
+                - ""ComputeBreaksDuration""(""Breaks""), 
+                0
+            )", stored: true)
+            .ValueGeneratedOnAddOrUpdate();
     }
 }

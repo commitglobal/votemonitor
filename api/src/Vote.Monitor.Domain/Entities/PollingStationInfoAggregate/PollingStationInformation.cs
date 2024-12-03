@@ -20,6 +20,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public DateTime? ArrivalTime { get; internal set; }
     public DateTime? DepartureTime { get; internal set; }
     public double? MinutesMonitoring { get; internal set; }
+    public double? BreaksDurationInMinutes { get; internal set; }
     public int NumberOfQuestionsAnswered { get; internal set; }
     public int NumberOfFlaggedAnswers { get; internal set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; internal set; }
@@ -136,11 +137,6 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         if (!departureTime.IsUndefined)
         {
             DepartureTime = departureTime.Value;
-        }
-
-        if (ArrivalTime.HasValue && DepartureTime.HasValue && DepartureTime >= ArrivalTime)
-        {
-            MinutesMonitoring = (DepartureTime.Value - ArrivalTime.Value).TotalMinutes;
         }
 
         if (breaks is not null)
