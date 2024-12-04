@@ -19,8 +19,6 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public PollingStationInformationForm PollingStationInformationForm { get; internal set; }
     public DateTime? ArrivalTime { get; internal set; }
     public DateTime? DepartureTime { get; internal set; }
-    public double? MinutesMonitoring { get; internal set; }
-    public double? BreaksDurationInMinutes { get; internal set; }
     public int NumberOfQuestionsAnswered { get; internal set; }
     public int NumberOfFlaggedAnswers { get; internal set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; internal set; }

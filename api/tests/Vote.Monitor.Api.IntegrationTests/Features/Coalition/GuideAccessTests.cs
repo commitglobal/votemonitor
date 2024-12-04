@@ -1,9 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Feature.ObserverGuide;
 using Feature.ObserverGuide.Model;
 using Vote.Monitor.Api.IntegrationTests.Consts;
-using Vote.Monitor.Api.IntegrationTests.Fakers;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using ListGuidesResponse = Feature.ObserverGuide.List.Response;
 
