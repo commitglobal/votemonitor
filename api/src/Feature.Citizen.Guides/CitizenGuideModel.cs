@@ -1,8 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
-
-namespace Feature.Citizen.Guides;
+﻿namespace Feature.Citizen.Guides;
 
 public record CitizenGuideModel
 {
