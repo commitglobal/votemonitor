@@ -7,8 +7,8 @@ module "ecs_api" {
 
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
-  min_capacity = 6
-  max_capacity = 12
+  min_capacity = 1
+  max_capacity = 1
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag
@@ -100,7 +100,7 @@ module "ecs_api" {
       name  = "ApiConfiguration__WebAppUrl"
       value = var.web_app_url
     },
-     {
+    {
       name  = "PushNotifications__SenderType"
       value = "Expo"
     },
