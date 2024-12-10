@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vote.Monitor.Domain;
@@ -13,9 +14,11 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20241203124707_AddComputedColumnsInPSI")]
+    partial class AddComputedColumnsInPSI
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5917,6 +5920,11 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("jsonb")
                         .HasDefaultValueSql("'[]'::JSONB");
 
+                    b.Property<double?>("BreaksDurationInMinutes")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("double precision")
+                        .HasComputedColumnSql("\"ComputeBreaksDuration\"(\"Breaks\")", true);
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -5943,6 +5951,11 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<double?>("MinutesMonitoring")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("double precision")
+                        .HasComputedColumnSql("GREATEST(\n                EXTRACT(EPOCH FROM (\"DepartureTime\" - \"ArrivalTime\")) / 60 \n                - \"ComputeBreaksDuration\"(\"Breaks\"), \n                0\n            )", true);
 
                     b.Property<Guid>("MonitoringObserverId")
                         .HasColumnType("uuid");

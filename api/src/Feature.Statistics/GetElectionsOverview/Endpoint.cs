@@ -164,7 +164,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             
             -- minutes monitoring
             SELECT
-                SUM(COALESCE("MinutesMonitoring", 0))
+                SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks"))
             FROM
                 "PollingStationInformation"
             WHERE

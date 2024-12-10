@@ -8,18 +8,17 @@ module "ecs_cluster" {
   default_instance_type = "t3a.small"
   instance_types        = local.ecs.instance_types
 
-  min_size                  = 2
+  min_size                  = 1
   max_size                  = 3
   minimum_scaling_step_size = 1
   maximum_scaling_step_size = 1
 
   target_capacity                          = 100
-  capacity_rebalance                       = true
-  on_demand_base_capacity                  = 2 # could be set to 1 for stability. consider savings plan
+  capacity_rebalance                       = false
+  on_demand_base_capacity                  = 1 # could be set to 1 for stability. consider savings plan
   on_demand_percentage_above_base_capacity = 0
   ecs_cloudwatch_log_retention             = 30
   userdata_cloudwatch_log_retention        = 30
-  desired_capacity_type                    = "units"
 
   spot_allocation_strategy = "price-capacity-optimized"
   spot_instance_pools      = 0

@@ -178,7 +178,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                         0 AS "NumberOfIncidentReports",
                         0 AS "NumberOfQuickReports",
                         COUNT(1) AS "NumberOfSubmissions",
-                        COALESCE(SUM(COALESCE(PSI."MinutesMonitoring", 0)), 0) AS "MinutesMonitoring",
+                        SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks")) AS "MinutesMonitoring",
                         SUM(PSI."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
                         SUM(PSI."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
                         COUNT(PSI."MonitoringObserverId") AS "ActiveObservers"

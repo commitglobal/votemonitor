@@ -5,7 +5,7 @@ import { FileUploader } from '@/components/ui/file-uploader';
 import { Separator } from '@/components/ui/separator';
 import Papa from 'papaparse';
 import { useMemo, useState } from 'react';
-import { ZodIssue, z } from 'zod';
+import { ZodIssue, ZodIssueCode, z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,11 @@ import { downloadImportExample } from '@/features/monitoring-observers/helpers';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
-import { LoaderIcon } from 'lucide-react';
 import { ImportedObserversDataTable } from './ImportedObserversDataTable';
-import { useNavigate } from '@tanstack/react-router';
 
 export const importObserversSchema = z.object({
   firstName: z
@@ -94,7 +94,7 @@ export function MonitoringObserversImport(): FunctionComponent {
   }
 
   return (
-    <Layout breadcrumbs={false} enableBreadcrumbs={false}>
+    <Layout enableBreadcrumbs={true} title='Import observer list'>
       <Card>
         <CardHeader>
           <CardTitle className='mb-3.5'>Import monitoring observer list</CardTitle>
@@ -129,6 +129,8 @@ export function MonitoringObserversImport(): FunctionComponent {
                   // worker: true,
                   transformHeader: (header) => header.charAt(0).toLowerCase() + header.slice(1),
                   async complete(results) {
+                    const existingEmails = new Set();
+
                     if (results.errors.length) {
                       console.error('Parsing errors:', results.errors);
                       // Optionally show an error message to the user.
@@ -140,7 +142,13 @@ export function MonitoringObserversImport(): FunctionComponent {
                         id: crypto.randomUUID(),
                       };
 
-                      const validationResult = importObserversSchema.safeParse(observerWithId);
+                      const validationResult = importObserversSchema
+                        .superRefine((val, ctx) => {
+                          if (existingEmails.has(val.email)) {
+                            ctx.addIssue({ code: ZodIssueCode.custom, message: 'Duplicate email' });
+                          } else existingEmails.add(val.email);
+                        })
+                        .safeParse(observerWithId);
 
                       return {
                         ...observerWithId,
@@ -169,7 +177,7 @@ export function MonitoringObserversImport(): FunctionComponent {
                 </Button>
               </div>{' '}
             </CardDescription>
-            <Separator/>
+            <Separator />
           </CardHeader>
           <CardContent className='p-0'>
             <div>
