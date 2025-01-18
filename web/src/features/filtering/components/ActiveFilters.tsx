@@ -1,6 +1,9 @@
+import { useDataSource } from '@/common/data-source-store';
 import { DateTimeFormat } from '@/common/formats';
+import { DataSources } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
 import {
   mapFormSubmissionFollowUpStatus,
@@ -12,9 +15,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { useDataSource } from '@/common/data-source-store';
-import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
-import { DataSources } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -61,6 +61,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.QuickReportFollowUpStatus, FILTER_LABEL.QuickReportFollowUpStatus],
   [FILTER_KEY.HasQuickReports, FILTER_LABEL.HasQuickReports],
   [FILTER_KEY.CoalitionMemberId, FILTER_LABEL.CoalitionMemberId],
+  [FILTER_KEY.Status, FILTER_LABEL.Status],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
@@ -120,7 +121,8 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         .filter(([filterId, value]) => isNotNilOrWhitespace(value?.toString()))
         .filter(
           ([filterId, value]) =>
-            filterId !== FILTER_KEY.CoalitionMemberId || (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
+            filterId !== FILTER_KEY.CoalitionMemberId ||
+            (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
         )
         .map(([filterId, value]) => {
           let key = '';

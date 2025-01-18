@@ -1,20 +1,27 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import type { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { Button } from '@/components/ui/button';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import { NGOStatusBadge } from '../components/NGOStatusBadge';
 
 export interface NGO {
   id: string;
   name: string;
-  status: string;
+  status: NGOStatus;
+}
+
+export enum NGOStatus {
+  Activated = 'Activated',
+  Pending = 'Pending',
+  Deactivated = 'Deactivated',
 }
 
 export const ngoColDefs: ColumnDef<NGO>[] = [
@@ -31,11 +38,15 @@ export const ngoColDefs: ColumnDef<NGO>[] = [
     accessorKey: 'status',
     enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
+    cell: ({
+      row: {
+        original: { status },
+      },
+    }) => <NGOStatusBadge status={status} />,
   },
   {
     id: 'actions',
     cell: ({ row }) => {
-
       const navigate = useNavigate();
 
       return (
@@ -48,7 +59,9 @@ export const ngoColDefs: ColumnDef<NGO>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={() =>  navigate({ to: '/ngos/$ngoId', params: { ngoId: row.original.id } })}>Edit</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ to: '/ngos/$ngoId', params: { ngoId: row.original.id } })}>
+                Edit
+              </DropdownMenuItem>
               <DropdownMenuItem>Deactivate</DropdownMenuItem>
               <DropdownMenuItem>Delete</DropdownMenuItem>
             </DropdownMenuContent>
