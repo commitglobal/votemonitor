@@ -5,7 +5,7 @@ import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-const ngoRouteSearchSchema = z.object({
+export const ngoRouteSearchSchema = z.object({
   searchText: z.coerce.string().optional(),
   status: z.nativeEnum(NGOStatus).optional(),
   pageNumber: z.number().catch(1),

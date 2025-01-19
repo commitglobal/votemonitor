@@ -25,7 +25,6 @@ import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ResetPasswordSuccessImport } from './routes/reset-password/success'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
-import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversImportImport } from './routes/monitoring-observers/import'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
@@ -52,6 +51,7 @@ import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides
 import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesFormSubmissionsFormIdAggregatedImport } from './routes/responses/form-submissions/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
+import { Route as NgosViewNgoIdTabImport } from './routes/ngos/view/$ngoId.$tab'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
@@ -126,11 +126,6 @@ const ObserversObserverIdRoute = ObserversObserverIdImport.update({
 
 const ObserverGuidesNewRoute = ObserverGuidesNewImport.update({
   path: '/observer-guides/new',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const NgosNgoIdRoute = NgosNgoIdImport.update({
-  path: '/ngos/$ngoId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -276,6 +271,11 @@ const ResponsesCitizenReportsFormIdAggregatedRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const NgosViewNgoIdTabRoute = NgosViewNgoIdTabImport.update({
+  path: '/ngos/view/$ngoId/$tab',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const MonitoringObserversViewMonitoringObserverIdTabRoute =
   MonitoringObserversViewMonitoringObserverIdTabImport.update({
     path: '/monitoring-observers/view/$monitoringObserverId/$tab',
@@ -344,10 +344,6 @@ declare module '@tanstack/react-router' {
     }
     '/monitoring-observers/import': {
       preLoaderRoute: typeof MonitoringObserversImportImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/$ngoId': {
-      preLoaderRoute: typeof NgosNgoIdImport
       parentRoute: typeof rootRoute
     }
     '/observer-guides/new': {
@@ -474,6 +470,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversViewMonitoringObserverIdTabImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/view/$ngoId/$tab': {
+      preLoaderRoute: typeof NgosViewNgoIdTabImport
+      parentRoute: typeof rootRoute
+    }
     '/responses/citizen-reports/$formId/aggregated': {
       preLoaderRoute: typeof ResponsesCitizenReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
@@ -502,7 +502,6 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   MonitoringObserversImportRoute,
-  NgosNgoIdRoute,
   ObserverGuidesNewRoute,
   ObserversObserverIdRoute,
   ResetPasswordSuccessRoute,
@@ -534,6 +533,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
+  NgosViewNgoIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute,
   ResponsesFormSubmissionsFormIdAggregatedRoute,
   ResponsesIncidentReportsFormIdAggregatedRoute,
