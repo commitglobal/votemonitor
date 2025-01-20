@@ -1,25 +1,9 @@
-import { authApi } from '@/common/auth-api';
 import { NGODetails } from '@/features/ngos/components/NGODetails';
-import { NGO } from '@/features/ngos/models/NGO';
+import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-quries';
 import { redirectIfNotAuth } from '@/lib/utils';
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';
 import { ngoRouteSearchSchema } from '..';
-
-export const ngoQueryOptions = (ngoId: string) =>
-  queryOptions({
-    queryKey: ['ngos', { ngoId }],
-    queryFn: async () => {
-      const response = await authApi.get<NGO>(`/ngos/${ngoId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo details');
-      }
-
-      return response.data;
-    },
-  });
 
 export const NgoAdminsSearchParamsSchema = ngoRouteSearchSchema.partial();
 export type NgoAdminsSearchParams = z.infer<typeof NgoAdminsSearchParamsSchema>;
@@ -45,7 +29,7 @@ export const Route = createFileRoute('/ngos/view/$ngoId/$tab')({
   component: NgoDetails,
   validateSearch: NgosDetailsdPageSearchParamsSchema,
 
-  loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoQueryOptions(ngoId)),
+  loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoDetailsOptions(ngoId)),
 });
 
 const coerceTabSlug = (slug: string) => {
@@ -57,7 +41,7 @@ const coerceTabSlug = (slug: string) => {
 
 function NgoDetails() {
   const { ngoId } = Route.useParams();
-  const { data: ngo } = useSuspenseQuery(ngoQueryOptions(ngoId));
+  const { data: ngo } = useNGODetails(ngoId);
 
   return (
     <div className='p-2'>

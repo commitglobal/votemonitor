@@ -11,7 +11,6 @@ import {
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import { NGOStatusBadge } from '../components/NGOStatusBadge';
 
 export interface NGO {
   id: string;
@@ -33,57 +32,6 @@ export interface NGOAdmin {
 
   status: NGOStatus;
 }
-
-export const ngoColDefs: ColumnDef<NGO>[] = [
-  {
-    header: 'ID',
-    accessorKey: 'id',
-  },
-  {
-    accessorKey: 'name',
-    enableSorting: true,
-    header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-  },
-  {
-    accessorKey: 'status',
-    enableSorting: false,
-    header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
-    cell: ({
-      row: {
-        original: { status },
-      },
-    }) => <NGOStatusBadge status={status} />,
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => {
-      const navigate = useNavigate();
-
-      return (
-        <div className='text-right'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost-primary' size='icon'>
-                <span className='sr-only'>Actions</span>
-                <EllipsisVerticalIcon className='w-6 h-6' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: row.original.id, tab: 'details' } })
-                }>
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem>Deactivate</DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
-  },
-];
 
 export const ngoAdminsColDefs: ColumnDef<NGOAdmin>[] = [
   {
