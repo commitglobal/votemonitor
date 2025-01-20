@@ -54,9 +54,9 @@ export const ngoDetailsOptions = (ngoId: string) =>
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
-export const useNGODeactivation = () => {
+export const useDeactivateNGO = () => {
   const router = useRouter();
-  const ngoDeactivationMutation = useMutation({
+  const deactivateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
       return authApi.post<any>(`${ENDPOINT}/${ngoId}:deactivate`, {});
     },
@@ -79,12 +79,12 @@ export const useNGODeactivation = () => {
       });
     },
   });
-  return { ngoDeactivationMutation };
+  return { deactivateNgoMutation };
 };
 
-export const useNGOActivation = () => {
+export const useActivateNGO = () => {
   const router = useRouter();
-  const ngoActivationMutation = useMutation({
+  const activateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
       return authApi.post<any>(`${ENDPOINT}/${ngoId}:activate`, {});
     },
@@ -107,5 +107,34 @@ export const useNGOActivation = () => {
       });
     },
   });
-  return { ngoActivationMutation };
+  return { activateNgoMutation };
+};
+
+export const useDeteleteNGO = () => {
+  const router = useRouter();
+  const deleteNgoMutation = useMutation({
+    mutationFn: (ngoId: string) => {
+      return authApi.delete<any>(`${ENDPOINT}/${ngoId}`);
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      router.invalidate();
+
+      toast({
+        title: 'Success',
+        description: 'NGO was activated successfully',
+      });
+    },
+
+    onError: (err) => {
+      console.log(err);
+      toast({
+        title: 'Error deleting NGO',
+        description: '',
+        variant: 'destructive',
+      });
+    },
+  });
+  return { deleteNgoMutation };
 };

@@ -1,5 +1,6 @@
 import Layout from '@/components/layout/Layout';
-import { Button } from '@/components/ui/button';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -20,13 +21,14 @@ import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react';
-import { useNGOActivation, useNGODeactivation, useNGOs } from '../../hooks/ngos-quries';
+import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../../hooks/ngos-quries';
 import { NGO, NGOStatus } from '../../models/NGO';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
 import { NGOStatusBadge } from '../NGOStatusBadge';
 
 export default function NGOsDashboard(): ReactElement {
   const navigate = useNavigate();
+  const confirm = useConfirm();
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
   const [searchText, setSearchText] = useState(search.searchText);
@@ -37,8 +39,9 @@ export default function NGOsDashboard(): ReactElement {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
 
-  const { ngoDeactivationMutation } = useNGODeactivation();
-  const { ngoActivationMutation } = useNGOActivation();
+  const { deactivateNgoMutation } = useDeactivateNGO();
+  const { activateNgoMutation } = useActivateNGO();
+  const { deleteNgoMutation } = useDeteleteNGO();
 
   useEffect(() => {
     navigateHandler({
@@ -112,12 +115,29 @@ export default function NGOsDashboard(): ReactElement {
                   onClick={(e) => {
                     e.stopPropagation();
                     isNGOActive
-                      ? ngoDeactivationMutation.mutate(row.original.id)
-                      : ngoActivationMutation.mutate(row.original.id);
+                      ? deactivateNgoMutation.mutate(row.original.id)
+                      : activateNgoMutation.mutate(row.original.id);
                   }}>
                   {isNGOActive ? 'Deactivate' : 'Activate'}
                 </DropdownMenuItem>
-                <DropdownMenuItem>Delete</DropdownMenuItem>
+                <DropdownMenuItem
+                  className='text-red-600'
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (
+                      await confirm({
+                        title: `Delete ${row.original.name}?`,
+                        body: 'This action is permanent and cannot be undone. Once deleted, this organization cannot be retrieved.',
+                        actionButton: 'Delete',
+                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                        cancelButton: 'Cancel',
+                      })
+                    ) {
+                      deleteNgoMutation.mutate(row.original.id);
+                    }
+                  }}>
+                  Delete
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
