@@ -4,7 +4,8 @@ import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
-import { NGO } from '../models/NGO';
+import { AxiosResponse } from 'axios';
+import { NGO, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -53,6 +54,50 @@ export const ngoDetailsOptions = (ngoId: string) =>
   });
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
+
+export const useNGOMutations = () => {
+  const createNgoAdminMutation = useMutation({
+    mutationFn: ({
+      ngoId,
+      values,
+      onMutationSuccess,
+    }: {
+      ngoId: string;
+      values: NGOAdminFormData;
+      onMutationSuccess: () => void;
+    }) => {
+      return authApi.post(`${ENDPOINT}/${ngoId}/admins`, values);
+    },
+
+    onSuccess: (_, { onMutationSuccess }) => {
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      onMutationSuccess();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const createNgoMutation = useMutation({
+    mutationFn: ({ values, onMutationSuccess }: { values: NGOCreationFormData; onMutationSuccess: () => void }) => {
+      return authApi.post(`${ENDPOINT}`, { name: values.name });
+    },
+
+    onSuccess: (response: AxiosResponse<NGO>, { values, onMutationSuccess }) => {
+      const ngoId = response.data.id;
+
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      const { name: _, ...adminValues } = values;
+
+      createNgoAdminMutation.mutate({ ngoId, values: { ...adminValues, password: 'weeetest1234' }, onMutationSuccess });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  return { createNgoMutation };
+};
 
 export const useDeactivateNGO = () => {
   const router = useRouter();
@@ -123,12 +168,11 @@ export const useDeteleteNGO = () => {
 
       toast({
         title: 'Success',
-        description: 'NGO was activated successfully',
+        description: 'NGO was deleted successfully',
       });
     },
 
-    onError: (err) => {
-      console.log(err);
+    onError: () => {
       toast({
         title: 'Error deleting NGO',
         description: '',

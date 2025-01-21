@@ -11,6 +11,7 @@ import {
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+import { z } from 'zod';
 
 export interface NGO {
   id: string;
@@ -32,6 +33,18 @@ export interface NGOAdmin {
 
   status: NGOStatus;
 }
+
+export const ngoAdminSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  phoneNumber: z.string(),
+});
+
+export const newNgoSchema = ngoAdminSchema.extend({ name: z.string() });
+
+export type NGOAdminFormData = z.infer<typeof ngoAdminSchema>;
+export type NGOCreationFormData = z.infer<typeof newNgoSchema>;
 
 export const ngoAdminsColDefs: ColumnDef<NGOAdmin>[] = [
   {

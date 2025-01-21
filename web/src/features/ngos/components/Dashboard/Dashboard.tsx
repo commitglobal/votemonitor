@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useDialog } from '@/components/ui/use-dialog';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Route } from '@/routes/ngos';
@@ -20,9 +21,11 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
+import { Plus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react';
 import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../../hooks/ngos-quries';
 import { NGO, NGOStatus } from '../../models/NGO';
+import CreateNGODialog from '../CreateNGODialog';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
 import { NGOStatusBadge } from '../NGOStatusBadge';
 
@@ -31,6 +34,7 @@ export default function NGOsDashboard(): ReactElement {
   const confirm = useConfirm();
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
+  const createNgoDialog = useDialog();
   const [searchText, setSearchText] = useState(search.searchText);
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -152,6 +156,13 @@ export default function NGOsDashboard(): ReactElement {
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
             <CardTitle className='text-xl'>All organizations</CardTitle>
+            <div className='flex md:flex-row-reverse gap-4 table-actions'>
+              <Button title='Add NGO' onClick={() => createNgoDialog.trigger()}>
+                <Plus className='mr-2' width={18} height={18} />
+                Add NGO
+              </Button>
+              <CreateNGODialog {...createNgoDialog.dialogProps} />
+            </div>
           </div>
           <Separator />
 
