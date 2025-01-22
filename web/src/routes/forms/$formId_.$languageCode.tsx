@@ -1,24 +1,30 @@
-import PreviewForm from '@/features/forms/components/PreviewForm/PreviewForm';
-import { formDetailsQueryOptions } from '@/features/forms/queries';
-import { redirectIfNotAuth } from '@/lib/utils';
-import { createFileRoute } from '@tanstack/react-router';
+import PreviewForm from '@/features/forms/components/PreviewForm/PreviewForm'
+import { formDetailsQueryOptions } from '@/features/forms/queries'
+import { redirectIfNotAuth } from '@/lib/utils'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/forms/$formId/$languageCode')({
+export const Route = createFileRoute('/forms/$formId_/$languageCode')({
   component: Details,
-  loader: ({ context: { queryClient, currentElectionRoundContext }, params: { formId } }) => {
-    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+  loader: ({
+    context: { queryClient, currentElectionRoundContext },
+    params: { formId },
+  }) => {
+    const electionRoundId =
+      currentElectionRoundContext.getState().currentElectionRoundId
 
-    return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId));
+    return queryClient.ensureQueryData(
+      formDetailsQueryOptions(electionRoundId, formId),
+    )
   },
   beforeLoad: () => {
-    redirectIfNotAuth();
+    redirectIfNotAuth()
   },
-});
+})
 
 function Details() {
   return (
-    <div className='p-2'>
+    <div className="p-2">
       <PreviewForm />
     </div>
-  );
+  )
 }

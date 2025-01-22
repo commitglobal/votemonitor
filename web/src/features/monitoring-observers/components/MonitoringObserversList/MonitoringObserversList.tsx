@@ -137,7 +137,6 @@ function MonitoringObserversList() {
 
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const createMonitoringObserverDialog = useDialog();
-  const importMonitoringObserversDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
   const { filteringIsActive, navigateHandler } = useFilteringContainer();
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -262,8 +261,7 @@ function MonitoringObserversList() {
             <Link to={'/monitoring-observers/import'}>
               <Button
                 className='bg-purple-900 hover:bg-purple-600'
-                disabled={electionRound?.status === ElectionRoundStatus.Archived}
-                onClick={() => importMonitoringObserversDialog.trigger()}>
+                disabled={electionRound?.status === ElectionRoundStatus.Archived}>
                 <svg
                   className='mr-1.5'
                   xmlns='http://www.w3.org/2000/svg'

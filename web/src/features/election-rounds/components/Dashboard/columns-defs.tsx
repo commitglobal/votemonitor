@@ -1,69 +1,59 @@
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { Button } from '@/components/ui/button';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { Link } from '@tanstack/react-router';
-import type { ColumnDef } from '@tanstack/react-table';
-import { z } from 'zod';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { ElectionRoundModel } from '../../models/types';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { ElectionRoundStatus } from '@/common/types';
+import ElectionRoundStatusBadge from '../ElectionRoundStatusBadge/ElectionRoundStatusBadge';
 
-export interface ElectionRound {
-  id: string;
-  countryId: string;
-  country: string;
-  title: string;
-  englishTitle: string;
-  startDate: string;
-  status: 'Archived' | 'NotStarted' | 'Started';
-  createdOn: string;
-  lastModifiedOn: string;
-}
+const columnHelper = createColumnHelper<ElectionRoundModel>();
 
-// TODO: figure out schema
-export const electionRoundFormSchema = z.object({
-  title: z.string().min(2).max(255),
-  englishTitle: z.string().min(2).max(255),
-  countryId: z.string(),
-  startDate: z.string(),
-});
-
-export type ElectionRoundFormValues = z.infer<typeof electionRoundFormSchema>;
-
-
-export const electionRoundColDefs: ColumnDef<ElectionRound>[] = [
-  {
-    header: 'ID',
-    accessorKey: 'id',
-  },
-  {
-    accessorKey: 'title',
+export const electionRoundColDefs: ColumnDef<ElectionRoundModel>[] = [
+  columnHelper.display({
+    id: 'title',
+    enableResizing: true,
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='Title' column={column} />,
-  },
-  {
-    accessorKey: 'englishTitle',
+    cell: ({ row }) => row.original.title,
+  }),
+  columnHelper.display({
+    id: 'englishTitle',
+    enableResizing: true,
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='English title' column={column} />,
-  },
-  {
-    accessorKey: 'country',
+    cell: ({ row }) => row.original.englishTitle,
+  }),
+  columnHelper.display({
+    id: 'countryName',
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='Country' column={column} />,
-  },
-  {
-    accessorKey: 'startDate',
+    cell: ({ row }) => row.original.countryName,
+  }),
+  columnHelper.display({
+    id: 'startDate',
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='Start date' column={column} />,
-  },
-  {
-    accessorKey: 'status',
-    enableSorting: false,
+    cell: ({ row }) => row.original.startDate,
+  }),
+  columnHelper.display({
+    id: 'status',
+    enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
-  },
+    cell: ({
+      row: {
+        original: { status },
+      },
+    }) => <ElectionRoundStatusBadge status={status} />,
+  }),
   {
     id: 'actions',
     cell: ({ row }) => {
@@ -83,8 +73,8 @@ export const electionRoundColDefs: ColumnDef<ElectionRound>[] = [
                 preload='intent'>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>Deactivate</DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
+              <DropdownMenuItem>Archive</DropdownMenuItem>
+              <DropdownMenuItem className='text-red-600'>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
