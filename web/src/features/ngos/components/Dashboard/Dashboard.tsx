@@ -23,7 +23,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react';
-import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../../hooks/ngos-quries';
+import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../../hooks/ngos-queriess';
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';

@@ -5,15 +5,17 @@ import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
-import { NGO, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
+import { NGO, NGOAdmin, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
-  all: () => ['ngos'] as const,
+  all: ( ) => ['ngos'] as const,
   lists: () => [...ngosKeys.all(), 'list'] as const,
   list: (params: DataTableParameters) => [...ngosKeys.lists(), { ...params }] as const,
   details: () => [...ngosKeys.all(), 'detail'] as const,
   detail: (id: string) => [...ngosKeys.details(), id] as const,
+  adminsList: (ngoId: string, params: DataTableParameters) =>
+    [...ngosKeys.all(), 'admins', ngoId, { ...params }] as const,
 };
 
 export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO>, Error> {
@@ -35,7 +37,7 @@ export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO
       }
 
       return response.data;
-    },
+    }
   });
 }
 
@@ -55,17 +57,32 @@ export const ngoDetailsOptions = (ngoId: string) =>
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
+export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryResult<PageResponse<NGOAdmin>, Error> {
+  return useQuery({
+    queryKey: ngosKeys.adminsList(ngoId, p),
+    queryFn: async () => {
+      const response = await authApi.get<PageResponse<NGO>>(`/ngos/${ngoId}/admins`, {
+        params: {
+          ...p.otherParams,
+          PageNumber: p.pageNumber,
+          PageSize: p.pageSize,
+          SortColumnName: p.sortColumnName,
+          SortOrder: p.sortOrder,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch ngos');
+      }
+
+      return response.data;
+    },
+  });
+}
+
 export const useNGOMutations = () => {
   const createNgoAdminMutation = useMutation({
-    mutationFn: ({
-      ngoId,
-      values,
-      onMutationSuccess,
-    }: {
-      ngoId: string;
-      values: NGOAdminFormData;
-      onMutationSuccess: () => void;
-    }) => {
+    mutationFn: ({ ngoId, values }: { ngoId: string; values: NGOAdminFormData; onMutationSuccess: () => void }) => {
       return authApi.post(`${ENDPOINT}/${ngoId}/admins`, values);
     },
 
@@ -74,12 +91,12 @@ export const useNGOMutations = () => {
       onMutationSuccess();
     },
     onError: (err) => {
-      console.log(err);
+      console.error(err);
     },
   });
 
   const createNgoMutation = useMutation({
-    mutationFn: ({ values, onMutationSuccess }: { values: NGOCreationFormData; onMutationSuccess: () => void }) => {
+    mutationFn: ({ values }: { values: NGOCreationFormData; onMutationSuccess: () => void }) => {
       return authApi.post(`${ENDPOINT}`, { name: values.name });
     },
 
@@ -89,14 +106,18 @@ export const useNGOMutations = () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       const { name: _, ...adminValues } = values;
 
-      createNgoAdminMutation.mutate({ ngoId, values: { ...adminValues, password: 'weeetest1234' }, onMutationSuccess });
+      createNgoAdminMutation.mutate({
+        ngoId,
+        values: { ...adminValues, password: 'weeetest1234' } as any,
+        onMutationSuccess,
+      });
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  return { createNgoMutation };
+  return { createNgoMutation, createNgoAdminMutation };
 };
 
 export const useDeactivateNGO = () => {

@@ -3,35 +3,36 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNGOMutations } from '../hooks/ngos-queriess';
-import { newNgoSchema, NGOCreationFormData } from '../models/NGO';
+import { NGOAdminFormData, ngoAdminSchema } from '../models/NGO';
 
-export interface CreateNGODialogProps {
+export interface AddNgoAdminDialogProps {
+  ngoId: string;
   open: boolean;
   onOpenChange: (open: any) => void;
 }
 
-function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
+function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
-  const { createNgoMutation } = useNGOMutations();
+  const { createNgoAdminMutation } = useNGOMutations();
 
-  const form = useForm<NGOCreationFormData>({
-    resolver: zodResolver(newNgoSchema),
+  const form = useForm<NGOAdminFormData>({
+    resolver: zodResolver(ngoAdminSchema),
   });
 
-  function onSubmit(values: NGOCreationFormData) {
-    createNgoMutation.mutate({
-      values,
+  function onSubmit(values: NGOAdminFormData) {
+    createNgoAdminMutation.mutate({
+      ngoId,
+      values: { ...values, password: 'weeetest1234' } as any,
       onMutationSuccess: () => {
         form.reset({});
         onOpenChange(false);
         toast({
           title: 'Success',
-          description: 'New organization created',
+          description: 'New NGO admin added',
         });
       },
     });
@@ -47,32 +48,10 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
         onEscapeKeyDown={(e) => {
           e.preventDefault();
         }}>
-        <DialogTitle className='mb-3.5'>Add organization</DialogTitle>
+        <DialogTitle className='mb-3.5'>Add NGO admin</DialogTitle>
         <div className='flex flex-col gap-3'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <Input placeholder='Name' {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className='inline-flex text-slate-700'>
-                <div>
-                  <InformationCircleIcon width={24} height={24} />
-                </div>
-                <div className='ml-2 text-sm'>
-                  Please add a contact person for this organization. This person will automatically become the
-                  organization's first admin.
-                </div>
-              </div>
-
               <FormField
                 control={form.control}
                 name='firstName'
@@ -127,8 +106,8 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button title={t('addBtnText')} type='submit' className='px-6'>
-                  Add organization
+                <Button title='Add admin' type='submit' className='px-6'>
+                  Add admin
                 </Button>
               </DialogFooter>
             </form>
@@ -139,4 +118,4 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
   );
 }
 
-export default CreateNGODialog;
+export default AddNgoAdminDialog;
