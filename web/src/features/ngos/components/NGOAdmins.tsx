@@ -1,6 +1,15 @@
-import { Button } from '@/components/ui/button';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
@@ -8,14 +17,16 @@ import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Route } from '@/routes/ngos/view/$ngoId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { ngoAdminsColDefs } from '../models/NGO';
+import { useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
+import { NGOAdmin, NgoAdminStatus } from '../models/NGO';
 import AddNgoAdminDialog from './AddNgoAdminDialog';
 import { NGOsListFilters } from './filtering/NGOsListFilters';
-import { useNgoAdmins } from '../hooks/ngos-queriess';
 
 interface NGOAdminsViewProps {
   ngoId: string;
@@ -23,7 +34,7 @@ interface NGOAdminsViewProps {
 
 export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const navigate = useNavigate();
-
+  const confirm = useConfirm();
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
   const [searchText, setSearchText] = useState(search.searchText);
@@ -34,6 +45,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
   const addNgoAdminDialog = useDialog();
+  const { deactivateNgoAdminMutation, activateNgoAdminMutation, deleteNgoAdminMutation } = useNGOMutations();
 
   useEffect(() => {
     navigateHandler({
@@ -60,6 +72,95 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
     },
     [navigate]
   );
+
+  const ngoAdminsColDefs: ColumnDef<NGOAdmin>[] = [
+    {
+      header: 'ID',
+      accessorKey: 'id',
+    },
+    {
+      accessorKey: 'email',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
+    },
+    {
+      accessorKey: 'firstName',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='First name' column={column} />,
+    },
+    {
+      accessorKey: 'lastName',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Last name' column={column} />,
+    },
+
+    {
+      accessorKey: 'status',
+      enableSorting: false,
+      header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => <Badge className={`badge-${status}`}>{status}</Badge>,
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const navigate = useNavigate();
+        const adminId = row.original.id;
+        const isAdminActive = row.original.status === NgoAdminStatus.Active;
+
+        return (
+          <div className='text-right'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost-primary' size='icon'>
+                  <span className='sr-only'>Actions</span>
+                  <EllipsisVerticalIcon className='w-6 h-6' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: row.original.id, tab: 'details' } })
+                  }>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    isAdminActive
+                      ? deactivateNgoAdminMutation.mutate({ ngoId, adminId })
+                      : activateNgoAdminMutation.mutate({ ngoId, adminId });
+                  }}>
+                  {!isAdminActive ? 'Activate' : 'Deactivate'}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className='text-red-600'
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (
+                      await confirm({
+                        title: `Delete ${row.original.firstName} ${row.original.lastName}?`,
+                        body: 'This action is permanent and cannot be undone. Once deleted, this NGO admin cannot be retrieved.',
+                        actionButton: 'Delete',
+                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+                        cancelButton: 'Cancel',
+                      })
+                    ) {
+                      deleteNgoAdminMutation.mutate({ ngoId, adminId });
+                    }
+                  }}>
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <Card className='w-full pt-0'>
