@@ -5,7 +5,8 @@ import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
-import { NGO, NGOAdmin, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
+import { NGO, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
+import { NgoAdmin, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -57,7 +58,7 @@ export const ngoDetailsOptions = (ngoId: string) =>
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
-export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryResult<PageResponse<NGOAdmin>, Error> {
+export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryResult<PageResponse<NgoAdmin>, Error> {
   return useQuery({
     queryKey: ngosKeys.adminsList(ngoId, p),
     queryFn: async () => {
@@ -286,3 +287,20 @@ export const useDeteleteNGO = () => {
   });
   return { deleteNgoMutation };
 };
+
+export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
+  queryOptions({
+    queryKey: ngosKeys.detail(ngoId),
+    queryFn: async () => {
+      const response = await authApi.get<NgoAdmin>(`/ngos/${ngoId}/admins/${adminId}`);
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch ngo details');
+      }
+
+      return response.data;
+    },
+  });
+
+export const useNgoAdminDetails = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
+  useSuspenseQuery(ngoAdminDetailsOptions({ ngoId, adminId }));

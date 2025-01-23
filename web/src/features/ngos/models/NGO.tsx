@@ -18,7 +18,7 @@ export enum NgoAdminStatus {
   Deactivated = 'Deactivated',
 }
 
-export interface NGOAdmin {
+export interface NgoAdmin {
   id: string;
   email: string;
   firstName: string;

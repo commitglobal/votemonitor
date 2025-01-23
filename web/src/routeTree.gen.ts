@@ -51,11 +51,12 @@ import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides
 import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesFormSubmissionsFormIdAggregatedImport } from './routes/responses/form-submissions/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
-import { Route as NgosViewNgoIdTabImport } from './routes/ngos/view/$ngoId.$tab'
+import { Route as NgosViewNgoIdTabImport } from './routes/ngos/view.$ngoId.$tab'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
+import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin.$ngoId.$adminId.view'
 
 // Create/Update Routes
 
@@ -302,6 +303,11 @@ const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
     } as any,
   )
 
+const NgosAdminNgoIdAdminIdViewRoute = NgosAdminNgoIdAdminIdViewImport.update({
+  path: '/ngos/admin/$ngoId/$adminId/view',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -486,6 +492,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/admin/$ngoId/$adminId/view': {
+      preLoaderRoute: typeof NgosAdminNgoIdAdminIdViewImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -537,6 +547,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesCitizenReportsFormIdAggregatedRoute,
   ResponsesFormSubmissionsFormIdAggregatedRoute,
   ResponsesIncidentReportsFormIdAggregatedRoute,
+  NgosAdminNgoIdAdminIdViewRoute,
 ])
 
 /* prettier-ignore-end */

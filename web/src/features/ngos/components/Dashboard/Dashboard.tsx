@@ -27,7 +27,7 @@ import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../..
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
-import { NGOStatusBadge } from '../NGOStatusBadge';
+import { NgoStatusBadge } from '../NgoStatusBadges';
 
 export default function NGOsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ export default function NGOsDashboard(): ReactElement {
         row: {
           original: { status },
         },
-      }) => <NGOStatusBadge status={status} />,
+      }) => <NgoStatusBadge status={status} />,
     },
     {
       id: 'actions',

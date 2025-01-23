@@ -5,12 +5,12 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Route } from '@/routes/ngos/view/$ngoId.$tab';
+import { Route } from '@/routes/ngos/view.$ngoId.$tab';
 import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { NGO } from '../models/NGO';
 import { NGOAdminsView } from './NGOAdmins';
-import { NGOStatusBadge } from './NGOStatusBadge';
+import { NgoStatusBadge } from './NgoStatusBadges';
 
 interface NGODetailsProps {
   data: NGO;
@@ -41,7 +41,7 @@ export const NGODetailsView: FC<NGODetailsProps> = ({ data }) => {
 
         <div className='flex flex-col gap-1'>
           <p className='font-bold text-gray-700'>Status</p>
-          <NGOStatusBadge status={data.status} />
+          <NgoStatusBadge status={data.status} />
         </div>
       </CardContent>
     </Card>

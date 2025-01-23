@@ -3,7 +3,7 @@ import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-que
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';
-import { ngoRouteSearchSchema } from '..';
+import { ngoRouteSearchSchema } from '.';
 
 export const NgoAdminsSearchParamsSchema = ngoRouteSearchSchema.partial();
 export type NgoAdminsSearchParams = z.infer<typeof NgoAdminsSearchParamsSchema>;

@@ -1,5 +1,4 @@
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
@@ -15,18 +14,19 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/ngos/view/$ngoId.$tab';
+import { Route } from '@/routes/ngos/view.$ngoId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
-import { NGOAdmin, NgoAdminStatus } from '../models/NGO';
-import AddNgoAdminDialog from './AddNgoAdminDialog';
+import { NgoAdmin, NgoAdminStatus } from '../models/NGO';
+import AddNgoAdminDialog from './admins/AddNgoAdminDialog';
 import { NGOsListFilters } from './filtering/NGOsListFilters';
+import { NgoAdminStatusBadge } from './NgoStatusBadges';
 
 interface NGOAdminsViewProps {
   ngoId: string;
@@ -41,7 +41,6 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
   };
-
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
   const addNgoAdminDialog = useDialog();
@@ -66,14 +65,10 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
     return Object.fromEntries(params);
   }, [debouncedSearch]);
 
-  const navigateToNgo = useCallback(
-    (ngoId: string) => {
-      void navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId, tab: 'details' } });
-    },
-    [navigate]
-  );
+  const navigateToNgoAdmin = (ngoId: string, adminId: string) =>
+    navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });
 
-  const ngoAdminsColDefs: ColumnDef<NGOAdmin>[] = [
+  const ngoAdminsColDefs: ColumnDef<NgoAdmin>[] = [
     {
       header: 'ID',
       accessorKey: 'id',
@@ -102,12 +97,13 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
         row: {
           original: { status },
         },
-      }) => <Badge className={`badge-${status}`}>{status}</Badge>,
+      }) => {
+        return <NgoAdminStatusBadge status={status} />;
+      },
     },
     {
       id: 'actions',
       cell: ({ row }) => {
-        const navigate = useNavigate();
         const adminId = row.original.id;
         const isAdminActive = row.original.status === NgoAdminStatus.Active;
 
@@ -121,12 +117,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end'>
-                <DropdownMenuItem
-                  onClick={() =>
-                    navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: row.original.id, tab: 'details' } })
-                  }>
-                  Edit
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigateToNgoAdmin(ngoId, row.original.id)}>Edit</DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
@@ -193,7 +184,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
           columns={ngoAdminsColDefs}
           useQuery={(params) => useNgoAdmins(ngoId, params)}
           queryParams={queryParams}
-          onRowClick={navigateToNgo}
+          onRowClick={(id) => navigateToNgoAdmin(ngoId, id)}
         />
       </CardContent>
     </Card>

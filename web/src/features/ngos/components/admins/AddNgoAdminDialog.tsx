@@ -6,8 +6,8 @@ import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNGOMutations } from '../hooks/ngos-queriess';
-import { NGOAdminFormData, ngoAdminSchema } from '../models/NGO';
+import { useNGOMutations } from '../../hooks/ngos-queriess';
+import { NGOAdminFormData, ngoAdminSchema } from '../../models/NGO';
 
 export interface AddNgoAdminDialogProps {
   ngoId: string;
