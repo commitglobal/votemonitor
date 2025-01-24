@@ -9,13 +9,15 @@ import Layout from '@/components/layout/Layout';
 import { format } from 'date-fns';
 import { FC } from 'react';
 import { NgoAdmin } from '../../models/NgoAdmin';
+import { NgoBackButton } from '../NgoExtraComponents';
 import { NgoAdminStatusBadge } from '../NgoStatusBadges';
 
 interface NgoAdminDetailsViewProps {
+  ngoId: string;
   ngoAdmin: NgoAdmin;
 }
 
-export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoAdmin }) => {
+export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoAdmin }) => {
   const navigate = useNavigate();
   const displayName = `${ngoAdmin.firstName} ${ngoAdmin.lastName}`;
   //TODO: Fix navigate to edit
@@ -27,7 +29,7 @@ export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoAdmin }) 
   };
 
   return (
-    <Layout title={displayName}>
+    <Layout title={displayName} backButton={<NgoBackButton ngoId={ngoId} />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>

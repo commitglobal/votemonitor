@@ -11,6 +11,7 @@ import { FC } from 'react';
 import { NGO } from '../models/NGO';
 import { NGOAdminsView } from './NGOAdmins';
 import { NgoStatusBadge } from './NgoStatusBadges';
+import { NgoBackButton } from './NgoExtraComponents';
 
 interface NGODetailsProps {
   data: NGO;
@@ -60,7 +61,7 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
     });
   }
   return (
-    <Layout title={`${data.name}`}>
+    <Layout title={`${data.name}`} backButton={<NgoBackButton />}>
       <Tabs defaultValue='details' value={tab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
           <TabsTrigger value='details'>Organization details</TabsTrigger>

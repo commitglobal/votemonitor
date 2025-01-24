@@ -18,7 +18,7 @@ function NgoAdminDetails() {
 
   return (
     <div className='p-2'>
-      <NgoAdminDetailsView ngoAdmin={ngoAdmin} />
+      <NgoAdminDetailsView ngoId={ngoId} ngoAdmin={ngoAdmin} />
     </div>
   );
 }
