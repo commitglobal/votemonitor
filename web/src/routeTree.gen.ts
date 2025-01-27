@@ -29,6 +29,7 @@ import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversImportImport } from './routes/monitoring-observers/import'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
+import { Route as FormsNewImport } from './routes/forms/new'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
@@ -45,6 +46,9 @@ import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guid
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
+import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
+import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
+import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
 import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
@@ -150,6 +154,11 @@ const MonitoringObserversTabRoute = MonitoringObserversTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormsNewRoute = FormsNewImport.update({
+  path: '/forms/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormsFormIdRoute = FormsFormIdImport.update({
   path: '/forms/$formId',
   getParentRoute: () => rootRoute,
@@ -234,6 +243,21 @@ const MonitoringObserversEditMonitoringObserverIdRoute =
 
 const FormsFormIdEditRoute = FormsFormIdEditImport.update({
   path: '/forms/$formId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsNewTemplateRoute = FormsNewTemplateImport.update({
+  path: '/forms/new/template',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsNewScratchRoute = FormsNewScratchImport.update({
+  path: '/forms/new/scratch',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsNewReuseRoute = FormsNewReuseImport.update({
+  path: '/forms/new/reuse',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -334,6 +358,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdImport
       parentRoute: typeof rootRoute
     }
+    '/forms/new': {
+      preLoaderRoute: typeof FormsNewImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/$tab': {
       preLoaderRoute: typeof MonitoringObserversTabImport
       parentRoute: typeof rootRoute
@@ -418,6 +446,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdLanguageCodeImport
       parentRoute: typeof rootRoute
     }
+    '/forms/new/reuse': {
+      preLoaderRoute: typeof FormsNewReuseImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/new/scratch': {
+      preLoaderRoute: typeof FormsNewScratchImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/new/template': {
+      preLoaderRoute: typeof FormsNewTemplateImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/edit': {
       preLoaderRoute: typeof FormsFormIdEditImport
       parentRoute: typeof rootRoute
@@ -499,6 +539,7 @@ export const routeTree = rootRoute.addChildren([
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,
+  FormsNewRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   MonitoringObserversImportRoute,
@@ -520,6 +561,9 @@ export const routeTree = rootRoute.addChildren([
   CitizenGuidesViewGuideIdRoute,
   CitizenNotificationsViewNotificationIdRoute,
   FormsFormIdLanguageCodeRoute,
+  FormsNewReuseRoute,
+  FormsNewScratchRoute,
+  FormsNewTemplateRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
   MonitoringObserversPushMessagesIdRoute,

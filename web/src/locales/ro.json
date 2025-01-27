@@ -265,12 +265,16 @@
         "level5": "Level 5"
       },
       "resetFilters": "Reset filters"
+    },
+    "form": {
+      "title": "Creează un nou formular",
+      "subtitle": "Alege modul în care vrei să începi."
     }
   },
   "pagination": {
     "dataTable": {
       "resultsSummary": "Showing {{start}} to {{end}} of {{total}} results",
-      "perPage": "per page",
+      "perPage": "per pagină",
       "goToFirstPage": "Go to first page",
       "goToPreviousPage": "Go to previous page",
       "goToNextPage": "Go to next page",
