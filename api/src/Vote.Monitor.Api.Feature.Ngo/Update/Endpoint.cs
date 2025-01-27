@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.Ngo.Specifications;
+﻿using Authorization.Policies;
+using Vote.Monitor.Api.Feature.Ngo.Specifications;
 
 namespace Vote.Monitor.Api.Feature.Ngo.Update;
 
@@ -7,6 +8,9 @@ public class Endpoint(IRepository<NgoAggregate> repository) : Endpoint<Request, 
     public override void Configure()
     {
         Put("/api/ngos/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("ngos"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
