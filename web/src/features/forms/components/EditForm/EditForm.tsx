@@ -1,4 +1,4 @@
-import { QuestionType, ZFormType, type FunctionComponent } from '@/common/types';
+import { QuestionType, ZFormType } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
@@ -25,17 +25,12 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import {
-  cn,
-  ensureTranslatedStringCorrectness,
-  isNilOrWhitespace,
-  isNotNilOrWhitespace
-} from '@/lib/utils';
+import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/forms_.$formId.edit';
 import { useMutation } from '@tanstack/react-query';
 import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { UpdateFormRequest } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import {
@@ -49,7 +44,6 @@ import {
   ZEditQuestionType,
   ZTranslatedString,
 } from '../../types';
-import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormDetails from './EditFormDetails';
 
 export const ZEditFormType = z
@@ -215,7 +209,11 @@ export const ZEditFormType = z
 
 export type EditFormType = z.infer<typeof ZEditFormType>;
 
-export default function EditForm(): FunctionComponent {
+interface EditFormProps {
+  currentTab?: string;
+}
+
+const EditForm: FC<EditFormProps> = ({ currentTab }) => {
   const { formId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
@@ -383,7 +381,7 @@ export default function EditForm(): FunctionComponent {
       description: ensureTranslatedStringCorrectness(formData.description, formData.languages),
       formType: formData.formType,
       questions: editQuestions,
-      icon: formData.icon ?? ''
+      icon: formData.icon ?? '',
     },
     mode: 'all',
   });
@@ -423,7 +421,7 @@ export default function EditForm(): FunctionComponent {
       });
     },
 
-    onSuccess: async (_, { shouldExitEditor,electionRoundId }) => {
+    onSuccess: async (_, { shouldExitEditor, electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form updated successfully',
@@ -474,14 +472,21 @@ export default function EditForm(): FunctionComponent {
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
+  const [activeTab, setActiveTab] = useState(currentTab ?? 'form-details');
+
   return (
     <Layout
+      enableBackButton
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs formCode={code} formName={name[languageCode] ?? ''} />}
+      enableBreadcrumbs={false}
       title={`${code} - ${name[languageCode]}`}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(saveForm)} className='flex flex-col flex-1'>
-          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className='flex flex-col flex-1'
+            defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger
                 value='form-details'
@@ -556,4 +561,6 @@ export default function EditForm(): FunctionComponent {
       </Form>
     </Layout>
   );
-}
+};
+
+export default EditForm;
