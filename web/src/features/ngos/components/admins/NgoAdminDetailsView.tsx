@@ -29,6 +29,7 @@ export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoNa
     });
   };
 
+
   return (
     <Layout
       title={displayName}

@@ -1,5 +1,10 @@
 import { NgoAdminDetailsView } from '@/features/ngos/components/admins/NgoAdminDetailsView';
-import { ngoDetailsOptions, useNgoAdminDetails, useNGODetails } from '@/features/ngos/hooks/ngos-queriess';
+import {
+  ngoAdminDetailsOptions,
+  ngoDetailsOptions,
+  useNgoAdminDetails,
+  useNGODetails,
+} from '@/features/ngos/hooks/ngos-queriess';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -9,7 +14,14 @@ export const Route = createFileRoute('/ngos/admin/$ngoId/$adminId/view')({
   },
   component: NgoAdminDetails,
 
-  loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoDetailsOptions(ngoId)),
+  loader: async ({ context: { queryClient }, params: { ngoId, adminId } }) => {
+    const ngoDataPromise = queryClient.ensureQueryData(ngoDetailsOptions(ngoId));
+    const ngoAdminDataPromise = queryClient.ensureQueryData(ngoAdminDetailsOptions({ ngoId, adminId }));
+
+    const [ngoData, ngoAdminData] = await Promise.all([ngoDataPromise, ngoAdminDataPromise]);
+
+    return { ngoAdminData, ngoData };
+  },
 });
 
 function NgoAdminDetails() {
