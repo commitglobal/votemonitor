@@ -16,15 +16,19 @@ const resources = {
 
 export type Dict = typeof resources.en;
 
+const DETECTION_OPTIONS = {
+  order: ['localStorage', 'navigator'],
+  caches: ['localStorage'],
+};
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     debug: true,
-    lng: 'en',
-    supportedLngs: ['en', 'ro'],
     defaultNS: 'translation',
     contextSeparator: '|',
+    detection: DETECTION_OPTIONS,
     interpolation: {
       escapeValue: false,
     },
