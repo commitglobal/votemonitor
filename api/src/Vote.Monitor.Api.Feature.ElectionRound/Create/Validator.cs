@@ -18,5 +18,13 @@ public class Validator : Validator<Request>
             .MinimumLength(3)
             .MaximumLength(256)
             .NotEmpty();
+
+        RuleFor(x => x.StartDate)
+            .Must(startDate =>
+            {
+                var timeProvider = Resolve<ITimeProvider>();
+                return startDate > timeProvider.UtcNowDate;
+            })
+            .WithMessage("Election start date must be in the future.");
     }
 }
