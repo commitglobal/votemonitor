@@ -10,8 +10,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { NGO } from '../models/NGO';
 import { NGOAdminsView } from './NGOAdmins';
+import { NgoBackButton, NgoBreadcrumbs } from './NgoExtraComponents';
 import { NgoStatusBadge } from './NgoStatusBadges';
-import { NgoBackButton } from './NgoExtraComponents';
 
 interface NGODetailsProps {
   data: NGO;
@@ -61,7 +61,10 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
     });
   }
   return (
-    <Layout title={`${data.name}`} backButton={<NgoBackButton />}>
+    <Layout
+      title={`${data.name}`}
+      backButton={<NgoBackButton />}
+      breadcrumbs={data && <NgoBreadcrumbs ngoData={{ id: data.id, name: data.name }} tab={tab} />}>
       <Tabs defaultValue='details' value={tab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
           <TabsTrigger value='details'>Organization details</TabsTrigger>

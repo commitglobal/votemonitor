@@ -18,3 +18,46 @@ export const NgoBackButton: FC<NgoBackButtonProps> = ({ ngoId }) => {
     </Link>
   );
 };
+
+interface NgoBreadcrumbsProps {
+  ngoData: {
+    id: string;
+    name: string;
+  };
+  adminData?: {
+    id: string;
+    name: string;
+  };
+  tab?: string;
+}
+
+export const NgoBreadcrumbs: FC<NgoBreadcrumbsProps> = ({ ngoData, adminData, tab }) => {
+  return (
+    <div className='breadcrumbs flex flex-row gap-2 mb-4'>
+      <Link className='crumb' to='/ngos' preload='intent'>
+        ngos
+      </Link>
+      <Link
+        className='crumb'
+        to='/ngos/view/$ngoId/$tab'
+        params={{ tab: 'details', ngoId: ngoData.id }}
+        preload='intent'>
+        {ngoData.name}
+      </Link>
+      <Link
+        className='crumb'
+        to='/ngos/view/$ngoId/$tab'
+        params={{ tab: tab ?? 'admins', ngoId: ngoData.id }}
+        preload='intent'>
+        {tab ?? 'admins'}
+      </Link>
+      <Link
+        className='crumb'
+        to='/ngos/admin/$ngoId/$adminId/view'
+        params={{ ngoId: ngoData.id, adminId: adminData?.id as string }}
+        preload='intent'>
+        {adminData?.name}
+      </Link>
+    </div>
+  );
+};

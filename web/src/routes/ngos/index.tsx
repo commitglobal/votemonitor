@@ -2,7 +2,7 @@ import { SortOrder } from '@/common/types';
 import NGOsDashboard from '@/features/ngos/components/Dashboard/Dashboard';
 import { NGOStatus } from '@/features/ngos/models/NGO';
 import { redirectIfNotAuth } from '@/lib/utils';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, SearchSchemaInput } from '@tanstack/react-router';
 import { z } from 'zod';
 
 export const ngoRouteSearchSchema = z.object({
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/ngos/')({
     redirectIfNotAuth();
   },
   component: Ngos,
-  validateSearch: ngoRouteSearchSchema,
+  validateSearch: (search: unknown & SearchSchemaInput) => ngoRouteSearchSchema.parse(search),
 });
 
 function Ngos() {

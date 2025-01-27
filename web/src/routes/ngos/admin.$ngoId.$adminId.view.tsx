@@ -1,5 +1,5 @@
 import { NgoAdminDetailsView } from '@/features/ngos/components/admins/NgoAdminDetailsView';
-import { ngoDetailsOptions, useNgoAdminDetails } from '@/features/ngos/hooks/ngos-queriess';
+import { ngoDetailsOptions, useNgoAdminDetails, useNGODetails } from '@/features/ngos/hooks/ngos-queriess';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -15,10 +15,11 @@ export const Route = createFileRoute('/ngos/admin/$ngoId/$adminId/view')({
 function NgoAdminDetails() {
   const { ngoId, adminId } = Route.useParams();
   const { data: ngoAdmin } = useNgoAdminDetails({ ngoId, adminId });
+  const { data: ngo } = useNGODetails(ngoId);
 
   return (
     <div className='p-2'>
-      <NgoAdminDetailsView ngoId={ngoId} ngoAdmin={ngoAdmin} />
+      <NgoAdminDetailsView ngoId={ngoId} ngoName={ngo.name} ngoAdmin={ngoAdmin} />
     </div>
   );
 }
