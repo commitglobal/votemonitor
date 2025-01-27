@@ -1,5 +1,4 @@
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -22,7 +21,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
+import { useNgoAdminDeleteWithConfirmation, useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
 import { NgoAdmin, NgoAdminStatus } from '../models/NGO';
 import AddNgoAdminDialog from './admins/AddNgoAdminDialog';
 import { NGOsListFilters } from './filtering/NGOsListFilters';
@@ -34,7 +33,7 @@ interface NGOAdminsViewProps {
 
 export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const navigate = useNavigate();
-  const confirm = useConfirm();
+  const { deleteNgoAdminWithConfirmation } = useNgoAdminDeleteWithConfirmation(ngoId);
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
   const [searchText, setSearchText] = useState(search.searchText);
@@ -105,6 +104,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
       id: 'actions',
       cell: ({ row }) => {
         const adminId = row.original.id;
+        const adminName = `${row.original.firstName} ${row.original.lastName}`;
         const isAdminActive = row.original.status === NgoAdminStatus.Active;
 
         return (
@@ -131,17 +131,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                   className='text-red-600'
                   onClick={async (e) => {
                     e.stopPropagation();
-                    if (
-                      await confirm({
-                        title: `Delete ${row.original.firstName} ${row.original.lastName}?`,
-                        body: 'This action is permanent and cannot be undone. Once deleted, this NGO admin cannot be retrieved.',
-                        actionButton: 'Delete',
-                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
-                        cancelButton: 'Cancel',
-                      })
-                    ) {
-                      deleteNgoAdminMutation.mutate({ ngoId, adminId });
-                    }
+                    await deleteNgoAdminWithConfirmation({ ngoId, adminId, name: adminName });
                   }}>
                   Delete
                 </DropdownMenuItem>

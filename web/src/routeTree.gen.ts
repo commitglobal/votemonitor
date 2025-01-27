@@ -57,6 +57,7 @@ import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/m
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
 import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin.$ngoId.$adminId.view'
+import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin.$ngoId.$adminId.edit'
 
 // Create/Update Routes
 
@@ -308,6 +309,11 @@ const NgosAdminNgoIdAdminIdViewRoute = NgosAdminNgoIdAdminIdViewImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const NgosAdminNgoIdAdminIdEditRoute = NgosAdminNgoIdAdminIdEditImport.update({
+  path: '/ngos/admin/$ngoId/$adminId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -492,6 +498,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/admin/$ngoId/$adminId/edit': {
+      preLoaderRoute: typeof NgosAdminNgoIdAdminIdEditImport
+      parentRoute: typeof rootRoute
+    }
     '/ngos/admin/$ngoId/$adminId/view': {
       preLoaderRoute: typeof NgosAdminNgoIdAdminIdViewImport
       parentRoute: typeof rootRoute
@@ -547,6 +557,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesCitizenReportsFormIdAggregatedRoute,
   ResponsesFormSubmissionsFormIdAggregatedRoute,
   ResponsesIncidentReportsFormIdAggregatedRoute,
+  NgosAdminNgoIdAdminIdEditRoute,
   NgosAdminNgoIdAdminIdViewRoute,
 ])
 

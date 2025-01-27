@@ -21,14 +21,12 @@ interface NgoAdminDetailsViewProps {
 export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoName, ngoAdmin }) => {
   const navigate = useNavigate();
   const displayName = `${ngoAdmin.firstName} ${ngoAdmin.lastName}`;
-  //TODO: Fix navigate to edit
   const navigateToEdit = (): void => {
     void navigate({
-      //to: '/monitoring-observers/edit/$monitoringObserverId',
-      params: { monitoringObserverId: ngoAdmin.id },
+      to: '/ngos/admin/$ngoId/$adminId/edit',
+      params: { adminId: ngoAdmin.id, ngoId },
     });
   };
-
 
   return (
     <Layout

@@ -1,5 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
@@ -172,11 +174,11 @@ export const useNGOMutations = () => {
   });
 
   const deleteNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, adminId }: { ngoId: string; adminId: string }) => {
+    mutationFn: ({ ngoId, adminId }: { ngoId: string; adminId: string; onMutationSuccess?: () => void }) => {
       return authApi.delete<any>(`${ENDPOINT}/${ngoId}/admins/${adminId}`, {});
     },
 
-    onSuccess: () => {
+    onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
@@ -184,6 +186,8 @@ export const useNGOMutations = () => {
         title: 'Success',
         description: 'NGO admin was deleted successfully',
       });
+
+      if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
@@ -304,3 +308,33 @@ export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestPar
 
 export const useNgoAdminDetails = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
   useSuspenseQuery(ngoAdminDetailsOptions({ ngoId, adminId }));
+
+export const useNgoAdminDeleteWithConfirmation = (ngoId: string) => {
+  const confirm = useConfirm();
+  const { deleteNgoAdminMutation } = useNGOMutations();
+
+  const deleteNgoAdminWithConfirmation = async ({
+    ngoId,
+    adminId,
+    name,
+    onMutationSuccess,
+  }: {
+    ngoId: string;
+    adminId: string;
+    name: string;
+    onMutationSuccess?: () => void;
+  }) => {
+    if (
+      await confirm({
+        title: `Delete ${name}?`,
+        body: 'This action is permanent and cannot be undone. Once deleted, this NGO admin cannot be retrieved.',
+        actionButton: 'Delete',
+        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+        cancelButton: 'Cancel',
+      })
+    ) {
+      deleteNgoAdminMutation.mutate({ ngoId, adminId, onMutationSuccess });
+    }
+  };
+  return { deleteNgoAdminWithConfirmation };
+};
