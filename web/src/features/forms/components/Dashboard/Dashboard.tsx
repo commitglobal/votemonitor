@@ -6,7 +6,7 @@ import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumn
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Badge } from '@/components/ui/badge';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -31,9 +31,10 @@ import {
   EllipsisVerticalIcon,
   FunnelIcon,
   PhotoIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -41,7 +42,6 @@ import { useMemo, useState, type ReactElement } from 'react';
 import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
-import CreateForm from './CreateForm';
 import { FormFilters } from './FormFilters/FormFilters';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
@@ -725,9 +725,12 @@ export default function FormsDashboard(): ReactElement {
             {i18n.t('electionEvent.observerForms.cardTitle')}
           </div>
           <div>
-            <CreateDialog title={i18n.t('electionEvent.observerForms.createDialogTitle')}>
-              <CreateForm />
-            </CreateDialog>
+            <Link to='/forms/new'>
+              <Button title='Create form' variant='default'>
+                <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
+                <span>Create form</span>
+              </Button>
+            </Link>
           </div>
         </CardTitle>
         <Separator />

@@ -274,6 +274,41 @@
         "level5": "Level 5"
       },
       "resetFilters": "Reset filters"
+    },
+    "form": {
+      "title": "Create new form",
+      "subtitle": "Choose how you'd like to start your form.",
+      "scratch": {
+        "title": "Start from scratch",
+        "description": "Create a completely new form",
+        "buttonText": "Begin new form"
+      },
+      "template": {
+        "title": "Start from a VM template",
+        "description": "Choose from available templates",
+        "buttonText": "Browse templates",
+        "useTemplate": "Use template",
+        "formBaseLanguage": "Base language",
+        "formBaseLanguageErr": "No base language specified",
+        "formDescription": "Description",
+        "formDescriptionErr": "This template has no description",
+        "formOtherLanguages": "Other languages",
+        "formQuestions": "Questions",
+        "formQuestionsErr": "No questions included in this template"
+      },
+      "reuse": {
+        "title": "Reuse a previous form",
+        "description": "Reuse or modify a form from a past election event you have monitored",
+        "buttonText": "Reuse previous form",
+        "reuseForm": "REuse form",
+        "formBaseLanguage": "Base language",
+        "formBaseLanguageErr": "No base language specified",
+        "formDescription": "Description",
+        "formDescriptionErr": "This template has no description",
+        "formOtherLanguages": "Other languages",
+        "formQuestions": "Questions",
+        "formQuestionsErr": "No questions included in this template"
+      }
     }
   },
   "pagination": {
