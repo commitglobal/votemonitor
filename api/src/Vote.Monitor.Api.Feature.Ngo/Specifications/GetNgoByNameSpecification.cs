@@ -7,6 +7,4 @@ public sealed class GetNgoByNameSpecification : Specification<NgoAggregate>
         Query
             .Where(x => x.Name == name);
     }
-
-
 }

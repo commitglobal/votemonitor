@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Ngo.Activate;
+﻿using Authorization.Policies;
+
+namespace Vote.Monitor.Api.Feature.Ngo.Activate;
 
 public class Endpoint(IRepository<NgoAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
@@ -7,6 +9,9 @@ public class Endpoint(IRepository<NgoAggregate> repository) : Endpoint<Request, 
     {
         Post("/api/ngos/{id}:activate");
         Description(x => x.Accepts<Request>());
+        DontAutoTag();
+        Options(x => x.WithTags("ngos"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
