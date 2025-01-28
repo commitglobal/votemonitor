@@ -5,6 +5,9 @@ export interface NGO {
   id: string;
   name: string;
   status: NGOStatus;
+  numberOfNgoAdmins: number;
+  numberOfElectionsMonitoring: number;
+  dateOfLastElection: string;
 }
 
 export enum NGOStatus {

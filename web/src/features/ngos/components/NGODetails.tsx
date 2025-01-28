@@ -44,6 +44,21 @@ export const NGODetailsView: FC<NGODetailsProps> = ({ data }) => {
           <p className='font-bold text-gray-700'>Status</p>
           <NgoStatusBadge status={data.status} />
         </div>
+
+        <div className='flex flex-col gap-1'>
+          <p className='font-bold text-gray-700'> Admins</p>
+          <p className='font-normal text-gray-900'>{data.numberOfNgoAdmins}</p>
+        </div>
+
+        <div className='flex flex-col gap-1'>
+          <p className='font-bold text-gray-700'>Election events</p>
+          <p className='font-normal text-gray-900'>{data.numberOfElectionsMonitoring}</p>
+        </div>
+
+        <div className='flex flex-col gap-1'>
+          <p className='font-bold text-gray-700'>Date of last event</p>
+          <p className='font-normal text-gray-900'>{data?.dateOfLastElection ?? 'N/A'}</p>
+        </div>
       </CardContent>
     </Card>
   );

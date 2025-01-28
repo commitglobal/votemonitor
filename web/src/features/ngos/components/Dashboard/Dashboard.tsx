@@ -83,6 +83,30 @@ export default function NGOsDashboard(): ReactElement {
       enableSorting: true,
       header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
     },
+
+    {
+      accessorKey: 'numberOfNgoAdmins',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Admins' column={column} />,
+    },
+
+    {
+      accessorKey: 'numberOfElectionsMonitoring',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Election events' column={column} />,
+    },
+
+    {
+      accessorKey: 'dateOfLastElection',
+      enableSorting: false,
+      header: ({ column }) => <DataTableColumnHeader title='Date of last event' column={column} />,
+      cell: ({
+        row: {
+          original: { dateOfLastElection },
+        },
+      }) => dateOfLastElection ?? 'N/A',
+    },
+
     {
       accessorKey: 'status',
       enableSorting: false,
@@ -93,6 +117,7 @@ export default function NGOsDashboard(): ReactElement {
         },
       }) => <NgoStatusBadge status={status} />,
     },
+
     {
       id: 'actions',
       cell: ({ row }) => {
