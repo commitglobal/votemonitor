@@ -7,8 +7,8 @@ import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
-import { NGO, NGOAdminFormData, NGOCreationFormData } from '../models/NGO';
-import { NgoAdmin, NgoAdminGetRequestParams } from '../models/NgoAdmin';
+import { NGO, NgoCreationFormData } from '../models/NGO';
+import { NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -86,7 +86,7 @@ export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryRes
 export const useNGOMutations = () => {
   const router = useRouter();
   const createNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, values }: { ngoId: string; values: NGOAdminFormData; onMutationSuccess: () => void }) => {
+    mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
       return authApi.post(`${ENDPOINT}/${ngoId}/admins`, values);
     },
 
@@ -100,7 +100,7 @@ export const useNGOMutations = () => {
   });
 
   const createNgoMutation = useMutation({
-    mutationFn: ({ values }: { values: NGOCreationFormData; onMutationSuccess: () => void }) => {
+    mutationFn: ({ values }: { values: NgoCreationFormData; onMutationSuccess: () => void }) => {
       return authApi.post(`${ENDPOINT}`, { name: values.name });
     },
 
@@ -112,7 +112,7 @@ export const useNGOMutations = () => {
 
       createNgoAdminMutation.mutate({
         ngoId,
-        values: { ...adminValues, password: 'weeetest1234' } as any,
+        values: adminValues,
         onMutationSuccess,
       });
     },

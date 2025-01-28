@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNGOMutations } from '../hooks/ngos-queriess';
-import { newNgoSchema, NGOCreationFormData } from '../models/NGO';
+import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
 
 export interface CreateNGODialogProps {
   open: boolean;
@@ -19,11 +19,11 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
   const { createNgoMutation } = useNGOMutations();
 
-  const form = useForm<NGOCreationFormData>({
+  const form = useForm<NgoCreationFormData>({
     resolver: zodResolver(newNgoSchema),
   });
 
-  function onSubmit(values: NGOCreationFormData) {
+  function onSubmit(values: NgoCreationFormData) {
     createNgoMutation.mutate({
       values,
       onMutationSuccess: () => {
@@ -116,6 +116,18 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
                   <FormItem>
                     <FormLabel>{t('phone')}</FormLabel>
                     <Input placeholder={t('phone')} {...field} {...fieldState} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <Input placeholder='Password' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}

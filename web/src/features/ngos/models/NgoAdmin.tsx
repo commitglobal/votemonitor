@@ -22,6 +22,7 @@ export const ngoAdminSchema = z.object({
   lastName: z.string(),
   email: z.string().email(),
   phoneNumber: z.string(),
+  password: z.string().min(1, { message: 'This field is required' }),
 });
 
 export const editNgoAdminSchema = z.object({
@@ -35,3 +36,5 @@ export const editNgoAdminSchema = z.object({
   phoneNumber: z.string().min(1, { message: 'This field is required' }),
   status: z.string(),
 });
+
+export type NgoAdminFormData = z.infer<typeof ngoAdminSchema>;

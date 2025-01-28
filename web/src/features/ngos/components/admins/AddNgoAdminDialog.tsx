@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNGOMutations } from '../../hooks/ngos-queriess';
-import { NGOAdminFormData, ngoAdminSchema } from '../../models/NGO';
+import { NgoAdminFormData, ngoAdminSchema } from '../../models/NgoAdmin';
 
 export interface AddNgoAdminDialogProps {
   ngoId: string;
@@ -19,14 +19,14 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
   const { createNgoAdminMutation } = useNGOMutations();
 
-  const form = useForm<NGOAdminFormData>({
+  const form = useForm<NgoAdminFormData>({
     resolver: zodResolver(ngoAdminSchema),
   });
 
-  function onSubmit(values: NGOAdminFormData) {
+  function onSubmit(values: NgoAdminFormData) {
     createNgoAdminMutation.mutate({
       ngoId,
-      values: { ...values, password: 'weeetest1234' } as any,
+      values,
       onMutationSuccess: () => {
         form.reset({});
         onOpenChange(false);
@@ -95,6 +95,18 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                   <FormItem>
                     <FormLabel>{t('phone')}</FormLabel>
                     <Input placeholder={t('phone')} {...field} {...fieldState} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <Input placeholder='Password' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}

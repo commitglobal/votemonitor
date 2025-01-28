@@ -22,7 +22,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useNgoAdminDeleteWithConfirmation, useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
-import { NgoAdmin, NgoAdminStatus } from '../models/NGO';
+import { NgoAdmin, NgoAdminStatus } from '../models/NgoAdmin';
 import AddNgoAdminDialog from './admins/AddNgoAdminDialog';
 import { NGOsListFilters } from './filtering/NGOsListFilters';
 import { NgoAdminStatusBadge } from './NgoStatusBadges';
