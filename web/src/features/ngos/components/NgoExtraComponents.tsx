@@ -1,7 +1,7 @@
 import { usePrevSearch } from '@/common/prev-search-store';
 import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import { Link } from '@tanstack/react-router';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 interface NgoBackButtonProps {
   ngoId?: string;
@@ -32,19 +32,24 @@ interface NgoBreadcrumbsProps {
 }
 
 export const NgoBreadcrumbs: FC<NgoBreadcrumbsProps> = ({ ngoData, adminData, tab }) => {
-  console.log(ngoData);
+  const [ngoName, setNgoName] = useState<null | string>(null);
+
+  useEffect(() => {
+    if (!ngoName && ngoData.name !== undefined) setNgoName(ngoData.name);
+  }, [ngoData.name]);
+
   return (
     <div className='breadcrumbs flex flex-row gap-2 mb-4'>
       <Link className='crumb' to='/ngos' preload='intent'>
         ngos
       </Link>
-      {ngoData?.name && (
+      {ngoName && (
         <Link
           className='crumb'
           to='/ngos/view/$ngoId/$tab'
           params={{ tab: 'details', ngoId: ngoData.id }}
           preload='intent'>
-          {ngoData.name}
+          {ngoName}
         </Link>
       )}
       <Link
