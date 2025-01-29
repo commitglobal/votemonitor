@@ -253,9 +253,9 @@ SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandl
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 SqlMapper.AddTypeHandler(typeof(LanguagesTranslationStatus), new JsonToObjectConverter<LanguagesTranslationStatus>());
 
+SqlMapper.AddTypeHandler(typeof(DateOnly), new DapperSqlDateOnlyTypeHandler());
+
 #endregion
-
-
 
 app.UseSwaggerGen(
     cfg =>
