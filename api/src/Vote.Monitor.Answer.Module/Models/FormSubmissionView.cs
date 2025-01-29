@@ -26,7 +26,7 @@ public class FormSubmissionView
     public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
-    public string PhoneNumber { get; init; } = default!;
+    public string? PhoneNumber { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public string NgoName { get; init; } = default!;
     public int NumberOfFlaggedAnswers { get; init; }

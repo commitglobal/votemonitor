@@ -28,7 +28,7 @@ public record FormSubmissionEntry
     public Guid MonitoringObserverId { get; init; }
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
-    public string PhoneNumber { get; init; } = default!;
+    public string? PhoneNumber { get; init; } = default!;
     public string NgoName { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }

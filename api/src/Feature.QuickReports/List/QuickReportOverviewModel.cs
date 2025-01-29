@@ -18,7 +18,7 @@ public class QuickReportOverviewModel
     public Guid MonitoringObserverId { get; set; }
     public string ObserverName { get; set; }
     public string Email { get; set; }
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     public string NgoName { get; set; }
     public string? PollingStationDetails { get; set; }
     public Guid? PollingStationId { get; set; }

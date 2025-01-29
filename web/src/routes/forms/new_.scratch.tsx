@@ -1,14 +1,14 @@
-import { FormBuilderScreenScratch } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenScratch';
-import { redirectIfNotAuth } from '@/lib/utils';
-import { createFileRoute } from '@tanstack/react-router';
+import { FormBuilderScreenScratch } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenScratch'
+import { redirectIfNotAuth } from '@/lib/utils'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/forms/new/scratch')({
+export const Route = createFileRoute('/forms/new_/scratch')({
   beforeLoad: () => {
-    redirectIfNotAuth();
+    redirectIfNotAuth()
   },
   component: CreateNewFormFromScratch,
-});
+})
 
 function CreateNewFormFromScratch() {
-  return <FormBuilderScreenScratch />;
+  return <FormBuilderScreenScratch />
 }

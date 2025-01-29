@@ -10,7 +10,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
-public record Responder(Guid ResponderId, string DisplayName, string Email, string PhoneNumber);
+public record Responder(Guid ResponderId, string DisplayName, string Email, string? PhoneNumber);
 
 public class FormSubmissionsAggregate
 {
