@@ -9,7 +9,7 @@ import { Route } from '@/routes/ngos/view.$ngoId.$tab';
 import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { NGO } from '../models/NGO';
-import { NGOAdminsView } from './NGOAdmins';
+import { NGOAdminsView } from './admins/NGOAdmins';
 import { NgoBackButton, NgoBreadcrumbs } from './NgoExtraComponents';
 import { NgoStatusBadge } from './NgoStatusBadges';
 

@@ -21,12 +21,11 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useNgoAdminMutations } from '../hooks/ngo-admin-queries';
-import { useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
-import { NgoAdmin, NgoAdminStatus } from '../models/NgoAdmin';
-import AddNgoAdminDialog from './admins/AddNgoAdminDialog';
-import { NGOsListFilters } from './filtering/NGOsListFilters';
-import { NgoAdminStatusBadge } from './NgoStatusBadges';
+import { useNgoAdminMutations, useNgoAdmins } from '../../hooks/ngo-admin-queries';
+import { NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
+import { NGOsListFilters } from '../filtering/NGOsListFilters';
+import { NgoAdminStatusBadge } from '../NgoStatusBadges';
+import AddNgoAdminDialog from './AddNgoAdminDialog';
 
 interface NGOAdminsViewProps {
   ngoId: string;
@@ -34,7 +33,8 @@ interface NGOAdminsViewProps {
 
 export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const navigate = useNavigate();
-  const { deleteNgoAdminWithConfirmation } = useNgoAdminMutations(ngoId);
+  const { deleteNgoAdminWithConfirmation, deactivateNgoAdminMutation, activateNgoAdminMutation } =
+    useNgoAdminMutations(ngoId);
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
   const [searchText, setSearchText] = useState(search.searchText);
@@ -44,7 +44,6 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
   const addNgoAdminDialog = useDialog();
-  const { deactivateNgoAdminMutation, activateNgoAdminMutation } = useNGOMutations();
 
   useEffect(() => {
     navigateHandler({
@@ -123,8 +122,8 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     isAdminActive
-                      ? deactivateNgoAdminMutation.mutate({ ngoId, adminId })
-                      : activateNgoAdminMutation.mutate({ ngoId, adminId });
+                      ? deactivateNgoAdminMutation.mutate(adminId)
+                      : activateNgoAdminMutation.mutate(adminId);
                   }}>
                   {!isAdminActive ? 'Activate' : 'Deactivate'}
                 </DropdownMenuItem>
@@ -132,7 +131,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                   className='text-red-600'
                   onClick={async (e) => {
                     e.stopPropagation();
-                    await deleteNgoAdminWithConfirmation({ ngoId, adminId, name: adminName });
+                    await deleteNgoAdminWithConfirmation({ adminId, name: adminName });
                   }}>
                   Delete
                 </DropdownMenuItem>

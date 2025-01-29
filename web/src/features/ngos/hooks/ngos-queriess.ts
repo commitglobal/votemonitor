@@ -1,13 +1,14 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
 import { NGO, NgoCreationFormData } from '../models/NGO';
-import { NgoAdmin } from '../models/NgoAdmin';
-import { useNgoAdminMutations } from './ngo-admin-queries';
+import { useCreateNgoAdmin } from './ngo-admin-queries';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -59,32 +60,8 @@ export const ngoDetailsOptions = (ngoId: string) =>
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
-export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryResult<PageResponse<NgoAdmin>, Error> {
-  return useQuery({
-    queryKey: ngosKeys.adminsList(ngoId, p),
-    queryFn: async () => {
-      const response = await authApi.get<PageResponse<NGO>>(`/ngos/${ngoId}/admins`, {
-        params: {
-          ...p.otherParams,
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
-        },
-      });
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch ngos');
-      }
-
-      return response.data;
-    },
-  });
-}
-
-export const useNGOMutations = () => {
-  const router = useRouter();
-  const { createNgoAdminMutation } = useNgoAdminMutations();
+export const useCreateNgo = () => {
+  const { createNgoAdminMutation } = useCreateNgoAdmin();
 
   const createNgoMutation = useMutation({
     mutationFn: ({ values }: { values: NgoCreationFormData; onMutationSuccess: () => void }) => {
@@ -112,64 +89,15 @@ export const useNGOMutations = () => {
     },
   });
 
-  const deactivateNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, adminId }: { ngoId: string; adminId: string }) => {
-      return authApi.post<any>(`${ENDPOINT}/${ngoId}/admins/${adminId}:deactivate`, {});
-    },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      router.invalidate();
-
-      toast({
-        title: 'Success',
-        description: 'NGO admin was deactivated successfully',
-      });
-    },
-
-    onError: () => {
-      toast({
-        title: 'Error deactivating the NGO admin',
-        description: '',
-        variant: 'destructive',
-      });
-    },
-  });
-
-  const activateNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, adminId }: { ngoId: string; adminId: string }) => {
-      return authApi.post<any>(`${ENDPOINT}/${ngoId}/admins/${adminId}:activate`, {});
-    },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      router.invalidate();
-
-      toast({
-        title: 'Success',
-        description: 'NGO admin was activated successfully',
-      });
-    },
-
-    onError: () => {
-      toast({
-        title: 'Error activating the NGO admin',
-        description: '',
-        variant: 'destructive',
-      });
-    },
-  });
-
   return {
     createNgoMutation,
-    createNgoAdminMutation,
-    activateNgoAdminMutation,
-    deactivateNgoAdminMutation,
   };
 };
 
-export const useDeactivateNGO = () => {
+export const useNgoMutations = () => {
   const router = useRouter();
+  const confirm = useConfirm();
+
   const deactivateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
       return authApi.post<any>(`${ENDPOINT}/${ngoId}:deactivate`, {});
@@ -193,11 +121,7 @@ export const useDeactivateNGO = () => {
       });
     },
   });
-  return { deactivateNgoMutation };
-};
 
-export const useActivateNGO = () => {
-  const router = useRouter();
   const activateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
       return authApi.post<any>(`${ENDPOINT}/${ngoId}:activate`, {});
@@ -221,17 +145,13 @@ export const useActivateNGO = () => {
       });
     },
   });
-  return { activateNgoMutation };
-};
 
-export const useDeteleteNGO = () => {
-  const router = useRouter();
   const deleteNgoMutation = useMutation({
-    mutationFn: (ngoId: string) => {
+    mutationFn: ({ ngoId }: { ngoId: string; onMutationSuccess?: () => void }) => {
       return authApi.delete<any>(`${ENDPOINT}/${ngoId}`);
     },
 
-    onSuccess: () => {
+    onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
@@ -239,6 +159,8 @@ export const useDeteleteNGO = () => {
         title: 'Success',
         description: 'NGO was deleted successfully',
       });
+
+      if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
@@ -249,5 +171,30 @@ export const useDeteleteNGO = () => {
       });
     },
   });
-  return { deleteNgoMutation };
+
+  // WRAPPED MUTATIONS
+
+  const deleteNgoWithConfirmation = async ({
+    ngoId,
+    name,
+    onMutationSuccess,
+  }: {
+    ngoId: string;
+    name: string;
+    onMutationSuccess?: () => void;
+  }) => {
+    if (
+      await confirm({
+        title: `Delete ${name}?`,
+        body: 'This action is permanent and cannot be undone. Once deleted, this organization cannot be retrieved.',
+        actionButton: 'Delete',
+        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+        cancelButton: 'Cancel',
+      })
+    ) {
+      deleteNgoMutation.mutate({ ngoId, onMutationSuccess });
+    }
+  };
+
+  return { deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation };
 };

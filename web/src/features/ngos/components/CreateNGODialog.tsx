@@ -7,7 +7,7 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNGOMutations } from '../hooks/ngos-queriess';
+import { useCreateNgo } from '../hooks/ngos-queriess';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
 
 export interface CreateNGODialogProps {
@@ -17,7 +17,7 @@ export interface CreateNGODialogProps {
 
 function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
-  const { createNgoMutation } = useNGOMutations();
+  const { createNgoMutation } = useCreateNgo();
 
   const form = useForm<NgoCreationFormData>({
     resolver: zodResolver(newNgoSchema),

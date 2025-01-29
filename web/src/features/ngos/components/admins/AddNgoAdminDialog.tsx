@@ -6,7 +6,7 @@ import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNGOMutations } from '../../hooks/ngos-queriess';
+import { useCreateNgoAdmin } from '../../hooks/ngo-admin-queries';
 import { NgoAdminFormData, ngoAdminSchema } from '../../models/NgoAdmin';
 
 export interface AddNgoAdminDialogProps {
@@ -17,7 +17,7 @@ export interface AddNgoAdminDialogProps {
 
 function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps) {
   const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
-  const { createNgoAdminMutation } = useNGOMutations();
+  const { createNgoAdminMutation } = useCreateNgoAdmin();
 
   const form = useForm<NgoAdminFormData>({
     resolver: zodResolver(ngoAdminSchema),

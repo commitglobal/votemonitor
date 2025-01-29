@@ -59,7 +59,6 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
 
   const handleDelete = async () => {
     await deleteNgoAdminWithConfirmation({
-      ngoId,
       adminId,
       name: displayName,
       onMutationSuccess: () => {

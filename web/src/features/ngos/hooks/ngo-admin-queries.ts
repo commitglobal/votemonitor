@@ -1,15 +1,23 @@
 import { authApi } from '@/common/auth-api';
+import { DataTableParameters, PageResponse } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 import { ngosKeys } from './ngos-queriess';
 
-// Returns endpoint with custom id, useful for creating NGO Admins along with NGOs
+const getEndpointWithNgoId = (ngoId: string): string => {
+  if (!ngoId) throw new Error('No NGO ID provided');
 
-const getEndpointWithNgoId = (ngoId: string) => {
   return `ngos/${ngoId}/admins`;
 };
 
@@ -30,8 +38,52 @@ export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestPar
 export const useNgoAdminDetails = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
   useSuspenseQuery(ngoAdminDetailsOptions({ ngoId, adminId }));
 
-export const useNgoAdminMutations = (ngoId?: string) => {
-  const DEFAULT_ENDPOINT = `ngos/${ngoId}/admins`;
+export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryResult<PageResponse<NgoAdmin>, Error> {
+  return useQuery({
+    queryKey: ngosKeys.adminsList(ngoId, p),
+    queryFn: async () => {
+      const response = await authApi.get<PageResponse<NgoAdmin>>(`/ngos/${ngoId}/admins`, {
+        params: {
+          ...p.otherParams,
+          PageNumber: p.pageNumber,
+          PageSize: p.pageSize,
+          SortColumnName: p.sortColumnName,
+          SortOrder: p.sortOrder,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch ngo admins');
+      }
+
+      return response.data;
+    },
+  });
+}
+
+// NGO ADMIN CREATION MUTATION
+
+export const useCreateNgoAdmin = () => {
+  const queryClient = useQueryClient();
+  const createNgoAdminMutation = useMutation({
+    mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
+      return authApi.post(getEndpointWithNgoId(ngoId), values);
+    },
+
+    onSuccess: (_, { onMutationSuccess }) => {
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      onMutationSuccess();
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  return { createNgoAdminMutation };
+};
+
+export const useNgoAdminMutations = (ngoId: string) => {
+  const DEFAULT_ENDPOINT = getEndpointWithNgoId(ngoId);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const router = useRouter();
@@ -84,29 +136,61 @@ export const useNgoAdminMutations = (ngoId?: string) => {
     },
   });
 
-  const createNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
-      return authApi.post(ngoId ? getEndpointWithNgoId(ngoId) : `${DEFAULT_ENDPOINT}`, values);
+  const deactivateNgoAdminMutation = useMutation({
+    mutationFn: (adminId: string) => {
+      return authApi.post<any>(`${DEFAULT_ENDPOINT}/${adminId}:deactivate`, {});
     },
 
-    onSuccess: (_, { onMutationSuccess }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      onMutationSuccess();
+      router.invalidate();
+
+      toast({
+        title: 'Success',
+        description: 'NGO admin was deactivated successfully',
+      });
     },
-    onError: (err) => {
-      console.error(err);
+
+    onError: () => {
+      toast({
+        title: 'Error deactivating the NGO admin',
+        description: '',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const activateNgoAdminMutation = useMutation({
+    mutationFn: (adminId: string) => {
+      return authApi.post<any>(`${DEFAULT_ENDPOINT}/${adminId}:activate`, {});
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      router.invalidate();
+
+      toast({
+        title: 'Success',
+        description: 'NGO admin was activated successfully',
+      });
+    },
+
+    onError: () => {
+      toast({
+        title: 'Error activating the NGO admin',
+        description: '',
+        variant: 'destructive',
+      });
     },
   });
 
   // WRAPPED MUTATIONS
 
   const deleteNgoAdminWithConfirmation = async ({
-    ngoId,
     adminId,
     name,
     onMutationSuccess,
   }: {
-    ngoId: string;
     adminId: string;
     name: string;
     onMutationSuccess?: () => void;
@@ -124,5 +208,10 @@ export const useNgoAdminMutations = (ngoId?: string) => {
     }
   };
 
-  return { createNgoAdminMutation, editNgoAdminMutation, deleteNgoAdminWithConfirmation };
+  return {
+    editNgoAdminMutation,
+    deactivateNgoAdminMutation,
+    activateNgoAdminMutation,
+    deleteNgoAdminWithConfirmation,
+  };
 };

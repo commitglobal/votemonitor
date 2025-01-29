@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/Layout';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -23,7 +23,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react';
-import { useActivateNGO, useDeactivateNGO, useDeteleteNGO, useNGOs } from '../../hooks/ngos-queriess';
+import { useNgoMutations, useNGOs } from '../../hooks/ngos-queriess';
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
@@ -43,9 +43,7 @@ export default function NGOsDashboard(): ReactElement {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
 
-  const { deactivateNgoMutation } = useDeactivateNGO();
-  const { activateNgoMutation } = useActivateNGO();
-  const { deleteNgoMutation } = useDeteleteNGO();
+  const { deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation } = useNgoMutations();
 
   useEffect(() => {
     navigateHandler({
@@ -153,17 +151,8 @@ export default function NGOsDashboard(): ReactElement {
                   className='text-red-600'
                   onClick={async (e) => {
                     e.stopPropagation();
-                    if (
-                      await confirm({
-                        title: `Delete ${row.original.name}?`,
-                        body: 'This action is permanent and cannot be undone. Once deleted, this organization cannot be retrieved.',
-                        actionButton: 'Delete',
-                        actionButtonClass: buttonVariants({ variant: 'destructive' }),
-                        cancelButton: 'Cancel',
-                      })
-                    ) {
-                      deleteNgoMutation.mutate(row.original.id);
-                    }
+
+                    await deleteNgoWithConfirmation({ ngoId: row.original.id, name: row.original.name });
                   }}>
                   Delete
                 </DropdownMenuItem>
