@@ -12,9 +12,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useNgoAdminDeleteWithConfirmation } from '../../hooks/ngos-queriess';
-import { NgoAdminStatus } from '../../models/NGO';
-import { editNgoAdminSchema, NgoAdmin } from '../../models/NgoAdmin';
+import { useNgoAdminMutations } from '../../hooks/ngo-admin-queries';
+import { editNgoAdminSchema, NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
 import { NgoBackButton, NgoBreadcrumbs } from '../NgoExtraComponents';
 
 interface EditNgoAdminProps {
@@ -25,7 +24,8 @@ interface EditNgoAdminProps {
 export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
   const navigate = useNavigate();
   const { ngoId, adminId } = Route.useParams();
-  const { deleteNgoAdminWithConfirmation } = useNgoAdminDeleteWithConfirmation(ngoId);
+
+  const { editNgoAdminMutation, deleteNgoAdminWithConfirmation } = useNgoAdminMutations(ngoId);
   const displayName = `${existingData.firstName} ${existingData.lastName}`;
 
   const form = useForm<z.infer<typeof editNgoAdminSchema>>({
@@ -33,17 +33,13 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
     defaultValues: {
       firstName: existingData.firstName,
       lastName: existingData.lastName,
-      email: existingData.email,
       phoneNumber: existingData.phoneNumber,
       status: existingData.status,
     },
   });
 
   function onSubmit(values: z.infer<typeof editNgoAdminSchema>) {
-    // editMutation.mutate({
-    //   observerId: observer.id,
-    //   obj: values,
-    // });
+    editNgoAdminMutation.mutate({ adminId, values });
   }
 
   // const deleteMutation = useMutation({
@@ -120,21 +116,7 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Email <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder='Email address' {...field} />
-                    </FormControl>
-                    <FormMessage className='mt-2' />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name='phoneNumber'

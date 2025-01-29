@@ -21,7 +21,8 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useNgoAdminDeleteWithConfirmation, useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
+import { useNgoAdminMutations } from '../hooks/ngo-admin-queries';
+import { useNgoAdmins, useNGOMutations } from '../hooks/ngos-queriess';
 import { NgoAdmin, NgoAdminStatus } from '../models/NgoAdmin';
 import AddNgoAdminDialog from './admins/AddNgoAdminDialog';
 import { NGOsListFilters } from './filtering/NGOsListFilters';
@@ -33,7 +34,7 @@ interface NGOAdminsViewProps {
 
 export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const navigate = useNavigate();
-  const { deleteNgoAdminWithConfirmation } = useNgoAdminDeleteWithConfirmation(ngoId);
+  const { deleteNgoAdminWithConfirmation } = useNgoAdminMutations(ngoId);
   const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
   const search = Route.useSearch();
   const [searchText, setSearchText] = useState(search.searchText);
@@ -43,7 +44,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
   const addNgoAdminDialog = useDialog();
-  const { deactivateNgoAdminMutation, activateNgoAdminMutation, deleteNgoAdminMutation } = useNGOMutations();
+  const { deactivateNgoAdminMutation, activateNgoAdminMutation } = useNGOMutations();
 
   useEffect(() => {
     navigateHandler({

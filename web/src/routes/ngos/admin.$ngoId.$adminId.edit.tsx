@@ -1,10 +1,6 @@
 import { EditNgoAdmin } from '@/features/ngos/components/admins/EditNgoAdmin';
-import {
-  ngoAdminDetailsOptions,
-  ngoDetailsOptions,
-  useNgoAdminDetails,
-  useNGODetails,
-} from '@/features/ngos/hooks/ngos-queriess';
+import { ngoAdminDetailsOptions, useNgoAdminDetails } from '@/features/ngos/hooks/ngo-admin-queries';
+import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queriess';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 

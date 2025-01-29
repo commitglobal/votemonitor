@@ -1,8 +1,7 @@
 import { NgoAdminDetailsView } from '@/features/ngos/components/admins/NgoAdminDetailsView';
+import { ngoAdminDetailsOptions, useNgoAdminDetails } from '@/features/ngos/hooks/ngo-admin-queries';
 import {
-  ngoAdminDetailsOptions,
   ngoDetailsOptions,
-  useNgoAdminDetails,
   useNGODetails,
 } from '@/features/ngos/hooks/ngos-queriess';
 import { redirectIfNotAuth } from '@/lib/utils';

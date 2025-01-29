@@ -1,14 +1,13 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse } from '@/common/types';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
 import { NGO, NgoCreationFormData } from '../models/NGO';
-import { NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
+import { NgoAdmin } from '../models/NgoAdmin';
+import { useNgoAdminMutations } from './ngo-admin-queries';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -85,19 +84,7 @@ export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryRes
 
 export const useNGOMutations = () => {
   const router = useRouter();
-  const createNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
-      return authApi.post(`${ENDPOINT}/${ngoId}/admins`, values);
-    },
-
-    onSuccess: (_, { onMutationSuccess }) => {
-      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      onMutationSuccess();
-    },
-    onError: (err) => {
-      console.error(err);
-    },
-  });
+  const { createNgoAdminMutation } = useNgoAdminMutations();
 
   const createNgoMutation = useMutation({
     mutationFn: ({ values }: { values: NgoCreationFormData; onMutationSuccess: () => void }) => {
@@ -173,38 +160,11 @@ export const useNGOMutations = () => {
     },
   });
 
-  const deleteNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, adminId }: { ngoId: string; adminId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`${ENDPOINT}/${ngoId}/admins/${adminId}`, {});
-    },
-
-    onSuccess: (_, { onMutationSuccess }) => {
-      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      router.invalidate();
-
-      toast({
-        title: 'Success',
-        description: 'NGO admin was deleted successfully',
-      });
-
-      if (onMutationSuccess) onMutationSuccess();
-    },
-
-    onError: () => {
-      toast({
-        title: 'Error deleting NGO admin',
-        description: '',
-        variant: 'destructive',
-      });
-    },
-  });
-
   return {
     createNgoMutation,
     createNgoAdminMutation,
     activateNgoAdminMutation,
     deactivateNgoAdminMutation,
-    deleteNgoAdminMutation,
   };
 };
 
@@ -290,51 +250,4 @@ export const useDeteleteNGO = () => {
     },
   });
   return { deleteNgoMutation };
-};
-
-export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
-  queryOptions({
-    queryKey: ngosKeys.detail(ngoId),
-    queryFn: async () => {
-      const response = await authApi.get<NgoAdmin>(`/ngos/${ngoId}/admins/${adminId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo details');
-      }
-
-      return response.data;
-    },
-  });
-
-export const useNgoAdminDetails = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
-  useSuspenseQuery(ngoAdminDetailsOptions({ ngoId, adminId }));
-
-export const useNgoAdminDeleteWithConfirmation = (ngoId: string) => {
-  const confirm = useConfirm();
-  const { deleteNgoAdminMutation } = useNGOMutations();
-
-  const deleteNgoAdminWithConfirmation = async ({
-    ngoId,
-    adminId,
-    name,
-    onMutationSuccess,
-  }: {
-    ngoId: string;
-    adminId: string;
-    name: string;
-    onMutationSuccess?: () => void;
-  }) => {
-    if (
-      await confirm({
-        title: `Delete ${name}?`,
-        body: 'This action is permanent and cannot be undone. Once deleted, this NGO admin cannot be retrieved.',
-        actionButton: 'Delete',
-        actionButtonClass: buttonVariants({ variant: 'destructive' }),
-        cancelButton: 'Cancel',
-      })
-    ) {
-      deleteNgoAdminMutation.mutate({ ngoId, adminId, onMutationSuccess });
-    }
-  };
-  return { deleteNgoAdminWithConfirmation };
 };

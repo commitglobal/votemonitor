@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { FC } from 'react';
-import { NgoAdminStatus, NGOStatus } from '../models/NGO';
+import { NGOStatus } from '../models/NGO';
+import { NgoAdminStatus } from '../models/NgoAdmin';
 
 interface NgoStatusBadgeProps {
   status: NGOStatus;
