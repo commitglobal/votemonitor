@@ -18,16 +18,20 @@ interface NGODetailsProps {
 }
 
 export const NGODetailsView: FC<NGODetailsProps> = ({ data }) => {
+  const navigate = useNavigate();
+  const navigateToEdit = (): void => {
+    void navigate({
+      to: '/ngos/edit/$ngoId',
+      params: { ngoId: data.id },
+    });
+  };
+
   return (
     <Card className='w-[800px] pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
         <div className='flex flex-row items-center justify-between'>
           <CardTitle className='text-xl'>Organization details</CardTitle>
-          <Button
-            //onClick={navigateToEdit}
-            variant='ghost-primary'
-            //</div>disabled={!monitoringObserver.isOwnObserver || electionRound?.status === ElectionRoundStatus.Archived}
-          >
+          <Button onClick={navigateToEdit} variant='ghost-primary'>
             <PencilIcon className='w-[18px] mr-2 text-purple-900' />
             <span className='text-base text-purple-900'>Edit</span>
           </Button>

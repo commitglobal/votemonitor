@@ -20,3 +20,11 @@ export enum NGOStatus {
 
 export const newNgoSchema = ngoAdminSchema.extend({ name: z.string() });
 export type NgoCreationFormData = z.infer<typeof newNgoSchema>;
+export const editNgoSchema = z.object({
+  name: z.string().min(2, {
+    message: 'This field is mandatory',
+  }),
+  status: z.string(),
+});
+
+export type EditNgoFormData = z.infer<typeof editNgoSchema>;

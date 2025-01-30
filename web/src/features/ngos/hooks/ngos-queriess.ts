@@ -5,9 +5,9 @@ import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
-import { useRouter } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
-import { NGO, NgoCreationFormData } from '../models/NGO';
+import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 import { useCreateNgoAdmin } from './ngo-admin-queries';
 const ENDPOINT = 'ngos';
 
@@ -92,6 +92,26 @@ export const useCreateNgo = () => {
 export const useNgoMutations = () => {
   const router = useRouter();
   const confirm = useConfirm();
+  const navigate = useNavigate();
+
+  const editNgoMutation = useMutation({
+    mutationFn: ({ ngoId, values }: { ngoId: string; values: EditNgoFormData }) => {
+      return authApi.put(`${ENDPOINT}/${ngoId}`, values);
+    },
+
+    onSuccess: (_, { ngoId }) => {
+      queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
+      router.invalidate();
+      navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: ngoId!, tab: 'details' } });
+    },
+    onError: () => {
+      toast({
+        title: 'Error editing NGO',
+        description: '',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const deactivateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
@@ -191,5 +211,5 @@ export const useNgoMutations = () => {
     }
   };
 
-  return { deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation };
+  return { editNgoMutation, deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation };
 };

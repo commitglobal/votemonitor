@@ -60,6 +60,7 @@ import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from '.
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
+import { Route as NgosEditNgoIdImport } from './routes/ngos/edit.$ngoId.'
 import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin.$ngoId.$adminId.view'
 import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin.$ngoId.$adminId.edit'
 
@@ -328,6 +329,11 @@ const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
     } as any,
   )
 
+const NgosEditNgoIdRoute = NgosEditNgoIdImport.update({
+  path: '/ngos/edit/$ngoId/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const NgosAdminNgoIdAdminIdViewRoute = NgosAdminNgoIdAdminIdViewImport.update({
   path: '/ngos/admin/$ngoId/$adminId/view',
   getParentRoute: () => rootRoute,
@@ -506,6 +512,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/edit/$ngoId/': {
+      preLoaderRoute: typeof NgosEditNgoIdImport
+      parentRoute: typeof rootRoute
+    }
     '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
       preLoaderRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport
       parentRoute: typeof rootRoute
@@ -593,6 +603,7 @@ export const routeTree = rootRoute.addChildren([
   ResponsesFormSubmissionsSubmissionIdRoute,
   ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
+  NgosEditNgoIdRoute,
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
