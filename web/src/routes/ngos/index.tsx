@@ -1,18 +1,15 @@
-import { SortOrder } from '@/common/types';
+import { DefaultSearchParamsSchema } from '@/common/zod-schemas';
 import NGOsDashboard from '@/features/ngos/components/Dashboard/Dashboard';
 import { NGOStatus } from '@/features/ngos/models/NGO';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, SearchSchemaInput } from '@tanstack/react-router';
 import { z } from 'zod';
 
-export const ngoRouteSearchSchema = z.object({
-  searchText: z.coerce.string().optional(),
+const NgosAdditionalSearchParams = z.object({
   status: z.nativeEnum(NGOStatus).optional(),
-  pageNumber: z.number().catch(1),
-  pageSize: z.number().catch(10),
-  sortColumnName: z.string().catch(''),
-  sortOrder: z.enum([SortOrder.asc, SortOrder.desc]).catch(SortOrder.asc),
 });
+
+export const ngoRouteSearchSchema = NgosAdditionalSearchParams.merge(DefaultSearchParamsSchema);
 
 export const Route = createFileRoute('/ngos/')({
   beforeLoad: () => {
