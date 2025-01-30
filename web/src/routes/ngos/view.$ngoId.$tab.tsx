@@ -5,10 +5,10 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';
 import { ngoRouteSearchSchema } from '.';
 
-export const NgoAdminsSearchParamsSchema = ngoRouteSearchSchema.partial();
-export type NgoAdminsSearchParams = z.infer<typeof NgoAdminsSearchParamsSchema>;
+export const ngoAdminsSearchParamsSchema = ngoRouteSearchSchema.partial();
+export type NgoAdminsSearchParams = z.infer<typeof ngoAdminsSearchParamsSchema>;
 
-export const NgosDetailsdPageSearchParamsSchema = NgoAdminsSearchParamsSchema.merge(
+export const NgosDetailsdPageSearchParamsSchema = ngoAdminsSearchParamsSchema.merge(
   z.object({
     tab: z.enum(['details', 'admins']).catch('details').optional(),
   })

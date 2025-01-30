@@ -22,17 +22,12 @@ export const ngosKeys = {
 };
 
 export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO>, Error> {
+  console.log(p);
   return useQuery({
     queryKey: ngosKeys.list(p),
     queryFn: async () => {
       const response = await authApi.get<PageResponse<NGO>>('/ngos', {
-        params: {
-          ...p.otherParams,
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
-        },
+        params: { ...p.otherParams },
       });
 
       if (response.status !== 200) {

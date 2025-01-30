@@ -11,16 +11,15 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/ngos/view.$ngoId.$tab';
+import { useDebouncedSearch } from '@/hooks/debounced-search';
+import { ngoAdminsSearchParamsSchema, Route } from '@/routes/ngos/view.$ngoId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC } from 'react';
 import { useNgoAdminMutations, useNgoAdmins } from '../../hooks/ngo-admin-queries';
 import { NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
@@ -35,34 +34,9 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const navigate = useNavigate();
   const { deleteNgoAdminWithConfirmation, deactivateNgoAdminMutation, activateNgoAdminMutation } =
     useNgoAdminMutations(ngoId);
-  const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
-  const search = Route.useSearch();
-  const [searchText, setSearchText] = useState(search.searchText);
-  const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
-    setSearchText(ev.currentTarget.value);
-  };
-  const debouncedSearch = useDebounce(search, 300);
-  const debouncedSearchText = useDebounce(searchText, 300);
+  const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
   const addNgoAdminDialog = useDialog();
-
-  useEffect(() => {
-    navigateHandler({
-      [FILTER_KEY.SearchText]: debouncedSearchText,
-    });
-  }, [debouncedSearchText]);
-
-  useEffect(() => {
-    setSearchText(search.searchText ?? '');
-  }, [search.searchText]);
-
-  const queryParams = useMemo(() => {
-    const params = [
-      ['searchText', debouncedSearch.searchText],
-      ['status', debouncedSearch.status],
-    ].filter(([_, value]) => value);
-
-    return Object.fromEntries(params);
-  }, [debouncedSearch]);
+  const { queryParams, searchText, handleSearchInput } = useDebouncedSearch(Route.id, ngoAdminsSearchParamsSchema);
 
   const navigateToNgoAdmin = (ngoId: string, adminId: string) =>
     navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });

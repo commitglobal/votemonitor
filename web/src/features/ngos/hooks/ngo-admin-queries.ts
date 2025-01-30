@@ -45,10 +45,6 @@ export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryRes
       const response = await authApi.get<PageResponse<NgoAdmin>>(`/ngos/${ngoId}/admins`, {
         params: {
           ...p.otherParams,
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
         },
       });
 

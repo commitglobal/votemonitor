@@ -1,5 +1,4 @@
 import Layout from '@/components/layout/Layout';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
@@ -13,16 +12,15 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/ngos';
+import { useDebouncedSearch } from '@/hooks/debounced-search';
+import { ngoRouteSearchSchema, Route } from '@/routes/ngos';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react';
+import { useCallback, type ReactElement } from 'react';
 import { useNgoMutations, useNGOs } from '../../hooks/ngos-queriess';
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
@@ -31,38 +29,11 @@ import { NgoStatusBadge } from '../NgoStatusBadges';
 
 export default function NGOsDashboard(): ReactElement {
   const navigate = useNavigate();
-  const confirm = useConfirm();
-  const { isFilteringContainerVisible, navigateHandler, toggleFilteringContainerVisibility } = useFilteringContainer();
-  const search = Route.useSearch();
+  const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
+  const { searchText, handleSearchInput, queryParams } = useDebouncedSearch(Route.id, ngoRouteSearchSchema);
   const createNgoDialog = useDialog();
-  const [searchText, setSearchText] = useState(search.searchText);
-  const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
-    setSearchText(ev.currentTarget.value);
-  };
-
-  const debouncedSearch = useDebounce(search, 300);
-  const debouncedSearchText = useDebounce(searchText, 300);
 
   const { deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation } = useNgoMutations();
-
-  useEffect(() => {
-    navigateHandler({
-      [FILTER_KEY.SearchText]: debouncedSearchText,
-    });
-  }, [debouncedSearchText]);
-
-  useEffect(() => {
-    setSearchText(search.searchText ?? '');
-  }, [search.searchText]);
-
-  const queryParams = useMemo(() => {
-    const params = [
-      ['searchText', debouncedSearch.searchText],
-      ['status', debouncedSearch.status],
-    ].filter(([_, value]) => value);
-
-    return Object.fromEntries(params);
-  }, [debouncedSearch]);
 
   const navigateToNgo = useCallback(
     (ngoId: string) => {
