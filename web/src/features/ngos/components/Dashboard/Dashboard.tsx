@@ -136,7 +136,7 @@ export default function NGOsDashboard(): ReactElement {
   ];
 
   return (
-    <Layout title={'Organizations'} subtitle='Manage'>
+    <Layout title={'Organizations'}>
       <Card className='w-full pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
