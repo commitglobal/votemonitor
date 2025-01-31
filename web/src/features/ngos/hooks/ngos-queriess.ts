@@ -22,7 +22,6 @@ export const ngosKeys = {
 };
 
 export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO>, Error> {
-  console.log(p);
   return useQuery({
     queryKey: ngosKeys.list(p),
     queryFn: async () => {
