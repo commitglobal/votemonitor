@@ -1,7 +1,9 @@
 # Vote Monitor
 
-## Technologies & Libraries
+## Backend Technologies & Libraries
 * [FastEndpoints](https://fast-endpoints.com/)
+* [Dapper](https://github.com/DapperLib/Dapper)
+* [EFCore](https://github.com/dotnet/efcore)
 * [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
 * [Ardalis.Specification](https://github.com/ardalis/specification)
 * [Ardalis.SmartEnum](https://github.com/ardalis/SmartEnum)
@@ -9,6 +11,15 @@
 * [TestContainers](https://testcontainers.com/)
 * [FluentAssertions](https://fluentassertions.com/)
 * [Bogus](https://github.com/bchavez/Bogus)
+* [NSubstitute](https://github.com/nsubstitute/NSubstitute)
+
+## Frontend Technologies & Libraries
+* [React + Vite](https://github.com/RicardoValdovinos/vite-react-boilerplate)
+* [ShadCnUi](https://github.com/shadcn-ui/ui)
+* [TanStack Router](https://github.com/TanStack/router)
+* [TanStack Query](https://github.com/TanStack/query)
+* [TanStack Table](https://github.com/TanStack/table)
+* [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) 
 
 ## Getting started using docker
 
