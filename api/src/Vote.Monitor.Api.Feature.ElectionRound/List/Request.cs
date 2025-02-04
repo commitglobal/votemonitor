@@ -5,7 +5,7 @@ namespace Vote.Monitor.Api.Feature.ElectionRound.List;
 public class Request : BaseSortPaginatedRequest
 {
     [QueryParam]
-    public string? TitleFilter { get; set; }
+    public string? SearchText { get; set; }
 
     [QueryParam]
     public Guid? CountryId { get; set; }

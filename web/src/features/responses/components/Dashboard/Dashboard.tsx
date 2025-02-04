@@ -48,6 +48,7 @@ export default function ResponsesDashboard(): ReactElement {
                 setPrevSearch(newSearch);
                 return newSearch;
               },
+              replace: true
             });
           }}>
           <TabsList

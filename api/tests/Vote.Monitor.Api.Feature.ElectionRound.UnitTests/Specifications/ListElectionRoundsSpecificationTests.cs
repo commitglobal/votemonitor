@@ -22,7 +22,7 @@ public class ListElectionRoundsSpecificationTests
         // Act
         List.Request request = new List.Request
         {
-            TitleFilter = titleFilter
+            SearchText = titleFilter
         };
         var spec = new ListElectionRoundsSpecification(request);
         var result = spec.Evaluate(testCollection).ToList();

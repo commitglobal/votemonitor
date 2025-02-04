@@ -269,6 +269,23 @@
       "createDialogTitle": "Create form",
       "resetFilters": "Reset filters"
     },
+    "formTemplates": {
+      "tabTitle": "Form templates",
+      "cardTitle": "Observation form templates",
+      "headers": {
+        "formCode": "Form Code",
+        "icon": "Icon",
+        "name": "Name",
+        "formType": "Form type",
+        "language": "Language",
+        "questions": "Questions",
+        "status": "Status",
+        "updatedOn": "Updated on",
+        "sharedWith": "Shared with"
+      },
+      "createDialogTitle": "Create form",
+      "resetFilters": "Reset filters"
+    },
     "locations": {
       "tabTitle": "Locations",
       "cardTitle": "Locations",

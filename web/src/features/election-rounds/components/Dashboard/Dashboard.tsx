@@ -4,25 +4,44 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { FunnelIcon, PlusIcon } from '@heroicons/react/24/outline';
 
+import { Button } from '@/components/ui/button';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useDebounce } from '@/components/ui/multiple-selector';
+import { useDialog } from '@/components/ui/use-dialog';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { Route } from '@/routes/election-rounds';
-import { useNavigate } from '@tanstack/react-router';
-import { ChangeEvent, ReactElement, useState } from 'react';
-import ElectionRoundsTable from './ElectionRoundsTable';
-import ElectionsRoundFilter from './ElectionsRoundFilter';
-import { Button } from '@/components/ui/button';
-import { useDialog } from '@/components/ui/use-dialog';
+import { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
+import { ElectionsRoundsQueryParams, useElectionRounds } from '../../queries';
 import CreateElectionRoundDialog from '../CreateElectionRoundDialog/CreateElectionRoundDialog';
+import { electionRoundColDefs } from './columns-defs';
+import ElectionsRoundFilter from './ElectionsRoundFilter';
 
 export default function ElectionRoundsDashboard(): ReactElement {
   const search = Route.useSearch();
+  const navigate = Route.useNavigate();
 
   const { filteringIsActive, navigateHandler } = useFilteringContainer();
   const [filtersExpanded, setFiltersExpanded] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>(search.searchText ?? '');
 
   const debouncedSearchText = useDebounce(searchText, 300);
+  const queryParams = useMemo(() => {
+    const params: ElectionsRoundsQueryParams = {
+      countryId: search.countryId,
+      electionRoundStatus: search.electionRoundStatus,
+      searchText: search.searchText,
+    };
+
+    return params;
+  }, [debouncedSearchText, search]);
+
+  useEffect(() => {
+    navigateHandler({
+      [FILTER_KEY.SearchText]: debouncedSearchText,
+    });
+  }, [debouncedSearchText]);
+
   const createElectionEventDialog = useDialog();
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
@@ -58,7 +77,14 @@ export default function ElectionRoundsDashboard(): ReactElement {
           {filtersExpanded && <ElectionsRoundFilter />}
         </CardHeader>
         <CardContent>
-          <ElectionRoundsTable />
+          <QueryParamsDataTable
+            columns={electionRoundColDefs}
+            useQuery={(params) => useElectionRounds(params)}
+            queryParams={queryParams}
+            onRowClick={(electionRoundId: string) =>
+              navigate({ to: `/election-rounds/$electionRoundId`, params: { electionRoundId } })
+            }
+          />
         </CardContent>
       </Card>
       {createElectionEventDialog.dialogProps.open && (

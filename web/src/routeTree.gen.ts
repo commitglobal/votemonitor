@@ -51,6 +51,7 @@ import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
 import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as ElectionRoundsElectionRoundIdEditImport } from './routes/election-rounds/$electionRoundId/edit'
+import { Route as ElectionRoundsElectionRoundIdTabImport } from './routes/election-rounds/$electionRoundId/$tab'
 import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
 import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
@@ -312,6 +313,13 @@ const ElectionRoundsElectionRoundIdEditRoute =
   ElectionRoundsElectionRoundIdEditImport.update({
     id: '/election-rounds/$electionRoundId/edit',
     path: '/election-rounds/$electionRoundId/edit',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ElectionRoundsElectionRoundIdTabRoute =
+  ElectionRoundsElectionRoundIdTabImport.update({
+    id: '/election-rounds/$electionRoundId/$tab',
+    path: '/election-rounds/$electionRoundId/$tab',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -592,6 +600,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CitizenNotificationsViewNotificationIdImport
       parentRoute: typeof rootRoute
     }
+    '/election-rounds/$electionRoundId/$tab': {
+      id: '/election-rounds/$electionRoundId/$tab'
+      path: '/election-rounds/$electionRoundId/$tab'
+      fullPath: '/election-rounds/$electionRoundId/$tab'
+      preLoaderRoute: typeof ElectionRoundsElectionRoundIdTabImport
+      parentRoute: typeof rootRoute
+    }
     '/election-rounds/$electionRoundId/edit': {
       id: '/election-rounds/$electionRoundId/edit'
       path: '/election-rounds/$electionRoundId/edit'
@@ -800,6 +815,7 @@ export interface FileRoutesByFullPath {
   '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
+  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
   '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new/reuse': typeof FormsNewReuseRoute
@@ -855,6 +871,7 @@ export interface FileRoutesByTo {
   '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
+  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
   '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new/reuse': typeof FormsNewReuseRoute
@@ -911,6 +928,7 @@ export interface FileRoutesById {
   '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
+  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
   '/forms/$formId_/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new_/reuse': typeof FormsNewReuseRoute
@@ -968,6 +986,7 @@ export interface FileRouteTypes {
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
+    | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
     | '/forms/$formId/$languageCode'
     | '/forms/new/reuse'
@@ -1022,6 +1041,7 @@ export interface FileRouteTypes {
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
+    | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
     | '/forms/$formId/$languageCode'
     | '/forms/new/reuse'
@@ -1076,6 +1096,7 @@ export interface FileRouteTypes {
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
+    | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
     | '/forms/$formId_/$languageCode'
     | '/forms/new_/reuse'
@@ -1132,6 +1153,7 @@ export interface RootRouteChildren {
   CitizenGuidesEditGuideIdRoute: typeof CitizenGuidesEditGuideIdRoute
   CitizenGuidesViewGuideIdRoute: typeof CitizenGuidesViewGuideIdRoute
   CitizenNotificationsViewNotificationIdRoute: typeof CitizenNotificationsViewNotificationIdRoute
+  ElectionRoundsElectionRoundIdTabRoute: typeof ElectionRoundsElectionRoundIdTabRoute
   ElectionRoundsElectionRoundIdEditRoute: typeof ElectionRoundsElectionRoundIdEditRoute
   FormsFormIdLanguageCodeRoute: typeof FormsFormIdLanguageCodeRoute
   FormsNewReuseRoute: typeof FormsNewReuseRoute
@@ -1189,6 +1211,7 @@ const rootRouteChildren: RootRouteChildren = {
   CitizenGuidesViewGuideIdRoute: CitizenGuidesViewGuideIdRoute,
   CitizenNotificationsViewNotificationIdRoute:
     CitizenNotificationsViewNotificationIdRoute,
+  ElectionRoundsElectionRoundIdTabRoute: ElectionRoundsElectionRoundIdTabRoute,
   ElectionRoundsElectionRoundIdEditRoute:
     ElectionRoundsElectionRoundIdEditRoute,
   FormsFormIdLanguageCodeRoute: FormsFormIdLanguageCodeRoute,
@@ -1270,6 +1293,7 @@ export const routeTree = rootRoute
         "/citizen-guides/edit/$guideId",
         "/citizen-guides/view/$guideId",
         "/citizen-notifications/view/$notificationId",
+        "/election-rounds/$electionRoundId/$tab",
         "/election-rounds/$electionRoundId/edit",
         "/forms/$formId_/$languageCode",
         "/forms/new_/reuse",
@@ -1377,6 +1401,9 @@ export const routeTree = rootRoute
     },
     "/citizen-notifications/view/$notificationId": {
       "filePath": "citizen-notifications/view.$notificationId.tsx"
+    },
+    "/election-rounds/$electionRoundId/$tab": {
+      "filePath": "election-rounds/$electionRoundId/$tab.tsx"
     },
     "/election-rounds/$electionRoundId/edit": {
       "filePath": "election-rounds/$electionRoundId/edit.tsx"
