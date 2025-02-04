@@ -42,6 +42,7 @@ export default function ResponsesDashboard(): ReactElement {
           defaultValue={tab ?? 'form-answers'}
           onValueChange={(tab) => {
             void navigate({
+              to: '.',
               search() {
                 const newSearch = { tab };
                 setPrevSearch(newSearch);

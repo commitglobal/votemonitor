@@ -89,6 +89,7 @@ const Header = (): FunctionComponent => {
     },
     staleTime: 0,
     refetchOnWindowFocus: false,
+    enabled: userRole === 'NgoAdmin',
   });
 
   useEffect(() => {
@@ -148,7 +149,7 @@ const Header = (): FunctionComponent => {
               </div>
 
               <div className='items-center hidden gap-2 md:flex'>
-                {status === 'pending' ? (
+                {userRole !== 'NgoAdmin'? <></> : status === 'pending' ? (
                   <Skeleton className='w-[360px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (
                   <DropdownMenu>
@@ -284,8 +285,6 @@ const Header = (): FunctionComponent => {
                     key={item.name}
                     as={Link}
                     to={item.to}
-                    search={{}}
-                    params={{}}
                     className='block px-3 py-2 text-base font-medium rounded-md'
                     activeProps={{
                       className: 'bg-primary-100 text-primary-600 cursor-default',
@@ -314,8 +313,6 @@ const Header = (): FunctionComponent => {
                     key={item.name}
                     as={Link}
                     to={item.to}
-                    search={{}}
-                    params={{}}
                     className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>
                     {item.name}
                   </Disclosure.Button>

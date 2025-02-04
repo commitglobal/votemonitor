@@ -223,9 +223,16 @@
         "level2": "Level 2",
         "level3": "Level 3",
         "level4": "Level 4",
-        "level5": "Level 5"
+        "level5": "Level 5",
+        "displayOrder": "Display order"
       },
-      "resetFilters": "Reset filters"
+      "resetFilters": "Reset filters",
+      "addPollingStation": {
+        "title": "Add a new polling station",
+        "addBtnText": "Add individual polling station",
+        "onSuccess": "Polling station created",
+        "onError": "Error adding polling station"
+      }
     },
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
@@ -273,7 +280,13 @@
         "level4": "Level 4",
         "level5": "Level 5"
       },
-      "resetFilters": "Reset filters"
+      "resetFilters": "Reset filters",
+      "addLocation": {
+        "title": "Add a new location",
+        "addBtnText": "Add individual location",
+        "onSuccess": "Polling station created",
+        "onError": "Error adding location"
+      }
     },
     "form": {
       "title": "Create new form",
@@ -392,7 +405,7 @@
   },
   "responses": {
     "title": "Responses",
-    "subtitle":"View all form answers and other reports submitted by your observers.",
+    "subtitle": "View all form answers and other reports submitted by your observers.",
     "subtitleCoalitionLeader": "View all form answers and other reports submitted by coalition observers."
   }
 }

@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 
 export interface FormDetailsBreadcrumbsProps {
   formCode: string;
-  formName: string
+  formName: string;
 }
 
 export function FormDetailsBreadcrumbs({ formCode, formName }: FormDetailsBreadcrumbsProps): FunctionComponent {
@@ -12,7 +12,9 @@ export function FormDetailsBreadcrumbs({ formCode, formName }: FormDetailsBreadc
       <Link className='crumb' to='/election-event/$tab' params={{ tab: 'observer-forms' }} preload='intent'>
         observer-forms
       </Link>
-      <Link className='crumb'>{formCode} - {formName}</Link>
+      <Link className='crumb' to='.'>
+        {formCode} - {formName}
+      </Link>
     </div>
   );
 }

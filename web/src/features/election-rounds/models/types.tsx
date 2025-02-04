@@ -10,4 +10,5 @@ export interface ElectionRoundModel {
   status: ElectionRoundStatus;
   createdOn: string;
   lastModifiedOn: string;
+  numberOfNgosMonitoring: number;
 }

@@ -88,7 +88,6 @@ function AddTranslationsDialog() {
                     <b>You cannot add or delete questions on the translated forms. </b>Any changes you want to make to the questions (deletion or addition of new questions) will be made to the form in the <b>base language</b>, and they will be copied to the translated forms.
                 </div>,
                 actionButton: 'Ok'
-
             })
             await queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
             router.invalidate();

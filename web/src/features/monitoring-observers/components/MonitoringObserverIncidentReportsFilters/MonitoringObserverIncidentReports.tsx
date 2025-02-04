@@ -3,24 +3,25 @@ import { PollingStationsFilters } from '@/components/PollingStationsFilters/Poll
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
 import { mapIncidentReportFollowUpStatus, mapIncidentReportLocationType } from '@/features/responses/utils/helpers';
-import { getRouteApi } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 
 export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const params = Route.useParams();
 
   const onClearFilter = useCallback(
     (filter: keyof MonitoringObserverDetailsRouteSearch | (keyof MonitoringObserverDetailsRouteSearch)[]) => () => {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      void navigate({ to: Route.path, replace: true, params, search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -29,7 +30,12 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, incidentReportFollowUpStatus: value }) });
+          void navigate({
+            to: Route.path,
+            replace: true,
+            params,
+            search: (prev: any) => ({ ...prev, incidentReportFollowUpStatus: value }),
+          });
         }}
         value={search.incidentReportFollowUpStatus ?? ''}>
         <SelectTrigger>
@@ -46,10 +52,14 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
         </SelectContent>
       </Select>
 
-
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, incidentReportLocationType: value }) });
+          void navigate({
+            to: Route.path,
+            replace: true,
+            params,
+            search: (prev: any) => ({ ...prev, incidentReportLocationType: value }),
+          });
         }}
         value={search.incidentReportLocationType ?? ''}>
         <SelectTrigger>
@@ -66,10 +76,14 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
         </SelectContent>
       </Select>
 
-
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
+          void navigate({
+            to: Route.path,
+            replace: true,
+            params,
+            search: (prev) => ({ ...prev, hasFlaggedAnswers: value }),
+          });
         }}
         value={search.hasFlaggedAnswers?.toString() ?? ''}>
         <SelectTrigger>
@@ -96,11 +110,17 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       {Object.entries(search).length > 0 && (
         <div className='flex flex-wrap gap-2 col-span-full'>
           {search.incidentReportFollowUpStatus && (
-            <FilterBadge label={`Form type: ${search.incidentReportFollowUpStatus}`} onClear={onClearFilter('incidentReportFollowUpStatus')} />
+            <FilterBadge
+              label={`Form type: ${search.incidentReportFollowUpStatus}`}
+              onClear={onClearFilter('incidentReportFollowUpStatus')}
+            />
           )}
 
           {search.incidentReportLocationType && (
-            <FilterBadge label={`Location type: ${search.incidentReportLocationType}`} onClear={onClearFilter('incidentReportLocationType')} />
+            <FilterBadge
+              label={`Location type: ${search.incidentReportLocationType}`}
+              onClear={onClearFilter('incidentReportLocationType')}
+            />
           )}
 
           {search.hasFlaggedAnswers && (

@@ -198,6 +198,16 @@ export function redirectIfNotAuth(): void {
   }
 }
 
+export function redirectIfNotPlatformAdmin(): void {
+  const token = localStorage.getItem('token');
+  const userRole = parseJwt(token ?? '')?.['user-role'];
+  if (userRole !== 'PlatformAdmin') {
+    throw redirect({
+      to: '/login',
+    });
+  }
+}
+
 export function parseJwt(token: string | undefined): UserPayload {
   let base64Url: string | undefined = token!.split('.')[1];
   let base64 = base64Url!.replace(/-/g, '+').replace(/_/g, '/');
@@ -249,15 +259,17 @@ export function ratingScaleToNumber(scale: RatingScaleType): number {
 export function buildURLSearchParams(data: any) {
   const params = new URLSearchParams();
 
-  Object.entries(data).filter(([_,value])=>!!value).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      // @ts-ignore
-      value.forEach((value) => params.append(key, value.toString()));
-    } else {
-      // @ts-ignore
-      params.append(key, value.toString());
-    }
-  });
+  Object.entries(data)
+    .filter(([_, value]) => !!value)
+    .forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // @ts-ignore
+        value.forEach((value) => params.append(key, value.toString()));
+      } else {
+        // @ts-ignore
+        params.append(key, value.toString());
+      }
+    });
 
   return params;
 }
@@ -463,7 +475,7 @@ export function formatBytes(
   if (bytes === 0) return '0 Byte';
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === 'accurate' ? accurateSizes[i] ?? 'Bytest' : sizes[i] ?? 'Bytes'
+    sizeType === 'accurate' ? (accurateSizes[i] ?? 'Bytest') : (sizes[i] ?? 'Bytes')
   }`;
 }
 
@@ -537,3 +549,47 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
   const { [key]: _, ...rest } = obj;
   return rest;
 }
+
+import { authApi } from '@/common/auth-api';
+
+export enum TemplateType {
+  MonitoringObservers = 'monitoring-observers',
+  PollingStations = 'polling-stations',
+  Locations = 'locations',
+}
+
+const templateConfigs = {
+  [TemplateType.MonitoringObservers]: {
+    endpoint: '/monitoring-observers:import-template',
+    filename: 'monitoring_observers_template.csv',
+    fileType: 'text/csv',
+  },
+  [TemplateType.PollingStations]: {
+    endpoint: '/polling-stations:import-template',
+    filename: 'polling_station_import_template.csv',
+    fileType: 'text/csv',
+  },
+  [TemplateType.Locations]: {
+    endpoint: '/locations:import-template',
+    filename: 'locations_import_template.csv',
+    fileType: 'text/csv',
+  },
+};
+
+export const downloadImportExample = async (templateType: TemplateType) => {
+  const res = await authApi.get(templateConfigs[templateType].endpoint);
+  const csvData = res.data;
+
+  const blob = new Blob([csvData], { type: templateConfigs[templateType].fileType });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = templateConfigs[templateType].filename;
+
+  document.body.appendChild(a);
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};

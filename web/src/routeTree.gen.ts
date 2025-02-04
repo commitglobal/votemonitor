@@ -31,11 +31,11 @@ import { Route as MonitoringObserversCreateNewMessageImport } from './routes/mon
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsNewImport } from './routes/forms/new'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
-import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as CitizenNotificationsNewImport } from './routes/citizen-notifications/new'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
+import { Route as ElectionRoundsElectionRoundIdIndexImport } from './routes/election-rounds/$electionRoundId/index'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
 import { Route as ResponsesIncidentReportsIncidentReportIdImport } from './routes/responses/incident-reports/$incidentReportId'
 import { Route as ResponsesFormSubmissionsSubmissionIdImport } from './routes/responses/form-submissions/$submissionId'
@@ -50,7 +50,7 @@ import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
 import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
 import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
-import { Route as ElectionRoundsElectionRoundIdEditImport } from './routes/election-rounds/$electionRoundId_.edit'
+import { Route as ElectionRoundsElectionRoundIdEditImport } from './routes/election-rounds/$electionRoundId/edit'
 import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
 import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
@@ -60,6 +60,8 @@ import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
+import { Route as ElectionRoundsElectionRoundIdPollingStationsImportImport } from './routes/election-rounds/$electionRoundId/polling-stations/import'
+import { Route as ElectionRoundsElectionRoundIdLocationsImportImport } from './routes/election-rounds/$electionRoundId/locations/import'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
 
 // Create/Update Routes
@@ -185,13 +187,6 @@ const FormsFormIdRoute = FormsFormIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ElectionRoundsElectionRoundIdRoute =
-  ElectionRoundsElectionRoundIdImport.update({
-    id: '/election-rounds/$electionRoundId',
-    path: '/election-rounds/$electionRoundId',
-    getParentRoute: () => rootRoute,
-  } as any)
-
 const ElectionEventTabRoute = ElectionEventTabImport.update({
   id: '/election-event/$tab',
   path: '/election-event/$tab',
@@ -215,6 +210,13 @@ const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
   path: '/accept-invite/success',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ElectionRoundsElectionRoundIdIndexRoute =
+  ElectionRoundsElectionRoundIdIndexImport.update({
+    id: '/election-rounds/$electionRoundId/',
+    path: '/election-rounds/$electionRoundId/',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const ResponsesQuickReportsQuickReportIdRoute =
   ResponsesQuickReportsQuickReportIdImport.update({
@@ -308,7 +310,7 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
 
 const ElectionRoundsElectionRoundIdEditRoute =
   ElectionRoundsElectionRoundIdEditImport.update({
-    id: '/election-rounds/$electionRoundId_/edit',
+    id: '/election-rounds/$electionRoundId/edit',
     path: '/election-rounds/$electionRoundId/edit',
     getParentRoute: () => rootRoute,
   } as any)
@@ -374,6 +376,20 @@ const FormsFormIdEditTranslationLanguageCodeRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const ElectionRoundsElectionRoundIdPollingStationsImportRoute =
+  ElectionRoundsElectionRoundIdPollingStationsImportImport.update({
+    id: '/election-rounds/$electionRoundId/polling-stations/import',
+    path: '/election-rounds/$electionRoundId/polling-stations/import',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ElectionRoundsElectionRoundIdLocationsImportRoute =
+  ElectionRoundsElectionRoundIdLocationsImportImport.update({
+    id: '/election-rounds/$electionRoundId/locations/import',
+    path: '/election-rounds/$electionRoundId/locations/import',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport.update(
     {
@@ -420,13 +436,6 @@ declare module '@tanstack/react-router' {
       path: '/election-event/$tab'
       fullPath: '/election-event/$tab'
       preLoaderRoute: typeof ElectionEventTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId': {
-      id: '/election-rounds/$electionRoundId'
-      path: '/election-rounds/$electionRoundId'
-      fullPath: '/election-rounds/$electionRoundId'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId': {
@@ -583,8 +592,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CitizenNotificationsViewNotificationIdImport
       parentRoute: typeof rootRoute
     }
-    '/election-rounds/$electionRoundId_/edit': {
-      id: '/election-rounds/$electionRoundId_/edit'
+    '/election-rounds/$electionRoundId/edit': {
+      id: '/election-rounds/$electionRoundId/edit'
       path: '/election-rounds/$electionRoundId/edit'
       fullPath: '/election-rounds/$electionRoundId/edit'
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdEditImport
@@ -688,11 +697,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
     }
+    '/election-rounds/$electionRoundId/': {
+      id: '/election-rounds/$electionRoundId/'
+      path: '/election-rounds/$electionRoundId'
+      fullPath: '/election-rounds/$electionRoundId'
+      preLoaderRoute: typeof ElectionRoundsElectionRoundIdIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
       id: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
       path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
       fullPath: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
       preLoaderRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/election-rounds/$electionRoundId/locations/import': {
+      id: '/election-rounds/$electionRoundId/locations/import'
+      path: '/election-rounds/$electionRoundId/locations/import'
+      fullPath: '/election-rounds/$electionRoundId/locations/import'
+      preLoaderRoute: typeof ElectionRoundsElectionRoundIdLocationsImportImport
+      parentRoute: typeof rootRoute
+    }
+    '/election-rounds/$electionRoundId/polling-stations/import': {
+      id: '/election-rounds/$electionRoundId/polling-stations/import'
+      path: '/election-rounds/$electionRoundId/polling-stations/import'
+      fullPath: '/election-rounds/$electionRoundId/polling-stations/import'
+      preLoaderRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportImport
       parentRoute: typeof rootRoute
     }
     '/forms_/$formId/edit-translation/$languageCode': {
@@ -748,7 +778,6 @@ export interface FileRoutesByFullPath {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
-  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -786,7 +815,10 @@ export interface FileRoutesByFullPath {
   '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
+  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
+  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -801,7 +833,6 @@ export interface FileRoutesByTo {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
-  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -839,7 +870,10 @@ export interface FileRoutesByTo {
   '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
+  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
+  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -855,7 +889,6 @@ export interface FileRoutesById {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
-  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -878,7 +911,7 @@ export interface FileRoutesById {
   '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
-  '/election-rounds/$electionRoundId_/edit': typeof ElectionRoundsElectionRoundIdEditRoute
+  '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
   '/forms/$formId_/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new_/reuse': typeof FormsNewReuseRoute
   '/forms/new_/scratch': typeof FormsNewScratchRoute
@@ -893,7 +926,10 @@ export interface FileRoutesById {
   '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
+  '/election-rounds/$electionRoundId/': typeof ElectionRoundsElectionRoundIdIndexRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
+  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
   '/forms_/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id_/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -910,7 +946,6 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
-    | '/election-rounds/$electionRoundId'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -948,7 +983,10 @@ export interface FileRouteTypes {
     | '/responses/form-submissions/$submissionId'
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
+    | '/election-rounds/$electionRoundId'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+    | '/election-rounds/$electionRoundId/locations/import'
+    | '/election-rounds/$electionRoundId/polling-stations/import'
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -962,7 +1000,6 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
-    | '/election-rounds/$electionRoundId'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -1000,7 +1037,10 @@ export interface FileRouteTypes {
     | '/responses/form-submissions/$submissionId'
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
+    | '/election-rounds/$electionRoundId'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+    | '/election-rounds/$electionRoundId/locations/import'
+    | '/election-rounds/$electionRoundId/polling-stations/import'
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -1014,7 +1054,6 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
-    | '/election-rounds/$electionRoundId'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -1037,7 +1076,7 @@ export interface FileRouteTypes {
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
-    | '/election-rounds/$electionRoundId_/edit'
+    | '/election-rounds/$electionRoundId/edit'
     | '/forms/$formId_/$languageCode'
     | '/forms/new_/reuse'
     | '/forms/new_/scratch'
@@ -1052,7 +1091,10 @@ export interface FileRouteTypes {
     | '/responses/form-submissions/$submissionId'
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
+    | '/election-rounds/$electionRoundId/'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+    | '/election-rounds/$electionRoundId/locations/import'
+    | '/election-rounds/$electionRoundId/polling-stations/import'
     | '/forms_/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id_/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -1068,7 +1110,6 @@ export interface RootRouteChildren {
   CitizenGuidesNewRoute: typeof CitizenGuidesNewRoute
   CitizenNotificationsNewRoute: typeof CitizenNotificationsNewRoute
   ElectionEventTabRoute: typeof ElectionEventTabRoute
-  ElectionRoundsElectionRoundIdRoute: typeof ElectionRoundsElectionRoundIdRoute
   FormsFormIdRoute: typeof FormsFormIdRoute
   FormsNewRoute: typeof FormsNewRoute
   MonitoringObserversTabRoute: typeof MonitoringObserversTabRoute
@@ -1106,7 +1147,10 @@ export interface RootRouteChildren {
   ResponsesFormSubmissionsSubmissionIdRoute: typeof ResponsesFormSubmissionsSubmissionIdRoute
   ResponsesIncidentReportsIncidentReportIdRoute: typeof ResponsesIncidentReportsIncidentReportIdRoute
   ResponsesQuickReportsQuickReportIdRoute: typeof ResponsesQuickReportsQuickReportIdRoute
+  ElectionRoundsElectionRoundIdIndexRoute: typeof ElectionRoundsElectionRoundIdIndexRoute
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  ElectionRoundsElectionRoundIdLocationsImportRoute: typeof ElectionRoundsElectionRoundIdLocationsImportRoute
+  ElectionRoundsElectionRoundIdPollingStationsImportRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
   FormsFormIdEditTranslationLanguageCodeRoute: typeof FormsFormIdEditTranslationLanguageCodeRoute
   MonitoringObserversPushMessagesIdViewRoute: typeof MonitoringObserversPushMessagesIdViewRoute
   MonitoringObserversViewMonitoringObserverIdTabRoute: typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -1121,7 +1165,6 @@ const rootRouteChildren: RootRouteChildren = {
   CitizenGuidesNewRoute: CitizenGuidesNewRoute,
   CitizenNotificationsNewRoute: CitizenNotificationsNewRoute,
   ElectionEventTabRoute: ElectionEventTabRoute,
-  ElectionRoundsElectionRoundIdRoute: ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute: FormsFormIdRoute,
   FormsNewRoute: FormsNewRoute,
   MonitoringObserversTabRoute: MonitoringObserversTabRoute,
@@ -1168,8 +1211,14 @@ const rootRouteChildren: RootRouteChildren = {
     ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute:
     ResponsesQuickReportsQuickReportIdRoute,
+  ElectionRoundsElectionRoundIdIndexRoute:
+    ElectionRoundsElectionRoundIdIndexRoute,
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute:
     CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
+  ElectionRoundsElectionRoundIdLocationsImportRoute:
+    ElectionRoundsElectionRoundIdLocationsImportRoute,
+  ElectionRoundsElectionRoundIdPollingStationsImportRoute:
+    ElectionRoundsElectionRoundIdPollingStationsImportRoute,
   FormsFormIdEditTranslationLanguageCodeRoute:
     FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute:
@@ -1199,7 +1248,6 @@ export const routeTree = rootRoute
         "/citizen-guides/new",
         "/citizen-notifications/new",
         "/election-event/$tab",
-        "/election-rounds/$electionRoundId",
         "/forms/$formId",
         "/forms/new",
         "/monitoring-observers/$tab",
@@ -1222,7 +1270,7 @@ export const routeTree = rootRoute
         "/citizen-guides/edit/$guideId",
         "/citizen-guides/view/$guideId",
         "/citizen-notifications/view/$notificationId",
-        "/election-rounds/$electionRoundId_/edit",
+        "/election-rounds/$electionRoundId/edit",
         "/forms/$formId_/$languageCode",
         "/forms/new_/reuse",
         "/forms/new_/scratch",
@@ -1237,7 +1285,10 @@ export const routeTree = rootRoute
         "/responses/form-submissions/$submissionId",
         "/responses/incident-reports/$incidentReportId",
         "/responses/quick-reports/$quickReportId",
+        "/election-rounds/$electionRoundId/",
         "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId",
+        "/election-rounds/$electionRoundId/locations/import",
+        "/election-rounds/$electionRoundId/polling-stations/import",
         "/forms_/$formId/edit-translation/$languageCode",
         "/monitoring-observers/push-messages/$id_/view",
         "/monitoring-observers/view/$monitoringObserverId/$tab",
@@ -1260,9 +1311,6 @@ export const routeTree = rootRoute
     },
     "/election-event/$tab": {
       "filePath": "election-event/$tab.tsx"
-    },
-    "/election-rounds/$electionRoundId": {
-      "filePath": "election-rounds/$electionRoundId.tsx"
     },
     "/forms/$formId": {
       "filePath": "forms/$formId.tsx"
@@ -1330,8 +1378,8 @@ export const routeTree = rootRoute
     "/citizen-notifications/view/$notificationId": {
       "filePath": "citizen-notifications/view.$notificationId.tsx"
     },
-    "/election-rounds/$electionRoundId_/edit": {
-      "filePath": "election-rounds/$electionRoundId_.edit.tsx"
+    "/election-rounds/$electionRoundId/edit": {
+      "filePath": "election-rounds/$electionRoundId/edit.tsx"
     },
     "/forms/$formId_/$languageCode": {
       "filePath": "forms/$formId_.$languageCode.tsx"
@@ -1375,8 +1423,17 @@ export const routeTree = rootRoute
     "/responses/quick-reports/$quickReportId": {
       "filePath": "responses/quick-reports/$quickReportId.tsx"
     },
+    "/election-rounds/$electionRoundId/": {
+      "filePath": "election-rounds/$electionRoundId/index.tsx"
+    },
     "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId": {
       "filePath": "citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId.tsx"
+    },
+    "/election-rounds/$electionRoundId/locations/import": {
+      "filePath": "election-rounds/$electionRoundId/locations/import.tsx"
+    },
+    "/election-rounds/$electionRoundId/polling-stations/import": {
+      "filePath": "election-rounds/$electionRoundId/polling-stations/import.tsx"
     },
     "/forms_/$formId/edit-translation/$languageCode": {
       "filePath": "forms_.$formId.edit-translation.$languageCode.tsx"

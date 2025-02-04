@@ -15,13 +15,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { queryClient } from '@/main';
-import { ArrowDownTrayIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
@@ -83,7 +88,7 @@ export default function ObserversDashboard(): ReactElement {
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -109,10 +114,21 @@ export default function ObserversDashboard(): ReactElement {
     navigate({ to: '/observers/$observerId', params: { observerId } });
   };
 
-  const useObservers = (electionRoundId: string, params: DataTableParameters): UseQueryResult<PageResponse<Observer>, Error> => {
-
+  const useObservers = (
+    electionRoundId: string,
+    params: DataTableParameters
+  ): UseQueryResult<PageResponse<Observer>, Error> => {
     return useQuery({
-      queryKey: ['observers', electionRoundId, params.pageNumber, params.pageSize, params.sortColumnName, params.sortOrder, searchText, statusFilter],
+      queryKey: [
+        'observers',
+        electionRoundId,
+        params.pageNumber,
+        params.pageSize,
+        params.sortColumnName,
+        params.sortOrder,
+        searchText,
+        statusFilter,
+      ],
       queryFn: async () => {
         const paramsObject: any = {
           PageNumber: params.pageNumber,
@@ -138,7 +154,7 @@ export default function ObserversDashboard(): ReactElement {
 
         return response.data;
       },
-      enabled: !!electionRoundId
+      enabled: !!electionRoundId,
     });
   };
 
@@ -183,22 +199,10 @@ export default function ObserversDashboard(): ReactElement {
                   <Dialog>
                     <DialogTrigger>
                       <Button className='bg-purple-900 hover:bg-purple-600'>
-                        <svg
-                          className='mr-1.5'
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='18'
-                          height='18'
-                          viewBox='0 0 18 18'
-                          fill='none'>
-                          <path
-                            d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
-                            stroke='white'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>
-                        Import observer list
+                        <div className='flex items-center gap-2'>
+                          <ArrowUpTrayIcon className='size-4 text-white' aria-hidden='true' />
+                          Import observer list
+                        </div>
                       </Button>
                     </DialogTrigger>
                     <DialogContent className='min-w-[650px]'>
@@ -323,7 +327,11 @@ export default function ObserversDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={(params) => useObservers(currentElectionRoundId, params)} onRowClick={navigateToObserver} />
+              <QueryParamsDataTable
+                columns={observerColDefs}
+                useQuery={(params) => useObservers(currentElectionRoundId, params)}
+                onRowClick={navigateToObserver}
+              />
             </CardContent>
           </Card>
         </TabsContent>

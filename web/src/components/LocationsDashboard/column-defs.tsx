@@ -1,9 +1,8 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { Location } from '../../models/Location';
-
+import { Location } from '@/common/types';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import i18n from '@/i18n';
+import { ColumnDef } from '@tanstack/react-table';
 
 export const locationColDefs: ColumnDef<Location>[] = [
   {
@@ -57,6 +56,6 @@ export const locationColDefs: ColumnDef<Location>[] = [
       row: {
         original: { tags },
       },
-    }) => <TableTagList tags={Object.entries(tags).map(([key, value]) => `${key} : ${value}`)} />,
+    }) => <TableTagList tags={Object.entries(tags ?? {}).map(([key, value]) => `${key} : ${value}`)} />,
   },
 ];

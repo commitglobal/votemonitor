@@ -13,7 +13,7 @@ import { ElectionRoundModel } from '../../models/types';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ElectionRoundStatus } from '@/common/types';
-import ElectionRoundStatusBadge from '../ElectionRoundStatusBadge/ElectionRoundStatusBadge';
+import ElectionRoundStatusBadge from '../../../../components/ElectionRoundStatusBadge/ElectionRoundStatusBadge';
 
 const columnHelper = createColumnHelper<ElectionRoundModel>();
 
@@ -53,6 +53,12 @@ export const electionRoundColDefs: ColumnDef<ElectionRoundModel>[] = [
         original: { status },
       },
     }) => <ElectionRoundStatusBadge status={status} />,
+  }),
+  columnHelper.display({
+    id: 'numberOfNgosMonitoring',
+    enableSorting: true,
+    header: ({ column }) => <DataTableColumnHeader title='NGOs' column={column} />,
+    cell: ({ row }) => row.original.numberOfNgosMonitoring,
   }),
   {
     id: 'actions',
