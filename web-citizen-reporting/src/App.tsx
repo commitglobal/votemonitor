@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+const testData = {
+  electionRoundId: "39e06a94-a201-4385-aeba-9a804452d89f",
+  version: "970ec83f-bfaf-49db-a927-0e1266f54d0f",
+  forms: [
+    {
+      description: {
+        EN: "aaa",
+      },
+      id: "b315c55b-df03-43bc-aca3-70f6d2cb0a1a",
+      formType: "CitizenReporting",
+      code: "CR1",
+      name: {
+        EN: "Citizen reporting test",
+      },
+      status: "Published",
+      defaultLanguage: "EN",
+      languages: ["EN"],
+      numberOfQuestions: 2,
+      icon: null,
+      languagesTranslationStatus: {
+        EN: "Translated",
+      },
+      questions: [
+        {
+          inputPlaceholder: {
+            EN: "",
+          },
+          $questionType: "textQuestion",
+          id: "43c0e5b0-1e1e-4031-90e0-31dd7d87be59",
+          code: "1",
+          text: {
+            EN: "How are you feeling today?",
+          },
+          helptext: {
+            EN: "",
+          },
+          displayLogic: null,
+        },
+        {
+          lowerLabel: {
+            EN: "",
+          },
+          upperLabel: {
+            EN: "",
+          },
+          scale: "OneTo5",
+          $questionType: "ratingQuestion",
+          id: "4fa8b2db-c7d3-48d3-8b34-a29b54deeea8",
+          code: "2",
+          text: {
+            EN: "How good was your morning coffee?",
+          },
+          helptext: {
+            EN: "",
+          },
+          displayLogic: null,
+        },
+      ],
+    },
+  ],
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  return <></>;
 }
 
-export default App
+export default App;
