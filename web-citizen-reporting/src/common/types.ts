@@ -1,8 +1,9 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export type FunctionComponent = React.ReactElement | null;
 
-type HeroIconSVGProps = React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & React.RefAttributes<SVGSVGElement>;
+type HeroIconSVGProps = React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> &
+  React.RefAttributes<SVGSVGElement>;
 
 type IconProps = HeroIconSVGProps & {
   title?: string;
@@ -16,8 +17,8 @@ export type PageParameters = {
 };
 
 export enum SortOrder {
-  asc = 'Asc',
-  desc = 'Desc',
+  asc = "Asc",
+  desc = "Desc",
 }
 
 export type SortParameters = {
@@ -41,22 +42,22 @@ export const ZTranslatedString = z.record(z.string());
 export type TranslatedString = z.infer<typeof ZTranslatedString>;
 
 export enum QuestionType {
-  TextQuestionType = 'textQuestion',
-  NumberQuestionType = 'numberQuestion',
-  DateQuestionType = 'dateQuestion',
-  SingleSelectQuestionType = 'singleSelectQuestion',
-  MultiSelectQuestionType = 'multiSelectQuestion',
-  RatingQuestionType = 'ratingQuestion',
+  TextQuestionType = "textQuestion",
+  NumberQuestionType = "numberQuestion",
+  DateQuestionType = "dateQuestion",
+  SingleSelectQuestionType = "singleSelectQuestion",
+  MultiSelectQuestionType = "multiSelectQuestion",
+  RatingQuestionType = "ratingQuestion",
 }
 
 export const ZDisplayLogicCondition = z.enum([
-  'Equals',
-  'NotEquals',
-  'LessThan',
-  'LessEqual',
-  'GreaterThan',
-  'GreaterEqual',
-  'Includes',
+  "Equals",
+  "NotEquals",
+  "LessThan",
+  "LessEqual",
+  "GreaterThan",
+  "GreaterEqual",
+  "Includes",
 ]);
 
 export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>;
@@ -90,14 +91,14 @@ export interface NumberQuestion extends BaseQuestion {
 }
 
 export enum RatingScaleType {
-  OneTo3 = 'OneTo3',
-  OneTo4 = 'OneTo4',
-  OneTo5 = 'OneTo5',
-  OneTo6 = 'OneTo6',
-  OneTo7 = 'OneTo7',
-  OneTo8 = 'OneTo8',
-  OneTo9 = 'OneTo9',
-  OneTo10 = 'OneTo10',
+  OneTo3 = "OneTo3",
+  OneTo4 = "OneTo4",
+  OneTo5 = "OneTo5",
+  OneTo6 = "OneTo6",
+  OneTo7 = "OneTo7",
+  OneTo8 = "OneTo8",
+  OneTo9 = "OneTo9",
+  OneTo10 = "OneTo10",
 }
 
 export interface RatingQuestion extends BaseQuestion {
@@ -124,12 +125,12 @@ export interface MultiSelectQuestion extends BaseQuestion {
 }
 
 export enum AnswerType {
-  TextAnswerType = 'textAnswer',
-  NumberAnswerType = 'numberAnswer',
-  DateAnswerType = 'dateAnswer',
-  SingleSelectAnswerType = 'singleSelectAnswer',
-  MultiSelectAnswerType = 'multiSelectAnswer',
-  RatingAnswerType = 'ratingAnswer',
+  TextAnswerType = "textAnswer",
+  NumberAnswerType = "numberAnswer",
+  DateAnswerType = "dateAnswer",
+  SingleSelectAnswerType = "singleSelectAnswer",
+  MultiSelectAnswerType = "multiSelectAnswer",
+  RatingAnswerType = "ratingAnswer",
 }
 
 export const BaseAnswerSchema = z.object({
@@ -181,9 +182,9 @@ export const MultiSelectAnswerSchema = BaseAnswerSchema.extend({
 export type MultiSelectAnswer = z.infer<typeof MultiSelectAnswerSchema>;
 
 export enum ElectionRoundStatus {
-  NotStarted = 'NotStarted',
-  Started = 'Started',
-  Archived = 'Archived',
+  NotStarted = "NotStarted",
+  Started = "Started",
+  Archived = "Archived",
 }
 
 export type LevelNode = {
@@ -194,59 +195,61 @@ export type LevelNode = {
 };
 
 export type UserPayload = {
-  'user-role': string;
+  "user-role": string;
 };
 
 export enum FormSubmissionFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
+  NotApplicable = "NotApplicable",
+  NeedsFollowUp = "NeedsFollowUp",
+  Resolved = "Resolved",
 }
 
 export enum QuickReportFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
+  NotApplicable = "NotApplicable",
+  NeedsFollowUp = "NeedsFollowUp",
+  Resolved = "Resolved",
 }
 
 export enum IncidentReportFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
+  NotApplicable = "NotApplicable",
+  NeedsFollowUp = "NeedsFollowUp",
+  Resolved = "Resolved",
 }
 
 export enum CitizenReportFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
+  NotApplicable = "NotApplicable",
+  NeedsFollowUp = "NeedsFollowUp",
+  Resolved = "Resolved",
 }
 
 export enum QuestionsAnswered {
-  None = 'None',
-  Some = 'Some',
-  All = 'All',
+  None = "None",
+  Some = "Some",
+  All = "All",
 }
 export type HistogramData = {
   [bucket: string]: number;
 };
 
 export const ZFormType = z.enum([
-  'PSI',
-  'Opening',
-  'Voting',
-  'ClosingAndCounting',
-  'CitizenReporting',
-  'IncidentReporting',
-  'Other',
+  "PSI",
+  "Opening",
+  "Voting",
+  "ClosingAndCounting",
+  "CitizenReporting",
+  "IncidentReporting",
+  "Other",
 ]);
 
 export type FormType = z.infer<typeof ZFormType>;
 
-export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
+export const ZTranslationStatus = z.enum(["Translated", "MissingTranslations"]);
 export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
 
 const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
-export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
+export type LanguagesTranslationStatus = z.infer<
+  typeof ZLanguagesTranslationStatus
+>;
 
 export interface Country {
   id: string;
@@ -279,6 +282,15 @@ export interface Coalition {
 }
 
 export enum DataSources {
-  Ngo = 'ngo',
-  Coalition = 'coalition',
+  Ngo = "ngo",
+  Coalition = "coalition",
+}
+
+export interface EditQuestionProps {
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  inputPlaceholder?: string;
+  code?: string;
+  control: any;
 }

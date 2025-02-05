@@ -1,3 +1,8 @@
+import { FormCard } from "./components/FormCard";
+import { FormQuestions } from "./components/FormQuestions";
+import { useFormAnswersStore } from "./components/questionsEditor/answers-store";
+import { Button } from "./components/ui/button";
+
 const testData = {
   electionRoundId: "39e06a94-a201-4385-aeba-9a804452d89f",
   version: "970ec83f-bfaf-49db-a927-0e1266f54d0f",
@@ -61,7 +66,17 @@ const testData = {
 };
 
 function App() {
-  return <></>;
+  const answers = useFormAnswersStore((s) => s.answers);
+
+  return (
+    <>
+      <FormQuestions
+        questions={testData.forms[0]?.questions}
+        languageCode="EN"
+      />
+      <Button onClick={() => console.log(answers)}>FFF</Button>
+    </>
+  );
 }
 
 export default App;
