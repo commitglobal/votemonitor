@@ -111,6 +111,7 @@ export function PollingStationsFilters(): FunctionComponent {
           setPrevSearch(newSearch);
           return newSearch;
         },
+        replace: true
       });
     },
     [navigate, setPrevSearch]

@@ -241,6 +241,13 @@ export default function PollingStationsDashboard(): ReactElement {
             {search.level5Filter && (
               <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter(['level5Filter'])} />
             )}
+
+            {search.pollingStationNumberFilter && (
+              <FilterBadge
+                label={`Polling station number: ${search.pollingStationNumberFilter}`}
+                onClear={onClearFilter(['pollingStationNumberFilter'])}
+              />
+            )}
           </div>
         )}
       </CardHeader>
