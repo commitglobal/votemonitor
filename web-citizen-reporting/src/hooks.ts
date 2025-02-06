@@ -1,4 +1,5 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useReducer } from "react";
 import { noAuthApi } from "./common/no-auth-api";
 import { CitizenReportPageResponse, LevelNode } from "./common/types";
@@ -100,4 +101,22 @@ export const useLocationFilters = (electionRoundId: string) => {
   return { search, locationId, handleLocationChange };
 };
 
-export const usePostFormMutation = (electionRoundId: string) => {};
+export const usePostFormMutation = (electionRoundId: string) => {
+  const navigate = useNavigate();
+
+  const postFormMutation = useMutation({
+    mutationFn: (obj: any) => {
+      return noAuthApi.post<any>(
+        `/election-rounds/${electionRoundId}/citizen-reports`,
+        obj
+      );
+    },
+
+    onSuccess: () => {
+      navigate({ to: "/thank-you" });
+    },
+
+    onError: (err) => console.error(err),
+  });
+  return { postFormMutation };
+};

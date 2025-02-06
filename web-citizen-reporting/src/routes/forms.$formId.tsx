@@ -9,8 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCitizenForms, useLocationFilters } from "@/hooks";
+import {
+  useCitizenForms,
+  useLocationFilters,
+  usePostFormMutation,
+} from "@/hooks";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { v4 as uuidv4 } from "uuid";
 
 export const Route = createFileRoute("/forms/$formId")({
   component: RouteComponent,
@@ -21,14 +26,22 @@ function RouteComponent() {
   const answersFromStore = useFormAnswersStore((s) => s.answers);
   const { DEFAULT_LANGUAGE, ELECTION_ROUND_ID } = Route.useRouteContext();
   const { data } = useCitizenForms(ELECTION_ROUND_ID);
-  const { search, handleLocationChange } =
+  const { search, locationId, handleLocationChange } =
     useLocationFilters(ELECTION_ROUND_ID);
+
+  const { postFormMutation } = usePostFormMutation(ELECTION_ROUND_ID);
   const formData = data?.forms.find((form) => form.id === formId);
   const FORM_LANGUAGE = formData?.defaultLanguage ?? DEFAULT_LANGUAGE;
 
   const handleSubmit = () => {
     const answers = Object.values(answersFromStore);
-    console.log(answers);
+
+    postFormMutation.mutate({
+      citizenReportId: uuidv4(),
+      formId,
+      answers,
+      locationId,
+    });
   };
 
   return (
