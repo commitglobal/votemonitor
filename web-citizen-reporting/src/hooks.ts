@@ -1,6 +1,6 @@
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useMemo, useReducer } from "react";
+import { useReducer } from "react";
 import { noAuthApi } from "./common/no-auth-api";
 import { CitizenReportPageResponse, LevelNode } from "./common/types";
 import { locationReducer, LocationState } from "./location-reducer";
@@ -75,21 +75,18 @@ export type HandleReducerSearchParams = {
 export const useLocationFilters = (electionRoundId: string) => {
   const [search, dispatch] = useReducer(locationReducer, {});
   const { data: nodes } = useLocationsNodes(electionRoundId);
+  const nodesWithLocationId = new Map(
+    nodes
+      ?.filter((node) => "locationId" in node)
+      .map((node) => [node.id, node.locationId])
+  );
 
-  const locationId = useMemo(() => {
-    const selectedNodeIds = Object.values(search);
-    const lastSelectedNode = nodes?.find(
-      (node) => selectedNodeIds.includes(node.id) && "locationId" in node
-    );
-    return lastSelectedNode?.locationId;
-  }, [
-    search.level1Filter,
-    search.level2Filter,
-    search.level3Filter,
-    search.level4Filter,
-    search.level5Filter,
-    nodes,
-  ]);
+  const lastNodeIdSelected = Object.values(search)
+    .filter((nodeId) => nodeId)
+    .at(-1);
+  const locationId =
+    lastNodeIdSelected && nodesWithLocationId.get(lastNodeIdSelected);
+  console.log(locationId);
 
   const handleLocationChange = ({
     level,

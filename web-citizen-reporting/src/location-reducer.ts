@@ -17,7 +17,46 @@ export const locationReducer = (
 ): LocationState => {
   switch (action.type) {
     case "SET_FILTER":
-      return { ...state, [action.level]: action.value };
+      if (action.level === "level1Filter")
+        return {
+          ...state,
+          level1Filter: action.value,
+          level2Filter: undefined,
+          level3Filter: undefined,
+          level4Filter: undefined,
+          level5Filter: undefined,
+        };
+
+      if (action.level === "level2Filter")
+        return {
+          ...state,
+          level2Filter: action.value,
+          level3Filter: undefined,
+          level4Filter: undefined,
+          level5Filter: undefined,
+        };
+
+      if (action.level === "level3Filter")
+        return {
+          ...state,
+          level3Filter: action.value,
+          level4Filter: undefined,
+          level5Filter: undefined,
+        };
+
+      if (action.level === "level4Filter")
+        return {
+          ...state,
+          level4Filter: action.value,
+          level5Filter: undefined,
+        };
+
+      if (action.level === "level5Filter")
+        return {
+          ...state,
+          level5Filter: action.value,
+        };
+
     case "CLEAR_FILTER":
       return { ...state, [action.level]: undefined };
     case "RESET_FILTERS":
