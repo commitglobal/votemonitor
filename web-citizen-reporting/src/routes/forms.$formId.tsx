@@ -33,8 +33,30 @@ function RouteComponent() {
   const formData = data?.forms.find((form) => form.id === formId);
   const FORM_LANGUAGE = formData?.defaultLanguage ?? DEFAULT_LANGUAGE;
 
+  const isValidAnswer = (answer: any) => {
+    if (
+      !["singleSelectAnswer", '"multiSelectAnswer"'].includes(
+        answer.$answerType
+      )
+    )
+      return true;
+
+    if (answer.$answerType === "singleSelectAnswer" && answer.selection)
+      return true;
+
+    if (
+      answer.$answerType === "multiSelectAnswer" &&
+      answer.selection.length > 0
+    )
+      return true;
+
+    return false;
+  };
+
   const handleSubmit = () => {
-    const answers = Object.values(answersFromStore);
+    const answers = Object.values(answersFromStore).filter((answer) =>
+      isValidAnswer(answer as any)
+    );
 
     postFormMutation.mutate({
       citizenReportId: uuidv4(),
