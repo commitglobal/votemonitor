@@ -1,3 +1,4 @@
+import { FormFull } from "@/models/form";
 import { z } from "zod";
 
 export type FunctionComponent = React.ReactElement | null;
@@ -25,6 +26,12 @@ export type SortParameters = {
   sortColumnName: string;
   sortOrder: SortOrder;
   searchText?: string;
+};
+
+export type CitizenReportPageResponse = {
+  electionRoundId: string;
+  version: string;
+  forms: FormFull[];
 };
 
 export type PageResponse<T> = {

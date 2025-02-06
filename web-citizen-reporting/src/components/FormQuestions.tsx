@@ -1,5 +1,5 @@
-import { BaseQuestion } from '@/common/types';
-import { FC } from 'react';
+import { BaseQuestion } from "@/common/types";
+import { FC } from "react";
 
 import {
   isDateQuestion,
@@ -8,32 +8,34 @@ import {
   isRatingQuestion,
   isSingleSelectQuestion,
   isTextQuestion,
-} from '@/common/guards';
-import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
-import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
-import PreviewNumberQuestion from '@/components/questionsEditor/preview/PreviewNumberQuestion';
-import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewRatingQuestion';
-import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
-import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
+} from "@/common/guards";
+import PreviewDateQuestion from "@/components/questionsEditor/preview/PreviewDateQuestion";
+import PreviewMultiSelectQuestion from "@/components/questionsEditor/preview/PreviewMultiSelectQuestion";
+import PreviewNumberQuestion from "@/components/questionsEditor/preview/PreviewNumberQuestion";
+import PreviewRatingQuestion from "@/components/questionsEditor/preview/PreviewRatingQuestion";
+import PreviewSingleSelectQuestion from "@/components/questionsEditor/preview/PreviewSingleSelectQuestion";
+import PreviewTextQuestion from "@/components/questionsEditor/preview/PreviewTextQuestion";
 
 interface FormQuestionsProps {
   questions: BaseQuestion[] | undefined;
   languageCode: string;
-  title: string;
   noContentMessage: string;
 }
 
-export const FormQuestions: FC<FormQuestionsProps> = ({ questions, languageCode, title, noContentMessage }) => {
+export const FormQuestions: FC<FormQuestionsProps> = ({
+  questions,
+  languageCode,
+  noContentMessage,
+}) => {
   if (questions?.length === 0)
     return (
-      <div className='flex flex-col gap-1'>
-        <p className='font-bold text-gray-700'>{title}</p>
-        <p className='font-normal text-gray-900'>{noContentMessage}</p>
+      <div className="flex flex-col gap-1">
+        <p className="font-normal text-gray-900">{noContentMessage}</p>
       </div>
     );
   return (
-    <div className='flex flex-col gap-1 mt-2'>
-      <p className='font-bold text-gray-700'>{`${title}: ${questions?.length}`}</p>
+    <div className="flex flex-col gap-1 mt-2">
+      <p className="font-bold text-gray-700">{`${questions?.length} questions`}</p>
 
       {questions?.map((question) => (
         <>
