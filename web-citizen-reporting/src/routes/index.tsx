@@ -7,8 +7,8 @@ export const Route = createFileRoute("/")({
 });
 
 function RouteComponent() {
-  const { data } = useCitizenForms();
-  const { DEFAULT_LANGUAGE } = Route.useRouteContext();
+  const { DEFAULT_LANGUAGE, ELECTION_ROUND_ID } = Route.useRouteContext();
+  const { data } = useCitizenForms(ELECTION_ROUND_ID);
   return (
     <div className="flex flex-col md:min-h-screen justify-center items-center">
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-purple-900 md:text-5xl lg:text-6xl dark:text-white">

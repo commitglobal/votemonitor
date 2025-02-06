@@ -199,6 +199,7 @@ export type LevelNode = {
   name: string;
   depth: number;
   parentId: number;
+  locationId?: string;
 };
 
 export type UserPayload = {

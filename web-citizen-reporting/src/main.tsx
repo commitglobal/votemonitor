@@ -14,13 +14,15 @@ import "./styles/tailwind.css";
 export const queryClient = new QueryClient();
 
 const DEFAULT_LANGUAGE = import.meta.env["VITE_DEFAULT_LANGUAGE"];
+const ELECTION_ROUND_ID = import.meta.env["VITE_ELECTION_ROUND_ID"];
 
 const router = createRouter({
   routeTree,
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   context: {
     queryClient,
-    DEFAULT_LANGUAGE
+    DEFAULT_LANGUAGE,
+    ELECTION_ROUND_ID,
   },
   defaultPreload: "intent",
   // Since we're using React Query, we don't want loader calls to ever be stale
