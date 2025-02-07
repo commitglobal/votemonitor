@@ -1,20 +1,29 @@
-import { BaseAnswer, DisplayLogicCondition, QuestionType } from '@/common/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useFormAnswersStore } from '../answers-store';
-import PreviewDateQuestion from './PreviewDateQuestion';
-import PreviewMultiSelectQuestion from './PreviewMultiSelectQuestion';
-import PreviewNumberQuestion from './PreviewNumberQuestion';
-import PreviewRatingQuestion from './PreviewRatingQuestion';
-import PreviewSingleSelectQuestion from './PreviewSingleSelectQuestion';
-import PreviewTextQuestion from './PreviewTextQuestion';
+import {
+  BaseAnswer,
+  DisplayLogicCondition,
+  QuestionType,
+} from "@/common/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useFormAnswersStore } from "../answers-store";
+import PreviewDateQuestion from "./PreviewDateQuestion";
+import PreviewMultiSelectQuestion from "./PreviewMultiSelectQuestion";
+import PreviewNumberQuestion from "./PreviewNumberQuestion";
+import PreviewRatingQuestion from "./PreviewRatingQuestion";
+import PreviewSingleSelectQuestion from "./PreviewSingleSelectQuestion";
+import PreviewTextQuestion from "./PreviewTextQuestion";
 
-import { isMultiSelectAnswer, isNumberAnswer, isRatingAnswer, isSingleSelectAnswer } from '@/common/guards';
-import { Progress } from '@/components/ui/progress';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
-import { isNilOrWhitespace } from '@/lib/utils';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { EditFormType } from "@/common/form-types";
+import {
+  isMultiSelectAnswer,
+  isNumberAnswer,
+  isRatingAnswer,
+  isSingleSelectAnswer,
+} from "@/common/guards";
+import { Progress } from "@/components/ui/progress";
+import { isNilOrWhitespace } from "@/lib/utils";
+import { useFormContext, useWatch } from "react-hook-form";
 
 export interface PreviewQuestionProps {
   activeQuestionId: string | undefined;
@@ -22,7 +31,11 @@ export interface PreviewQuestionProps {
   questionIndex: number;
 }
 
-function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId }: PreviewQuestionProps) {
+function PreviewQuestion({
+  questionIndex,
+  activeQuestionId,
+  setActiveQuestionId,
+}: PreviewQuestionProps) {
   const { getAnswer } = useFormAnswersStore();
 
   const { control } = useFormContext<EditFormType>();
@@ -34,37 +47,44 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
 
   const languageCode = useWatch({
     control,
-    name: 'languageCode'
+    name: "languageCode",
   });
 
   const question = questions[questionIndex];
 
-  function meetsDisplayLogicCondition(condition: DisplayLogicCondition | undefined, value: string | undefined, answer: BaseAnswer | undefined): boolean {
+  function meetsDisplayLogicCondition(
+    condition: DisplayLogicCondition | undefined,
+    value: string | undefined,
+    answer: BaseAnswer | undefined
+  ): boolean {
     if (condition === undefined || value === undefined) return true;
     if (answer === undefined) return false;
 
     if (isSingleSelectAnswer(answer)) {
-      return condition === 'Includes' && (answer.selection?.optionId === value);
+      return condition === "Includes" && answer.selection?.optionId === value;
     }
 
     if (isMultiSelectAnswer(answer)) {
-      return condition === 'Includes' && (answer.selection?.some(o => o.optionId === value) ?? false);
+      return (
+        condition === "Includes" &&
+        (answer.selection?.some((o) => o.optionId === value) ?? false)
+      );
     }
     if (isNumberAnswer(answer) || isRatingAnswer(answer)) {
       if (answer.value === undefined) return false;
       const numericValue = +value;
       switch (condition) {
-        case 'Equals':
+        case "Equals":
           return answer.value === numericValue;
-        case 'NotEquals':
+        case "NotEquals":
           return answer.value !== numericValue;
-        case 'GreaterEqual':
+        case "GreaterEqual":
           return answer.value >= numericValue;
-        case 'GreaterThan':
+        case "GreaterThan":
           return answer.value > numericValue;
-        case 'LessEqual':
+        case "LessEqual":
           return answer.value <= numericValue;
-        case 'LessThan':
+        case "LessThan":
           return answer.value < numericValue;
         default:
           return false;
@@ -82,7 +102,13 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
     for (let index = questionIndex - 1; index >= 0; index--) {
       const prev = questions[index]!;
       if (prev.hasDisplayLogic) {
-        if (meetsDisplayLogicCondition(prev.condition, prev.value, getAnswer(prev.parentQuestionId!))) {
+        if (
+          meetsDisplayLogicCondition(
+            prev.condition,
+            prev.value,
+            getAnswer(prev.parentQuestionId!)
+          )
+        ) {
           setActiveQuestionId(prev.questionId);
           break;
         }
@@ -102,7 +128,13 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
     for (let index = questionIndex + 1; index < questions.length; index++) {
       const next = questions[index]!;
       if (next.hasDisplayLogic) {
-        if (meetsDisplayLogicCondition(next.condition, next.value, getAnswer(next.parentQuestionId!))) {
+        if (
+          meetsDisplayLogicCondition(
+            next.condition,
+            next.value,
+            getAnswer(next.parentQuestionId!)
+          )
+        ) {
           setActiveQuestionId(next.questionId);
           break;
         }
@@ -118,26 +150,26 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
   }
 
   return (
-    <Card className='w-full'>
-      <CardHeader className='p-4 bg-slate-600 rounded-t-md'>
-        <h3 className='text-white'>Question preview</h3>
+    <Card className="w-full">
+      <CardHeader className="p-4 bg-slate-600 rounded-t-md">
+        <h3 className="text-white">Question preview</h3>
       </CardHeader>
       <CardContent>
         {question && (
-          <div className='flex flex-col justify-between w-full h-full max-w-lg px-6 pt-6 pb-3'>
-            <Button className='mb-4' type='button' onClick={resetProgress}>
+          <div className="flex flex-col justify-between w-full h-full max-w-lg px-6 pt-6 pb-3">
+            <Button className="mb-4" type="button" onClick={resetProgress}>
               Start from the beginning
             </Button>
             <div>
-              {
-                question?.$questionType === QuestionType.TextQuestionType && (
-                  <PreviewTextQuestion
-                    questionId={question.questionId}
-                    text={question.text[languageCode]}
-                    helptext={question.helptext[languageCode]}
-                    inputPlaceholder={question.inputPlaceholder[languageCode]}
-                    code={question.code}
-                  />)}
+              {question?.$questionType === QuestionType.TextQuestionType && (
+                <PreviewTextQuestion
+                  questionId={question.questionId}
+                  text={question.text[languageCode]}
+                  helptext={question.helptext[languageCode]}
+                  inputPlaceholder={question.inputPlaceholder[languageCode]}
+                  code={question.code}
+                />
+              )}
 
               {question?.$questionType === QuestionType.NumberQuestionType && (
                 <PreviewNumberQuestion
@@ -146,17 +178,17 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
                   helptext={question.helptext[languageCode]}
                   inputPlaceholder={question.inputPlaceholder[languageCode]}
                   code={question.code}
-                />)}
+                />
+              )}
 
-              {
-                question?.$questionType === QuestionType.DateQuestionType && (
-                  <PreviewDateQuestion
-                    questionId={question.questionId}
-                    text={question.text[languageCode]}
-                    helptext={question.helptext[languageCode]}
-                    code={question.code}
-                  />)
-              }
+              {question?.$questionType === QuestionType.DateQuestionType && (
+                <PreviewDateQuestion
+                  questionId={question.questionId}
+                  text={question.text[languageCode]}
+                  helptext={question.helptext[languageCode]}
+                  code={question.code}
+                />
+              )}
 
               {question?.$questionType === QuestionType.RatingQuestionType && (
                 <PreviewRatingQuestion
@@ -167,39 +199,56 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
                   upperLabel={question.upperLabel[languageCode]}
                   lowerLabel={question.lowerLabel[languageCode]}
                   code={question.code}
-                />)}
+                />
+              )}
 
-              {question?.$questionType === QuestionType.MultiSelectQuestionType && (
+              {question?.$questionType ===
+                QuestionType.MultiSelectQuestionType && (
                 <PreviewMultiSelectQuestion
                   questionId={question.questionId}
                   text={question.text[languageCode]}
                   helptext={question.helptext[languageCode]}
-                  options={question.options?.map(o => ({ optionId: o.optionId, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
+                  options={
+                    question.options?.map((o) => ({
+                      optionId: o.optionId,
+                      isFreeText: o.isFreeText,
+                      text: o.text[languageCode],
+                    })) ?? []
+                  }
                   code={question.code}
-                />)}
+                />
+              )}
 
-              {question?.$questionType === QuestionType.SingleSelectQuestionType && (
+              {question?.$questionType ===
+                QuestionType.SingleSelectQuestionType && (
                 <PreviewSingleSelectQuestion
                   questionId={question.questionId}
                   text={question.text[languageCode]}
                   helptext={question.helptext[languageCode]}
-                  options={question.options?.map(o => ({ optionId: o.optionId, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
+                  options={
+                    question.options?.map((o) => ({
+                      optionId: o.optionId,
+                      isFreeText: o.isFreeText,
+                      text: o.text[languageCode],
+                    })) ?? []
+                  }
                   code={question.code}
-                />)}
+                />
+              )}
             </div>
-            <div className='flex justify-end gap-4 mt-4 nav-buttons'>
+            <div className="flex justify-end gap-4 mt-4 nav-buttons">
               <Button
-                variant='outline'
-                className='flex items-center justify-center gap-2 mb-4'
-                type='button'
+                variant="outline"
+                className="flex items-center justify-center gap-2 mb-4"
+                type="button"
                 onClick={onPreviousButtonClicked}
               >
                 <ChevronLeftIcon width={18} />
                 Previous
               </Button>
               <Button
-                className='flex items-center justify-center gap-2 mb-4'
-                type='button'
+                className="flex items-center justify-center gap-2 mb-4"
+                type="button"
                 onClick={onNextButtonClicked}
               >
                 Next
@@ -207,17 +256,19 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
               </Button>
             </div>
             {!!questions.length && (
-              <div className='mt-8'>
-                <Progress value={((questionIndex + 1) / questions.length) * 100} />
+              <div className="mt-8">
+                <Progress
+                  value={((questionIndex + 1) / questions.length) * 100}
+                />
               </div>
             )}
           </div>
         )}
-        {activeQuestionId === 'end' && (
-          <h2 className='p-4 text-2xl text-center'>Finished</h2>
+        {activeQuestionId === "end" && (
+          <h2 className="p-4 text-2xl text-center">Finished</h2>
         )}
         {isNilOrWhitespace(activeQuestionId) && (
-          <h2 className='p-4 text-2xl text-center'>Select a question</h2>
+          <h2 className="p-4 text-2xl text-center">Select a question</h2>
         )}
       </CardContent>
     </Card>
