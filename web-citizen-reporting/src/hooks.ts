@@ -86,7 +86,6 @@ export const useLocationFilters = (electionRoundId: string) => {
     .at(-1);
   const locationId =
     lastNodeIdSelected && nodesWithLocationId.get(lastNodeIdSelected);
-  console.log(locationId);
 
   const handleLocationChange = ({
     level,
