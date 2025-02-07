@@ -113,7 +113,10 @@ export const usePostFormMutation = (electionRoundId: string) => {
       navigate({ to: "/thank-you" });
     },
 
-    onError: (err) => console.error(err),
+    onError: (err) => {
+      alert("An error occurred");
+      console.error(err);
+    },
   });
   return { postFormMutation };
 };

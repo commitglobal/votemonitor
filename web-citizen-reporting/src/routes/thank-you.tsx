@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/thank-you")({
   component: RouteComponent,
@@ -13,6 +14,11 @@ function RouteComponent() {
       <p className="text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
         Your report was submitted.
       </p>
+      <Link to="/">
+        <Button variant="link" className="mt-8">
+          Go back to the homepage
+        </Button>
+      </Link>
     </div>
   );
 }

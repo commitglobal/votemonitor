@@ -65,7 +65,7 @@ export const LocationSelector: FC<LocationSelectorProps> = ({
   return (
     <div className="mt-10">
       <h4 className="mb-2">Location:</h4>
-      <div className="flex flex-column justify-between">
+      <div className="flex flex-col md:flex-row justify-between">
         <Select
           onValueChange={(value: string) => {
             handleReducerSearch({ level: "level1Filter", value });
