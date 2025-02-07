@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { I18nextProvider } from "react-i18next";
+import { AlertDialogProvider } from "./components/ui/alert-dialog-provider";
 import i18n from "./i18n";
 import { routeTree } from "./routeTree.gen";
 import "./styles/tailwind.css";
@@ -46,7 +47,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <AlertDialogProvider>
+          <App />
+        </AlertDialogProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );
