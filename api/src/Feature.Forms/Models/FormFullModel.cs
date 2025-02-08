@@ -25,9 +25,12 @@ public class FormFullModel
     public required string DefaultLanguage { get; init; }
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
-    public string? Icon { get; set; }
+    public string? Icon { get; init; }
+    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
+
+    public int DisplayOrder { get; init; }
 
     public static FormFullModel FromEntity(FormAggregate form) => form == null
         ? null
@@ -46,7 +49,4 @@ public class FormFullModel
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
             Icon = form.Icon
         };
-
-
-    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 }

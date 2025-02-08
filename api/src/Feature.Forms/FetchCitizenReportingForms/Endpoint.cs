@@ -59,7 +59,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 ElectionRoundId = monitoringNgo.ElectionRoundId,
                 Version = monitoringNgo.FormsVersion.ToString(),
-                Forms = forms.Select(FormFullModel.FromEntity).ToList()
+                Forms = forms.Select(FormFullModel.FromEntity).OrderBy(x => x.DisplayOrder).ToList()
             };
         });
 
