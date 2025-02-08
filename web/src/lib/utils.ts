@@ -1,5 +1,5 @@
-import { FormType, RatingScaleType, TranslatedString, UserPayload, ZFormType } from '@/common/types';
-import { FormStatus } from '@/features/forms/models/form';
+import { FormTemplateType, FormType, RatingScaleType, TranslatedString, UserPayload } from '@/common/types';
+import { FormStatus } from '@/features/forms/models';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
 import { clsx, type ClassValue } from 'clsx';
@@ -302,20 +302,42 @@ export function takewhile<T>(arr: T[], predicate: (value: T) => boolean): T[] {
 
 export function mapFormType(formType: FormType): string {
   switch (formType) {
-    case ZFormType.Values.Opening:
+    case FormType.Opening:
       return i18n.t('form.type.opening');
-    case ZFormType.Values.Voting:
+    case FormType.Voting:
       return i18n.t('form.type.voting');
-    case ZFormType.Values.ClosingAndCounting:
+    case FormType.ClosingAndCounting:
       return i18n.t('form.type.closingAndCounting');
-    case ZFormType.Values.CitizenReporting:
+    case FormType.CitizenReporting:
       return i18n.t('form.type.citizenReporting');
-    case ZFormType.Values.IncidentReporting:
+    case FormType.IncidentReporting:
       return i18n.t('form.type.incidentReporting');
-    case ZFormType.Values.PSI:
+    case FormType.PSI:
       return i18n.t('form.type.psi');
-    case ZFormType.Values.Other:
+    case FormType.Other:
       return i18n.t('form.type.other');
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export function mapFormTemplateType(formTemplateType: FormTemplateType): string {
+  switch (formTemplateType) {
+    case FormTemplateType.Opening:
+      return i18n.t('form-template.type.opening');
+    case FormTemplateType.Voting:
+      return i18n.t('form-template.type.voting');
+    case FormTemplateType.ClosingAndCounting:
+      return i18n.t('form-template.type.closingAndCounting');
+    case FormTemplateType.CitizenReporting:
+      return i18n.t('form-template.type.citizenReporting');
+    case FormTemplateType.IncidentReporting:
+      return i18n.t('form-template.type.incidentReporting');
+    case FormTemplateType.PSI:
+      return i18n.t('form-template.type.psi');
+    case FormTemplateType.Other:
+      return i18n.t('form-template.type.other');
 
     default:
       return 'Unknown';
@@ -330,6 +352,20 @@ export function mapFormStatus(formStatus: FormStatus): string {
       return i18n.t('form.status.published');
     case FormStatus.Obsolete:
       return i18n.t('form.status.obsolete');
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export function mapFormTemplateStatus(formTemplateStatus: FormTemplateStatus): string {
+  switch (formTemplateStatus) {
+    case FormTemplateStatus.Drafted:
+      return i18n.t('form-template.status.drafted');
+    case FormTemplateStatus.Published:
+      return i18n.t('form-template.status.published');
+    case FormTemplateStatus.Obsolete:
+      return i18n.t('form-template.status.obsolete');
 
     default:
       return 'Unknown';
@@ -551,6 +587,7 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
 }
 
 import { authApi } from '@/common/auth-api';
+import { FormTemplateStatus } from '@/features/form-templates/models';
 
 export enum TemplateType {
   MonitoringObservers = 'monitoring-observers',

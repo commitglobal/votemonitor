@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { LanguageIcon } from '@heroicons/react/24/outline';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { questionsIconMapping } from '../utils';

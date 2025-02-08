@@ -1,15 +1,13 @@
-import { QuestionType, ZFormType } from '@/common/types';
+import { FormType, QuestionType, ZTranslatedString } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-import { authApi } from '@/common/auth-api';
 import {
   isDateQuestion,
   isMultiSelectQuestion,
@@ -21,18 +19,13 @@ import {
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
-import { toast } from '@/components/ui/use-toast';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
-import { queryClient } from '@/main';
-import { Route } from '@/routes/forms_.$formId.edit';
-import { useMutation } from '@tanstack/react-query';
-import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
-import { FC, useEffect, useState } from 'react';
-import { UpdateFormRequest } from '../../models/form';
-import { formDetailsQueryOptions, formsKeys } from '../../queries';
+import { useBlocker } from '@tanstack/react-router';
+import { FC, useEffect } from 'react';
+import { FormFull } from '../../features/forms/models';
+
 import {
   EditDateQuestionType,
   EditMultiSelectQuestionType,
@@ -40,15 +33,13 @@ import {
   EditRatingQuestionType,
   EditSingleSelectQuestionType,
   EditTextQuestionType,
-  mapToQuestionRequest,
   ZEditQuestionType,
-  ZTranslatedString,
-} from '../../types';
-import EditFormDetails from './EditFormDetails';
+} from '@/common/form-requests';
+import { FormTemplateFull } from '@/features/form-templates/models';
+import EditFormDetails from './FormDetailEditor';
 
 export const ZEditFormType = z
   .object({
-    formId: z.string().trim().min(1),
     languageCode: z.string().trim().min(1),
     defaultLanguage: z.string().trim().min(1),
     code: z.string().trim().min(1),
@@ -56,7 +47,7 @@ export const ZEditFormType = z
     description: ZTranslatedString.optional(),
     icon: z.string().optional(),
     languages: z.array(z.string()),
-    formType: ZFormType.catch(ZFormType.Values.Opening),
+    formType: z.nativeEnum(FormType).catch(FormType.Opening),
     questions: z.array(ZEditQuestionType),
   })
   .superRefine((data, ctx) => {
@@ -209,20 +200,16 @@ export const ZEditFormType = z
 
 export type EditFormType = z.infer<typeof ZEditFormType>;
 
-interface EditFormProps {
-  currentTab?: string;
+interface FormEditorProps {
+  formData?: FormFull | FormTemplateFull;
+  onSaveForm: (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => void;
+  hasCitizenReportingOption: boolean;
+  formEditingMode: 'NewForm' | 'ExistingForm';
 }
 
-const EditForm: FC<EditFormProps> = ({ currentTab }) => {
-  const { formId } = Route.useParams();
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
+const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditingMode, formData, onSaveForm }) => {
   const confirm = useConfirm();
-  const [shouldExitEditor, setShouldExitEditor] = useState(false);
-  const navigate = useNavigate();
-  const router = useRouter();
-
-  const editQuestions = formData.questions.map((question) => {
+  const editQuestions = formData?.questions.map((question) => {
     if (isNumberQuestion(question)) {
       const numberQuestion: EditNumberQuestionType = {
         $questionType: QuestionType.NumberQuestionType,
@@ -372,107 +359,48 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
   const form = useForm<EditFormType>({
     resolver: zodResolver(ZEditFormType),
     defaultValues: {
-      formId: formData.id,
-      code: formData.code,
-      languageCode: formData.defaultLanguage,
-      defaultLanguage: formData.defaultLanguage,
-      languages: formData.languages,
-      name: ensureTranslatedStringCorrectness(formData.name, formData.languages),
-      description: ensureTranslatedStringCorrectness(formData.description, formData.languages),
-      formType: formData.formType,
+      code: formData?.code,
+      languageCode: formData?.defaultLanguage,
+      defaultLanguage: formData?.defaultLanguage,
+      languages: formData?.languages,
+      name: ensureTranslatedStringCorrectness(formData?.name, formData?.languages ?? []),
+      description: ensureTranslatedStringCorrectness(formData?.description, formData?.languages ?? []),
+      formType: formData?.formType,
       questions: editQuestions,
-      icon: formData.icon ?? '',
+      icon: formData?.icon ?? '',
     },
     mode: 'all',
   });
 
-  useBlocker(
-    () =>
-      confirm({
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return await confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
-        actionButtonClass: buttonVariants({ variant: 'destructive' }),
         cancelButton: 'Stay',
-      }),
-    form.formState.isDirty
-  );
+      });
+    },
+  });
 
-  const code = useWatch({ control: form.control, name: 'code', defaultValue: formData.code });
-  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData.name });
+  const code = useWatch({ control: form.control, name: 'code', defaultValue: formData?.code });
+  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData?.name });
 
   const languageCode = useWatch({
     control: form.control,
     name: 'languageCode',
-    defaultValue: formData.defaultLanguage,
+    defaultValue: formData?.defaultLanguage,
   });
-
-  const editMutation = useMutation({
-    mutationFn: ({
-      electionRoundId,
-      form,
-    }: {
-      electionRoundId: string;
-      form: UpdateFormRequest;
-      shouldExitEditor: boolean;
-    }) => {
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
-        ...form,
-      });
-    },
-
-    onSuccess: async (_, { shouldExitEditor, electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form updated successfully',
-      });
-
-      await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
-      router.invalidate();
-
-      if (shouldExitEditor) {
-        if (
-          await confirm({
-            title: 'Changes made to form in base language',
-            body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
-          })
-        ) {
-          void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
-        }
-      }
-    },
-
-    onError: () => {
-      toast({
-        title: 'Error saving the form',
-        description: 'Please contact tech support',
-        variant: 'destructive',
-      });
-    },
-  });
-
-  function saveForm(values: EditFormType) {
-    const updatedForm: UpdateFormRequest = {
-      id: values.formId,
-      code: values.code,
-      name: values.name,
-      defaultLanguage: values.languageCode,
-      description: values.description,
-      formType: values.formType,
-      languages: values.languages,
-      icon: isNilOrWhitespace(values.icon) ? undefined : values.icon,
-      questions: values.questions.map(mapToQuestionRequest),
-    };
-    editMutation.mutate({ form: updatedForm, shouldExitEditor, electionRoundId: currentElectionRoundId });
-  }
 
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {
       form.reset({}, { keepValues: true });
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
-
-  const [activeTab, setActiveTab] = useState(currentTab ?? 'form-details');
 
   return (
     <Layout
@@ -481,12 +409,8 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
       enableBreadcrumbs={false}
       title={`${code} - ${name[languageCode]}`}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(saveForm)} className='flex flex-col flex-1'>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className='flex flex-col flex-1'
-            defaultValue='form-details'>
+        <form className='flex flex-col flex-1'>
+          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger
                 value='form-details'
@@ -510,7 +434,7 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
                   <Separator />
                 </CardHeader>
                 <CardContent className='flex flex-col items-baseline gap-6'>
-                  <EditFormDetails languageCode={languageCode} />
+                  <EditFormDetails languageCode={languageCode} hasCitizenReportingOption={hasCitizenReportingOption} />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -541,16 +465,16 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
                 type='submit'
                 variant='outline'
                 onClick={() => {
-                  setShouldExitEditor(false);
+                  form.handleSubmit((data) => onSaveForm(data, false));
                 }}
-                disabled={!form.formState.isValid}>
+                disabled={!form.formState.isValid || formEditingMode === 'NewForm'}>
                 Save
               </Button>
               <Button
                 type='submit'
                 variant='default'
                 onClick={() => {
-                  setShouldExitEditor(true);
+                  form.handleSubmit((data) => onSaveForm(data, true));
                 }}
                 disabled={!form.formState.isValid}>
                 Save and exit form editor
@@ -563,4 +487,4 @@ const EditForm: FC<EditFormProps> = ({ currentTab }) => {
   );
 };
 
-export default EditForm;
+export default FormEditor;

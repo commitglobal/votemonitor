@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 
 export interface EditNumberQuestionProps {
   questionIndex: number;

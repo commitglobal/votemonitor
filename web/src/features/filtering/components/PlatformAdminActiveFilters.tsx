@@ -3,19 +3,18 @@ import { DateTimeFormat } from '@/common/formats';
 import { DataSources } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
-import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
-import {
-  mapFormSubmissionFollowUpStatus,
-  mapIncidentCategory,
-  mapQuickReportFollowUpStatus,
-} from '@/features/responses/utils/helpers';
-import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapFormTemplateStatus, mapFormTemplateType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { ActiveFilterProps, defaultLocalizator, isBooleanType, isDateType, SearchParams } from './NgoAdminActiveFilters';
+import {
+  ActiveFilterProps,
+  defaultLocalizator,
+  isBooleanType,
+  isDateType,
+  SearchParams,
+} from './NgoAdminActiveFilters';
 
 export const HIDDEN_FILTERS = [
   FILTER_KEY.PageSize,
@@ -28,7 +27,7 @@ export const HIDDEN_FILTERS = [
 ];
 
 const FILTER_LABELS = new Map<string, string>([
-  [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormTypeFilter],
+  [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormType],
   [FILTER_KEY.LocationL1, FILTER_LABEL.LocationL1],
   [FILTER_KEY.LocationL2, FILTER_LABEL.LocationL2],
   [FILTER_KEY.LocationL3, FILTER_LABEL.LocationL3],
@@ -40,9 +39,13 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
+  [FILTER_KEY.FormTemplateStatusFilter, FILTER_LABEL.FormTemplateStatus],
+  [FILTER_KEY.FormTemplateTypeFilter, FILTER_LABEL.FormTemplateType],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
+  [FILTER_KEY.FormTemplateTypeFilter, mapFormTemplateType],
+  [FILTER_KEY.FormTemplateStatusFilter, mapFormTemplateStatus],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

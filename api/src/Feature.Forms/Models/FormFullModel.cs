@@ -49,4 +49,5 @@ public class FormFullModel
 
 
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
+    public object DisplayOrder { get; set; }
 }

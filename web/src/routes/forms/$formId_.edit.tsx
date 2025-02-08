@@ -1,4 +1,4 @@
-import EditForm from '@/features/forms/components/EditForm/EditForm'
+import FormTemplateEdit from '@/features/form-templates/components/FormTemplateEdit/FormTemplateEdit'
 import { formDetailsQueryOptions } from '@/features/forms/queries'
 import { redirectIfNotAuth } from '@/lib/utils'
 import { createFileRoute } from '@tanstack/react-router'
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/forms_/$formId/edit')({
 function Edit() {
   return (
     <div className="p-2 flex flex-col flex-1">
-      <EditForm />
+      <FormTemplateEdit />
     </div>
   )
 }

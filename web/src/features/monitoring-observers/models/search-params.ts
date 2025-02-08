@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import { FormSubmissionFollowUpStatus, QuestionsAnswered, QuickReportFollowUpStatus, ZFormType } from '@/common/types';
+import { FormSubmissionFollowUpStatus, QuestionsAnswered, QuickReportFollowUpStatus, FormType } from '@/common/types';
 import { z } from 'zod';
 import { MonitoringObserverStatus } from './monitoring-observer';
 import { IncidentCategory } from '@/features/responses/models/quick-report';
@@ -20,7 +20,7 @@ export const PushMessageTargetedObserversSearchParamsSchema = z.object({
   submissionsToDate: z.coerce.date().optional(),
   questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
   formId: z.string().optional(),
-  formTypeFilter: ZFormType.optional(),
+  formTypeFilter: z.nativeEnum(FormType).optional(),
   followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),

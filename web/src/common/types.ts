@@ -231,17 +231,25 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
-export const ZFormType = z.enum([
-  'PSI',
-  'Opening',
-  'Voting',
-  'ClosingAndCounting',
-  'CitizenReporting',
-  'IncidentReporting',
-  'Other',
-]);
+export enum FormType {
+  PSI = 'PSI',
+  Opening = 'Opening',
+  Voting = 'Voting',
+  ClosingAndCounting = 'ClosingAndCounting',
+  CitizenReporting = 'CitizenReporting',
+  IncidentReporting = 'IncidentReporting',
+  Other = 'Other',
+}
 
-export type FormType = z.infer<typeof ZFormType>;
+export enum FormTemplateType {
+  PSI = 'PSI',
+  Opening = 'Opening',
+  Voting = 'Voting',
+  ClosingAndCounting = 'ClosingAndCounting',
+  CitizenReporting = 'CitizenReporting',
+  IncidentReporting = 'IncidentReporting',
+  Other = 'Other',
+}
 
 export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
 export type TranslationStatus = z.infer<typeof ZTranslationStatus>;

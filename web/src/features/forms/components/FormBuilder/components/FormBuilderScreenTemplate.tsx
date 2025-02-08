@@ -7,9 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { FormTemplateBase } from '@/features/form-templates/models';
+import { useFormTemplates } from '@/features/form-templates/queries';
 import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
-import { FormBase } from '@/features/forms/models/form';
-import { useFormTemplates } from '@/features/forms/queries';
 import { cn, mapFormType } from '@/lib/utils';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -22,7 +22,7 @@ export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
   const previewTemplateDialog = usePreviewTemplateDialog();
   const { createForm } = useCreateFormFromTemplate();
-  const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
+  const getSubrows = (originalRow: FormTemplateBase, index: number): undefined | FormTemplateBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
     // we need to have subrows only for translations
@@ -36,9 +36,9 @@ export const FormBuilderScreenTemplate: FC = () => {
       }));
   };
 
-  const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+  const getRowClassName = (row: Row<FormTemplateBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
-  const templatesColDefs: ColumnDef<FormBase>[] = [
+  const templatesColDefs: ColumnDef<FormTemplateBase>[] = [
     {
       header: '',
       id: 'colapse',
@@ -120,7 +120,7 @@ export const FormBuilderScreenTemplate: FC = () => {
     <Layout title={t('template.title')} subtitle={t('template.description')}>
       <QueryParamsDataTable
         columns={templatesColDefs}
-        useQuery={() => useFormTemplates()}
+        useQuery={useFormTemplates}
         getSubrows={getSubrows}
         getRowClassName={getRowClassName}
       />

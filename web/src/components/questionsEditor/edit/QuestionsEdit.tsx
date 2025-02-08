@@ -1,12 +1,12 @@
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { StrictModeDroppable } from '../StrictModeDroppable';
 import AddQuestionButton from './AddQuestionButton';
 import EditQuestionFactory from './EditQuestionFactory';
-import { EditQuestionType } from '@/features/forms/types';
+import { EditQuestionType } from '@/common/form-requests';
 
 export enum MoveDirection {
   UP = 'UP',
@@ -18,14 +18,11 @@ export interface QuestionsEditProps {
   setActiveQuestionId: (questionId: string | undefined) => void;
 }
 
-function QuestionsEdit({
-  activeQuestionId,
-  setActiveQuestionId,
-}: QuestionsEditProps) {
+function QuestionsEdit({ activeQuestionId, setActiveQuestionId }: QuestionsEditProps) {
   const { control, trigger } = useFormContext<EditFormType>();
 
   const { fields, append, swap, remove, insert } = useFieldArray({
-    name: "questions",
+    name: 'questions',
     control: control,
   });
 
@@ -38,7 +35,6 @@ function QuestionsEdit({
     control,
     name: `languages`,
   });
-
 
   function addQuestion(question: EditQuestionType) {
     append(question);

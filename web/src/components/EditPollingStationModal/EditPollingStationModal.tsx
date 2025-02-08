@@ -47,9 +47,9 @@ export default function EditPollingStationModal({
       <DialogHeader>
         <DialogTitle>Edit polling station</DialogTitle>
       </DialogHeader>
-      <div className='py-4'>
+      <div className='py-2'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-2'>
             <FormField
               control={form.control}
               name='level1'

@@ -1,4 +1,4 @@
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import PreviewQuestion from './preview/PreviewQuestion';

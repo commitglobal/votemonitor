@@ -1,9 +1,9 @@
+import { EditMultiSelectQuestionType, EditQuestionType, EditSingleSelectQuestionType } from '@/common/form-requests';
 import {
   QuestionType,
   RatingScaleType
 } from '@/common/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { EditMultiSelectQuestionType, EditQuestionType, EditSingleSelectQuestionType } from '@/features/forms/types';
 import i18n from '@/i18n';
 import { cn, newTranslatedString } from '@/lib/utils';
 import {

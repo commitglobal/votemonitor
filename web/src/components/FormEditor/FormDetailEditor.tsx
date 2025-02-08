@@ -4,25 +4,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 
-import { QuestionType, ZFormType } from '@/common/types';
+import { QuestionType, FormType } from '@/common/types';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { EditFormType } from './EditForm';
+import { EditFormType } from './FormEditor';
 import { changeLanguageCode, mapFormType } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
-export interface EditFormDetailsProps {
+export interface FormDetailEditorProps {
   languageCode: string;
+  hasCitizenReportingOption: boolean;
 }
 
-function EditFormDetails({ languageCode }: EditFormDetailsProps) {
+function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetailEditorProps) {
   const { t } = useTranslation();
   const form = useFormContext<EditFormType>();
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   const formType = useWatch({ control: form.control, name: 'formType' });
   const icon = useWatch({ control: form.control, name: 'icon' });
 
@@ -138,20 +137,20 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
-                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
-                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>
-                    {mapFormType(ZFormType.Values.ClosingAndCounting)}
+                  <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
+                  <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
+                  <SelectItem value={FormType.ClosingAndCounting}>
+                    {mapFormType(FormType.ClosingAndCounting)}
                   </SelectItem>
-                  {electionRound?.isMonitoringNgoForCitizenReporting && (
-                    <SelectItem value={ZFormType.Values.CitizenReporting}>
-                      {mapFormType(ZFormType.Values.CitizenReporting)}
+                  {hasCitizenReportingOption && (
+                    <SelectItem value={FormType.CitizenReporting}>
+                      {mapFormType(FormType.CitizenReporting)}
                     </SelectItem>
                   )}
-                  <SelectItem value={ZFormType.Values.IncidentReporting}>
-                    {mapFormType(ZFormType.Values.IncidentReporting)}
+                  <SelectItem value={FormType.IncidentReporting}>
+                    {mapFormType(FormType.IncidentReporting)}
                   </SelectItem>
-                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
+                  <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -159,7 +158,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
           )}
         />
 
-        {formType === ZFormType.Values.CitizenReporting && electionRound?.isMonitoringNgoForCitizenReporting ? (
+        {formType === FormType.CitizenReporting && hasCitizenReportingOption ? (
           <>
             <FormField
               control={form.control}
@@ -284,4 +283,4 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
   );
 }
 
-export default EditFormDetails;
+export default FormDetailEditor;

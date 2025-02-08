@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { cn, newTranslatedString } from '@/lib/utils';
 import { FlagIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { CheckCircle, CheckSquare, PencilLine } from 'lucide-react';

@@ -16,14 +16,14 @@ import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewR
 import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
 import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
 
-interface FormQuestionsProps {
+interface FormQuestionsPreviewProps {
   questions: BaseQuestion[] | undefined;
   languageCode: string;
   title: string;
   noContentMessage: string;
 }
 
-export const FormQuestions: FC<FormQuestionsProps> = ({ questions, languageCode, title, noContentMessage }) => {
+export const FormQuestionsPreview: FC<FormQuestionsPreviewProps> = ({ questions, languageCode, title, noContentMessage }) => {
   if (questions?.length === 0)
     return (
       <div className='flex flex-col gap-1'>

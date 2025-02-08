@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCreateFormFromForm, useCreateFormFromFormDialog } from '@/features/forms/hooks';
-import { FormBase } from '@/features/forms/models/form';
+import { FormBase } from '@/features/forms/models';
 import { useForms } from '@/features/forms/queries';
 import { cn, mapFormType } from '@/lib/utils';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';

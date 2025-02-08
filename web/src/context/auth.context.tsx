@@ -10,15 +10,17 @@ export type AuthContextType = {
   isLoading: boolean;
   token: string | undefined;
   userRole: string | undefined;
+  isPlatformAdmin: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   signIn: () => new Promise(() => false),
-  signOut: () => { },
+  signOut: () => {},
   isAuthenticated: false,
   isLoading: false,
   token: undefined,
-  userRole: undefined
+  userRole: undefined,
+  isPlatformAdmin: false,
 });
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
@@ -26,6 +28,8 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string>('');
   const [userRole, setUserRole] = useState<string>('Unknown');
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -34,7 +38,10 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsLoading(false);
     if (token) {
       setToken(token);
-      setUserRole(parseJwt(token)[`user-role`]);
+      const role = parseJwt(token)[`user-role`];
+
+      setUserRole(role);
+      setIsPlatformAdmin(role === 'PlatformAdmin');
     }
   }, []);
 
@@ -45,6 +52,8 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       setIsAuthenticated(true);
       setToken(response.data.token);
       setUserRole(response.data.role);
+      setIsPlatformAdmin(response.data.role === 'PlatformAdmin');
+
       return true;
     } catch (error: any) {
       if (error.response.status === 400) {
@@ -63,6 +72,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsAuthenticated(false);
     setToken('');
     setUserRole('');
+    setIsPlatformAdmin(false);
   };
 
   return (
@@ -74,6 +84,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         isLoading,
         token,
         userRole,
+        isPlatformAdmin,
       }}>
       {children}
     </AuthContext.Provider>

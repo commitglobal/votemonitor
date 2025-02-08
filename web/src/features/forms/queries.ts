@@ -3,7 +3,7 @@ import { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
-import { FormBase, FormFull } from './models/form';
+import { FormBase, FormFull } from './models';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formsKeys = {
@@ -32,9 +32,6 @@ export const formDetailsQueryOptions = (electionRoundId: string, formId: string)
   });
 };
 
-export function formDetails(electionRoundId: string, formId: string): UseQueryResult<FormFull, Error> {
-  return useQuery(formDetailsQueryOptions(electionRoundId, formId));
-}
 
 export function useForms(
   electionRoundId: string,
@@ -69,35 +66,5 @@ export function useForms(
     },
     enabled: !!electionRoundId,
     staleTime: STALE_TIME,
-  });
-}
-
-export function useFormTemplates(): UseQueryResult<PageResponse<any>, Error> {
-  return useQuery({
-    queryKey: ['form-templates'],
-    queryFn: async () => {
-      const response = await authApi.get<PageResponse<any>>(`/form-templates`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch form templates');
-      }
-
-      return response.data;
-    },
-  });
-}
-
-export function useFormTemplateDetails(templateId: string): UseQueryResult<FormFull, Error> {
-  return useQuery({
-    queryKey: ['form-templates', templateId],
-    queryFn: async () => {
-      const response = await authApi.get<FormFull>(`/form-templates/${templateId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch form template data');
-      }
-
-      return response.data;
-    },
   });
 }

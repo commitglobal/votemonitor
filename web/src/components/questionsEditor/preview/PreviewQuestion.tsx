@@ -12,7 +12,7 @@ import PreviewTextQuestion from './PreviewTextQuestion';
 
 import { isMultiSelectAnswer, isNumberAnswer, isRatingAnswer, isSingleSelectAnswer } from '@/common/guards';
 import { Progress } from '@/components/ui/progress';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { useFormContext, useWatch } from 'react-hook-form';
 

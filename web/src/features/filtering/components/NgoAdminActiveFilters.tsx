@@ -10,7 +10,7 @@ import {
   mapIncidentCategory,
   mapQuickReportFollowUpStatus,
 } from '@/features/responses/utils/helpers';
-import { isNotNilOrWhitespace, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapFormTemplateType, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
@@ -39,7 +39,8 @@ export const HIDDEN_FILTERS = [
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
-  [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormTypeFilter],
+  [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormType],
+  [FILTER_KEY.FormTemplateTypeFilter, FILTER_LABEL.FormTemplateType],
   [FILTER_KEY.HasFlaggedAnswers, FILTER_LABEL.HasFlaggedAnswers],
   [FILTER_KEY.FormSubmissionFollowUpStatus, FILTER_LABEL.FollowUpStatus],
   [FILTER_KEY.HasNotes, FILTER_LABEL.HasNotes],
@@ -54,6 +55,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
   [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
+  [FILTER_KEY.FormTemplateStatusFilter, FILTER_LABEL.FormTemplateStatus],
   [FILTER_KEY.FromDate, FILTER_LABEL.FromDate],
   [FILTER_KEY.ToDate, FILTER_LABEL.ToDate],
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
@@ -67,6 +69,7 @@ const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
   [FILTER_KEY.QuickReportFollowUpStatus, mapQuickReportFollowUpStatus],
   [FILTER_KEY.FormSubmissionFollowUpStatus, mapFormSubmissionFollowUpStatus],
   [FILTER_KEY.QuickReportIncidentCategory, mapIncidentCategory],
+  [FILTER_KEY.FormTypeFilter, mapFormType],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

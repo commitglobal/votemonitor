@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Route as FormDetailsRoute } from '@/routes/forms/$formId_.$languageCode';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from '@tanstack/react-router';
+import { ReactNode } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -18,7 +17,6 @@ import {
   isTextQuestion,
 } from '@/common/guards';
 import { FunctionComponent } from '@/common/types';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
 import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
 import PreviewNumberQuestion from '@/components/questionsEditor/preview/PreviewNumberQuestion';
@@ -26,31 +24,28 @@ import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewR
 import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
 import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
 import { LanguageBadge } from '@/components/ui/language-badge';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FormTemplateFull } from '@/features/form-templates/models';
+import { FormFull, FormStatus } from '@/features/forms/models';
 import { getTranslationOrDefault, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { FormStatus } from '../../models/form';
-import { formDetailsQueryOptions } from '../../queries';
-import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
-export default function PreviewForm(): FunctionComponent {
-  const { formId, languageCode } = FormDetailsRoute.useParams();
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-
-  const formQuery = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
-  const form = formQuery.data;
-
-  const navigate = useNavigate();
+export interface PreviewFormPageProps {
+  form: FormFull | FormTemplateFull;
+  languageCode: string;
+  onNavigateToEdit: () => void;
+  breadcrumbs?: ReactNode;
+  backButton?: ReactNode;
+}
+export default function PreviewFormPage({
+  form,
+  languageCode,
+  breadcrumbs,
+  backButton,
+  onNavigateToEdit,
+}: PreviewFormPageProps): FunctionComponent {
   const { t } = useTranslation();
-  const navigateToEdit = (): void => {
-    void navigate({ to: '/forms/$formId/edit', params: { formId } });
-  };
 
   return (
-    <Layout
-      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[languageCode] ?? ''} />}
-      title={`${form.code} - ${form.name[languageCode]}`}>
+    <Layout backButton={backButton} breadcrumbs={breadcrumbs} title={`${form.code} - ${form.name[languageCode]}`}>
       <Tabs defaultValue='form-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='form-details'>Form details</TabsTrigger>
@@ -64,7 +59,10 @@ export default function PreviewForm(): FunctionComponent {
                   <span className='text-xl'>Form details</span>
                   <LanguageBadge languageCode={languageCode} />
                 </CardTitle>
-                <Button onClick={navigateToEdit} variant='ghost-primary' disabled={form.status !== FormStatus.Drafted}>
+                <Button
+                  onClick={onNavigateToEdit}
+                  variant='ghost-primary'
+                  disabled={form.status !== FormStatus.Drafted}>
                   <PencilIcon className='w-[18px] mr-2 text-purple-900' />
                   <span className='text-base text-purple-900'>Edit</span>
                 </Button>
@@ -139,7 +137,10 @@ export default function PreviewForm(): FunctionComponent {
                   <span className='text-xl'>Form questions</span>
                   <LanguageBadge languageCode={languageCode} />
                 </CardTitle>
-                <Button onClick={navigateToEdit} variant='ghost-primary' disabled={form.status !== FormStatus.Drafted}>
+                <Button
+                  onClick={onNavigateToEdit}
+                  variant='ghost-primary'
+                  disabled={form.status !== FormStatus.Drafted}>
                   <PencilIcon className='w-[18px] mr-2 text-purple-900' />
                   <span className='text-base text-purple-900'>Edit</span>
                 </Button>

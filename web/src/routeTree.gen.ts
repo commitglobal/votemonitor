@@ -18,6 +18,7 @@ import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
 import { Route as LoginIndexImport } from './routes/login/index'
+import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as ElectionEventIndexImport } from './routes/election-event/index'
@@ -31,6 +32,8 @@ import { Route as MonitoringObserversCreateNewMessageImport } from './routes/mon
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsNewImport } from './routes/forms/new'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
+import { Route as FormTemplatesNewImport } from './routes/form-templates/new'
+import { Route as FormTemplatesFormTemplateIdImport } from './routes/form-templates/$formTemplateId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as CitizenNotificationsNewImport } from './routes/citizen-notifications/new'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
@@ -50,6 +53,8 @@ import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
 import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
 import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
+import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId_.edit'
+import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
 import { Route as ElectionRoundsElectionRoundIdEditImport } from './routes/election-rounds/$electionRoundId/edit'
 import { Route as ElectionRoundsElectionRoundIdTabImport } from './routes/election-rounds/$electionRoundId/$tab'
 import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
@@ -61,6 +66,7 @@ import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
+import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates/$formTemplateId_.edit-translation.$languageCode'
 import { Route as ElectionRoundsElectionRoundIdPollingStationsImportImport } from './routes/election-rounds/$electionRoundId/polling-stations/import'
 import { Route as ElectionRoundsElectionRoundIdLocationsImportImport } from './routes/election-rounds/$electionRoundId/locations/import'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
@@ -106,6 +112,12 @@ const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
 const LoginIndexRoute = LoginIndexImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormTemplatesIndexRoute = FormTemplatesIndexImport.update({
+  id: '/form-templates/',
+  path: '/form-templates/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -187,6 +199,19 @@ const FormsFormIdRoute = FormsFormIdImport.update({
   path: '/forms/$formId',
   getParentRoute: () => rootRoute,
 } as any)
+
+const FormTemplatesNewRoute = FormTemplatesNewImport.update({
+  id: '/form-templates/new',
+  path: '/form-templates/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormTemplatesFormTemplateIdRoute =
+  FormTemplatesFormTemplateIdImport.update({
+    id: '/form-templates/$formTemplateId',
+    path: '/form-templates/$formTemplateId',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const ElectionEventTabRoute = ElectionEventTabImport.update({
   id: '/election-event/$tab',
@@ -309,6 +334,20 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormTemplatesFormTemplateIdEditRoute =
+  FormTemplatesFormTemplateIdEditImport.update({
+    id: '/form-templates/$formTemplateId_/edit',
+    path: '/form-templates/$formTemplateId/edit',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const FormTemplatesFormTemplateIdLanguageCodeRoute =
+  FormTemplatesFormTemplateIdLanguageCodeImport.update({
+    id: '/form-templates/$formTemplateId_/$languageCode',
+    path: '/form-templates/$formTemplateId/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const ElectionRoundsElectionRoundIdEditRoute =
   ElectionRoundsElectionRoundIdEditImport.update({
     id: '/election-rounds/$electionRoundId/edit',
@@ -384,6 +423,13 @@ const FormsFormIdEditTranslationLanguageCodeRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute =
+  FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport.update({
+    id: '/form-templates/$formTemplateId_/edit-translation/$languageCode',
+    path: '/form-templates/$formTemplateId/edit-translation/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const ElectionRoundsElectionRoundIdPollingStationsImportRoute =
   ElectionRoundsElectionRoundIdPollingStationsImportImport.update({
     id: '/election-rounds/$electionRoundId/polling-stations/import',
@@ -444,6 +490,20 @@ declare module '@tanstack/react-router' {
       path: '/election-event/$tab'
       fullPath: '/election-event/$tab'
       preLoaderRoute: typeof ElectionEventTabImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId': {
+      id: '/form-templates/$formTemplateId'
+      path: '/form-templates/$formTemplateId'
+      fullPath: '/form-templates/$formTemplateId'
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/new': {
+      id: '/form-templates/new'
+      path: '/form-templates/new'
+      fullPath: '/form-templates/new'
+      preLoaderRoute: typeof FormTemplatesNewImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId': {
@@ -537,6 +597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordIndexImport
       parentRoute: typeof rootRoute
     }
+    '/form-templates/': {
+      id: '/form-templates/'
+      path: '/form-templates'
+      fullPath: '/form-templates'
+      preLoaderRoute: typeof FormTemplatesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/login/': {
       id: '/login/'
       path: '/login'
@@ -612,6 +679,20 @@ declare module '@tanstack/react-router' {
       path: '/election-rounds/$electionRoundId/edit'
       fullPath: '/election-rounds/$electionRoundId/edit'
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId_/$languageCode': {
+      id: '/form-templates/$formTemplateId_/$languageCode'
+      path: '/form-templates/$formTemplateId/$languageCode'
+      fullPath: '/form-templates/$formTemplateId/$languageCode'
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdLanguageCodeImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId_/edit': {
+      id: '/form-templates/$formTemplateId_/edit'
+      path: '/form-templates/$formTemplateId/edit'
+      fullPath: '/form-templates/$formTemplateId/edit'
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId_/$languageCode': {
@@ -740,6 +821,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportImport
       parentRoute: typeof rootRoute
     }
+    '/form-templates/$formTemplateId_/edit-translation/$languageCode': {
+      id: '/form-templates/$formTemplateId_/edit-translation/$languageCode'
+      path: '/form-templates/$formTemplateId/edit-translation/$languageCode'
+      fullPath: '/form-templates/$formTemplateId/edit-translation/$languageCode'
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
+      parentRoute: typeof rootRoute
+    }
     '/forms_/$formId/edit-translation/$languageCode': {
       id: '/forms_/$formId/edit-translation/$languageCode'
       path: '/forms/$formId/edit-translation/$languageCode'
@@ -793,6 +881,8 @@ export interface FileRoutesByFullPath {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
+  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
+  '/form-templates/new': typeof FormTemplatesNewRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -806,6 +896,7 @@ export interface FileRoutesByFullPath {
   '/election-event': typeof ElectionEventIndexRoute
   '/election-rounds': typeof ElectionRoundsIndexRoute
   '/forgot-password': typeof ForgotPasswordIndexRoute
+  '/form-templates': typeof FormTemplatesIndexRoute
   '/login': typeof LoginIndexRoute
   '/monitoring-observers': typeof MonitoringObserversIndexRoute
   '/ngos': typeof NgosIndexRoute
@@ -817,6 +908,8 @@ export interface FileRoutesByFullPath {
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
   '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
+  '/form-templates/$formTemplateId/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
+  '/form-templates/$formTemplateId/edit': typeof FormTemplatesFormTemplateIdEditRoute
   '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new/reuse': typeof FormsNewReuseRoute
   '/forms/new/scratch': typeof FormsNewScratchRoute
@@ -835,6 +928,7 @@ export interface FileRoutesByFullPath {
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -849,6 +943,8 @@ export interface FileRoutesByTo {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
+  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
+  '/form-templates/new': typeof FormTemplatesNewRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -862,6 +958,7 @@ export interface FileRoutesByTo {
   '/election-event': typeof ElectionEventIndexRoute
   '/election-rounds': typeof ElectionRoundsIndexRoute
   '/forgot-password': typeof ForgotPasswordIndexRoute
+  '/form-templates': typeof FormTemplatesIndexRoute
   '/login': typeof LoginIndexRoute
   '/monitoring-observers': typeof MonitoringObserversIndexRoute
   '/ngos': typeof NgosIndexRoute
@@ -873,6 +970,8 @@ export interface FileRoutesByTo {
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
   '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
+  '/form-templates/$formTemplateId/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
+  '/form-templates/$formTemplateId/edit': typeof FormTemplatesFormTemplateIdEditRoute
   '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new/reuse': typeof FormsNewReuseRoute
   '/forms/new/scratch': typeof FormsNewScratchRoute
@@ -891,6 +990,7 @@ export interface FileRoutesByTo {
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -906,6 +1006,8 @@ export interface FileRoutesById {
   '/citizen-guides/new': typeof CitizenGuidesNewRoute
   '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
   '/election-event/$tab': typeof ElectionEventTabRoute
+  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
+  '/form-templates/new': typeof FormTemplatesNewRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/forms/new': typeof FormsNewRoute
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
@@ -919,6 +1021,7 @@ export interface FileRoutesById {
   '/election-event/': typeof ElectionEventIndexRoute
   '/election-rounds/': typeof ElectionRoundsIndexRoute
   '/forgot-password/': typeof ForgotPasswordIndexRoute
+  '/form-templates/': typeof FormTemplatesIndexRoute
   '/login/': typeof LoginIndexRoute
   '/monitoring-observers/': typeof MonitoringObserversIndexRoute
   '/ngos/': typeof NgosIndexRoute
@@ -930,6 +1033,8 @@ export interface FileRoutesById {
   '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
   '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
   '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
+  '/form-templates/$formTemplateId_/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
+  '/form-templates/$formTemplateId_/edit': typeof FormTemplatesFormTemplateIdEditRoute
   '/forms/$formId_/$languageCode': typeof FormsFormIdLanguageCodeRoute
   '/forms/new_/reuse': typeof FormsNewReuseRoute
   '/forms/new_/scratch': typeof FormsNewScratchRoute
@@ -948,6 +1053,7 @@ export interface FileRoutesById {
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/form-templates/$formTemplateId_/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
   '/forms_/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id_/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -964,6 +1070,8 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
+    | '/form-templates/$formTemplateId'
+    | '/form-templates/new'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -977,6 +1085,7 @@ export interface FileRouteTypes {
     | '/election-event'
     | '/election-rounds'
     | '/forgot-password'
+    | '/form-templates'
     | '/login'
     | '/monitoring-observers'
     | '/ngos'
@@ -988,6 +1097,8 @@ export interface FileRouteTypes {
     | '/citizen-notifications/view/$notificationId'
     | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
+    | '/form-templates/$formTemplateId/$languageCode'
+    | '/form-templates/$formTemplateId/edit'
     | '/forms/$formId/$languageCode'
     | '/forms/new/reuse'
     | '/forms/new/scratch'
@@ -1006,6 +1117,7 @@ export interface FileRouteTypes {
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
+    | '/form-templates/$formTemplateId/edit-translation/$languageCode'
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -1019,6 +1131,8 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
+    | '/form-templates/$formTemplateId'
+    | '/form-templates/new'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -1032,6 +1146,7 @@ export interface FileRouteTypes {
     | '/election-event'
     | '/election-rounds'
     | '/forgot-password'
+    | '/form-templates'
     | '/login'
     | '/monitoring-observers'
     | '/ngos'
@@ -1043,6 +1158,8 @@ export interface FileRouteTypes {
     | '/citizen-notifications/view/$notificationId'
     | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
+    | '/form-templates/$formTemplateId/$languageCode'
+    | '/form-templates/$formTemplateId/edit'
     | '/forms/$formId/$languageCode'
     | '/forms/new/reuse'
     | '/forms/new/scratch'
@@ -1061,6 +1178,7 @@ export interface FileRouteTypes {
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
+    | '/form-templates/$formTemplateId/edit-translation/$languageCode'
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -1074,6 +1192,8 @@ export interface FileRouteTypes {
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
+    | '/form-templates/$formTemplateId'
+    | '/form-templates/new'
     | '/forms/$formId'
     | '/forms/new'
     | '/monitoring-observers/$tab'
@@ -1087,6 +1207,7 @@ export interface FileRouteTypes {
     | '/election-event/'
     | '/election-rounds/'
     | '/forgot-password/'
+    | '/form-templates/'
     | '/login/'
     | '/monitoring-observers/'
     | '/ngos/'
@@ -1098,6 +1219,8 @@ export interface FileRouteTypes {
     | '/citizen-notifications/view/$notificationId'
     | '/election-rounds/$electionRoundId/$tab'
     | '/election-rounds/$electionRoundId/edit'
+    | '/form-templates/$formTemplateId_/$languageCode'
+    | '/form-templates/$formTemplateId_/edit'
     | '/forms/$formId_/$languageCode'
     | '/forms/new_/reuse'
     | '/forms/new_/scratch'
@@ -1116,6 +1239,7 @@ export interface FileRouteTypes {
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
+    | '/form-templates/$formTemplateId_/edit-translation/$languageCode'
     | '/forms_/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id_/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
@@ -1131,6 +1255,8 @@ export interface RootRouteChildren {
   CitizenGuidesNewRoute: typeof CitizenGuidesNewRoute
   CitizenNotificationsNewRoute: typeof CitizenNotificationsNewRoute
   ElectionEventTabRoute: typeof ElectionEventTabRoute
+  FormTemplatesFormTemplateIdRoute: typeof FormTemplatesFormTemplateIdRoute
+  FormTemplatesNewRoute: typeof FormTemplatesNewRoute
   FormsFormIdRoute: typeof FormsFormIdRoute
   FormsNewRoute: typeof FormsNewRoute
   MonitoringObserversTabRoute: typeof MonitoringObserversTabRoute
@@ -1144,6 +1270,7 @@ export interface RootRouteChildren {
   ElectionEventIndexRoute: typeof ElectionEventIndexRoute
   ElectionRoundsIndexRoute: typeof ElectionRoundsIndexRoute
   ForgotPasswordIndexRoute: typeof ForgotPasswordIndexRoute
+  FormTemplatesIndexRoute: typeof FormTemplatesIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   MonitoringObserversIndexRoute: typeof MonitoringObserversIndexRoute
   NgosIndexRoute: typeof NgosIndexRoute
@@ -1155,6 +1282,8 @@ export interface RootRouteChildren {
   CitizenNotificationsViewNotificationIdRoute: typeof CitizenNotificationsViewNotificationIdRoute
   ElectionRoundsElectionRoundIdTabRoute: typeof ElectionRoundsElectionRoundIdTabRoute
   ElectionRoundsElectionRoundIdEditRoute: typeof ElectionRoundsElectionRoundIdEditRoute
+  FormTemplatesFormTemplateIdLanguageCodeRoute: typeof FormTemplatesFormTemplateIdLanguageCodeRoute
+  FormTemplatesFormTemplateIdEditRoute: typeof FormTemplatesFormTemplateIdEditRoute
   FormsFormIdLanguageCodeRoute: typeof FormsFormIdLanguageCodeRoute
   FormsNewReuseRoute: typeof FormsNewReuseRoute
   FormsNewScratchRoute: typeof FormsNewScratchRoute
@@ -1173,6 +1302,7 @@ export interface RootRouteChildren {
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   ElectionRoundsElectionRoundIdLocationsImportRoute: typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   ElectionRoundsElectionRoundIdPollingStationsImportRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
+  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
   FormsFormIdEditTranslationLanguageCodeRoute: typeof FormsFormIdEditTranslationLanguageCodeRoute
   MonitoringObserversPushMessagesIdViewRoute: typeof MonitoringObserversPushMessagesIdViewRoute
   MonitoringObserversViewMonitoringObserverIdTabRoute: typeof MonitoringObserversViewMonitoringObserverIdTabRoute
@@ -1187,6 +1317,8 @@ const rootRouteChildren: RootRouteChildren = {
   CitizenGuidesNewRoute: CitizenGuidesNewRoute,
   CitizenNotificationsNewRoute: CitizenNotificationsNewRoute,
   ElectionEventTabRoute: ElectionEventTabRoute,
+  FormTemplatesFormTemplateIdRoute: FormTemplatesFormTemplateIdRoute,
+  FormTemplatesNewRoute: FormTemplatesNewRoute,
   FormsFormIdRoute: FormsFormIdRoute,
   FormsNewRoute: FormsNewRoute,
   MonitoringObserversTabRoute: MonitoringObserversTabRoute,
@@ -1201,6 +1333,7 @@ const rootRouteChildren: RootRouteChildren = {
   ElectionEventIndexRoute: ElectionEventIndexRoute,
   ElectionRoundsIndexRoute: ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute: ForgotPasswordIndexRoute,
+  FormTemplatesIndexRoute: FormTemplatesIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   MonitoringObserversIndexRoute: MonitoringObserversIndexRoute,
   NgosIndexRoute: NgosIndexRoute,
@@ -1214,6 +1347,9 @@ const rootRouteChildren: RootRouteChildren = {
   ElectionRoundsElectionRoundIdTabRoute: ElectionRoundsElectionRoundIdTabRoute,
   ElectionRoundsElectionRoundIdEditRoute:
     ElectionRoundsElectionRoundIdEditRoute,
+  FormTemplatesFormTemplateIdLanguageCodeRoute:
+    FormTemplatesFormTemplateIdLanguageCodeRoute,
+  FormTemplatesFormTemplateIdEditRoute: FormTemplatesFormTemplateIdEditRoute,
   FormsFormIdLanguageCodeRoute: FormsFormIdLanguageCodeRoute,
   FormsNewReuseRoute: FormsNewReuseRoute,
   FormsNewScratchRoute: FormsNewScratchRoute,
@@ -1242,6 +1378,8 @@ const rootRouteChildren: RootRouteChildren = {
     ElectionRoundsElectionRoundIdLocationsImportRoute,
   ElectionRoundsElectionRoundIdPollingStationsImportRoute:
     ElectionRoundsElectionRoundIdPollingStationsImportRoute,
+  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute:
+    FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute:
     FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute:
@@ -1271,6 +1409,8 @@ export const routeTree = rootRoute
         "/citizen-guides/new",
         "/citizen-notifications/new",
         "/election-event/$tab",
+        "/form-templates/$formTemplateId",
+        "/form-templates/new",
         "/forms/$formId",
         "/forms/new",
         "/monitoring-observers/$tab",
@@ -1284,6 +1424,7 @@ export const routeTree = rootRoute
         "/election-event/",
         "/election-rounds/",
         "/forgot-password/",
+        "/form-templates/",
         "/login/",
         "/monitoring-observers/",
         "/ngos/",
@@ -1295,6 +1436,8 @@ export const routeTree = rootRoute
         "/citizen-notifications/view/$notificationId",
         "/election-rounds/$electionRoundId/$tab",
         "/election-rounds/$electionRoundId/edit",
+        "/form-templates/$formTemplateId_/$languageCode",
+        "/form-templates/$formTemplateId_/edit",
         "/forms/$formId_/$languageCode",
         "/forms/new_/reuse",
         "/forms/new_/scratch",
@@ -1313,6 +1456,7 @@ export const routeTree = rootRoute
         "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId",
         "/election-rounds/$electionRoundId/locations/import",
         "/election-rounds/$electionRoundId/polling-stations/import",
+        "/form-templates/$formTemplateId_/edit-translation/$languageCode",
         "/forms_/$formId/edit-translation/$languageCode",
         "/monitoring-observers/push-messages/$id_/view",
         "/monitoring-observers/view/$monitoringObserverId/$tab",
@@ -1335,6 +1479,12 @@ export const routeTree = rootRoute
     },
     "/election-event/$tab": {
       "filePath": "election-event/$tab.tsx"
+    },
+    "/form-templates/$formTemplateId": {
+      "filePath": "form-templates/$formTemplateId.tsx"
+    },
+    "/form-templates/new": {
+      "filePath": "form-templates/new.tsx"
     },
     "/forms/$formId": {
       "filePath": "forms/$formId.tsx"
@@ -1375,6 +1525,9 @@ export const routeTree = rootRoute
     "/forgot-password/": {
       "filePath": "forgot-password/index.tsx"
     },
+    "/form-templates/": {
+      "filePath": "form-templates/index.tsx"
+    },
     "/login/": {
       "filePath": "login/index.tsx"
     },
@@ -1407,6 +1560,12 @@ export const routeTree = rootRoute
     },
     "/election-rounds/$electionRoundId/edit": {
       "filePath": "election-rounds/$electionRoundId/edit.tsx"
+    },
+    "/form-templates/$formTemplateId_/$languageCode": {
+      "filePath": "form-templates/$formTemplateId_.$languageCode.tsx"
+    },
+    "/form-templates/$formTemplateId_/edit": {
+      "filePath": "form-templates/$formTemplateId_.edit.tsx"
     },
     "/forms/$formId_/$languageCode": {
       "filePath": "forms/$formId_.$languageCode.tsx"
@@ -1461,6 +1620,9 @@ export const routeTree = rootRoute
     },
     "/election-rounds/$electionRoundId/polling-stations/import": {
       "filePath": "election-rounds/$electionRoundId/polling-stations/import.tsx"
+    },
+    "/form-templates/$formTemplateId_/edit-translation/$languageCode": {
+      "filePath": "form-templates/$formTemplateId_.edit-translation.$languageCode.tsx"
     },
     "/forms_/$formId/edit-translation/$languageCode": {
       "filePath": "forms_.$formId.edit-translation.$languageCode.tsx"

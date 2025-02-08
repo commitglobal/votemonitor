@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, ZFormType, ZTranslationStatus } from '@/common/types';
+import { ElectionRoundStatus, FormType, ZTranslationStatus } from '@/common/types';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -40,11 +40,11 @@ import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { useMemo, useState, type ReactElement } from 'react';
-import { FormBase, FormStatus } from '../../models/form';
+import { FormBase, FormStatus } from '../../models';
 import { formsKeys, useForms } from '../../queries';
-import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { FormFilters } from './FormFilters/FormFilters';
+import AddFormTranslationsDialog, { useAddFormTranslationsDialog } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export default function FormsDashboard(): ReactElement {
     return Object.fromEntries(params) as FormsSearchParams;
   }, [searchText, debouncedSearch]);
 
-  const addTranslationsDialog = useAddTranslationsDialog();
+  const addTranslationsDialog = useAddFormTranslationsDialog();
   const editFormAccessDialog = useEditFormAccessDialog();
 
   const confirm = useConfirm();
@@ -272,7 +272,7 @@ export default function FormsDashboard(): ReactElement {
                   </Tooltip>
                 </TooltipProvider>
               ) : (
-                <>{row.original.formType === ZFormType.Enum.CitizenReporting ? 'Citizens' : 'None'}</>
+                <>{row.original.formType === FormType.CitizenReporting ? 'Citizens' : 'None'}</>
               )
             ) : null,
         })
@@ -758,7 +758,7 @@ export default function FormsDashboard(): ReactElement {
           queryParams={queryParams}
           getRowClassName={getRowClassName}
         />
-        <AddTranslationsDialog />
+        <AddFormTranslationsDialog />
         <EditFormAccessDialog />
       </CardContent>
     </Card>

@@ -1,4 +1,4 @@
-import { FormSubmissionFollowUpStatus, ZFormType, type FunctionComponent } from '@/common/types';
+import { FormSubmissionFollowUpStatus, FormType, type FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,7 +61,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(ZFormType.Values).map((value) => (
+            {Object.values(FormType).map((value) => (
               <SelectItem value={value} key={value}>
                 {mapFormType(value)}
               </SelectItem>

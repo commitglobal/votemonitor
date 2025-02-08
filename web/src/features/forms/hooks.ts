@@ -4,7 +4,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { create } from 'zustand';
-import { FormFull } from './models/form';
+import { FormFull } from './models';
 import { formsKeys } from './queries';
 
 export interface PreviewDialogProps {

@@ -21,7 +21,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { queryClient } from '@/main';
-import { FormBase } from '../../models/form';
+import { FormBase } from '../../models';
 import { formsKeys } from '../../queries';
 import { sortBy } from 'lodash';
 

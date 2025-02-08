@@ -133,6 +133,37 @@
       "obsolete": "Obsolete"
     }
   },
+  "form-template": {
+    "field.code": "Form Template Code",
+    "field.name": "Form Template Name",
+    "field.description": "Description",
+    "field.defaultLanguage": "Base language",
+    "field.languageCode": "Language",
+    "field.formType": "Form template type",
+    "field.icon": "Icon",
+    "field.languages": "Available languages",
+    "field.status": "Status",
+    "placeholder.code": "Form template code",
+    "placeholder.icon": "<svg>...</svg>",
+    "placeholder.name": "Form template name",
+    "placeholder.description": "Form template description",
+    "placeholder.defaultLanguage": "Select a default language",
+    "placeholder.languages": "Select available languages",
+    "type": {
+      "opening": "Opening",
+      "voting": "Voting",
+      "closingAndCounting": "Closing And Counting",
+      "psi": "PSI",
+      "other": "Other",
+      "citizenReporting": "Citizen reporting",
+      "incidentReporting": "Incident reporting"
+    },
+    "status": {
+      "drafted": "Drafted",
+      "published": "Published",
+      "obsolete": "Obsolete"
+    }
+  },
   "observers": {
     "addObserver": {
       "title": "Add a new observer",

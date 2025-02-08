@@ -11,11 +11,11 @@ import { useMutation } from '@tanstack/react-query';
 import { difference } from 'lodash';
 import { useState } from 'react';
 import { create } from 'zustand';
-import { formsKeys } from '../../queries';
+import { formsKeys } from '../../features/forms/queries';
 import { useRouter } from '@tanstack/react-router';
 import { useLanguages } from '@/hooks/languages';
 
-export interface AddTranslationsDialogPropsProps {
+export interface AddFormTranslationsDialogPropsProps {
     isOpen: boolean;
     formId: string;
     languages: string[];
@@ -23,7 +23,7 @@ export interface AddTranslationsDialogPropsProps {
     dismiss: VoidFunction;
 }
 
-export const useAddTranslationsDialog = create<AddTranslationsDialogPropsProps>((set) => ({
+export const useAddFormTranslationsDialog = create<AddFormTranslationsDialogPropsProps>((set) => ({
     isOpen: false,
     formId: '',
     languages: [],
@@ -31,8 +31,8 @@ export const useAddTranslationsDialog = create<AddTranslationsDialogPropsProps>(
     dismiss: () => set({ isOpen: false }),
 }));
 
-function AddTranslationsDialog() {
-    const { languages, formId, isOpen, trigger, dismiss } = useAddTranslationsDialog();
+function AddFormTranslationsDialog() {
+    const { languages, formId, isOpen, trigger, dismiss } = useAddFormTranslationsDialog();
     const [newLanguages, setLanguages] = useState<string[]>(languages);
     const { data: appLanguages } = useLanguages();
     const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
@@ -132,4 +132,4 @@ function AddTranslationsDialog() {
     )
 }
 
-export default AddTranslationsDialog
+export default AddFormTranslationsDialog

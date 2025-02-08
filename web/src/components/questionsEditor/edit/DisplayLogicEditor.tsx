@@ -1,3 +1,4 @@
+import { EditQuestionType } from '@/common/form-requests';
 import {
   DisplayLogicCondition,
   QuestionType
@@ -8,8 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
-import { EditQuestionType } from '@/features/forms/types';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { ratingScaleToNumber } from '@/lib/utils';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';

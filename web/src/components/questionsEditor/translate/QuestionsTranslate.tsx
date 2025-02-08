@@ -1,4 +1,4 @@
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import TranslateQuestionFactory from './TranslateQuestionFactory';
 
