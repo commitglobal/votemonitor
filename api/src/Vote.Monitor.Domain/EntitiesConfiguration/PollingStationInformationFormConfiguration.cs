@@ -35,6 +35,7 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
             .HasColumnType("jsonb");
 
         builder.Ignore(x => x.Icon);
+        builder.Ignore(x => x.DisplayOrder);
 
         builder.Property(x => x.Questions)
             .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()

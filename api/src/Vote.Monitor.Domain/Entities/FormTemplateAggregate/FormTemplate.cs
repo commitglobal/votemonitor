@@ -165,7 +165,8 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public FormTemplate Duplicate() =>
         new(FormType, Code, DefaultLanguage, Name, Description, Languages, Questions);
 
-    public FormAggregate.Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    public FormAggregate.Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage,
+        string[] languages)
     {
         if (Status != FormTemplateStatus.Published)
         {
@@ -201,6 +202,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
             defaultLanguage,
             languages,
             null,
+            0,
             Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
 
