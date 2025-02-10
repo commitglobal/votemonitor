@@ -41,15 +41,11 @@ public class FormAggregateTests
             new SingleSelectQuestionFaker(singleSelectOptions, languageList: languages).Generate();
         var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectOptions, languageList: languages).Generate();
 
-        var questions = new BaseQuestion[]
-        {
-            singleSelectQuestion,
-            multiSelectQuestion
-        };
+        var questions = new BaseQuestion[] { singleSelectQuestion, multiSelectQuestion };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            languages, null, questions);
+            languages, null, displayOrder: 0, questions);
 
         // Act
 
@@ -103,15 +99,11 @@ public class FormAggregateTests
             new SingleSelectQuestionFaker(singleSelectOptions, languageList: languages).Generate();
         var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectOptions, languageList: languages).Generate();
 
-        var questions = new BaseQuestion[]
-        {
-            singleSelectQuestion,
-            multiSelectQuestion
-        };
+        var questions = new BaseQuestion[] { singleSelectQuestion, multiSelectQuestion };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            languages, null, questions);
+            languages, null, displayOrder: 0, questions);
 
         List<BaseAnswer> initialAnswers =
         [
@@ -156,17 +148,12 @@ public class FormAggregateTests
 
         var questions = new BaseQuestion[]
         {
-            textQuestion,
-            dateQuestion,
-            ratingQuestion,
-            numberQuestion,
-            singleSelectQuestion,
-            multiSelectQuestion
+            textQuestion, dateQuestion, ratingQuestion, numberQuestion, singleSelectQuestion, multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            languages, null, questions);
+            languages, null, displayOrder: 0, questions);
 
         List<BaseAnswer> answers =
         [
@@ -204,17 +191,12 @@ public class FormAggregateTests
 
         var questions = new BaseQuestion[]
         {
-            textQuestion,
-            dateQuestion,
-            ratingQuestion,
-            numberQuestion,
-            singleSelectQuestion,
-            multiSelectQuestion
+            textQuestion, dateQuestion, ratingQuestion, numberQuestion, singleSelectQuestion, multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            ["EN"], null, questions);
+            ["EN"], null, displayOrder: 0, questions);
 
         List<BaseAnswer> initialAnswers =
         [
@@ -259,17 +241,12 @@ public class FormAggregateTests
 
         var questions = new BaseQuestion[]
         {
-            textQuestion,
-            dateQuestion,
-            ratingQuestion,
-            numberQuestion,
-            singleSelectQuestion,
-            multiSelectQuestion
+            textQuestion, dateQuestion, ratingQuestion, numberQuestion, singleSelectQuestion, multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            languages, null, questions);
+            languages, null, displayOrder: 0, questions);
 
         List<BaseAnswer> initialAnswers =
         [
@@ -311,17 +288,12 @@ public class FormAggregateTests
 
         var questions = new BaseQuestion[]
         {
-            textQuestion,
-            dateQuestion,
-            ratingQuestion,
-            numberQuestion,
-            singleSelectQuestion,
-            multiSelectQuestion
+            textQuestion, dateQuestion, ratingQuestion, numberQuestion, singleSelectQuestion, multiSelectQuestion
         };
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
-            ["EN"], null, questions);
+            ["EN"], null, displayOrder: 0, questions);
         List<BaseAnswer> initialAnswers =
         [
             new SingleSelectAnswerFaker(singleSelectQuestion),
@@ -356,7 +328,7 @@ public class FormAggregateTests
 
         var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
             new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "RO",
-            languages, null, questions!);
+            languages, null, displayOrder: 0, questions!);
 
         // Act
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, false);
