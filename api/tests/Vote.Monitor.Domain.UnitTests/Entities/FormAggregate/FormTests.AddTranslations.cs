@@ -9,7 +9,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, []);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -25,7 +25,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, []);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, []);
 
         var formBefore = form.DeepClone();
 
@@ -41,7 +41,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, []);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, []);
 
         var formBefore = form.DeepClone();
 
@@ -57,7 +57,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, []);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, []);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -84,7 +84,7 @@ public partial class FormTests
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, questions);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, questions);
 
         string[] newLanguages = [LanguagesList.RO.Iso1, LanguagesList.HU.Iso1];
 
@@ -137,7 +137,7 @@ public partial class FormTests
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, questions);
+            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, questions);
 
         string[] newLanguages = [LanguagesList.HU.Iso1];
 

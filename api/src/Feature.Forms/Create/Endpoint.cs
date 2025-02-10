@@ -40,7 +40,7 @@ public class Endpoint(
             .AsReadOnly();
 
         var form = FormAggregate.Create(req.ElectionRoundId, monitoringNgo.Id, req.FormType, req.Code, req.Name,
-            req.Description, req.DefaultLanguage, req.Languages, req.Icon, questions);
+            req.Description, req.DefaultLanguage, req.Languages, req.Icon, displayOrder: 0, questions);
 
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

@@ -25,7 +25,8 @@ public class PollingStationInformationForm : BaseForm
         languages,
         null,
         questions,
-        FormStatus.Published)
+        FormStatus.Published,
+        displayOrder: 0)
     {
     }
 

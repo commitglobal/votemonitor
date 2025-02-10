@@ -28,6 +28,7 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) : base(electionRound,
         formType,
         code,
@@ -37,7 +38,8 @@ public class Form : BaseForm
         languages,
         icon,
         questions,
-        FormStatus.Drafted)
+        FormStatus.Drafted,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgo.Id;
         MonitoringNgo = monitoringNgo;
@@ -53,6 +55,7 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) : base(
         electionRoundId,
         formType,
@@ -63,7 +66,8 @@ public class Form : BaseForm
         languages,
         icon,
         questions,
-        FormStatus.Drafted)
+        FormStatus.Drafted,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgoId;
     }
@@ -81,7 +85,8 @@ public class Form : BaseForm
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
+        LanguagesTranslationStatus languagesTranslationStatus,
+        int displayOrder) : base(id,
         electionRoundId,
         formType,
         code,
@@ -92,7 +97,8 @@ public class Form : BaseForm
         languages,
         icon,
         numberOfQuestions,
-        languagesTranslationStatus)
+        languagesTranslationStatus,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgoId;
     }
@@ -107,9 +113,10 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) =>
         new(electionRound, monitoringNgo, formType, code, name, description, defaultLanguage, languages, icon,
-            questions);
+            displayOrder, questions);
 
     public static Form Create(
         Guid electionRoundId,
@@ -121,13 +128,14 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) =>
         new(electionRoundId, monitoringNgoId, formType, code, name, description, defaultLanguage, languages, icon,
-            questions);
+            displayOrder, questions);
 
     public Form Duplicate() =>
         new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
-            Questions);
+            DisplayOrder, Questions);
 
     public FormSubmission CreateFormSubmission(
         PollingStation pollingStation,
