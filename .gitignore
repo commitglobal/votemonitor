@@ -271,3 +271,4 @@ log*.txt
 .vscode
 
 OfflineCapabilities
+/api/src/Vote.Monitor.Api/Uploads
