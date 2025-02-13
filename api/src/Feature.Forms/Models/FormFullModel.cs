@@ -24,8 +24,13 @@ public class FormFullModel
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
     public string? Icon { get; init; }
+    public string? Icon { get; init; }
+    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
+
+    public int DisplayOrder { get; init; }
+
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
     

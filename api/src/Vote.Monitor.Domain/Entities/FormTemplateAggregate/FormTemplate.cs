@@ -102,7 +102,8 @@ public class FormTemplate : BaseForm
             new TranslatedString(Description).TrimTranslations(languages),
             defaultLanguage,
             languages,
-            Icon,
+            null,
+            0,
             Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
 

@@ -301,6 +301,8 @@ public static class CountriesList
     public static readonly CountryDetails YE = new("Yemen", "Yemen", "YE", "YEM", "887");
     public static readonly CountryDetails ZM = new("Zambia", "Republic of Zambia", "ZM", "ZMB", "894");
     public static readonly CountryDetails ZW = new("Zimbabwe", "Republic of Zimbabwe", "ZW", "ZWE", "716");
+    
+    public static readonly CountryDetails XK = new("Kosovo", "Republic of Kosovo", "XK", "XKX", "926");
 
 
     private static readonly Lazy<Dictionary<Guid, CountryDetails>> _countries = new(() =>

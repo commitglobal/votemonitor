@@ -32,6 +32,7 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) : base(
         formType,
         code,
@@ -41,7 +42,8 @@ public class Form : BaseForm
         languages,
         icon,
         questions,
-        FormStatus.Drafted)
+        FormStatus.Drafted,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgo.Id;
         MonitoringNgo = monitoringNgo;
@@ -59,6 +61,7 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) : base(
         formType,
         code,
@@ -68,7 +71,8 @@ public class Form : BaseForm
         languages,
         icon,
         questions,
-        FormStatus.Drafted)
+        FormStatus.Drafted,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgoId;
         ElectionRoundId = electionRoundId;
@@ -87,7 +91,8 @@ public class Form : BaseForm
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
+        LanguagesTranslationStatus languagesTranslationStatus,
+        int displayOrder) : base(id,
         formType,
         code,
         name,
@@ -97,7 +102,8 @@ public class Form : BaseForm
         languages,
         icon,
         numberOfQuestions,
-        languagesTranslationStatus)
+        languagesTranslationStatus,
+        displayOrder)
     {
         MonitoringNgoId = monitoringNgoId;
         ElectionRoundId = electionRoundId;
@@ -113,9 +119,10 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) =>
         new(electionRound, monitoringNgo, formType, code, name, description, defaultLanguage, languages, icon,
-            questions);
+            displayOrder, questions);
 
     public static Form Create(
         Guid electionRoundId,
@@ -127,13 +134,51 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions) =>
         new(electionRoundId, monitoringNgoId, formType, code, name, description, defaultLanguage, languages, icon,
-            questions);
+            displayOrder, questions);
 
     public Form Duplicate() =>
-        new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
-            Questions);
+        new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon, DisplayOrder, Questions);
+
+    public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    {
+        if (Status != FormStatus.Published)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(Status), "Form is not published.")
+            ]);
+        }
+
+        if (!Languages.Contains(defaultLanguage))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(defaultLanguage), "Default language is not supported.")
+            ]);
+        }
+
+        foreach (var iso in languages)
+        {
+            if (!Languages.Contains(iso))
+            {
+                throw new ValidationException([
+                    new ValidationFailure(nameof(languages) + $".{iso}", "Language is not supported.")
+                ]);
+            }
+        }
+
+        return Form.Create(electionRoundId,
+            monitoringNgoId,
+            FormType,
+            Code,
+            new TranslatedString(Name).TrimTranslations(languages),
+            new TranslatedString(Description).TrimTranslations(languages),
+            defaultLanguage,
+            languages,
+            Icon,
+            Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
+    }
 
     public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
     {

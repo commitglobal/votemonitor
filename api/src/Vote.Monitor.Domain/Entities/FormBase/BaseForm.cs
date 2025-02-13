@@ -24,7 +24,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     public FormStatus Status { get; protected set; }
     public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; } = [];
-    public string? Icon { get; set; }
+    public string? Icon { get; private set; }
+    public int DisplayOrder { get; private set; }
     public int NumberOfQuestions { get; private set; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; } = new();
@@ -39,7 +40,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         IEnumerable<string> languages,
         string? icon,
         IEnumerable<BaseQuestion> questions,
-        FormStatus status)
+        FormStatus status,
+        int displayOrder)
     {
         Id = Guid.NewGuid();
 
@@ -54,6 +56,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestions = Questions.Count;
         Icon = icon;
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
+        DisplayOrder = displayOrder;
     }
 
     [JsonConstructor]
@@ -67,7 +70,8 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus)
+        LanguagesTranslationStatus languagesTranslationStatus,
+        int displayOrder)
     {
         Id = id;
         FormType = formType;
@@ -80,6 +84,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Icon = icon;
         NumberOfQuestions = numberOfQuestions;
         LanguagesTranslationStatus = languagesTranslationStatus;
+        DisplayOrder = displayOrder;
     }
 
     public void Draft()
@@ -99,6 +104,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
+        int displayOrder,
         IEnumerable<BaseQuestion> questions)
     {
         Code = code;
@@ -110,6 +116,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
         Icon = icon;
+        DisplayOrder = displayOrder;
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
@@ -241,6 +248,44 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         LanguagesTranslationStatus =
             ComputeLanguagesTranslationStatus();
+    }
+
+    public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    {
+        if (Status != FormStatus.Published)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(Status), "Form is not published.")
+            ]);
+        }
+        
+        if (!Languages.Contains(defaultLanguage))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(defaultLanguage), "Default language is not supported.")
+            ]);
+        }
+
+        foreach (var iso in languages)
+        {
+            if (!Languages.Contains(iso))
+            {
+                throw new ValidationException([
+                    new ValidationFailure(nameof(languages) + $".{iso}", "Language is not supported.")
+                ]);
+            }
+        }
+
+        return Form.Create(electionRoundId,
+            monitoringNgoId,
+            FormType,
+            Code,
+            new TranslatedString(Name).TrimTranslations(languages),
+            new TranslatedString(Description).TrimTranslations(languages),
+            defaultLanguage,
+            languages,
+            null,
+            Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
     
     private LanguagesTranslationStatus ComputeLanguagesTranslationStatus()

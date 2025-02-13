@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vote.Monitor.Domain;
@@ -13,9 +14,11 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20250204141913_AddKosovo")]
+    partial class AddKosovo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3488,11 +3491,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.Property<int>("DisplayOrder")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -3637,16 +3635,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Icon")
-                        .HasColumnType("text");
-
                     b.Property<string[]>("Languages")
                         .IsRequired()
                         .HasColumnType("text[]");
-
-                    b.Property<string>("LanguagesTranslationStatus")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");

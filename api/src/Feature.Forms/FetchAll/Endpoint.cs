@@ -54,7 +54,8 @@ public class Endpoint(VoteMonitorContext context)
         {
             resultForms.AddRange(await context.CoalitionFormAccess
                 .Include(x => x.Form)
-                .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId && x.Coalition.ElectionRoundId == req.ElectionRoundId)
+                .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId &&
+                            x.Coalition.ElectionRoundId == req.ElectionRoundId)
                 .Where(x => x.Form.FormType != FormType.CitizenReporting)
                 .Select(f => FormFullModel.FromEntity(f.Form))
                 .AsNoTracking()
@@ -77,7 +78,7 @@ public class Endpoint(VoteMonitorContext context)
         {
             ElectionRoundId = monitoringNgo.ElectionRoundId,
             Version = DeterministicGuid.Create(resultForms.Select(x => x.Id)).ToString(),
-            Forms = resultForms
+            Forms = resultForms.OrderBy(x => x.DisplayOrder).ToList()
         });
     }
 }
