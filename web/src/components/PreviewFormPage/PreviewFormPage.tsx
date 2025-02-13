@@ -16,16 +16,16 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from '@/common/guards';
-import { FunctionComponent } from '@/common/types';
-import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
-import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
-import PreviewNumberQuestion from '@/components/questionsEditor/preview/PreviewNumberQuestion';
-import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewRatingQuestion';
-import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
-import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
+import { FormStatus, FunctionComponent } from '@/common/types';
+import PreviewDateQuestion from '@/components/FormQuestionsPreview/PreviewDateQuestion';
+import PreviewMultiSelectQuestion from '@/components/FormQuestionsPreview/PreviewMultiSelectQuestion';
+import PreviewNumberQuestion from '@/components/FormQuestionsPreview/PreviewNumberQuestion';
+import PreviewRatingQuestion from '@/components/FormQuestionsPreview/PreviewRatingQuestion';
+import PreviewSingleSelectQuestion from '@/components/FormQuestionsPreview/PreviewSingleSelectQuestion';
+import PreviewTextQuestion from '@/components/FormQuestionsPreview/PreviewTextQuestion';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { FormTemplateFull } from '@/features/form-templates/models';
-import { FormFull, FormStatus } from '@/features/forms/models';
+import { FormFull } from '@/features/forms/models';
 import { getTranslationOrDefault, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 
 export interface PreviewFormPageProps {

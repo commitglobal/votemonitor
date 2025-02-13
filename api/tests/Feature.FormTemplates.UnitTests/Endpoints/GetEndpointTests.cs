@@ -56,8 +56,8 @@ public class GetEndpointTests
             .BeOfType<Results<Ok<FormTemplateFullModel>, NotFound>>()
             .Which.Result.Should().BeOfType<NotFound>();
 
-        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<ListFormTemplatesSpecification>());
-        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<ListFormTemplatesSpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<GetFormTemplateSpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<GetFormTemplateSpecification>());
     }
 
     [Fact]

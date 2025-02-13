@@ -11,14 +11,12 @@ public class FormSlimModel
 
     public required Guid Id { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public required FormType FormType { get; init; }
 
     public required string Code { get; init; }
     public TranslatedString Name { get; init; }
     public string? Icon { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]
     public required FormStatus Status { get; init; }
 
     public required string DefaultLanguage { get; init; }
@@ -28,7 +26,7 @@ public class FormSlimModel
 
     public string LastModifiedBy { get; init; }
     public bool IsFormOwner { get; init; }
-    
+
     public FormAccessModel[] FormAccess { get; init; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }

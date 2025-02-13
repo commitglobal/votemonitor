@@ -241,20 +241,12 @@ export enum FormType {
   Other = 'Other',
 }
 
-export enum FormTemplateType {
-  PSI = 'PSI',
-  Opening = 'Opening',
-  Voting = 'Voting',
-  ClosingAndCounting = 'ClosingAndCounting',
-  CitizenReporting = 'CitizenReporting',
-  IncidentReporting = 'IncidentReporting',
-  Other = 'Other',
+export enum TranslationStatus {
+  Translated = 'Translated',
+  MissingTranslations = 'MissingTranslations',
 }
 
-export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
-export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
-
-const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
+const ZLanguagesTranslationStatus = z.record(z.string(), z.nativeEnum(TranslationStatus));
 export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
 
 export interface Country {
@@ -393,3 +385,28 @@ export const importLocationSchema = z
       });
     }
   });
+
+export enum FormStatus {
+  Drafted = 'Drafted',
+  Published = 'Published',
+  Obsolete = 'Obsolete',
+}
+
+export const FormStatusList: FormStatus[] = [FormStatus.Drafted, FormStatus.Published, FormStatus.Obsolete];
+
+export interface FormBase {
+  id: string;
+  formType: FormType;
+  code: string;
+  defaultLanguage: string;
+  icon?: string;
+  name: TranslatedString;
+  description?: TranslatedString;
+  isFormOwner: boolean;
+  status: FormStatus;
+  languages: string[];
+  lastModifiedOn: string;
+  lastModifiedBy: string;
+  numberOfQuestions: number;
+  languagesTranslationStatus: LanguagesTranslationStatus;
+}

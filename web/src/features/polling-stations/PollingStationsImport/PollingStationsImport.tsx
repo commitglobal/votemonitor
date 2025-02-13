@@ -59,7 +59,6 @@ export function PollingStationsImport(): FunctionComponent {
       electionRoundId: string;
       pollingStations: ImportPollingStationRow[];
     }) => {
-      debugger;
       return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, { pollingStations });
     },
 
@@ -123,7 +122,6 @@ export function PollingStationsImport(): FunctionComponent {
                   transformHeader: (header) => header.charAt(0).toLowerCase() + header.slice(1),
                   async complete(results) {
                     if (results.errors.length) {
-                      console.error('Parsing errors:', results.errors);
                       // Optionally show an error message to the user.
                       toast({
                         title: 'Parsing errors',

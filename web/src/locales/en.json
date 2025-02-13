@@ -148,21 +148,7 @@
     "placeholder.name": "Form template name",
     "placeholder.description": "Form template description",
     "placeholder.defaultLanguage": "Select a default language",
-    "placeholder.languages": "Select available languages",
-    "type": {
-      "opening": "Opening",
-      "voting": "Voting",
-      "closingAndCounting": "Closing And Counting",
-      "psi": "PSI",
-      "other": "Other",
-      "citizenReporting": "Citizen reporting",
-      "incidentReporting": "Incident reporting"
-    },
-    "status": {
-      "drafted": "Drafted",
-      "published": "Published",
-      "obsolete": "Obsolete"
-    }
+    "placeholder.languages": "Select available languages"
   },
   "observers": {
     "addObserver": {

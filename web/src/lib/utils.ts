@@ -1,5 +1,4 @@
-import { FormTemplateType, FormType, RatingScaleType, TranslatedString, UserPayload } from '@/common/types';
-import { FormStatus } from '@/features/forms/models';
+import { FormStatus, FormType, RatingScaleType, TranslatedString, UserPayload } from '@/common/types';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
 import { clsx, type ClassValue } from 'clsx';
@@ -322,28 +321,6 @@ export function mapFormType(formType: FormType): string {
   }
 }
 
-export function mapFormTemplateType(formTemplateType: FormTemplateType): string {
-  switch (formTemplateType) {
-    case FormTemplateType.Opening:
-      return i18n.t('form-template.type.opening');
-    case FormTemplateType.Voting:
-      return i18n.t('form-template.type.voting');
-    case FormTemplateType.ClosingAndCounting:
-      return i18n.t('form-template.type.closingAndCounting');
-    case FormTemplateType.CitizenReporting:
-      return i18n.t('form-template.type.citizenReporting');
-    case FormTemplateType.IncidentReporting:
-      return i18n.t('form-template.type.incidentReporting');
-    case FormTemplateType.PSI:
-      return i18n.t('form-template.type.psi');
-    case FormTemplateType.Other:
-      return i18n.t('form-template.type.other');
-
-    default:
-      return 'Unknown';
-  }
-}
-
 export function mapFormStatus(formStatus: FormStatus): string {
   switch (formStatus) {
     case FormStatus.Drafted:
@@ -352,20 +329,6 @@ export function mapFormStatus(formStatus: FormStatus): string {
       return i18n.t('form.status.published');
     case FormStatus.Obsolete:
       return i18n.t('form.status.obsolete');
-
-    default:
-      return 'Unknown';
-  }
-}
-
-export function mapFormTemplateStatus(formTemplateStatus: FormTemplateStatus): string {
-  switch (formTemplateStatus) {
-    case FormTemplateStatus.Drafted:
-      return i18n.t('form-template.status.drafted');
-    case FormTemplateStatus.Published:
-      return i18n.t('form-template.status.published');
-    case FormTemplateStatus.Obsolete:
-      return i18n.t('form-template.status.obsolete');
 
     default:
       return 'Unknown';
@@ -587,7 +550,6 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
 }
 
 import { authApi } from '@/common/auth-api';
-import { FormTemplateStatus } from '@/features/form-templates/models';
 
 export enum TemplateType {
   MonitoringObservers = 'monitoring-observers',

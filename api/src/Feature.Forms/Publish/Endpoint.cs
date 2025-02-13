@@ -21,7 +21,8 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
@@ -40,7 +41,7 @@ public class Endpoint(
 
         var result = form.Publish();
 
-        if (result is PublishResult.InvalidForm validationResult)
+        if (result is FormPublishResult.InvalidForm validationResult)
         {
             validationResult.Problems.Errors.ForEach(AddError);
             return new ProblemDetails(ValidationFailures);
@@ -48,7 +49,9 @@ public class Endpoint(
 
         await formsRepository.UpdateAsync(form, ct);
 
-        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        var monitoringNgo =
+            await monitoringNgoRepository.FirstOrDefaultAsync(
+                new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
         monitoringNgo!.UpdateFormVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

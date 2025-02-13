@@ -1,4 +1,4 @@
-import { CreateFormPage } from '@/components/CreateFormPage/CreateFormPage';
+import FormEditor from '@/components/FormEditor/FormEditor';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -6,9 +6,6 @@ export const Route = createFileRoute('/forms/new_/scratch')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },
-  component: CreateNewFormFromScratch,
+  component: FormEditor,
 });
 
-function CreateNewFormFromScratch() {
-  return <CreateFormPage />;
-}

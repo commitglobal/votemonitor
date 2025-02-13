@@ -10,7 +10,7 @@ import {
   mapIncidentCategory,
   mapQuickReportFollowUpStatus,
 } from '@/features/responses/utils/helpers';
-import { isNotNilOrWhitespace, mapFormTemplateType, mapFormType, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';

@@ -3,7 +3,7 @@ import { DateTimeFormat } from '@/common/formats';
 import { DataSources } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { isNotNilOrWhitespace, mapFormTemplateStatus, mapFormTemplateType, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapFormStatus, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
@@ -44,8 +44,8 @@ const FILTER_LABELS = new Map<string, string>([
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
-  [FILTER_KEY.FormTemplateTypeFilter, mapFormTemplateType],
-  [FILTER_KEY.FormTemplateStatusFilter, mapFormTemplateStatus],
+  [FILTER_KEY.FormTemplateTypeFilter, mapFormType],
+  [FILTER_KEY.FormTemplateStatusFilter, mapFormStatus],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

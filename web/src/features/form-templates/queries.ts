@@ -1,9 +1,9 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
+import { DataTableParameters, FormBase, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
-import { FormTemplateBase, FormTemplateFull } from './models';
+import { FormTemplateFull } from './models';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formTemlatesKeys = {
@@ -38,7 +38,7 @@ export function useformTemplateDetails(formTemplateId: string): UseQueryResult<F
 
 export function useFormTemplates(
   queryParams: DataTableParameters
-): UseQueryResult<PageResponse<FormTemplateBase>, Error> {
+): UseQueryResult<PageResponse<FormBase>, Error> {
 
   return useQuery({
     queryKey: formTemlatesKeys.list(queryParams),
@@ -53,7 +53,7 @@ export function useFormTemplates(
 
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<FormTemplateBase>>(`/form-templates`, {
+      const response = await authApi.get<PageResponse<FormBase>>(`/form-templates`, {
         params: searchParams,
       });
 

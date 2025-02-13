@@ -1,8 +1,8 @@
+import { FormStatus } from '@/common/types';
 import { SelectFilter, SelectFilterOption } from '@/features/filtering/components/SelectFilter';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { FormTemplateStatus } from '@/features/form-templates/models';
-import { mapFormTemplateStatus } from '@/lib/utils';
+import { mapFormStatus } from '@/lib/utils';
 import { FC } from 'react';
 
 export const FormTemplateStatusFilter: FC = () => {
@@ -13,18 +13,18 @@ export const FormTemplateStatusFilter: FC = () => {
   };
   const options: SelectFilterOption[] = [
     {
-      value: FormTemplateStatus.Drafted,
-      label: mapFormTemplateStatus(FormTemplateStatus.Drafted),
+      value: FormStatus.Drafted,
+      label: mapFormStatus(FormStatus.Drafted),
     },
 
     {
-      value: FormTemplateStatus.Published,
-      label: mapFormTemplateStatus(FormTemplateStatus.Published),
+      value: FormStatus.Published,
+      label: mapFormStatus(FormStatus.Published),
     },
 
     {
-      value: FormTemplateStatus.Obsolete,
-      label: mapFormTemplateStatus(FormTemplateStatus.Obsolete),
+      value: FormStatus.Obsolete,
+      label: mapFormStatus(FormStatus.Obsolete),
     },
   ];
 

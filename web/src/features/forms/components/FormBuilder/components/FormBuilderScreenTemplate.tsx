@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { FormTemplateBase } from '@/features/form-templates/models';
 import { useFormTemplates } from '@/features/form-templates/queries';
 import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
 import { cn, mapFormType } from '@/lib/utils';
@@ -17,12 +16,13 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PreviewTemplateDialog } from './PreviewDialogs';
+import { FormBase } from '@/common/types';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
   const previewTemplateDialog = usePreviewTemplateDialog();
   const { createForm } = useCreateFormFromTemplate();
-  const getSubrows = (originalRow: FormTemplateBase, index: number): undefined | FormTemplateBase[] => {
+  const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
     // we need to have subrows only for translations
@@ -36,9 +36,9 @@ export const FormBuilderScreenTemplate: FC = () => {
       }));
   };
 
-  const getRowClassName = (row: Row<FormTemplateBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+  const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
-  const templatesColDefs: ColumnDef<FormTemplateBase>[] = [
+  const templatesColDefs: ColumnDef<FormBase>[] = [
     {
       header: '',
       id: 'colapse',

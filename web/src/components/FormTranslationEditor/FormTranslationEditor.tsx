@@ -23,7 +23,7 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from '@/common/guards';
-import FormQuestionsTranslator from '@/components/questionsEditor/FormQuestionsTranslator';
+import FormQuestionsTranslator from '@/components/FormTranslationEditor/FormQuestionsTranslationEditor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { FormTemplateFull } from '@/features/form-templates/models';

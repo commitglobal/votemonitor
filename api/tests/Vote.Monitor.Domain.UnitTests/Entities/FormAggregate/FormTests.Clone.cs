@@ -16,6 +16,7 @@ public partial class FormTests
             new TranslatedStringFaker(_languages),
             new TranslatedStringFaker(_languages),
             _languages,
+            icon: null,
             [
                 _textQuestion,
                 _numberQuestion,
@@ -56,6 +57,7 @@ public partial class FormTests
             new TranslatedStringFaker(_languages),
             new TranslatedStringFaker(_languages),
             _languages,
+            icon: null,
             [
                 _textQuestion,
                 _numberQuestion,
@@ -87,6 +89,7 @@ public partial class FormTests
             new TranslatedStringFaker(_languages),
             new TranslatedStringFaker(_languages),
             _languages,
+            icon: null,
             [
                 _textQuestion,
                 _numberQuestion,
@@ -120,6 +123,7 @@ public partial class FormTests
             new TranslatedStringFaker(_languages),
             new TranslatedStringFaker(_languages),
             _languages,
+            icon: null,
             [
                 _textQuestion,
                 _numberQuestion,

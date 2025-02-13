@@ -25,7 +25,8 @@ public class CreateEndpointTests
         {
             Name = templateName,
             Code = "a code",
-            Languages = [LanguagesList.RO.Iso1]
+            Languages = [LanguagesList.RO.Iso1],
+            DefaultLanguage = LanguagesList.RO.Iso1
         };
         var result = await endpoint.ExecuteAsync(request, default);
 
@@ -35,9 +36,9 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, Conflict<ProblemDetails>>>()!
             .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateSlimModel>>()!
+            .Result.Should().BeOfType<Ok<FormTemplateFullModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
     }
 
@@ -59,7 +60,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }

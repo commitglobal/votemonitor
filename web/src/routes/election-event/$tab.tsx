@@ -1,6 +1,5 @@
-import { FormType } from '@/common/types';
+import { FormStatus, FormType } from '@/common/types';
 import ElectionEventDashboard from '@/features/election-event/components/Dashboard/Dashboard';
-import { FormStatus } from '@/features/forms/models';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';

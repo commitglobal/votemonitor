@@ -21,6 +21,6 @@ public sealed class GetFormTemplateSpecification : SingleResultSpecification<For
     {
         Query
             .Where(x => x.Id == id)
-            .Where(x => x.Status == FormTemplateStatus.Published, isNgoAdmin);
+            .Where(x => x.Status == FormStatus.Published, isNgoAdmin);
     }
 }

@@ -42,9 +42,7 @@ export function LocationsImport(): FunctionComponent {
       errors: validationResult.success ? [] : validationResult.error.errors,
     };
 
-    setLocations((prevData) =>
-      prevData.map((o) => (o.id === location.id ? { ...o, ...locationWithErorrs } : o))
-    );
+    setLocations((prevData) => prevData.map((o) => (o.id === location.id ? { ...o, ...locationWithErorrs } : o)));
   }
 
   const hasInvalidLocations = useMemo(() => {
@@ -52,14 +50,7 @@ export function LocationsImport(): FunctionComponent {
   }, [locations]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({
-      electionRoundId,
-      locations,
-    }: {
-      electionRoundId: string;
-      locations: ImportLocationRow[];
-    }) => {
-      debugger;
+    mutationFn: ({ electionRoundId, locations }: { electionRoundId: string; locations: ImportLocationRow[] }) => {
       return authApi.post(`/election-rounds/${electionRoundId}/locations`, { locations });
     },
 
@@ -123,7 +114,6 @@ export function LocationsImport(): FunctionComponent {
                   transformHeader: (header) => header.charAt(0).toLowerCase() + header.slice(1),
                   async complete(results) {
                     if (results.errors.length) {
-                      console.error('Parsing errors:', results.errors);
                       // Optionally show an error message to the user.
                       toast({
                         title: 'Parsing errors',

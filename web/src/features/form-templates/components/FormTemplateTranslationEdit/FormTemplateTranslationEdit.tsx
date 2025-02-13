@@ -1,6 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { mapToQuestionRequest } from '@/common/form-requests';
-import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
+import { EditFormType } from '@/components/FormEditor/FormEditor';
+import FormTranslationEditor from '@/components/FormTranslationEditor/FormTranslationEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -14,7 +15,6 @@ import { useCallback } from 'react';
 import { UpdateFormTemplateRequest } from '../../models';
 import { formTemlatesKeys, formTemplateDetailsQueryOptions } from '../../queries';
 import { FormTemplateDetailsBreadcrumbs } from '../FormTemplateDetailsBreadcrumbs/FormDetailsBreadcrumbs';
-import FormTranslationEditor from '@/components/FormTranslationEditor/FormTranslationEditor';
 
 function FormTemplateTranslationEdit() {
   const { formTemplateId , languageCode} = Route.useParams();

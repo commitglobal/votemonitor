@@ -9,26 +9,26 @@ namespace Feature.Forms.Models;
 
 public class FormFullModel
 {
-    public TranslatedString Description { get; set; }
+    public TranslatedString Description { get; init; }
 
     public required Guid Id { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public required FormType FormType { get; init; }
 
     public required string Code { get; init; }
     public TranslatedString Name { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]
     public required FormStatus Status { get; init; }
 
     public required string DefaultLanguage { get; init; }
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
-    public string? Icon { get; set; }
+    public string? Icon { get; init; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
+    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
+    
     public static FormFullModel FromEntity(FormAggregate form) => form == null
         ? null
         : new FormFullModel
@@ -44,10 +44,6 @@ public class FormFullModel
             NumberOfQuestions = form.NumberOfQuestions,
             Description = form.Description,
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
-            Icon = form.Icon
+            Icon = form.Icon,
         };
-
-
-    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
-    public object DisplayOrder { get; set; }
 }

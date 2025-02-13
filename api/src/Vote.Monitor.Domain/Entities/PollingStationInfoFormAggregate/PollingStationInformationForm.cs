@@ -12,11 +12,14 @@ namespace Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 public class PollingStationInformationForm : BaseForm
 {
+    public Guid ElectionRoundId { get; private set; }
+    public ElectionRound ElectionRound { get; private set; }
+    
     private PollingStationInformationForm(
         ElectionRound electionRound,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(electionRound,
+        IEnumerable<BaseQuestion> questions) : base(
         FormType.PSI,
         "PSI",
         TranslatedString.New(languages, "PSI"),
@@ -27,6 +30,8 @@ public class PollingStationInformationForm : BaseForm
         questions,
         FormStatus.Published)
     {
+        ElectionRound = electionRound;
+        ElectionRoundId = electionRound.Id;
     }
 
     private PollingStationInformationForm(

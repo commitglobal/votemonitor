@@ -8,20 +8,25 @@ namespace Feature.FormTemplates;
 
 public record FormTemplateSlimModel
 {
-    public Guid Id { get; init; }
-    public required string Code { get; init; }
-    public required string DefaultLanguage { get; init; }
-    public string[] Languages { get; init; } = [];
+    public TranslatedString Description { get; set; }
 
-    public required TranslatedString Name { get; init; }
-    public required TranslatedString Description { get; init; }
+    public required Guid Id { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public required FormType FormType { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormTemplateStatus, string>))]
-    public required FormTemplateStatus Status { get; init; }
-    public int NumberOfQuestions { get; set; }
-    public required DateTime CreatedOn { get; init; }
-    public required DateTime? LastModifiedOn { get; init; }
+    public required string Code { get; init; }
+    public TranslatedString Name { get; init; }
+    public string? Icon { get; init; }
+
+    public required FormStatus Status { get; init; }
+
+    public required string DefaultLanguage { get; init; }
+    public required string[] Languages { get; init; } = [];
+    public int NumberOfQuestions { get; init; }
+    public required DateTime LastModifiedOn { get; init; }
+
+    public string LastModifiedBy { get; init; }
+
+
+    public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
 }

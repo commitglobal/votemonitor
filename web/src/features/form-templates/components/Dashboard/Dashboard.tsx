@@ -1,10 +1,14 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ZTranslationStatus } from '@/common/types';
+import { FormBase, FormStatus } from '@/common/types';
+import AddFormTranslationsDialog, {
+  useAddFormTranslationsDialog,
+} from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
+import FormStatusBadge from '@/components/FormStatusBadge/ElectionRoundStatusBadge';
+import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -37,12 +41,8 @@ import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { useMemo, useState, type ReactElement } from 'react';
-import { FormTemplateBase, FormTemplateStatus } from '../../models';
 import { formTemlatesKeys, useFormTemplates } from '../../queries';
 import { FormTemplateFilters } from './FormTemplateFilters';
-import AddFormTranslationsDialog, {
-  useAddFormTranslationsDialog,
-} from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -68,9 +68,9 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const { data: languages } = useLanguages();
 
-  const columnHelper = createColumnHelper<FormTemplateBase>();
+  const columnHelper = createColumnHelper<FormBase>();
 
-  const formColDefs: ColumnDef<FormTemplateBase>[] = useMemo(() => {
+  const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
     const defaultColumns = [
       columnHelper.display({
         header: '',
@@ -101,7 +101,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         id: 'code',
         enableSorting: true,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formCode')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.formCode')} column={column} />
         ),
         cell: ({ row }) => row.original.code,
       }),
@@ -109,7 +109,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         id: 'name',
         enableSorting: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.name')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.name')} column={column} />
         ),
         cell: ({ row }) => row.original.name[row.original.defaultLanguage],
       }),
@@ -118,7 +118,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         enableSorting: true,
         enableResizing: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formType')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.formType')} column={column} />
         ),
         cell: ({ row }) => (row.depth === 0 ? mapFormType(row.original.formType) : ''),
       }),
@@ -127,7 +127,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         enableSorting: false,
         enableResizing: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.language')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.language')} column={column} />
         ),
         cell: ({ row }) => (
           <LanguageBadge languageCode={row.original.defaultLanguage} variant={'unstyled'} displayMode='native' />
@@ -138,7 +138,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         enableSorting: true,
         enableResizing: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.questions')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.questions')} column={column} />
         ),
         cell: ({ row }) => (row.depth === 0 ? row.original.numberOfQuestions : ''),
       }),
@@ -147,35 +147,18 @@ export default function FormTemplatesDashboard(): ReactElement {
         enableSorting: true,
         enableResizing: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.status')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.status')} column={column} />
         ),
         cell: ({ row }) => {
           const form = row.original;
 
           return row.depth === 0 ? (
-            <Badge
-              className={cn({
-                'text-slate-700 bg-slate-200': form.status === FormTemplateStatus.Drafted,
-                'text-green-600 bg-green-200': form.status === FormTemplateStatus.Published,
-                'text-yellow-600 bg-yellow-200': form.status === FormTemplateStatus.Obsolete,
-              })}>
-              {form.status}
-            </Badge>
+            <FormStatusBadge status={form.status} />
           ) : (
-            <Badge
-              className={cn({
-                'text-green-600 bg-green-200':
-                  form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.Translated,
-                'text-yellow-600 bg-yellow-200':
-                  form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.MissingTranslations,
-                'text-slate-700 bg-slate-200': form.languagesTranslationStatus[form.defaultLanguage] === undefined,
-              })}>
-              {form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.Translated
-                ? 'Translated'
-                : form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.MissingTranslations
-                  ? 'Missing translation'
-                  : 'Unknown'}
-            </Badge>
+            <FormTranslationStatusBadge
+              defaultLanguage={form.defaultLanguage}
+              translationStatus={form.languagesTranslationStatus}
+            />
           );
         },
       }),
@@ -184,7 +167,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         enableSorting: true,
         enableResizing: false,
         header: ({ column }) => (
-          <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.updatedOn')} column={column} />
+          <DataTableColumnHeader title={i18n.t('electionEvent.formTemplates.headers.updatedOn')} column={column} />
         ),
         cell: ({ row }) =>
           row.depth === 0 ? (
@@ -224,13 +207,13 @@ export default function FormTemplatesDashboard(): ReactElement {
 
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormTemplateStatus.Drafted}
+                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                   onClick={() => navigateToEdit(row.original.id)}>
                   Edit
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormTemplateStatus.Drafted}
+                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                   onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
                   Edit
                 </DropdownMenuItem>
@@ -238,17 +221,17 @@ export default function FormTemplatesDashboard(): ReactElement {
 
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormTemplateStatus.Drafted}
+                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
                   onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
                   Add translations
                 </DropdownMenuItem>
               ) : null}
-              {row.depth === 0 && row.original.status === FormTemplateStatus.Published ? (
+              {row.depth === 0 && row.original.status === FormStatus.Published ? (
                 <DropdownMenuItem disabled={!row.original.isFormOwner} onClick={() => handleObsoleteForm(row.original)}>
                   Obsolete
                 </DropdownMenuItem>
               ) : null}
-              {row.depth === 0 && row.original.status === FormTemplateStatus.Drafted ? (
+              {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
                 <DropdownMenuItem disabled={!row.original.isFormOwner} onClick={() => handlePublishForm(row.original)}>
                   Publish
                 </DropdownMenuItem>
@@ -269,7 +252,7 @@ export default function FormTemplatesDashboard(): ReactElement {
                       await confirm({
                         title: `Delete form ${row.original.code}?`,
                         body:
-                          row.original.status === FormTemplateStatus.Published ? (
+                          row.original.status === FormStatus.Published ? (
                             <>
                               Please note that this form is published and may contain associated data. Deleting this
                               form could result in the loss of any submitted answers from your observers. Once deleted,{' '}
@@ -332,15 +315,15 @@ export default function FormTemplatesDashboard(): ReactElement {
     setSearchText(ev.currentTarget.value);
   };
 
-  const handleObsoleteForm = (formTemplate: FormTemplateBase) => {
+  const handleObsoleteForm = (formTemplate: FormBase) => {
     obsoleteFormTemplateMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
-  const handlePublishForm = (formTemplate: FormTemplateBase) => {
+  const handlePublishForm = (formTemplate: FormBase) => {
     publishFormMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
-  const handleDuplicateForm = (formTemplate: FormTemplateBase) => {
+  const handleDuplicateForm = (formTemplate: FormBase) => {
     duplicateFormMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
@@ -471,7 +454,7 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
   });
 
-  const getSubrows = (originalRow: FormTemplateBase, index: number): undefined | FormTemplateBase[] => {
+  const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
     // we need to have subrows only for translations
@@ -485,15 +468,14 @@ export default function FormTemplatesDashboard(): ReactElement {
       }));
   };
 
-  const getRowClassName = (row: Row<FormTemplateBase>): string =>
-    cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+  const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
         <CardTitle className='flex flex-row items-center justify-between pr-6'>
           <div className='text-2xl font-semibold leading-none tracking-tight'>
-            {i18n.t('electionEvent.observerForms.cardTitle')}
+            {i18n.t('electionEvent.formTemplates.cardTitle')}
           </div>
           <div>
             <Link to='/form-templates/new'>

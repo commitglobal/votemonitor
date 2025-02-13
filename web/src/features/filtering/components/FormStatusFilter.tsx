@@ -1,9 +1,9 @@
+import { FormStatus } from '@/common/types';
 import { SelectFilter, SelectFilterOption } from '@/features/filtering/components/SelectFilter';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { mapFormStatus } from '@/lib/utils';
 import { FC } from 'react';
-import { FormStatus } from '../../forms/models';
 
 export const FormStatusFilter: FC = () => {
   const { queryParams, navigateHandler } = useFilteringContainer();

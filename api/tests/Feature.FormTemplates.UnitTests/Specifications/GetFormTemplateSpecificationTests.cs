@@ -1,4 +1,5 @@
 ﻿using Feature.FormTemplates.Specifications;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.FormTemplates.UnitTests.Specifications;
 
@@ -30,8 +31,8 @@ public class GetFormTemplateSpecificationTests
     public void GetFormTemplateSpecification_MatchesByCodeButNotId()
     {
         // Arrange
-        var formTemplate1 = new FormTemplateAggregateFaker(code: "A", status: FormTemplateStatus.Published).Generate();
-        var formTemplate2 = new FormTemplateAggregateFaker(code: "A", status: FormTemplateStatus.Published).Generate();
+        var formTemplate1 = new FormTemplateAggregateFaker(code: "A", status: FormStatus.Published).Generate();
+        var formTemplate2 = new FormTemplateAggregateFaker(code: "A", status: FormStatus.Published).Generate();
 
         var testCollection = new FormTemplateAggregateFaker()
             .Generate(500)

@@ -32,7 +32,7 @@ public class Endpoint(IRepository<FormTemplate> repository) : Endpoint<Request, 
         var questions = req.Questions.Select(QuestionsMapper.ToEntity)
                  .ToList()
                  .AsReadOnly();
-        formTemplate.UpdateDetails(req.Code, req.DefaultLanguage, req.Name,  req.Description, req.FormType, req.Languages, questions);
+        formTemplate.UpdateDetails(req.Code, req.Name, req.Description,  req.FormType, req.DefaultLanguage, req.Languages, req.Icon,  questions);
 
         await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();

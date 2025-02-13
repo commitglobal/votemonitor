@@ -9,12 +9,12 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from '@/common/guards';
-import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
-import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
-import PreviewNumberQuestion from '@/components/questionsEditor/preview/PreviewNumberQuestion';
-import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewRatingQuestion';
-import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
-import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
+import PreviewDateQuestion from '@/components/FormQuestionsPreview/PreviewDateQuestion';
+import PreviewMultiSelectQuestion from '@/components/FormQuestionsPreview/PreviewMultiSelectQuestion';
+import PreviewNumberQuestion from '@/components/FormQuestionsPreview/PreviewNumberQuestion';
+import PreviewRatingQuestion from '@/components/FormQuestionsPreview/PreviewRatingQuestion';
+import PreviewSingleSelectQuestion from '@/components/FormQuestionsPreview/PreviewSingleSelectQuestion';
+import PreviewTextQuestion from '@/components/FormQuestionsPreview/PreviewTextQuestion';
 
 interface FormQuestionsPreviewProps {
   questions: BaseQuestion[] | undefined;
@@ -23,7 +23,12 @@ interface FormQuestionsPreviewProps {
   noContentMessage: string;
 }
 
-export const FormQuestionsPreview: FC<FormQuestionsPreviewProps> = ({ questions, languageCode, title, noContentMessage }) => {
+export const FormQuestionsPreview: FC<FormQuestionsPreviewProps> = ({
+  questions,
+  languageCode,
+  title,
+  noContentMessage,
+}) => {
   if (questions?.length === 0)
     return (
       <div className='flex flex-col gap-1'>

@@ -1,8 +1,8 @@
-import { FormTemplateType } from '@/common/types';
+import { FormType } from '@/common/types';
 import { SelectFilter, SelectFilterOption } from '@/features/filtering/components/SelectFilter';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { mapFormTemplateType } from '@/lib/utils';
+import { mapFormType } from '@/lib/utils';
 import { FC, useMemo } from 'react';
 
 export const FormTemplateTypeFilter: FC = () => {
@@ -15,32 +15,32 @@ export const FormTemplateTypeFilter: FC = () => {
   const selectOptions = useMemo(() => {
     const options: SelectFilterOption[] = [
       {
-        value: FormTemplateType.Opening,
-        label: mapFormTemplateType(FormTemplateType.Opening),
+        value: FormType.Opening,
+        label: mapFormType(FormType.Opening),
       },
       {
-        value: FormTemplateType.Voting,
-        label: mapFormTemplateType(FormTemplateType.Voting),
+        value: FormType.Voting,
+        label: mapFormType(FormType.Voting),
       },
       {
-        value: FormTemplateType.ClosingAndCounting,
-        label: mapFormTemplateType(FormTemplateType.ClosingAndCounting),
+        value: FormType.ClosingAndCounting,
+        label: mapFormType(FormType.ClosingAndCounting),
       },
       {
-        value: FormTemplateType.PSI,
-        label: mapFormTemplateType(FormTemplateType.PSI),
+        value: FormType.PSI,
+        label: mapFormType(FormType.PSI),
       },
       {
-        value: FormTemplateType.CitizenReporting,
-        label: mapFormTemplateType(FormTemplateType.CitizenReporting),
+        value: FormType.CitizenReporting,
+        label: mapFormType(FormType.CitizenReporting),
       },
       {
-        value: FormTemplateType.IncidentReporting,
-        label: mapFormTemplateType(FormTemplateType.IncidentReporting),
+        value: FormType.IncidentReporting,
+        label: mapFormType(FormType.IncidentReporting),
       },
       {
-        value: FormTemplateType.Other,
-        label: mapFormTemplateType(FormTemplateType.Other),
+        value: FormType.Other,
+        label: mapFormType(FormType.Other),
       },
     ];
 

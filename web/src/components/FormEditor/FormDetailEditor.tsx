@@ -4,26 +4,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 
-import { QuestionType, FormType } from '@/common/types';
+import { FormType, QuestionType } from '@/common/types';
 import LanguageSelect from '@/containers/LanguageSelect';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { changeLanguageCode, mapFormType } from '@/lib/utils';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { EditFormType } from './FormEditor';
-import { changeLanguageCode, mapFormType } from '@/lib/utils';
-import { useEffect, useRef, useState } from 'react';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export interface FormDetailEditorProps {
   languageCode: string;
   hasCitizenReportingOption: boolean;
 }
 
-function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetailEditorProps) {
+function FormDetailEditor({ languageCode, hasCitizenReportingOption }: FormDetailEditorProps) {
   const { t } = useTranslation();
-  const form = useFormContext<EditFormType>();
-  const formType = useWatch({ control: form.control, name: 'formType' });
-  const icon = useWatch({ control: form.control, name: 'icon' });
+  const { control, trigger, getValues, setValue } = useFormContext<EditFormType>();
+  const formType = useWatch({ control, name: 'formType' });
+  const icon = useWatch({ control, name: 'icon' });
 
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
   const [error, setError] = useState('');
@@ -65,20 +63,21 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
   }, [icon]);
 
   const handleLanguageChange = (newLanguageCode: string): void => {
-    const formValues = form.getValues();
-    form.setValue('name', changeLanguageCode(formValues.name, languageCode, newLanguageCode));
+    const formValues = getValues();
+    setValue('name', changeLanguageCode(formValues.name, languageCode, newLanguageCode));
 
-    form.setValue('description', changeLanguageCode(formValues.description, languageCode, newLanguageCode));
+    setValue('description', changeLanguageCode(formValues.description, languageCode, newLanguageCode));
 
-    form.setValue('languageCode', newLanguageCode);
-    form.setValue('languages', [...formValues.languages.filter((l) => l !== languageCode), newLanguageCode]);
+    setValue('languageCode', newLanguageCode);
+    setValue('defaultLanguage', newLanguageCode);
+    setValue('languages', [newLanguageCode, ...(formValues.languages ?? []).filter((l) => l !== languageCode)]);
 
     formValues.questions.forEach((question, index) => {
       if (
         question.$questionType === QuestionType.NumberQuestionType ||
         question.$questionType === QuestionType.TextQuestionType
       ) {
-        form.setValue(`questions.${index}`, {
+        setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
           text: changeLanguageCode(question.text, languageCode, newLanguageCode),
@@ -91,7 +90,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         question.$questionType === QuestionType.DateQuestionType ||
         question.$questionType === QuestionType.RatingQuestionType
       ) {
-        form.setValue(`questions.${index}`, {
+        setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
           text: changeLanguageCode(question.text, languageCode, newLanguageCode)!,
@@ -103,7 +102,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         question.$questionType === QuestionType.SingleSelectQuestionType ||
         question.$questionType === QuestionType.MultiSelectQuestionType
       ) {
-        form.setValue(`questions.${index}`, {
+        setValue(`questions.${index}`, {
           ...question,
           languageCode: newLanguageCode,
           text: changeLanguageCode(question.text, languageCode, newLanguageCode)!,
@@ -115,17 +114,17 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         });
       }
 
-      form.trigger(`questions.${index}`);
+      trigger(`questions.${index}`);
     });
 
-    form.trigger('questions');
+    trigger('questions');
   };
 
   return (
     <div className='md:inline-flex md:space-x-6'>
       <div className='space-y-4 md:w-1/2'>
         <FormField
-          control={form.control}
+          control={control}
           name='formType'
           render={({ field }) => (
             <FormItem>
@@ -143,13 +142,9 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
                     {mapFormType(FormType.ClosingAndCounting)}
                   </SelectItem>
                   {hasCitizenReportingOption && (
-                    <SelectItem value={FormType.CitizenReporting}>
-                      {mapFormType(FormType.CitizenReporting)}
-                    </SelectItem>
+                    <SelectItem value={FormType.CitizenReporting}>{mapFormType(FormType.CitizenReporting)}</SelectItem>
                   )}
-                  <SelectItem value={FormType.IncidentReporting}>
-                    {mapFormType(FormType.IncidentReporting)}
-                  </SelectItem>
+                  <SelectItem value={FormType.IncidentReporting}>{mapFormType(FormType.IncidentReporting)}</SelectItem>
                   <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
                 </SelectContent>
               </Select>
@@ -161,7 +156,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         {formType === FormType.CitizenReporting && hasCitizenReportingOption ? (
           <>
             <FormField
-              control={form.control}
+              control={control}
               name='icon'
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -186,7 +181,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         ) : null}
 
         <FormField
-          control={form.control}
+          control={control}
           name='code'
           render={({ field, fieldState }) => (
             <FormItem>
@@ -199,7 +194,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name='name'
           render={({ field, fieldState }) => (
             <FormItem>
@@ -224,7 +219,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name='languageCode'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
@@ -253,7 +248,7 @@ function FormDetailEditor({ languageCode ,hasCitizenReportingOption}: FormDetail
       </div>
       <div className='md:w-1/2'>
         <FormField
-          control={form.control}
+          control={control}
           name='description'
           render={({ field, fieldState }) => (
             <FormItem>

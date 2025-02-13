@@ -22,7 +22,7 @@ public class Endpoint(IRepository<FormTemplate> repository) : Endpoint<Request, 
 
         var result = formTemplate.Publish();
 
-        if (result is PublishResult.InvalidFormTemplate validationResult)
+        if (result is FormTemplatePublishResult.InvalidFormTemplate validationResult)
         {
             validationResult.Problems.Errors.ForEach(AddError);
             return new ProblemDetails(ValidationFailures);

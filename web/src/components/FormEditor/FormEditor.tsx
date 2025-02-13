@@ -1,5 +1,5 @@
 import { FormType, QuestionType, ZTranslatedString } from '@/common/types';
-import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
+import FormQuestionsEditor from '@/components/FormEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
@@ -16,8 +16,6 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from '@/common/guards';
-import Layout from '@/components/layout/Layout';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
@@ -36,17 +34,18 @@ import {
   ZEditQuestionType,
 } from '@/common/form-requests';
 import { FormTemplateFull } from '@/features/form-templates/models';
+import { DevTool } from '@hookform/devtools';
 import EditFormDetails from './FormDetailEditor';
 
 export const ZEditFormType = z
   .object({
-    languageCode: z.string().trim().min(1),
-    defaultLanguage: z.string().trim().min(1),
-    code: z.string().trim().min(1),
+    languageCode: z.string().trim().min(1, 'Language code is required.'),
+    defaultLanguage: z.string().trim().min(1, 'Default language is required.'),
+    code: z.string().trim().min(1, 'Code is required.'),
     name: ZTranslatedString,
     description: ZTranslatedString.optional(),
     icon: z.string().optional(),
-    languages: z.array(z.string()),
+    languages: z.array(z.string()).nonempty('At least one language is required.'),
     formType: z.nativeEnum(FormType).catch(FormType.Opening),
     questions: z.array(ZEditQuestionType),
   })
@@ -193,8 +192,6 @@ export const ZEditFormType = z
           });
         }
       }
-
-      return z.NEVER;
     });
   });
 
@@ -359,14 +356,14 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
   const form = useForm<EditFormType>({
     resolver: zodResolver(ZEditFormType),
     defaultValues: {
-      code: formData?.code,
-      languageCode: formData?.defaultLanguage,
-      defaultLanguage: formData?.defaultLanguage,
-      languages: formData?.languages,
-      name: ensureTranslatedStringCorrectness(formData?.name, formData?.languages ?? []),
-      description: ensureTranslatedStringCorrectness(formData?.description, formData?.languages ?? []),
-      formType: formData?.formType,
-      questions: editQuestions,
+      code: formData?.code ?? '',
+      languageCode: formData?.defaultLanguage ?? 'EN',
+      defaultLanguage: formData?.defaultLanguage ?? 'EN',
+      languages: formData?.languages ?? ['EN'],
+      name: ensureTranslatedStringCorrectness(formData?.name, formData?.languages ?? ['EN']),
+      description: ensureTranslatedStringCorrectness(formData?.description, formData?.languages ?? ['EN']),
+      formType: formData?.formType ?? FormType.Opening,
+      questions: editQuestions ?? [],
       icon: formData?.icon ?? '',
     },
     mode: 'all',
@@ -374,7 +371,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
 
   useBlocker({
     shouldBlockFn: async () => {
-      if (!form.formState.isDirty) {
+      if (!form.formState.isDirty || form.formState.isSubmitting) {
         return false;
       }
 
@@ -386,9 +383,6 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
       });
     },
   });
-
-  const code = useWatch({ control: form.control, name: 'code', defaultValue: formData?.code });
-  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData?.name });
 
   const languageCode = useWatch({
     control: form.control,
@@ -403,87 +397,71 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
   return (
-    <Layout
-      enableBackButton
-      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      enableBreadcrumbs={false}
-      title={`${code} - ${name[languageCode]}`}>
-      <Form {...form}>
-        <form className='flex flex-col flex-1'>
-          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
-            <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-              <TabsTrigger
-                value='form-details'
-                className={cn({
-                  'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid,
-                })}>
-                Form details
-              </TabsTrigger>
-              <TabsTrigger
-                value='questions'
-                className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>
-                Questions
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value='form-details'>
-              <Card className='pt-0'>
-                <CardHeader className='flex gap-2 flex-column'>
-                  <div className='flex flex-row items-center justify-between'>
-                    <CardTitle className='text-xl'>Form details</CardTitle>
-                  </div>
-                  <Separator />
-                </CardHeader>
-                <CardContent className='flex flex-col items-baseline gap-6'>
-                  <EditFormDetails languageCode={languageCode} hasCitizenReportingOption={hasCitizenReportingOption} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent className='flex flex-col flex-1' value='questions'>
-              <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
-                <CardHeader className='flex gap-2 flex-column'>
-                  <div className='flex flex-row items-center justify-between'>
-                    <CardTitle className='text-xl'>
-                      {languageCode && (
-                        <div className='flex items-center gap-2'>
-                          <span className='text-sm'>Form questions</span>
-                          <LanguageBadge languageCode={languageCode} />
-                        </div>
-                      )}
-                    </CardTitle>
-                  </div>
-                  <Separator />
-                </CardHeader>
-                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
-                  <FormQuestionsEditor />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-          <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
-            <div className='container flex items-center justify-end h-full gap-4'>
-              <Button
-                type='submit'
-                variant='outline'
-                onClick={() => {
-                  form.handleSubmit((data) => onSaveForm(data, false));
-                }}
-                disabled={!form.formState.isValid || formEditingMode === 'NewForm'}>
-                Save
-              </Button>
-              <Button
-                type='submit'
-                variant='default'
-                onClick={() => {
-                  form.handleSubmit((data) => onSaveForm(data, true));
-                }}
-                disabled={!form.formState.isValid}>
-                Save and exit form editor
-              </Button>
-            </div>
-          </footer>
-        </form>
-      </Form>
-    </Layout>
+    <Form {...form}>
+      <pre>{JSON.stringify(form.formState.errors, null, 4)}</pre>
+      <form className='flex flex-col flex-1' onSubmit={form.handleSubmit((data) => onSaveForm(data, false))}>
+        <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
+          <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
+            <TabsTrigger
+              value='form-details'
+              className={cn({
+                'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid,
+              })}>
+              Form details
+            </TabsTrigger>
+            <TabsTrigger
+              value='questions'
+              className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>
+              Questions
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value='form-details'>
+            <Card className='pt-0'>
+              <CardHeader className='flex gap-2 flex-column'>
+                <div className='flex flex-row items-center justify-between'>
+                  <CardTitle className='text-xl'>Form details</CardTitle>
+                </div>
+                <Separator />
+              </CardHeader>
+              <CardContent className='flex flex-col items-baseline gap-6'>
+                <EditFormDetails languageCode={languageCode} hasCitizenReportingOption={hasCitizenReportingOption} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent className='flex flex-col flex-1' value='questions'>
+            <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
+              <CardHeader className='flex gap-2 flex-column'>
+                <div className='flex flex-row items-center justify-between'>
+                  <CardTitle className='text-xl'>
+                    {languageCode && (
+                      <div className='flex items-center gap-2'>
+                        <span className='text-sm'>Form questions</span>
+                        <LanguageBadge languageCode={languageCode} />
+                      </div>
+                    )}
+                  </CardTitle>
+                </div>
+                <Separator />
+              </CardHeader>
+              <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
+                <FormQuestionsEditor />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
+          <div className='container flex items-center justify-end h-full gap-4'>
+            <Button type='submit' variant='outline' disabled={formEditingMode === 'NewForm'}>
+              Save
+            </Button>
+            <Button type='submit' variant='default'>
+              Save and exit form editor
+            </Button>
+          </div>
+        </footer>
+      </form>
+      <DevTool control={form.control} /> {/* set up the dev tool */}
+    </Form>
   );
 };
 

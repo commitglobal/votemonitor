@@ -1,6 +1,9 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, FormType, ZTranslationStatus } from '@/common/types';
+import { ElectionRoundStatus, FormStatus, FormType } from '@/common/types';
+import AddFormTranslationsDialog, {
+  useAddFormTranslationsDialog,
+} from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -40,11 +43,12 @@ import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { useMemo, useState, type ReactElement } from 'react';
-import { FormBase, FormStatus } from '../../models';
+import { NgoFormBase } from '../../models';
 import { formsKeys, useForms } from '../../queries';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { FormFilters } from './FormFilters/FormFilters';
-import AddFormTranslationsDialog, { useAddFormTranslationsDialog } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
+import FormStatusBadge from '@/components/FormStatusBadge/ElectionRoundStatusBadge';
+import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -73,9 +77,9 @@ export default function FormsDashboard(): ReactElement {
 
   const { data: languages } = useLanguages();
 
-  const columnHelper = createColumnHelper<FormBase>();
+  const columnHelper = createColumnHelper<NgoFormBase>();
 
-  const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
+  const formColDefs: ColumnDef<NgoFormBase>[] = useMemo(() => {
     const defaultColumns = [
       columnHelper.display({
         header: '',
@@ -158,29 +162,12 @@ export default function FormsDashboard(): ReactElement {
           const form = row.original;
 
           return row.depth === 0 ? (
-            <Badge
-              className={cn({
-                'text-slate-700 bg-slate-200': form.status === FormStatus.Drafted,
-                'text-green-600 bg-green-200': form.status === FormStatus.Published,
-                'text-yellow-600 bg-yellow-200': form.status === FormStatus.Obsolete,
-              })}>
-              {form.status}
-            </Badge>
+            <FormStatusBadge status={form.status} />
           ) : (
-            <Badge
-              className={cn({
-                'text-green-600 bg-green-200':
-                  form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.Translated,
-                'text-yellow-600 bg-yellow-200':
-                  form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.MissingTranslations,
-                'text-slate-700 bg-slate-200': form.languagesTranslationStatus[form.defaultLanguage] === undefined,
-              })}>
-              {form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.Translated
-                ? 'Translated'
-                : form.languagesTranslationStatus[form.defaultLanguage] === ZTranslationStatus.enum.MissingTranslations
-                ? 'Missing translation'
-                : 'Unknown'}
-            </Badge>
+            <FormTranslationStatusBadge
+              translationStatus={form.languagesTranslationStatus}
+              defaultLanguage={form.defaultLanguage}
+            />
           );
         },
       }),
@@ -556,15 +543,15 @@ export default function FormsDashboard(): ReactElement {
     setSearchText(ev.currentTarget.value);
   };
 
-  const handleObsoleteForm = (form: FormBase) => {
+  const handleObsoleteForm = (form: NgoFormBase) => {
     obsoleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   };
 
-  const handlePublishForm = (form: FormBase) => {
+  const handlePublishForm = (form: NgoFormBase) => {
     publishFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   };
 
-  const handleDuplicateForm = (form: FormBase) => {
+  const handleDuplicateForm = (form: NgoFormBase) => {
     duplicateFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   };
 
@@ -700,7 +687,7 @@ export default function FormsDashboard(): ReactElement {
     },
   });
 
-  const getSubrows = (originalRow: FormBase, index: number): undefined | FormBase[] => {
+  const getSubrows = (originalRow: NgoFormBase, index: number): undefined | NgoFormBase[] => {
     if (originalRow.languages.length === 0) return undefined;
 
     // we need to have subrows only for translations
@@ -714,7 +701,8 @@ export default function FormsDashboard(): ReactElement {
       }));
   };
 
-  const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+  const getRowClassName = (row: Row<NgoFormBase>): string =>
+    cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
   return (
     <Card className='w-full pt-0'>

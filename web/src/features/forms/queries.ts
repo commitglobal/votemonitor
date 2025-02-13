@@ -3,7 +3,7 @@ import { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
-import { FormBase, FormFull } from './models';
+import { FormFull, NgoFormBase } from './models';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formsKeys = {
@@ -32,11 +32,10 @@ export const formDetailsQueryOptions = (electionRoundId: string, formId: string)
   });
 };
 
-
 export function useForms(
   electionRoundId: string,
   queryParams: DataTableParameters
-): UseQueryResult<PageResponse<FormBase>, Error> {
+): UseQueryResult<PageResponse<NgoFormBase>, Error> {
   return useQuery({
     queryKey: formsKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
@@ -50,7 +49,7 @@ export function useForms(
 
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<FormBase>>(`/election-rounds/${electionRoundId}/forms`, {
+      const response = await authApi.get<PageResponse<NgoFormBase>>(`/election-rounds/${electionRoundId}/forms`, {
         params: searchParams,
       });
 
