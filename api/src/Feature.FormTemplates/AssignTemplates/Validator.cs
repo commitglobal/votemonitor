@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-
-namespace Feature.FormTemplates.AssignTemplates;
+﻿namespace Feature.FormTemplates.AssignTemplates;
 
 public class Validator : Validator<Request>
 {
