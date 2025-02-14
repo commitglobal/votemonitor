@@ -55,7 +55,7 @@ namespace Vote.Monitor.Domain.Migrations
                                         "GetMonitoringNgoDetails"(electionRoundId, ngoId))
                                        AND MN."NgoId" <> ngoId
                                    ) THEN MO."Id"::TEXT
-                               ELSE U."FirstName" END   AS "FirstName",
+                               ELSE U."FirstName"::TEXT END   AS "FirstName",
                            CASE
                                WHEN (
                                    (SELECT "IsCoalitionLeader"
@@ -63,7 +63,7 @@ namespace Vote.Monitor.Domain.Migrations
                                         "GetMonitoringNgoDetails"(electionRoundId, ngoId))
                                        AND MN."NgoId" <> ngoId
                                    ) THEN MO."Id"::TEXT
-                               ELSE U."LastName" END    AS "LastName",
+                               ELSE U."LastName"::TEXT END    AS "LastName",
                            CASE
                                WHEN (
                                    (SELECT "IsCoalitionLeader"
@@ -135,8 +135,8 @@ namespace Vote.Monitor.Domain.Migrations
                            MN."NgoId",
                            MO."MonitoringNgoId",
                            U."DisplayName" AS "DisplayName",
-                           U."FirstName"   AS "FirstName",
-                           U."LastName"    AS "LastName",
+                           U."FirstName"::TEXT   AS "FirstName",
+                           U."LastName"::TEXT    AS "LastName",
                            U."Email"::TEXT AS "Email",
                            U."PhoneNumber" AS "PhoneNumber",
                            MO."Tags"       AS "Tags",

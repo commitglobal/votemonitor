@@ -130,6 +130,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             GROUP BY
                 MO."Id",
                 U."DisplayName",
+                U."FirstName",
+                U."LastName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",

@@ -93,6 +93,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         SELECT
             MO."Id",
             MO."DisplayName",
+            MO."FirstName",
+            MO."LastName",
             MO."PhoneNumber",
             MO."Email",
             MO."Tags",
@@ -105,6 +107,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         GROUP BY
             MO."Id",
             MO."DisplayName",
+            MO."FirstName",
+            MO."LastName",
             MO."PhoneNumber",
             MO."Email",
             MO."Tags",
