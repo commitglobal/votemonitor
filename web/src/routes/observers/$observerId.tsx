@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import ObserverDetails from '@/features/observers/components/ObserverDetails/ObserverDetails';
-import { Observer } from '@/features/observers/models/Observer';
+import { Observer } from '@/features/observers/models/observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';

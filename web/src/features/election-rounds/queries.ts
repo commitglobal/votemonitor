@@ -3,6 +3,7 @@ import { DataTableParameters, ElectionRoundStatus, PageResponse } from '@/common
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { ElectionRoundModel } from './models/types';
 import { buildURLSearchParams } from '@/lib/utils';
+const STALE_TIME = 1000 * 60 * 15; // fifteen minutes
 
 export const electionRoundKeys = {
   all: ['electionRounds'] as const,
@@ -43,6 +44,7 @@ export function useElectionRounds(
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 }
 
