@@ -84,7 +84,7 @@ function FormNew() {
   );
 
   return (
-    <Layout backButton={<NavigateBack to='/election-rounds' />} title={`Create new form template`}>
+    <Layout backButton={<NavigateBack to='/election-rounds' />} title={`Create new form template`} breadcrumbs={<></>}>
       <FormEditor
         onSaveForm={(formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) =>
           saveForm(currentElectionRoundId, formData, shouldNavigateAwayAfterSubmit)

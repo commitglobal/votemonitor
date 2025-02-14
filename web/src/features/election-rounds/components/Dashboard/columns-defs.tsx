@@ -9,11 +9,8 @@ import {
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { Link } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { ElectionRoundModel } from '../../models/types';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { ElectionRoundStatus } from '@/common/types';
 import ElectionRoundStatusBadge from '../../../../components/ElectionRoundStatusBadge/ElectionRoundStatusBadge';
+import { ElectionRoundModel } from '../../models/types';
 
 const columnHelper = createColumnHelper<ElectionRoundModel>();
 
