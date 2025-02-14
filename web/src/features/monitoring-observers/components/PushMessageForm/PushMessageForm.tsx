@@ -203,7 +203,7 @@ function PushMessageForm(): FunctionComponent {
                     value={searchText}
                     placeholder='Search'
                   />
-                  <MonitoringObserverTagsSelect />
+                  <MonitoringObserverTagsSelect isUsingAlternativeFilteringKey />
                   <MonitoringObserverStatusSelect />
                   <FormTypeFilter />
                   <FormSubmissionsFormFilter />

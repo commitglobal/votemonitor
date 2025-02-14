@@ -8,12 +8,12 @@ import { FormSubmissionsFollowUpFilter } from '../../../filtering/components/For
 
 export function FormSubmissionsFiltersByObserver(): FunctionComponent {
   const dataSource = useDataSource();
-  
+
   return (
     <FilteringContainer>
       <FormSubmissionsFollowUpFilter />
       {dataSource === DataSources.Coalition ? <CoalitionMemberFilter /> : null}
-      <MonitoringObserverTagsSelect isFilteringFormSubmissions />
+      <MonitoringObserverTagsSelect isUsingAlternativeFilteringKey />
       <FormSubmissionsFlaggedAnswersFilter />
     </FilteringContainer>
   );
