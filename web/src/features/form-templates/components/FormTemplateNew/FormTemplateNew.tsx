@@ -18,23 +18,32 @@ function FormTemplateNew() {
   const { toast } = useToast();
 
   const newFormTemplateMutation = useMutation({
-    mutationFn: ({ formTemplate }: { formTemplate: NewFormTemplateRequest }) => {
-      return authApi.post<FormTemplateFull>(`/form-templates`, {
-        ...formTemplate,
-      });
+    mutationFn: async ({
+      formTemplate,
+    }: {
+      shouldNavigateAwayAfterSubmit: boolean;
+      formTemplate: NewFormTemplateRequest;
+    }) => {
+      return await authApi
+        .post<FormTemplateFull>(`/form-templates`, {
+          ...formTemplate,
+        })
+        .then((response) => response.data);
     },
 
-    onSuccess: () => {
+    onSuccess: ({ id }, { shouldNavigateAwayAfterSubmit }) => {
       toast({
         title: 'Success',
         description: 'Form template created successfully',
       });
 
-      // TODO: set in cache
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all(), type: 'all' });
       router.invalidate();
-
-      void navigate({ to: '/form-templates' });
+      if (shouldNavigateAwayAfterSubmit) {
+        void navigate({ to: '/form-templates' });
+      } else {
+        void navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
+      }
     },
 
     onError: () => {
@@ -47,7 +56,6 @@ function FormTemplateNew() {
   });
 
   const saveFormTemplate = useCallback((formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
-    debugger;
     const newFormTemplate: NewFormTemplateRequest = {
       code: formData.code,
       name: formData.name,
@@ -59,7 +67,7 @@ function FormTemplateNew() {
       questions: formData.questions.map(mapToQuestionRequest),
     };
 
-    newFormTemplateMutation.mutate({ formTemplate: newFormTemplate });
+    newFormTemplateMutation.mutate({ formTemplate: newFormTemplate, shouldNavigateAwayAfterSubmit });
   }, []);
 
   return (
@@ -69,7 +77,6 @@ function FormTemplateNew() {
           saveFormTemplate(formData, shouldNavigateAwayAfterSubmit)
         }
         hasCitizenReportingOption={true}
-        formEditingMode={'NewForm'}
       />
     </Layout>
   );

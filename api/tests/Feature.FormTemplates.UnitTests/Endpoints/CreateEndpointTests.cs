@@ -36,32 +36,7 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, Conflict<ProblemDetails>>>()!
-            .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateFullModel>>()!
+            .Should().BeOfType<Ok<FormTemplateFullModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
-    }
-
-    [Fact]
-    public async Task ShouldReturnConflict_WhenFormTemplateWithSameCodeExists()
-    {
-        // Arrange
-        var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
-
-        repository
-            .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
-            .Returns(true);
-
-        var endpoint = Factory.Create<Endpoint>(repository);
-
-        // Act
-        var request = new Request();
-        var result = await endpoint.ExecuteAsync(request, default);
-
-        // Assert
-        result
-            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, Conflict<ProblemDetails>>>()
-            .Which
-            .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
 }

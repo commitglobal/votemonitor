@@ -13,7 +13,7 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { UpdateFormTemplateRequest } from '../../models';
 import { formTemlatesKeys, formTemplateDetailsQueryOptions } from '../../queries';
-import { FormTemplateDetailsBreadcrumbs } from '../FormTemplateDetailsBreadcrumbs/FormDetailsBreadcrumbs';
+import { FormTemplateDetailsBreadcrumbs } from '@/components/FormTemplateDetailsBreadcrumbs/FormTemplateDetailsBreadcrumbs';
 
 function FormTemplateEdit() {
   const { formTemplateId } = Route.useParams();
@@ -101,7 +101,6 @@ function FormTemplateEdit() {
           saveFormTemplate(formData, shouldNavigateAwayAfterSubmit)
         }
         hasCitizenReportingOption={true}
-        formEditingMode={'ExistingForm'}
       />
     </Layout>
   );

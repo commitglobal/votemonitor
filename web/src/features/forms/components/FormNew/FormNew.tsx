@@ -22,23 +22,38 @@ function FormNew() {
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
   const newFormMutation = useMutation({
-    mutationFn: ({ electionRoundId, form }: { electionRoundId: string; form: NewFormRequest }) => {
-      return authApi.post<FormFull>(`/election-rounds/${electionRoundId}/forms`, {
-        ...form,
-      });
+    mutationFn: ({
+      electionRoundId,
+      form,
+    }: {
+      electionRoundId: string;
+      form: NewFormRequest;
+      shouldNavigateAwayAfterSubmit: boolean;
+    }) => {
+      return authApi
+        .post<FormFull>(`/election-rounds/${electionRoundId}/forms`, {
+          ...form,
+        })
+        .then((response) => response.data);
     },
 
-    onSuccess: (_, { electionRoundId }) => {
+    onSuccess: ({ id }, { electionRoundId, shouldNavigateAwayAfterSubmit }) => {
       toast({
         title: 'Success',
         description: 'Form template created successfully',
       });
 
-      // TODO: set in cache
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
       router.invalidate();
 
-      void navigate({ to: '/form-templates' });
+      if (shouldNavigateAwayAfterSubmit) {
+        void navigate({
+          to: '/election-rounds/$electionRoundId/$tab',
+          params: { electionRoundId, tab: 'observer-forms' },
+        });
+      } else {
+        void navigate({ to: '/forms/$formId/edit', params: { formId: id } });
+      }
     },
 
     onError: () => {
@@ -63,7 +78,7 @@ function FormNew() {
         questions: formData.questions.map(mapToQuestionRequest),
       };
 
-      newFormMutation.mutate({ electionRoundId, form: newForm });
+      newFormMutation.mutate({ electionRoundId, form: newForm, shouldNavigateAwayAfterSubmit });
     },
     []
   );
@@ -75,7 +90,6 @@ function FormNew() {
           saveForm(currentElectionRoundId, formData, shouldNavigateAwayAfterSubmit)
         }
         hasCitizenReportingOption={electionEvent?.isMonitoringNgoForCitizenReporting ?? false}
-        formEditingMode={'ExistingForm'}
       />
     </Layout>
   );

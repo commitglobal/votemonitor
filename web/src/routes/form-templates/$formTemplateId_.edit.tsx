@@ -1,29 +1,19 @@
-import FormTemplateEdit from '@/features/form-templates/components/FormTemplateEdit/FormTemplateEdit'
-import { formTemplateDetailsQueryOptions } from '@/features/form-templates/queries'
-import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils'
-import { createFileRoute } from '@tanstack/react-router'
+import FormTemplateEdit from '@/features/form-templates/components/FormTemplateEdit/FormTemplateEdit';
+import { formTemplateDetailsQueryOptions } from '@/features/form-templates/queries';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/form-templates/$formTemplateId_/edit')({
   component: Edit,
-  loader: ({
-    context: { queryClient },
-    params: { formTemplateId },
-  }) => {
-
-    return queryClient.ensureQueryData(
-      formTemplateDetailsQueryOptions(formTemplateId),
-    )
+  loader: ({ context: { queryClient }, params: { formTemplateId } }) => {
+    return queryClient.ensureQueryData(formTemplateDetailsQueryOptions(formTemplateId));
   },
   beforeLoad: () => {
     redirectIfNotAuth();
     redirectIfNotPlatformAdmin();
   },
-})
+});
 
 function Edit() {
-  return (
-    <div className="p-2 flex flex-col flex-1">
-      <FormTemplateEdit />
-    </div>
-  )
+  return <FormTemplateEdit />;
 }

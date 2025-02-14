@@ -6,28 +6,6 @@ namespace Feature.FormTemplates.UnitTests.Specifications;
 public class GetFormTemplateSpecificationTests
 {
     [Fact]
-    public void GetFormTemplateSpecification_UsesExactMatchOnCode()
-    {
-        // Arrange
-        var formTemplate = new FormTemplateAggregateFaker().Generate();
-
-        var testCollection = new FormTemplateAggregateFaker()
-            .Generate(500)
-            .Union(new[] { formTemplate })
-            .Union(new FormTemplateAggregateFaker().Generate(500))
-            .ToList();
-
-        var spec = new GetFormTemplateSpecification(formTemplate.Code, formTemplate.FormType);
-
-        // Act
-        var result = spec.Evaluate(testCollection).ToList();
-
-        // Assert
-        result.Should().HaveCount(1); // Expecting only one item in the result
-        result.Should().Contain(formTemplate);
-    }
-
-    [Fact]
     public void GetFormTemplateSpecification_MatchesByCodeButNotId()
     {
         // Arrange

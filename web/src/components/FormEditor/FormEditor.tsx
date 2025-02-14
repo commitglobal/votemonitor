@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { useBlocker } from '@tanstack/react-router';
-import { FC, useEffect } from 'react';
+import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { FormFull } from '../../features/forms/models';
 
 import {
@@ -201,11 +201,11 @@ interface FormEditorProps {
   formData?: FormFull | FormTemplateFull;
   onSaveForm: (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => void;
   hasCitizenReportingOption: boolean;
-  formEditingMode: 'NewForm' | 'ExistingForm';
 }
 
-const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditingMode, formData, onSaveForm }) => {
+const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, onSaveForm }) => {
   const confirm = useConfirm();
+  const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
   const editQuestions = formData?.questions.map((question) => {
     if (isNumberQuestion(question)) {
       const numberQuestion: EditNumberQuestionType = {
@@ -398,8 +398,9 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
 
   return (
     <Form {...form}>
-      <pre>{JSON.stringify(form.formState.errors, null, 4)}</pre>
-      <form className='flex flex-col flex-1' onSubmit={form.handleSubmit((data) => onSaveForm(data, false))}>
+      <form
+        className='flex flex-col flex-1'
+        onSubmit={form.handleSubmit((data) => onSaveForm(data, navigateAwayAfterSave))}>
         <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
           <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
             <TabsTrigger
@@ -451,10 +452,10 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formEditin
         </Tabs>
         <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
           <div className='container flex items-center justify-end h-full gap-4'>
-            <Button type='submit' variant='outline' disabled={formEditingMode === 'NewForm'}>
+            <Button type='submit' variant='outline' onClick={() => setNavigateAwayAfterSave(false)}>
               Save
             </Button>
-            <Button type='submit' variant='default'>
+            <Button type='submit' variant='default' onClick={() => setNavigateAwayAfterSave(true)}>
               Save and exit form editor
             </Button>
           </div>

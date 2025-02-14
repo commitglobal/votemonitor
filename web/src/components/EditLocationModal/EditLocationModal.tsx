@@ -33,10 +33,6 @@ export default function EditLocationModal({ location, updateLocation }: EditLoca
     form.trigger();
   }, [form.trigger]);
 
-  function onSubmit(updatedLocation: Location) {
-    updateLocation(updatedLocation);
-  }
-
   return (
     <>
       <DialogHeader>
@@ -44,7 +40,7 @@ export default function EditLocationModal({ location, updateLocation }: EditLoca
       </DialogHeader>
       <div className='py-4'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4'>
+          <form onSubmit={form.handleSubmit(updateLocation)} className='grid gap-4'>
             <FormField
               control={form.control}
               name='level1'
