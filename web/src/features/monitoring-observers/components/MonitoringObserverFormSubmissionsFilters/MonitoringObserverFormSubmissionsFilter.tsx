@@ -20,7 +20,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, ...filters }) });
+      navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -29,7 +29,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             params,
             replace: true,
@@ -53,7 +53,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, formTypeFilter: value }) });
+          navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, formTypeFilter: value }) });
         }}
         value={search.formTypeFilter ?? ''}>
         <SelectTrigger>
@@ -72,7 +72,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -95,7 +95,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Button
         onClick={() => {
-          void navigate({});
+          navigate({});
         }}
         variant='ghost-primary'>
         Reset filters

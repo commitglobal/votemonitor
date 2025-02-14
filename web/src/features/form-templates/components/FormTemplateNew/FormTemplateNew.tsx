@@ -40,9 +40,9 @@ function FormTemplateNew() {
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all(), type: 'all' });
       router.invalidate();
       if (shouldNavigateAwayAfterSubmit) {
-        void navigate({ to: '/form-templates' });
+        navigate({ to: '/form-templates' });
       } else {
-        void navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
+        navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
       }
     },
 

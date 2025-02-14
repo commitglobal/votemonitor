@@ -96,7 +96,7 @@ export function QuickReportsTab(): FunctionComponent {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({
+      navigate({
         to: '.',
         search: (prev: any) => {
           const newSearch = { ...prev, ...filters };
@@ -110,7 +110,7 @@ export function QuickReportsTab(): FunctionComponent {
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {
-      void navigate({ to: '/responses/quick-reports/$quickReportId', params: { quickReportId } });
+      navigate({ to: '/responses/quick-reports/$quickReportId', params: { quickReportId } });
     },
     [navigate]
   );
@@ -168,7 +168,7 @@ export function QuickReportsTab(): FunctionComponent {
 
             <Select
               onValueChange={(value) => {
-                void navigate({ to: '.', search: (prev: any) => ({ ...prev, quickReportLocationType: value }) });
+                navigate({ to: '.', search: (prev: any) => ({ ...prev, quickReportLocationType: value }) });
               }}
               value={search.quickReportLocationType ?? ''}>
               <SelectTrigger>
@@ -191,7 +191,7 @@ export function QuickReportsTab(): FunctionComponent {
 
             <Select
               onValueChange={(value) => {
-                void navigate({
+                navigate({
                   to: '.',
                   search: (prev: any) => ({ ...prev, quickReportFollowUpStatus: value }),
                 });
@@ -217,7 +217,7 @@ export function QuickReportsTab(): FunctionComponent {
 
             <Select
               onValueChange={(value) => {
-                void navigate({ to: '.', search: (prev: any) => ({ ...prev, incidentCategory: value }) });
+                navigate({ to: '.', search: (prev: any) => ({ ...prev, incidentCategory: value }) });
               }}
               value={search.incidentCategory ?? ''}>
               <SelectTrigger>

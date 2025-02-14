@@ -47,12 +47,12 @@ function FormNew() {
       router.invalidate();
 
       if (shouldNavigateAwayAfterSubmit) {
-        void navigate({
-          to: '/election-rounds/$electionRoundId/$tab',
-          params: { electionRoundId, tab: 'observer-forms' },
+        navigate({
+          to: '/election-event/$tab',
+          params: {  tab: 'observer-forms' },
         });
       } else {
-        void navigate({ to: '/forms/$formId/edit', params: { formId: id } });
+        navigate({ to: '/forms/$formId/edit', params: { formId: id } });
       }
     },
 

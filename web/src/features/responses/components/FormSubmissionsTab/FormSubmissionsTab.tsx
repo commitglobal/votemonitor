@@ -118,7 +118,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' });
-                    void navigate({
+                    navigate({
                       to: '.',
                       replace: true,
                       search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' },

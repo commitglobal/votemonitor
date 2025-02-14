@@ -21,7 +21,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ to: '.', replace: true, params, search: (prev) => ({ ...prev, ...filters }) });
+      navigate({ to: '.', replace: true, params, search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -30,7 +30,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -54,7 +54,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -78,7 +78,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -101,7 +101,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
 
       <Button
         onClick={() => {
-          void navigate({});
+          navigate({});
         }}
         variant='ghost-primary'>
         Reset filters

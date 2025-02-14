@@ -24,7 +24,7 @@ function Details() {
   const form = Route.useLoaderData();
   const navigate = useNavigate();
   const navigateToEdit = useCallback(() => {
-    void navigate({ to: '/forms/$formId/edit', params: { formId } });
+    navigate({ to: '/forms/$formId/edit', params: { formId } });
   }, [navigate]);
 
   return (

@@ -20,7 +20,7 @@ export function MonitoringObserverQuickReportsFilters(): FunctionComponent {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      navigate({ search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -29,7 +29,7 @@ export function MonitoringObserverQuickReportsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -53,7 +53,7 @@ export function MonitoringObserverQuickReportsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({
+          navigate({
             to: '.',
             replace: true,
             params,
@@ -77,7 +77,7 @@ export function MonitoringObserverQuickReportsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
+          navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
         }}
         value={search.hasFlaggedAnswers?.toString() ?? ''}>
         <SelectTrigger>
@@ -95,7 +95,7 @@ export function MonitoringObserverQuickReportsFilters(): FunctionComponent {
 
       <Button
         onClick={() => {
-          void navigate({});
+          navigate({});
         }}
         variant='ghost-primary'>
         Reset filters

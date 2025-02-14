@@ -21,7 +21,7 @@ export function useFilteringContainer() {
 
   const navigateHandler = useCallback(
     (search: Record<string, any | undefined>) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {

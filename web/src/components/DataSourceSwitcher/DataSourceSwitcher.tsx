@@ -24,7 +24,7 @@ export function DataSourceSwitcher(): FunctionComponent {
 
   const navigateHandler = useCallback(
     (dataSource: DataSources) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {

@@ -1,4 +1,3 @@
-import FormTemplateEdit from '@/features/form-templates/components/FormTemplateEdit/FormTemplateEdit';
 import FormEdit from '@/features/forms/components/FormEdit/FormEdit';
 import { formDetailsQueryOptions } from '@/features/forms/queries';
 import { redirectIfNotAuth } from '@/lib/utils';

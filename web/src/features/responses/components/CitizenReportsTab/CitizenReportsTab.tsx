@@ -41,7 +41,7 @@ export function CitizenReportsTab(): FunctionComponent {
   useEffect(() => {
     if (byFilter === 'byEntry') {
       setPrevSearch({ [FILTER_KEY.ViewBy]: 'byEntry' });
-      void navigate({ to: '.', search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
+      navigate({ to: '.', search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
     }
   }, [byFilter]);
 
@@ -74,7 +74,7 @@ export function CitizenReportsTab(): FunctionComponent {
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' });
-                    void navigate({
+                    navigate({
                       to: '.',
                       replace: true,
                       search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' },

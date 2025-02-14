@@ -101,7 +101,7 @@ export function PollingStationsFilters(): FunctionComponent {
 
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
-      void navigate({
+      navigate({
         to: '.',
         search: (prev: Record<string, string | undefined | string[] | number | Date | boolean>) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {

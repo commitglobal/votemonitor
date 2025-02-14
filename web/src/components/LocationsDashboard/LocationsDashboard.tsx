@@ -135,7 +135,7 @@ export default function LocationsDashboard(): ReactElement {
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
       // @ts-ignore
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      navigate({ search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -196,7 +196,7 @@ export default function LocationsDashboard(): ReactElement {
 
             <Button
               onClick={() => {
-                void navigate({});
+                navigate({});
               }}
               variant='ghost-primary'>
               {i18n.t('electionEvent.locations.resetFilters')}

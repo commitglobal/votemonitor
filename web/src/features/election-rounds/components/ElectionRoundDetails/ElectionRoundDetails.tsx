@@ -28,7 +28,7 @@ function ElectionRoundDetails() {
       <Tabs
         defaultValue={tab ?? 'event-details'}
         onValueChange={(tab) => {
-          void navigate({
+          navigate({
             to: '/election-rounds/$electionRoundId/$tab',
             params: { electionRoundId, tab },
             replace: true,

@@ -134,7 +134,7 @@ export default function PollingStationsDashboard(): ReactElement {
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
       // @ts-ignore
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      navigate({ search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -195,7 +195,7 @@ export default function PollingStationsDashboard(): ReactElement {
 
             <Button
               onClick={() => {
-                void navigate({});
+                navigate({});
               }}
               variant='ghost-primary'>
               {i18n.t('electionEvent.pollingStations.resetFilters')}

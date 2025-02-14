@@ -247,7 +247,7 @@ const Header = (): FunctionComponent => {
                           variant='link'
                           onClick={() => {
                             signOut();
-                            void navigate({ to: '/login' });
+                            navigate({ to: '/login' });
                           }}>
                           Sign out
                         </Button>
@@ -324,7 +324,7 @@ const Header = (): FunctionComponent => {
                   as={Button}
                   onClick={() => {
                     signOut();
-                    void navigate({ to: '/login' });
+                    navigate({ to: '/login' });
                   }}
                   variant='link'
                   className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>

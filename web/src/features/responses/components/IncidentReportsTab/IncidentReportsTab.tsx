@@ -93,7 +93,7 @@ export default function IncidentReportsTab(): FunctionComponent {
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' });
-                    void navigate({
+                    navigate({
                       to: '.',
                       search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' },
                     });

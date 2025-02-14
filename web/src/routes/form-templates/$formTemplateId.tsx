@@ -12,7 +12,7 @@ function Details(): FunctionComponent {
     const formTemplateId = formData.id;
     const languageCode = formData.defaultLanguage;
 
-    void navigate({
+    navigate({
       to: '/form-templates/$formTemplateId/$languageCode',
       params: { languageCode, formTemplateId },
       replace: true,
