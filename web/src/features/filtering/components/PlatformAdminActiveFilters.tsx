@@ -1,8 +1,5 @@
-import { useDataSource } from '@/common/data-source-store';
 import { DateTimeFormat } from '@/common/formats';
-import { DataSources } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { isNotNilOrWhitespace, mapFormStatus, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
@@ -76,19 +73,12 @@ interface PlatformAdminActiveFiltersProps {
 }
 
 export const PlatformAdminActiveFilters: FC<PlatformAdminActiveFiltersProps> = ({ queryParams }) => {
-  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const dataSource = useDataSource();
 
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
       {Object.entries(queryParams)
         .filter(([filterId, value]) => !!value)
         .filter(([filterId, value]) => isNotNilOrWhitespace(value?.toString()))
-        .filter(
-          ([filterId, value]) =>
-            filterId !== FILTER_KEY.CoalitionMemberId ||
-            (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
-        )
         .map(([filterId, value]) => {
           let key = '';
           const isArray = Array.isArray(value);

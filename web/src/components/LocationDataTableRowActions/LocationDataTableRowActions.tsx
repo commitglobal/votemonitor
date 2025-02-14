@@ -1,14 +1,13 @@
-import { Row } from '@tanstack/react-table';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 import { Location } from '@/common/types';
@@ -23,18 +22,12 @@ interface DataTableRowActionsProps {
   deleteLocation: (location: Location) => void;
 }
 
-export function LocationDataTableRowActions({
-  location,
-  deleteLocation,
-  updateLocation,
-}: DataTableRowActionsProps) {
+export function LocationDataTableRowActions({ location, deleteLocation, updateLocation }: DataTableRowActionsProps) {
   const [dialogContent, setDialogContent] = React.useState<React.ReactNode | null>(null);
   const confirm = useConfirm();
 
   const handleEditClick = React.useCallback(() => {
-    setDialogContent(
-      <EditLocationModal location={location} updateLocation={updateLocation} />
-    );
+    setDialogContent(<EditLocationModal location={location} updateLocation={updateLocation} />);
   }, [location, updateLocation]);
 
   const handleDeleteClick = React.useCallback(async () => {
