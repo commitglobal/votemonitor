@@ -94,7 +94,7 @@ export default function IncidentReportsTab(): FunctionComponent {
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' });
                     void navigate({
-                      to: Route.path,
+                      to: '.',
                       search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'incident-reports' },
                     });
                     setFiltersExpanded(false);

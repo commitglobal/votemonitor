@@ -97,7 +97,7 @@ export function QuickReportsTab(): FunctionComponent {
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
       void navigate({
-        to: Route.path,
+        to: '.',
         search: (prev: any) => {
           const newSearch = { ...prev, ...filters };
           setPrevSearch(newSearch);
@@ -168,7 +168,7 @@ export function QuickReportsTab(): FunctionComponent {
 
             <Select
               onValueChange={(value) => {
-                void navigate({ to: Route.path, search: (prev: any) => ({ ...prev, quickReportLocationType: value }) });
+                void navigate({ to: '.', search: (prev: any) => ({ ...prev, quickReportLocationType: value }) });
               }}
               value={search.quickReportLocationType ?? ''}>
               <SelectTrigger>
@@ -192,7 +192,7 @@ export function QuickReportsTab(): FunctionComponent {
             <Select
               onValueChange={(value) => {
                 void navigate({
-                  to: Route.path,
+                  to: '.',
                   search: (prev: any) => ({ ...prev, quickReportFollowUpStatus: value }),
                 });
               }}
@@ -217,7 +217,7 @@ export function QuickReportsTab(): FunctionComponent {
 
             <Select
               onValueChange={(value) => {
-                void navigate({ to: Route.path, search: (prev: any) => ({ ...prev, incidentCategory: value }) });
+                void navigate({ to: '.', search: (prev: any) => ({ ...prev, incidentCategory: value }) });
               }}
               value={search.incidentCategory ?? ''}>
               <SelectTrigger>

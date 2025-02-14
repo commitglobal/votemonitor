@@ -25,8 +25,6 @@ export const Route = createFileRoute(
 
 function Edit() {
   return (
-    <div className="p-2 flex-1">
       <FormTranslationEdit />
-    </div>
   )
 }

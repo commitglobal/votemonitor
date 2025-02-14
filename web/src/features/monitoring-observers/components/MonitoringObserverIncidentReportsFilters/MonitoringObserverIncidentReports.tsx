@@ -21,7 +21,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ to: Route.path, replace: true, params, search: (prev) => ({ ...prev, ...filters }) });
+      void navigate({ to: '.', replace: true, params, search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -31,7 +31,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       <Select
         onValueChange={(value) => {
           void navigate({
-            to: Route.path,
+            to: '.',
             replace: true,
             params,
             search: (prev: any) => ({ ...prev, incidentReportFollowUpStatus: value }),
@@ -55,7 +55,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       <Select
         onValueChange={(value) => {
           void navigate({
-            to: Route.path,
+            to: '.',
             replace: true,
             params,
             search: (prev: any) => ({ ...prev, incidentReportLocationType: value }),
@@ -79,7 +79,7 @@ export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
       <Select
         onValueChange={(value) => {
           void navigate({
-            to: Route.path,
+            to: '.',
             replace: true,
             params,
             search: (prev) => ({ ...prev, hasFlaggedAnswers: value }),

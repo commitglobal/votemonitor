@@ -16,8 +16,6 @@ export const Route = createFileRoute('/form-templates/$formTemplateId_/edit-tran
 
 function Edit() {
   return (
-    <div className='p-2 flex-1'>
       <FormTemplateTranslationEdit />
-    </div>
   );
 }
