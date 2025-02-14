@@ -14,7 +14,7 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    [Migration("20250213082231_AddFormTemplatesIconColumn")]
+    [Migration("20250214075446_AddFormTemplatesIconColumn")]
     partial class AddFormTemplatesIconColumn
     {
         /// <inheritdoc />
@@ -3302,6 +3302,16 @@ namespace Vote.Monitor.Domain.Migrations
                             Iso3 = "ZWE",
                             Name = "Zimbabwe",
                             NumericCode = "716"
+                        },
+                        new
+                        {
+                            Id = new Guid("4b07d158-c1d0-8ab0-a28e-a56d64f910e1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Republic of Kosovo",
+                            Iso2 = "XK",
+                            Iso3 = "XKX",
+                            Name = "Kosovo",
+                            NumericCode = "926"
                         });
                 });
 
@@ -3481,6 +3491,11 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<int>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -3620,6 +3635,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("jsonb");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
 
                     b.Property<string>("FormType")
                         .IsRequired()

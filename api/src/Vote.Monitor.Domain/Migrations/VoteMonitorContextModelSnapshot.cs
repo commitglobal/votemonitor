@@ -3633,6 +3633,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
                     b.Property<string>("FormType")
                         .IsRequired()
                         .HasColumnType("text");

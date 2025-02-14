@@ -10,29 +10,19 @@ namespace Vote.Monitor.Domain.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Icon",
+            migrationBuilder.AddColumn<int>(
+                name: "DisplayOrder",
                 table: "FormTemplates",
-                type: "text",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LanguagesTranslationStatus",
-                table: "FormTemplates",
-                type: "jsonb",
+                type: "integer",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Icon",
-                table: "FormTemplates");
-
-            migrationBuilder.DropColumn(
-                name: "LanguagesTranslationStatus",
+                name: "DisplayOrder",
                 table: "FormTemplates");
         }
     }
