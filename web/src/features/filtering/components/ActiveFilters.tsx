@@ -1,6 +1,9 @@
+import { useDataSource } from '@/common/data-source-store';
 import { DateTimeFormat } from '@/common/formats';
+import { DataSources } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
 import {
   mapFormSubmissionFollowUpStatus,
@@ -12,9 +15,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import { useDataSource } from '@/common/data-source-store';
-import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
-import { DataSources } from '@/common/types';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -50,7 +50,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.LocationL3, FILTER_LABEL.LocationL3],
   [FILTER_KEY.LocationL4, FILTER_LABEL.LocationL4],
   [FILTER_KEY.LocationL5, FILTER_LABEL.LocationL5],
-  [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
+  [FILTER_KEY.TagsFilter, FILTER_LABEL.TagsFilter],
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
   [FILTER_KEY.FormId, FILTER_LABEL.FormId],
   [FILTER_KEY.FormStatusFilter, FILTER_LABEL.FormStatus],
@@ -120,7 +120,8 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         .filter(([filterId, value]) => isNotNilOrWhitespace(value?.toString()))
         .filter(
           ([filterId, value]) =>
-            filterId !== FILTER_KEY.CoalitionMemberId || (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
+            filterId !== FILTER_KEY.CoalitionMemberId ||
+            (dataSource === DataSources.Coalition && filterId === FILTER_KEY.CoalitionMemberId)
         )
         .map(([filterId, value]) => {
           let key = '';

@@ -17,6 +17,7 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
+import { targetedObserversKeys } from '../../hooks/push-messages-queries';
 import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
@@ -87,6 +88,7 @@ export default function EditObserver() {
       });
       router.invalidate();
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
+      queryClient.invalidateQueries({ queryKey: targetedObserversKeys.all(electionRoundId) });
 
       navigate({
         to: '/monitoring-observers/view/$monitoringObserverId/$tab',
