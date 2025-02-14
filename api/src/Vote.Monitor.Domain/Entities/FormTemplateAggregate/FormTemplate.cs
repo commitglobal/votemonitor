@@ -21,7 +21,8 @@ public class FormTemplate : BaseForm
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
+        LanguagesTranslationStatus languagesTranslationStatus,
+        int displayOrder) : base(id,
         formType,
         code,
         name,
@@ -31,7 +32,8 @@ public class FormTemplate : BaseForm
         languages,
         icon,
         numberOfQuestions,
-        languagesTranslationStatus)
+        languagesTranslationStatus,
+        displayOrder)
     {
     }
 
@@ -103,7 +105,6 @@ public class FormTemplate : BaseForm
             defaultLanguage,
             languages,
             null,
-            0,
             Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
 

@@ -28,8 +28,7 @@ public class PollingStationInformationForm : BaseForm
         languages,
         null,
         questions,
-        FormStatus.Published,
-        displayOrder: 0)
+        FormStatus.Published)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;

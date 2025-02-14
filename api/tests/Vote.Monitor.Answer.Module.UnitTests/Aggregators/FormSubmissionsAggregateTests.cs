@@ -45,7 +45,7 @@ public class FormSubmissionsAggregateTests
 
         _form = Domain.Entities.FormAggregate.Form.Create(_electionRound, monitoringNgo, FormType.Opening, "F1",
             new TranslatedStringFaker(),
-            new TranslatedStringFaker(), "EN", [], null, displayOrder: 0, questions);
+            new TranslatedStringFaker(), "EN", [], null, questions);
     }
 
     [Fact]

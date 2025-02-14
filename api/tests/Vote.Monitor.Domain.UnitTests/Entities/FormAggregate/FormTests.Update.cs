@@ -8,10 +8,10 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, []);
+            LanguagesList.RO.Iso1, _languages, null, []);
         // Act
         form.UpdateDetails(form.Code, form.Name, form.Description, form.FormType, form.DefaultLanguage, form.Languages,
-            null, displayOrder: 0, questions);
+            null, questions);
 
         // Assert
         form.LanguagesTranslationStatus.Should().HaveCount(2);

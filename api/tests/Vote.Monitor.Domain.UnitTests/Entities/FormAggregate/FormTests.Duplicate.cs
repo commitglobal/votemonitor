@@ -17,7 +17,7 @@ public partial class FormTests
         ];
 
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.RO.Iso1, _languages, null, displayOrder: 0, questions);
+            LanguagesList.RO.Iso1, _languages, null, questions);
 
         form.Publish();
 
@@ -41,7 +41,7 @@ public partial class FormTests
     {
         // Arrange
         var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
-            LanguagesList.EN.Iso1, _languages, null, displayOrder: 0, questions);
+            LanguagesList.EN.Iso1, _languages, null, questions);
 
         // Act
         var newForm = form.Duplicate();

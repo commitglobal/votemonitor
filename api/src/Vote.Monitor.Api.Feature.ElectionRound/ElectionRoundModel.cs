@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
-using Vote.Monitor.Domain.Entities.NgoAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound;
 

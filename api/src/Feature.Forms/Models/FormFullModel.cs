@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Form.Module.Mappers;
 using Vote.Monitor.Form.Module.Models;
@@ -24,14 +22,11 @@ public class FormFullModel
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
     public string? Icon { get; init; }
-    public string? Icon { get; init; }
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
 
     public int DisplayOrder { get; init; }
-
-    public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
 
     
     public static FormFullModel FromEntity(FormAggregate form) => form == null
@@ -50,5 +45,6 @@ public class FormFullModel
             Description = form.Description,
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
             Icon = form.Icon,
+            DisplayOrder = form.DisplayOrder
         };
 }

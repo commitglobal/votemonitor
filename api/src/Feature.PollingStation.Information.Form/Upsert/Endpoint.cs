@@ -37,7 +37,7 @@ public class Endpoint(
         CancellationToken ct)
     {
         pollingStationInformationForm.UpdateDetails("PSI", TranslatedString.New(languages, "PSI"),
-            TranslatedString.New(languages, "PSI"), FormType.PSI, defaultLanguage, languages, null, displayOrder: 0,
+            TranslatedString.New(languages, "PSI"), FormType.PSI, defaultLanguage, languages, null,
             questions);
         await repository.UpdateAsync(pollingStationInformationForm, ct);
 
