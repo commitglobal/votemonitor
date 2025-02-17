@@ -11,7 +11,7 @@ import {
   usePreviewTemplateDialog,
 } from '@/features/forms/hooks';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { useformTemplateDetails } from '@/features/form-templates/queries';
 import { FormQuestionsPreview } from '@/components/FormQuestionsPreview/FormQuestionsPreview';
 
@@ -81,8 +81,10 @@ export const PreviewTemplateDialog = () => {
     else dismiss();
   };
 
-  const filteredLanguages =
-    formTemplate?.languages && formTemplate?.languages.filter((language) => language !== languageCode);
+  const filteredLanguages = useMemo(
+    () => formTemplate?.languages && formTemplate?.languages.filter((language) => language !== languageCode),
+    [formTemplate?.languages, languageCode]
+  );
 
   return (
     <PreviewFormOrTemplateDialog
