@@ -1,5 +1,5 @@
 import { electionRoundDetailsQueryOptions } from '@/features/election-rounds/queries';
-import { redirectIfNotAuth } from '@/lib/utils';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/election-rounds/$electionRoundId/')({
@@ -8,6 +8,7 @@ export const Route = createFileRoute('/election-rounds/$electionRoundId/')({
     queryClient.ensureQueryData(electionRoundDetailsQueryOptions(electionRoundId)),
   beforeLoad: () => {
     redirectIfNotAuth();
+    redirectIfNotPlatformAdmin();
   },
 });
 

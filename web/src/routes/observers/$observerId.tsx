@@ -1,7 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import ObserverDetails from '@/features/observers/components/ObserverDetails/ObserverDetails';
 import { Observer } from '@/features/observers/models/observer';
-import { redirectIfNotAuth } from '@/lib/utils';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -22,6 +22,7 @@ export const observerDetailsQueryOptions = (observerId: string) =>
 export const Route = createFileRoute('/observers/$observerId')({
   beforeLoad: () => {
     redirectIfNotAuth();
+    redirectIfNotPlatformAdmin();
   },
   component: Details,
   loader: ({ context: { queryClient }, params: { observerId } }) =>
@@ -29,9 +30,5 @@ export const Route = createFileRoute('/observers/$observerId')({
 });
 
 function Details() {
-  return (
-    <div className='p-2'>
-      <ObserverDetails />
-    </div>
-  );
+  return <ObserverDetails />;
 }

@@ -19,9 +19,5 @@ export const Route = createFileRoute('/citizen-guides/edit/$guideId')({
 function EditCitizenGuide() {
   const { guideId } = Route.useParams();
 
-  return (
-    <div className='p-2'>
-      <EditTextGuide guidePageType={GuidePageType.Citizen} guideId={guideId} />
-    </div>
-  );
+  return <EditTextGuide guidePageType={GuidePageType.Citizen} guideId={guideId} />;
 }
