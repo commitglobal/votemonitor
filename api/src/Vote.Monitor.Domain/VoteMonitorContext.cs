@@ -8,6 +8,7 @@ using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
+using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
@@ -79,6 +80,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CoalitionMembership> CoalitionMemberships { get; set; }
     public DbSet<CoalitionFormAccess> CoalitionFormAccess { get; set; }
     public DbSet<CoalitionGuideAccess> CoalitionGuideAccess { get; set; }
+    public DbSet<ElectionRoundFormTemplate> ElectionRoundFormTemplates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -163,6 +165,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CoalitionMembershipConfiguration());
         builder.ApplyConfiguration(new CoalitionFormAccessConfiguration());
         builder.ApplyConfiguration(new CoalitionGuideAccessConfiguration());
+        builder.ApplyConfiguration(new ElectionRoundFormTemplateConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
