@@ -21,8 +21,7 @@ public class FormTemplate : BaseForm
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus,
-        int displayOrder) : base(id,
+        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
         formType,
         code,
         name,
@@ -32,8 +31,7 @@ public class FormTemplate : BaseForm
         languages,
         icon,
         numberOfQuestions,
-        languagesTranslationStatus,
-        displayOrder)
+        languagesTranslationStatus)
     {
     }
 
@@ -108,20 +106,19 @@ public class FormTemplate : BaseForm
             Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
 
-
-    public FormTemplatePublishResult Publish()
+    public override DraftFormResult DraftInternal()
     {
-        var validator = new FormValidator();
-        var validationResult = validator.Validate(this);
+        return new DraftFormResult.Drafted();
+    }
 
-        if (!validationResult.IsValid)
-        {
-            return new FormTemplatePublishResult.InvalidFormTemplate(validationResult);
-        }
+    public override ObsoleteFormResult ObsoleteInternal()
+    {
+        return new ObsoleteFormResult.Obsoleted();
+    }
 
-        Status = FormStatus.Published;
-
-        return new FormTemplatePublishResult.Published();
+    public override PublishFormResult PublishInternal()
+    {
+        return new PublishFormResult.Published();
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

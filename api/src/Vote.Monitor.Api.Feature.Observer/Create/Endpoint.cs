@@ -42,7 +42,7 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             FirstName = applicationUser.FirstName,
             LastName = applicationUser.LastName,
             Email = applicationUser.Email!,
-            PhoneNumber = applicationUser.PhoneNumber!,
+            PhoneNumber = applicationUser.PhoneNumber,
             Status = applicationUser.Status,
             CreatedOn = observer.CreatedOn,
             LastModifiedOn = observer.LastModifiedOn

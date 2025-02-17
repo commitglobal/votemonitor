@@ -39,11 +39,14 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         if (string.IsNullOrEmpty(password.Trim()))
         {
             NewInvite();
+            Status = UserStatus.Pending;
         }
         else
         {
             var hasher = new PasswordHasher<ApplicationUser>();
             PasswordHash = hasher.HashPassword(this, password.Trim());
+            Status = UserStatus.Active;
+            EmailConfirmed = true;
         }
     }
 

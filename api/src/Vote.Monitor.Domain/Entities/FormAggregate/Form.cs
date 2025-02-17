@@ -21,6 +21,7 @@ public class Form : BaseForm
     public MonitoringNgo MonitoringNgo { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
+    public int DisplayOrder { get; private set; }
 
     private Form(
         ElectionRound electionRound,
@@ -98,11 +99,11 @@ public class Form : BaseForm
         languages,
         icon,
         numberOfQuestions,
-        languagesTranslationStatus,
-        displayOrder)
+        languagesTranslationStatus)
     {
         MonitoringNgoId = monitoringNgoId;
         ElectionRoundId = electionRoundId;
+        DisplayOrder = displayOrder;
     }
 
     public static Form Create(
@@ -203,19 +204,19 @@ public class Form : BaseForm
             numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
     }
 
-    public FormPublishResult Publish()
+    public override DraftFormResult DraftInternal()
     {
-        var validator = new FormValidator();
-        var validationResult = validator.Validate(this);
+        return new DraftFormResult.Drafted();
+    }
 
-        if (!validationResult.IsValid)
-        {
-            return new FormPublishResult.InvalidForm(validationResult);
-        }
+    public override ObsoleteFormResult ObsoleteInternal()
+    {
+        return new ObsoleteFormResult.Obsoleted();
+    }
 
-        Status = FormStatus.Published;
-
-        return new FormPublishResult.Published();
+    public override PublishFormResult PublishInternal()
+    {
+        return new PublishFormResult.Published();
     }
 
     public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)

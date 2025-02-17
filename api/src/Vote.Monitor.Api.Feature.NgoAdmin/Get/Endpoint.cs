@@ -30,7 +30,7 @@ public class Endpoint(IRepository<NgoAdminAggregate> repository)
             FirstName = ngoAdmin.ApplicationUser.FirstName,
             LastName = ngoAdmin.ApplicationUser.LastName,
             Email = ngoAdmin.ApplicationUser.Email!,
-            PhoneNumber = ngoAdmin.ApplicationUser.PhoneNumber!,
+            PhoneNumber = ngoAdmin.ApplicationUser.PhoneNumber,
             Status = ngoAdmin.ApplicationUser.Status,
             CreatedOn = ngoAdmin.CreatedOn,
             LastModifiedOn = ngoAdmin.LastModifiedOn

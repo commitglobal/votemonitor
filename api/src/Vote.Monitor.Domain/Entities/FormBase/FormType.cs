@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Domain.Entities.FormAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.FormBase;
 
 [JsonConverter(typeof(SmartEnumValueConverter<FormType, string>))]
 public sealed class FormType : SmartEnum<FormType, string>

@@ -49,6 +49,7 @@ import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessD
 import { FormFilters } from './FormFilters/FormFilters';
 import FormStatusBadge from '@/components/FormStatusBadge/ElectionRoundStatusBadge';
 import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
+import { difference } from 'lodash';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export default function FormsDashboard(): ReactElement {
   const router = useRouter();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+  const { data: appLanguages } = useLanguages();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -74,8 +76,6 @@ export default function FormsDashboard(): ReactElement {
   const editFormAccessDialog = useEditFormAccessDialog();
 
   const confirm = useConfirm();
-
-  const { data: languages } = useLanguages();
 
   const columnHelper = createColumnHelper<NgoFormBase>();
 
@@ -308,7 +308,16 @@ export default function FormsDashboard(): ReactElement {
                   disabled={
                     row.original.status !== FormStatus.Drafted || electionRound?.status === ElectionRoundStatus.Archived
                   }
-                  onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
+                  onClick={() =>
+                    addTranslationsDialog.trigger(row.original.id, row.original.languages, (formId, newLanguages) =>
+                      addTranslationsMutation.mutate({
+                        electionRoundId: currentElectionRoundId,
+                        formId,
+                        newLanguages,
+                        originalLanguages: row.original.languages,
+                      })
+                    )
+                  }>
                   Add translations
                 </DropdownMenuItem>
               ) : null}
@@ -371,7 +380,7 @@ export default function FormsDashboard(): ReactElement {
                   disabled={electionRound?.status === ElectionRoundStatus.Archived}
                   onClick={async () => {
                     const languageCode = row.original.defaultLanguage;
-                    const language = languages?.find((l) => languageCode === l.code);
+                    const language = appLanguages?.find((l) => languageCode === l.code);
                     const fullName = language ? `${language.name} / ${language.nativeName}` : '';
 
                     if (
@@ -443,7 +452,16 @@ export default function FormsDashboard(): ReactElement {
                       electionRound?.status === ElectionRoundStatus.Archived ||
                       row.original.status !== FormStatus.Drafted
                     }
-                    onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
+                    onClick={() =>
+                      addTranslationsDialog.trigger(row.original.id, row.original.languages, (formId, newLanguages) =>
+                        addTranslationsMutation.mutate({
+                          electionRoundId: currentElectionRoundId,
+                          formId,
+                          newLanguages,
+                          originalLanguages: row.original.languages,
+                        })
+                      )
+                    }>
                     Add translations
                   </DropdownMenuItem>
                 ) : null}
@@ -505,7 +523,7 @@ export default function FormsDashboard(): ReactElement {
                     disabled={!row.original.isFormOwner}
                     onClick={async () => {
                       const languageCode = row.original.defaultLanguage;
-                      const language = languages?.find((l) => languageCode === l.code);
+                      const language = appLanguages?.find((l) => languageCode === l.code);
                       const fullName = language ? `${language.name} / ${language.nativeName}` : '';
 
                       if (
@@ -587,6 +605,63 @@ export default function FormsDashboard(): ReactElement {
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      router.invalidate();
+    },
+  });
+
+  function getTitle(newLanguages: string[]): string {
+    const languagesLabels =
+      appLanguages?.filter((l) => newLanguages.includes(l.code)).map((l) => `${l.name} / ${l.nativeName}`) ?? [];
+
+    if (languagesLabels.length === 0) return '';
+    if (languagesLabels.length === 1) return languagesLabels[0] + ' added';
+
+    const lastLanguage = languagesLabels.pop(); // Remove the last language from the array
+    return languagesLabels.join(', ') + ' and ' + lastLanguage + ' added';
+  }
+
+  const addTranslationsMutation = useMutation({
+    mutationFn: ({
+      electionRoundId,
+      formId,
+      newLanguages,
+      originalLanguages,
+    }: {
+      electionRoundId: string;
+      formId: string;
+      newLanguages: string[];
+      originalLanguages: string[];
+    }) => {
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formId}:addTranslations`, {
+        languageCodes: newLanguages,
+      });
+    },
+
+    onSuccess: async (_, { newLanguages, originalLanguages }) => {
+      toast({
+        title: 'Success',
+        description: 'Translations added',
+      });
+
+      addTranslationsDialog.dismiss();
+      const addedLanguages = difference(newLanguages, originalLanguages);
+
+      await confirm({
+        title: getTitle(addedLanguages),
+        body: (
+          <div>
+            {addedLanguages.length} translations were created to be translated into the selected languages{' '}
+            <b>({addedLanguages.join(', ')})</b>. Please note that this is not an automatic translation as you need to
+            manually translate each form in selected languages.
+            <br />
+            <b>You cannot add or delete questions on the translated forms. </b>Any changes you want to make to the
+            questions (deletion or addition of new questions) will be made to the form in the <b>base language</b>, and
+            they will be copied to the translated forms.
+          </div>
+        ),
+        actionButton: 'Ok',
+      });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
       router.invalidate();
     },
   });

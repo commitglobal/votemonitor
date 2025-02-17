@@ -1,16 +1,16 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 using Vote.Monitor.Core.Validation;
-using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Validation;
 
-namespace Vote.Monitor.Domain.Entities.FormAggregate;
+namespace Vote.Monitor.Domain.Entities.FormBase;
 
-public class FormValidator : Validator<BaseForm>
+public class BaseFormValidator : Validator<BaseForm>
 {
-    public FormValidator()
+    public BaseFormValidator()
     {
         RuleFor(x => x.Name).SetValidator(new TranslatedStringValidator());
+        RuleFor(x => x.Code).NotEmpty();
 
         RuleForEach(x => x.Questions)
             .SetInheritanceValidator(v =>

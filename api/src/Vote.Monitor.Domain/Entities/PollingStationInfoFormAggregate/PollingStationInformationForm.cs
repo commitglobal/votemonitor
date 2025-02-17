@@ -80,10 +80,26 @@ public class PollingStationInformationForm : BaseForm
             arrivalTime,
             departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
     }
+    
+    public override DraftFormResult DraftInternal()
+    {
+        return new DraftFormResult.Drafted();
+    }
+
+    public override ObsoleteFormResult ObsoleteInternal()
+    {
+        return new ObsoleteFormResult.Obsoleted();
+    }
+
+    public override PublishFormResult PublishInternal()
+    {
+        return new PublishFormResult.Published();
+    }
 
 #pragma warning disable CS8618 // Required by Entity Framework
     private PollingStationInformationForm() : base()
     {
     }
 #pragma warning restore CS8618
+   
 }

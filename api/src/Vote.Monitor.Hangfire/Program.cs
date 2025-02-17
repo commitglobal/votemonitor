@@ -33,6 +33,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Ardalis.SmartEnum.Dapper;
 using Job.Contracts.Jobs;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;

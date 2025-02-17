@@ -51,6 +51,7 @@ using Vote.Monitor.Api.Hangfire;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 

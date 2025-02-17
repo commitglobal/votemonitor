@@ -47,7 +47,7 @@ public class Endpoint(
             FirstName = applicationUser.FirstName,
             LastName = applicationUser.LastName,
             Email = applicationUser.Email!,
-            PhoneNumber = applicationUser.PhoneNumber!,
+            PhoneNumber = applicationUser.PhoneNumber,
             Status = applicationUser.Status,
             CreatedOn = ngoAdmin.CreatedOn,
             LastModifiedOn = ngoAdmin.LastModifiedOn

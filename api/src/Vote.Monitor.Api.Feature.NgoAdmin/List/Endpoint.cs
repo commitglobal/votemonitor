@@ -28,7 +28,7 @@ public class Endpoint(IReadRepository<NgoAdminAggregate> repository)
             FirstName = x.ApplicationUser.FirstName,
             LastName = x.ApplicationUser.LastName,
             Email = x.ApplicationUser.Email!,
-            PhoneNumber = x.ApplicationUser.PhoneNumber!,
+            PhoneNumber = x.ApplicationUser.PhoneNumber,
             Status = x.ApplicationUser.Status,
             CreatedOn = x.CreatedOn,
             LastModifiedOn = x.LastModifiedOn

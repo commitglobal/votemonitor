@@ -2,6 +2,7 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.ListEntries;

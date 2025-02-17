@@ -40,9 +40,10 @@ import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { useMemo, useState, type ReactElement } from 'react';
+import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { formTemlatesKeys, useFormTemplates } from '../../queries';
 import { FormTemplateFilters } from './FormTemplateFilters';
+import { difference } from 'lodash';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const columnHelper = createColumnHelper<FormBase>();
 
-  const formColDefs: ColumnDef<FormBase>[] = useMemo(() => {
+  const formTemplateColDefs: ColumnDef<FormBase>[] = useMemo(() => {
     const defaultColumns = [
       columnHelper.display({
         header: '',
@@ -201,7 +202,7 @@ export default function FormTemplatesDashboard(): ReactElement {
               <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigateToForm(row.original.id, row.original.defaultLanguage)}>
+              <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id, row.original.defaultLanguage)}>
                 View
               </DropdownMenuItem>
 
@@ -222,7 +223,18 @@ export default function FormTemplatesDashboard(): ReactElement {
               {row.depth === 0 ? (
                 <DropdownMenuItem
                   disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
-                  onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>
+                  onClick={() =>
+                    addTranslationsDialog.trigger(
+                      row.original.id,
+                      row.original.languages,
+                      (formTemplateId, newLanguages) =>
+                        addTranslationsMutation.mutate({
+                          formTemplateId: formTemplateId,
+                          newLanguageCodes: newLanguages,
+                          originalLanguageCodes: row.original.languages,
+                        })
+                    )
+                  }>
                   Add translations
                 </DropdownMenuItem>
               ) : null}
@@ -232,14 +244,16 @@ export default function FormTemplatesDashboard(): ReactElement {
                 </DropdownMenuItem>
               ) : null}
               {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
-                <DropdownMenuItem disabled={!row.original.isFormOwner} onClick={() => handlePublishForm(row.original)}>
+                <DropdownMenuItem
+                  disabled={!row.original.isFormOwner}
+                  onClick={() => handlePublishFormTemplate(row.original)}>
                   Publish
                 </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
                 <DropdownMenuItem
                   disabled={!row.original.isFormOwner}
-                  onClick={() => handleDuplicateForm(row.original)}>
+                  onClick={() => handleDuplicateFormTemplate(row.original)}>
                   Duplicate
                 </DropdownMenuItem>
               ) : null}
@@ -266,7 +280,7 @@ export default function FormTemplatesDashboard(): ReactElement {
                         cancelButton: 'Cancel',
                       })
                     ) {
-                      deleteFormMutation.mutate({
+                      deleteFormTemplateMutation.mutate({
                         formTemplateId: row.original.id,
                       });
                     }
@@ -319,15 +333,15 @@ export default function FormTemplatesDashboard(): ReactElement {
     obsoleteFormTemplateMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
-  const handlePublishForm = (formTemplate: FormBase) => {
-    publishFormMutation.mutate({ formTemplateId: formTemplate.id });
+  const handlePublishFormTemplate = (formTemplate: FormBase) => {
+    publishFormTemplateMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
-  const handleDuplicateForm = (formTemplate: FormBase) => {
-    duplicateFormMutation.mutate({ formTemplateId: formTemplate.id });
+  const handleDuplicateFormTemplate = (formTemplate: FormBase) => {
+    duplicateFormTemplateMutation.mutate({ formTemplateId: formTemplate.id });
   };
 
-  const navigateToForm = (formTemplateId: string, languageCode: string) => {
+  const navigateToFormTemplate = (formTemplateId: string, languageCode: string) => {
     navigate({ to: '/form-templates/$formTemplateId/$languageCode', params: { formTemplateId, languageCode } });
   };
 
@@ -358,7 +372,65 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
   });
 
-  const publishFormMutation = useMutation({
+  const getTitle = useCallback(
+    (newLanguages: string[]) => {
+      const languagesLabels =
+        languages?.filter((l) => newLanguages.includes(l.code)).map((l) => `${l.name} / ${l.nativeName}`) ?? [];
+
+      if (languagesLabels.length === 0) return '';
+      if (languagesLabels.length === 1) return languagesLabels[0] + ' added';
+
+      const lastLanguage = languagesLabels.pop(); // Remove the last language from the array
+      return languagesLabels.join(', ') + ' and ' + lastLanguage + ' added';
+    },
+    [languages]
+  );
+
+  const addTranslationsMutation = useMutation({
+    mutationFn: ({
+      formTemplateId,
+      newLanguageCodes,
+    }: {
+      formTemplateId: string;
+      newLanguageCodes: string[];
+      originalLanguageCodes: string[];
+    }) => {
+      return authApi.put<void>(`/form-templates/${formTemplateId}:addTranslations`, {
+        languageCodes: newLanguageCodes,
+      });
+    },
+
+    onSuccess: async (_, { newLanguageCodes, originalLanguageCodes }) => {
+      toast({
+        title: 'Success',
+        description: 'Translations added',
+      });
+
+      addTranslationsDialog.dismiss();
+      const addedLanguages = difference(newLanguageCodes, originalLanguageCodes);
+
+      await confirm({
+        title: getTitle(addedLanguages),
+        body: (
+          <div>
+            {addedLanguages.length} translations were created to be translated into the selected languages{' '}
+            <b>({addedLanguages.join(', ')})</b>. Please note that this is not an automatic translation as you need to
+            manually translate each form in selected languages.
+            <br />
+            <b>You cannot add or delete questions on the translated forms. </b>Any changes you want to make to the
+            questions (deletion or addition of new questions) will be made to the form in the <b>base language</b>, and
+            they will be copied to the translated forms.
+          </div>
+        ),
+        actionButton: 'Ok',
+      });
+
+      await queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
+      router.invalidate();
+    },
+  });
+
+  const publishFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
       return authApi.post<void>(`/form-templates/${formTemplateId}:publish`);
     },
@@ -385,7 +457,7 @@ export default function FormTemplatesDashboard(): ReactElement {
         return;
       }
       toast({
-        title: 'Error publishing form',
+        title: 'Error publishing form template',
         description: 'Please contact tech support',
         variant: 'destructive',
       });
@@ -416,7 +488,7 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
   });
 
-  const duplicateFormMutation = useMutation({
+  const duplicateFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
       return authApi.post<void>(`/form-templates/${formTemplateId}:duplicate`);
     },
@@ -440,7 +512,7 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
   });
 
-  const deleteFormMutation = useMutation({
+  const deleteFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
       return authApi.delete<void>(`/form-templates/${formTemplateId}`);
     },
@@ -506,7 +578,7 @@ export default function FormTemplatesDashboard(): ReactElement {
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
-          columns={formColDefs}
+          columns={formTemplateColDefs}
           useQuery={useFormTemplates}
           getSubrows={getSubrows}
           queryParams={queryParams}

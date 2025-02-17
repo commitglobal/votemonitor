@@ -11,7 +11,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormBase;
 
-public class BaseForm : AuditableBaseEntity, IAggregateRoot
+public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public FormType FormType { get; private set; }
@@ -22,12 +22,11 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
     public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; } = [];
     public string? Icon { get; private set; }
-    public int DisplayOrder { get; private set; }
     public int NumberOfQuestions { get; private set; }
 
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; } = new();
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
-    
+
     protected BaseForm(
         FormType formType,
         string code,
@@ -65,8 +64,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus,
-        int displayOrder)
+        LanguagesTranslationStatus languagesTranslationStatus)
     {
         Id = id;
         FormType = formType;
@@ -79,18 +77,61 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Icon = icon;
         NumberOfQuestions = numberOfQuestions;
         LanguagesTranslationStatus = languagesTranslationStatus;
-        DisplayOrder = displayOrder;
     }
 
-    public void Draft()
+    public DraftFormResult Draft()
     {
+        var draftInternalResult = DraftInternal();
+        if (draftInternalResult is not DraftFormResult.Drafted)
+        {
+            return draftInternalResult;
+        }
+
         Status = FormStatus.Drafted;
+        return new DraftFormResult.Drafted();
+
     }
 
-    public void Obsolete()
+    public abstract DraftFormResult DraftInternal();
+
+    public ObsoleteFormResult Obsolete()
     {
+        var obsoleteInternalResult = ObsoleteInternal();
+        if (obsoleteInternalResult is not ObsoleteFormResult.Obsoleted)
+        {
+            return obsoleteInternalResult;
+        }
+
         Status = FormStatus.Obsolete;
+        return new ObsoleteFormResult.Obsoleted();
+
     }
+
+    public abstract ObsoleteFormResult ObsoleteInternal();
+
+    public PublishFormResult Publish()
+    {
+        var validator = new BaseFormValidator();
+        var validationResult = validator.Validate(this);
+
+        if (!validationResult.IsValid)
+        {
+            return new PublishFormResult.Error(validationResult);
+        }
+
+        var publishInternalResult = PublishInternal();
+        if (publishInternalResult is not PublishFormResult.Published)
+        {
+            return publishInternalResult;
+        }
+
+        Status = FormStatus.Published;
+        return new PublishFormResult.Published();
+
+    }
+
+    public abstract PublishFormResult PublishInternal();
+
 
     public void UpdateDetails(string code,
         TranslatedString name,
@@ -242,7 +283,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         LanguagesTranslationStatus =
             ComputeLanguagesTranslationStatus();
     }
-    
+
     private LanguagesTranslationStatus ComputeLanguagesTranslationStatus()
     {
         var languagesTranslationStatus = new LanguagesTranslationStatus();

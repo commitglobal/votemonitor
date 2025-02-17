@@ -161,7 +161,7 @@ namespace Vote.Monitor.Domain.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS ""GetAvailableMonitoringObservers"";");
-             migrationBuilder.Sql(
+            migrationBuilder.Sql(
             """
             CREATE OR REPLACE FUNCTION "GetAvailableMonitoringObservers"(
               electionRoundId UUID, 

@@ -3,6 +3,7 @@ using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Publish;
@@ -41,7 +42,7 @@ public class Endpoint(
 
         var result = form.Publish();
 
-        if (result is FormPublishResult.InvalidForm validationResult)
+        if (result is PublishFormResult.Error validationResult)
         {
             validationResult.Problems.Errors.ForEach(AddError);
             return new ProblemDetails(ValidationFailures);
