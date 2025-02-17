@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { useBlocker } from '@tanstack/react-router';
-import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { FormFull } from '../../features/forms/models';
 
 import {
