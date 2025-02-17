@@ -85,7 +85,7 @@ export const useTargetedMonitoringObservers = (
       );
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch monitoring observers');
+        throw new Error('Failed to fetch notification');
       }
 
       return response.data;

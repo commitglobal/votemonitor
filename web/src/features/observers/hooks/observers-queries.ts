@@ -36,7 +36,7 @@ export const useObservers = (queryParams: DataTableParameters): UseObserversResu
       });
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch monitoring observers');
+        throw new Error('Failed to fetch observers');
       }
 
       return {
