@@ -15,26 +15,14 @@ import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-
-export interface ActiveFilterProps {
-  filterId: string;
-  value: string;
-  isArray?: boolean;
-}
-
-export type SearchParams = {
-  [key: string]: any;
-};
-
-export const HIDDEN_FILTERS = [
-  FILTER_KEY.PageSize,
-  FILTER_KEY.PageNumber,
-  FILTER_KEY.ViewBy,
-  FILTER_KEY.Tab,
-  FILTER_KEY.SortOrder,
-  FILTER_KEY.SortColumnName,
-  FILTER_KEY.DataSource,
-];
+import {
+  ActiveFilterProps,
+  defaultLocalizator,
+  HIDDEN_FILTERS,
+  isBooleanType,
+  isDateType,
+  SearchParams,
+} from '../common';
 
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
@@ -99,19 +87,6 @@ interface NgoAdminActiveFiltersProps {
   queryParams: Record<string, string | Date | number | string[] | undefined>;
 }
 
-export function isDateType(value: any): boolean {
-  return value instanceof Date && !isNaN(value.getTime());
-}
-
-export function isBooleanType(value: any): boolean {
-  const trimmedValue = value.toString().toLowerCase().trim();
-
-  return trimmedValue === 'true' || trimmedValue === 'false';
-}
-export function defaultLocalizator(value: any): string {
-  return (value ?? '').toString();
-}
-
 export const NgoAdminActiveFilters: FC<NgoAdminActiveFiltersProps> = ({ queryParams }) => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const dataSource = useDataSource();
@@ -122,8 +97,8 @@ export const NgoAdminActiveFilters: FC<NgoAdminActiveFiltersProps> = ({ queryPar
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
       {Object.entries(queryParams)
-        .filter(([filterId, value]) => !!value)
-        .filter(([filterId, value]) => isNotNilOrWhitespace(value?.toString()))
+        .filter(([_, value]) => !!value)
+        .filter(([_, value]) => isNotNilOrWhitespace(value?.toString()))
         .filter(
           ([filterId, value]) =>
             filterId !== FILTER_KEY.CoalitionMemberId ||

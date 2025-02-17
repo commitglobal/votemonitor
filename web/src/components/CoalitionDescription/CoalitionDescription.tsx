@@ -1,7 +1,5 @@
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';

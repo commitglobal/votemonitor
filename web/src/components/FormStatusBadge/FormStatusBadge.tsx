@@ -1,6 +1,6 @@
-import { ElectionRoundStatus, FormStatus } from '@/common/types';
+import { FormStatus } from '@/common/types';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, mapFormStatus } from '@/lib/utils';
 
 export interface FormStatusBadgeProps {
   status: FormStatus;
@@ -14,7 +14,7 @@ function FormStatusBadge({ status }: FormStatusBadgeProps) {
         'text-green-600 bg-green-200': status === FormStatus.Published,
         'text-yellow-600 bg-yellow-200': status === FormStatus.Obsolete,
       })}>
-      {status}
+      {mapFormStatus(status)}
     </Badge>
   );
 }

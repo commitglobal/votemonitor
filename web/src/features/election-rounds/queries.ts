@@ -32,8 +32,9 @@ export function useElectionRounds(
         SortColumnName: queryParams.sortColumnName,
         SortOrder: queryParams.sortOrder,
       };
-      const searchParams = buildURLSearchParams(params);
 
+      const searchParams = buildURLSearchParams(params);
+      
       const response = await authApi.get<PageResponse<ElectionRoundModel>>(`/election-rounds`, {
         params: searchParams,
       });

@@ -78,7 +78,7 @@ public class ListElectionRoundsSpecificationTests
         // Act
         List.Request request = new List.Request
         {
-            Status = ElectionRoundStatus.Started
+            ElectionRoundStatus = ElectionRoundStatus.Started
         };
         var spec = new ListElectionRoundsSpecification(request);
         var result = spec.Evaluate(testCollection).ToList();

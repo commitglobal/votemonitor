@@ -9,7 +9,7 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
         Query
             .Include(x=>x.Country)
             .Search(x => x.Title, "%" + request.SearchText + "%", !string.IsNullOrEmpty(request.SearchText))
-            .Where(x => x.Status == request.Status, request.Status != null)
+            .Where(x => x.Status == request.ElectionRoundStatus, request.ElectionRoundStatus != null)
             .Where(x => x.CountryId == request.CountryId, request.CountryId != null)
             .ApplyOrdering(request)
             .Paginate(request);

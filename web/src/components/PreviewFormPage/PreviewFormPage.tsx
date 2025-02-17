@@ -27,7 +27,7 @@ import { LanguageBadge } from '@/components/ui/language-badge';
 import { FormTemplateFull } from '@/features/form-templates/models';
 import { FormFull } from '@/features/forms/models';
 import { getTranslationOrDefault, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
-import FormStatusBadge from '../FormStatusBadge/ElectionRoundStatusBadge';
+import FormStatusBadge from '../FormStatusBadge/FormStatusBadge';
 
 export interface PreviewFormPageProps {
   form: FormFull | FormTemplateFull;

@@ -97,6 +97,7 @@ export function useFormSubmissionsByObserver(
   electionRoundId: string,
   queryParams: DataTableParameters
 ): UseFormSubmissionsByObserverResult {
+  debugger;
   return useQuery({
     queryKey: formSubmissionsByObserverKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
@@ -126,10 +127,13 @@ export function useFormSubmissionsByObserver(
   });
 }
 
-export function useFormSubmissionsFilters(electionRoundId: string, dataSource : DataSources) {
+export function useFormSubmissionsFilters(electionRoundId: string, dataSource: DataSources) {
+  debugger;
+
   return useQuery({
     queryKey: formSubmissionsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
+
       const response = await authApi.get<FormSubmissionsFilters>(
         `/election-rounds/${electionRoundId}/form-submissions:filters?dataSource=${dataSource}`
       );

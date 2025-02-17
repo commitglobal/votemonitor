@@ -1,4 +1,11 @@
-import { FormStatus, FormType, RatingScaleType, TranslatedString, UserPayload } from '@/common/types';
+import {
+  ElectionRoundStatus,
+  FormStatus,
+  FormType,
+  RatingScaleType,
+  TranslatedString,
+  UserPayload,
+} from '@/common/types';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
 import { clsx, type ClassValue } from 'clsx';
@@ -329,6 +336,19 @@ export function mapFormStatus(formStatus: FormStatus): string {
       return i18n.t('form.status.published');
     case FormStatus.Obsolete:
       return i18n.t('form.status.obsolete');
+
+    default:
+      return 'Unknown';
+  }
+}
+export function mapElectionRoundStatus(electionRoundStatus: ElectionRoundStatus): string {
+  switch (electionRoundStatus) {
+    case ElectionRoundStatus.NotStarted:
+      return i18n.t('electionRound.status.notStarted');
+    case ElectionRoundStatus.Started:
+      return i18n.t('electionRound.status.started');
+    case ElectionRoundStatus.Archived:
+      return i18n.t('electionRound.status.archived');
 
     default:
       return 'Unknown';

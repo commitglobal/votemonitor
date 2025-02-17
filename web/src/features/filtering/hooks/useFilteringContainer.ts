@@ -1,7 +1,7 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
-import { HIDDEN_FILTERS } from '../components/NgoAdminActiveFilters';
+import { HIDDEN_FILTERS } from '../common';
 import { FILTER_KEY } from '../filtering-enums';
 
 function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Partial<T> {

@@ -32,6 +32,8 @@ export const enum FILTER_KEY {
   HasQuickReports = 'hasQuickReports',
   DataSource = 'dataSource',
   CoalitionMemberId = 'coalitionMemberId',
+  CountryIdFilter = 'countryId',
+  ElectionRoundStatusFilter = 'electionRoundStatus',
 }
 
 export const enum FILTER_LABEL {
@@ -61,4 +63,6 @@ export const enum FILTER_LABEL {
   QuickReportFollowUpStatus = 'Quick report follow up status',
   HasQuickReports = 'Has quick reports',
   CoalitionMemberId = 'NGO',
+  CountryId = 'Country',
+  ElectionRoundStatus = 'Election round status',
 }

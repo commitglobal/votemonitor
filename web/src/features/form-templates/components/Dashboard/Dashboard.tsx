@@ -4,7 +4,7 @@ import { FormBase, FormStatus } from '@/common/types';
 import AddFormTranslationsDialog, {
   useAddFormTranslationsDialog,
 } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
-import FormStatusBadge from '@/components/FormStatusBadge/ElectionRoundStatusBadge';
+import FormStatusBadge from '@/components/FormStatusBadge/FormStatusBadge';
 import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';

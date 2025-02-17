@@ -30,7 +30,7 @@ export default function ElectionRoundsDashboard(): ReactElement {
     const params: ElectionsRoundsQueryParams = {
       countryId: search.countryId,
       electionRoundStatus: search.electionRoundStatus,
-      searchText: search.searchText,
+      searchText: search.searchText,      
     };
 
     return params;
@@ -79,7 +79,7 @@ export default function ElectionRoundsDashboard(): ReactElement {
         <CardContent>
           <QueryParamsDataTable
             columns={electionRoundColDefs}
-            useQuery={(params) => useElectionRounds(params)}
+            useQuery={useElectionRounds}
             queryParams={queryParams}
             onRowClick={(electionRoundId: string) =>
               navigate({ to: `/election-rounds/$electionRoundId`, params: { electionRoundId } })

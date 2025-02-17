@@ -1,6 +1,6 @@
 import { ElectionRoundStatus } from '@/common/types';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, mapElectionRoundStatus } from '@/lib/utils';
 
 export interface ElectionRoundStatusBadgeProps {
   status: ElectionRoundStatus;
@@ -14,11 +14,7 @@ function ElectionRoundStatusBadge({ status }: ElectionRoundStatusBadgeProps) {
         'text-yellow-600 bg-yellow-200': status === ElectionRoundStatus.Archived,
         'text-slate-700 bg-slate-200': status === ElectionRoundStatus.NotStarted,
       })}>
-      {status === ElectionRoundStatus.Started
-        ? 'Started'
-        : status === ElectionRoundStatus.Archived
-          ? 'Archived'
-          : 'Not Started'}
+      {mapElectionRoundStatus(status)}
     </Badge>
   );
 }

@@ -1,17 +1,13 @@
 import { DateTimeFormat } from '@/common/formats';
 import { FilterBadge } from '@/components/ui/badge';
-import { isNotNilOrWhitespace, mapFormStatus, mapFormType, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapElectionRoundStatus, mapFormStatus, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
-import {
-  ActiveFilterProps,
-  defaultLocalizator,
-  isBooleanType,
-  isDateType,
-  SearchParams,
-} from './NgoAdminActiveFilters';
+
+import { useCountries } from '@/hooks/countries';
+import { ActiveFilterProps, defaultLocalizator, isBooleanType, isDateType, SearchParams } from '../common';
 
 export const HIDDEN_FILTERS = [
   FILTER_KEY.PageSize,
@@ -38,11 +34,14 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.SearchText, FILTER_LABEL.SearchText],
   [FILTER_KEY.FormTemplateStatusFilter, FILTER_LABEL.FormTemplateStatus],
   [FILTER_KEY.FormTemplateTypeFilter, FILTER_LABEL.FormTemplateType],
+  [FILTER_KEY.CountryIdFilter, FILTER_LABEL.CountryId],
+  [FILTER_KEY.ElectionRoundStatusFilter, FILTER_LABEL.ElectionRoundStatus],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
   [FILTER_KEY.FormTemplateTypeFilter, mapFormType],
   [FILTER_KEY.FormTemplateStatusFilter, mapFormStatus],
+  [FILTER_KEY.ElectionRoundStatusFilter, mapElectionRoundStatus],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -73,6 +72,7 @@ interface PlatformAdminActiveFiltersProps {
 }
 
 export const PlatformAdminActiveFilters: FC<PlatformAdminActiveFiltersProps> = ({ queryParams }) => {
+  const { data: countries } = useCountries();
 
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
@@ -87,6 +87,15 @@ export const PlatformAdminActiveFilters: FC<PlatformAdminActiveFiltersProps> = (
           const localizator = FILTER_VALUE_LOCALIZATORS.get(filterId) ?? defaultLocalizator;
 
           if (HIDDEN_FILTERS.includes(filterId)) return;
+
+          if (filterId === FILTER_KEY.CountryIdFilter) {
+            key = `active-filter-${filterId}`;
+            const country = countries?.find((c) => c.id === value);
+
+            if (country) {
+              return <ActiveFilter key={key} filterId={filterId} value={`${country.fullName}`} />;
+            }
+          }
 
           if (!isArray && !isDate && !isBoolean) {
             key = `active-filter-${filterId}`;

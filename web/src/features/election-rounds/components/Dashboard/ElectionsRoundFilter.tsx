@@ -1,8 +1,12 @@
-import React from 'react'
+import CountryFilter from "@/features/filtering/components/CountryFilter";
+import { ElectionRoundStatusFilter } from "@/features/filtering/components/ElectionRoundStatusFilter";
+import { FilteringContainer } from "@/features/filtering/components/FilteringContainer";
 
 export default function ElectionsRoundFilter() {
-    
   return (
-    <div>ElectionsRoundFilter</div>
-  )
+    <FilteringContainer>
+      <ElectionRoundStatusFilter />
+      <CountryFilter />
+    </FilteringContainer>
+  );
 }

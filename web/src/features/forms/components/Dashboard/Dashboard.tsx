@@ -47,7 +47,7 @@ import { NgoFormBase } from '../../models';
 import { formsKeys, useForms } from '../../queries';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { FormFilters } from './FormFilters/FormFilters';
-import FormStatusBadge from '@/components/FormStatusBadge/ElectionRoundStatusBadge';
+import FormStatusBadge from '@/components/FormStatusBadge/FormStatusBadge';
 import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
 import { difference } from 'lodash';
 

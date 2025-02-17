@@ -32,13 +32,20 @@
     }
   },
   "app.input.pleaseSpecify": "Please specify",
-  "election-round.action.create": "Create new election event",
-  "election-round.field.country": "Country",
-  "election-round.field.englishTitle": "English title",
-  "election-round.field.startDate": "Start date",
-  "election-round.field.title": "Title",
-  "election-round.placeholder.englishTitle": "Title in English",
-  "election-round.placeholder.title": "Title",
+  "electionRound":{
+    "action.create": "Create new election event",
+    "field.country": "Country",
+    "field.englishTitle": "English title",
+    "field.startDate": "Start date",
+    "field.title": "Title",
+    "placeholder.englishTitle": "Title in English",
+    "placeholder.title": "Title",
+    "status":{
+      "notStarted":"Not started",
+      "started":"Started",
+      "archived": "Archived"
+    }
+  },
   "form-template.field.code": "Form Code",
   "form-template.field.name": "Form Name",
   "form-template.field.description": "Description",
