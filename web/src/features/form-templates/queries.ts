@@ -23,7 +23,7 @@ export const formTemplateDetailsQueryOptions = (formTemplateId: string) => {
       const response = await authApi.get<FormTemplateFull>(`/form-templates/${formTemplateId}`);
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch form');
+        throw new Error('Failed to fetch form template');
       }
 
       return response.data;
