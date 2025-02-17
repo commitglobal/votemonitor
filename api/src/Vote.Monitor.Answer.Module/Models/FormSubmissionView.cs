@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Form.Module.Models;
 
@@ -26,7 +27,7 @@ public class FormSubmissionView
     public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
-    public string PhoneNumber { get; init; } = default!;
+    public string? PhoneNumber { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public string NgoName { get; init; } = default!;
     public int NumberOfFlaggedAnswers { get; init; }

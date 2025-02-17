@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Authorization.Policies;
+using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Api.Feature.NgoAdmin.Create;
 
-public class Endpoint(UserManager<ApplicationUser> userManager,
+public class Endpoint(
+    UserManager<ApplicationUser> userManager,
     IRepository<NgoAdminAggregate> repository)
     : Endpoint<Request, Results<Ok<NgoAdminModel>, Conflict<ProblemDetails>>>
 {
@@ -13,9 +15,11 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
         DontAutoTag();
         Options(x => x.WithTags("ngo-admins"));
         Summary(x => { x.Description = "Creates ngo admin for a given ngo"; });
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<NgoAdminModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<NgoAdminModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var user = await userManager.FindByEmailAsync(req.Email);
         if (user is not null)
@@ -24,7 +28,8 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var applicationUser = ApplicationUser.CreateNgoAdmin(req.FirstName, req.LastName, req.Email,req.PhoneNumber, req.Password);
+        var applicationUser =
+            ApplicationUser.CreateNgoAdmin(req.FirstName, req.LastName, req.Email, req.PhoneNumber, req.Password);
 
         var result = await userManager.CreateAsync(applicationUser);
         if (!result.Succeeded)
@@ -42,10 +47,10 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             FirstName = applicationUser.FirstName,
             LastName = applicationUser.LastName,
             Email = applicationUser.Email!,
+            PhoneNumber = applicationUser.PhoneNumber,
             Status = applicationUser.Status,
             CreatedOn = ngoAdmin.CreatedOn,
             LastModifiedOn = ngoAdmin.LastModifiedOn
         });
-
     }
 }

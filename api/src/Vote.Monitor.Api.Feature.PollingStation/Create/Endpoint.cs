@@ -3,11 +3,13 @@ using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Create;
-public class Endpoint(IRepository<PollingStationAggregate> repository,
+
+public class Endpoint(
+    VoteMonitorContext context,
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     ITimeProvider timeProvider,
     ICurrentUserProvider userProvider)
-    : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>>
+    : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>>>
 {
     public override void Configure()
     {
@@ -17,24 +19,9 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound<ProblemDetails>>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var specification = new GetPollingStationSpecification(req.ElectionRoundId,
-            req.Level1,
-            req.Level2,
-            req.Level3,
-            req.Level4,
-            req.Level5,
-            req.Number,
-            req.Address);
-        var hasIdenticalPollingStation = await repository.AnyAsync(specification, ct);
-
-        if (hasIdenticalPollingStation)
-        {
-            AddError("A polling station with same address and tags exists");
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
-        }
-
         var electionRound = await electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
@@ -42,35 +29,43 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = PollingStationAggregate.Create(electionRound,
-            req.Level1,
-            req.Level2,
-            req.Level3,
-            req.Level4,
-            req.Level5,
-            req.Number,
-            req.Address,
-            req.DisplayOrder,
-            req.Tags.ToTagsObject(),
-            timeProvider.UtcNow,
-            userProvider.GetUserId()!.Value);
+        var userId = userProvider.GetUserId()!.Value;
 
-        await repository.AddAsync(pollingStation, ct);
+        var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(electionRound,
+                ps.Level1,
+                ps.Level2,
+                ps.Level3,
+                ps.Level4,
+                ps.Level5,
+                ps.Number,
+                ps.Address,
+                ps.DisplayOrder,
+                ps.Tags.ToTagsObject(),
+                timeProvider.UtcNow,
+                userId))
+            .ToArray();
+
+        await context.BulkInsertAsync(pollingStations, cancellationToken: ct);
+
         electionRound.UpdatePollingStationsVersion();
-        await electionRoundRepository.UpdateAsync(electionRound, ct);
 
-        return TypedResults.Ok(new PollingStationModel
+        await electionRoundRepository.UpdateAsync(electionRound, cancellationToken: ct);
+
+        return TypedResults.Ok<Response>(new Response()
         {
-            Id = pollingStation.Id,
-            Level1 = pollingStation.Level1,
-            Level2 = pollingStation.Level2,
-            Level3 = pollingStation.Level3,
-            Level4 = pollingStation.Level4,
-            Level5 = pollingStation.Level5,
-            Number = pollingStation.Number,
-            Address = pollingStation.Address,
-            DisplayOrder = pollingStation.DisplayOrder,
-            Tags = pollingStation.Tags.ToDictionary()
+            PollingStations = pollingStations.Select(x => new PollingStationModel
+            {
+                Id = x.Id,
+                Level1 = x.Level1,
+                Level2 = x.Level2,
+                Level3 = x.Level3,
+                Level4 = x.Level4,
+                Level5 = x.Level5,
+                Number = x.Number,
+                Address = x.Address,
+                DisplayOrder = x.DisplayOrder,
+                Tags = x.Tags.ToDictionary(),
+            }).ToArray()
         });
     }
 }

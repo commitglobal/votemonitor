@@ -55,7 +55,11 @@ function PushMessageForm(): FunctionComponent {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    void navigate({ search: (prev) => ({ ...prev, [FILTER_KEY.SearchText]: debouncedSearchText }) });
+    navigate({
+      to: '.',
+      replace: true,
+      search: (prev: any) => ({ ...prev, [FILTER_KEY.SearchText]: debouncedSearchText }),
+    });
   }, [debouncedSearchText]);
 
   useEffect(() => {

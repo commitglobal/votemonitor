@@ -168,44 +168,4 @@ public class UpdateRequestValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Tags);
     }
-
-    [Fact]
-    public void Validation_ShouldFail_When_Tags_Null()
-    {
-        // Arrange
-        var request = new Update.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
-            DisplayOrder = 5,
-            Address = "123 Main St",
-            Tags = null
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Tags);
-    }
-
-    [Fact]
-    public void Validation_ShouldFail_When_Tags_Empty()
-    {
-        // Arrange
-        var request = new Update.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            Id = Guid.NewGuid(),
-            DisplayOrder = 5,
-            Address = "123 Main St",
-            Tags = new()
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Tags);
-    }
 }

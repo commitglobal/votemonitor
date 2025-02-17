@@ -1,5 +1,11 @@
-import { FormType, RatingScaleType, TranslatedString, UserPayload, ZFormType } from '@/common/types';
-import { FormStatus } from '@/features/forms/models/form';
+import {
+  ElectionRoundStatus,
+  FormStatus,
+  FormType,
+  RatingScaleType,
+  TranslatedString,
+  UserPayload,
+} from '@/common/types';
 import i18n from '@/i18n';
 import { redirect } from '@tanstack/react-router';
 import { clsx, type ClassValue } from 'clsx';
@@ -198,6 +204,16 @@ export function redirectIfNotAuth(): void {
   }
 }
 
+export function redirectIfNotPlatformAdmin(): void {
+  const token = localStorage.getItem('token');
+  const userRole = parseJwt(token ?? '')?.['user-role'];
+  if (userRole !== 'PlatformAdmin') {
+    throw redirect({
+      to: '/login',
+    });
+  }
+}
+
 export function parseJwt(token: string | undefined): UserPayload {
   let base64Url: string | undefined = token!.split('.')[1];
   let base64 = base64Url!.replace(/-/g, '+').replace(/_/g, '/');
@@ -249,15 +265,17 @@ export function ratingScaleToNumber(scale: RatingScaleType): number {
 export function buildURLSearchParams(data: any) {
   const params = new URLSearchParams();
 
-  Object.entries(data).filter(([_,value])=>!!value).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      // @ts-ignore
-      value.forEach((value) => params.append(key, value.toString()));
-    } else {
-      // @ts-ignore
-      params.append(key, value.toString());
-    }
-  });
+  Object.entries(data)
+    .filter(([_, value]) => !!value)
+    .forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // @ts-ignore
+        value.forEach((value) => params.append(key, value.toString()));
+      } else {
+        // @ts-ignore
+        params.append(key, value.toString());
+      }
+    });
 
   return params;
 }
@@ -290,19 +308,19 @@ export function takewhile<T>(arr: T[], predicate: (value: T) => boolean): T[] {
 
 export function mapFormType(formType: FormType): string {
   switch (formType) {
-    case ZFormType.Values.Opening:
+    case FormType.Opening:
       return i18n.t('form.type.opening');
-    case ZFormType.Values.Voting:
+    case FormType.Voting:
       return i18n.t('form.type.voting');
-    case ZFormType.Values.ClosingAndCounting:
+    case FormType.ClosingAndCounting:
       return i18n.t('form.type.closingAndCounting');
-    case ZFormType.Values.CitizenReporting:
+    case FormType.CitizenReporting:
       return i18n.t('form.type.citizenReporting');
-    case ZFormType.Values.IncidentReporting:
+    case FormType.IncidentReporting:
       return i18n.t('form.type.incidentReporting');
-    case ZFormType.Values.PSI:
+    case FormType.PSI:
       return i18n.t('form.type.psi');
-    case ZFormType.Values.Other:
+    case FormType.Other:
       return i18n.t('form.type.other');
 
     default:
@@ -318,6 +336,19 @@ export function mapFormStatus(formStatus: FormStatus): string {
       return i18n.t('form.status.published');
     case FormStatus.Obsolete:
       return i18n.t('form.status.obsolete');
+
+    default:
+      return 'Unknown';
+  }
+}
+export function mapElectionRoundStatus(electionRoundStatus: ElectionRoundStatus): string {
+  switch (electionRoundStatus) {
+    case ElectionRoundStatus.NotStarted:
+      return i18n.t('electionRound.status.notStarted');
+    case ElectionRoundStatus.Started:
+      return i18n.t('electionRound.status.started');
+    case ElectionRoundStatus.Archived:
+      return i18n.t('electionRound.status.archived');
 
     default:
       return 'Unknown';
@@ -463,7 +494,7 @@ export function formatBytes(
   if (bytes === 0) return '0 Byte';
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === 'accurate' ? accurateSizes[i] ?? 'Bytest' : sizes[i] ?? 'Bytes'
+    sizeType === 'accurate' ? (accurateSizes[i] ?? 'Bytest') : (sizes[i] ?? 'Bytes')
   }`;
 }
 
@@ -537,3 +568,47 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
   const { [key]: _, ...rest } = obj;
   return rest;
 }
+
+import { authApi } from '@/common/auth-api';
+
+export enum TemplateType {
+  MonitoringObservers = 'monitoring-observers',
+  PollingStations = 'polling-stations',
+  Locations = 'locations',
+}
+
+const templateConfigs = {
+  [TemplateType.MonitoringObservers]: {
+    endpoint: '/monitoring-observers:import-template',
+    filename: 'monitoring_observers_template.csv',
+    fileType: 'text/csv',
+  },
+  [TemplateType.PollingStations]: {
+    endpoint: '/polling-stations:import-template',
+    filename: 'polling_station_import_template.csv',
+    fileType: 'text/csv',
+  },
+  [TemplateType.Locations]: {
+    endpoint: '/locations:import-template',
+    filename: 'locations_import_template.csv',
+    fileType: 'text/csv',
+  },
+};
+
+export const downloadImportExample = async (templateType: TemplateType) => {
+  const res = await authApi.get(templateConfigs[templateType].endpoint);
+  const csvData = res.data;
+
+  const blob = new Blob([csvData], { type: templateConfigs[templateType].fileType });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = templateConfigs[templateType].filename;
+
+  document.body.appendChild(a);
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};

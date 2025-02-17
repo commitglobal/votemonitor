@@ -1,5 +1,5 @@
+import { EditQuestionType } from '@/common/form-requests';
 import { QuestionType } from '@/common/types';
-import { EditQuestionType } from '@/features/forms/types';
 import { isNotNilOrWhitespace } from '@/lib/utils';
 import {
   Bars3BottomLeftIcon,

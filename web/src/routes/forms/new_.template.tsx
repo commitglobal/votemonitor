@@ -1,14 +1,14 @@
-import { FormBuilderScreenTemplate } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenTemplate';
-import { redirectIfNotAuth } from '@/lib/utils';
-import { createFileRoute } from '@tanstack/react-router';
+import { FormBuilderScreenTemplate } from '@/features/forms/components/FormBuilder/components/FormBuilderScreenTemplate'
+import { redirectIfNotAuth } from '@/lib/utils'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/forms/new/template')({
+export const Route = createFileRoute('/forms/new_/template')({
   beforeLoad: () => {
-    redirectIfNotAuth();
+    redirectIfNotAuth()
   },
   component: CreateNewFormFromTemplate,
-});
+})
 
 function CreateNewFormFromTemplate() {
-  return <FormBuilderScreenTemplate />;
+  return <FormBuilderScreenTemplate />
 }

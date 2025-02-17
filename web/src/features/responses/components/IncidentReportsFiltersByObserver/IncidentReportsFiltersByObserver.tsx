@@ -31,7 +31,7 @@ export function IncidentReportsFiltersByObserver(): FunctionComponent {
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev: FormSubmissionsSearchParams) => {
           const prevTagsFilter = prev.tagsFilter ?? [];
@@ -48,7 +48,7 @@ export function IncidentReportsFiltersByObserver(): FunctionComponent {
 
   const onFollowUpFilterChange = useCallback(
     (followUpStatus: string) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev: FormSubmissionsSearchParams) => {
           return { ...prev, incidentReportFollowUpStatus: followUpStatus !== 'ALL' ? followUpStatus : undefined };

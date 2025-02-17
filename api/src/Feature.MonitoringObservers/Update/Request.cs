@@ -14,5 +14,5 @@ public class Request
     public MonitoringObserverStatus Status { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
 }

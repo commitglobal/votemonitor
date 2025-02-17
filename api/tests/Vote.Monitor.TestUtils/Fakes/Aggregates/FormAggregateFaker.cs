@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
@@ -59,7 +60,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
 
             var form = Form.Create(electionRound, monitoringNgo, formType,
                 "C1", translatedStringFaker.Generate(), translatedStringFaker.Generate(),
-                languages.First(), languages, null, displayOrder: 0, questions);
+                languages.First(), languages, null, questions);
 
             if (status == FormStatus.Obsolete)
             {

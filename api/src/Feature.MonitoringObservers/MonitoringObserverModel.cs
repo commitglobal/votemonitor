@@ -9,7 +9,7 @@ public class MonitoringObserverModel
     public string LastName { get; init; }
     public string DisplayName { get; init; }
     public string Email { get; init; }
-    public string PhoneNumber { get; init; }
+    public string? PhoneNumber { get; init; }
     public string[] Tags { get; init; }
     public bool IsOwnObserver { get; init; }
     public DateTime? LatestActivityAt { get; init; }

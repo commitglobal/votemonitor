@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.FormTemplates.Specifications;
 
@@ -21,6 +21,6 @@ public sealed class GetFormTemplateSpecification : SingleResultSpecification<For
     {
         Query
             .Where(x => x.Id == id)
-            .Where(x => x.Status == FormTemplateStatus.Published, isNgoAdmin);
+            .Where(x => x.Status == FormStatus.Published, isNgoAdmin);
     }
 }

@@ -34,7 +34,7 @@ export default function NGOsDashboard(): ReactElement {
 
   const navigateToNgo = useCallback(
     (ngoId: string) => {
-      void navigate({ to: '/ngos/$ngoId', params: { ngoId } });
+      navigate({ to: '/ngos/$ngoId', params: { ngoId } });
     },
     [navigate]
   );

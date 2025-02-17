@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.ValueComparers;
 using Vote.Monitor.Domain.ValueConverters;
@@ -35,7 +36,6 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
             .HasColumnType("jsonb");
 
         builder.Ignore(x => x.Icon);
-        builder.Ignore(x => x.DisplayOrder);
 
         builder.Property(x => x.Questions)
             .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()

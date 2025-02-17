@@ -1,63 +1,57 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
 import Layout from '@/components/layout/Layout';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { queryClient } from '@/main';
-import { ArrowDownTrayIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
+import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { ReactElement, useRef, useState } from 'react';
 
-import { Observer } from '../../models/Observer';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useObservers } from '../../hooks/observers-queries';
+import { Observer } from '../../models/observer';
 
 export default function ObserversDashboard(): ReactElement {
+  const columnHelper = createColumnHelper<Observer>();
+
   const observerColDefs: ColumnDef<Observer>[] = [
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-      accessorKey: 'name',
+    columnHelper.display({
+      id: 'firstName',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='First name' column={column} />,
+      cell: ({ row }) => <div className='truncate'>{row.original.firstName}</div>,
+    }),
+    columnHelper.display({
+      id: 'lastName',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Last name' column={column} />,
+      cell: ({ row }) => <div className='truncate'>{row.original.lastName}</div>,
+    }),
+    columnHelper.display({
+      id: 'email',
       enableSorting: true,
       enableGlobalFilter: true,
-    },
-    {
       header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
-      accessorKey: 'email',
+      cell: ({ row }) => <div className='truncate'>{row.original.email}</div>,
+    }),
+    columnHelper.display({
+      id: 'phoneNumber',
       enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
-      accessorKey: 'phoneNumber',
-      enableSorting: true,
-    },
-    {
-      header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
-      accessorKey: 'status',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <Badge className={'badge-' + status}>{status}</Badge>,
-    },
+      header: ({ column }) => <DataTableColumnHeader title='Phone number' column={column} />,
+      cell: ({ row }) => <div className='truncate'>{row.original.phoneNumber}</div>,
+    }),
     {
       header: '',
       accessorKey: 'action',
@@ -83,7 +77,6 @@ export default function ObserversDashboard(): ReactElement {
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -107,39 +100,6 @@ export default function ObserversDashboard(): ReactElement {
 
   const navigateToObserver = (observerId: string) => {
     navigate({ to: '/observers/$observerId', params: { observerId } });
-  };
-
-  const useObservers = (electionRoundId: string, params: DataTableParameters): UseQueryResult<PageResponse<Observer>, Error> => {
-
-    return useQuery({
-      queryKey: ['observers', electionRoundId, params.pageNumber, params.pageSize, params.sortColumnName, params.sortOrder, searchText, statusFilter],
-      queryFn: async () => {
-        const paramsObject: any = {
-          PageNumber: params.pageNumber,
-          PageSize: params.pageSize,
-          SortColumnName: params.sortColumnName,
-          SortOrder: params.sortOrder,
-          searchText: searchText,
-          status: statusFilter,
-        };
-
-        const response = await authApi.get<PageResponse<Observer>>(
-          `/election-rounds/${electionRoundId}/monitoring-observers`,
-          {
-            params: Object.keys(paramsObject)
-              .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
-              .reduce((a, k) => ({ ...a, [k]: paramsObject[k] }), {}),
-          }
-        );
-
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch observers');
-        }
-
-        return response.data;
-      },
-      enabled: !!electionRoundId
-    });
   };
 
   const deleteMutation = useMutation({
@@ -172,7 +132,6 @@ export default function ObserversDashboard(): ReactElement {
       <Tabs defaultValue='account'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='account'>All observers</TabsTrigger>
-          <TabsTrigger value='password'>Push messages</TabsTrigger>
         </TabsList>
         <TabsContent value='account'>
           <Card className='w-full pt-0'>
@@ -180,82 +139,6 @@ export default function ObserversDashboard(): ReactElement {
               <div className='flex flex-row items-center justify-between px-6'>
                 <CardTitle className='text-xl'>Observers list</CardTitle>
                 <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
-                  <Dialog>
-                    <DialogTrigger>
-                      <Button className='bg-purple-900 hover:bg-purple-600'>
-                        <svg
-                          className='mr-1.5'
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='18'
-                          height='18'
-                          viewBox='0 0 18 18'
-                          fill='none'>
-                          <path
-                            d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
-                            stroke='white'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>
-                        Import observer list
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className='min-w-[650px]'>
-                      <DialogHeader>
-                        <DialogTitle className='mb-3.5'>Import observer list</DialogTitle>
-                        <Separator />
-                        <DialogDescription>
-                          <div className='mt-3.5 text-base'>
-                            In order to successfully import a list of observers, please use the template provided below.
-                            Download the template, fill it in with the observer information and then upload it. No other
-                            format is accepted for import.
-                          </div>
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className='flex flex-col gap-3'>
-                        <p className='text-sm text-gray-700'>
-                          Download template <span className='text-red-500'>*</span>
-                        </p>
-                        <div className='px-3 py-1 rounded-lg cursor-pointer bg-purple-50'>
-                          <div className='flex flex-row gap-1 text-sm text-purple-900'>
-                            {' '}
-                            <ArrowDownTrayIcon className='w-[15px]' />
-                            Observers_template.csv
-                          </div>
-                          <div className='text-xs text-purple-900'>28kb</div>
-                        </div>
-                        <div className='text-sm font-normal text-gray-500'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        </div>
-                        <input
-                          type='file'
-                          ref={hiddenFileInput}
-                          onChange={handleChange}
-                          style={{ display: 'none' }} // NOTICE!
-                        />
-                        <Button onClick={handleClick} variant='outline'>
-                          <span className='font-normal text-gray-500'>
-                            {fileName || (
-                              <div>
-                                Drag & drop your files or <span className='underline'>Browse</span>
-                              </div>
-                            )}
-                          </span>
-                        </Button>
-                        <div className='text-sm text-gray-500 font-norma'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        </div>
-                        <Separator />
-                      </div>
-                      <DialogFooter>
-                        <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
-                          Cancel
-                        </Button>
-                        <Button className='bg-purple-900 hover:bg-purple-600'>Import list</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
                   <Button className='text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'>
                     <svg
                       className='mr-1.5'
@@ -286,48 +169,12 @@ export default function ObserversDashboard(): ReactElement {
                 <Cog8ToothIcon className='w-[20px] text-purple-900' />
               </div>
               <Separator />
-              {isFiltering ? (
-                <div className='flex flex-row gap-4 table-filters'>
-                  <Select value={statusFilter} onValueChange={handleStatusFilter}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Observer status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value='Active'>Active</SelectItem>
-                        <SelectItem value='Suspended'>Suspended</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-
-                  <Select>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Tags' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value='apple'>Tag1</SelectItem>
-                        <SelectItem value='banana'>Tag2</SelectItem>
-                        <SelectItem value='blueberry'>Tag3</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <Button variant='ghost-primary'>
-                    <span onClick={resetFilters} className='text-base text-purple-900'>
-                      Reset filters
-                    </span>
-                  </Button>
-                </div>
-              ) : (
-                ''
-              )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={(params) => useObservers(currentElectionRoundId, params)} onRowClick={navigateToObserver} />
+              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value='password'></TabsContent>
       </Tabs>
     </Layout>
   );

@@ -44,6 +44,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         SELECT
             "Id",
             "DisplayName",
+            "FirstName",
+            "LastName",
             "PhoneNumber",
             "Email",
             "Tags",
@@ -53,6 +55,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             SELECT
                 MO."Id",
                 U."DisplayName",
+                U."FirstName",
+                U."LastName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
@@ -126,6 +130,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             GROUP BY
                 MO."Id",
                 U."DisplayName",
+                U."FirstName",
+                U."LastName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
