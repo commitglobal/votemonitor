@@ -60,37 +60,6 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
     },
   });
 
-  // const createElectionRoundMutation = useMutation({
-  //   mutationFn: (electionRound: ElectionRoundRequest) => {
-  //     return authApi.post<ElectionRoundModel>(`/election-rounds`, {
-  //       ...electionRound,
-  //       startDate: format(electionRound.startDate, DateOnlyFormat),
-  //     });
-  //   },
-
-  //   onSuccess: async ({ data }) => {
-  //     await queryClient.invalidateQueries({ queryKey: electionRoundKeys.lists() });
-  //     router.invalidate();
-  //     router.navigate({
-  //       to: '/election-rounds/$electionRoundId',
-  //       params: { electionRoundId: data.id },
-  //     });
-
-  //     toast({
-  //       title: 'Success',
-  //       description: 'Election round created',
-  //     });
-  //   },
-
-  //   onError: () => {
-  //     toast({
-  //       title: 'Error creating election round',
-  //       description: 'Please contact Platform admins',
-  //       variant: 'destructive',
-  //     });
-  //   },
-  // });
-
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {
       form.reset({}, { keepValues: true });
