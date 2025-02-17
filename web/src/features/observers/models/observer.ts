@@ -1,5 +1,5 @@
 export enum ObserverStatus {
-  ACTIVE = 'Active',
+  Active = 'Active',
   Pending = 'Pending',
   Deactivated = 'Deactivated',
 }
