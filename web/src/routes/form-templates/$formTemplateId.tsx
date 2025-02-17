@@ -1,6 +1,5 @@
 import type { FunctionComponent } from '@/common/types';
 import { formTemplateDetailsQueryOptions } from '@/features/form-templates/queries';
-import { formDetailsQueryOptions } from '@/features/forms/queries';
 import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router';
 
