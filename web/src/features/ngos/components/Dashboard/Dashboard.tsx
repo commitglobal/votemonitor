@@ -24,7 +24,6 @@ import { useCallback, type ReactElement } from 'react';
 import { useNgoMutations, useNGOs } from '../../hooks/ngos-queries';
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
-import { NGOsListFilters } from '../filtering/NGOsListFilters';
 import { NgoStatusBadge } from '../NgoStatusBadges';
 
 export default function NGOsDashboard(): ReactElement {
@@ -156,7 +155,6 @@ export default function NGOsDashboard(): ReactElement {
             />
             <Cog8ToothIcon className='w-[20px] text-purple-900' />
           </div>
-          {isFilteringContainerVisible && <NGOsListFilters />}
         </CardHeader>
         <CardContent>
           <QueryParamsDataTable

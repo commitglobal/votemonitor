@@ -74,6 +74,8 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
 
   function handleTabChange(tab: string): void {
     navigate({
+      to: '.',
+      replace: true,
       params(prev: any) {
         return { ...prev, tab };
       },

@@ -22,7 +22,6 @@ import { Plus } from 'lucide-react';
 import { FC } from 'react';
 import { useNgoAdminMutations, useNgoAdmins } from '../../hooks/ngo-admin-queries';
 import { NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
-import { NGOsListFilters } from '../filtering/NGOsListFilters';
 import { NgoAdminStatusBadge } from '../NgoStatusBadges';
 import AddNgoAdminDialog from './AddNgoAdminDialog';
 
@@ -141,7 +140,6 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
           />
           <Cog8ToothIcon className='w-[20px] text-purple-900' />
         </div>
-        {isFilteringContainerVisible && <NGOsListFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable

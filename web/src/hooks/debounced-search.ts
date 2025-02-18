@@ -11,6 +11,7 @@ export const useDebouncedSearch = <T>(routeId: string, schema: ZodSchema<T>) => 
 
   const { navigateHandler } = useFilteringContainer();
   const routerApi = getRouteApi(routeId as any);
+  //@ts-ignore
   const search = routerApi.useSearch<SchemaWithSearchText>();
   const [searchText, setSearchText] = useState(search.searchText);
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
