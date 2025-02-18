@@ -25,9 +25,5 @@ function NgoAdminDetails() {
   const { data: ngoAdmin } = useNgoAdminDetails({ ngoId, adminId });
   const { data: ngo } = useNGODetails(ngoId);
 
-  return (
-    <div className='p-2'>
-      <NgoAdminDetailsView ngoId={ngoId} ngoName={ngo.name} ngoAdmin={ngoAdmin} />
-    </div>
-  );
+  return <NgoAdminDetailsView ngoId={ngoId} ngoName={ngo.name} ngoAdmin={ngoAdmin} />;
 }

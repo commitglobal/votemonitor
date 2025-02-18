@@ -1,6 +1,6 @@
 import { EditNgo } from '@/features/ngos/components/EditNgo';
 import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
-import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
+import { redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/ngos/edit/$ngoId/')({
@@ -16,9 +16,5 @@ function EditNgoPage() {
   const { ngoId } = Route.useParams();
   const { data: ngo } = useNGODetails(ngoId);
 
-  return (
-    <div className='p-2'>
-      <EditNgo existingData={ngo} ngoId={ngoId} />
-    </div>
-  );
+  return <EditNgo existingData={ngo} ngoId={ngoId} />;
 }
