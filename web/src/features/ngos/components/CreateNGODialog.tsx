@@ -3,7 +3,6 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +39,7 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
       <DialogContent
-        className='min-w-[650px] min-h-[350px]'
+        className='min-w-[650px]'
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
@@ -63,77 +62,7 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
                 )}
               />
 
-              <div className='inline-flex text-slate-700'>
-                <div>
-                  <InformationCircleIcon width={24} height={24} />
-                </div>
-                <div className='ml-2 text-sm'>
-                  Please add a contact person for this organization. This person will automatically become the
-                  organization's first admin.
-                </div>
-              </div>
-
-              <FormField
-                control={form.control}
-                name='firstName'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('firstName')}</FormLabel>
-                    <Input placeholder={t('firstName')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='lastName'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('lastName')}</FormLabel>
-                    <Input placeholder={t('lastName')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('email')}</FormLabel>
-                    <Input placeholder={t('email')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='phoneNumber'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('phone')}</FormLabel>
-                    <Input placeholder={t('phone')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <Input placeholder='Password' {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <DialogFooter>
+             <DialogFooter>
                 <DialogClose asChild>
                   <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                     Cancel

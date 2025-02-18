@@ -8,7 +8,6 @@ import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery }
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { AxiosResponse } from 'axios';
 import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
-import { useCreateNgoAdmin } from './ngo-admin-queries';
 const ENDPOINT = 'ngos';
 
 export const ngosKeys = {
@@ -55,26 +54,16 @@ export const ngoDetailsOptions = (ngoId: string) =>
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
 export const useCreateNgo = () => {
-  const { createNgoAdminMutation } = useCreateNgoAdmin();
-
   const createNgoMutation = useMutation({
     mutationFn: ({ values }: { values: NgoCreationFormData; onMutationSuccess: () => void }) => {
       return authApi.post(`${ENDPOINT}`, { name: values.name });
     },
 
     onSuccess: (response: AxiosResponse<NGO>, { values, onMutationSuccess }) => {
-      const ngoId = response.data.id;
-
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
-      const { name: _, ...adminValues } = values;
-
-      createNgoAdminMutation.mutate({
-        ngoId,
-        values: adminValues,
-        onMutationSuccess,
-      });
+      if (onMutationSuccess) onMutationSuccess();
     },
-    onError: () => {
+    onError: (err) => {
       toast({
         title: 'Error creating a new NGO',
         description: '',

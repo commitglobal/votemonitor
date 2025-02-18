@@ -18,11 +18,6 @@ export enum NGOStatus {
 }
 
 export const newNgoSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  phoneNumber: z.string(),
-  password: z.string().min(1, { message: 'This field is required' }),
   name: z.string(),
 });
 
