@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useCreateNgoAdmin } from '../../hooks/ngo-admin-queries';
 import { NgoAdminFormData, ngoAdminSchema } from '../../models/NgoAdmin';
 
@@ -16,7 +15,6 @@ export interface AddNgoAdminDialogProps {
 }
 
 function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps) {
-  const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
   const { createNgoAdminMutation } = useCreateNgoAdmin();
 
   const form = useForm<NgoAdminFormData>({
@@ -57,8 +55,8 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='firstName'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>{t('firstName')}</FormLabel>
-                    <Input placeholder={t('firstName')} {...field} {...fieldState} />
+                    <FormLabel>First name</FormLabel>
+                    <Input placeholder='First name' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -69,8 +67,8 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='lastName'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>{t('lastName')}</FormLabel>
-                    <Input placeholder={t('lastName')} {...field} {...fieldState} />
+                    <FormLabel>Last name</FormLabel>
+                    <Input placeholder='Last name' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -81,8 +79,8 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='email'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>{t('email')}</FormLabel>
-                    <Input placeholder={t('email')} {...field} {...fieldState} />
+                    <FormLabel>Email</FormLabel>
+                    <Input placeholder='Email' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -93,8 +91,8 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='phoneNumber'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>{t('phone')}</FormLabel>
-                    <Input placeholder={t('phone')} {...field} {...fieldState} />
+                    <FormLabel>Phone number</FormLabel>
+                    <Input placeholder='Phone number' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
                 )}

@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useCreateNgo } from '../hooks/ngos-queries';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
 
@@ -15,7 +14,6 @@ export interface CreateNGODialogProps {
 }
 
 function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
-  const { t } = useTranslation('translation', { keyPrefix: 'observers.addObserver' });
   const { createNgoMutation } = useCreateNgo();
 
   const form = useForm<NgoCreationFormData>({
@@ -62,13 +60,13 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
                 )}
               />
 
-             <DialogFooter>
+              <DialogFooter>
                 <DialogClose asChild>
                   <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button title={t('addBtnText')} type='submit' className='px-6'>
+                <Button title='Add organization' type='submit' className='px-6'>
                   Add organization
                 </Button>
               </DialogFooter>
