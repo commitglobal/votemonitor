@@ -4,7 +4,9 @@ export const enum FILTER_KEY {
   MonitoringObserverStatus = 'monitoringObserverStatus',
   MonitoringObserverTags = 'tags',
   FormTypeFilter = 'formTypeFilter',
+  FormTemplateTypeFilter = 'formTemplateType',
   FormStatusFilter = 'formStatusFilter',
+  FormTemplateStatusFilter = 'formTemplateStatus',
   HasFlaggedAnswers = 'hasFlaggedAnswers',
   FormSubmissionFollowUpStatus = 'followUpStatus',
   HasNotes = 'hasNotes',
@@ -30,12 +32,15 @@ export const enum FILTER_KEY {
   HasQuickReports = 'hasQuickReports',
   DataSource = 'dataSource',
   CoalitionMemberId = 'coalitionMemberId',
+  CountryIdFilter = 'countryId',
+  ElectionRoundStatusFilter = 'electionRoundStatus',
 }
 
 export const enum FILTER_LABEL {
   MonitoringObserverStatus = 'Observer status',
   MonitoringObserverTags = 'Tags',
-  FormTypeFilter = 'Form type',
+  FormType = 'Form type',
+  FormTemplateType = 'Form template type',
   HasFlaggedAnswers = 'Flagged answers',
   FollowUpStatus = 'Follow-up status',
   HasNotes = 'Question notes',
@@ -50,6 +55,7 @@ export const enum FILTER_LABEL {
   MediaFiles = 'Has attachments',
   FormId = 'Form',
   FormStatus = 'Form status',
+  FormTemplateStatus = 'Form template status',
   FromDate = 'From date',
   ToDate = 'To Date',
   SearchText = 'Search text',
@@ -57,4 +63,6 @@ export const enum FILTER_LABEL {
   QuickReportFollowUpStatus = 'Quick report follow up status',
   HasQuickReports = 'Has quick reports',
   CoalitionMemberId = 'NGO',
+  CountryId = 'Country',
+  ElectionRoundStatus = 'Election round status',
 }

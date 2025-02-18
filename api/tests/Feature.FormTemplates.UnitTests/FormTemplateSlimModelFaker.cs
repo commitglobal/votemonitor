@@ -1,11 +1,12 @@
-﻿using Vote.Monitor.TestUtils.Fakes;
+﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.TestUtils.Fakes;
 
 namespace Feature.FormTemplates.UnitTests;
 
 public sealed class FormTemplateSlimModelFaker : PrivateFaker<FormTemplateSlimModel>
 {
-    private readonly List<FormTemplateStatus> _statuses = [FormTemplateStatus.Drafted, FormTemplateStatus.Published];
-    public FormTemplateSlimModelFaker(Guid? id = null, FormTemplateStatus? status = null)
+    private readonly List<FormStatus> _statuses = [FormStatus.Drafted, FormStatus.Published];
+    public FormTemplateSlimModelFaker(Guid? id = null, FormStatus? status = null)
     {
         UsePrivateConstructor();
 

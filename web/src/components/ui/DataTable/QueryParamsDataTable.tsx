@@ -37,6 +37,7 @@ export function QueryParamsDataTable<TData extends RowData, TValue>({
   const navigate = useNavigate();
   const setPaginationState = (p: PaginationState): void => {
     navigate({
+      to: '.',
       search: {
         ...queryParams,
         pageNumber: valueOrDefault(p.pageIndex, 0) + 1,
@@ -53,6 +54,7 @@ export function QueryParamsDataTable<TData extends RowData, TValue>({
     }
 
     navigate({
+      to: '.',
       search: {
         ...queryParams,
         sortColumnName: s[0]?.id,

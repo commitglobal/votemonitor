@@ -8,13 +8,14 @@ public class Validator : Validator<Request>
             .NotEmpty();
 
         RuleFor(x => x.FirstName)
-            .NotEmpty();
+            .NotEmpty()
+            .MaximumLength(256);
 
         RuleFor(x => x.LastName)
-            .NotEmpty();
+            .NotEmpty()
+            .MaximumLength(256);
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty()
-            .MinimumLength(3);
+            .MaximumLength(256);
     }
 }

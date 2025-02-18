@@ -1,25 +1,26 @@
-import { FormSubmissionFollowUpStatus, ZFormType, type FunctionComponent } from '@/common/types';
+import { FormSubmissionFollowUpStatus, FormType, type FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getRouteApi } from '@tanstack/react-router';
+import { mapFormType } from '@/lib/utils';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { mapFormType } from '@/lib/utils';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 
 export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const params = Route.useParams();
 
   const onClearFilter = useCallback(
     (filter: keyof MonitoringObserverDetailsRouteSearch | (keyof MonitoringObserverDetailsRouteSearch)[]) => () => {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -28,7 +29,12 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, followUpStatus: value }) });
+          navigate({
+            to: '.',
+            params,
+            replace: true,
+            search: (prev: any) => ({ ...prev, followUpStatus: value }),
+          });
         }}
         value={search.followUpStatus ?? ''}>
         <SelectTrigger>
@@ -47,7 +53,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
+          navigate({ to: '.', params, replace: true, search: (prev: any) => ({ ...prev, formTypeFilter: value }) });
         }}
         value={search.formTypeFilter ?? ''}>
         <SelectTrigger>
@@ -55,7 +61,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(ZFormType.Values).map((value) => (
+            {Object.values(FormType).map((value) => (
               <SelectItem value={value} key={value}>
                 {mapFormType(value)}
               </SelectItem>
@@ -66,7 +72,12 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
+          navigate({
+            to: '.',
+            replace: true,
+            params,
+            search: (prev: any) => ({ ...prev, hasFlaggedAnswers: value }),
+          });
         }}
         value={search.hasFlaggedAnswers?.toString() ?? ''}>
         <SelectTrigger>
@@ -84,7 +95,7 @@ export function MonitoringObserverFormSubmissionsFilters(): FunctionComponent {
 
       <Button
         onClick={() => {
-          void navigate({});
+          navigate({});
         }}
         variant='ghost-primary'>
         Reset filters

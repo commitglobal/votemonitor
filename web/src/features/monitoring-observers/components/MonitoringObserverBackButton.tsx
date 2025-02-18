@@ -10,7 +10,7 @@ export const MonitorObserverBackButton: FC = () => {
     <Link
       title='Go back'
       search={prevSearch}
-      to='/monitoring-observers/$tab/'
+      to='/monitoring-observers/$tab'
       params={{ tab: 'list' }}
       preload='intent'>
       <BackButtonIcon />

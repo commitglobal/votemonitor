@@ -31,12 +31,9 @@ public class Endpoint(
         CancellationToken ct)
     {
         var electionRound = await context.ElectionRounds.Where(x => x.Id == req.Id)
-            .Include(x => x.MonitoringNgos)
-            .ThenInclude(x => x.Ngo)
-            .Include(x => x.MonitoringNgos)
-            .ThenInclude(x => x.MonitoringObservers)
             .Include(x => x.Country)
-            .AsSplitQuery()
+            .Include(x=>x.MonitoringNgos)
+            .ThenInclude(x=>x.Ngo)
             .Select(electionRound => new ElectionRoundModel
             {
                 Id = electionRound.Id,
@@ -52,11 +49,14 @@ public class Endpoint(
                 StartDate = electionRound.StartDate,
                 LastModifiedOn = electionRound.LastModifiedOn,
                 CreatedOn = electionRound.CreatedOn,
+                NumberOfNgosMonitoring = electionRound.MonitoringNgos.Count,
+                MonitoringNgos = electionRound.MonitoringNgos.Select(x=>MonitoringNgoModel.FromEntity(x.Ngo)).ToList(),
                 CoalitionId = null,
                 CoalitionName = null,
-                IsCoalitionLeader = false,
-                IsMonitoringNgoForCitizenReporting = false,
+                IsCoalitionLeader = null,
+                IsMonitoringNgoForCitizenReporting = null,
             })
+            .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
 
         if (electionRound is null)

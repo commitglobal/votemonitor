@@ -3488,6 +3488,11 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<int>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -3632,9 +3637,16 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
                     b.Property<string[]>("Languages")
                         .IsRequired()
                         .HasColumnType("text[]");
+
+                    b.Property<string>("LanguagesTranslationStatus")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");

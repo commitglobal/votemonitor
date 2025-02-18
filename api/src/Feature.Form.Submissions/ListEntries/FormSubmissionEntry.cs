@@ -2,6 +2,7 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.ListEntries;
@@ -28,7 +29,7 @@ public record FormSubmissionEntry
     public Guid MonitoringObserverId { get; init; }
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
-    public string PhoneNumber { get; init; } = default!;
+    public string? PhoneNumber { get; init; } = default!;
     public string NgoName { get; init; } = default!;
     public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }

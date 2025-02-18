@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Api.Feature.ElectionRound;
 
 public record ElectionRoundModel
 {
@@ -23,10 +25,41 @@ public record ElectionRoundModel
 
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
-    
-    public required bool IsMonitoringNgoForCitizenReporting { get; init; }
-    public required bool IsCoalitionLeader { get; init; }
+
+    #region ngo-admin fields
+
+    public required bool? IsMonitoringNgoForCitizenReporting { get; init; }
+    public required bool? IsCoalitionLeader { get; init; }
 
     public required Guid? CoalitionId { get; init; }
     public required string? CoalitionName { get; init; }
+
+    #endregion
+
+    #region platform-admin fields
+
+    public int? NumberOfNgosMonitoring { get; init; }
+    public List<MonitoringNgoModel>? MonitoringNgos { get; init; } = null;
+
+    #endregion
+}
+
+public record MonitoringNgoModel
+{
+    public static MonitoringNgoModel FromEntity(Ngo ngo)
+    {
+        return new(ngo.Id, ngo.Name, ngo.Status);
+    }
+
+    public Guid Id { get; private set; }
+
+    public string Name { get; private set; }
+    public NgoStatus Status { get; private set; }
+
+    private MonitoringNgoModel(Guid id, string name, NgoStatus status)
+    {
+        Name = name;
+        Status = status;
+        Id = id;
+    }
 }

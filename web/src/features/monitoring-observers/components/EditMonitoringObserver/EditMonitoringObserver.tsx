@@ -211,7 +211,7 @@ export default function EditObserver() {
                     variant='outline'
                     type='button'
                     onClick={() => {
-                      void navigate({
+                      navigate({
                         to: '/monitoring-observers/view/$monitoringObserverId/$tab',
                         params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
                       });

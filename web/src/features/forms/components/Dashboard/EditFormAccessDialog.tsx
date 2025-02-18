@@ -21,9 +21,9 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { queryClient } from '@/main';
-import { FormBase } from '../../models/form';
 import { formsKeys } from '../../queries';
 import { sortBy } from 'lodash';
+import { NgoFormBase } from '../../models';
 
 export interface EditFormAccessDialogProps {
   isOpen: boolean;
@@ -42,7 +42,7 @@ export const useEditFormAccessDialog = create<EditFormAccessDialogProps>((set) =
 function EditFormAccessDialog() {
   const { formId, isOpen, trigger, dismiss } = useEditFormAccessDialog();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const form = queryClient.getQueryData<FormBase>(formsKeys.baseDetails(currentElectionRoundId, formId));
+  const form = queryClient.getQueryData<NgoFormBase>(formsKeys.baseDetails(currentElectionRoundId, formId));
   const { data: coalitionDetails } = useCoalitionDetails(currentElectionRoundId);
   const router = useRouter();
 

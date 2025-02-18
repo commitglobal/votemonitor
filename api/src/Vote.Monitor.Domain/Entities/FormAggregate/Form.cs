@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
@@ -15,8 +17,11 @@ namespace Vote.Monitor.Domain.Entities.FormAggregate;
 
 public class Form : BaseForm
 {
-    public Guid MonitoringNgoId { get; set; }
-    public MonitoringNgo MonitoringNgo { get; set; }
+    public Guid MonitoringNgoId { get; private set; }
+    public MonitoringNgo MonitoringNgo { get; private set; }
+    public Guid ElectionRoundId { get; private set; }
+    public ElectionRound ElectionRound { get; private set; }
+    public int DisplayOrder { get; private set; }
 
     private Form(
         ElectionRound electionRound,
@@ -28,7 +33,7 @@ public class Form : BaseForm
         string defaultLanguage,
         IEnumerable<string> languages,
         string? icon,
-        IEnumerable<BaseQuestion> questions) : base(electionRound,
+        IEnumerable<BaseQuestion> questions) : base(
         formType,
         code,
         name,
@@ -41,6 +46,8 @@ public class Form : BaseForm
     {
         MonitoringNgoId = monitoringNgo.Id;
         MonitoringNgo = monitoringNgo;
+        ElectionRoundId = electionRound.Id;
+        ElectionRound = electionRound;
     }
 
     private Form(
@@ -54,7 +61,6 @@ public class Form : BaseForm
         IEnumerable<string> languages,
         string? icon,
         IEnumerable<BaseQuestion> questions) : base(
-        electionRoundId,
         formType,
         code,
         name,
@@ -66,6 +72,7 @@ public class Form : BaseForm
         FormStatus.Drafted)
     {
         MonitoringNgoId = monitoringNgoId;
+        ElectionRoundId = electionRoundId;
     }
 
     [JsonConstructor]
@@ -81,8 +88,8 @@ public class Form : BaseForm
         string[] languages,
         string? icon,
         int numberOfQuestions,
-        LanguagesTranslationStatus languagesTranslationStatus) : base(id,
-        electionRoundId,
+        LanguagesTranslationStatus languagesTranslationStatus,
+        int displayOrder) : base(id,
         formType,
         code,
         name,
@@ -95,6 +102,8 @@ public class Form : BaseForm
         languagesTranslationStatus)
     {
         MonitoringNgoId = monitoringNgoId;
+        ElectionRoundId = electionRoundId;
+        DisplayOrder = displayOrder;
     }
 
     public static Form Create(
@@ -193,6 +202,59 @@ public class Form : BaseForm
             pollingStationId,
             locationDescription, Id, answers,
             numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
+    }
+
+    public override DraftFormResult DraftInternal()
+    {
+        return new DraftFormResult.Drafted();
+    }
+
+    public override ObsoleteFormResult ObsoleteInternal()
+    {
+        return new ObsoleteFormResult.Obsoleted();
+    }
+
+    public override PublishFormResult PublishInternal()
+    {
+        return new PublishFormResult.Published();
+    }
+
+    public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
+    {
+        if (Status != FormStatus.Published)
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(Status), "Form template is not published.")
+            ]);
+        }
+
+        if (!Languages.Contains(defaultLanguage))
+        {
+            throw new ValidationException([
+                new ValidationFailure(nameof(defaultLanguage), "Default language is not supported.")
+            ]);
+        }
+
+        foreach (var iso in languages)
+        {
+            if (!Languages.Contains(iso))
+            {
+                throw new ValidationException([
+                    new ValidationFailure(nameof(languages) + $".{iso}", "Language is not supported.")
+                ]);
+            }
+        }
+
+        return Form.Create(electionRoundId,
+            monitoringNgoId,
+            FormType,
+            Code,
+            new TranslatedString(Name).TrimTranslations(languages),
+            new TranslatedString(Description).TrimTranslations(languages),
+            defaultLanguage,
+            languages,
+            null,
+            Questions.Select(x => x.DeepClone().TrimTranslations(languages)).ToList());
     }
 
 

@@ -15,7 +15,7 @@ public record IncidentReportEntryModel
     public string FormDefaultLanguage { get; set; }
     public string ObserverName { get; set; }
     public string Email { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
+    public string? PhoneNumber { get; set; } = default!;
     public string[] Tags { get; set; } = [];
     public int NumberOfQuestionsAnswered { get; set; }
     public int NumberOfFlaggedAnswers { get; set; }

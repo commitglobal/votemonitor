@@ -1,6 +1,7 @@
 ﻿using Feature.FormTemplates.Publish;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.FormTemplates.UnitTests.Endpoints;
 
@@ -10,7 +11,7 @@ public class PublishEndpointTests
     public async Task Should_PublishFormTemplate_And_Return_NoContent_WhenFormTemplateExists()
     {
         // Arrange
-        var formTemplate = new FormTemplateAggregateFaker(status: FormTemplateStatus.Drafted).Generate();
+        var formTemplate = new FormTemplateAggregateFaker(status: FormStatus.Drafted).Generate();
 
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
         repository
@@ -26,7 +27,7 @@ public class PublishEndpointTests
         // Assert
         await repository
             .Received(1)
-            .UpdateAsync(Arg.Is<FormTemplateAggregate>(x => x.Status == FormTemplateStatus.Published));
+            .UpdateAsync(Arg.Is<FormTemplateAggregate>(x => x.Status == FormStatus.Published));
 
         result
             .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
@@ -62,7 +63,7 @@ public class PublishEndpointTests
             [LanguagesList.RO.Iso1] = ""
         };
 
-        var formTemplate = new FormTemplateAggregateFaker(status: FormTemplateStatus.Drafted,
+        var formTemplate = new FormTemplateAggregateFaker(status: FormStatus.Drafted,
             languages: [LanguagesList.RO, LanguagesList.EN],
             name: name).Generate();
 

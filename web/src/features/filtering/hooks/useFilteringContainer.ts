@@ -1,7 +1,7 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
-import { HIDDEN_FILTERS } from '../components/ActiveFilters';
+import { HIDDEN_FILTERS } from '../common';
 import { FILTER_KEY } from '../filtering-enums';
 
 function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Partial<T> {
@@ -21,7 +21,7 @@ export function useFilteringContainer() {
 
   const navigateHandler = useCallback(
     (search: Record<string, any | undefined>) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {
@@ -39,6 +39,8 @@ export function useFilteringContainer() {
 
   const resetFilters = () => {
     navigate({
+      to: '.',
+      replace: true,
       search: filterObject(queryParams, HIDDEN_FILTERS),
     });
     setPrevSearch(filterObject(queryParams, HIDDEN_FILTERS));

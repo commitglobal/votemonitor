@@ -19,7 +19,7 @@ public class Endpoint(IReadRepository<ObserverAggregate> repository) : Endpoint<
             Email = x.ApplicationUser.Email!,
             FirstName = x.ApplicationUser.FirstName,
             LastName = x.ApplicationUser.LastName,
-            PhoneNumber = x.ApplicationUser.PhoneNumber!,
+            PhoneNumber = x.ApplicationUser.PhoneNumber,
             Status = x.ApplicationUser.Status,
             CreatedOn = x.CreatedOn,
             LastModifiedOn = x.LastModifiedOn
