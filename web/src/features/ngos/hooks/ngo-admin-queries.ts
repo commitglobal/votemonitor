@@ -15,12 +15,6 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 import { ngosKeys } from './ngos-queries';
 
-const getEndpointWithNgoId = (ngoId: string): string => {
-  if (!ngoId) throw new Error('No NGO ID provided');
-
-  return `ngos/${ngoId}/admins`;
-};
-
 export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
   queryOptions({
     queryKey: ngosKeys.detail(ngoId),
@@ -63,7 +57,7 @@ export const useCreateNgoAdmin = () => {
   const queryClient = useQueryClient();
   const createNgoAdminMutation = useMutation({
     mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
-      return authApi.post(getEndpointWithNgoId(ngoId), values);
+      return authApi.post(`/ngos/${ngoId}/admins`, values);
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
@@ -79,7 +73,6 @@ export const useCreateNgoAdmin = () => {
 };
 
 export const useNgoAdminMutations = (ngoId: string) => {
-  const DEFAULT_ENDPOINT = getEndpointWithNgoId(ngoId);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const router = useRouter();
@@ -89,7 +82,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const editNgoAdminMutation = useMutation({
     mutationFn: ({ adminId, values }: { adminId: string; values: EditNgoAdminFormData }) => {
-      return authApi.put(`${DEFAULT_ENDPOINT}/${adminId}`, values);
+      return authApi.put(`ngos/${ngoId}/admins/${adminId}`, values);
     },
 
     onSuccess: () => {
@@ -108,7 +101,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const deleteNgoAdminMutation = useMutation({
     mutationFn: ({ adminId }: { adminId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`${DEFAULT_ENDPOINT}/${adminId}`, {});
+      return authApi.delete<any>(`ngos/${ngoId}/admins/${adminId}`, {});
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
@@ -134,7 +127,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const deactivateNgoAdminMutation = useMutation({
     mutationFn: (adminId: string) => {
-      return authApi.post<any>(`${DEFAULT_ENDPOINT}/${adminId}:deactivate`, {});
+      return authApi.post<any>(`ngos/${ngoId}/admins/${adminId}:deactivate`, {});
     },
 
     onSuccess: () => {
@@ -158,7 +151,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const activateNgoAdminMutation = useMutation({
     mutationFn: (adminId: string) => {
-      return authApi.post<any>(`${DEFAULT_ENDPOINT}/${adminId}:activate`, {});
+      return authApi.post<any>(`ngos/${ngoId}/admins/${adminId}:activate`, {});
     },
 
     onSuccess: () => {
