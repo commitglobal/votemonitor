@@ -1,20 +1,21 @@
-import { authApi } from "@/common/auth-api";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { authApi } from '@/common/auth-api';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+const STALE_TIME = 1000 * 60 * 5; // fifteen minutes
 
 export function useMonitoringObserversTags(electionRoundId: string): UseQueryResult<string[], Error> {
-    return useQuery({
-        queryKey: ['tags', electionRoundId],
-        queryFn: async () => {
+  return useQuery({
+    queryKey: ['tags', electionRoundId],
+    queryFn: async () => {
+      const response = await authApi.get<{ tags: string[] }>(
+        `/election-rounds/${electionRoundId}/monitoring-observers:tags`
+      );
 
-            const response = await authApi.get<{ tags: string[] }>(
-                `/election-rounds/${electionRoundId}/monitoring-observers:tags`
-            );
-
-            if (response.status !== 200) {
-                throw new Error('Failed to fetch monitoring observers tags');
-            }
-            return response.data?.tags ?? [];
-        },
-        enabled: !!electionRoundId
-    });
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch monitoring observers tags');
+      }
+      return response.data?.tags ?? [];
+    },
+    enabled: !!electionRoundId,
+    staleTime: STALE_TIME,
+  });
 }

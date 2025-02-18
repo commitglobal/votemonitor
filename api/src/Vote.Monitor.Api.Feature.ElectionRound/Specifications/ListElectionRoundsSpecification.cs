@@ -7,8 +7,9 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
     public ListElectionRoundsSpecification(List.Request request)
     {
         Query
-            .Search(x => x.Title, "%" + request.TitleFilter + "%", !string.IsNullOrEmpty(request.TitleFilter))
-            .Where(x => x.Status == request.Status, request.Status != null)
+            .Include(x=>x.Country)
+            .Search(x => x.Title, "%" + request.SearchText + "%", !string.IsNullOrEmpty(request.SearchText))
+            .Where(x => x.Status == request.ElectionRoundStatus, request.ElectionRoundStatus != null)
             .Where(x => x.CountryId == request.CountryId, request.CountryId != null)
             .ApplyOrdering(request)
             .Paginate(request);
@@ -30,8 +31,9 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
             CountryNumericCode = x.Country.NumericCode,
             CoalitionId = null,
             CoalitionName = null,
-            IsCoalitionLeader = false,
-            IsMonitoringNgoForCitizenReporting = false
+            IsCoalitionLeader = null,
+            IsMonitoringNgoForCitizenReporting = null,
+            NumberOfNgosMonitoring = x.MonitoringNgos.Count
         });
     }
 }

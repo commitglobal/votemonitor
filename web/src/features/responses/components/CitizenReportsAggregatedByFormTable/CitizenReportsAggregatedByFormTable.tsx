@@ -15,7 +15,7 @@ export function CitizenReportsAggregatedByFormTable(): FunctionComponent {
 
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
-      void navigate({ to: '/responses/citizen-reports/$formId/aggregated', params: { formId } });
+      navigate({ to: '/responses/citizen-reports/$formId/aggregated', params: { formId } });
     },
     [navigate]
   );

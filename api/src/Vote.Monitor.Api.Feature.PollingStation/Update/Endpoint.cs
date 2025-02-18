@@ -29,22 +29,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             AddError(r => r.Id, "Polling station not found.");
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
-
-        var specification = new GetPollingStationSpecification(req.ElectionRoundId,
-            req.Level1,
-            req.Level2,
-            req.Level3,
-            req.Level4,
-            req.Level5,
-            req.Number,
-            req.Address);
-        var hasIdenticalPollingStation = await repository.AnyAsync(specification, ct);
-        if (hasIdenticalPollingStation)
-        {
-            AddError("A polling station with same address and tags exists");
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
-        }
-
+        
         pollingStation.UpdateDetails(req.Level1, req.Level2, req.Level3, req.Level4, req.Level5, req.Number, req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
         await repository.UpdateAsync(pollingStation, ct);
         electionRound.UpdatePollingStationsVersion();

@@ -25,7 +25,7 @@ public class Endpoint(IReadRepository<ObserverAggregate> repository)
             Email = observer.ApplicationUser.Email!,
             FirstName = observer.ApplicationUser.FirstName,
             LastName = observer.ApplicationUser.LastName,
-            PhoneNumber = observer.ApplicationUser.PhoneNumber!,
+            PhoneNumber = observer.ApplicationUser.PhoneNumber,
             Status = observer.ApplicationUser.Status,
             CreatedOn = observer.CreatedOn,
             LastModifiedOn = observer.LastModifiedOn

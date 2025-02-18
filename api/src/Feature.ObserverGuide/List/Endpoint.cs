@@ -238,45 +238,84 @@ public class Endpoint(
             	G."WebsiteUrl",
             	G."FilePath",
             	G."UploadedFileName",
-            	COALESCE(G."LastModifiedOn", G."CreatedOn") AS"CreatedOn",
-            	n."Name" AS "CreatedBy",
-            	EXISTS (
-            		SELECT
-            			1
-            		FROM
-            			"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
-            		WHERE
-            			"MonitoringNgoId" = G."MonitoringNgoId"
-            	) AS "IsGuideOwner"
+            	G."CreatedOn",
+            	G."CreatedBy"
             FROM
-            	"CoalitionGuideAccess" CGA
-            	INNER JOIN "Coalitions" C ON CGA."CoalitionId" = C."Id"
-            	INNER JOIN "ObserversGuides" G ON CGA."GuideId" = G."Id"
-                INNER JOIN "MonitoringNgos" mn on g."MonitoringNgoId" = mn."Id"
-                INNER JOIN "Ngos" n on n."Id" = mn."NgoId"
-            WHERE
-            	CGA."MonitoringNgoId" = (
+            	(
             		SELECT
-            			"MonitoringNgoId"
+            			G."Id",
+            			G."Title",
+            			G."FileName",
+            			G."MimeType",
+            			G."GuideType",
+            			G."Text",
+            			G."WebsiteUrl",
+            		    G."FilePath",
+                        G."UploadedFileName",
+                        COALESCE(G."LastModifiedOn", G."CreatedOn") AS"CreatedOn",
+                        n."Name" AS "CreatedBy"
             		FROM
-            			"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
-            	)
-            	AND C."ElectionRoundId" = @electionRoundId
-                AND g."IsDeleted" = false
-            	AND (
-            		(
-            			SELECT
-            				"CoalitionId" IS NOT NULL
-            			FROM
-            				"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
-            		)
-            		OR (
-            			SELECT
-            				"IsCoalitionLeader"
-            			FROM
-            				"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
-            		)
-            	)
+            			"CoalitionGuideAccess" CGA
+            			INNER JOIN "Coalitions" C ON CGA."CoalitionId" = C."Id"
+            			INNER JOIN "ObserversGuides" G ON CGA."GuideId" = G."Id"
+            			INNER JOIN "MonitoringNgos" mn on g."MonitoringNgoId" = mn."Id"
+                        INNER JOIN "Ngos" n on n."Id" = mn."NgoId"
+            		WHERE
+            			CGA."MonitoringNgoId" = (
+            				SELECT
+            					"MonitoringNgoId"
+            				FROM
+            					"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
+            			)
+                        AND g."IsDeleted" = false
+            			AND C."ElectionRoundId" = @electionRoundId
+            			AND (
+            				(
+            					SELECT
+            						"CoalitionId" IS NOT NULL
+            					FROM
+            						"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
+            				)
+            				OR (
+            					SELECT
+            						"IsCoalitionLeader"
+            					FROM
+            						"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
+            				)
+            			)
+            		UNION
+            		SELECT
+            			G."Id",
+            			G."Title",
+            			G."FileName",
+            			G."MimeType",
+            			G."GuideType",
+            			G."Text",
+            			G."WebsiteUrl",
+            			G."FilePath",
+                        G."UploadedFileName",
+                        COALESCE(G."LastModifiedOn", G."CreatedOn") AS"CreatedOn",
+                        n."Name" AS "CreatedBy"
+            		FROM
+            			"ObserversGuides" G
+            			INNER JOIN "MonitoringNgos" MN ON G."MonitoringNgoId" = MN."Id"
+                        INNER JOIN "Ngos" n on n."Id" = mn."NgoId"
+            		WHERE
+            			MN."ElectionRoundId" = @electionRoundId
+            		    AND g."IsDeleted" = false
+            			AND G."MonitoringNgoId" = (
+            				SELECT
+            					"MonitoringNgoId"
+            				FROM
+            					"GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
+            			)
+            		 AND (
+            		    SELECT
+            			    "CoalitionId" IS  NULL
+            		    FROM
+            			    "GetMonitoringNgoDetails" (@electionRoundId, @ngoId)
+            	    )
+            	) G
             """;
 
         var queryArgs = new { electionRoundId, ngoId = ngo.NgoId };

@@ -81,6 +81,7 @@ public class ExportPollingStationsJob(VoteMonitorContext context,
             PS."Level5",
             PS."Number",
             PS."Address",
+            ps."DisplayOrder",
             PS."Tags"
         FROM
             "PollingStations" PS

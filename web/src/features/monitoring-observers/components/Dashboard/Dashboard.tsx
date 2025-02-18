@@ -16,6 +16,8 @@ export default function MonitoringObserversDashboard(): ReactElement {
   function handleTabChange(tab: string): void {
     setCurrentTab(tab);
     navigate({
+      to: '.',
+      replace: true,
       params(prev) {
         return { ...prev, tab };
       },

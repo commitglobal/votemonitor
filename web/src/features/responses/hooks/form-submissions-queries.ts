@@ -126,10 +126,11 @@ export function useFormSubmissionsByObserver(
   });
 }
 
-export function useFormSubmissionsFilters(electionRoundId: string, dataSource : DataSources) {
+export function useFormSubmissionsFilters(electionRoundId: string, dataSource: DataSources) {
   return useQuery({
     queryKey: formSubmissionsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
+
       const response = await authApi.get<FormSubmissionsFilters>(
         `/election-rounds/${electionRoundId}/form-submissions:filters?dataSource=${dataSource}`
       );

@@ -8,7 +8,7 @@ function Details(): FunctionComponent {
   const pushMessageData = useLoaderData({ from: '/monitoring-observers/push-messages/$id' });
 
   if (pushMessageData.id) {
-    void navigate({
+    navigate({
       to: '/monitoring-observers/push-messages/$id/view',
       params: { id: pushMessageData.id },
       replace: true,

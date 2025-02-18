@@ -10,7 +10,7 @@ public class TargetedMonitoringObserverModel
     public string ObserverName { get; init; }
 
     public string Email { get; init; }
-    public string PhoneNumber { get; init; }
+    public string? PhoneNumber { get; init; }
     public string[] Tags { get; init; } = [];
 
     [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]

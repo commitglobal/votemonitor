@@ -12,6 +12,30 @@ using static ApiTesting;
 public class GuideAccessTests : BaseApiTestFixture
 {
     [Test]
+    public void ShouldGrantAccessToObservers_WhenNotInACoalition()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithNgo(ScenarioNgos.Beta)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithObserver(ScenarioObserver.Bob)
+            .WithElectionRound(ScenarioElectionRound.A,
+                er => er
+                    .WithMonitoringNgo(ScenarioNgos.Alfa,
+                        alfa => alfa.WithMonitoringObserver(ScenarioObserver.Alice).WithGuide()))
+            .Please();
+
+        // Act
+        var aliceGuides = scenarioData
+            .ObserverByName(ScenarioObserver.Alice)
+            .GetResponse<ListGuidesResponse>($"/api/election-rounds/{scenarioData.ElectionRoundId}/observer-guide");
+
+        // Assert
+        aliceGuides.Guides.Should().NotBeEmpty();
+    }
+
+    [Test]
     public void ShouldNotGrantGuideAccessForMonitoringObservers_WhenCreatingNewGuide()
     {
         // Arrange
