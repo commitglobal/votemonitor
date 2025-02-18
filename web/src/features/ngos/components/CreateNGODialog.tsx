@@ -7,7 +7,7 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useCreateNgo } from '../hooks/ngos-queriess';
+import { useCreateNgo } from '../hooks/ngos-queries';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
 
 export interface CreateNGODialogProps {

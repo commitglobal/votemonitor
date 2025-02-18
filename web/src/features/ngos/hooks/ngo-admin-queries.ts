@@ -13,7 +13,7 @@ import {
 } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
-import { ngosKeys } from './ngos-queriess';
+import { ngosKeys } from './ngos-queries';
 
 const getEndpointWithNgoId = (ngoId: string): string => {
   if (!ngoId) throw new Error('No NGO ID provided');

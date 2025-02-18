@@ -1,9 +1,6 @@
 import { NgoAdminDetailsView } from '@/features/ngos/components/admins/NgoAdminDetailsView';
 import { ngoAdminDetailsOptions, useNgoAdminDetails } from '@/features/ngos/hooks/ngo-admin-queries';
-import {
-  ngoDetailsOptions,
-  useNGODetails,
-} from '@/features/ngos/hooks/ngos-queriess';
+import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 

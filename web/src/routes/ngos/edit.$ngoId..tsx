@@ -1,5 +1,5 @@
 import { EditNgo } from '@/features/ngos/components/EditNgo';
-import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queriess';
+import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 

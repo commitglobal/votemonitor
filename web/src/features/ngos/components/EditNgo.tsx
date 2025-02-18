@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNgoMutations } from '../hooks/ngos-queriess';
+import { useNgoMutations } from '../hooks/ngos-queries';
 import { EditNgoFormData, editNgoSchema, NGO, NGOStatus } from '../models/NGO';
 import { NgoBackButton, NgoBreadcrumbs } from './NgoExtraComponents';
 

@@ -21,7 +21,7 @@ import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { useCallback, type ReactElement } from 'react';
-import { useNgoMutations, useNGOs } from '../../hooks/ngos-queriess';
+import { useNgoMutations, useNGOs } from '../../hooks/ngos-queries';
 import { NGO, NGOStatus } from '../../models/NGO';
 import CreateNGODialog from '../CreateNGODialog';
 import { NGOsListFilters } from '../filtering/NGOsListFilters';
@@ -43,10 +43,6 @@ export default function NGOsDashboard(): ReactElement {
   );
 
   const ngoColDefs: ColumnDef<NGO>[] = [
-    {
-      header: 'ID',
-      accessorKey: 'id',
-    },
     {
       accessorKey: 'name',
       enableSorting: true,
