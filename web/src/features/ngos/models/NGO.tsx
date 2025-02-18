@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 
 import { z } from 'zod';
-import { ngoAdminSchema } from './NgoAdmin';
 
 export interface NGO {
   id: string;
@@ -18,7 +17,15 @@ export enum NGOStatus {
   Deactivated = 'Deactivated',
 }
 
-export const newNgoSchema = ngoAdminSchema.extend({ name: z.string() });
+export const newNgoSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  phoneNumber: z.string(),
+  password: z.string().min(1, { message: 'This field is required' }),
+  name: z.string(),
+});
+
 export type NgoCreationFormData = z.infer<typeof newNgoSchema>;
 export const editNgoSchema = z.object({
   name: z.string().min(2, {
