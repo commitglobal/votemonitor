@@ -1,11 +1,11 @@
 import { EditNgo } from '@/features/ngos/components/EditNgo';
 import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
-import { redirectIfNotAuth } from '@/lib/utils';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/ngos/edit/$ngoId/')({
   beforeLoad: ({ params }) => {
-    redirectIfNotAuth();
+    redirectIfNotPlatformAdmin();
   },
   component: EditNgoPage,
 

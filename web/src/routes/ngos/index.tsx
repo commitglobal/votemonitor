@@ -1,7 +1,7 @@
 import { DefaultSearchParamsSchema } from '@/common/zod-schemas';
 import NGOsDashboard from '@/features/ngos/components/Dashboard/Dashboard';
 import { NGOStatus } from '@/features/ngos/models/NGO';
-import { redirectIfNotAuth } from '@/lib/utils';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute, SearchSchemaInput } from '@tanstack/react-router';
 import { z } from 'zod';
 
@@ -13,7 +13,7 @@ export const ngoRouteSearchSchema = NgosAdditionalSearchParams.merge(DefaultSear
 
 export const Route = createFileRoute('/ngos/')({
   beforeLoad: () => {
-    redirectIfNotAuth();
+    redirectIfNotPlatformAdmin();
   },
   component: Ngos,
   validateSearch: (search: unknown & SearchSchemaInput) => ngoRouteSearchSchema.parse(search),

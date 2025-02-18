@@ -1,6 +1,6 @@
 import { NGODetails } from '@/features/ngos/components/NGODetails';
 import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
-import { redirectIfNotAuth } from '@/lib/utils';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { z } from 'zod';
 import { ngoRouteSearchSchema } from '.';
@@ -16,7 +16,7 @@ export const NgosDetailsdPageSearchParamsSchema = ngoAdminsSearchParamsSchema.me
 
 export const Route = createFileRoute('/ngos/view/$ngoId/$tab')({
   beforeLoad: ({ params }) => {
-    redirectIfNotAuth();
+    redirectIfNotPlatformAdmin();
 
     const coercedTab = coerceTabSlug(params.tab);
     if (params.tab !== coercedTab) {
