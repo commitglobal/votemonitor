@@ -1,6 +1,6 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { HIDDEN_FILTERS } from '../common';
 import { FILTER_KEY } from '../filtering-enums';
 
