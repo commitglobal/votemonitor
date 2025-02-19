@@ -4,10 +4,11 @@ import { ElectionRoundStatus, FormStatus, FormType } from '@/common/types';
 import AddFormTranslationsDialog, {
   useAddFormTranslationsDialog,
 } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
+import FormStatusBadge from '@/components/FormStatusBadge/FormStatusBadge';
+import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -42,14 +43,12 @@ import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
+import { difference } from 'lodash';
 import { useMemo, useState, type ReactElement } from 'react';
 import { NgoFormBase } from '../../models';
 import { formsKeys, useForms } from '../../queries';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { FormFilters } from './FormFilters/FormFilters';
-import FormStatusBadge from '@/components/FormStatusBadge/FormStatusBadge';
-import FormTranslationStatusBadge from '@/components/FormTranslationStatusBadge/FormTranslationStatusBadge';
-import { difference } from 'lodash';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -637,16 +636,20 @@ export default function FormsDashboard(): ReactElement {
       });
     },
 
-    onSuccess: async (_, { newLanguages, originalLanguages }) => {
+    onSuccess: async (_, { electionRoundId, newLanguages, originalLanguages }) => {
       toast({
         title: 'Success',
         description: 'Translations added',
       });
 
       addTranslationsDialog.dismiss();
+
       const addedLanguages = difference(newLanguages, originalLanguages);
 
-      await confirm({
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
+      await router.invalidate();
+
+      confirm({
         title: getTitle(addedLanguages),
         body: (
           <div>
@@ -661,8 +664,6 @@ export default function FormsDashboard(): ReactElement {
         ),
         actionButton: 'Ok',
       });
-      await queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
-      router.invalidate();
     },
   });
 

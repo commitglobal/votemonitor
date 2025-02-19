@@ -3,9 +3,9 @@ using SubmissionsFaker.Clients.NgoAdmin.Models;
 
 namespace SubmissionsFaker.Forms;
 
-public class FormData
+public class ObservationForms
 {
-    public static UpdateForm OpeningForm(string code) => new()
+    public static CreateFormRequest OpeningForm(string code) => new()
     {
         Code = code,
         DefaultLanguage = "RO",
@@ -178,11 +178,11 @@ public class FormData
         ]
     };
 
-    public static UpdateForm VotingForm = new()
+    public static CreateFormRequest VotingForm = new()
     {
     };
 
-    public static UpdateForm ClosingForm = new()
+    public static CreateFormRequest ClosingForm = new()
     {
     };
 }

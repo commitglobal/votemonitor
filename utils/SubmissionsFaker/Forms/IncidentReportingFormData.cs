@@ -5,7 +5,7 @@ namespace SubmissionsFaker.Forms;
 
 public class IncidentReportingFormData
 {
-    public static UpdateForm IncidentReporting(string code) => new()
+    public static UpdateFormRequest IncidentReporting(string code) => new()
     {
         Code = code,
         DefaultLanguage = "RO",

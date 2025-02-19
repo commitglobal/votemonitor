@@ -16,6 +16,7 @@ import { formsKeys, formDetailsQueryOptions } from '../../queries';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { Route } from '@/routes/forms/$formId_.edit-translation.$languageCode';
+import { FormDetailsBreadcrumbs } from '@/components/FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 function FormTranslationEdit() {
   const { formId, languageCode } = Route.useParams();
@@ -59,7 +60,7 @@ function FormTranslationEdit() {
             body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
           })
         ) {
-          navigate({ to: '/election-event', search: {} });
+          await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
         }
       }
     },
@@ -99,8 +100,7 @@ function FormTranslationEdit() {
   return (
     <Layout
       backButton={<NavigateBack to='/election-event' />}
-      // breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[form.defaultLanguage] ?? ''} />}
-      breadcrumbs={<></>}
+      breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[form.defaultLanguage] ?? ''} />}
       title={`${form.code} - ${form.name[form.defaultLanguage] ?? ''}`}>
       <FormTranslationEditor
         formData={form}

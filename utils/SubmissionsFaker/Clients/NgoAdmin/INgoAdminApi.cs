@@ -7,7 +7,7 @@ namespace SubmissionsFaker.Clients.NgoAdmin;
 public interface INgoAdminApi
 {
     [Post("/api/election-rounds/{electionRoundId}/forms")]
-    Task<CreateResponse> CreateForm([AliasAs("electionRoundId")] Guid electionRoundId, [Body] NewForm form);
+    Task<ResponseWithId> CreateForm([AliasAs("electionRoundId")] Guid electionRoundId, [Body] CreateFormRequest form);
 
     [Post("/api/election-rounds/{electionRoundId}/forms/{id}:publish")]
     Task PublishForm([AliasAs("electionRoundId")] Guid electionRoundId,

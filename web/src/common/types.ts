@@ -402,7 +402,6 @@ export interface FormBase {
   icon?: string;
   name: TranslatedString;
   description?: TranslatedString;
-  isFormOwner: boolean;
   status: FormStatus;
   languages: string[];
   lastModifiedOn: string;
