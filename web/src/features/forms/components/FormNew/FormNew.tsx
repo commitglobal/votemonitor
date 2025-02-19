@@ -40,7 +40,7 @@ function FormNew() {
     onSuccess: ({ id }, { electionRoundId, shouldNavigateAwayAfterSubmit }) => {
       toast({
         title: 'Success',
-        description: 'Form template created successfully',
+        description: 'Form created successfully',
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
@@ -49,7 +49,7 @@ function FormNew() {
       if (shouldNavigateAwayAfterSubmit) {
         navigate({
           to: '/election-event/$tab',
-          params: {  tab: 'observer-forms' },
+          params: { tab: 'observer-forms' },
         });
       } else {
         navigate({ to: '/forms/$formId/edit', params: { formId: id } });
@@ -58,7 +58,7 @@ function FormNew() {
 
     onError: () => {
       toast({
-        title: 'Error creating form template',
+        title: 'Error creating form',
         description: 'Please contact tech support',
         variant: 'destructive',
       });

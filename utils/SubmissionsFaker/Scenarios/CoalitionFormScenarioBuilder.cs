@@ -9,13 +9,13 @@ namespace SubmissionsFaker.Scenarios;
 public class CoalitionFormScenarioBuilder
 {
     private readonly CoalitionScenarioBuilder _parentBuilder;
-    private readonly UpdateFormResponse _form;
+    private readonly CreateFormRequest _form;
 
     private readonly Dictionary<string, Guid> _submissions = new Dictionary<string, Guid>();
 
     internal CoalitionFormScenarioBuilder(
         CoalitionScenarioBuilder parentBuilder,
-        UpdateFormResponse form)
+        CreateFormRequest form)
     {
         _parentBuilder = parentBuilder;
         _form = form;
@@ -40,5 +40,5 @@ public class CoalitionFormScenarioBuilder
         _submissions[$"{observer}_{pollingStation}"];
 
     public Guid FormId => _form.Id;
-    public UpdateFormResponse Form => _form;
+    public CreateFormRequest Form => _form;
 }

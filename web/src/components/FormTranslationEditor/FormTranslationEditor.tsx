@@ -1,11 +1,11 @@
 import { QuestionType, type FunctionComponent } from '@/common/types';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import {
   EditDateQuestionType,
@@ -30,7 +30,7 @@ import { FormTemplateFull } from '@/features/form-templates/models';
 import { FormFull } from '@/features/forms/models';
 import { cn, ensureTranslatedStringCorrectness } from '@/lib/utils';
 import { useBlocker } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { EditFormType, ZEditFormType } from '../FormEditor/FormEditor';
 import FormDetailsTranslationEditor from './FormDetailsTranslationEditor';
 
@@ -48,6 +48,7 @@ export default function FormTranslationEditor({
   onSaveForm,
 }: FormTranslationEditorProps): FunctionComponent {
   const confirm = useConfirm();
+  const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
 
   const formQuestions = formData.questions.map((question) => {
     if (isNumberQuestion(question)) {
@@ -222,23 +223,26 @@ export default function FormTranslationEditor({
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
-  useBlocker(
-    () =>
-      confirm({
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty || form.formState.isSubmitting) {
+        return false;
+      }
+
+      return await confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
-        actionButtonClass: buttonVariants({ variant: 'destructive' }),
         cancelButton: 'Stay',
-      }),
-    form.formState.isDirty
-  );
-
-  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData.name });
+      });
+    },
+  });
 
   return (
     <Form {...form}>
-      <form className='flex flex-col flex-1'>
+      <form
+        className='flex flex-col flex-1'
+        onSubmit={form.handleSubmit((data) => onSaveForm(data, navigateAwayAfterSave))}>
         <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
           <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
             <TabsTrigger
@@ -293,22 +297,10 @@ export default function FormTranslationEditor({
         </Tabs>
         <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
           <div className='container flex items-center justify-end h-full gap-4'>
-            <Button
-              type='submit'
-              variant='outline'
-              onClick={() => {
-                form.handleSubmit((data) => onSaveForm(data, false));
-              }}
-              disabled={!form.formState.isValid}>
+            <Button type='submit' variant='outline' onClick={() => setNavigateAwayAfterSave(false)}>
               Save
             </Button>
-            <Button
-              type='submit'
-              variant='default'
-              onClick={() => {
-                form.handleSubmit((data) => onSaveForm(data, true));
-              }}
-              disabled={!form.formState.isValid}>
+            <Button type='submit' variant='default' onClick={() => setNavigateAwayAfterSave(true)}>
               Save and exit form editor
             </Button>
           </div>
