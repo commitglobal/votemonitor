@@ -103,6 +103,7 @@ function PushMessageForm(): FunctionComponent {
 
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
+    mode: 'all',
     defaultValues: {
       title: '',
       messageBody: '',

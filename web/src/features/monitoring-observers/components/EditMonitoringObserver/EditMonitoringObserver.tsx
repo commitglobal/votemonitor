@@ -47,6 +47,7 @@ export default function EditObserver() {
 
   const form = useForm<z.infer<typeof editObserverFormSchema>>({
     resolver: zodResolver(editObserverFormSchema),
+    mode: 'all',
     defaultValues: {
       status: monitoringObserver.status,
       tags: monitoringObserver.tags,

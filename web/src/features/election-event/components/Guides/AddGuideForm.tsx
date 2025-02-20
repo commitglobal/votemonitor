@@ -83,6 +83,7 @@ export default function AddGuideForm({
 
   const form = useForm<NewGuideType>({
     resolver: zodResolver(newGuideFormSchema),
+    mode: 'all',
     defaultValues: {
       guideType: guideType,
       title: '',

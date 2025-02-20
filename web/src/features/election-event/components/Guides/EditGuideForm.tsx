@@ -94,6 +94,7 @@ export default function EditGuideForm({
   type EditGuideType = z.infer<typeof editGuideFormSchema>;
   const form = useForm<EditGuideType>({
     resolver: zodResolver(editGuideFormSchema),
+    mode: 'all',
     defaultValues: {
       guidePageType: guidePageType,
       guideType: guideType,
