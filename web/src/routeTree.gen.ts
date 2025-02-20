@@ -71,8 +71,8 @@ import { Route as ElectionRoundsElectionRoundIdPollingStationsImportImport } fro
 import { Route as ElectionRoundsElectionRoundIdLocationsImportImport } from './routes/election-rounds/$electionRoundId/locations/import'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
 import { Route as NgosEditNgoIdImport } from './routes/ngos/edit.$ngoId.'
-import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin.$ngoId.$adminId.view'
-import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin.$ngoId.$adminId.edit'
+import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin/$ngoId.$adminId.view'
+import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin/$ngoId.$adminId.edit'
 
 // Create/Update Routes
 
@@ -1715,10 +1715,10 @@ export const routeTree = rootRoute
       "filePath": "responses/incident-reports/$formId.aggregated.tsx"
     },
     "/ngos/admin/$ngoId/$adminId/edit": {
-      "filePath": "ngos/admin.$ngoId.$adminId.edit.tsx"
+      "filePath": "ngos/admin/$ngoId.$adminId.edit.tsx"
     },
     "/ngos/admin/$ngoId/$adminId/view": {
-      "filePath": "ngos/admin.$ngoId.$adminId.view.tsx"
+      "filePath": "ngos/admin/$ngoId.$adminId.view.tsx"
     }
   }
 }

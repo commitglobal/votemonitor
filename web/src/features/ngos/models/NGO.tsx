@@ -13,20 +13,22 @@ export interface NGO {
 
 export enum NGOStatus {
   Activated = 'Activated',
-  Pending = 'Pending',
   Deactivated = 'Deactivated',
 }
 
 export const newNgoSchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters.' })
+    .max(256, { message: 'Name must not exceed 256 characters.' }),
 });
 
 export type NgoCreationFormData = z.infer<typeof newNgoSchema>;
 export const editNgoSchema = z.object({
-  name: z.string().min(2, {
-    message: 'This field is mandatory',
-  }),
-  status: z.string(),
+  name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters.' })
+    .max(256, { message: 'Name must not exceed 256 characters.' }),
 });
 
 export type EditNgoFormData = z.infer<typeof editNgoSchema>;

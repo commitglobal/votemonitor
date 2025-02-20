@@ -7,18 +7,60 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useCreateNgoAdmin } from '../../hooks/ngo-admin-queries';
 import { NgoAdminFormData, ngoAdminSchema } from '../../models/NgoAdmin';
+import { useCallback, useEffect } from 'react';
+import { useBlocker } from '@tanstack/react-router';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
 
 export interface AddNgoAdminDialogProps {
   ngoId: string;
   open: boolean;
-  onOpenChange: (open: any) => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps) {
   const { createNgoAdminMutation } = useCreateNgoAdmin();
+  const confirm = useConfirm();
 
   const form = useForm<NgoAdminFormData>({
+    mode: 'all',
     resolver: zodResolver(ngoAdminSchema),
+  });
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset(undefined, { keepValues: true });
+    }
+  }, [form.formState.isSubmitSuccessful]);
+
+  const internalOnOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        form.reset({
+          email: '',
+          firstName: '',
+          lastName: '',
+          password: '',
+          phoneNumber: '',
+        });
+      }
+      onOpenChange(open);
+    },
+    [onOpenChange]
+  );
+
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return !(await confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        cancelButton: 'Stay',
+      }));
+    },
   });
 
   function onSubmit(values: NgoAdminFormData) {
@@ -27,17 +69,28 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
       values,
       onMutationSuccess: () => {
         form.reset({});
-        onOpenChange(false);
+        internalOnOpenChange(false);
         toast({
           title: 'Success',
           description: 'New NGO admin added',
+        });
+      },
+      onMutationError: (error) => {
+        error?.errors?.forEach((error) => {
+          form.setError(error.name as keyof NgoAdminFormData, { type: 'custom', message: error.reason });
+        });
+
+        toast({
+          title: 'Error adding NGO admin',
+          description: 'Please contact Platform admins',
+          variant: 'destructive',
         });
       },
     });
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+    <Dialog open={open} onOpenChange={internalOnOpenChange} modal={true}>
       <DialogContent
         className='min-w-[650px] min-h-[350px]'
         onInteractOutside={(e) => {
@@ -55,7 +108,9 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='firstName'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>First name</FormLabel>
+                    <FormLabel>
+                      First name <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <Input placeholder='First name' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
@@ -67,7 +122,9 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='lastName'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Last name</FormLabel>
+                    <FormLabel>
+                      Last name <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <Input placeholder='Last name' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
@@ -79,7 +136,9 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='email'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>
+                      Email <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <Input placeholder='Email' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>
@@ -103,7 +162,9 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
                 name='password'
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>
+                      Password <span className='text-red-500'>*</span>
+                    </FormLabel>
                     <Input placeholder='Password' {...field} {...fieldState} />
                     <FormMessage />
                   </FormItem>

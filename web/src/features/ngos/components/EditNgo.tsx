@@ -1,18 +1,19 @@
+import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from '@tanstack/react-router';
-import { FC } from 'react';
+import { Link, useBlocker, useNavigate } from '@tanstack/react-router';
+import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNgoMutations } from '../hooks/ngos-queries';
-import { EditNgoFormData, editNgoSchema, NGO, NGOStatus } from '../models/NGO';
-import { NgoBackButton, NgoBreadcrumbs } from './NgoExtraComponents';
+import { EditNgoFormData, editNgoSchema, NGO } from '../models/NGO';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { DevTool } from '@hookform/devtools';
 
 interface EditNgoAdminProps {
   existingData: NGO;
@@ -21,16 +22,24 @@ interface EditNgoAdminProps {
 
 export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const { editNgoMutation, deleteNgoWithConfirmation } = useNgoMutations();
 
   const form = useForm<EditNgoFormData>({
     resolver: zodResolver(editNgoSchema),
+    mode: 'all',
+    reValidateMode: 'onChange',
     defaultValues: {
-      name: existingData.name,
-      status: existingData.status,
+      name: existingData.name ?? '',
     },
   });
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset({}, { keepValues: true });
+    }
+  }, [form.formState.isSubmitSuccessful, form.reset]);
 
   function onSubmit(values: EditNgoFormData) {
     editNgoMutation.mutate({ ngoId, values });
@@ -41,16 +50,35 @@ export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
       ngoId,
       name: existingData.name,
       onMutationSuccess: () => {
-        navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId, tab: 'admins' } });
+        navigate({ to: '/ngos' });
       },
     });
   };
 
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty || form.formState.isSubmitting) {
+        return false;
+      }
+
+      return !(await confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        cancelButton: 'Stay',
+      }));
+    },
+  });
+
   return (
     <Layout
       title={`Edit ${existingData.name}`}
-      backButton={<NgoBackButton ngoId={ngoId} />}
-      breadcrumbs={<NgoBreadcrumbs ngoData={{ id: ngoId, name: existingData.name }} />}>
+      backButton={
+        <Link title='Go back' to='/ngos/view/$ngoId/$tab' params={{ ngoId, tab: 'details' }} preload='intent'>
+          <BackButtonIcon />
+        </Link>
+      }
+      breadcrumbs={<></>}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
@@ -64,40 +92,13 @@ export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
               <FormField
                 control={form.control}
                 name='name'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
                     <FormLabel>
                       Name <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder='Name' {...field} />
-                    </FormControl>
-                    <FormMessage className='mt-2' />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='status'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Status <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder='NGO Status' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value={NGOStatus.Activated}>{NGOStatus.Activated}</SelectItem>
-                            <SelectItem value={NGOStatus.Pending}>{NGOStatus.Pending}</SelectItem>
-                            <SelectItem value={NGOStatus.Deactivated}>{NGOStatus.Deactivated}</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <Input placeholder='Name' {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage className='mt-2' />
                   </FormItem>
@@ -121,6 +122,7 @@ export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
                 </div>
               </div>
             </form>
+            <DevTool control={form.control} /> {/* set up the dev tool */}
           </Form>
         </CardContent>
       </Card>

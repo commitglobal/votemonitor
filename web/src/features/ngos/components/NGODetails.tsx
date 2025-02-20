@@ -3,14 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PencilIcon } from '@heroicons/react/24/outline';
 
+import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route } from '@/routes/ngos/view.$ngoId.$tab';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { NGO } from '../models/NGO';
 import { NGOAdminsView } from './admins/NGOAdmins';
-import { NgoBackButton, NgoBreadcrumbs } from './NgoExtraComponents';
 import { NgoStatusBadge } from './NgoStatusBadges';
 
 interface NGODetailsProps {
@@ -19,8 +19,8 @@ interface NGODetailsProps {
 
 export const NGODetailsView: FC<NGODetailsProps> = ({ data }) => {
   const navigate = useNavigate();
-  const navigateToEdit = (): void => {
-    void navigate({
+  const navigateToEdit = () => {
+    navigate({
       to: '/ngos/edit/$ngoId',
       params: { ngoId: data.id },
     });
@@ -74,8 +74,8 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
 
   function handleTabChange(tab: string): void {
     navigate({
-      to: '.',
       replace: true,
+      // @ts-ignore
       params(prev: any) {
         return { ...prev, tab };
       },
@@ -84,10 +84,14 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
   return (
     <Layout
       title={`${data.name}`}
-      backButton={<NgoBackButton />}
-      breadcrumbs={data && <NgoBreadcrumbs ngoData={{ id: data.id, name: data.name }} tab={tab} />}>
+      backButton={
+        <Link title='Go back' to='/ngos' preload='intent'>
+          <BackButtonIcon />
+        </Link>
+      }
+      breadcrumbs={<></>}>
       <Tabs defaultValue='details' value={tab} onValueChange={handleTabChange}>
-        <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
+        <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='details'>Organization details</TabsTrigger>
           <TabsTrigger value='admins'>Admin users</TabsTrigger>
         </TabsList>

@@ -7,7 +7,7 @@ namespace Vote.Monitor.Api.Feature.NgoAdmin.Create;
 public class Endpoint(
     UserManager<ApplicationUser> userManager,
     IRepository<NgoAdminAggregate> repository)
-    : Endpoint<Request, Results<Ok<NgoAdminModel>, Conflict<ProblemDetails>>>
+    : Endpoint<Request, Results<Ok<NgoAdminModel>, ProblemDetails>>
 {
     public override void Configure()
     {
@@ -18,14 +18,14 @@ public class Endpoint(
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<NgoAdminModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<NgoAdminModel>, ProblemDetails>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var user = await userManager.FindByEmailAsync(req.Email);
         if (user is not null)
         {
-            AddError(r => r.Email, "A ngo admin with same login already exists");
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+            AddError(r => r.Email, "A user with same login already exists");
+            return new ProblemDetails(ValidationFailures);
         }
 
         var applicationUser =
@@ -35,7 +35,7 @@ public class Endpoint(
         if (!result.Succeeded)
         {
             AddError(r => r.Email, result.GetAllErrors());
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+            return new ProblemDetails(ValidationFailures);
         }
 
         var ngoAdmin = new NgoAdminAggregate(req.NgoId, applicationUser);

@@ -1,11 +1,12 @@
 import { NgoAdminDetailsView } from '@/features/ngos/components/admins/NgoAdminDetailsView';
 import { ngoAdminDetailsOptions, useNgoAdminDetails } from '@/features/ngos/hooks/ngo-admin-queries';
-import { ngoDetailsOptions, useNGODetails } from '@/features/ngos/hooks/ngos-queries';
-import { redirectIfNotPlatformAdmin } from '@/lib/utils';
+import { ngoDetailsOptions } from '@/features/ngos/hooks/ngos-queries';
+import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/ngos/admin/$ngoId/$adminId/view')({
   beforeLoad: ({ params }) => {
+    redirectIfNotAuth();
     redirectIfNotPlatformAdmin();
   },
   component: NgoAdminDetails,
@@ -23,7 +24,6 @@ export const Route = createFileRoute('/ngos/admin/$ngoId/$adminId/view')({
 function NgoAdminDetails() {
   const { ngoId, adminId } = Route.useParams();
   const { data: ngoAdmin } = useNgoAdminDetails({ ngoId, adminId });
-  const { data: ngo } = useNGODetails(ngoId);
 
-  return <NgoAdminDetailsView ngoId={ngoId} ngoName={ngo.name} ngoAdmin={ngoAdmin} />;
+  return <NgoAdminDetailsView ngoId={ngoId} ngoAdmin={ngoAdmin} />;
 }

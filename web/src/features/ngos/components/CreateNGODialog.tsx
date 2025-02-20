@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useCreateNgo } from '../hooks/ngos-queries';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
+import { useCallback, useEffect } from 'react';
 
 export interface CreateNGODialogProps {
   open: boolean;
@@ -18,24 +19,56 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
 
   const form = useForm<NgoCreationFormData>({
     resolver: zodResolver(newNgoSchema),
+    defaultValues: {
+      name: '',
+    },
   });
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset(undefined, { keepValues: true });
+    }
+  }, [form.formState.isSubmitSuccessful]);
+
+  const internalOnOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        form.reset({
+          name: '',
+        });
+      }
+      onOpenChange(open);
+    },
+    [onOpenChange]
+  );
 
   function onSubmit(values: NgoCreationFormData) {
     createNgoMutation.mutate({
       values,
       onMutationSuccess: () => {
         form.reset({});
-        onOpenChange(false);
+        internalOnOpenChange(false);
         toast({
           title: 'Success',
           description: 'New organization created',
+        });
+      },
+      onMutationError: (error) => {
+        error?.errors?.forEach((error) => {
+          form.setError(error.name as keyof NgoCreationFormData, { type: 'custom', message: error.reason });
+        });
+
+        toast({
+          title: 'Error adding NGO admin',
+          description: 'Please contact Platform admins',
+          variant: 'destructive',
         });
       },
     });
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+    <Dialog open={open} onOpenChange={internalOnOpenChange} modal={true}>
       <DialogContent
         className='min-w-[650px]'
         onInteractOutside={(e) => {

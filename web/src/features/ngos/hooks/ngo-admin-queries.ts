@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
+import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
@@ -14,10 +14,12 @@ import {
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 import { ngosKeys } from './ngos-queries';
+import axios, { AxiosError } from 'axios';
+const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
 export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
   queryOptions({
-    queryKey: ngosKeys.detail(ngoId),
+    queryKey: ngosKeys.adminDetails(ngoId, adminId),
     queryFn: async () => {
       const response = await authApi.get<NgoAdmin>(`/ngos/${ngoId}/admins/${adminId}`);
 
@@ -27,6 +29,7 @@ export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestPar
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 
 export const useNgoAdminDetails = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
@@ -48,6 +51,7 @@ export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryRes
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 }
 
@@ -56,16 +60,35 @@ export function useNgoAdmins(ngoId: string, p: DataTableParameters): UseQueryRes
 export const useCreateNgoAdmin = () => {
   const queryClient = useQueryClient();
   const createNgoAdminMutation = useMutation({
-    mutationFn: ({ ngoId, values }: { ngoId: string; values: NgoAdminFormData; onMutationSuccess: () => void }) => {
-      return authApi.post(`/ngos/${ngoId}/admins`, values);
+    mutationFn: ({
+      ngoId,
+      values,
+    }: {
+      ngoId: string;
+      values: NgoAdminFormData;
+      onMutationSuccess: () => void;
+      onMutationError: (error?: ProblemDetails) => void;
+    }) => {
+      return authApi.post<NgoAdmin, string>(`/ngos/${ngoId}/admins`, values);
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       onMutationSuccess();
     },
-    onError: (err) => {
-      console.error(err);
+    onError: (error, { onMutationError }) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const axiosError = error as AxiosError<ProblemDetails>;
+
+        if (axiosError.response?.status === 400) {
+          const problemDetails = axiosError.response.data;
+          return onMutationError(problemDetails);
+        }
+      }
+
+      // Handle non-Axios or unexpected errors
+      console.error('Unexpected error:', error);
+      onMutationError();
     },
   });
 
@@ -82,13 +105,13 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const editNgoAdminMutation = useMutation({
     mutationFn: ({ adminId, values }: { adminId: string; values: EditNgoAdminFormData }) => {
-      return authApi.put(`ngos/${ngoId}/admins/${adminId}`, values);
+      return authApi.put(`/ngos/${ngoId}/admins/${adminId}`, values);
     },
 
-    onSuccess: () => {
+    onSuccess: (_, { adminId }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
-      navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: ngoId!, tab: 'admins' } });
+      navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });
     },
     onError: () => {
       toast({
@@ -101,7 +124,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const deleteNgoAdminMutation = useMutation({
     mutationFn: ({ adminId }: { adminId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`ngos/${ngoId}/admins/${adminId}`, {});
+      return authApi.delete<any>(`/ngos/${ngoId}/admins/${adminId}`, {});
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
@@ -127,7 +150,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const deactivateNgoAdminMutation = useMutation({
     mutationFn: (adminId: string) => {
-      return authApi.post<any>(`ngos/${ngoId}/admins/${adminId}:deactivate`, {});
+      return authApi.post<any>(`/ngos/${ngoId}/admins/${adminId}:deactivate`, {});
     },
 
     onSuccess: () => {
@@ -151,7 +174,7 @@ export const useNgoAdminMutations = (ngoId: string) => {
 
   const activateNgoAdminMutation = useMutation({
     mutationFn: (adminId: string) => {
-      return authApi.post<any>(`ngos/${ngoId}/admins/${adminId}:activate`, {});
+      return authApi.post<any>(`/ngos/${ngoId}/admins/${adminId}:activate`, {});
     },
 
     onSuccess: () => {

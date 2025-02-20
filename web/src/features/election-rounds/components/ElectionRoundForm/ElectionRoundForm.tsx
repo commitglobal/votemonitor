@@ -52,6 +52,7 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
 
   const form = useForm<ElectionRoundRequest>({
     resolver: zodResolver(electionRoundSchema),
+    mode: 'all',
     defaultValues: {
       countryId: electionRound?.countryId ?? '',
       title: electionRound?.title ?? '',

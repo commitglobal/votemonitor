@@ -29,7 +29,6 @@ public class Endpoint(
         }
 
         ngoAdmin.ApplicationUser.UpdateDetails(req.FirstName, req.LastName, req.PhoneNumber);
-        ngoAdmin.ApplicationUser.UpdateStatus(req.Status);
         var result = await userManager.UpdateAsync(ngoAdmin.ApplicationUser);
 
         if (!result.Succeeded)

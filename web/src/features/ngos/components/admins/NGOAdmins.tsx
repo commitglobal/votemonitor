@@ -19,7 +19,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { useNgoAdminMutations, useNgoAdmins } from '../../hooks/ngo-admin-queries';
 import { NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
 import { NgoAdminStatusBadge } from '../NgoStatusBadges';
@@ -37,14 +37,17 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const addNgoAdminDialog = useDialog();
   const { queryParams, searchText, handleSearchInput } = useDebouncedSearch(Route.id, ngoAdminsSearchParamsSchema);
 
-  const navigateToNgoAdmin = (ngoId: string, adminId: string) =>
-    navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });
+  const navigateToViewNgoAdmin = useCallback(
+    (adminId: string) => navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } }),
+    [ngoId]
+  );
+
+  const navigateToEditNgoAdmin = useCallback(
+    (adminId: string) => navigate({ to: '/ngos/admin/$ngoId/$adminId/edit', params: { ngoId, adminId } }),
+    [ngoId]
+  );
 
   const ngoAdminsColDefs: ColumnDef<NgoAdmin>[] = [
-    {
-      header: 'ID',
-      accessorKey: 'id',
-    },
     {
       accessorKey: 'email',
       enableSorting: true,
@@ -59,6 +62,12 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
       accessorKey: 'lastName',
       enableSorting: true,
       header: ({ column }) => <DataTableColumnHeader title='Last name' column={column} />,
+    },
+    {
+      accessorKey: 'phoneNumber',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Phone number' column={column} />,
+      cell: ({ row: { original } }) => original.phoneNumber || '-',
     },
 
     {
@@ -90,7 +99,8 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => navigateToNgoAdmin(ngoId, row.original.id)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigateToViewNgoAdmin(adminId)}>View</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigateToEditNgoAdmin(adminId)}>Edit</DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
@@ -146,7 +156,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
           columns={ngoAdminsColDefs}
           useQuery={(params) => useNgoAdmins(ngoId, params)}
           queryParams={queryParams}
-          onRowClick={(id) => navigateToNgoAdmin(ngoId, id)}
+          // onRowClick={(id) => navigateToViewNgoAdmin(id)}
         />
       </CardContent>
     </Card>

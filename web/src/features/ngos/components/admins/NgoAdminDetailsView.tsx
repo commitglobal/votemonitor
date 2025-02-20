@@ -2,23 +2,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import { DateTimeFormat } from '@/common/formats';
+import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { format } from 'date-fns';
 import { FC } from 'react';
 import { NgoAdmin } from '../../models/NgoAdmin';
-import { NgoBackButton, NgoBreadcrumbs } from '../NgoExtraComponents';
 import { NgoAdminStatusBadge } from '../NgoStatusBadges';
 
 interface NgoAdminDetailsViewProps {
   ngoId: string;
-  ngoName: string;
   ngoAdmin: NgoAdmin;
 }
 
-export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoName, ngoAdmin }) => {
+export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoAdmin }) => {
   const navigate = useNavigate();
   const displayName = `${ngoAdmin.firstName} ${ngoAdmin.lastName}`;
   const navigateToEdit = (): void => {
@@ -31,11 +30,13 @@ export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoNa
   return (
     <Layout
       title={displayName}
-      backButton={<NgoBackButton ngoId={ngoId} />}
-      breadcrumbs={
-        <NgoBreadcrumbs ngoData={{ id: ngoId, name: ngoName }} adminData={{ id: ngoAdmin.id, name: displayName }} />
-      }>
-      <Card className='w-[800px] pt-0'>
+      backButton={
+        <Link title='Go back' to='/ngos/view/$ngoId/$tab' params={{ ngoId, tab: 'admins' }} preload='intent'>
+          <BackButtonIcon />
+        </Link>
+      }
+      breadcrumbs={<></>}>
+      <Card className='w-[600px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
             <CardTitle className='text-xl'>NGO admin details</CardTitle>
@@ -48,8 +49,12 @@ export const NgoAdminDetailsView: FC<NgoAdminDetailsViewProps> = ({ ngoId, ngoNa
         </CardHeader>
         <CardContent className='flex flex-col items-baseline gap-6'>
           <div className='flex flex-col gap-1'>
-            <p className='font-bold text-gray-700'>Name</p>
-            <p className='font-normal text-gray-900'>{displayName}</p>
+            <p className='font-bold text-gray-700'>First name</p>
+            <p className='font-normal text-gray-900'>{ngoAdmin.firstName}</p>
+          </div>
+          <div className='flex flex-col gap-1'>
+            <p className='font-bold text-gray-700'>Last name</p>
+            <p className='font-normal text-gray-900'>{ngoAdmin.lastName}</p>
           </div>
           <div className='flex flex-col gap-1'>
             <p className='font-bold text-gray-700'>Email</p>

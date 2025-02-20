@@ -410,3 +410,12 @@ export interface FormBase {
   numberOfQuestions: number;
   languagesTranslationStatus: LanguagesTranslationStatus;
 }
+
+export interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+  errors?: { name: string; reason: string }[]; // Maps field names to error messages
+}

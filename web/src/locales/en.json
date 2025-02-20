@@ -32,7 +32,7 @@
     }
   },
   "app.input.pleaseSpecify": "Please specify",
-  "electionRound":{
+  "electionRound": {
     "action.create": "Create new election event",
     "field.country": "Country",
     "field.englishTitle": "English title",
@@ -40,9 +40,9 @@
     "field.title": "Title",
     "placeholder.englishTitle": "Title in English",
     "placeholder.title": "Title",
-    "status":{
-      "notStarted":"Not started",
-      "started":"Started",
+    "status": {
+      "notStarted": "Not started",
+      "started": "Started",
       "archived": "Archived"
     }
   },
@@ -448,5 +448,17 @@
     "title": "Responses",
     "subtitle": "View all form answers and other reports submitted by your observers.",
     "subtitleCoalitionLeader": "View all form answers and other reports submitted by coalition observers."
+  },
+  "ngo": {
+    "status": {
+      "activated": "Activated",
+      "deactivated": "Deactivated"
+    }
+  },
+  "ngo-admin": {
+    "status": {
+      "active": "Active",
+      "deactivated": "Deactivated"
+    }
   }
 }

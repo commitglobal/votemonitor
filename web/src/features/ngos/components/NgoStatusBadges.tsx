@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { cn, mapNgoAdminStatus, mapNgoStatus } from '@/lib/utils';
 import { FC } from 'react';
 import { NGOStatus } from '../models/NGO';
 import { NgoAdminStatus } from '../models/NgoAdmin';
@@ -8,26 +9,15 @@ interface NgoStatusBadgeProps {
 }
 
 export const NgoStatusBadge: FC<NgoStatusBadgeProps> = ({ status }) => {
-  let className = '';
-
-  switch (status) {
-    case NGOStatus.Activated:
-      className = 'badge-Active';
-      break;
-
-    case NGOStatus.Pending:
-      className = 'badge-Pending';
-      break;
-
-    case NGOStatus.Deactivated:
-      className = 'badge-Suspended';
-      break;
-
-    default:
-      break;
-  }
-
-  return <Badge className={className}>{status}</Badge>;
+  return (
+    <Badge
+      className={cn('w-fit', {
+        'text-green-600 bg-green-200': status === NGOStatus.Activated,
+        'text-slate-700 bg-slate-200': status === NGOStatus.Deactivated,
+      })}>
+      {mapNgoStatus(status)}
+    </Badge>
+  );
 };
 
 interface NgoAdmintatusBadgeProps {
@@ -35,20 +25,13 @@ interface NgoAdmintatusBadgeProps {
 }
 
 export const NgoAdminStatusBadge: FC<NgoAdmintatusBadgeProps> = ({ status }) => {
-  let className = '';
-
-  switch (status) {
-    case NgoAdminStatus.Active:
-      className = 'badge-Active';
-      break;
-
-    case NgoAdminStatus.Deactivated:
-      className = 'badge-Suspended';
-      break;
-
-    default:
-      break;
-  }
-
-  return <Badge className={className}>{status}</Badge>;
+  return (
+    <Badge
+      className={cn('w-fit', {
+        'text-green-600 bg-green-200': status === NgoAdminStatus.Active,
+        'text-slate-700 bg-slate-200': status === NgoAdminStatus.Deactivated,
+      })}>
+      {mapNgoAdminStatus(status)}
+    </Badge>
+  );
 };

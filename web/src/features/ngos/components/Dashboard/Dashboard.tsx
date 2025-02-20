@@ -34,9 +34,16 @@ export default function NGOsDashboard(): ReactElement {
 
   const { deactivateNgoMutation, activateNgoMutation, deleteNgoWithConfirmation } = useNgoMutations();
 
-  const navigateToNgo = useCallback(
+  const navigateToViewNgo = useCallback(
     (ngoId: string) => {
       void navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId, tab: 'details' } });
+    },
+    [navigate]
+  );
+
+  const navigateToEditNgo = useCallback(
+    (ngoId: string) => {
+      void navigate({ to: '/ngos/edit/$ngoId', params: { ngoId } });
     },
     [navigate]
   );
@@ -85,7 +92,6 @@ export default function NGOsDashboard(): ReactElement {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const navigate = useNavigate();
         const isNGOActive = row.original.status === NGOStatus.Activated;
 
         return (
@@ -99,9 +105,10 @@ export default function NGOsDashboard(): ReactElement {
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end'>
                 <DropdownMenuItem
-                  onClick={() =>
-                    navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: row.original.id, tab: 'details' } })
-                  }>
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateToEditNgo(row.original.id);
+                  }}>
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -131,7 +138,7 @@ export default function NGOsDashboard(): ReactElement {
   ];
 
   return (
-    <Layout title={'Organizations'}>
+    <Layout>
       <Card className='w-full pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
@@ -159,9 +166,9 @@ export default function NGOsDashboard(): ReactElement {
         <CardContent>
           <QueryParamsDataTable
             columns={ngoColDefs}
-            useQuery={(params) => useNGOs(params)}
+            useQuery={useNGOs}
             queryParams={queryParams}
-            onRowClick={navigateToNgo}
+            onRowClick={navigateToViewNgo}
           />
         </CardContent>
       </Card>

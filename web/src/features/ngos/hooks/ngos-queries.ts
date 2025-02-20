@@ -1,14 +1,15 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
+import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { AxiosResponse } from 'axios';
 import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
-const ENDPOINT = 'ngos';
+import axios, { AxiosError } from 'axios';
+
+const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
 export const ngosKeys = {
   all: () => ['ngos'] as const,
@@ -16,6 +17,7 @@ export const ngosKeys = {
   list: (params: DataTableParameters) => [...ngosKeys.lists(), { ...params }] as const,
   details: () => [...ngosKeys.all(), 'detail'] as const,
   detail: (id: string) => [...ngosKeys.details(), id] as const,
+  adminDetails: (ngoId: string, ngoAdminId: string) => [...ngosKeys.detail(ngoId), 'admins', ngoAdminId] as const,
   adminsList: (ngoId: string, params: DataTableParameters) =>
     [...ngosKeys.all(), 'admins', ngoId, { ...params }] as const,
 };
@@ -34,6 +36,7 @@ export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 }
 
@@ -49,21 +52,40 @@ export const ngoDetailsOptions = (ngoId: string) =>
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 
 export const useNGODetails = (ngoId: string) => useSuspenseQuery(ngoDetailsOptions(ngoId));
 
 export const useCreateNgo = () => {
   const createNgoMutation = useMutation({
-    mutationFn: ({ values }: { values: NgoCreationFormData; onMutationSuccess: () => void }) => {
-      return authApi.post(`${ENDPOINT}`, { name: values.name });
+    mutationFn: ({
+      values,
+    }: {
+      values: NgoCreationFormData;
+      onMutationSuccess: () => void;
+      onMutationError: (error?: ProblemDetails) => void;
+    }) => {
+      return authApi.post('/ngos', { name: values.name });
     },
 
-    onSuccess: (response: AxiosResponse<NGO>, { values, onMutationSuccess }) => {
+    onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       if (onMutationSuccess) onMutationSuccess();
     },
-    onError: (err) => {
+    onError: (error, { onMutationError }) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const axiosError = error as AxiosError<ProblemDetails>;
+
+        if (axiosError.response?.status === 400) {
+          const problemDetails = axiosError.response.data;
+          return onMutationError(problemDetails);
+        }
+      }
+
+      // Handle non-Axios or unexpected errors
+      console.error('Unexpected error:', error);
+      onMutationError();
       toast({
         title: 'Error creating a new NGO',
         description: '',
@@ -84,7 +106,7 @@ export const useNgoMutations = () => {
 
   const editNgoMutation = useMutation({
     mutationFn: ({ ngoId, values }: { ngoId: string; values: EditNgoFormData }) => {
-      return authApi.put(`${ENDPOINT}/${ngoId}`, values);
+      return authApi.put(`/ngos/${ngoId}`, values);
     },
 
     onSuccess: (_, { ngoId }) => {
@@ -103,7 +125,7 @@ export const useNgoMutations = () => {
 
   const deactivateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
-      return authApi.post<any>(`${ENDPOINT}/${ngoId}:deactivate`, {});
+      return authApi.post<any>(`/ngos/${ngoId}:deactivate`, {});
     },
 
     onSuccess: () => {
@@ -127,7 +149,7 @@ export const useNgoMutations = () => {
 
   const activateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
-      return authApi.post<any>(`${ENDPOINT}/${ngoId}:activate`, {});
+      return authApi.post<any>(`/ngos/${ngoId}:activate`, {});
     },
 
     onSuccess: () => {
@@ -151,7 +173,7 @@ export const useNgoMutations = () => {
 
   const deleteNgoMutation = useMutation({
     mutationFn: ({ ngoId }: { ngoId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`${ENDPOINT}/${ngoId}`);
+      return authApi.delete<any>(`/ngos/${ngoId}`);
     },
 
     onSuccess: (_, { onMutationSuccess }) => {

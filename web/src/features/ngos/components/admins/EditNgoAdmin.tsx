@@ -1,44 +1,69 @@
+import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Route } from '@/routes/ngos/admin.$ngoId.$adminId.edit';
+import { Route } from '@/routes/ngos/admin/$ngoId.$adminId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from '@tanstack/react-router';
-import { FC } from 'react';
+import { Link, useBlocker, useNavigate } from '@tanstack/react-router';
+import { FC, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useNgoAdminMutations } from '../../hooks/ngo-admin-queries';
-import { editNgoAdminSchema, NgoAdmin, NgoAdminStatus } from '../../models/NgoAdmin';
-import { NgoBackButton, NgoBreadcrumbs } from '../NgoExtraComponents';
+import { EditNgoAdminFormData, editNgoAdminSchema, NgoAdmin } from '../../models/NgoAdmin';
+import { NgoAdminStatusBadge } from '../NgoStatusBadges';
 
 interface EditNgoAdminProps {
-  existingData: NgoAdmin;
-  id: string;
+  ngoAdmin: NgoAdmin;
 }
 
-export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
+export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ ngoAdmin }) => {
   const navigate = useNavigate();
   const { ngoId, adminId } = Route.useParams();
-
   const { editNgoAdminMutation, deleteNgoAdminWithConfirmation } = useNgoAdminMutations(ngoId);
-  const displayName = `${existingData.firstName} ${existingData.lastName}`;
+  const confirm = useConfirm();
 
-  const form = useForm<z.infer<typeof editNgoAdminSchema>>({
+  const displayName = useMemo(
+    () => `${ngoAdmin.firstName} ${ngoAdmin.lastName}`,
+    [ngoAdmin.firstName, ngoAdmin.lastName]
+  );
+
+  const form = useForm<EditNgoAdminFormData>({
     resolver: zodResolver(editNgoAdminSchema),
+    mode: 'all',
+    reValidateMode: 'onChange',
     defaultValues: {
-      firstName: existingData.firstName,
-      lastName: existingData.lastName,
-      phoneNumber: existingData.phoneNumber,
-      status: existingData.status,
+      firstName: ngoAdmin.firstName,
+      lastName: ngoAdmin.lastName,
+      phoneNumber: ngoAdmin.phoneNumber,
     },
   });
 
-  function onSubmit(values: z.infer<typeof editNgoAdminSchema>) {
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset({}, { keepValues: true });
+    }
+  }, [form.formState.isSubmitSuccessful, form.reset]);
+
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return !(await confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        cancelButton: 'Stay',
+      }));
+    },
+  });
+
+  function onSubmit(values: EditNgoAdminFormData) {
     editNgoAdminMutation.mutate({ adminId, values });
   }
 
@@ -55,11 +80,13 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
   return (
     <Layout
       title={`Edit ${displayName}`}
-      backButton={<NgoBackButton ngoId={ngoId} />}
-      breadcrumbs={
-        <NgoBreadcrumbs ngoData={{ id: ngoId, name: '' }} adminData={{ id: existingData.id, name: displayName }} />
-      }>
-      <Card className='w-[800px] pt-0'>
+      backButton={
+        <Link title='Go back' to='/ngos/admin/$ngoId/$adminId/view' params={{ ngoId, adminId }} preload='intent'>
+          <BackButtonIcon />
+        </Link>
+      }
+      breadcrumbs={<></>}>
+      <Card className='w-[600px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
             <CardTitle className='text-xl'>Edit NGO admin</CardTitle>
@@ -69,16 +96,20 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
         <CardContent className='flex flex-col gap-6 items-baseline'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+              <div className='flex flex-col gap-1'>
+                <p className='font-bold text-gray-700'>Email</p>
+                <p className='font-normal text-gray-900'>{ngoAdmin.email}</p>
+              </div>
               <FormField
                 control={form.control}
                 name='firstName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
                     <FormLabel>
                       First name <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder='First name' {...field} />
+                      <Input placeholder='First name' {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage className='mt-2' />
                   </FormItem>
@@ -88,13 +119,13 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
               <FormField
                 control={form.control}
                 name='lastName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
                     <FormLabel>
                       Last name <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder='Last name' {...field} />
+                      <Input placeholder='Last name' {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage className='mt-2' />
                   </FormItem>
@@ -104,43 +135,22 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
               <FormField
                 control={form.control}
                 name='phoneNumber'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Phone number <span className='text-red-500'>*</span>
-                    </FormLabel>
+                    <FormLabel>Phone number</FormLabel>
                     <FormControl>
-                      <Input placeholder='Phone number' {...field} />
+                      <Input placeholder='Phone number' {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage className='mt-2' />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name='status'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Status <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Admin status' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value={NgoAdminStatus.Active}>{NgoAdminStatus.Active}</SelectItem>
-                            <SelectItem value={NgoAdminStatus.Deactivated}>{NgoAdminStatus.Deactivated}</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage className='mt-2' />
-                  </FormItem>
-                )}
-              />
+
+              <div className='flex flex-col gap-1'>
+                <p className='font-bold text-gray-700'>Status</p>
+                <NgoAdminStatusBadge status={ngoAdmin.status} />
+              </div>
+
               <div className='flex justify-between'>
                 <Button
                   onClick={handleDelete}
@@ -150,9 +160,16 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ id, existingData }) => {
                   Delete admin
                 </Button>
                 <div className='flex gap-2'>
-                  <Button variant='outline' type='submit'>
-                    Cancel
-                  </Button>
+                  <Link
+                    title='Go back'
+                    to='/ngos/admin/$ngoId/$adminId/view'
+                    params={{ ngoId, adminId }}
+                    preload='intent'>
+                    <Button variant='outline' type='button'>
+                      Cancel
+                    </Button>
+                  </Link>
+
                   <Button type='submit' className='px-6'>
                     Save
                   </Button>

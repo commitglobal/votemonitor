@@ -570,6 +570,8 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
 }
 
 import { authApi } from '@/common/auth-api';
+import { NGOStatus } from '@/features/ngos/models/NGO';
+import { NgoAdminStatus } from '@/features/ngos/models/NgoAdmin';
 
 export enum TemplateType {
   MonitoringObservers = 'monitoring-observers',
@@ -612,3 +614,27 @@ export const downloadImportExample = async (templateType: TemplateType) => {
 
   window.URL.revokeObjectURL(url);
 };
+
+export function mapNgoStatus(ngoStatus: NGOStatus): string {
+  switch (ngoStatus) {
+    case NGOStatus.Activated:
+      return i18n.t('ngo.status.activated');
+    case NGOStatus.Deactivated:
+      return i18n.t('ngo.status.deactivated');
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export function mapNgoAdminStatus(ngoAdminStatus: NgoAdminStatus): string {
+  switch (ngoAdminStatus) {
+    case NgoAdminStatus.Active:
+      return i18n.t('ngo-admin.status.active');
+    case NgoAdminStatus.Deactivated:
+      return i18n.t('ngo-admin.status.deactivated');
+
+    default:
+      return 'Unknown';
+  }
+}
