@@ -1,7 +1,7 @@
 import { AnswerType, NumberAnswer } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import { useFormAnswersStore } from '../questionsEditor/answers-store';
 
 export interface PreviewNumberQuestionProps {
@@ -14,10 +14,10 @@ export interface PreviewNumberQuestionProps {
 
 function PreviewNumberQuestion({ code, questionId, text, helptext, inputPlaceholder }: PreviewNumberQuestionProps) {
   const { setAnswer, getAnswer } = useFormAnswersStore();
-  const [localAnswer, setLocalAnswer] = useState<NumberAnswer | undefined>(undefined);
-  useEffect(() => {
-    setLocalAnswer(getAnswer(questionId) as NumberAnswer);
-  }, [questionId]);
+  // const [localAnswer, setLocalAnswer] = useState<NumberAnswer | undefined>(undefined);
+  // useEffect(() => {
+  //   setLocalAnswer(getAnswer(questionId) as NumberAnswer);
+  // }, [questionId]);
 
   return (
     <div className='grid gap-6'>
@@ -33,7 +33,7 @@ function PreviewNumberQuestion({ code, questionId, text, helptext, inputPlacehol
           id={`${questionId}-value`}
           placeholder={inputPlaceholder}
           type='number'
-          value={localAnswer?.value}
+          value={(getAnswer(questionId) as NumberAnswer)?.value}
           onChange={(e) => {
             const numberAnswer: NumberAnswer = {
               $answerType: AnswerType.NumberAnswerType,
