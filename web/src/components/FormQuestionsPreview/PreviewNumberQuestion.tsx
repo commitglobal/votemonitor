@@ -14,7 +14,7 @@ export interface PreviewNumberQuestionProps {
 function PreviewNumberQuestion({ code, questionId, text, helptext, inputPlaceholder }: PreviewNumberQuestionProps) {
   const { setAnswer, getAnswer } = useFormAnswersStore();
 
-  const value = (getAnswer(questionId) as NumberAnswer)?.value?.toString();
+  const value = (getAnswer(questionId) as NumberAnswer)?.value;
 
   return (
     <div className='grid gap-6'>
