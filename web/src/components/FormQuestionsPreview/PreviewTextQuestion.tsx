@@ -2,7 +2,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '../ui/textarea';
 import { AnswerType, TextAnswer } from '@/common/types';
 import { useFormAnswersStore } from '../questionsEditor/answers-store';
-import { useEffect, useState } from 'react';
 
 export interface PreviewTextQuestionProps {
   questionId: string;
@@ -14,10 +13,8 @@ export interface PreviewTextQuestionProps {
 
 function PreviewTextQuestion({ code, questionId, text, helptext, inputPlaceholder }: PreviewTextQuestionProps) {
   const { setAnswer, getAnswer } = useFormAnswersStore();
-  const [localAnswer, setLocalAnswer] = useState<TextAnswer | undefined>(undefined);
-  useEffect(() => {
-    setLocalAnswer(getAnswer(questionId) as TextAnswer);
-  }, [questionId]);
+
+  const value = (getAnswer(questionId) as TextAnswer)?.text;
 
   return (
     <div className='grid gap-6'>
@@ -36,7 +33,7 @@ function PreviewTextQuestion({ code, questionId, text, helptext, inputPlaceholde
             const textAnswer: TextAnswer = { $answerType: AnswerType.TextAnswerType, questionId, text: e.target.value };
             setAnswer(textAnswer);
           }}
-          value={localAnswer?.text}
+          value={value}
         />
       </div>
     </div>
