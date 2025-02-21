@@ -13,7 +13,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
-import { ArrowUpTrayIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUpTrayIcon,
+  Cog8ToothIcon,
+  EllipsisVerticalIcon,
+  FunnelIcon,
+  PaperAirplaneIcon,
+} from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
@@ -131,7 +137,7 @@ function MonitoringObserversList() {
     ];
   }, [currentElectionRoundId]);
 
-  const [searchText, setSearchText] = useState(search.searchText);
+  const [searchText, setSearchText] = useState(search.searchText || '');
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
 

@@ -2,7 +2,6 @@ import { AnswerType, type FunctionComponent, type RatingAnswer, type RatingScale
 import { Label } from '@/components/ui/label';
 import { RatingGroup } from '@/components/ui/ratings';
 import { ratingScaleToNumber } from '@/lib/utils';
-import { useEffect, useState } from 'react';
 import { useFormAnswersStore } from '../questionsEditor/answers-store';
 
 export interface PreviewRatingQuestionProps {
@@ -25,12 +24,8 @@ function PreviewRatingQuestion({
   upperLabel,
 }: PreviewRatingQuestionProps): FunctionComponent {
   const { setAnswer, getAnswer } = useFormAnswersStore();
-  const [localAnswer, setLocalAnswer] = useState<RatingAnswer | undefined>(undefined);
 
-  useEffect(() => {
-    const ratingAnswer = getAnswer(questionId) as RatingAnswer;
-    setLocalAnswer(ratingAnswer);
-  }, [questionId]);
+  const value = (getAnswer(questionId) as RatingAnswer)?.value?.toString();
 
   return (
     <div className='grid gap-6'>
@@ -47,7 +42,7 @@ function PreviewRatingQuestion({
           id={`${questionId}-value`}
           lowerLabel={lowerLabel}
           upperLabel={upperLabel}
-          defaultValue={localAnswer?.value?.toString()}
+          value={value}
           onValueChange={(value) => {
             const ratingAnswer: RatingAnswer = {
               $answerType: AnswerType.RatingAnswerType,

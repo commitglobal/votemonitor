@@ -79,7 +79,7 @@ function PreviewMultiSelectQuestion({ code, questionId, text, helptext, options 
           <CheckboxField key={option.optionId}>
             <Checkbox
               name={option.optionId}
-              checked={localAnswer?.selection?.some((o) => o.optionId === option.optionId)}
+              checked={localAnswer?.selection?.some((o) => o.optionId === option.optionId) || false}
               onChange={(checked) => handleOptionSelected(checked, option.optionId)}
             />
             <Label className='break-all'>{option.text}</Label>
@@ -90,7 +90,7 @@ function PreviewMultiSelectQuestion({ code, questionId, text, helptext, options 
           <CheckboxField>
             <Checkbox
               name={freeTextOption.optionId}
-              checked={localAnswer?.selection?.some((o) => o.optionId === freeTextOption.optionId)}
+              checked={localAnswer?.selection?.some((o) => o.optionId === freeTextOption.optionId) || false}
               onChange={(checked) => {
                 handleOptionSelected(checked, freeTextOption.optionId);
               }}
