@@ -57,7 +57,7 @@ function LevelStatisticsCard({ level, cardName, levelsStats }: LevelStatisticsCa
 
   return (
     <Card className='w-full'>
-      <CardHeader className='flex flex-row items-center justify-between'>
+      <CardHeader className='flex flex-row items-center justify-between space-y-0'>
         <CardTitle className='text-lg font-medium'>{cardName}</CardTitle>
         <ExportDataButton />
       </CardHeader>
