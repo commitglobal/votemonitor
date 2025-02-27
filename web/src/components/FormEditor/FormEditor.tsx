@@ -34,7 +34,6 @@ import {
   ZEditQuestionType,
 } from '@/common/form-requests';
 import { FormTemplateFull } from '@/features/form-templates/models';
-import { DevTool } from '@hookform/devtools';
 import EditFormDetails from './FormDetailEditor';
 
 export const ZEditFormType = z
@@ -461,7 +460,6 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
           </div>
         </footer>
       </form>
-      <DevTool control={form.control} /> {/* set up the dev tool */}
     </Form>
   );
 };

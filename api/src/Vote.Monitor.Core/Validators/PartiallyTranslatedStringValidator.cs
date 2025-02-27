@@ -10,7 +10,7 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
 
     }
 
-    public PartiallyTranslatedStringValidator(List<string> supportedLanguages, int maximumLength = 256)
+    public PartiallyTranslatedStringValidator(List<string> supportedLanguages)
     {
         Func<string, bool> isNotEmpty = str => !string.IsNullOrWhiteSpace(str);
         Func<KeyValuePair<string, string>, bool> isValidTranslation = translation => isNotEmpty(translation.Key);
@@ -39,7 +39,6 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
         RuleForEach(x => x)
             .OverrideIndexer((_, _, element, _) => $@"[""{element.Key}""]")
             .SetValidator(new InvalidLanguageCodeFormatValidator())
-            .SetValidator(new TranslationLengthValidator(maximumLength))
             .SetValidator(new UnsupportedLanguageValidator(supportedLanguages));
     }
 }

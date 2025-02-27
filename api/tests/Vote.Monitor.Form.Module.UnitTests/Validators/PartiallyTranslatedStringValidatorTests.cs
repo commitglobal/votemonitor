@@ -11,7 +11,7 @@ public class PartiallyTranslatedStringValidatorTests
     public void Validation_ShouldFail_When_NoTranslations()
     {
         // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1], 3);
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1]);
         var translatedString = new TranslatedString();
 
         // Act
@@ -29,11 +29,8 @@ public class PartiallyTranslatedStringValidatorTests
     public void Validation_ShouldFail_When_LanguageCode_IsNot_2Chars(string languageCode)
     {
         // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1],  3);
-        var translatedString = new TranslatedString
-        {
-            [languageCode] = "a string"
-        };
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1]);
+        var translatedString = new TranslatedString { [languageCode] = "a string" };
 
         // Act
         var validationResult = sut.TestValidate(translatedString);
@@ -49,11 +46,10 @@ public class PartiallyTranslatedStringValidatorTests
     public void Validation_ShouldFail_When_LanguageCode_IsEmpty(string emptyLanguageCode)
     {
         // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1],3);
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1]);
         var translatedString = new TranslatedString
         {
-            [LanguagesList.EN.Iso1] = "a string",
-            [emptyLanguageCode] = "a string"
+            [LanguagesList.EN.Iso1] = "a string", [emptyLanguageCode] = "a string"
         };
 
         // Act
@@ -72,8 +68,7 @@ public class PartiallyTranslatedStringValidatorTests
         var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1]);
         var translatedString = new TranslatedString
         {
-            [LanguagesList.EN.Iso1] = "a string",
-            [LanguagesList.HU.Iso1] = "a string"
+            [LanguagesList.EN.Iso1] = "a string", [LanguagesList.HU.Iso1] = "a string"
         };
 
         // Act
@@ -85,36 +80,12 @@ public class PartiallyTranslatedStringValidatorTests
             .WithErrorMessage("Supported languages [EN,RO] do not include HU.");
     }
 
-    [Theory]
-    [InlineData("aaaaaa")]
-    public void Validation_ShouldFail_When_Translation_ExceedsLimits(string invalidTranslation)
-    {
-        // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1], 5);
-        var translatedString = new TranslatedString
-        {
-            [LanguagesList.RO.Iso1] = "valid",
-            [LanguagesList.EN.Iso1] = invalidTranslation
-        };
-
-        // Act
-        var validationResult = sut.TestValidate(translatedString);
-
-        // Assert
-        validationResult
-            .ShouldHaveValidationErrorFor(@"x[""EN""]")
-            .WithErrorMessage("Translation for 'EN' must be less than 5 characters.");
-    }
-
     [Fact]
     public void Validation_ShouldFail_When_MissingLanguageInTranslation()
     {
         // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1], 5);
-        var translatedString = new TranslatedString
-        {
-            [LanguagesList.RO.Iso1] = "valid"
-        };
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1]);
+        var translatedString = new TranslatedString { [LanguagesList.RO.Iso1] = "valid" };
 
         // Act
         var validationResult = sut.TestValidate(translatedString);
@@ -123,18 +94,14 @@ public class PartiallyTranslatedStringValidatorTests
         validationResult
             .ShouldHaveValidationErrorFor("")
             .WithErrorMessage("Missing translation placeholder for \"EN\"");
-        
     }
+
     [Fact]
     public void Validation_ShouldPass_When_PartiallyTranslated()
     {
         // Arrange
-        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1], 5);
-        var translatedString = new TranslatedString
-        {
-            [LanguagesList.RO.Iso1] = "valid",
-            [LanguagesList.EN.Iso1] = ""
-        };
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1]);
+        var translatedString = new TranslatedString { [LanguagesList.RO.Iso1] = "valid", [LanguagesList.EN.Iso1] = "" };
 
         // Act
         var validationResult = sut.TestValidate(translatedString);

@@ -26,7 +26,7 @@ public class Validator : Validator<Request>
             .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages));
 
         RuleFor(x => x.Description)
-            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 10_000));
+            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages));
 
         RuleFor(x => x.FormType)
             .NotEmpty();

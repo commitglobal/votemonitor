@@ -90,11 +90,6 @@ public class CreateValidatorTests
         {
             [LanguagesList.IT.Iso1] = "an italian string"
         },
-        new()
-        {
-            [LanguagesList.RO.Iso1] = "a long string",
-            [LanguagesList.EN.Iso1] = "a".Repeat(10_001)
-        },
         new() { [""] = "an empty" },
         new() { ["aaa"] = "an invalid iso" },
         new() { ["a"] = "an invalid iso" },
