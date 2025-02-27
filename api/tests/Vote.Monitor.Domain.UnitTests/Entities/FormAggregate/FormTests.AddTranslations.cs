@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
 

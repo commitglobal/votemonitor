@@ -11,7 +11,6 @@ import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { downloadImportExample } from '@/features/monitoring-observers/helpers';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
@@ -20,6 +19,7 @@ import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { ImportedObserversDataTable } from './ImportedObserversDataTable';
+import { downloadImportExample, TemplateType } from '@/lib/utils';
 
 export const importObserversSchema = z.object({
   firstName: z
@@ -107,7 +107,9 @@ export function MonitoringObserversImport(): FunctionComponent {
         </CardHeader>
 
         <CardContent className='flex flex-col gap-4'>
-          <div onClick={downloadImportExample} className='px-3 py-1 rounded-lg cursor-pointer bg-purple-50 w-[300px] '>
+          <div
+            onClick={() => downloadImportExample(TemplateType.MonitoringObservers)}
+            className='px-3 py-1 rounded-lg cursor-pointer bg-purple-50 w-[300px] '>
             <div className='flex flex-row gap-1 text-sm text-purple-900 '>
               <ArrowDownTrayIcon className='w-[15px]' />
               monitoring_observers_template.csv

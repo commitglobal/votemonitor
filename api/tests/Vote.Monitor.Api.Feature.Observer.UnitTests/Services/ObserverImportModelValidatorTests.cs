@@ -66,18 +66,4 @@ public class ObserverImportModelValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Email);
     }
-
-    [Fact]
-    public void Validate_WithInvalidPhoneNumber_ShouldHaveValidationError()
-    {
-        // Arrange
-        var validator = new ObserverImportModelValidator();
-        _model = _model with { PhoneNumber = "12" }; // less than the required minimum length
-
-        // Act
-        var result = validator.TestValidate(_model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
-    }
 }

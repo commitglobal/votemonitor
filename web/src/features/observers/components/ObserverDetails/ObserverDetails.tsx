@@ -20,7 +20,7 @@ export default function ObserverDetails() {
   };
 
   return (
-    <Layout title={observer.name}>
+    <Layout title={observer.firstName + ' ' + observer.lastName}>
       <Tabs defaultValue='observer-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='observer-details'>Observer details</TabsTrigger>
@@ -40,8 +40,12 @@ export default function ObserverDetails() {
             </CardHeader>
             <CardContent className='flex flex-col gap-6 items-baseline'>
               <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Name</p>
-                <p className='text-gray-900 font-normal'>{observer.name}</p>
+                <p className='text-gray-700 font-bold'>First name</p>
+                <p className='text-gray-900 font-normal'>{observer.firstName}</p>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <p className='text-gray-700 font-bold'>Last name</p>
+                <p className='text-gray-900 font-normal'>{observer.lastName}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Email</p>

@@ -67,10 +67,3 @@
 .breadcrumbs .crumb:last-child:after {
   display: none;
 }
-
-.election-text {
-  max-width: 350px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}

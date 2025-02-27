@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
+import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FunctionComponent, FormType } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -134,7 +134,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
             )}
           </CardContent>
         </Card>
-        {formSubmission.formType === ZFormType.Enum.PSI ? (
+        {formSubmission.formType === FormType.PSI ? (
           <Card>
             <CardHeader>
               <div className='flex gap-4'>

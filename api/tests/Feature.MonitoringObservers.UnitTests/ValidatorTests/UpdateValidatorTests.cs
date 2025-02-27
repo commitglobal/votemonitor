@@ -134,21 +134,7 @@ public class UpdateValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.LastName);
     }
-
-    [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_PhoneNumber_Empty(string phoneNumber)
-    {
-        // Arrange
-        var request = new Update.Request { PhoneNumber = phoneNumber };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
-    }
-
+    
     [Fact]
     public void Validation_ShouldFail_When_PhoneNumber_Exceeds_Limit()
     {

@@ -13,7 +13,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
-import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUpTrayIcon,
+  Cog8ToothIcon,
+  EllipsisVerticalIcon,
+  FunnelIcon,
+  PaperAirplaneIcon,
+} from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
@@ -131,13 +137,12 @@ function MonitoringObserversList() {
     ];
   }, [currentElectionRoundId]);
 
-  const [searchText, setSearchText] = useState(search.searchText);
+  const [searchText, setSearchText] = useState(search.searchText || '');
   const debouncedSearch = useDebounce(search, 300);
   const debouncedSearchText = useDebounce(searchText, 300);
 
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const createMonitoringObserverDialog = useDialog();
-  const importMonitoringObserversDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
   const { filteringIsActive, navigateHandler } = useFilteringContainer();
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -262,24 +267,11 @@ function MonitoringObserversList() {
             <Link to={'/monitoring-observers/import'}>
               <Button
                 className='bg-purple-900 hover:bg-purple-600'
-                disabled={electionRound?.status === ElectionRoundStatus.Archived}
-                onClick={() => importMonitoringObserversDialog.trigger()}>
-                <svg
-                  className='mr-1.5'
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='18'
-                  height='18'
-                  viewBox='0 0 18 18'
-                  fill='none'>
-                  <path
-                    d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
-                    stroke='white'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                </svg>
-                Import observer list
+                disabled={electionRound?.status === ElectionRoundStatus.Archived}>
+                <div className='flex items-center gap-2'>
+                  <ArrowUpTrayIcon className='size-4 text-white' aria-hidden='true' />
+                  Import observer list
+                </div>
               </Button>
             </Link>
 

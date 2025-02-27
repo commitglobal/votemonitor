@@ -12,7 +12,13 @@ import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from '
 import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
 import { TanStackRouterDevelopmentTools } from './components/utils/development-tools/TanStackRouterDevelopmentTools.tsx';
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
 
 const router = createRouter({
   routeTree,
@@ -20,7 +26,7 @@ const router = createRouter({
   context: {
     queryClient,
     authContext: AuthContext as any,
-    currentElectionRoundContext: CurrentElectionRoundContext as any
+    currentElectionRoundContext: CurrentElectionRoundContext as any,
   },
   defaultPreload: 'intent',
   // Since we're using React Query, we don't want loader calls to ever be stale
@@ -45,7 +51,7 @@ function App() {
           router={router}
           context={{
             authContext,
-            currentElectionRoundContext
+            currentElectionRoundContext,
           }}
         />
       </I18nextProvider>

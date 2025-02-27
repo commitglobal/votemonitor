@@ -15,6 +15,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
         builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Status).IsRequired();
         builder.Property(x => x.NumberOfQuestions).IsRequired();
+        builder.Property(x => x.Icon).IsRequired(false);
 
         builder.Property(x => x.Name)
             .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
@@ -28,6 +29,10 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
 
         builder.Property(x => x.Questions)
             .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()
+            .HasColumnType("jsonb");
+
+        builder.Property(x => x.LanguagesTranslationStatus)
+            .HasConversion<LanguagesTranslationStatusToJsonConverter, LanguagesTranslationStatusValueComparer>()
             .HasColumnType("jsonb");
     }
 }

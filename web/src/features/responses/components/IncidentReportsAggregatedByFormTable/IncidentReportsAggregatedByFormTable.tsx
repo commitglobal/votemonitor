@@ -35,7 +35,7 @@ export function IncidentReportsAggregatedByFormTable(): FunctionComponent {
   }, [debouncedSearch]);
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
-      void navigate({ to: '/responses/incident-reports/$formId/aggregated', params: { formId } });
+      navigate({ to: '/responses/incident-reports/$formId/aggregated', params: { formId } });
     },
     [navigate]
   );

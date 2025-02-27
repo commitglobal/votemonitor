@@ -17,8 +17,6 @@ internal class ObserverImportModelValidator : Validator<ObserverImportModel>
             .MaximumLength(256);
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty()
-            .MinimumLength(3)
             .MaximumLength(256);
 
         RuleFor(x => x.Password)

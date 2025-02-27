@@ -6,6 +6,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.Form.Submissions.GetAggregated;

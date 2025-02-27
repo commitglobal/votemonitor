@@ -16,7 +16,7 @@ export function ResetFiltersButton({ disabled, params }: ResetFiltersButtonProps
       disabled={disabled}
       onClick={() => {
         setPrevSearch(params);
-        void navigate({});
+        navigate({});
       }}
       variant='ghost-primary'>
       Reset filters

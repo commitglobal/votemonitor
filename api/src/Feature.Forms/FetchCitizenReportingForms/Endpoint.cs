@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.Forms.FetchCitizenReportingForms;
 
@@ -59,7 +60,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 ElectionRoundId = monitoringNgo.ElectionRoundId,
                 Version = monitoringNgo.FormsVersion.ToString(),
-                Forms = forms.Select(FormFullModel.FromEntity).ToList()
+                Forms = forms.Select(FormFullModel.FromEntity).OrderBy(x => x.DisplayOrder).ToList()
             };
         });
 

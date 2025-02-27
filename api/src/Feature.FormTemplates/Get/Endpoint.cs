@@ -31,27 +31,14 @@ public class Endpoint(
             }
         }
 
-        var formTemplate = await repository.SingleOrDefaultAsync(new GetFormTemplateSpecification(req.Id, isNgoAdmin), ct);
+        var formTemplate =
+            await repository.SingleOrDefaultAsync(new GetFormTemplateSpecification(req.Id, isNgoAdmin), ct);
 
         if (formTemplate is null)
         {
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(new FormTemplateFullModel
-        {
-            Id = formTemplate.Id,
-            FormType = formTemplate.FormType,
-            Code = formTemplate.Code,
-            DefaultLanguage = formTemplate.DefaultLanguage,
-            Name = formTemplate.Name,
-            Description = formTemplate.Description,
-            Status = formTemplate.Status,
-            CreatedOn = formTemplate.CreatedOn,
-            LastModifiedOn = formTemplate.LastModifiedOn,
-            Languages = formTemplate.Languages,
-            NumberOfQuestions = formTemplate.NumberOfQuestions,
-            Questions = formTemplate.Questions.Select(QuestionsMapper.ToModel).ToList()
-        });
+        return TypedResults.Ok(FormTemplateFullModel.FromEntity(formTemplate));
     }
 }

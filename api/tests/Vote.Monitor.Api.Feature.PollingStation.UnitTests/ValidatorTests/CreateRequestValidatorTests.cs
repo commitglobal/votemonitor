@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿using Vote.Monitor.Api.Feature.PollingStation.Create;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class CreateRequestValidatorTests
 {
@@ -8,10 +10,7 @@ public class CreateRequestValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundIdEmpty()
     {
         // Arrange
-        var request = new Create.Request
-        {
-            ElectionRoundId = Guid.Empty, Address = "123 Main St", DisplayOrder = 1, Tags = new()
-        };
+        var request = new Create.Request { ElectionRoundId = Guid.Empty, };
         // Act
         var result = _validator.TestValidate(request);
 
@@ -19,87 +18,83 @@ public class CreateRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    public void Validation_ShouldPass_When_DisplayOrder_GreaterThanOrEqualToZero(int displayOrder)
+    [Fact]
+    public void Validation_ShouldFail_WhenNullPollingStations()
     {
         // Arrange
-        var request = new Create.Request
-        {
-            ElectionRoundId = Guid.NewGuid(), DisplayOrder = displayOrder, Address = string.Empty, Tags = new()
-        };
+        var request = new Create.Request { ElectionRoundId = Guid.NewGuid(), PollingStations = null! };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.DisplayOrder);
+        result.ShouldNotHaveValidationErrorFor(x => x.PollingStations);
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_DisplayOrder_LessThanZero()
+    public void Validation_ShouldFail_WhenEmptyPollingStations()
     {
         // Arrange
-        var request = new Create.Request
-        {
-            ElectionRoundId = Guid.NewGuid(), DisplayOrder = -1, Address = string.Empty, Tags = new()
-        };
+        var request = new Create.Request { ElectionRoundId = Guid.NewGuid(), PollingStations = [] };
+
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.DisplayOrder);
+        result.ShouldNotHaveValidationErrorFor(x => x.PollingStations);
     }
 
     [Fact]
-    public void Validation_ShouldPass_When_Address_NotEmpty()
-    {
-        // Arrange
-        var request = new Create.Request
-        {
-            ElectionRoundId = Guid.NewGuid(), Address = "123 Main St", DisplayOrder = 1, Tags = new()
-        };
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Address);
-    }
-
-    [Theory]
-    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_Address_Empty(string address)
-    {
-        // Arrange
-        var request = new Create.Request
-        {
-            ElectionRoundId = Guid.NewGuid(), Address = address, DisplayOrder = 1, Tags = new()
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Address);
-    }
-
-    [Fact]
-    public void Validation_ShouldPass_When_Tags_NotEmpty()
+    public void Validation_ShouldFail_WhenInvalidPollingStation()
     {
         // Arrange
         var request = new Create.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            Tags = new Dictionary<string, string> { { "Tag1", "value1" }, { "Tag2", "value2" } },
-            DisplayOrder = 0,
-            Address = string.Empty
+            PollingStations =
+            [
+                new Request.PollingStationRequest
+                {
+                    Level1 = "Level1", Number = "1", Address = "some address", DisplayOrder = 1
+                },
+                new Request.PollingStationRequest
+                {
+                    Level1 = "",
+                    Level2 = "Level 2",
+                    Number = "2",
+                    Address = "some other address",
+                    DisplayOrder = 2
+                },
+            ]
         };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Tags);
+        result.ShouldNotHaveValidationErrorFor(x => x.PollingStations);
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_WhenValidRequest()
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStations =
+            [
+                new Request.PollingStationRequest
+                {
+                    Level1 = "Level1", Number = "1", Address = "some address", DisplayOrder = 1
+                }
+            ]
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
     }
 }

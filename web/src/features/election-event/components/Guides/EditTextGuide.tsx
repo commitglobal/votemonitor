@@ -54,7 +54,7 @@ export default function EditTextGuide({ guidePageType, guideId }: EditTextGuideP
                   variant='outline'
                   type='button'
                   onClick={() => {
-                    void navigate({
+                    navigate({
                       to: '/election-event/$tab',
                       params: { tab: guidePageType === GuidePageType.Observer ? 'observer-guides' : 'citizen-guides' },
                     });

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormBase;
+
+namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
 
 public partial class FormTests
 {

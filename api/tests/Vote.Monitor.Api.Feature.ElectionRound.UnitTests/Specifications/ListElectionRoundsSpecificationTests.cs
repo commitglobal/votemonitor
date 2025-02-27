@@ -22,14 +22,16 @@ public class ListElectionRoundsSpecificationTests
         // Act
         List.Request request = new List.Request
         {
-            TitleFilter = titleFilter
+            SearchText = titleFilter
         };
         var spec = new ListElectionRoundsSpecification(request);
         var result = spec.Evaluate(testCollection).ToList();
 
         // Assert
         result.Should().HaveCount(1);
-        result.First().Should().BeEquivalentTo(electionRound, cfg=>cfg.ExcludingMissingMembers());
+        result.First().Should().BeEquivalentTo(electionRound, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
     }
 
     [Fact]
@@ -55,7 +57,9 @@ public class ListElectionRoundsSpecificationTests
 
         // Assert
         result.Should().HaveCount(1);
-        result.First().Should().BeEquivalentTo(electionRound, cfg => cfg.ExcludingMissingMembers());
+        result.First().Should().BeEquivalentTo(electionRound, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
     }
 
     [Fact]
@@ -74,7 +78,7 @@ public class ListElectionRoundsSpecificationTests
         // Act
         List.Request request = new List.Request
         {
-            Status = ElectionRoundStatus.Started
+            ElectionRoundStatus = ElectionRoundStatus.Started
         };
         var spec = new ListElectionRoundsSpecification(request);
         var result = spec.Evaluate(testCollection).ToList();
@@ -82,7 +86,9 @@ public class ListElectionRoundsSpecificationTests
         // Assert
         result.Should().HaveCount(1);
         result.Should().HaveCount(1);
-        result.First().Should().BeEquivalentTo(electionRound, cfg => cfg.ExcludingMissingMembers());
+        result.First().Should().BeEquivalentTo(electionRound, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
     }
 
     [Theory]
@@ -114,10 +120,18 @@ public class ListElectionRoundsSpecificationTests
 
         // Assert
         result.Should().HaveCount(4);
-        result[0].Should().BeEquivalentTo(electionRound1, cfg => cfg.ExcludingMissingMembers());
-        result[1].Should().BeEquivalentTo(electionRound2, cfg => cfg.ExcludingMissingMembers());
-        result[2].Should().BeEquivalentTo(electionRound3, cfg => cfg.ExcludingMissingMembers());
-        result[3].Should().BeEquivalentTo(electionRound4, cfg => cfg.ExcludingMissingMembers());
+        result[0].Should().BeEquivalentTo(electionRound1, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
+        result[1].Should().BeEquivalentTo(electionRound2, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
+        result[2].Should().BeEquivalentTo(electionRound3, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
+        result[3].Should().BeEquivalentTo(electionRound4, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
     }
 
     // For now sorting by status is a known issue. It only occurs for in-memory collections.
@@ -206,8 +220,12 @@ public class ListElectionRoundsSpecificationTests
         // Assert
         result.Should().HaveCount(2);
 
-        result[0].Should().BeEquivalentTo(electionRound1, cfg => cfg.ExcludingMissingMembers());
-        result[1].Should().BeEquivalentTo(electionRound2, cfg => cfg.ExcludingMissingMembers());
+        result[0].Should().BeEquivalentTo(electionRound1, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
+        result[1].Should().BeEquivalentTo(electionRound2, cfg => cfg
+            .Excluding(x=>x.MonitoringNgos)
+            .ExcludingMissingMembers());
     }
 
     public static IEnumerable<object[]> TitleFilters =>

@@ -41,14 +41,12 @@ export default function IncidentReportsAggregatedDetails(): FunctionComponent {
       backButton={<NavigateBack search={prevSearch} to='/responses' />}
       breadcrumbs={
         <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
-          <Link
-            className='crumb'
-            to='/responses'
-            search={prevSearch as any}
-            preload='intent'>
+          <Link className='crumb' to='/responses' search={prevSearch as any} preload='intent'>
             responses
           </Link>
-          <Link className='crumb'>{formId}</Link>
+          <Link className='crumb' to='.'>
+            {formId}
+          </Link>
         </div>
       }
       title={`${formCode} - ${mapFormType(formType)}`}>

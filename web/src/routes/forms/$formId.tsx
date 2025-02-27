@@ -11,7 +11,7 @@ function Details(): FunctionComponent {
     const formId = formData.id;
     const languageCode = formData.defaultLanguage;
 
-    void navigate({
+    navigate({
       to: '/forms/$formId/$languageCode',
       params: { languageCode, formId },
       replace: true,

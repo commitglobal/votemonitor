@@ -4,6 +4,7 @@ using Vote.Monitor.Answer.Module.UnitTests.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
@@ -43,7 +44,8 @@ public class FormSubmissionsAggregateTests
             _multiSelectQuestion
         ];
 
-        _form = Domain.Entities.FormAggregate.Form.Create(_electionRound, monitoringNgo, FormType.Opening, "F1", new TranslatedStringFaker(),
+        _form = Domain.Entities.FormAggregate.Form.Create(_electionRound, monitoringNgo, FormType.Opening, "F1",
+            new TranslatedStringFaker(),
             new TranslatedStringFaker(), "EN", [], null, questions);
     }
 

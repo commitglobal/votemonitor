@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 public class CitizenReportFormSubmissionsAggregate

@@ -13,20 +13,22 @@ import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
 
-const formSchema = z.object({
-  password: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
-  confirmPassword: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
-}).refine(
-  (values) => {
-    return values.password === values.confirmPassword;
-  },
-  {
-    message: "Passwords must match!",
-    path: ["confirmPassword"],
-  }
-);
+const formSchema = z
+  .object({
+    password: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
+    confirmPassword: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
+  })
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    {
+      message: 'Passwords must match!',
+      path: ['confirmPassword'],
+    }
+  );
 
-interface AcceptInviteRequest{
+interface AcceptInviteRequest {
   password: string;
   confirmPassword: string;
   invitationToken: string;
@@ -37,18 +39,16 @@ function AcceptInvite() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'all',
     defaultValues: {
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
     },
   });
 
   const acceptInviteMutation = useMutation({
-    mutationFn: (obj:AcceptInviteRequest) => {
-      return noAuthApi.post<AcceptInviteRequest>(
-        `/auth/accept-invite`,
-        obj
-      );
+    mutationFn: async (obj: AcceptInviteRequest) => {
+      return await noAuthApi.post<AcceptInviteRequest>(`/auth/accept-invite`, obj);
     },
 
     onSuccess: () => {
@@ -57,24 +57,24 @@ function AcceptInvite() {
         description: 'Password was set successfully',
       });
 
-      navigate({to: '/accept-invite/success'});
+      navigate({ to: '/accept-invite/success' });
     },
 
-    onError: ()=>{
+    onError: () => {
       toast({
         title: 'Error accepting invite',
         description: 'Please contact tech support',
-        variant: 'destructive'
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     acceptInviteMutation.mutate({
       password: values.password,
       confirmPassword: values.confirmPassword,
-      invitationToken: invitationToken
-    })
+      invitationToken: invitationToken,
+    });
   };
 
   return (
