@@ -7,9 +7,6 @@ public class Request
 {
     public Guid ElectionRoundId { get; set; }
 
-    [FromClaim(ApplicationClaimTypes.NgoId)]
-    public Guid NgoId { get; set; }
-
     public ExportedDataType ExportedDataType { get; set; }
 
     public FormSubmissionsFilters? FormSubmissionsFilters { get; set; }
