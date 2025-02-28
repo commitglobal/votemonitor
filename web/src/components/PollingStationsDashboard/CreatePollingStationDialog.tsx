@@ -8,7 +8,6 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
-import { usePollingStationsTags } from '@/hooks/tags-queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -23,7 +22,6 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.pollingStations' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const queryClient = useQueryClient();
-  const { data: availableTags } = usePollingStationsTags(currentElectionRoundId);
 
   const form = useForm<ImportPollingStationRow>({
     mode: 'all',
