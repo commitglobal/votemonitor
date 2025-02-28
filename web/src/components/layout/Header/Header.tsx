@@ -47,13 +47,10 @@ const Header = (): FunctionComponent => {
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionEvent>();
   const router = useRouter();
-  const {
-    setCurrentElectionRoundId,
-    currentElectionRoundId,
-  } = useCurrentElectionRoundStore((s) => s);
+  const { setCurrentElectionRoundId, currentElectionRoundId } = useCurrentElectionRoundStore((s) => s);
 
   const handleSelectElectionRound = async (electionRound?: ElectionEvent): Promise<void> => {
-    if (electionRound && selectedElectionRound?.id != electionRound.id ) {
+    if (electionRound && selectedElectionRound?.id != electionRound.id) {
       setSelectedElection(electionRound);
       setCurrentElectionRoundId(electionRound.id);
 
@@ -149,7 +146,9 @@ const Header = (): FunctionComponent => {
               </div>
 
               <div className='items-center hidden gap-2 md:flex'>
-                {userRole !== 'NgoAdmin'? <></> : status === 'pending' ? (
+                {userRole !== 'NgoAdmin' ? (
+                  <></>
+                ) : status === 'pending' ? (
                   <Skeleton className='w-[360px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (
                   <DropdownMenu>
@@ -173,9 +172,7 @@ const Header = (): FunctionComponent => {
                         <DropdownMenuLabel> Upcomming elections </DropdownMenuLabel>
 
                         {activeElections?.map((electionRound) => (
-                          <DropdownMenuRadioItem
-                            key={electionRound.id}
-                            value={electionRound.id}>
+                          <DropdownMenuRadioItem key={electionRound.id} value={electionRound.id}>
                             <div className='flex items-center gap-2'>
                               {electionRound?.status === ElectionRoundStatus.NotStarted ? (
                                 <PauseCircleIcon className='w-4 h-4 text-slate-700' />
@@ -192,9 +189,7 @@ const Header = (): FunctionComponent => {
                         <DropdownMenuSeparator />
                         <DropdownMenuLabel> Archived elections </DropdownMenuLabel>
                         {archivedElections?.map((electionRound) => (
-                          <DropdownMenuRadioItem
-                            key={electionRound.id}
-                            value={electionRound.id}>
+                          <DropdownMenuRadioItem key={electionRound.id} value={electionRound.id}>
                             <div className='flex items-center gap-2'>
                               <StopCircleIcon className='w-4 h-4 text-yellow-700' />
 

@@ -52,7 +52,7 @@ function FormTemplateEdit() {
             body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
           })
         ) {
-          navigate({ to: '/form-templates' });
+          await navigate({ to: '/form-templates' });
         }
       }
     },

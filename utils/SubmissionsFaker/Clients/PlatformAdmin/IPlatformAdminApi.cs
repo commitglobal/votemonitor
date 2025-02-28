@@ -9,10 +9,10 @@ namespace SubmissionsFaker.Clients.PlatformAdmin;
 public interface IPlatformAdminApi
 {
     [Post("/api/election-rounds")]
-    Task<CreateResponse> CreateElectionRound([Body] ElectionRound electionRound);
+    Task<ResponseWithId> CreateElectionRound([Body] ElectionRound electionRound);
 
     [Post("/api/ngos")]
-    Task<CreateResponse> CreateNgo([Body] Ngo ngo);
+    Task<ResponseWithId> CreateNgo([Body] Ngo ngo);
 
     [Post("/api/ngos/{ngoId}/admins")]
     Task CreateNgoAdmin([Body] ApplicationUser ngoAdmin, [AliasAs("ngoId")] Guid ngoId);
@@ -26,10 +26,10 @@ public interface IPlatformAdminApi
     Task ImportLocations([AliasAs("electionRoundId")] Guid electionRoundId, [AliasAs("File")] StreamPart stream);
 
     [Post("/api/observers")]
-    Task<CreateResponse> CreateObserver([Body] ApplicationUser observer);
+    Task<ResponseWithId> CreateObserver([Body] ApplicationUser observer);
 
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos")]
-    Task<CreateResponse> AssignNgoToElectionRound([AliasAs("electionRoundId")] Guid electionRoundId,
+    Task<ResponseWithId> AssignNgoToElectionRound([AliasAs("electionRoundId")] Guid electionRoundId,
         [Body] AssignNgoRequest request);
 
     [Post("/api/election-rounds/{electionRoundId}:enableCitizenReporting")]
@@ -37,7 +37,7 @@ public interface IPlatformAdminApi
         [Body] EnableCitizenReportingRequest request);
 
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers")]
-    Task<CreateResponse> AssignObserverToMonitoring([AliasAs("electionRoundId")] Guid electionRoundId,
+    Task<ResponseWithId> AssignObserverToMonitoring([AliasAs("electionRoundId")] Guid electionRoundId,
         [AliasAs("monitoringNgoId")] Guid monitoringNgoId, [Body] AssignObserverRequest request);
 
     [Post("/api/election-rounds/{electionRoundId}/polling-station-information-form")]

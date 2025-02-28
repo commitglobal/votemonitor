@@ -16,7 +16,7 @@ public class FormsSeeder
             .MaxValue(2)
             .StartTask();
 
-        var openingForm = FormData.OpeningForm("Opening");
+        var openingForm = ObservationForms.OpeningForm("Opening");
         var form = await ngoAdminApi.CreateForm(electionRoundId, openingForm);
         await ngoAdminApi.PublishForm(electionRoundId, form.Id);
         progressTask.Increment(1);

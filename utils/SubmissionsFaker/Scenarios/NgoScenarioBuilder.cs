@@ -1,4 +1,3 @@
-using Spectre.Console;
 using SubmissionsFaker.Extensions;
 using SubmissionsFaker.Models;
 
@@ -25,11 +24,9 @@ public class NgoScenarioBuilder
         adminEmail ??= Guid.NewGuid().ToString("N");
         var realEmail = $"{Guid.NewGuid()}@example.org";
         _platformAdmin.PostWithResponse<ResponseWithId>($"/api/ngos/{NgoId}/admins",
-            new { FirstName = "NgoAdmin", LastName = adminEmail, Email = realEmail, Password = "string" });
+            new { FirstName = "Observer", LastName = adminEmail, Email = realEmail, Password = "string" });
 
         var adminClient = _clientFactory.NewForAuthenticatedUser(realEmail, "string");
-        
-        AnsiConsole.WriteLine($"Ngo admin created: {realEmail}");
 
         _admins.Add(adminEmail, adminClient);
         return this;

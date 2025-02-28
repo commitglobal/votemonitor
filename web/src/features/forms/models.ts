@@ -1,4 +1,4 @@
-import { BaseQuestion, FormBase, FormType, LanguagesTranslationStatus, TranslatedString } from "@/common/types";
+import { BaseQuestion, FormBase, FormType, LanguagesTranslationStatus, TranslatedString } from '@/common/types';
 
 export interface FormAccessModel {
   ngoId: string;
@@ -6,35 +6,33 @@ export interface FormAccessModel {
 }
 
 export interface NgoFormBase extends FormBase {
-    formAccess: FormAccessModel[];
-  }
+  isFormOwner: boolean;
+  formAccess: FormAccessModel[];
+}
 
 export interface FormFull extends NgoFormBase {
-    questions: BaseQuestion[]
+  questions: BaseQuestion[];
 }
 
 export interface UpdateFormRequest {
-    id: string;
-    formType: FormType;
-    code: string;
-    defaultLanguage: string;
-    name: TranslatedString;
-    description?: TranslatedString;
-    languages: string[];
-    icon?: string;
-    questions: BaseQuestion[]
+  id: string;
+  formType: FormType;
+  code: string;
+  defaultLanguage: string;
+  name: TranslatedString;
+  description?: TranslatedString;
+  languages: string[];
+  icon?: string;
+  questions: BaseQuestion[];
 }
-
 
 export interface NewFormRequest {
-    code: string;
-    defaultLanguage: string;
-    name: TranslatedString;
-    description?: TranslatedString;
-    formType: FormType;
-    languages: string[];
-    icon?: string;
-    questions: BaseQuestion[];
+  code: string;
+  defaultLanguage: string;
+  name: TranslatedString;
+  description?: TranslatedString;
+  formType: FormType;
+  languages: string[];
+  icon?: string;
+  questions: BaseQuestion[];
 }
-
-

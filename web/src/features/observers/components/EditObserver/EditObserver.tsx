@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -10,7 +11,7 @@ import { Route } from '@/routes/observers_.$observerId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -19,6 +20,7 @@ export default function EditObserver() {
   const { observerId } = Route.useParams();
   const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
   const observer = observerQuery.data;
+  const confirm = useConfirm();
 
   const editObserverFormSchema = z.object({
     lastName: z.string().min(1, {
@@ -33,11 +35,27 @@ export default function EditObserver() {
 
   const form = useForm<z.infer<typeof editObserverFormSchema>>({
     resolver: zodResolver(editObserverFormSchema),
+    mode: 'all',
     defaultValues: {
       firstName: observer.firstName,
       lastName: observer.lastName,
       email: observer.email,
       phoneNumber: observer.phoneNumber,
+    },
+  });
+
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return !(await confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        cancelButton: 'Stay',
+      }));
     },
   });
 

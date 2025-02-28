@@ -40,10 +40,10 @@ import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
+import { difference } from 'lodash';
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { formTemlatesKeys, useFormTemplates } from '../../queries';
 import { FormTemplateFilters } from './FormTemplateFilters';
-import { difference } from 'lodash';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -208,13 +208,13 @@ export default function FormTemplatesDashboard(): ReactElement {
 
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                  disabled={row.original.status !== FormStatus.Drafted}
                   onClick={() => navigateToEdit(row.original.id)}>
                   Edit
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                  disabled={row.original.status !== FormStatus.Drafted}
                   onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
                   Edit
                 </DropdownMenuItem>
@@ -222,7 +222,7 @@ export default function FormTemplatesDashboard(): ReactElement {
 
               {row.depth === 0 ? (
                 <DropdownMenuItem
-                  disabled={!row.original.isFormOwner || row.original.status !== FormStatus.Drafted}
+                  disabled={row.original.status !== FormStatus.Drafted}
                   onClick={() =>
                     addTranslationsDialog.trigger(
                       row.original.id,
@@ -239,28 +239,17 @@ export default function FormTemplatesDashboard(): ReactElement {
                 </DropdownMenuItem>
               ) : null}
               {row.depth === 0 && row.original.status === FormStatus.Published ? (
-                <DropdownMenuItem disabled={!row.original.isFormOwner} onClick={() => handleObsoleteForm(row.original)}>
-                  Obsolete
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
               ) : null}
               {row.depth === 0 && row.original.status === FormStatus.Drafted ? (
-                <DropdownMenuItem
-                  disabled={!row.original.isFormOwner}
-                  onClick={() => handlePublishFormTemplate(row.original)}>
-                  Publish
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handlePublishFormTemplate(row.original)}>Publish</DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
-                <DropdownMenuItem
-                  disabled={!row.original.isFormOwner}
-                  onClick={() => handleDuplicateFormTemplate(row.original)}>
-                  Duplicate
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDuplicateFormTemplate(row.original)}>Duplicate</DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
                 <DropdownMenuItem
                   className='text-red-600'
-                  disabled={!row.original.isFormOwner}
                   onClick={async () => {
                     if (
                       await confirm({
@@ -290,7 +279,6 @@ export default function FormTemplatesDashboard(): ReactElement {
               ) : (
                 <DropdownMenuItem
                   className='text-red-600'
-                  disabled={!row.original.isFormOwner}
                   onClick={async () => {
                     const languageCode = row.original.defaultLanguage;
                     const language = languages?.find((l) => languageCode === l.code);
@@ -409,7 +397,10 @@ export default function FormTemplatesDashboard(): ReactElement {
       addTranslationsDialog.dismiss();
       const addedLanguages = difference(newLanguageCodes, originalLanguageCodes);
 
-      await confirm({
+      await queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
+      await router.invalidate();
+
+      confirm({
         title: getTitle(addedLanguages),
         body: (
           <div>
@@ -424,9 +415,6 @@ export default function FormTemplatesDashboard(): ReactElement {
         ),
         actionButton: 'Ok',
       });
-
-      await queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
-      router.invalidate();
     },
   });
 

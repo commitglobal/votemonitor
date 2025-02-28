@@ -402,11 +402,19 @@ export interface FormBase {
   icon?: string;
   name: TranslatedString;
   description?: TranslatedString;
-  isFormOwner: boolean;
   status: FormStatus;
   languages: string[];
   lastModifiedOn: string;
   lastModifiedBy: string;
   numberOfQuestions: number;
   languagesTranslationStatus: LanguagesTranslationStatus;
+}
+
+export interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+  errors?: { name: string; reason: string }[]; // Maps field names to error messages
 }

@@ -36,6 +36,7 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
   type ObserverFormData = z.infer<typeof newObserverSchema>;
 
   const form = useForm<ObserverFormData>({
+    mode: 'all',
     resolver: zodResolver(newObserverSchema),
   });
 

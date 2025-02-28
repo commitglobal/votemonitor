@@ -26,7 +26,6 @@ import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ResetPasswordSuccessImport } from './routes/reset-password/success'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
-import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversImportImport } from './routes/monitoring-observers/import'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
@@ -63,6 +62,7 @@ import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides
 import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesFormSubmissionsFormIdAggregatedImport } from './routes/responses/form-submissions/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
+import { Route as NgosViewNgoIdTabImport } from './routes/ngos/view.$ngoId.$tab'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms/$formId_.edit-translation.$languageCode'
@@ -70,6 +70,9 @@ import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport }
 import { Route as ElectionRoundsElectionRoundIdPollingStationsImportImport } from './routes/election-rounds/$electionRoundId/polling-stations/import'
 import { Route as ElectionRoundsElectionRoundIdLocationsImportImport } from './routes/election-rounds/$electionRoundId/locations/import'
 import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
+import { Route as NgosEditNgoIdImport } from './routes/ngos/edit.$ngoId.'
+import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin/$ngoId.$adminId.view'
+import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin/$ngoId.$adminId.edit'
 
 // Create/Update Routes
 
@@ -160,12 +163,6 @@ const ObserversObserverIdRoute = ObserversObserverIdImport.update({
 const ObserverGuidesNewRoute = ObserverGuidesNewImport.update({
   id: '/observer-guides/new',
   path: '/observer-guides/new',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const NgosNgoIdRoute = NgosNgoIdImport.update({
-  id: '/ngos/$ngoId',
-  path: '/ngos/$ngoId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -402,6 +399,12 @@ const ResponsesCitizenReportsFormIdAggregatedRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const NgosViewNgoIdTabRoute = NgosViewNgoIdTabImport.update({
+  id: '/ngos/view/$ngoId/$tab',
+  path: '/ngos/view/$ngoId/$tab',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const MonitoringObserversViewMonitoringObserverIdTabRoute =
   MonitoringObserversViewMonitoringObserverIdTabImport.update({
     id: '/monitoring-observers/view/$monitoringObserverId/$tab',
@@ -452,6 +455,24 @@ const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
       getParentRoute: () => rootRoute,
     } as any,
   )
+
+const NgosEditNgoIdRoute = NgosEditNgoIdImport.update({
+  id: '/ngos/edit/$ngoId/',
+  path: '/ngos/edit/$ngoId/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const NgosAdminNgoIdAdminIdViewRoute = NgosAdminNgoIdAdminIdViewImport.update({
+  id: '/ngos/admin/$ngoId/$adminId/view',
+  path: '/ngos/admin/$ngoId/$adminId/view',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const NgosAdminNgoIdAdminIdEditRoute = NgosAdminNgoIdAdminIdEditImport.update({
+  id: '/ngos/admin/$ngoId/$adminId/edit',
+  path: '/ngos/admin/$ngoId/$adminId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -539,13 +560,6 @@ declare module '@tanstack/react-router' {
       path: '/monitoring-observers/import'
       fullPath: '/monitoring-observers/import'
       preLoaderRoute: typeof MonitoringObserversImportImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/$ngoId': {
-      id: '/ngos/$ngoId'
-      path: '/ngos/$ngoId'
-      fullPath: '/ngos/$ngoId'
-      preLoaderRoute: typeof NgosNgoIdImport
       parentRoute: typeof rootRoute
     }
     '/observer-guides/new': {
@@ -800,6 +814,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/edit/$ngoId/': {
+      id: '/ngos/edit/$ngoId/'
+      path: '/ngos/edit/$ngoId'
+      fullPath: '/ngos/edit/$ngoId'
+      preLoaderRoute: typeof NgosEditNgoIdImport
+      parentRoute: typeof rootRoute
+    }
     '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
       id: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
       path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
@@ -849,6 +870,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversViewMonitoringObserverIdTabImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/view/$ngoId/$tab': {
+      id: '/ngos/view/$ngoId/$tab'
+      path: '/ngos/view/$ngoId/$tab'
+      fullPath: '/ngos/view/$ngoId/$tab'
+      preLoaderRoute: typeof NgosViewNgoIdTabImport
+      parentRoute: typeof rootRoute
+    }
     '/responses/citizen-reports/$formId/aggregated': {
       id: '/responses/citizen-reports/$formId/aggregated'
       path: '/responses/citizen-reports/$formId/aggregated'
@@ -870,6 +898,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/ngos/admin/$ngoId/$adminId/edit': {
+      id: '/ngos/admin/$ngoId/$adminId/edit'
+      path: '/ngos/admin/$ngoId/$adminId/edit'
+      fullPath: '/ngos/admin/$ngoId/$adminId/edit'
+      preLoaderRoute: typeof NgosAdminNgoIdAdminIdEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/ngos/admin/$ngoId/$adminId/view': {
+      id: '/ngos/admin/$ngoId/$adminId/view'
+      path: '/ngos/admin/$ngoId/$adminId/view'
+      fullPath: '/ngos/admin/$ngoId/$adminId/view'
+      preLoaderRoute: typeof NgosAdminNgoIdAdminIdViewImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -888,7 +930,6 @@ export interface FileRoutesByFullPath {
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
   '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
   '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/ngos/$ngoId': typeof NgosNgoIdRoute
   '/observer-guides/new': typeof ObserverGuidesNewRoute
   '/observers/$observerId': typeof ObserversObserverIdRoute
   '/reset-password/success': typeof ResetPasswordSuccessRoute
@@ -925,6 +966,7 @@ export interface FileRoutesByFullPath {
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
   '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
+  '/ngos/edit/$ngoId': typeof NgosEditNgoIdRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
@@ -932,9 +974,12 @@ export interface FileRoutesByFullPath {
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
+  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
   '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
   '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
   '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
+  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
+  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
 }
 
 export interface FileRoutesByTo {
@@ -950,7 +995,6 @@ export interface FileRoutesByTo {
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
   '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
   '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/ngos/$ngoId': typeof NgosNgoIdRoute
   '/observer-guides/new': typeof ObserverGuidesNewRoute
   '/observers/$observerId': typeof ObserversObserverIdRoute
   '/reset-password/success': typeof ResetPasswordSuccessRoute
@@ -987,6 +1031,7 @@ export interface FileRoutesByTo {
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
   '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
+  '/ngos/edit/$ngoId': typeof NgosEditNgoIdRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
@@ -994,9 +1039,12 @@ export interface FileRoutesByTo {
   '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
+  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
   '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
   '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
   '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
+  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
+  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
 }
 
 export interface FileRoutesById {
@@ -1013,7 +1061,6 @@ export interface FileRoutesById {
   '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
   '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
   '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/ngos/$ngoId': typeof NgosNgoIdRoute
   '/observer-guides/new': typeof ObserverGuidesNewRoute
   '/observers/$observerId': typeof ObserversObserverIdRoute
   '/reset-password/success': typeof ResetPasswordSuccessRoute
@@ -1050,6 +1097,7 @@ export interface FileRoutesById {
   '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
   '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
   '/election-rounds/$electionRoundId/': typeof ElectionRoundsElectionRoundIdIndexRoute
+  '/ngos/edit/$ngoId/': typeof NgosEditNgoIdRoute
   '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
@@ -1057,9 +1105,12 @@ export interface FileRoutesById {
   '/forms/$formId_/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
   '/monitoring-observers/push-messages/$id_/view': typeof MonitoringObserversPushMessagesIdViewRoute
   '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
+  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
   '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
   '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
   '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
+  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
+  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
 }
 
 export interface FileRouteTypes {
@@ -1077,7 +1128,6 @@ export interface FileRouteTypes {
     | '/monitoring-observers/$tab'
     | '/monitoring-observers/create-new-message'
     | '/monitoring-observers/import'
-    | '/ngos/$ngoId'
     | '/observer-guides/new'
     | '/observers/$observerId'
     | '/reset-password/success'
@@ -1114,6 +1164,7 @@ export interface FileRouteTypes {
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
     | '/election-rounds/$electionRoundId'
+    | '/ngos/edit/$ngoId'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
@@ -1121,9 +1172,12 @@ export interface FileRouteTypes {
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
+    | '/ngos/view/$ngoId/$tab'
     | '/responses/citizen-reports/$formId/aggregated'
     | '/responses/form-submissions/$formId/aggregated'
     | '/responses/incident-reports/$formId/aggregated'
+    | '/ngos/admin/$ngoId/$adminId/edit'
+    | '/ngos/admin/$ngoId/$adminId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1138,7 +1192,6 @@ export interface FileRouteTypes {
     | '/monitoring-observers/$tab'
     | '/monitoring-observers/create-new-message'
     | '/monitoring-observers/import'
-    | '/ngos/$ngoId'
     | '/observer-guides/new'
     | '/observers/$observerId'
     | '/reset-password/success'
@@ -1175,6 +1228,7 @@ export interface FileRouteTypes {
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
     | '/election-rounds/$electionRoundId'
+    | '/ngos/edit/$ngoId'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
@@ -1182,9 +1236,12 @@ export interface FileRouteTypes {
     | '/forms/$formId/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
+    | '/ngos/view/$ngoId/$tab'
     | '/responses/citizen-reports/$formId/aggregated'
     | '/responses/form-submissions/$formId/aggregated'
     | '/responses/incident-reports/$formId/aggregated'
+    | '/ngos/admin/$ngoId/$adminId/edit'
+    | '/ngos/admin/$ngoId/$adminId/view'
   id:
     | '__root__'
     | '/'
@@ -1199,7 +1256,6 @@ export interface FileRouteTypes {
     | '/monitoring-observers/$tab'
     | '/monitoring-observers/create-new-message'
     | '/monitoring-observers/import'
-    | '/ngos/$ngoId'
     | '/observer-guides/new'
     | '/observers/$observerId'
     | '/reset-password/success'
@@ -1236,6 +1292,7 @@ export interface FileRouteTypes {
     | '/responses/incident-reports/$incidentReportId'
     | '/responses/quick-reports/$quickReportId'
     | '/election-rounds/$electionRoundId/'
+    | '/ngos/edit/$ngoId/'
     | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
     | '/election-rounds/$electionRoundId/locations/import'
     | '/election-rounds/$electionRoundId/polling-stations/import'
@@ -1243,9 +1300,12 @@ export interface FileRouteTypes {
     | '/forms/$formId_/edit-translation/$languageCode'
     | '/monitoring-observers/push-messages/$id_/view'
     | '/monitoring-observers/view/$monitoringObserverId/$tab'
+    | '/ngos/view/$ngoId/$tab'
     | '/responses/citizen-reports/$formId/aggregated'
     | '/responses/form-submissions/$formId/aggregated'
     | '/responses/incident-reports/$formId/aggregated'
+    | '/ngos/admin/$ngoId/$adminId/edit'
+    | '/ngos/admin/$ngoId/$adminId/view'
   fileRoutesById: FileRoutesById
 }
 
@@ -1262,7 +1322,6 @@ export interface RootRouteChildren {
   MonitoringObserversTabRoute: typeof MonitoringObserversTabRoute
   MonitoringObserversCreateNewMessageRoute: typeof MonitoringObserversCreateNewMessageRoute
   MonitoringObserversImportRoute: typeof MonitoringObserversImportRoute
-  NgosNgoIdRoute: typeof NgosNgoIdRoute
   ObserverGuidesNewRoute: typeof ObserverGuidesNewRoute
   ObserversObserverIdRoute: typeof ObserversObserverIdRoute
   ResetPasswordSuccessRoute: typeof ResetPasswordSuccessRoute
@@ -1299,6 +1358,7 @@ export interface RootRouteChildren {
   ResponsesIncidentReportsIncidentReportIdRoute: typeof ResponsesIncidentReportsIncidentReportIdRoute
   ResponsesQuickReportsQuickReportIdRoute: typeof ResponsesQuickReportsQuickReportIdRoute
   ElectionRoundsElectionRoundIdIndexRoute: typeof ElectionRoundsElectionRoundIdIndexRoute
+  NgosEditNgoIdRoute: typeof NgosEditNgoIdRoute
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
   ElectionRoundsElectionRoundIdLocationsImportRoute: typeof ElectionRoundsElectionRoundIdLocationsImportRoute
   ElectionRoundsElectionRoundIdPollingStationsImportRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
@@ -1306,9 +1366,12 @@ export interface RootRouteChildren {
   FormsFormIdEditTranslationLanguageCodeRoute: typeof FormsFormIdEditTranslationLanguageCodeRoute
   MonitoringObserversPushMessagesIdViewRoute: typeof MonitoringObserversPushMessagesIdViewRoute
   MonitoringObserversViewMonitoringObserverIdTabRoute: typeof MonitoringObserversViewMonitoringObserverIdTabRoute
+  NgosViewNgoIdTabRoute: typeof NgosViewNgoIdTabRoute
   ResponsesCitizenReportsFormIdAggregatedRoute: typeof ResponsesCitizenReportsFormIdAggregatedRoute
   ResponsesFormSubmissionsFormIdAggregatedRoute: typeof ResponsesFormSubmissionsFormIdAggregatedRoute
   ResponsesIncidentReportsFormIdAggregatedRoute: typeof ResponsesIncidentReportsFormIdAggregatedRoute
+  NgosAdminNgoIdAdminIdEditRoute: typeof NgosAdminNgoIdAdminIdEditRoute
+  NgosAdminNgoIdAdminIdViewRoute: typeof NgosAdminNgoIdAdminIdViewRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -1325,7 +1388,6 @@ const rootRouteChildren: RootRouteChildren = {
   MonitoringObserversCreateNewMessageRoute:
     MonitoringObserversCreateNewMessageRoute,
   MonitoringObserversImportRoute: MonitoringObserversImportRoute,
-  NgosNgoIdRoute: NgosNgoIdRoute,
   ObserverGuidesNewRoute: ObserverGuidesNewRoute,
   ObserversObserverIdRoute: ObserversObserverIdRoute,
   ResetPasswordSuccessRoute: ResetPasswordSuccessRoute,
@@ -1372,6 +1434,7 @@ const rootRouteChildren: RootRouteChildren = {
     ResponsesQuickReportsQuickReportIdRoute,
   ElectionRoundsElectionRoundIdIndexRoute:
     ElectionRoundsElectionRoundIdIndexRoute,
+  NgosEditNgoIdRoute: NgosEditNgoIdRoute,
   CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute:
     CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
   ElectionRoundsElectionRoundIdLocationsImportRoute:
@@ -1386,12 +1449,15 @@ const rootRouteChildren: RootRouteChildren = {
     MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute:
     MonitoringObserversViewMonitoringObserverIdTabRoute,
+  NgosViewNgoIdTabRoute: NgosViewNgoIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute:
     ResponsesCitizenReportsFormIdAggregatedRoute,
   ResponsesFormSubmissionsFormIdAggregatedRoute:
     ResponsesFormSubmissionsFormIdAggregatedRoute,
   ResponsesIncidentReportsFormIdAggregatedRoute:
     ResponsesIncidentReportsFormIdAggregatedRoute,
+  NgosAdminNgoIdAdminIdEditRoute: NgosAdminNgoIdAdminIdEditRoute,
+  NgosAdminNgoIdAdminIdViewRoute: NgosAdminNgoIdAdminIdViewRoute,
 }
 
 export const routeTree = rootRoute
@@ -1416,7 +1482,6 @@ export const routeTree = rootRoute
         "/monitoring-observers/$tab",
         "/monitoring-observers/create-new-message",
         "/monitoring-observers/import",
-        "/ngos/$ngoId",
         "/observer-guides/new",
         "/observers/$observerId",
         "/reset-password/success",
@@ -1453,6 +1518,7 @@ export const routeTree = rootRoute
         "/responses/incident-reports/$incidentReportId",
         "/responses/quick-reports/$quickReportId",
         "/election-rounds/$electionRoundId/",
+        "/ngos/edit/$ngoId/",
         "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId",
         "/election-rounds/$electionRoundId/locations/import",
         "/election-rounds/$electionRoundId/polling-stations/import",
@@ -1460,9 +1526,12 @@ export const routeTree = rootRoute
         "/forms/$formId_/edit-translation/$languageCode",
         "/monitoring-observers/push-messages/$id_/view",
         "/monitoring-observers/view/$monitoringObserverId/$tab",
+        "/ngos/view/$ngoId/$tab",
         "/responses/citizen-reports/$formId/aggregated",
         "/responses/form-submissions/$formId/aggregated",
-        "/responses/incident-reports/$formId/aggregated"
+        "/responses/incident-reports/$formId/aggregated",
+        "/ngos/admin/$ngoId/$adminId/edit",
+        "/ngos/admin/$ngoId/$adminId/view"
       ]
     },
     "/": {
@@ -1500,9 +1569,6 @@ export const routeTree = rootRoute
     },
     "/monitoring-observers/import": {
       "filePath": "monitoring-observers/import.tsx"
-    },
-    "/ngos/$ngoId": {
-      "filePath": "ngos/$ngoId.tsx"
     },
     "/observer-guides/new": {
       "filePath": "observer-guides/new.tsx"
@@ -1612,6 +1678,9 @@ export const routeTree = rootRoute
     "/election-rounds/$electionRoundId/": {
       "filePath": "election-rounds/$electionRoundId/index.tsx"
     },
+    "/ngos/edit/$ngoId/": {
+      "filePath": "ngos/edit.$ngoId..tsx"
+    },
     "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId": {
       "filePath": "citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId.tsx"
     },
@@ -1633,6 +1702,9 @@ export const routeTree = rootRoute
     "/monitoring-observers/view/$monitoringObserverId/$tab": {
       "filePath": "monitoring-observers/view/$monitoringObserverId.$tab.tsx"
     },
+    "/ngos/view/$ngoId/$tab": {
+      "filePath": "ngos/view.$ngoId.$tab.tsx"
+    },
     "/responses/citizen-reports/$formId/aggregated": {
       "filePath": "responses/citizen-reports/$formId.aggregated.tsx"
     },
@@ -1641,6 +1713,12 @@ export const routeTree = rootRoute
     },
     "/responses/incident-reports/$formId/aggregated": {
       "filePath": "responses/incident-reports/$formId.aggregated.tsx"
+    },
+    "/ngos/admin/$ngoId/$adminId/edit": {
+      "filePath": "ngos/admin/$ngoId.$adminId.edit.tsx"
+    },
+    "/ngos/admin/$ngoId/$adminId/view": {
+      "filePath": "ngos/admin/$ngoId.$adminId.view.tsx"
     }
   }
 }

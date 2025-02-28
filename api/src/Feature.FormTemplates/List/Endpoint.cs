@@ -48,6 +48,7 @@ public class Endpoint(
                          FT."FormType",
                          FT."NumberOfQuestions",
                          FT."Icon",
+                         FT."LanguagesTranslationStatus",
                          COALESCE(FT."LastModifiedOn", FT."CreatedOn")          AS "LastModifiedOn",
                          COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy"
                   FROM "FormTemplates" FT

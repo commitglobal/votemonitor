@@ -27,6 +27,7 @@ interface ForgotPasswordRequest {
 function ForgotPassword() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'all',
     defaultValues: {
       email: '',
     },

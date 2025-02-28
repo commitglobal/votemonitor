@@ -6,13 +6,9 @@ import { useTranslation } from 'react-i18next';
 
 import { FormType } from '@/common/types';
 import LanguageSelect from '@/containers/LanguageSelect';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { mapFormType } from '@/lib/utils';
 import { useFormContext } from 'react-hook-form';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { EditFormType } from '../FormEditor/FormEditor';
-import { FormFull } from '@/features/forms/models';
-import { FormTemplateFull } from '@/features/form-templates/models';
 
 export interface FormDetailsTranslationEditorProps {
   languageCode: string;

@@ -29,7 +29,7 @@ public class CreateEndpointTests
             .AddAsync(Arg.Is<NgoAggregate>(x => x.Name == ngoName));
 
         result
-            .Should().BeOfType<Results<Ok<NgoModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<NgoModel>, ProblemDetails>>()!
             .Which!
             .Result.Should().BeOfType<Ok<NgoModel>>()!
             .Which!.Value!.Name.Should().Be(ngoName);
@@ -53,8 +53,8 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<NgoModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<NgoModel>, ProblemDetails>>()
             .Which
-            .Result.Should().BeOfType<Conflict<ProblemDetails>>();
+            .Result.Should().BeOfType<ProblemDetails>();
     }
 }

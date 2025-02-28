@@ -1,4 +1,4 @@
-import { ElectionRoundStatus, LanguagesTranslationStatus, TranslationStatus } from '@/common/types';
+import { LanguagesTranslationStatus, TranslationStatus } from '@/common/types';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
