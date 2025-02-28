@@ -57,7 +57,6 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
   });
 
   function onSubmit(values: ImportPollingStationRow) {
-    console.log(values);
     newPollingStationMutation.mutate({ electionRoundId: currentElectionRoundId, values });
   }
 
