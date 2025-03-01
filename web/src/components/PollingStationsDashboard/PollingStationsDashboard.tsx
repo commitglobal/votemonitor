@@ -18,10 +18,13 @@ import { queryClient } from '@/main';
 import { ArrowUpTrayIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
+import { Plus } from 'lucide-react';
 import { useCallback, useContext, useMemo, useState, type ReactElement } from 'react';
 import { PollingStationDataTableRowActions } from '../PollingStationDataTableRowActions/PollingStationDataTableRowActions';
+import { useDialog } from '../ui/use-dialog';
 import { useToast } from '../ui/use-toast';
 import { pollingStationColDefs } from './column-defs';
+import CreatePollingStationDialog from './CreatePollingStationDialog';
 import { useDeletePollingStationMutation, usePollingStations, useUpdatePollingStationMutation } from './hooks';
 
 export default function PollingStationsDashboard(): ReactElement {
@@ -33,6 +36,7 @@ export default function PollingStationsDashboard(): ReactElement {
   const router = useRouter();
   const { mutate: deletePollingStationMutation } = useDeletePollingStationMutation();
   const { mutate: updatePollingStationMutation } = useUpdatePollingStationMutation();
+  const createPollingStationDialog = useDialog();
 
   const deletePollingStationCallback = useCallback(
     (pollingStation: PollingStation) =>
@@ -162,6 +166,19 @@ export default function PollingStationsDashboard(): ReactElement {
 
           <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
+            {userRole === 'PlatformAdmin' && (
+              <>
+                <Button
+                  variant='secondary'
+                  disabled={electionRound?.status === ElectionRoundStatus.Archived}
+                  onClick={() => createPollingStationDialog.trigger()}>
+                  <Plus className='mr-2' width={18} height={18} />
+                  {i18n.t('electionEvent.pollingStations.addPollingStation.addBtnText')}
+                </Button>
+                <CreatePollingStationDialog {...createPollingStationDialog.dialogProps} />
+              </>
+            )}
+
             {userRole === 'PlatformAdmin' && (
               <Link
                 to={'/election-rounds/$electionRoundId/polling-stations/import'}
