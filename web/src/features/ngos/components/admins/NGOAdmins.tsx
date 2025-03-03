@@ -1,3 +1,5 @@
+import PasswordSetterDialog from '@/components/PasswordSetterDialog/PasswordSetterDialog';
+import { usePasswordSetterDialog } from '@/components/PasswordSetterDialog/usePasswordSetterDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
@@ -36,6 +38,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
   const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
   const addNgoAdminDialog = useDialog();
   const { queryParams, searchText, handleSearchInput } = useDebouncedSearch(Route.id, ngoAdminsSearchParamsSchema);
+  const { passwordSetterDialogProps, handlePasswordSet } = usePasswordSetterDialog();
 
   const navigateToViewNgoAdmin = useCallback(
     (adminId: string) => navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } }),
@@ -85,9 +88,9 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const adminId = row.original.id;
-        const adminName = `${row.original.firstName} ${row.original.lastName}`;
-        const isAdminActive = row.original.status === NgoAdminStatus.Active;
+        const userId = row.original.id;
+        const displayName = `${row.original.firstName} ${row.original.lastName}`;
+        const isUserActive = row.original.status === NgoAdminStatus.Active;
 
         return (
           <div className='text-right'>
@@ -99,22 +102,34 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => navigateToViewNgoAdmin(adminId)}>View</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigateToEditNgoAdmin(adminId)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigateToViewNgoAdmin(userId)}>View</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    navigateToEditNgoAdmin(userId);
+                  }}>
+                  Edit
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    isAdminActive
-                      ? deactivateNgoAdminMutation.mutate(adminId)
-                      : activateNgoAdminMutation.mutate(adminId);
+                    isUserActive ? deactivateNgoAdminMutation.mutate(userId) : activateNgoAdminMutation.mutate(userId);
                   }}>
-                  {!isAdminActive ? 'Activate' : 'Deactivate'}
+                  {!isUserActive ? 'Activate' : 'Deactivate'}
                 </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    handlePasswordSet({ userId, displayName });
+                  }}>
+                  Set password
+                </DropdownMenuItem>
+
                 <DropdownMenuItem
                   className='text-red-600'
                   onClick={async (e) => {
                     e.stopPropagation();
-                    await deleteNgoAdminWithConfirmation({ adminId, name: adminName });
+                    await deleteNgoAdminWithConfirmation({ userId, displayName });
                   }}>
                   Delete
                 </DropdownMenuItem>
@@ -158,6 +173,7 @@ export const NGOAdminsView: FC<NGOAdminsViewProps> = ({ ngoId }) => {
           queryParams={queryParams}
           // onRowClick={(id) => navigateToViewNgoAdmin(id)}
         />
+        <PasswordSetterDialog {...passwordSetterDialogProps} />
       </CardContent>
     </Card>
   );

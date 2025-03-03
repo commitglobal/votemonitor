@@ -69,8 +69,8 @@ export const EditNgoAdmin: FC<EditNgoAdminProps> = ({ ngoAdmin }) => {
 
   const handleDelete = async () => {
     await deleteNgoAdminWithConfirmation({
-      adminId,
-      name: displayName,
+      userId: adminId,
+      displayName,
       onMutationSuccess: () => {
         navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId, tab: 'admins' } });
       },
