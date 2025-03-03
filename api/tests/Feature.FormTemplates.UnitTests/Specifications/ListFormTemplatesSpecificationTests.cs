@@ -27,7 +27,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -58,7 +58,7 @@ public class ListFormTemplatesSpecificationTests
             CodeFilter = DefaultCode
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -92,7 +92,7 @@ public class ListFormTemplatesSpecificationTests
             Status = FormTemplateStatus.Published
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -128,7 +128,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -160,7 +160,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -194,35 +194,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
-
-        // Act
-        var result = spec.Evaluate(testCollection).ToList();
-
-        // Assert
-        result.Should().HaveCount(2);
-        result.Should().ContainEquivalentOf(formTemplate1, cfg => cfg.ExcludingMissingMembers());
-        result.Should().ContainEquivalentOf(formTemplate2, cfg => cfg.ExcludingMissingMembers());
-    }
-
-    [Fact]
-    public void ListFormTemplatesSpecification_ShouldReturnOnlyPublishedForms_WhenUserIsNgoAdmin()
-    {
-        // Arrange
-        var formTemplate1 = new FormTemplateAggregateFaker(index: 101, status: FormTemplateStatus.Published).Generate();
-        var formTemplate2 = new FormTemplateAggregateFaker(index: 102, status: FormTemplateStatus.Published).Generate();
-
-        var testCollection = Enumerable.Range(1, 100)
-            .Select(idx => new FormTemplateAggregateFaker(index: idx, status: DefaultStatus).Generate())
-            .Union(new[] { formTemplate1, formTemplate2 })
-            .ToList();
-
-        var request = new Request
-        {
-            Status = FormTemplateStatus.Drafted
-        };
-
-        var spec = new ListFormTemplatesSpecification(request, true);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -255,7 +227,7 @@ public class ListFormTemplatesSpecificationTests
             PageNumber = 2
         };
 
-        var spec = new ListFormTemplatesSpecification(request, false);
+        var spec = new ListFormTemplatesSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();

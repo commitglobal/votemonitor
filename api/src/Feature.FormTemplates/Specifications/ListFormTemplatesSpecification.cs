@@ -5,14 +5,13 @@ namespace Feature.FormTemplates.Specifications;
 
 public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateSlimModel>
 {
-    public ListFormTemplatesSpecification(List.Request request, bool isNgoAdmin)
+    public ListFormTemplatesSpecification(List.Request request)
     {
         Query
             .Search(x => x.Code, "%" + request.CodeFilter + "%", !string.IsNullOrEmpty(request.CodeFilter))
-            .Where(x => x.Status == request.Status, request.Status != null && !isNgoAdmin)
+            .Where(x => x.Status == request.Status || x.Status == FormTemplateStatus.Published, request.Status != null)
             .Where(x => x.DefaultLanguage == request.LanguageCode || x.Languages.Contains(request.LanguageCode),
                 !string.IsNullOrWhiteSpace(request.LanguageCode))
-            .Where(x => x.Status == FormTemplateStatus.Published, isNgoAdmin)
             .ApplyOrdering(request)
             .Paginate(request);
 
