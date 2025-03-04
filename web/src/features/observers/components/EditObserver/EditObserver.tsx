@@ -15,6 +15,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useObserverMutations } from '../../hooks/observers-queries';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function EditObserver() {
   const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
   const observer = observerQuery.data;
   const confirm = useConfirm();
+  const { deleteObserverWithConfirmation } = useObserverMutations();
 
   const editObserverFormSchema = z.object({
     lastName: z.string().min(1, {
@@ -67,23 +69,20 @@ export default function EditObserver() {
     });
   }
 
-  const deleteMutation = useMutation({
-    mutationFn: (observerId: string) => {
-      return authApi.delete<void>(`/observers/${observerId}`);
-    },
-    onSuccess: () => {
-      navigate({ to: '/observers' });
-    },
-  });
-
   const editMutation = useMutation({
     mutationFn: ({ observerId, obj }: any) => {
       return authApi.put<void>(`/observers/${observerId}`, obj);
     },
   });
 
-  const handleDelete = () => {
-    deleteMutation.mutate(observer.id);
+  const handleDelete = async () => {
+    await deleteObserverWithConfirmation({
+      observerId,
+      name: observer.firstName + ' ' + observer.lastName,
+      onMutationSuccess: () => {
+        navigate({ to: '/observers' });
+      },
+    });
   };
 
   return (

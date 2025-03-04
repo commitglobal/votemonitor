@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,19 +11,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { queryClient } from '@/main';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { ReactElement, useState } from 'react';
-
 import { Plus } from 'lucide-react';
-import { useObservers } from '../../hooks/observers-queries';
+import { ReactElement, useState } from 'react';
+import { useObserverMutations, useObservers } from '../../hooks/observers-queries';
 import { Observer } from '../../models/observer';
 
 export default function ObserversDashboard(): ReactElement {
   const columnHelper = createColumnHelper<Observer>();
+  const { deleteObserverWithConfirmation } = useObserverMutations();
 
   const observerColDefs: ColumnDef<Observer>[] = [
     columnHelper.display({
@@ -76,7 +73,15 @@ export default function ObserversDashboard(): ReactElement {
               }}>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className='text-red-600' onClick={() => handleDelete(row.original.id)}>
+            <DropdownMenuItem
+              className='text-red-600'
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteObserverWithConfirmation({
+                  observerId: row.original.id,
+                  name: row.original.firstName + ' ' + row.original.lastName,
+                });
+              }}>
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -93,22 +98,9 @@ export default function ObserversDashboard(): ReactElement {
     setSearchText(ev.currentTarget.value);
   };
 
-  const handleDelete = (observerId: string) => {
-    deleteMutation.mutate(observerId);
-  };
-
   const navigateToObserver = ({ observerId, isEditing }: { observerId: string; isEditing?: boolean }) => {
     navigate({ to: `/observers/$observerId/${isEditing ? 'edit' : ''}`, params: { observerId } });
   };
-
-  const deleteMutation = useMutation({
-    mutationFn: (observerId: string) => {
-      return authApi.delete<void>(`/observers/${observerId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['observers'] });
-    },
-  });
 
   return (
     <Layout
