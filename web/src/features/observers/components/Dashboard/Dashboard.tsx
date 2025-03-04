@@ -17,7 +17,7 @@ import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/reac
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
-import { ReactElement, useRef, useState } from 'react';
+import { ReactElement, useState } from 'react';
 
 import { Plus } from 'lucide-react';
 import { useObservers } from '../../hooks/observers-queries';
@@ -62,8 +62,20 @@ export default function ObserversDashboard(): ReactElement {
             <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateToObserver({ observerId: row.original.id });
+              }}>
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateToObserver({ observerId: row.original.id, isEditing: true });
+              }}>
+              Edit
+            </DropdownMenuItem>
             <DropdownMenuItem className='text-red-600' onClick={() => handleDelete(row.original.id)}>
               Delete
             </DropdownMenuItem>
@@ -81,14 +93,12 @@ export default function ObserversDashboard(): ReactElement {
     setSearchText(ev.currentTarget.value);
   };
 
-
-
   const handleDelete = (observerId: string) => {
     deleteMutation.mutate(observerId);
   };
 
-  const navigateToObserver = (observerId: string) => {
-    navigate({ to: '/observers/$observerId', params: { observerId } });
+  const navigateToObserver = ({ observerId, isEditing }: { observerId: string; isEditing?: boolean }) => {
+    navigate({ to: `/observers/$observerId/${isEditing ? 'edit' : ''}`, params: { observerId } });
   };
 
   const deleteMutation = useMutation({
@@ -99,8 +109,6 @@ export default function ObserversDashboard(): ReactElement {
       queryClient.invalidateQueries({ queryKey: ['observers'] });
     },
   });
-
-
 
   return (
     <Layout
@@ -148,7 +156,11 @@ export default function ObserversDashboard(): ReactElement {
         </CardHeader>
 
         <CardContent>
-          <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
+          <QueryParamsDataTable
+            columns={observerColDefs}
+            useQuery={useObservers}
+            onRowClick={(observerId) => navigateToObserver({ observerId })}
+          />
         </CardContent>
       </Card>
     </Layout>
