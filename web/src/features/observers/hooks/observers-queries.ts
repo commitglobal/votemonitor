@@ -58,6 +58,33 @@ export const useObserverMutations = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const toggleObserverStatus = useMutation({
+    mutationFn: ({ observerId, isObserverActive }: { observerId: string; isObserverActive: boolean }) => {
+      const ACTION = isObserverActive ? 'deactivate' : 'activate';
+
+      return authApi.put<any>(`/observers/${observerId}:${ACTION}`, {});
+    },
+
+    onSuccess: (_, { isObserverActive }) => {
+      queryClient.invalidateQueries({ queryKey: observersKeys.all() });
+      router.invalidate();
+
+      toast({
+        title: 'Success',
+        description: `Observer was ${isObserverActive ? 'deactivated' : 'activated'}`,
+      });
+    },
+
+    onError: (err, { isObserverActive }) => {
+      console.error(err);
+      toast({
+        title: `Error`,
+        description: `Error ${isObserverActive ? 'deactivating' : 'activating'} observer`,
+        variant: 'destructive',
+      });
+    },
+  });
+
   const deleteObserverMutation = useMutation({
     mutationFn: ({ observerId }: { observerId: string; onMutationSuccess?: () => void }) => {
       return authApi.delete<any>(`/observers/${observerId}`);
@@ -108,5 +135,5 @@ export const useObserverMutations = () => {
     }
   };
 
-  return { deleteObserverWithConfirmation };
+  return { toggleObserverStatus, deleteObserverWithConfirmation };
 };

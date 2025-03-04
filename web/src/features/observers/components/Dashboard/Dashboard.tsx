@@ -1,4 +1,5 @@
 import Layout from '@/components/layout/Layout';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
@@ -17,11 +18,11 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { ReactElement, useState } from 'react';
 import { useObserverMutations, useObservers } from '../../hooks/observers-queries';
-import { Observer } from '../../models/observer';
+import { Observer, ObserverStatus } from '../../models/observer';
 
 export default function ObserversDashboard(): ReactElement {
   const columnHelper = createColumnHelper<Observer>();
-  const { deleteObserverWithConfirmation } = useObserverMutations();
+  const { deleteObserverWithConfirmation, toggleObserverStatus } = useObserverMutations();
 
   const observerColDefs: ColumnDef<Observer>[] = [
     columnHelper.display({
@@ -43,50 +44,74 @@ export default function ObserversDashboard(): ReactElement {
       header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
       cell: ({ row }) => <div className='truncate'>{row.original.email}</div>,
     }),
+
     columnHelper.display({
       id: 'phoneNumber',
       enableSorting: true,
       header: ({ column }) => <DataTableColumnHeader title='Phone number' column={column} />,
       cell: ({ row }) => <div className='truncate'>{row.original.phoneNumber}</div>,
     }),
+
+    columnHelper.display({
+      id: 'status',
+      header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => <Badge className={'badge-' + status}>{status}</Badge>,
+    }),
     {
       header: '',
       accessorKey: 'action',
       enableSorting: true,
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                navigateToObserver({ observerId: row.original.id });
-              }}>
-              View
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                navigateToObserver({ observerId: row.original.id, isEditing: true });
-              }}>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className='text-red-600'
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteObserverWithConfirmation({
-                  observerId: row.original.id,
-                  name: row.original.firstName + ' ' + row.original.lastName,
-                });
-              }}>
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+      cell: ({ row }) => {
+        const observerId = row.original.id;
+        const isObserverActive = row.original.status === ObserverStatus.Active;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVerticalIcon className='w-[24px] h-[24px] text-purple-600' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigateToObserver({ observerId });
+                }}>
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigateToObserver({ observerId, isEditing: true });
+                }}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleObserverStatus.mutate({ observerId, isObserverActive });
+                }}>
+                {isObserverActive ? 'Deactivate' : 'Activate'}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                className='text-red-600'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteObserverWithConfirmation({
+                    observerId: row.original.id,
+                    name: row.original.firstName + ' ' + row.original.lastName,
+                  });
+                }}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
   ];
 
