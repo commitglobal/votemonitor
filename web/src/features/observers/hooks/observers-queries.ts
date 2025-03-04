@@ -6,7 +6,7 @@ import { toast } from '@/components/ui/use-toast';
 import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { Observer } from '../models/observer';
+import { Observer, ObserverFormData } from '../models/observer';
 
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
@@ -57,6 +57,25 @@ export const useObserverMutations = () => {
   const confirm = useConfirm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const editObserverMutation = useMutation({
+    mutationFn: ({ observerId, values }: { observerId: string; values: ObserverFormData }) => {
+      return authApi.put(`/observers/${observerId}`, values);
+    },
+
+    onSuccess: (_, { observerId }) => {
+      queryClient.invalidateQueries({ queryKey: observersKeys.all() });
+      router.invalidate();
+      navigate({ to: '/observers/$observerId', params: { observerId } });
+    },
+    onError: () => {
+      toast({
+        title: 'Error editing NGO admin',
+        description: '',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const toggleObserverStatus = useMutation({
     mutationFn: ({ observerId, isObserverActive }: { observerId: string; isObserverActive: boolean }) => {
@@ -135,5 +154,5 @@ export const useObserverMutations = () => {
     }
   };
 
-  return { toggleObserverStatus, deleteObserverWithConfirmation };
+  return { editObserverMutation, toggleObserverStatus, deleteObserverWithConfirmation };
 };

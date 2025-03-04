@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import BackButton from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -11,11 +10,11 @@ import { observerDetailsQueryOptions } from '@/routes/observers/$observerId';
 import { Route } from '@/routes/observers_.$observerId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useObserverMutations } from '../../hooks/observers-queries';
+import { ObserverFormData, observerFormSchema } from '../../models/observer';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -23,21 +22,10 @@ export default function EditObserver() {
   const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
   const observer = observerQuery.data;
   const confirm = useConfirm();
-  const { deleteObserverWithConfirmation } = useObserverMutations();
+  const { deleteObserverWithConfirmation, editObserverMutation } = useObserverMutations();
 
-  const editObserverFormSchema = z.object({
-    lastName: z.string().min(1, {
-      message: 'Last name must be at least 1 characters long',
-    }),
-    firstName: z.string().min(1, {
-      message: 'First name must be at least 1 characters long',
-    }),
-    email: z.string().min(1, { message: 'Email is required' }).email('Please enter a valid email address'),
-    phoneNumber: z.string(),
-  });
-
-  const form = useForm<z.infer<typeof editObserverFormSchema>>({
-    resolver: zodResolver(editObserverFormSchema),
+  const form = useForm<ObserverFormData>({
+    resolver: zodResolver(observerFormSchema),
     mode: 'all',
     defaultValues: {
       firstName: observer.firstName,
@@ -62,18 +50,12 @@ export default function EditObserver() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof editObserverFormSchema>) {
-    editMutation.mutate({
+  function onSubmit(values: ObserverFormData) {
+    editObserverMutation.mutate({
       observerId: observer.id,
-      obj: values,
+      values,
     });
   }
-
-  const editMutation = useMutation({
-    mutationFn: ({ observerId, obj }: any) => {
-      return authApi.put<void>(`/observers/${observerId}`, obj);
-    },
-  });
 
   const handleDelete = async () => {
     await deleteObserverWithConfirmation({
