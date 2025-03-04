@@ -1,4 +1,5 @@
 import { authApi } from '@/common/auth-api';
+import BackButton from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
@@ -86,7 +87,9 @@ export default function EditObserver() {
   };
 
   return (
-    <Layout title={`Edit ${observer.firstName + ' ' + observer.lastName}`}>
+    <Layout
+      title={`Edit ${observer.firstName + ' ' + observer.lastName}`}
+      backButton={<BackButton rootRoute='/observers' />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
