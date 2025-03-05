@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import ObserverDetails from '@/features/observers/components/ObserverDetails/ObserverDetails';
+import { observersKeys } from '@/features/observers/hooks/observers-queries';
 import { Observer } from '@/features/observers/models/observer';
 import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
@@ -7,7 +8,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const observerDetailsQueryOptions = (observerId: string) =>
   queryOptions({
-    queryKey: ['observer', { observerId }],
+    queryKey: observersKeys.detail(observerId),
     queryFn: async () => {
       const response = await authApi.get<Observer>(`/observers/${observerId}`);
 
