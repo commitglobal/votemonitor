@@ -53,6 +53,7 @@ export default function EditObserver() {
     editObserverMutation.mutate({
       observerId: observer.id,
       values,
+      form,
     });
   }
 

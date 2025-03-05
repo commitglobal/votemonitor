@@ -83,7 +83,14 @@ export const useObserverMutations = () => {
   });
 
   const editObserverMutation = useMutation({
-    mutationFn: ({ observerId, values }: { observerId: string; values: EditObserverFormData }) => {
+    mutationFn: ({
+      observerId,
+      values,
+    }: {
+      observerId: string;
+      values: EditObserverFormData;
+      form: UseFormReturn<EditObserverFormData>;
+    }) => {
       return authApi.put(`/observers/${observerId}`, values);
     },
 
@@ -92,7 +99,10 @@ export const useObserverMutations = () => {
       router.invalidate();
       navigate({ to: '/observers/$observerId', params: { observerId } });
     },
-    onError: () => {
+    onError: (error: AxiosError<ProblemDetails>, { form }) => {
+      console.error(error);
+      addFormValidationErrorsFromBackend(form, error);
+
       toast({
         title: 'Error editing observer',
         description: '',
