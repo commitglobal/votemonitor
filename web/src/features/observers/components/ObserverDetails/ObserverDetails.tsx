@@ -1,3 +1,4 @@
+import { BreadcrumbsWithAliases } from '@/components/layout/Breadcrumbs/BreadcrumbsWithAliases';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,13 +15,17 @@ export default function ObserverDetails() {
   const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
   const observer = observerQuery.data;
 
+  const displayName = observer.firstName + ' ' + observer.lastName;
+
   const navigate = useNavigate();
   const navigateToEdit = () => {
     navigate({ to: `/observers/$observerId/edit`, params: { observerId } });
   };
 
   return (
-    <Layout title={observer.firstName + ' ' + observer.lastName}>
+    <Layout
+      title={displayName}
+      breadcrumbs={<BreadcrumbsWithAliases customAliases={[{ param: observerId, alias: displayName }]} />}>
       <Tabs defaultValue='observer-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='observer-details'>Observer details</TabsTrigger>
