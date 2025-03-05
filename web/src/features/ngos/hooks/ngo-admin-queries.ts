@@ -12,9 +12,9 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
+import axios, { AxiosError } from 'axios';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 import { ngosKeys } from './ngos-queries';
-import axios, { AxiosError } from 'axios';
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
 export const ngoAdminDetailsOptions = ({ ngoId, adminId }: NgoAdminGetRequestParams) =>
@@ -199,24 +199,24 @@ export const useNgoAdminMutations = (ngoId: string) => {
   // WRAPPED MUTATIONS
 
   const deleteNgoAdminWithConfirmation = async ({
-    adminId,
-    name,
+    userId,
+    displayName,
     onMutationSuccess,
   }: {
-    adminId: string;
-    name: string;
+    userId: string;
+    displayName: string;
     onMutationSuccess?: () => void;
   }) => {
     if (
       await confirm({
-        title: `Delete ${name}?`,
+        title: `Delete ${displayName}?`,
         body: 'This action is permanent and cannot be undone. Once deleted, this NGO admin cannot be retrieved.',
         actionButton: 'Delete',
         actionButtonClass: buttonVariants({ variant: 'destructive' }),
         cancelButton: 'Cancel',
       })
     ) {
-      deleteNgoAdminMutation.mutate({ adminId, onMutationSuccess });
+      deleteNgoAdminMutation.mutate({ adminId: userId, onMutationSuccess });
     }
   };
 
