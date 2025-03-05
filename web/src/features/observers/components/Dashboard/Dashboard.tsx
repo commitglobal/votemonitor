@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useDialog } from '@/components/ui/use-dialog';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useDebouncedSearch } from '@/hooks/debounced-search';
 import { observersRouteSearchSchema, Route } from '@/routes/observers';
@@ -24,6 +25,7 @@ import { Plus } from 'lucide-react';
 import { ReactElement } from 'react';
 import { useObserverMutations, useObservers } from '../../hooks/observers-queries';
 import { Observer, ObserverStatus } from '../../models/observer';
+import CreateObserverDialog from '../CreateObserverDialog';
 import { ObserversListFilters } from '../ObserversFiltering';
 
 export default function ObserversDashboard(): ReactElement {
@@ -131,6 +133,8 @@ export default function ObserversDashboard(): ReactElement {
   ];
 
   const navigate = useNavigate();
+  const createObserverDialog = useDialog();
+
   const { searchText, handleSearchInput, queryParams } = useDebouncedSearch(Route.id, observersRouteSearchSchema);
   const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
   const { passwordSetterDialogProps, handlePasswordSet } = usePasswordSetterDialog();
@@ -165,10 +169,11 @@ export default function ObserversDashboard(): ReactElement {
                 </svg>
                 Export observer list
               </Button>
-              <Button title='Add observer' onClick={() => {}}>
+              <Button title='Add observer' onClick={() => createObserverDialog.trigger()}>
                 <Plus className='mr-2' width={18} height={18} />
                 Add observer
               </Button>
+              <CreateObserverDialog {...createObserverDialog.dialogProps} />
             </div>
           </div>
           <Separator />

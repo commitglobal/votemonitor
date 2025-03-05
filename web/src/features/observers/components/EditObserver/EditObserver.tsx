@@ -14,7 +14,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { useObserverMutations } from '../../hooks/observers-queries';
-import { ObserverFormData, observerFormSchema } from '../../models/observer';
+import { EditObserverFormData, editObserverFormSchema } from '../../models/observer';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -24,13 +24,12 @@ export default function EditObserver() {
   const confirm = useConfirm();
   const { deleteObserverWithConfirmation, editObserverMutation } = useObserverMutations();
 
-  const form = useForm<ObserverFormData>({
-    resolver: zodResolver(observerFormSchema),
+  const form = useForm<EditObserverFormData>({
+    resolver: zodResolver(editObserverFormSchema),
     mode: 'all',
     defaultValues: {
       firstName: observer.firstName,
       lastName: observer.lastName,
-      email: observer.email,
       phoneNumber: observer.phoneNumber,
     },
   });
@@ -50,7 +49,7 @@ export default function EditObserver() {
     },
   });
 
-  function onSubmit(values: ObserverFormData) {
+  function onSubmit(values: EditObserverFormData) {
     editObserverMutation.mutate({
       observerId: observer.id,
       values,
@@ -111,21 +110,7 @@ export default function EditObserver() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field, fieldState }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Email <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder='Email address' {...field} {...fieldState} type='email' />
-                    </FormControl>
-                    <FormMessage className='mt-2' />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name='phoneNumber'
