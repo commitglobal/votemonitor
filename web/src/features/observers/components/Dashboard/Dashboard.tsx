@@ -12,13 +12,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import { useDebouncedSearch } from '@/hooks/debounced-search';
+import { observersRouteSearchSchema, Route } from '@/routes/observers';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { useObserverMutations, useObservers } from '../../hooks/observers-queries';
 import { Observer, ObserverStatus } from '../../models/observer';
+import { ObserversListFilters } from '../ObserversFiltering';
 
 export default function ObserversDashboard(): ReactElement {
   const columnHelper = createColumnHelper<Observer>();
@@ -115,13 +119,9 @@ export default function ObserversDashboard(): ReactElement {
     },
   ];
 
-  const [searchText, setSearchText] = useState('');
-  const [isFiltering, setFiltering] = useState(false);
-
   const navigate = useNavigate();
-  const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
-    setSearchText(ev.currentTarget.value);
-  };
+  const { searchText, handleSearchInput, queryParams } = useDebouncedSearch(Route.id, observersRouteSearchSchema);
+  const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
 
   const navigateToObserver = ({ observerId, isEditing }: { observerId: string; isEditing?: boolean }) => {
     navigate({ to: `/observers/$observerId/${isEditing ? 'edit' : ''}`, params: { observerId } });
@@ -164,12 +164,13 @@ export default function ObserversDashboard(): ReactElement {
           <div className='flex flex-row justify-end gap-4  filters'>
             <Input value={searchText} onChange={handleSearchInput} className='max-w-md' placeholder='Search' />
             <FunnelIcon
-              onClick={() => {}}
+              onClick={toggleFilteringContainerVisibility}
               className='w-[20px] text-purple-900 cursor-pointer'
-              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-            />
+              fill={isFilteringContainerVisible ? '#5F288D' : 'rgba(0,0,0,0)'}
+            />{' '}
             <Cog8ToothIcon className='w-[20px] text-purple-900' />
           </div>
+          {isFilteringContainerVisible && <ObserversListFilters />}
         </CardHeader>
 
         <CardContent>
@@ -177,6 +178,7 @@ export default function ObserversDashboard(): ReactElement {
             columns={observerColDefs}
             useQuery={useObservers}
             onRowClick={(observerId) => navigateToObserver({ observerId })}
+            queryParams={queryParams}
           />
         </CardContent>
       </Card>

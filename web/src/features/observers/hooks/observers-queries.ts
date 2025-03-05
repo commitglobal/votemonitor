@@ -3,7 +3,6 @@ import type { DataTableParameters, PageResponse } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { Observer, ObserverFormData } from '../models/observer';
@@ -26,27 +25,17 @@ export const useObservers = (queryParams: DataTableParameters): UseObserversResu
   return useQuery({
     queryKey: observersKeys.list(queryParams),
     queryFn: async () => {
-      const params = {
-        ...queryParams.otherParams,
-        PageNumber: String(queryParams.pageNumber),
-        PageSize: String(queryParams.pageSize),
-        SortColumnName: queryParams.sortColumnName,
-        SortOrder: queryParams.sortOrder,
-      };
-      const searchParams = buildURLSearchParams(params);
-
-      const response = await authApi.get<PageResponse<Observer>>(`/observers`, {
-        params: searchParams,
+      const response = await authApi.get<PageResponse<Observer>>('/observers', {
+        params: {
+          ...queryParams.otherParams,
+          status: (queryParams.otherParams as any)?.observerStatus,
+        },
       });
-
       if (response.status !== 200) {
         throw new Error('Failed to fetch observers');
       }
 
-      return {
-        ...response.data,
-        isEmpty: !isQueryFiltered(queryParams.otherParams ?? {}) && response.data.items.length === 0,
-      };
+      return response.data;
     },
     staleTime: STALE_TIME,
   });
