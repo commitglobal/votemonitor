@@ -1,11 +1,14 @@
 import { authApi } from '@/common/auth-api';
-import type { DataTableParameters, PageResponse } from '@/common/types';
+import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
+import type { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { type UseQueryResult, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { Observer, ObserverFormData } from '../models/observer';
+import { AxiosError } from 'axios';
+import { UseFormReturn } from 'react-hook-form';
+import { AddObserverFormData, EditObserverFormData, Observer } from '../models/observer';
 
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
@@ -47,8 +50,40 @@ export const useObserverMutations = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const addObserverMutation = useMutation({
+    mutationFn: ({
+      values,
+    }: {
+      values: AddObserverFormData;
+      form: UseFormReturn<AddObserverFormData>;
+      onOpenChange: (isOpen: boolean) => void;
+    }) => {
+      return authApi.post(`/observers`, values);
+    },
+
+    onSuccess: (_, { form, onOpenChange }) => {
+      toast({
+        title: 'Success',
+        description: 'Observer added',
+      });
+      queryClient.invalidateQueries({ queryKey: observersKeys.all() });
+      router.invalidate();
+      form.reset({});
+      onOpenChange(false);
+    },
+    onError: (error: AxiosError<ProblemDetails>, { form }) => {
+      console.error(error);
+      addFormValidationErrorsFromBackend(form, error);
+      toast({
+        title: 'Error adding observer',
+        description: '',
+        variant: 'destructive',
+      });
+    },
+  });
+
   const editObserverMutation = useMutation({
-    mutationFn: ({ observerId, values }: { observerId: string; values: ObserverFormData }) => {
+    mutationFn: ({ observerId, values }: { observerId: string; values: EditObserverFormData }) => {
       return authApi.put(`/observers/${observerId}`, values);
     },
 
@@ -59,7 +94,7 @@ export const useObserverMutations = () => {
     },
     onError: () => {
       toast({
-        title: 'Error editing NGO admin',
+        title: 'Error editing observer',
         description: '',
         variant: 'destructive',
       });
@@ -143,5 +178,5 @@ export const useObserverMutations = () => {
     }
   };
 
-  return { editObserverMutation, toggleObserverStatus, deleteObserverWithConfirmation };
+  return { addObserverMutation, editObserverMutation, toggleObserverStatus, deleteObserverWithConfirmation };
 };
