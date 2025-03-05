@@ -8,14 +8,21 @@ type CustomAlias = {
 };
 
 interface BreadcrumbsWithAliasesProps {
-  customAliases?: CustomAlias[];
+  customAliases: CustomAlias[];
 }
+
+const DEFAULT_ALIASES = new Map<string, string>([
+  ['observers', 'Observers'],
+  ['form-templates', 'Form templates'],
+]);
+
+const INTERNAL_ALIASES = new Map<string, string>(DEFAULT_ALIASES);
 
 export const BreadcrumbsWithAliases: FC<BreadcrumbsWithAliasesProps> = ({ customAliases }) => {
   const { latestLocation } = useRouter();
   const prevSearch = usePrevSearch();
 
-  const DEFAULT_ALIASES = new Map<string, string>([['observers', 'Observers']]);
+  customAliases.forEach((aliasData) => INTERNAL_ALIASES.set(aliasData.param, aliasData.alias));
 
   let currentLink: string = '';
 
@@ -23,20 +30,11 @@ export const BreadcrumbsWithAliases: FC<BreadcrumbsWithAliasesProps> = ({ custom
     .split('/')
     .filter((crumb) => crumb !== '')
     .map((crumb) => {
-      let crumbWithAlias = undefined;
       currentLink += `/${crumb}`;
-
-      if (DEFAULT_ALIASES.has(crumb)) crumbWithAlias = DEFAULT_ALIASES.get(crumb);
-
-      if (customAliases) {
-        const customAliasResult = customAliases.find((aliasObj) => aliasObj.param === crumb);
-
-        if (customAliasResult) crumbWithAlias = customAliasResult.alias;
-      }
 
       return (
         <Link className='crumb' key={crumb} search={prevSearch} to={currentLink} preload='intent'>
-          {crumbWithAlias ?? crumb}
+          {INTERNAL_ALIASES.get(crumb) ?? crumb}
         </Link>
       );
     });
