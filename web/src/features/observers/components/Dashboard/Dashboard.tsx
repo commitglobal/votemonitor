@@ -1,4 +1,6 @@
 import Layout from '@/components/layout/Layout';
+import PasswordSetterDialog from '@/components/PasswordSetterDialog/PasswordSetterDialog';
+import { usePasswordSetterDialog } from '@/components/PasswordSetterDialog/usePasswordSetterDialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -72,6 +74,7 @@ export default function ObserversDashboard(): ReactElement {
       enableSorting: true,
       cell: ({ row }) => {
         const observerId = row.original.id;
+        const displayName = row.original.firstName + ' ' + row.original.lastName;
         const isObserverActive = row.original.status === ObserverStatus.Active;
         return (
           <DropdownMenu>
@@ -102,12 +105,20 @@ export default function ObserversDashboard(): ReactElement {
               </DropdownMenuItem>
 
               <DropdownMenuItem
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  handlePasswordSet({ userId: observerId, displayName });
+                }}>
+                Set password
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
                 className='text-red-600'
                 onClick={(e) => {
                   e.stopPropagation();
                   deleteObserverWithConfirmation({
                     observerId: row.original.id,
-                    name: row.original.firstName + ' ' + row.original.lastName,
+                    name: displayName,
                   });
                 }}>
                 Delete
@@ -122,6 +133,7 @@ export default function ObserversDashboard(): ReactElement {
   const navigate = useNavigate();
   const { searchText, handleSearchInput, queryParams } = useDebouncedSearch(Route.id, observersRouteSearchSchema);
   const { isFilteringContainerVisible, toggleFilteringContainerVisibility } = useFilteringContainer();
+  const { passwordSetterDialogProps, handlePasswordSet } = usePasswordSetterDialog();
 
   const navigateToObserver = ({ observerId, isEditing }: { observerId: string; isEditing?: boolean }) => {
     navigate({ to: `/observers/$observerId/${isEditing ? 'edit' : ''}`, params: { observerId } });
@@ -180,6 +192,7 @@ export default function ObserversDashboard(): ReactElement {
             onRowClick={(observerId) => navigateToObserver({ observerId })}
             queryParams={queryParams}
           />
+          <PasswordSetterDialog {...passwordSetterDialogProps} />
         </CardContent>
       </Card>
     </Layout>
