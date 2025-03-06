@@ -38,7 +38,8 @@ export const useAddNoteMutation = (
       queryClient.setQueryData<Note[]>(getNotesQK, (old: Note[] = []) => [
         {
           ...payload,
-          lastUpdatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
           isNotSynched: true,
         },
         ...old,

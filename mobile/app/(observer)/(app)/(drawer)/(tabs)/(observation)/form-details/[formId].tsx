@@ -155,12 +155,12 @@ const FormDetails = () => {
           answer = { ...answer, selectionValues: selectedAnswersTexts };
         }
 
-        // sort the notes by lastUpdatedAt date in order to extract the last added note
+        // sort the notes by createdAt date in order to extract the last added note
         const lastNote =
           notes && notes[q.id]
             ? notes[q.id]
                 .slice()
-                .sort((a, b) => +new Date(a.lastUpdatedAt) - +new Date(b.lastUpdatedAt))
+                .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt))
                 .pop()
             : undefined;
 
@@ -232,7 +232,6 @@ const FormDetails = () => {
         electionRoundId: activeElectionRound?.id,
         formId: currentForm?.id as string,
         answers: [],
-        lastUpdatedAt: new Date().toISOString(),
       });
       setClearingForm(false);
     }

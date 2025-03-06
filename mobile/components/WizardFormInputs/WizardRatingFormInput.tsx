@@ -9,12 +9,6 @@ interface WizardRatingFormInputProps extends RatingInputProps {
   paragraph?: string;
   // helper text
   helper?: string;
-
-  // lower label text
-  lowerLabel?: string;
-
-  // upper label text
-  upperLabel?: string;
 }
 
 const WizardRatingFormInput: React.FC<WizardRatingFormInputProps> = ({
@@ -22,13 +16,11 @@ const WizardRatingFormInput: React.FC<WizardRatingFormInputProps> = ({
   label,
   paragraph,
   helper,
-  lowerLabel,
-  upperLabel,
   ...rest
 }) => {
   return (
     <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
-      <RatingInput id={id} lowerLabel={lowerLabel} upperLabel={upperLabel} {...rest} />
+      <RatingInput id={id} {...rest} />
     </WizardFormElement>
   );
 };

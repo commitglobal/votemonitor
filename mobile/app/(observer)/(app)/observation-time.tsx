@@ -185,7 +185,6 @@ const ObservationTime = () => {
       {
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
-        lastUpdatedAt: new Date().toISOString(),
         ...formData,
         breaks: definedBreaks,
       },
