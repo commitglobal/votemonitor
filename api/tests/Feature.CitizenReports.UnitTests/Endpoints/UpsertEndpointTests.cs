@@ -1,7 +1,6 @@
 ﻿using Feature.CitizenReports.Models;
 using Feature.CitizenReports.Specifications;
 using Feature.CitizenReports.Upsert;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 
@@ -21,7 +20,7 @@ public class UpsertEndpointTests
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _locationsRepository = Substitute.For<IReadRepository<Location>>();
 
-        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository, new CurrentUtcTimeProvider());
+        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository);
     }
 
     [Fact]
