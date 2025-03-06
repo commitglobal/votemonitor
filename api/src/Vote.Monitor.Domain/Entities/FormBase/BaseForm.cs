@@ -89,7 +89,6 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         Status = FormStatus.Drafted;
         return new DraftFormResult.Drafted();
-
     }
 
     public abstract DraftFormResult DraftInternal();
@@ -104,7 +103,6 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         Status = FormStatus.Obsolete;
         return new ObsoleteFormResult.Obsoleted();
-
     }
 
     public abstract ObsoleteFormResult ObsoleteInternal();
@@ -127,7 +125,6 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         Status = FormStatus.Published;
         return new PublishFormResult.Published();
-
     }
 
     public abstract PublishFormResult PublishInternal();
@@ -178,12 +175,13 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
         return (numberOfQuestionsAnswered, numberOfFlaggedAnswers);
     }
 
-    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool? isCompleted)
+    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
         var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        formSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted);
+        formSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
 
         return formSubmission;
     }
@@ -198,25 +196,30 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
         return citizenReport;
     }
 
-    public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
-        ValueOrUndefined<DateTime?> arrivalTime, ValueOrUndefined<DateTime?> departureTime,
-        List<ObservationBreak>? breaks, ValueOrUndefined<bool> isCompleted)
+    public PollingStationInformation FillIn(PollingStationInformation psiSubmission,
+        List<BaseAnswer>? answers,
+        ValueOrUndefined<DateTime?> arrivalTime,
+        ValueOrUndefined<DateTime?> departureTime,
+        List<ObservationBreak>? breaks,
+        ValueOrUndefined<bool> isCompleted,
+        DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
         var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
         psiSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
-            departureTime, breaks, isCompleted);
+            departureTime, breaks, isCompleted, lastUpdatedAt);
 
         return psiSubmission;
     }
 
-    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool? isCompleted)
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers, bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
         var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        incidentReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted);
+        incidentReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
 
         return incidentReport;
     }

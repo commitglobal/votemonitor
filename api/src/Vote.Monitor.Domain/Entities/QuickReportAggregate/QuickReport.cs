@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-public class QuickReport : AuditableBaseEntity, IAggregateRoot
+public class QuickReport :  IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -16,8 +16,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     public PollingStation? PollingStation { get; private set; }
     public string? PollingStationDetails { get; private set; }
     public QuickReportFollowUpStatus FollowUpStatus { get; private set; }
-
     public IncidentCategory IncidentCategory { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }
 
     public static QuickReport Create(Guid id,
         Guid electionRoundId,
@@ -27,10 +27,11 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         QuickReportLocationType locationType,
         Guid? pollingStationId,
         string? pollingStationDetails,
-        IncidentCategory incidentCategory)
+        IncidentCategory incidentCategory,
+        DateTime lastUpdatedAt)
     {
         return new QuickReport(id, electionRoundId, monitoringObserverId, locationType, title,
-            description, pollingStationId, pollingStationDetails, incidentCategory);
+            description, pollingStationId, pollingStationDetails, incidentCategory, lastUpdatedAt);
     }
 
     public void Update(string title,
@@ -38,7 +39,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         QuickReportLocationType locationType,
         Guid? pollingStationId,
         string? pollingStationDetails,
-        IncidentCategory incidentCategory)
+        IncidentCategory incidentCategory,
+        DateTime lastUpdatedAt)
     {
         Title = title;
         QuickReportLocationType = locationType;
@@ -46,6 +48,7 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         PollingStationId = pollingStationId;
         PollingStationDetails = pollingStationDetails;
         IncidentCategory = incidentCategory;
+        LastUpdatedAt = lastUpdatedAt;
     }
 
     public void UpdateFollowUpStatus(QuickReportFollowUpStatus followUpStatus)
@@ -61,7 +64,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         string description,
         Guid? pollingStationId,
         string? pollingStationDetails,
-        IncidentCategory incidentCategory)
+        IncidentCategory incidentCategory,
+        DateTime lastUpdatedAt)
     {
         Id = id;
         ElectionRoundId = electionRoundId;
@@ -73,6 +77,7 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         PollingStationDetails = pollingStationDetails;
         FollowUpStatus = QuickReportFollowUpStatus.NotApplicable;
         IncidentCategory = incidentCategory;
+        LastUpdatedAt = lastUpdatedAt;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

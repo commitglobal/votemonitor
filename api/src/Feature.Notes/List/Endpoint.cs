@@ -39,8 +39,7 @@ public class Endpoint(
                 FormId = note.FormId,
                 QuestionId = note.QuestionId,
                 Text = note.Text,
-                CreatedAt = note.CreatedOn,
-                UpdatedAt = note.LastModifiedOn
+                LastUpdatedAt = note.LastUpdatedAt
             })
             .ToList()
         );

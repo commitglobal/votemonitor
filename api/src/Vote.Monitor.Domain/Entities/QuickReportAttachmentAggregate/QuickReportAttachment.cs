@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
-public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
+public class QuickReportAttachment : IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -16,6 +16,7 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
     public string MimeType { get; private set; }
     public bool IsCompleted { get; private set; }
     public bool IsDeleted { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }
 
     private QuickReportAttachment(
         Guid id,
@@ -25,7 +26,8 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         Id = id;
         ElectionRoundId = electionRoundId;
@@ -43,6 +45,7 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
         UploadedFileName = uploadedFileName;
+        LastUpdatedAt = lastUpdatedAt;
     }
 
     public void Delete()
@@ -61,15 +64,9 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         Guid quickReportId,
         string fileName,
         string filePath,
-        string mimeType) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath, mimeType, true);
-
-    public static QuickReportAttachment CreateV2(Guid id,
-        Guid electionRoundId,
-        Guid monitoringObserverId,
-        Guid quickReportId,
-        string fileName,
-        string filePath,
-        string mimeType) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath, mimeType, false);
+        string mimeType,
+        DateTime lastUpdatedAt) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath,
+        mimeType, false, lastUpdatedAt);
 
 #pragma warning disable CS8618 // Required by Entity Framework
 

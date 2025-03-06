@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
@@ -12,7 +13,6 @@ public class UpsertEndpointTests
     private readonly IReadRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IReadRepository<FormAggregate> _formRepository;
-    private readonly IReadRepository<Coalition> _coalitionRepository;
     private readonly IAuthorizationService _authorizationService;
 
     private readonly Upsert.Endpoint _endpoint;
@@ -22,16 +22,17 @@ public class UpsertEndpointTests
         _repository = Substitute.For<IRepository<FormSubmission>>();
         _pollingStationRepository = Substitute.For<IReadRepository<PollingStationAggregate>>();
         _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
-        _coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
+        var coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
         
         _endpoint = Factory.Create<Upsert.Endpoint>(_repository,
             _pollingStationRepository,
             _monitoringObserverRepository,
-            _coalitionRepository,
+            coalitionRepository,
             _formRepository,
-            _authorizationService);
+            _authorizationService,
+            new CurrentUtcTimeProvider());
 
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
@@ -55,7 +56,7 @@ public class UpsertEndpointTests
             ObserverId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -80,7 +81,7 @@ public class UpsertEndpointTests
             ObserverId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -119,7 +120,7 @@ public class UpsertEndpointTests
             ]
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).UpdateAsync(formSubmission);
@@ -153,7 +154,7 @@ public class UpsertEndpointTests
             .ReturnsNull();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -191,7 +192,7 @@ public class UpsertEndpointTests
             .ReturnsNull();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -212,7 +213,7 @@ public class UpsertEndpointTests
         var request = new Upsert.Request();
         
         // Act
-        Func<Task> act = () => _endpoint.ExecuteAsync(request, default);
+        Func<Task> act = () => _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var exception = await act.Should().ThrowAsync<ValidationFailureException>();
@@ -262,7 +263,7 @@ public class UpsertEndpointTests
             .Returns(monitoringObserver);
 
         // Act
-        Func<Task> act = () => _endpoint.ExecuteAsync(request, default);
+        Func<Task> act = () => _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var exception = await act.Should().ThrowAsync<ValidationFailureException>();
@@ -314,7 +315,7 @@ public class UpsertEndpointTests
             .Returns(monitoringObserver);
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository

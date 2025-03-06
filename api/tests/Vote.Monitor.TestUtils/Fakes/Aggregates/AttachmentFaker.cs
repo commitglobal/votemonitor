@@ -11,7 +11,9 @@ public sealed class AttachmentFaker : PrivateFaker<Attachment>
         string? filePath = null,
         ElectionRound? electionRound = null,
         PollingStation? pollingStation = null,
-        MonitoringObserver? monitoringObserver = null)
+        MonitoringObserver? monitoringObserver = null,
+        bool? isCompleted = null,
+        bool? isDeleted = null)
     {
         UsePrivateConstructor();
 
@@ -28,5 +30,7 @@ public sealed class AttachmentFaker : PrivateFaker<Attachment>
         RuleFor(fake => fake.PollingStationId, pollingStation?.Id ?? fakePollingStation.Id);
         RuleFor(fake => fake.MonitoringObserver, monitoringObserver ?? fakeMonitoringObserver);
         RuleFor(fake => fake.MonitoringObserverId, monitoringObserver?.Id ?? fakeMonitoringObserver.Id);
+        RuleFor(fake => fake.IsCompleted, isCompleted ?? true);
+        RuleFor(fake => fake.IsDeleted, isDeleted ?? false);
     }
 }

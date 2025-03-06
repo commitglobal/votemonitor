@@ -37,7 +37,7 @@ public class DeleteEndpointTests
         {
             ElectionRoundId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).DeleteAsync(form);
@@ -61,7 +61,7 @@ public class DeleteEndpointTests
         {
             ElectionRoundId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<PollingStationInformationForm>());

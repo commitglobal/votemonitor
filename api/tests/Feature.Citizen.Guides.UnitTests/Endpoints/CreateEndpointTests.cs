@@ -61,7 +61,7 @@ public class CreateEndpointTests
             Attachment = FakeFormFile.New().HavingFileName(fileName).Please(),
             GuideType = CitizenGuideType.Document
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -91,7 +91,7 @@ public class CreateEndpointTests
             Title = "my citizen guide",
             Attachment = FakeFormFile.New().Please()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -127,7 +127,7 @@ public class CreateEndpointTests
             GuideType = CitizenGuideType.Document
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -162,7 +162,7 @@ public class CreateEndpointTests
             Text = guideText,
             GuideType = CitizenGuideType.Text
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         _htmlStringSanitizer

@@ -29,7 +29,8 @@ public class QuickReportAttachmentConfiguration : IEntityTypeConfiguration<Quick
             .HasMaxLength(256)
             .IsRequired();
 
-        builder.Property(x => x.IsDeleted);
+        builder.Property(x => x.IsDeleted).IsRequired();
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

@@ -30,7 +30,7 @@ public class GetEndpointTests
             ElectionRoundId = fakeNote.ElectionRoundId,
             Id = fakeNote.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<IncidentReportNoteModel>>();
@@ -51,7 +51,7 @@ public class GetEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

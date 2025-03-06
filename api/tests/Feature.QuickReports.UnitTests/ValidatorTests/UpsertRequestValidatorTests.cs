@@ -50,7 +50,7 @@ public class UpsertRequestValidatorTests
     public void Validation_ShouldFail_When_QuickReportLocationType_Empty()
     {
         // Arrange
-        var request = new Upsert.Request { QuickReportLocationType = default! };
+        var request = new Upsert.Request { QuickReportLocationType = null! };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -63,7 +63,7 @@ public class UpsertRequestValidatorTests
     public void Validation_ShouldFail_When_Title_Empty()
     {
         // Arrange
-        var request = new Upsert.Request { Title = default! };
+        var request = new Upsert.Request { Title = null! };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -76,7 +76,7 @@ public class UpsertRequestValidatorTests
     public void Validation_ShouldFail_When_Description_Empty()
     {
         // Arrange
-        var request = new Upsert.Request { Description = default! };
+        var request = new Upsert.Request { Description = null! };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -113,7 +113,8 @@ public class UpsertRequestValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyNullableGuidTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_QuickReportLocationType_VisitedPollingStation_And_PollingStationId_Empty(Guid? pollingStationId)
+    public void Validation_ShouldFail_When_QuickReportLocationType_VisitedPollingStation_And_PollingStationId_Empty(
+        Guid? pollingStationId)
     {
         // Arrange
         var request = new Upsert.Request
@@ -131,7 +132,8 @@ public class UpsertRequestValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_QuickReportLocationType_OtherPollingStation_And_PollingStationDetails_Empty(string? pollingStationDetails)
+    public void Validation_ShouldFail_When_QuickReportLocationType_OtherPollingStation_And_PollingStationDetails_Empty(
+        string? pollingStationDetails)
     {
         // Arrange
         var request = new Upsert.Request
@@ -148,7 +150,8 @@ public class UpsertRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_QuickReportLocationType_OtherPollingStation_And_PollingStationDetails_ExceedsLimit()
+    public void
+        Validation_ShouldFail_When_QuickReportLocationType_OtherPollingStation_And_PollingStationDetails_ExceedsLimit()
     {
         // Arrange
         var request = new Upsert.Request
@@ -166,6 +169,32 @@ public class UpsertRequestValidatorTests
 
 
     [Fact]
+    public void Validation_ShouldPass_When_LastUpdatedAt_Null()
+    {
+        // Arrange
+        var request = new Upsert.Request { LastUpdatedAt = null };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.LastUpdatedAt);
+    }
+
+    [Fact]
+    public void Validation_ShouldFail_When_LastUpdatedAt_NotUtc()
+    {
+        // Arrange
+        var request = new Upsert.Request { LastUpdatedAt = new DateTime(2025, 04, 20, 06, 9, 00, DateTimeKind.Local) };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt);
+    }
+
+    [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
@@ -176,7 +205,8 @@ public class UpsertRequestValidatorTests
             Id = Guid.NewGuid(),
             Title = "some title",
             Description = "some description",
-            QuickReportLocationType = QuickReportLocationType.NotRelatedToAPollingStation
+            QuickReportLocationType = QuickReportLocationType.NotRelatedToAPollingStation,
+            LastUpdatedAt = DateTime.UtcNow,
         };
 
         // Act

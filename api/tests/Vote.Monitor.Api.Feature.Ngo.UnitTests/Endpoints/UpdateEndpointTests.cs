@@ -16,7 +16,7 @@ public class UpdateEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -44,7 +44,7 @@ public class UpdateEndpointTests
 
         // Act
         var request = new Request { Id = ngo.Id, Name = "ExistingName" };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -68,7 +68,7 @@ public class UpdateEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid(), Name = "updatedName" };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         ngo.Received(1).UpdateDetails("updatedName");

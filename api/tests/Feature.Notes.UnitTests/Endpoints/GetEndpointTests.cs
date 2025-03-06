@@ -50,7 +50,7 @@ public class GetEndpointTests
             ObserverId = fakeMonitoringObserver.Id,
             Id = noteId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<NoteModel>>();
@@ -76,7 +76,7 @@ public class GetEndpointTests
             ObserverId = fakeMonitoringObserver.Id,
             Id = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

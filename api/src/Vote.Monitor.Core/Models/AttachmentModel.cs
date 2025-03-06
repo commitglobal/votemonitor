@@ -1,16 +1,16 @@
 ﻿namespace Vote.Monitor.Core.Models;
 
-public class AttachmentModel
+public record AttachmentModel
 {
-    public Guid SubmissionId { get; set; }
-    public Guid QuestionId { get; set; }
-    public Guid MonitoringObserverId { get; set; }
-    public string FilePath { get; set; }
-    public string UploadedFileName { get; set; }
-    public string FileName { get; set; }
-    public string MimeType { get; set; }
-    public string PresignedUrl { get; set; }
-    public int UrlValidityInSeconds { get; set; }
+    public Guid SubmissionId { get; init; }
+    public Guid QuestionId { get; init; }
+    public Guid MonitoringObserverId { get; init; }
+    public string FilePath { get; init; }
+    public string UploadedFileName { get; init; }
+    public string FileName { get; init; }
+    public string MimeType { get; init; }
+    public string PresignedUrl { get; init; }
+    public int UrlValidityInSeconds { get; init; }
 
-    public DateTime TimeSubmitted { get; set; }
+    public DateTime TimeSubmitted { get; init; }
 }

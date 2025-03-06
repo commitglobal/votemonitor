@@ -52,7 +52,7 @@ public class DeleteEndpointTests
             ObserverId = fakeMonitoringObserver.Id,
             Id = attachmentId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -77,7 +77,7 @@ public class DeleteEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -92,14 +92,14 @@ public class DeleteEndpointTests
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
-
+        var fakeMonitoringObserverId = Guid.NewGuid();
+        
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _monitoringObserverRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(fakeMonitoringObserver);
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverIdSpecification>())
+            .Returns(fakeMonitoringObserverId);
 
         _repository
             .GetByIdAsync(Arg.Any<Guid>())
@@ -109,9 +109,9 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            ObserverId = fakeMonitoringObserver.Id
+            ObserverId = fakeMonitoringObserverId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

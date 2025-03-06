@@ -29,7 +29,7 @@ public class CreateEndpointTests
             StartDate = startDate,
             CountryId = CountriesList.MD.Id
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
@@ -61,7 +61,7 @@ public class CreateEndpointTests
         // Act
         var request = new Create.Request
             { Title = "a title", EnglishTitle = "an english title", StartDate = DateOnly.MinValue };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -88,7 +88,7 @@ public class CreateEndpointTests
             StartDate = DateOnly.MinValue,
             CountryId = CountriesList.MD.Id
         };
-        await endpoint.ExecuteAsync(request, default);
+        await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await psiFormRepository.Received(1)

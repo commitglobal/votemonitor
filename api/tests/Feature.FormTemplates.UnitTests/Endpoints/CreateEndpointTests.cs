@@ -28,7 +28,7 @@ public class CreateEndpointTests
             Languages = [LanguagesList.RO.Iso1],
             DefaultLanguage = LanguagesList.RO.Iso1
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository

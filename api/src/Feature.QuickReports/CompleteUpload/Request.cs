@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Feature.QuickReports.Complete;
+namespace Feature.QuickReports.CompleteUpload;
 
 public class Request
 {

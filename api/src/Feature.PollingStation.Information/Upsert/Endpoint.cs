@@ -4,6 +4,7 @@ using Feature.PollingStation.Information.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Mappers;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -19,7 +20,8 @@ public class Endpoint(
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<PollingStationInformationForm> formRepository,
     VoteMonitorContext context,
-    IAuthorizationService authorizationService)
+    IAuthorizationService authorizationService,
+    ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
@@ -83,14 +85,14 @@ public class Endpoint(
             }
 
             pollingStationInformation = form.CreatePollingStationInformation(
-                req.ObserverId,
                 pollingStation,
                 monitoringObserver,
                 req.ArrivalTime,
                 req.DepartureTime,
                 answers,
                 observationBreaks,
-                req.IsCompleted);
+                req.IsCompleted,
+                req.LastUpdatedAt ?? timeProvider.UtcNow);
         }
         else
         {
@@ -99,7 +101,8 @@ public class Endpoint(
                 req.ArrivalTime,
                 req.DepartureTime,
                 observationBreaks,
-                req.IsCompleted);
+                req.IsCompleted,
+                req.LastUpdatedAt ?? timeProvider.UtcNow);
         }
 
         await context
@@ -121,8 +124,7 @@ public class Endpoint(
                 DepartureTime = inserting.DepartureTime,
                 Answers = inserting.Answers,
                 Breaks = inserting.Breaks,
-                CreatedOn = existing.CreatedOn,
-                LastModifiedOn = DateTime.UtcNow
+                LastUpdatedAt = inserting.LastUpdatedAt
             })
             .RunAsync(ct);
 

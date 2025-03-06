@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
-namespace Feature.QuickReports.Complete;
+namespace Feature.QuickReports.CompleteUpload;
 
 public class Endpoint(
     IAuthorizationService authorizationService,

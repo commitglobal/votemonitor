@@ -31,7 +31,7 @@ public class DuplicateEndpointTests
         // Act
         var request = new Duplicate.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -55,7 +55,7 @@ public class DuplicateEndpointTests
             NgoId = Guid.NewGuid(),
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -79,7 +79,7 @@ public class DuplicateEndpointTests
         var request = new Duplicate.Request { Id = Guid.NewGuid() };
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

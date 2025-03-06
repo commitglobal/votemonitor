@@ -16,7 +16,7 @@ public class ArchiveEndpointTests
 
         // Act
         var request = new Archive.Request { Id = electionRound.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         electionRound
@@ -38,7 +38,7 @@ public class ArchiveEndpointTests
 
         // Act
         var request = new Archive.Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

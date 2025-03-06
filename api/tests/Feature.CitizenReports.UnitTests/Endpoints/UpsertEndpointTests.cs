@@ -38,7 +38,7 @@ public class UpsertEndpointTests
             CitizenReportId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -66,7 +66,7 @@ public class UpsertEndpointTests
             CitizenReportId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -110,7 +110,7 @@ public class UpsertEndpointTests
             ]
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).UpdateAsync(citizenReport);
@@ -160,7 +160,7 @@ public class UpsertEndpointTests
         };
 
         // Act
-        Func<Task> act = () => _endpoint.ExecuteAsync(request, default);
+        Func<Task> act = () => _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var exception = await act.Should().ThrowAsync<ValidationFailureException>();
@@ -208,7 +208,7 @@ public class UpsertEndpointTests
         };
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository

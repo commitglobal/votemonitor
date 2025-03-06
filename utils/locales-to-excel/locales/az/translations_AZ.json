@@ -1,810 +1,852 @@
 {
-    "common": {
-        "skip": "Növbəti",
-        "search": "Axtar",
-        "loading": "Yüklənir",
-        "status": {
-            "completed": "Yerinə yetirildi",
-            "in_progress": "Davam edir",
-            "not_started": "Başlamayıb",
-            "marked_as_completed": "Yerinə yetirilmək üçün qeyd olunub"
-        },
-        "forms": {
-            "mark_as_done": "Formanı doldurulmuş olaraq qeyd edin",
-            "mark_as_in_progress": "Formanı hazırda yerinə yetirilən kimi qeyd edin"
-        },
-        "cancel": "Ləğv etmək",
-        "save": "Yaddaşa almaq",
-        "no_data": "Məlumat tapılmadı",
-        "select": "İzləmək",
-        "done": "Yerinə yetirildi",
-        "ok": "Bəli"
+  "common": {
+    "skip": "Növbəti",
+    "search": "Axtar",
+    "loading": "Yüklənir",
+    "status": {
+      "completed": "Yerinə yetirildi",
+      "in_progress": "Davam edir",
+      "not_started": "Başlamayıb",
+      "marked_as_completed": "Yerinə yetirilmək üçün qeyd olunub"
     },
-    "languages": {
-        "ro": "Rumın dili",
-        "en": "İngilis dili",
-        "pl": "Polyak dili",
-        "bg": "Bolqar dili",
-        "sr": "Serb dili",
-        "ka": "Gürcü dili",
-        "hy": "Erməni dili",
-        "ru": "Rus dili",
-        "az": "Azərbaycan dili"
+    "forms": {
+      "mark_as_done": "Formanı doldurulmuş olaraq qeyd edin",
+      "mark_as_in_progress": "Formanı hazırda yerinə yetirilən kimi qeyd edin"
     },
-    "onboarding": {
-        "language": {
-            "heading": "Dil seç",
-            "description": "Seçdiyiniz dil sizin \naplikasiyanın əsas dili olacaq və istənilən zaman  aplikasiyanın  “More” bölməsindən  dəyişə bilər\n",
-            "save": "İzlənilənin aktivləşdirilməsi"
-        },
-        "polling_stations": {
-            "heading": "Seçki məntəqələrində müşahidəçilik",
-            "description": "Və real vaxtda sizin qeyri-hökumət təşkilatı tərəfindən əvvəlcədən tərtib edilmiş formalarda bütün seçki prosesini  təsvir edin."
-        },
-        "forms": {
-            "heading": "Müşahidəçi formalarını doldurun",
-            "description": "Və monitorinqin hər bir mərhələsində onların tərəqqisinə nəzər yetirin"
-        },
-        "media": {
-            "heading": "Qeyd və ya media fayllar əlavə edin",
-            "description": "Əgər siz izlədiyiniz cavabı əlavə olaraq təsdiq edəcək hansısa problem görübsünüzsə",
-            "save": "Appa keçid"
-        }
+    "cancel": "Ləğv etmək",
+    "save": "Yaddaşa almaq",
+    "no_data": "Məlumat tapılmadı",
+    "select": "İzləmək",
+    "done": "Yerinə yetirildi",
+    "ok": "Bəli"
+  },
+  "languages": {
+    "ro": "Rumın dili",
+    "en": "İngilis dili",
+    "pl": "Polyak dili",
+    "bg": "Bolqar dili",
+    "sr": "Serb dili",
+    "ka": "Gürcü dili",
+    "hy": "Erməni dili",
+    "ru": "Rus dili",
+    "az": "Azərbaycan dili"
+  },
+  "onboarding": {
+    "language": {
+      "heading": "Dil seç",
+      "description": "Seçdiyiniz dil sizin \naplikasiyanın əsas dili olacaq və istənilən zaman  aplikasiyanın  “More” bölməsindən  dəyişə bilər\n",
+      "save": "İzlənilənin aktivləşdirilməsi"
     },
-    "select_app_mode": {
-        "heading": "Aplikasiya rejimi seçin",
-        "description": "Siz seçki prosesini akkreditasiyadan keçmiş müşahidəçi və ya sadəcə olaraq ədalətli və demokratik seçkilərə dəstək verməkdə maraqlı olan vətəndaş kimi müşahidə edə bilərsiniz.",
-        "accredited_observer": {
-            "title": "Vote Monitor - akreditasiyadan keçmiş müşahidəçilər üçün",
-            "description": "Mən akkreditə olunmuş müstəqil müşahidəçiyəm və seçki prosesini müşahidə etmək üçün QHT tərəfindən dəvət olunmuşam. **"
-        },
-        "citizen": {
-            "title": "Vətəndaşlar üçün Səs Monitoru",
-            "description": "Mən vətəndaşam və seçki kampaniyası zamanı və ya seçki günü gördüyüm seçki pozuntuları barədə məlumat vermək istəyirəm."
-        },
-        "helper": "**Akkreditasiya olunmuş müşahidəçi kimi siz istənilən vaxt proqramın menyusundan Vətəndaş rejiminə keçə biləcəksiniz.",
-        "continue": "Davam et"
+    "polling_stations": {
+      "heading": "Seçki məntəqələrində müşahidəçilik",
+      "description": "Və real vaxtda sizin qeyri-hökumət təşkilatı tərəfindən əvvəlcədən tərtib edilmiş formalarda bütün seçki prosesini  təsvir edin."
     },
-    "select_election_event": {
-        "heading": "Mövcud seçki tədbirləri",
-        "description": "Hesabat təqdim etmək istədiyiniz tədbiri seçin:",
-        "continue": "Davam et",
-        "empty_description": "Hal-hazırda bir vətəndaş kimi insidentlər barədə məlumat verə biləcəyiniz aktiv seçki tədbirləri yoxdur. Tədbir mövcud olduqdan sonra onu bu bölmədə görəcəksiniz.",
-        "error_description": "Mövcud seçki tədbirləri əldə edilərkən xəta baş verdi. Yenidən cəhd edin.",
-        "retry": "Yenidən cəhd edin"
+    "forms": {
+      "heading": "Müşahidəçi formalarını doldurun",
+      "description": "Və monitorinqin hər bir mərhələsində onların tərəqqisinə nəzər yetirin"
     },
-    "drawer": {
-        "report_as": "{{value}} olaraq bildirin",
-        "citizen": "vətəndaş",
-        "accredited_observer": "akkreditə olunmuş müşahidəçi"
-    },
-    "citizen_report_issue": {
-        "header_title": "Problemi bildirin",
-        "description": "Bir vətəndaş kimi siz aşağıdakı siyahıdan hesabat formasını doldurmaqla seçki ilə bağlı problem barədə məlumat verə bilərsiniz.",
-        "empty_forms": "Hesabat formaları Səs Monitoru komandası onları sistemdə dərc etdikdən sonra burada görünəcək.",
-        "error_message": "Hesabat formalarını əldə edərkən xəta baş verdi. Yenidən cəhd edin.",
-        "retry": "Yenidən cəhd edin",
-        "info_modal": {
-            "p1": "Vote Monitor Citizen vasitəsilə təqdim olunan hesabatlar seçki hadisəsini izləyən QHT-lər tərəfindən təhlil ediləcək və seçki müşahidəsi hesabatlarına daxil edilə bilər. Bəzi hallarda gələcək seçki proseslərini təkmilləşdirmək üçün hesabatlarınız seçkilərin təşkilinə cavabdeh olan qurumlara göndərilə bilər.",
-            "p2": "Nəzərə alın ki, bu ərizə vasitəsilə hesabatın təqdim edilməsi seçkilərin təşkilinə cavabdeh olan qurumlara edilən rəsmi şikayət sayılmır.",
-            "ok": "OK"
-        }
-    },
-    "citizen_form": {
-        "review": {
-            "heading": "Hesabatınızı nəzərdən keçirin",
-            "send": "Hesabat göndərin",
-            "sending_report": "Hesabatınızı göndəririk. Zəhmət olmasa gözləyin..."
-        },
-        "progress_bar_label": "Formanın tərəqqisi",
-        "success": {
-            "title": "Hesabatınız uğurla göndərildi!",
-            "description": "Vətəndaş fəallığınıza görə təşəkkür edirik. Cavablarınızın surətini e-poçtunuza göndərmək seçiminiz var və ya əsas səhifəyə qayıda bilərsiniz.",
-            "back_to_main": "Əsas səhifəyə qayıt",
-            "send_copy": "Mənə surətini göndər"
-        },
-        "error": "Rəyinizi göndərərkən problem baş verdi.",
-        "email_copy": {
-            "title": "Formanın surətini almaq üçün e-poçtunuzu daxil edin",
-            "description": "Formanızın surətini almaq üçün lütfən aşağıda e-poçt ünvanınızı daxil edin. Bu e-poçt ünvanı yalnız nüsxəni sizə göndərmək üçün istifadə ediləcək və saxlanılmayacaq və başqa məqsədlər üçün istifadə edilməyəcək.",
-            "placeholder": "E-poçtunuzu daxil edin",
-            "required": "E-poçt məcburidir",
-            "invalid": "E-poçt formatı etibarlı deyil",
-            "cancel": "Ləğv et",
-            "send": "Göndər"
-        },
-        "copy_sent": {
-            "title": "Surətiniz göndərildi",
-            "description": "Surətiniz dərhal gəlməlidir, lakin nadir hallarda onun işlənməsi bir neçə dəqiqə çəkə bilər. Bu arada əsas səhifəyə qayıda bilərsiniz."
-        },
-        "unsaved_changes_dialog": {
-            "title": "Saxlanmamış dəyişiklikləriniz var",
-            "description": "Bu səhifəni tərk etmək forma üzrə bütün irəliləyişlərinizin itirilməsinə səbəb olacaq. Geri qayıtmaq istədiyinizə əminsiniz?",
-            "actions": {
-                "discard": "Geri qayıt",
-                "save": "Burada qalın"
-            }
-        }
-    },
-    "login": {
-        "disclaimer": {
-            "paragraph1": "Xahiş edirik, nəzərə alasınız ki, əgər siz ölkənizdə müşahidəni həyata keçirən təşkilat tərəfindən akreditasiyalı müstəqil müşahidəçi deyilsinizsə siz Vote Monitor aplikasiyadan istifadə edə bilməyəcəksiniz.",
-            "paragraph2": "Xahiş edirik, atılması lazım olan növbəti addımlar üçün belə təşkilatlara müraciət edin ki, seçki müşahidəçisi ola biləsiniz və ya əlavə məlumat üçün sonrakı ünvan vasitəsilə bizimlə əlaqə saxlayasanız:",
-            "email": "info@commitglobal.org"
-        },
-        "heading": "Avtorizasiya",
-        "paragraph": "Xahiş edirik, müşahidəçi olaraq qeydiyyatdan keçdiyiniz E-poçt ünvanından istifadə edəsiniz",
-        "form": {
-            "email": {
-                "label": "El-poçt*",
-                "placeholder": "El-Poçt",
-                "required": "E-poçtu qeyd etmək mütləqdir",
-                "pattern": "Yanlış E-poçt formatı"
-            },
-            "password": {
-                "label": "Parol*",
-                "placeholder": "Parol",
-                "required": "Parolu qeyd etmək mütləqdir"
-            },
-            "submit": {
-                "save": "Avtorizasiya",
-                "loading": "Avtorizasiya..."
-            },
-            "errors": {
-                "invalid_credentials": "E-poçt və ya parol səhvdir. Xahiş edirik yenidən cəhd edin",
-                "offline": "Avtorizasiya üçün internet bağlantısı tələb olunur"
-            }
-        },
-        "actions": {
-            "forgot_password": "Parolu unutmusan?"
-        },
-        "email_toast": "E-poçt ünvanı kopyalandı"
-    },
-    "forgot_password": {
-        "header": {
-            "title": "Parolun unudulması"
-        },
-        "heading": "Parolu unutmusan?",
-        "paragraph": "Xahiş edirik, hesabınızla əlaqəli E-poçt ünvanını göstərin və biz sizə parolunuzu bərpa etmək üçün link göndərəcəyik.",
-        "form": {
-            "email": {
-                "label": "E-poçt*",
-                "placeholder": "E-poçt",
-                "required": "E-poçtu qeyd etmək mütləqdir",
-                "pattern": "Yanlış E-poçt formatı"
-            },
-            "submit": {
-                "loading": "Göndərmək...",
-                "save": "Göndərmək"
-            },
-            "errors": {
-                "invalid_email": "E-poçt sistemdə qeydiyyat olunmayıb. Xahiş edirik yenidən cəhd edin"
-            }
-        },
-        "confirmation": {
-            "heading": "E-poçt göndərildi",
-            "paragraph": "Elektron poçtunuzu yoxlayın və bizim göndərdiyimiz bildirişi açın. Əgər bildirişi almayıbsınızsa xahiş edirik, \"Spam\" papkasını da yoxlayın.",
-            "confirm": "Avtorizasiyaya qayıtmaq"
-        }
-    },
-    "about_app": {
-        "title": "Vote Monitor haqqında",
-        "title_observer": "Vote Monitor Observer haqqında",
-        "general": "Vote Monitor müstəqil müşahidəçilər üçündür və seçki monitorinqini həyata keçirən təşkilat üçün ayrılmış rəqəmsal vasitədir. Vote Monitor Code for Romania/Commit Global tərəfindən yaradılıb və  idarə edilir.",
-        "purpose": "Aplikasiya müstəqil müşahidəçilərə seçki məntəqələrini müşahidə etməyə və konkret seçki turu üçün real vaxt rejimində səsvermə prosesini sənədləşdirməyə kömək edir. Mobil aplikasiya əsasında toplanmış bütün məlumatlar real vaxt rejimində təşkilatlara göndərilir ki, onlar saxtakarlıq və ya digər pozuntuları göstərə biləcək mümkün qırmızı bayraqları müəyyən edə bilsinlər. Yekun nəticədə, məqsədimiz səsvermə prosesinin aydın, sadə və real mənzərəsini təqdim etməkdir.",
-        "app_provides": {
-            "paragraph": "Aplikasiya müşahidəçini təmin edir:",
-            "item1": "Müxtəlif ziyarət edilmiş seçki məntəqələrini idarə etmək vasitəsilə",
-            "item2": "Qeydiyyatdan keçmiş müşahidəçi təşkilatlar tərəfindən yaradılmış formalar vasitəsilə səsvermə prosesi monitorinqinin effektiv üsulu ilə",
-            "item3": "Standart formalardan əlavə insidentlərin sürətli göndərilməsi vasitəsi ilə"
-        },
-        "usage": "Aplikasiyadan dünyanın istənilən ölkəsində hər hansı tipli seçkilər üçün istifadə etmək mümkündür. 2016-cı ildən Rumınya və Polşada ondan istifadə olunur.",
-        "version": "Vote Monitor versiyası {{value}}"
-    },
-    "about_app_citizen": {
-        "title": "Vote Monitor haqqında",
-        "title_observer": "Vote Monitor Citizen haqqında",
-        "p1": "Vote Monitor Citizen gündəlik vətəndaşlara seçki dövründə rastlaşdıqları hər hansı pozuntular, o cümlədən təşviqat fəaliyyəti, seçki məntəqələrinin fəaliyyəti və səsvermə günü prosedurları barədə məlumat verməklə seçkilərin monitorinqində fəal iştirak etməyə imkan verir.",
-        "p2": "Vote Monitor Citizen ilkin olaraq Code for Romania/Commit Global tərəfindən seçkilərin monitorinqi səylərində QHT-lərlə birlikdə işləyən müstəqil müşahidəçilər üçün hazırlanmış Səs Monitoru proqramının əlavəsidir.",
-        "p3": "İstifadəçilər real vaxt rejimində seçki prosesində iştirak edən qeyri-hökumət təşkilatları tərəfindən təhlil ediləcək hesabatlar təqdim edə bilərlər. Bu hesabatlar təfərrüatlı müşahidə sənədlərinə töhfə verə bilər və bəzi hallarda gələcək seçkiləri təkmilləşdirmək üçün müvafiq qurumlara göndərilə bilər.",
-        "p4": "Vətəndaş hesabatları şəffaflığın təşviqində mühüm rol oynasa da, nəzərə alın ki, bu proqram vasitəsilə hesabat təqdim etmək seçkilərin təşkilinə cavabdeh olan qurumlara rəsmi şikayət sayılmır.",
-        "version": "Vote Monitor versiyası {{value}}"
-    },
-    "loading_screen": {
-        "heading": "Yüklənir...",
-        "paragraph": "Biz məlumatları hazırlayırıq, xahiş edirik gözləyin!"
-    },
-    "tabs": {
-        "observation": "Müşahidə",
-        "quick_report": "Hesabat",
-        "guides": "Bələdçilər",
-        "inbox": "Gələnlər qutusu",
-        "more": "Daha artıq"
-    },
-    "add_polling_station": {
-        "title": "Seçki məntəqəsi əlavə et",
-        "progress": {
-            "location": "Seçki məntəqəsini {{value}}-dən əlavə et"
-        },
-        "actions": {
-            "next_step": "Növbəti addım",
-            "back": "Geri",
-            "finalize": "Başa vurmaq"
-        },
-        "error": "Seçki məntəqələrinin yüklənməsi zamanı xəta"
-    },
-    "observation": {
-        "title": "Seçki məntəqələrini müşahidə etmək",
-        "no_election_round": {
-            "heading": "Hələ müşahidəyə ehtiyac duyan seçki tədbiri yoxdur",
-            "paragraph": "Təşkilatınız sizi seçki tədbirinə əlavə etdikdən sonra aplikasiyadan istifadə edə biləcəksiniz"
-        },
-        "no_visited_polling_stations": {
-            "heading": "Seçki məntəqələri hələ ziyarət edilməyib",
-            "paragraph": "Müşahidəçi formalarını doldurmazdan əvvəl ilk seçki məntəqəsini göstərin",
-            "add": "İlk seçki məntəqənizi əlavə edin"
-        },
-        "my_polling_stations": {
-            "heading": "Mənim seçki məntəqələrim",
-            "paragraph": "Forma cavablarını və ya səsvermə məntəqəsi məlumatını yenidən görmək istəyirsinizsə, seçki məntəqələrini çevirə bilərsiniz.",
-            "add": "Yeni seçki məntəqəsi əlavə edin."
-        },
-        "polling_stations_information": {
-            "heading": "Seçki məntəqəsi haqqında məlumat",
-            "time_select": {
-                "not_defined": "Müəyyən edilməyib",
-                "arrival_time": "Giriş vaxtı",
-                "departure_time": "Çıxış vaxtı",
-                "save": "Yerinə yetirilib",
-                "error": {
-                    "arrival_first": "Xahiş edirik, ilk əvvəl giriş vaxtını seçəsiniz",
-                    "later_departure": "Xahiş edirik, giriş vaxtından gec olan çıxış vaxtını seçəsiniz",
-                    "earlier_arrival": "Xahiş edirik, çıxış vaxtından əvvəl olan giriş vaxtını seçəsiniz",
-                    "server": "Biz məlumatı serverə göndərə bilmədik"
-                }
-            },
-            "observation_time": {
-                "observation_time": "Müşahidə vaxtı",
-                "not_defined": "Müəyyən edilməyib",
-                "no_of_breaks": "{{value}} fasilə",
-                "one_break": "{{value}} fasilə",
-                "arrival_and_departure": "Gəliş və gediş vaxtı",
-                "arrival_time": "Gəliş vaxtı",
-                "departure_time": "Gediş vaxtı",
-                "departure_after_arrival": "Gediş vaxtı gəliş vaxtından sonra olmalıdır",
-                "select_arrival_time": "Gəliş vaxtını seçin",
-                "select_departure_time": "Gediş vaxtını seçin",
-                "add_break": "Müşahidəyə yeni fasilə əlavə edin",
-                "break": "fasilə {{value}} ",
-                "start_time": "Başlama vaxtı",
-                "select_start_time": "Başlama vaxtını seçin",
-                "end_time": "Bitmə vaxtı",
-                "select_end_time": "Bitmə vaxtını seçin",
-                "undefined_date": "Gün/Ay/İl",
-                "undefined_time": "HH:MM",
-                "save": "Müşahidə vaxtına qənaət edin",
-                "clear": "Müşahidə müddətini təmizləyin",
-                "confirmation_modals": {
-                    "clear": {
-                        "title": "Müşahidə müddətini təmizləyin",
-                        "description": "Bu əməliyyat gəliş və gediş vaxtınızı, o cümlədən bu seçki məntəqəsi üçün indiyə qədər daxil etdiyiniz bütün fasilələri siləcək. Gözlənilməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl vaxtları yoxladığınızdan əmin olun.",
-                        "actions": {
-                            "cancel": "Ləğv et",
-                            "clear": "Müşahidə müddətini təmizləyin"
-                        }
-                    },
-                    "delete": {
-                        "title": "Fasiləni silin",
-                        "description": "Bu hərəkət fasilənizi siləcək. Gözlənilməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl vaxtları yoxladığınızdan əmin olun.",
-                        "actions": {
-                            "cancel": "Ləğv et",
-                            "delete": "Fasiləni silin"
-                        }
-                    },
-                    "unsaved_changes": {
-                        "title": "Müşahidə vaxtına edilən dəyişiklikləri yadda saxlayın",
-                        "description": "Daxil etdiyiniz müşahidə vaxtı ilə bağlı yadda saxlanmamış dəyişiklikləriniz var. Səhifəni tərk etməzdən əvvəl dəyişikliklərinizi yadda saxlamaq istəyirsiniz?",
-                        "actions": {
-                            "discard": "Atın",
-                            "save": "Dəyişiklikləri yadda saxlayın"
-                        }
-                    },
-                    "unable_to_save": {
-                        "title": "Müşahidə Vaxtına qənaət etmək mümkün deyil",
-                        "p1": "Daxil etdiyiniz vaxtlar fasilə dövrləri ilə gəliş/gediş vaxtları arasında ziddiyyət olduğu üçün yadda saxlanıla bilməz.",
-                        "p2": "Zəhmət olmasa əmin olun ki, fasilə dövrləri gəliş və gediş müşahidə vaxtları ilə müəyyən edilmiş vaxt intervalını keçməməlidir. Zəhmət olmasa vaxtları nəzərdən keçirin və uyğun olaraq tənzimləyin.",
-                        "ok": "OK"
-                    }
-                }
-            },
-            "polling_station_form": {
-                "paragraph": "Xahiş edirik, seçki məntəqəsi haqqında bir neçə qısa suala cavab verəsinz.",
-                "form_details_button_label": "Seçki məntəqəsinin sualları",
-                "number_of_questions": "{{value}} Suallar",
-                "answer_questions": "Suallara cavab ver."
-            }
-        },
-        "forms": {
-            "heading": "Müşahidəçi formaları",
-            "list": {
-                "empty": "Təşkilatınız müşahidə formalarını sistemə yerləşdirəndə burada görünəcək",
-                "error": {
-                    "paragraph1": "Problem var!",
-                    "paragraph2": "Məlumatları əldə etmək alınmadı. Yenidən cəhd etmək üçün yenidən cəhd edin düyməsinə basın!",
-                    "retry": "Yenidən cəhd edin"
-                }
-            },
-            "select_language_modal": {
-                "header": "Forma üçün dil seçin",
-                "helper": "Seçilmiş forma bir neçə dildə əlçatan olacaq. Xahiş edirik, hansı dildə davam etmək istədiyinizi seçin.",
-                "error": "Xahiş edirik variantlardan birini seçin"
-            }
-        },
-        "options_menu": {
-            "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
-        }
-    },
-    "polling_station_information_form": {
-        "title": "Seçki məntəqəsinin məlumatı",
-        "submit": "Cavabların göndərilməsi",
-        "form": {
-            "max": "Daxil edilmiş mətn {{value}} simvoldan çox olmamalıdır",
-            "placeholder": "Xahiş edirik mətni daxil edin..."
-        },
-        "menu": {
-            "clear": "Formanı silin (bütün cavabların silinməsi)"
-        },
-        "warning_modal": {
-            "title": "Seçki məntəqəsinin məlumat formasının silinməsi",
-            "description": "Bu hərəkət formaya daxil edilmiş bütün cavabları siləcək. Xoşagəlməz məlumatın itirilməsini aradan qaldırmaq üçün xahiş edirik, bu hərəkəti yerinə yetirənə qədər formanı yoxlayın.",
-            "actions": {
-                "cancel": "Ləğv etmək",
-                "clear": "Formanın silinməsi (bütün cavabların silinməsi)"
-            }
-        },
-        "unsaved_changes_dialog": {
-            "title": "Formada dəyişikliklərin yadda saxlanılması",
-            "description": "Bu formada yadda saxlanmamış dəyişiklikləriniz var. Formadan çıxmazdan əvvəl dəyişikliklərinizi yadda saxlamaq istəyirsiniz?",
-            "actions": {
-                "discard": "Silmək ",
-                "save": "Dəyişiklikləri yaddaşa almaq"
-            }
-        }
-    },
-    "form_overview": {
-        "overview": {
-            "heading": "Formaya yenidən baxış",
-            "status": "Forma statusu",
-            "answered_questions": "Cavablandırılmış suallar",
-            "resume": "Formanı davam etdirmək",
-            "start_form": "Formaya başlamaq",
-            "progress": "İnkişaf"
-        },
-        "questions": {
-            "title": "Suallar",
-            "not_answered": "Cavab verilməyib",
-            "answered": "Cavab verilib",
-            "no_notes": "Əlavə edilmiş qeydləri əhatə etmir",
-            "notes": "Əlavə edilmiş qeydləri əhatə edir"
-        },
-        "attachments": {
-            "notes": "{{count}} Qeyd (lər)",
-            "media": "{{count}} Media fayllar"
-        },
-        "error": "Forma məlumatları yüklənərkən xəta baş verdi!",
-        "menu": {
-            "clear": "Formanın təmizlənməsi (bütün cavabların silinməsi)",
-            "change_language": "Dili dəyişmək"
-        },
-        "clear_answers_modal": {
-            "title": "Formanın təmizlənməsi {{value}}",
-            "description": {
-                "p1": "Bu əməliyyat formaya daxil edilmiş bütün cavabları (qeydlər və media faylları daxil olmaqla) siləcək. Bütün sualların statusu \"Cavabsız\" olaraq dəyişəcək.",
-                "p2": "Xoşagəlməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl formanı yoxlayın"
-            },
-            "actions": {
-                "clear": "Formanın təmizlənməsi",
-                "cancel": "Ləğv etmək"
-            }
-        }
-    },
-    "polling_station_form_wizard": {
-        "progress_bar": {
-            "label": "Formanın inkişafı",
-            "clear_answer": "Cavabın silinməsi"
-        },
-        "form": {
-            "min": "Sütun ən azı {{value}} simvol olmalıdır",
-            "max": "Sütunun maksimum {{value}} simvolu olmalıdır",
-            "required": "Bu sahə tələb olunur",
-            "date_placeholder": "Xahiş edirik tarixi qeyd edin",
-            "text_placeholder": "Xahiş edirik mətni qeyd edin"
-        },
-        "attachments": {
-            "heading": "Yüklənmiş media",
-            "loading": "Qoşma əlavə edilir…",
-            "error": "Qoşma göndərilərkən xəta baş verdi!",
-            "add": "Qeydlər və medianın əlavə edilməsi",
-            "menu": {
-                "add_note": "Qeydin əlavə edilməsi",
-                "load": "Qalereyadan yükləmə",
-                "take_picture": "Şəkil çəkdirmək",
-                "record_video": "Video yazmaq",
-                "upload_audio": "Audio faylın yüklənməsi"
-            },
-            "upload": {
-                "compressing": "Əlavənin sıxılması:",
-                "preparing": "Qoşma hazırlanır...",
-                "starting": "Yükləmə başlayır...",
-                "progress": "Yükləmə prosesi:",
-                "completed": "Yükləmə tamamlandı.",
-                "aborted": "Yükləmə dayandırıldı.",
-                "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır."
-            }
-        },
-        "notes": {
-            "heading": "Qeydlər ",
-            "add": {
-                "heading": "Qeydin əlavə edilməsi",
-                "form": {
-                    "input": {
-                        "placeholder": "Bu suala hər hansı müvafiq qeyd əlavə edin",
-                        "max": "Daxil edilmiş mətn 10.000 simvoldan çox olmamalıdır",
-                        "required": "Bu sütun məcburi deyil"
-                    }
-                }
-            },
-            "edit": {
-                "heading": "Qeydin redaktə edilməsi",
-                "delete": "Qeydin silinməsi"
-            },
-            "delete": {
-                "title": "Qeydin silinməsi",
-                "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
-                "actions": {
-                    "cancel": "Ləğv etmək",
-                    "delete": "Silmək"
-                }
-            }
-        },
-        "warning_modal": {
-            "question": {
-                "title": "{{value}} Sualın cavabının silinməsi",
-                "description": "Bu suala cavabın silinməsi onunla bağlı məlumatı (qeydlər və media fayllar daxil olmaqla), eləcə də bütün əlaqəli sualları həmişəlik siləcək. Sualların statusu \"Cavabsız\" olaraq dəyişəcək.",
-                "actions": {
-                    "cancel": "Ləğv etmək",
-                    "clear": "Cavabın silinməsi"
-                }
-            },
-            "attachment": {
-                "title": "Media faylın silinməsi",
-                "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
-                "actions": {
-                    "cancel": "Ləğv etmək",
-                    "clear": "Silmək"
-                }
-            },
-            "unsaved_answer": {
-                "title": "Sualdakı dəyişikliklərin yadda saxlanılması",
-                "description": "Bu sualda yadda saxlanmamış dəyişiklikləriniz var. Sualı tərk etməzdən əvvəl dəyişiklikləri yadda saxlamaq istəyirsiniz?",
-                "actions": {
-                    "cancel": "Təkzib etmək",
-                    "save": "Dəyişikliklərin yadda saxlanılması"
-                }
-            }
-        },
-        "error": "Sual ilə bağlı məlumatlar yüklənərkən xəta baş verdi!"
-    },
-    "manage_my_polling_stations": {
-        "empty": {
-            "title": "Hələlik heç bir seçki məntəqəsinə baş çəkilməyib"
-        },
-        "general_text": "Mənim seçki məntəqələrimin idarə edilməsi",
-        "ps_card": {
-            "header": "Seçki məntəqəsi #{{value}}",
-            "l1": "[Məkan L1]",
-            "l2": "[Məkan  L2]",
-            "l3": "[Məkan L3]",
-            "l4": "[Məkan L4]",
-            "l5": "[Məkan L5]",
-            "street": "Küçə",
-            "ps_number": "Seçki məntəqəsinin nömrəsi"
-        },
-        "warning_dialog": {
-            "title": "#{{value}} Seçki məntəqəsinin silinməsi",
-            "description": "Bu fəaliyyət bu seçki  məntəqəsini sizin ziyarət etdiyiniz məntəqələrin siyahısından siləcək. Onun yenidən əlavə olunması yeni seçki məntəqəsinin əlavə edilməsi funksiyası vasitəsilə mümkündür.",
-            "actions": {
-                "cancel": "Ləğv etmək",
-                "remove": "Silmək",
-                "loading": "Yüklənir..."
-            }
-        },
-        "removal_unallowed_dialog": {
-            "title": "#{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
-            "description": "Sizin siyahıdan seçki məntəqəsini çıxarmaq mümkün deyil. Çünki o sistemin sizin adınızla silə bilməyəcəyi məlumatları (Seçki məntəqəsinin məlumatı və ya formanın cavabları) əhatə edir. Əgər bu seçki məntəqəsini çıxarmaq istəyirsinizsə, xahiş edirik, əvvəl əliniz ilə seçki məntqəsinin məlumatını və cavabları təmizləyin, sonra yenidən cəhd edin."
-        },
-        "delete_success": "Seçki məntəqəsi uğurla silindi!",
-        "delete_error": "Seçki məntəqəsinə baş çəkmə silinərkən problem aşkarlandı. Xahiş edirik, yenidən cəhd edin.",
-        "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır."
-    },
-    "quick_report": {
-        "list": {
-            "title": "Pozuntu barədə sürətli bildiriş vermək",
-            "heading": "Mənim göndərdiyim pozuntular barədə sürətli bildirişlər",
-            "error": "Pozuntu barədə sürətli bildirişlərin yüklənməsi zamanı xəta baş verdi!",
-            "empty": "Əgər seçki məntəqəsinin daxilində və xaricində pozuntular qeydə alsanız, yaxud lazım olduğu halda,  təşkilata təcili bildriş göndərin",
-            "add": "Yeni pozuntu barədə təcili bildiriş",
-            "no_files": "Əlavə edilmiş fayllar yoxdur",
-            "attachment_one": "{{count}}Əlavə edilmiş fayl",
-            "attachment_other": "{{count}}Əlavə edilmiş fayl"
-        },
-        "attachments": {
-            "heading": "Yüklənmiş media",
-            "loading": "Qoşma əlavə edilir...",
-            "upload": {
-                "preparing": "Qoşma hazırlanır...",
-                "starting": "Yükləmə başlayır...",
-                "progress": "Yükləmə prosesi:",
-                "completed": "Yükləmə tamamlandı.",
-                "aborted": "Yükləmə dayandırıldı."
-            },
-            "error": "Qoşma göndərilərkən xəta baş verdi!"
-        },
-        "options_menu": {
-            "manage_my_polling_stations": "Mənim seçki məntəqəmin idarə edilməsi"
-        },
-        "info_modal": {
-            "p1": "Bu bölmədən siz seçki məntəqələrində və ya yaxın ərazilərdə müşahidə etdiyiniz hər hansı seçki pozuntusu barədə tez məlumat verə bilərsiniz.",
-            "p2": "Bu xüsusiyyət, təcili məsələlərin operativ şəkildə həllini təmin edərək, müntəzəm müşahidə formalarından kənarda təşkilatı dərhal xəbərdar etməyə imkan verir."
-        }
-    },
-    "report_new_issue": {
-        "title": "Yeni pozuntu barədə təcili bildiriş",
-        "upload": {
-            "compressing": "Əlavənin sıxılması:",
-            "preparing": "Qoşma hazırlanır...",
-            "starting": "Yükləmə başlayır...",
-            "progress": "Qoşmalar yüklənir:",
-            "completed": "Yükləmə tamamlandı.",
-            "aborted": "Yükləmə dayandırıldı.",
-            "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır."
-        },
-        "media": {
-            "heading": "Yüklənmiş media",
-            "add": "Media faylın əlavə edilməsi",
-            "error": "Əlavəni göndərən zaman xəta qeydə alındı!",
-            "menu": {
-                "load": "Qalereyadan yükləmə",
-                "take_picture": "Foto çəkmək",
-                "record_video": "Video çəkmək",
-                "upload_audio": "Audio faylın yüklənməsi"
-            }
-        },
-        "form": {
-            "polling_station_id": {
-                "label": "Seçki məntəqəsi*",
-                "placeholder": "Seçki məntəqəsini seçin",
-                "extra": "Xahiş edirik, burada bu seçki məntəqəsinə aid detalları qeyd edin (ünvan, ad, nömrə və s. kimi",
-                "required": "Bu sütun mütləqdir",
-                "options": {
-                    "other": "Başqa seçki məntəqəsi",
-                    "not_related": "Seçki məntəqəsi ilə əlaqədar deyil"
-                }
-            },
-            "incident_category": {
-                "label": "Hadisə kateqoriyası *",
-                "placeholder": "Kateqoriya",
-                "required": "Bu sütun mütləqdir",
-                "options": {
-                    "PhysicalViolenceIntimidationPressure": "Fiziki zorakılıq/hədələmə/təzyiq",
-                    "CampaigningAtPollingStation": "Seçki məntəqəsində təşviqat",
-                    "RestrictionOfObserversRights": "Müşahidəçinin/nümayəndənin/media hüquqların qeyri-qanuni məhdudlaşdırılması",
-                    "UnauthorizedPersonsAtPollingStation": "Səlahiyyətsiz şəxslərin seçki məntəqəsində olması",
-                    "ViolationDuringVoterVerificationProcess": "Seçicinin kimliyinin müəyyən edilməsi prosesində pozuntu",
-                    "VotingWithImproperDocumentation": "Qeyri-müvafiq sənəd ilə səs vermək",
-                    "IllegalRestrictionOfVotersRightToVote": "Seçicinin səsvermə hüququnun qeyri-qanuni məhdudlaşdırılması",
-                    "DamagingOrSeizingElectionMaterials": "Seçki materiallarına ziyan vurmaq/qaçırmaq",
-                    "ImproperFilingOrHandlingOfElectionDocumentation": "Seçki sənədlərinin qeyri-müvafiq şəkildə hazırlanması/doldurulması",
-                    "BallotStuffing": "Əlavə bülletenlərin qutuya atılması/saxtalaşdırma",
-                    "ViolationsRelatedToControlPaper": "Nəzarət vərəqi ilə əlaqədar pozuntular",
-                    "NotCheckingVoterIdentificationSafeguardMeasures": "İşarələmənin yoxlanmaması",
-                    "VotingWithoutVoterIdentificationSafeguardMeasures": "İşarlənmədən keçmədən səs vermək",
-                    "BreachOfSecrecyOfVote": "Səsvermənin gizliliyinin pozulması",
-                    "ViolationsRelatedToMobileBallotBox": "Daşınan seçki qutusu ilə əlaqədar pozuntular",
-                    "NumberOfBallotsExceedsNumberOfVoters": "Bülletenlərin sayı gələn seçicilərin sayından çoxdur",
-                    "ImproperInvalidationOrValidationOfBallots": "Bülletenin etibarsız olması/həqiqiliyinə səhv qərar verilməsi",
-                    "FalsificationOrImproperCorrectionOfFinalProtocol": "Yekun protokolun dəyişdirilməsi/saxtalaşdırılması",
-                    "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Yekun protokolun surətinin verilməməsi/natamam surətin verilməsi (Məlumat çatmır)",
-                    "ImproperFillingInOfFinalProtocol": "Yekun protokolun qeyri-müvafiq doldurulması",
-                    "ViolationOfSealingProceduresOfElectionMaterials": "Seçki materialının surğuclanma qaydasının pozulması",
-                    "ViolationsRelatedToVoterLists": "Seçicilər siyahısı ilə əlaqədar pozuntular",
-                    "Other": "Başqa"
-                }
-            },
-            "polling_station_details": {
-                "label": "Seçki məntəqəsinin detalları",
-                "placeholder": "Xahiş edirik, burada bu seçki məntəqəsinə aid detalları qeyd edin (ünvan, ad, nömrə və s. kimi",
-                "required": "Bu sütun mütləqdir",
-                "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
-            },
-            "issue_title": {
-                "label": "Pozuntunun başlığı",
-                "placeholder": "Pozuntunun başlığını yazın",
-                "required": "Pozuntunun başlığını yazmaq mütləqdir",
-                "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
-            },
-            "issue_description": {
-                "label": "Təsvir*",
-                "placeholder": "Xahiş edirik, vəziyyəti burada ətraflı şəkildə təsvir edəsiniz",
-                "required": "Pozuntunu təsvir etmək mütləqdir",
-                "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
-            },
-            "submit": "Göndərmək",
-            "clear": "Təmizləmək",
-            "loading": "İşlənir...",
-            "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
-        }
-    },
-    "report_details": {
-        "title": "Sürətli hesabat təfərrüatları",
-        "uploaded_media": "Yüklənmiş media",
-        "no_files": "Əlavə fayllar yoxdur",
-        "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
-    },
-    "guides": {
-        "title": "Bələdçilər",
-        "empty": {
-            "heading": "Bələdçi hələ əlavə edilməyib",
-            "paragraph": "Təşkilatınızdan bələdçi və resurslar əlinizdədir."
-        },
-        "list": {
-            "heading": "Bələdçilər",
-            "guide": {
-                "backup_title": "Sənəd",
-                "created_on": "Yaradılıb"
-            }
-        },
-        "options_sheet": {
-            "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
-        },
-        "info_modal": "Bu bölmədə, seçki proseslərini müşahidə etmək və müstəqil müşahidəçi kimi rastlaşdığınız hər hansı seçki problemləri və ya qanun pozuntuları barədə məlumat vermək üçün hazırlanmış əsas məlumat və resursların olmasını gözləyin."
-    },
-    "resources": {
-        "title": "Resurslar",
-        "info": "Bu bölmədə, seçki proseslərini müşahidə etmək və vətəndaş kimi qarşılaşdığınız hər hansı seçki problemi və ya qanun pozuntuları barədə məlumat vermək üçün hazırlanmış əsas məlumat və resursların olmasını gözləyin.",
-        "empty": {
-            "heading": "Hələ oxumaq üçün bələdçi yoxdur",
-            "paragraph": "Seçki proseslərini müşahidə etmək və bir vətəndaş kimi problemlərlə bağlı məlumat verməklə bağlı təlimatlar və resurslar sizin əlinizdədir."
-        },
-        "types": {
-            "Document": "Fayl növü pdf",
-            "Website": "Xarici URL",
-            "Text": "Tətbiq bələdçisində"
-        }
-    },
-    "inbox": {
-        "title": "Bildirişlər",
-        "empty": {
-            "heading": "Bildirişlər hələ qəbul edilməyib",
-            "paragraph": "Burada sizin təşkilatdan bildirişlər və xəbərdarlıqlar görünəcək"
-        },
-        "banner": " {{ngoName}}-dən bildirişlər",
-        "today": "Bu gün",
-        "your_organization": "Sizin təşkilat",
-        "menu": {
-            "manage_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
-        },
-        "info_modal": {
-            "p1": "Bu Gələnlər qutusunda sizi müşahidəçi kimi akkreditə etmiş QHT-dən canlı yeniləmələr və mesajlar alacaqsınız.",
-            "p2": "Müşahidə fəaliyyətinizə aid olan hər hansı yeni məlumat alıb-almadığınızı görmək üçün vaxtaşırı yoxlayın."
-        }
-    },
-    "updates": {
-        "title": "Yeniləmələr",
-        "empty": {
-            "heading": "Hələ yeniləmələr alınmayıb",
-            "paragraph": "Seçki dövrü ilə bağlı yeniliklər burada görünəcək."
-        },
-        "info_modal": {
-            "p1": "Bu bölmədə vətəndaş fəallığı ilə maraqlanan bir vətəndaş kimi sizin üçün uyğun olan seçki dövrü ilə bağlı Səs Monitorinqi qrupundan canlı yeniləmələri alacağınızı gözləyin.",
-            "p2": "Hər hansı yeni məlumat alıb-almadığınızı yoxlamaq üçün vaxtaşırı yoxlayın."
-        }
-    },
-    "more": {
-        "title": "Daha artıq",
-        "change-language": "Aplikasiya dilinin dəyişdirilməsi",
-        "change-password": "Parolun dəyişdirilməsi",
-        "terms": "Qaydalar və şərtlər",
-        "privacy_policy": "Gizlilik siyasəti",
-        "about": "Vote Monitor haqqında",
-        "app_version": "Vote Monitor versiyası  {{value}}",
-        "support": "Qeyri-hökumət təşkilatının qaynar xəttinə zəng vurmaq",
-        "feedback": "Qarşılıqlı əlaqə aplikasiyası haqqında",
-        "logout": "Çıxış",
-        "logged_in": "{{user}} olaraq daxil olubsunuz",
-        "warning_modal": {
-            "logout_offline": {
-                "title": "Diqqət: Sizin məlumatlar sinxronizasiya olunmayıb",
-                "description": "Hazırda oflayn rejimdəsiniz. Əgər indi sistemdən çıxsanız oflayn rejimdə olduğunuz zaman doldurduğunuz və ya yüklədiyiniz  hər hansı forma, əlavə fayl, yaxud qeyd itəcək. Məlumatların itirilməsinin qarşısını almaq üçün xahiş edirik, çıxış edənə kimi internet bağlantı yaradın və yalnız bundan sonra çıxa bilərsiniz. ",
-                "cancel": "Ləğv etmək",
-                "action": "Çıxış"
-            },
-            "logout_online": {
-                "title": "Çıxmaq istədiyinizdən əminsiniz?",
-                "cancel": "Ləğv etmək",
-                "action": "Çıxış"
-            }
-        },
-        "feedback_toast": {
-            "success": "Əlaqə göndərildi!",
-            "offline": "Bu fəaliyyəti yerinə yetirmək üçün internet bağlantısı lazımdır.",
-            "error": "Qarşılıqlı əlaqə zamanı xəta qeydə alındı!",
-            "required": "Bu sütun mütləqdir"
-        },
-        "feedback_sheet": {
-            "heading": "Öz rəyinizi göndərin",
-            "p1": "Xahiş edirik, aplikasiyanın fəaliyyəti zamanı qarşılaşdığınız çatışmazlıqlar barədə bizə bildirin, yaxud Vote Monitorun gələcəkdə təkmilləşdirilməsi ilə bağlı tövsiyələrinizi bölüşün. Hər bir rəy bizim üçün dəyərlidir!",
-            "placeholder": "Burada öz rəyinizi yazın...",
-            "cancel": "Ləğv etmək",
-            "action": "Göndərmək",
-            "input": {
-                "max": "Əlavə edilmiş mətn  {{value}}  simvoldan artıq olmamalıdır"
-            }
-        },
-        "options_sheet": {
-            "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
-        }
-    },
-    "change_password": {
-        "title": "Parolun dəyişdirilməsi",
-        "form": {
-            "current_password": {
-                "label": "Mövcud parol*",
-                "placeholder": "Mövcud parolunuzu yazın",
-                "required": "Parol mütləqdir",
-                "credentials_error": "Mövcud parol səhvdir"
-            },
-            "new_password": {
-                "label": "Yeni parol",
-                "placeholder": "Yeni parolu yazın",
-                "helper": "Ən az 8 simvoldan ibarət olmalıdır",
-                "required": "Parol mütləqdir"
-            },
-            "confirm_password": {
-                "label": "Yeni parolu təsdiq edin*",
-                "placeholder": "Parolu təsdiq edin",
-                "helper": "İki parol bir-birinə uyğun gəlməlidir",
-                "required": "Parol mütləqdir",
-                "no_match": "Parollar bir-birinə uyğun deyil"
-            },
-            "save": "Yeni parolu yadda saxlayın"
-        },
-        "confirmation": {
-            "heading": "Parol dəyişdirildi!",
-            "paragraph": "Sizin parol uğurla dəyişdirildi.",
-            "confirm": "Aplikasiyaya qayıtmaq"
-        },
-        "error": {
-            "offline": "Hazırda aplikasiya internetlə əlaqədə deyil və bu tələbi yerinə yetirə bilməz"
-        }
-    },
-    "generic_error_screen": {
-        "paragraph1": "Ups, xəta qeydə alındı!",
-        "paragraph2": "Bu xətadan sonra bərpa mümkün olmadı. Xahiş edirik, öz internet əlaqənizi yoxlayın və aplikasiyanı yenidən açın!",
-        "retry": "Yenidən cəhd edin",
-        "logout": "Çıxış"
-    },
-    "network_banner": {
-        "online": "Aplikasiya onlayn rejimdədir. Bütün cavablar serverə göndərilib.",
-        "offline": "Aplikasiya oflayn rejimdədir. Cavablar yalnız yerində saxlanılıb.",
-        "offline_citizen": "Oflayn rejim. Formanı təqdim etmək üçün internet lazımdır.",
-        "more_details": "Daha artıq detallar",
-        "offline_warning": "Görünür hazırda oflyansınız. Narahat olmayın, sizin cavablar təhlükəsiz şəkildə yerində saxlanılıb və internet ilə bağlantı yarananda serverdə sinxronlaşdırılacaq. Müşahidə formalarının doldurulmasına və insidentlərin göndərilməsinə sərbəst şəkildə davam edin.",
-        "offline_warning_citizen": "Deyəsən, hazırda oflaynsınız. Formanı təqdim etmək üçün onlayn olmalısınız."
-    },
-    "sync": {
-        "sync_data": "Oflayn məlumatların sinxronizasiyası...",
-        "warning": "Xahiş edirik, aplikasiyanı və interneti bağlamayın. Yoxsa məlumatlar itəcək.",
-        "files": "Sizin fayllar yüklənir, buna zaman lazım ola bilər"
+    "media": {
+      "heading": "Qeyd və ya media fayllar əlavə edin",
+      "description": "Əgər siz izlədiyiniz cavabı əlavə olaraq təsdiq edəcək hansısa problem görübsünüzsə",
+      "save": "Appa keçid"
     }
+  },
+  "select_app_mode": {
+    "heading": "Aplikasiya rejimi seçin",
+    "description": "Siz seçki prosesini akkreditasiyadan keçmiş müşahidəçi və ya sadəcə olaraq ədalətli və demokratik seçkilərə dəstək verməkdə maraqlı olan vətəndaş kimi müşahidə edə bilərsiniz.",
+    "accredited_observer": {
+      "title": "Vote Monitor - akreditasiyadan keçmiş müşahidəçilər üçün",
+      "description": "Mən akkreditə olunmuş müstəqil müşahidəçiyəm və seçki prosesini müşahidə etmək üçün QHT tərəfindən dəvət olunmuşam. **"
+    },
+    "citizen": {
+      "title": "Vətəndaşlar üçün Səs Monitoru",
+      "description": "Mən vətəndaşam və seçki kampaniyası zamanı və ya seçki günü gördüyüm seçki pozuntuları barədə məlumat vermək istəyirəm."
+    },
+    "helper": "**Akkreditasiya olunmuş müşahidəçi kimi siz istənilən vaxt proqramın menyusundan Vətəndaş rejiminə keçə biləcəksiniz.",
+    "continue": "Davam et"
+  },
+  "select_election_event": {
+    "heading": "Mövcud seçki tədbirləri",
+    "description": "Hesabat təqdim etmək istədiyiniz tədbiri seçin:",
+    "continue": "Davam et",
+    "empty_description": "Hal-hazırda bir vətəndaş kimi insidentlər barədə məlumat verə biləcəyiniz aktiv seçki tədbirləri yoxdur. Tədbir mövcud olduqdan sonra onu bu bölmədə görəcəksiniz.",
+    "error_description": "Mövcud seçki tədbirləri əldə edilərkən xəta baş verdi. Yenidən cəhd edin.",
+    "retry": "Yenidən cəhd edin"
+  },
+  "drawer": {
+    "report_as_citizen": "vətəndaş olaraq bildirin",
+    "report_as_accredited_observer": "akkreditə olunmuş müşahidəçi olaraq bildirin"
+  },
+  "citizen_report_issue": {
+    "header_title": "Problemi bildirin",
+    "description": "Bir vətəndaş kimi siz aşağıdakı siyahıdan hesabat formasını doldurmaqla seçki ilə bağlı problem barədə məlumat verə bilərsiniz.",
+    "empty_forms": "Hesabat formaları Səs Monitoru komandası onları sistemdə dərc etdikdən sonra burada görünəcək.",
+    "error_message": "Hesabat formalarını əldə edərkən xəta baş verdi. Yenidən cəhd edin.",
+    "retry": "Yenidən cəhd edin",
+    "info_modal": {
+      "p1": "Vote Monitor Citizen vasitəsilə təqdim olunan hesabatlar seçki hadisəsini izləyən QHT-lər tərəfindən təhlil ediləcək və seçki müşahidəsi hesabatlarına daxil edilə bilər. Bəzi hallarda gələcək seçki proseslərini təkmilləşdirmək üçün hesabatlarınız seçkilərin təşkilinə cavabdeh olan qurumlara göndərilə bilər.",
+      "p2": "Nəzərə alın ki, bu ərizə vasitəsilə hesabatın təqdim edilməsi seçkilərin təşkilinə cavabdeh olan qurumlara edilən rəsmi şikayət sayılmır.",
+      "ok": "OK"
+    }
+  },
+  "citizen_form": {
+    "review": {
+      "heading": "Hesabatınızı nəzərdən keçirin",
+      "send": "Hesabat göndərin",
+      "sending_report": "Hesabatınızı göndəririk. Zəhmət olmasa gözləyin..."
+    },
+    "progress_bar_label": "Formanın tərəqqisi",
+    "success": {
+      "title": "Hesabatınız uğurla göndərildi!",
+      "description": "Vətəndaş fəallığınıza görə təşəkkür edirik. Cavablarınızın surətini e-poçtunuza göndərmək seçiminiz var və ya əsas səhifəyə qayıda bilərsiniz.",
+      "back_to_main": "Əsas səhifəyə qayıt",
+      "send_copy": "Mənə surətini göndər"
+    },
+    "error": "Rəyinizi göndərərkən problem baş verdi.",
+    "email_copy": {
+      "title": "Formanın surətini almaq üçün e-poçtunuzu daxil edin",
+      "description": "Formanızın surətini almaq üçün lütfən aşağıda e-poçt ünvanınızı daxil edin. Bu e-poçt ünvanı yalnız nüsxəni sizə göndərmək üçün istifadə ediləcək və saxlanılmayacaq və başqa məqsədlər üçün istifadə edilməyəcək.",
+      "placeholder": "E-poçtunuzu daxil edin",
+      "required": "E-poçt məcburidir",
+      "invalid": "E-poçt formatı etibarlı deyil",
+      "cancel": "Ləğv et",
+      "send": "Göndər"
+    },
+    "copy_sent": {
+      "title": "Surətiniz göndərildi",
+      "description": "Surətiniz dərhal gəlməlidir, lakin nadir hallarda onun işlənməsi bir neçə dəqiqə çəkə bilər. Bu arada əsas səhifəyə qayıda bilərsiniz."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Saxlanmamış dəyişiklikləriniz var",
+      "description": "Bu səhifəni tərk etmək forma üzrə bütün irəliləyişlərinizin itirilməsinə səbəb olacaq. Geri qayıtmaq istədiyinizə əminsiniz?",
+      "actions": {
+        "discard": "Geri qayıt",
+        "save": "Burada qalın"
+      }
+    },
+    "attachments": {
+      "heading": "Yüklənmiş media",
+      "loading": "Qoşma əlavə edilir…",
+      "error": "Qoşma göndərilərkən xəta baş verdi!",
+      "add": "Media faylları əlavə edin",
+      "menu": {
+        "load": "Qalereyadan yükləmə",
+        "take_picture": "Şəkil çəkdirmək",
+        "record_video": "Video yazmaq",
+        "upload_audio": "Audio faylın yüklənməsi"
+      },
+      "upload": {
+        "compressing": "Əlavənin sıxılması:",
+        "preparing": "Qoşma hazırlanır...",
+        "starting": "Yükləmə başlayır...",
+        "progress": "Qoşmalar yüklənir:",
+        "completed": "Yükləmə tamamlandı.",
+        "aborted": "Yükləmə dayandırıldı.",
+        "offline": "Bu fəaliyyəti yerinə yetirmək üçün internet bağlantısı lazımdır."
+      },
+      "delete": {
+        "title": "Media faylın silinməsi",
+        "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "clear": "Silmək"
+        }
+      }
+    }
+  },
+  "login": {
+    "disclaimer": {
+      "paragraph1": "Xahiş edirik, nəzərə alasınız ki, əgər siz ölkənizdə müşahidəni həyata keçirən təşkilat tərəfindən akreditasiyalı müstəqil müşahidəçi deyilsinizsə siz Vote Monitor aplikasiyadan istifadə edə bilməyəcəksiniz.",
+      "paragraph2": {
+        "slice1": "Əgər siz akkreditə olunmuş müşahidəçi deyilsinizsə, hesaba ehtiyac",
+        "link": "olmadan davam edən seçki tədbiri üçün vətəndaş kimi qanun",
+        "slice2": "pozuntuları barədə məlumat verə bilərsiniz."
+      }
+    },
+    "heading": "Avtorizasiya",
+    "paragraph": "Xahiş edirik, müşahidəçi olaraq qeydiyyatdan keçdiyiniz E-poçt ünvanından istifadə edəsiniz",
+    "form": {
+      "email": {
+        "label": "El-poçt*",
+        "placeholder": "El-Poçt",
+        "required": "E-poçtu qeyd etmək mütləqdir",
+        "pattern": "Yanlış E-poçt formatı"
+      },
+      "password": {
+        "label": "Parol*",
+        "placeholder": "Parol",
+        "required": "Parolu qeyd etmək mütləqdir"
+      },
+      "submit": {
+        "save": "Avtorizasiya",
+        "loading": "Avtorizasiya..."
+      },
+      "errors": {
+        "invalid_credentials": "E-poçt və ya parol səhvdir. Xahiş edirik yenidən cəhd edin",
+        "offline": "Avtorizasiya üçün internet bağlantısı tələb olunur"
+      }
+    },
+    "actions": {
+      "forgot_password": "Parolu unutmusan?"
+    },
+    "email_toast": "E-poçt ünvanı kopyalandı"
+  },
+  "forgot_password": {
+    "header": {
+      "title": "Parolun unudulması"
+    },
+    "heading": "Parolu unutmusan?",
+    "paragraph": "Xahiş edirik, hesabınızla əlaqəli E-poçt ünvanını göstərin və biz sizə parolunuzu bərpa etmək üçün link göndərəcəyik.",
+    "form": {
+      "email": {
+        "label": "E-poçt*",
+        "placeholder": "E-poçt",
+        "required": "E-poçtu qeyd etmək mütləqdir",
+        "pattern": "Yanlış E-poçt formatı"
+      },
+      "submit": {
+        "loading": "Göndərmək...",
+        "save": "Göndərmək"
+      },
+      "errors": {
+        "invalid_email": "E-poçt sistemdə qeydiyyat olunmayıb. Xahiş edirik yenidən cəhd edin"
+      }
+    },
+    "confirmation": {
+      "heading": "E-poçt göndərildi",
+      "paragraph": "Elektron poçtunuzu yoxlayın və bizim göndərdiyimiz bildirişi açın. Əgər bildirişi almayıbsınızsa xahiş edirik, \"Spam\" papkasını da yoxlayın.",
+      "confirm": "Avtorizasiyaya qayıtmaq"
+    }
+  },
+  "about_app": {
+    "title": "Vote Monitor haqqında",
+    "title_observer": "Vote Monitor Observer haqqında",
+    "general": "Vote Monitor müstəqil müşahidəçilər üçündür və seçki monitorinqini həyata keçirən təşkilat üçün ayrılmış rəqəmsal vasitədir. Vote Monitor Code for Romania/Commit Global tərəfindən yaradılıb və  idarə edilir.",
+    "purpose": "Aplikasiya müstəqil müşahidəçilərə seçki məntəqələrini müşahidə etməyə və konkret seçki turu üçün real vaxt rejimində səsvermə prosesini sənədləşdirməyə kömək edir. Mobil aplikasiya əsasında toplanmış bütün məlumatlar real vaxt rejimində təşkilatlara göndərilir ki, onlar saxtakarlıq və ya digər pozuntuları göstərə biləcək mümkün qırmızı bayraqları müəyyən edə bilsinlər. Yekun nəticədə, məqsədimiz səsvermə prosesinin aydın, sadə və real mənzərəsini təqdim etməkdir.",
+    "app_provides": {
+      "paragraph": "Aplikasiya müşahidəçini təmin edir:",
+      "item1": "Müxtəlif ziyarət edilmiş seçki məntəqələrini idarə etmək vasitəsilə",
+      "item2": "Qeydiyyatdan keçmiş müşahidəçi təşkilatlar tərəfindən yaradılmış formalar vasitəsilə səsvermə prosesi monitorinqinin effektiv üsulu ilə",
+      "item3": "Standart formalardan əlavə insidentlərin sürətli göndərilməsi vasitəsi ilə"
+    },
+    "usage": "Aplikasiyadan dünyanın istənilən ölkəsində hər hansı tipli seçkilər üçün istifadə etmək mümkündür. 2016-cı ildən Rumınya və Polşada ondan istifadə olunur.",
+    "version": "Vote Monitor versiyası {{value}}"
+  },
+  "about_app_citizen": {
+    "title": "Vote Monitor haqqında",
+    "title_observer": "Vote Monitor Citizen haqqında",
+    "p1": "Vote Monitor Citizen gündəlik vətəndaşlara seçki dövründə rastlaşdıqları hər hansı pozuntular, o cümlədən təşviqat fəaliyyəti, seçki məntəqələrinin fəaliyyəti və səsvermə günü prosedurları barədə məlumat verməklə seçkilərin monitorinqində fəal iştirak etməyə imkan verir.",
+    "p2": "Vote Monitor Citizen ilkin olaraq Code for Romania/Commit Global tərəfindən seçkilərin monitorinqi səylərində QHT-lərlə birlikdə işləyən müstəqil müşahidəçilər üçün hazırlanmış Səs Monitoru proqramının əlavəsidir.",
+    "p3": "İstifadəçilər real vaxt rejimində seçki prosesində iştirak edən qeyri-hökumət təşkilatları tərəfindən təhlil ediləcək hesabatlar təqdim edə bilərlər. Bu hesabatlar təfərrüatlı müşahidə sənədlərinə töhfə verə bilər və bəzi hallarda gələcək seçkiləri təkmilləşdirmək üçün müvafiq qurumlara göndərilə bilər.",
+    "p4": "Vətəndaş hesabatları şəffaflığın təşviqində mühüm rol oynasa da, nəzərə alın ki, bu proqram vasitəsilə hesabat təqdim etmək seçkilərin təşkilinə cavabdeh olan qurumlara rəsmi şikayət sayılmır.",
+    "version": "Vote Monitor versiyası {{value}}"
+  },
+  "loading_screen": {
+    "heading": "Yüklənir...",
+    "paragraph": "Biz məlumatları hazırlayırıq, xahiş edirik gözləyin!"
+  },
+  "tabs": {
+    "observation": "Müşahidə",
+    "quick_report": "Hesabat",
+    "guides": "Bələdçilər",
+    "inbox": "Gələnlər qutusu",
+    "more": "Daha artıq",
+    "report": "Hesabat",
+    "resources": "Bələdçilər",
+    "updates": "Yeniləmələr"
+  },
+  "add_polling_station": {
+    "title": "Seçki məntəqəsi əlavə et",
+    "progress": {
+      "location": "Seçki məntəqəsini {{value}}-dən əlavə et"
+    },
+    "actions": {
+      "next_step": "Növbəti addım",
+      "back": "Geri",
+      "finalize": "Başa vurmaq"
+    },
+    "error": "Seçki məntəqələrinin yüklənməsi zamanı xəta"
+  },
+  "observation": {
+    "title": "Seçki məntəqələrini müşahidə etmək",
+    "no_election_round": {
+      "heading": "Hələ müşahidəyə ehtiyac duyan seçki tədbiri yoxdur",
+      "paragraph": "Təşkilatınız sizi seçki tədbirinə əlavə etdikdən sonra aplikasiyadan istifadə edə biləcəksiniz"
+    },
+    "no_form": "Hələlik seçki məntəqəsinin məlumat forması yoxdur",
+    "refresh_page": "Əgər məlumat görünmüyorsa, təkrar səhifəni yükləyərək ən son məlumatı alın",
+    "no_visited_polling_stations": {
+      "heading": "Seçki məntəqələri hələ ziyarət edilməyib",
+      "paragraph": "Müşahidəçi formalarını doldurmazdan əvvəl ilk seçki məntəqəsini göstərin",
+      "add": "İlk seçki məntəqənizi əlavə edin"
+    },
+    "my_polling_stations": {
+      "heading": "Mənim seçki məntəqələrim",
+      "paragraph": "Forma cavablarını və ya səsvermə məntəqəsi məlumatını yenidən görmək istəyirsinizsə, seçki məntəqələrini çevirə bilərsiniz.",
+      "add": "Yeni seçki məntəqəsi əlavə edin."
+    },
+    "polling_stations_information": {
+      "heading": "Seçki məntəqəsi haqqında məlumat",
+      "time_select": {
+        "not_defined": "Müəyyən edilməyib",
+        "arrival_time": "Giriş vaxtı",
+        "departure_time": "Çıxış vaxtı",
+        "save": "Yerinə yetirilib",
+        "error": {
+          "arrival_first": "Xahiş edirik, ilk əvvəl giriş vaxtını seçəsiniz",
+          "later_departure": "Xahiş edirik, giriş vaxtından gec olan çıxış vaxtını seçəsiniz",
+          "earlier_arrival": "Xahiş edirik, çıxış vaxtından əvvəl olan giriş vaxtını seçəsiniz",
+          "server": "Biz məlumatı serverə göndərə bilmədik"
+        }
+      },
+      "observation_time": {
+        "observation_time": "Müşahidə vaxtı",
+        "not_defined": "Müəyyən edilməyib",
+        "no_of_breaks": "{{value}} fasilə",
+        "one_break": "{{value}} fasilə",
+        "arrival_and_departure": "Gəliş və gediş vaxtı",
+        "arrival_time": "Gəliş vaxtı",
+        "departure_time": "Gediş vaxtı",
+        "departure_after_arrival": "Gediş vaxtı gəliş vaxtından sonra olmalıdır",
+        "select_arrival_time": "Gəliş vaxtını seçin",
+        "select_departure_time": "Gediş vaxtını seçin",
+        "add_break": "Müşahidəyə yeni fasilə əlavə edin",
+        "break": "fasilə {{value}} ",
+        "start_time": "Başlama vaxtı",
+        "select_start_time": "Başlama vaxtını seçin",
+        "end_time": "Bitmə vaxtı",
+        "select_end_time": "Bitmə vaxtını seçin",
+        "undefined_date": "Gün/Ay/İl",
+        "undefined_time": "HH:MM",
+        "save": "Müşahidə vaxtına qənaət edin",
+        "clear": "Müşahidə müddətini təmizləyin",
+        "confirmation_modals": {
+          "clear": {
+            "title": "Müşahidə müddətini təmizləyin",
+            "description": "Bu əməliyyat gəliş və gediş vaxtınızı, o cümlədən bu seçki məntəqəsi üçün indiyə qədər daxil etdiyiniz bütün fasilələri siləcək. Gözlənilməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl vaxtları yoxladığınızdan əmin olun.",
+            "actions": {
+              "cancel": "Ləğv et",
+              "clear": "Müşahidə müddətini təmizləyin"
+            }
+          },
+          "delete": {
+            "title": "Fasiləni silin",
+            "description": "Bu hərəkət fasilənizi siləcək. Gözlənilməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl vaxtları yoxladığınızdan əmin olun.",
+            "actions": {
+              "cancel": "Ləğv et",
+              "delete": "Fasiləni silin"
+            }
+          },
+          "unsaved_changes": {
+            "title": "Müşahidə vaxtına edilən dəyişiklikləri yadda saxlayın",
+            "description": "Daxil etdiyiniz müşahidə vaxtı ilə bağlı yadda saxlanmamış dəyişiklikləriniz var. Səhifəni tərk etməzdən əvvəl dəyişikliklərinizi yadda saxlamaq istəyirsiniz?",
+            "actions": {
+              "discard": "Atın",
+              "save": "Dəyişiklikləri yadda saxlayın"
+            }
+          },
+          "unable_to_save": {
+            "title": "Müşahidə Vaxtına qənaət etmək mümkün deyil",
+            "p1": "Daxil etdiyiniz vaxtlar fasilə dövrləri ilə gəliş/gediş vaxtları arasında ziddiyyət olduğu üçün yadda saxlanıla bilməz.",
+            "p2": "Zəhmət olmasa əmin olun ki, fasilə dövrləri gəliş və gediş müşahidə vaxtları ilə müəyyən edilmiş vaxt intervalını keçməməlidir. Zəhmət olmasa vaxtları nəzərdən keçirin və uyğun olaraq tənzimləyin.",
+            "ok": "OK"
+          }
+        }
+      },
+      "polling_station_form": {
+        "paragraph": "Xahiş edirik, seçki məntəqəsi haqqında bir neçə qısa suala cavab verəsinz.",
+        "form_details_button_label": "Seçki məntəqəsinin sualları",
+        "number_of_questions": "{{value}} Suallar",
+        "answer_questions": "Suallara cavab ver."
+      }
+    },
+    "forms": {
+      "heading": "Müşahidəçi formaları",
+      "list": {
+        "empty": "Təşkilatınız müşahidə formalarını sistemə yerləşdirəndə burada görünəcək",
+        "error": {
+          "paragraph1": "Problem var!",
+          "paragraph2": "Məlumatları əldə etmək alınmadı. Yenidən cəhd etmək üçün yenidən cəhd edin düyməsinə basın!",
+          "retry": "Yenidən cəhd edin"
+        }
+      },
+      "select_language_modal": {
+        "header": "Forma üçün dil seçin",
+        "helper": "Seçilmiş forma bir neçə dildə əlçatan olacaq. Xahiş edirik, hansı dildə davam etmək istədiyinizi seçin.",
+        "error": "Xahiş edirik variantlardan birini seçin"
+      }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
+    }
+  },
+  "polling_station_information_form": {
+    "title": "Seçki məntəqəsinin məlumatı",
+    "submit": "Cavabların göndərilməsi",
+    "form": {
+      "max": "Daxil edilmiş mətn {{value}} simvoldan çox olmamalıdır",
+      "placeholder": "Xahiş edirik mətni daxil edin..."
+    },
+    "menu": {
+      "clear": "Formanı silin (bütün cavabların silinməsi)"
+    },
+    "warning_modal": {
+      "title": "Seçki məntəqəsinin məlumat formasının silinməsi",
+      "description": "Bu hərəkət formaya daxil edilmiş bütün cavabları siləcək. Xoşagəlməz məlumatın itirilməsini aradan qaldırmaq üçün xahiş edirik, bu hərəkəti yerinə yetirənə qədər formanı yoxlayın.",
+      "actions": {
+        "cancel": "Ləğv etmək",
+        "clear": "Formanın silinməsi (bütün cavabların silinməsi)"
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Formada dəyişikliklərin yadda saxlanılması",
+      "description": "Bu formada yadda saxlanmamış dəyişiklikləriniz var. Formadan çıxmazdan əvvəl dəyişikliklərinizi yadda saxlamaq istəyirsiniz?",
+      "actions": {
+        "discard": "Silmək ",
+        "save": "Dəyişiklikləri yaddaşa almaq"
+      }
+    }
+  },
+  "form_overview": {
+    "overview": {
+      "heading": "Formaya yenidən baxış",
+      "status": "Forma statusu",
+      "answered_questions": "Cavablandırılmış suallar",
+      "resume": "Formanı davam etdirmək",
+      "start_form": "Formaya başlamaq",
+      "progress": "İnkişaf"
+    },
+    "questions": {
+      "title": "Suallar",
+      "not_answered": "Cavab verilməyib",
+      "answered": "Cavab verilib",
+      "no_notes": "Əlavə edilmiş qeydləri əhatə etmir",
+      "notes": "Əlavə edilmiş qeydləri əhatə edir"
+    },
+    "attachments": {
+      "notes": "{{count}} Qeyd (lər)",
+      "media": "{{count}} Media fayllar"
+    },
+    "error": "Forma məlumatları yüklənərkən xəta baş verdi!",
+    "menu": {
+      "clear": "Formanın təmizlənməsi (bütün cavabların silinməsi)",
+      "change_language": "Dili dəyişmək"
+    },
+    "clear_answers_modal": {
+      "title": "Formanın təmizlənməsi {{value}}",
+      "description": {
+        "p1": "Bu əməliyyat formaya daxil edilmiş bütün cavabları (qeydlər və media faylları daxil olmaqla) siləcək. Bütün sualların statusu \"Cavabsız\" olaraq dəyişəcək.",
+        "p2": "Xoşagəlməz məlumat itkisinin qarşısını almaq üçün bu əməliyyatı yerinə yetirməzdən əvvəl formanı yoxlayın"
+      },
+      "actions": {
+        "clear": "Formanın təmizlənməsi",
+        "cancel": "Ləğv etmək"
+      }
+    }
+  },
+  "polling_station_form_wizard": {
+    "progress_bar": {
+      "label": "Formanın inkişafı",
+      "clear_answer": "Cavabın silinməsi"
+    },
+    "form": {
+      "min": "Sütun ən azı {{value}} simvol olmalıdır",
+      "max": "Sütunun maksimum {{value}} simvolu olmalıdır",
+      "required": "Bu sahə tələb olunur",
+      "date_placeholder": "Xahiş edirik tarixi qeyd edin",
+      "text_placeholder": "Xahiş edirik mətni qeyd edin"
+    },
+    "save_and_continue": "Yadda saxlayın və davam edin",
+    "attachments": {
+      "heading": "Yüklənmiş media",
+      "loading": "Qoşma əlavə edilir…",
+      "error": "Qoşma göndərilərkən xəta baş verdi!",
+      "add": "Qeydlər və medianın əlavə edilməsi",
+      "menu": {
+        "add_note": "Qeydin əlavə edilməsi",
+        "load": "Qalereyadan yükləmə",
+        "take_picture": "Şəkil çəkdirmək",
+        "record_video": "Video yazmaq",
+        "upload_audio": "Audio faylın yüklənməsi"
+      },
+      "upload": {
+        "compressing": "Əlavənin sıxılması:",
+        "preparing": "Qoşma hazırlanır...",
+        "starting": "Yükləmə başlayır...",
+        "progress": "Yükləmə prosesi:",
+        "completed": "Yükləmə tamamlandı.",
+        "aborted": "Yükləmə dayandırıldı.",
+        "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır.",
+        "abort_offline": "İnternetə keçid edərək, əməliyyatı tamamlamaq və ya yenidən başlamaq üçün",
+        "abort_offline_button": "Yenidən başlamaq",
+        "uploaded": "Əlavəni göndərən zaman xəta qeydə alındı!",
+        "abort_offline_confirm": "Are you sure you want to abort the upload?",
+        "abort_offline_cancel": "Cancel"
+      }
+    },
+    "notes": {
+      "heading": "Qeydlər ",
+      "add": {
+        "heading": "Qeydin əlavə edilməsi",
+        "form": {
+          "input": {
+            "placeholder": "Bu suala hər hansı müvafiq qeyd əlavə edin",
+            "max": "Daxil edilmiş mətn 10.000 simvoldan çox olmamalıdır",
+            "required": "Bu sütun məcburi deyil"
+          }
+        }
+      },
+      "edit": {
+        "heading": "Qeydin redaktə edilməsi",
+        "delete": "Qeydin silinməsi"
+      },
+      "delete": {
+        "title": "Qeydin silinməsi",
+        "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "delete": "Silmək"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "{{value}} Sualın cavabının silinməsi",
+        "description": "Bu suala cavabın silinməsi onunla bağlı məlumatı (qeydlər və media fayllar daxil olmaqla), eləcə də bütün əlaqəli sualları həmişəlik siləcək. Sualların statusu \"Cavabsız\" olaraq dəyişəcək.",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "clear": "Cavabın silinməsi"
+        }
+      },
+      "attachment": {
+        "title": "Media faylın silinməsi",
+        "description": "Bu əməliyyatı dəyişə bilməzsiniz. Silinmiş qeydi bərpa etmək mümkün deyil",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "clear": "Silmək"
+        }
+      },
+      "unsaved_answer": {
+        "title": "Sualdakı dəyişikliklərin yadda saxlanılması",
+        "description": "Bu sualda yadda saxlanmamış dəyişiklikləriniz var. Sualı tərk etməzdən əvvəl dəyişiklikləri yadda saxlamaq istəyirsiniz?",
+        "actions": {
+          "cancel": "Təkzib etmək",
+          "save": "Dəyişikliklərin yadda saxlanılması"
+        }
+      }
+    },
+    "error": "Sual ilə bağlı məlumatlar yüklənərkən xəta baş verdi!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "Hələlik heç bir seçki məntəqəsinə baş çəkilməyib"
+    },
+    "general_text": "Mənim seçki məntəqələrimin idarə edilməsi",
+    "ps_card": {
+      "header": "Seçki məntəqəsi #{{value}}",
+      "l1": "[Məkan L1]",
+      "l2": "[Məkan  L2]",
+      "l3": "[Məkan L3]",
+      "l4": "[Məkan L4]",
+      "l5": "[Məkan L5]",
+      "street": "Küçə",
+      "ps_number": "Seçki məntəqəsinin nömrəsi"
+    },
+    "warning_dialog": {
+      "title": "#{{value}} Seçki məntəqəsinin silinməsi",
+      "description": "Bu fəaliyyət bu seçki  məntəqəsini sizin ziyarət etdiyiniz məntəqələrin siyahısından siləcək. Onun yenidən əlavə olunması yeni seçki məntəqəsinin əlavə edilməsi funksiyası vasitəsilə mümkündür.",
+      "actions": {
+        "cancel": "Ləğv etmək",
+        "remove": "Silmək",
+        "loading": "Yüklənir..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "#{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
+      "description": "Sizin siyahıdan seçki məntəqəsini çıxarmaq mümkün deyil. Çünki o sistemin sizin adınızla silə bilməyəcəyi məlumatları (Seçki məntəqəsinin məlumatı və ya formanın cavabları) əhatə edir. Əgər bu seçki məntəqəsini çıxarmaq istəyirsinizsə, xahiş edirik, əvvəl əliniz ilə seçki məntqəsinin məlumatını və cavabları təmizləyin, sonra yenidən cəhd edin."
+    },
+    "delete_success": "Seçki məntəqəsi uğurla silindi!",
+    "delete_error": "Seçki məntəqəsinə baş çəkmə silinərkən problem aşkarlandı. Xahiş edirik, yenidən cəhd edin.",
+    "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır."
+  },
+  "quick_report": {
+    "list": {
+      "title": "Pozuntu barədə sürətli bildiriş vermək",
+      "heading": "Mənim göndərdiyim pozuntular barədə sürətli bildirişlər",
+      "error": "Pozuntu barədə sürətli bildirişlərin yüklənməsi zamanı xəta baş verdi!",
+      "empty": "Əgər seçki məntəqəsinin daxilində və xaricində pozuntular qeydə alsanız, yaxud lazım olduğu halda,  təşkilata təcili bildriş göndərin",
+      "add": "Yeni pozuntu barədə təcili bildiriş",
+      "no_files": "Əlavə edilmiş fayllar yoxdur",
+      "attachment_one": "{{count}}Əlavə edilmiş fayl",
+      "attachment_other": "{{count}}Əlavə edilmiş fayl"
+    },
+    "attachments": {
+      "heading": "Yüklənmiş media",
+      "loading": "Qoşma əlavə edilir...",
+      "upload": {
+        "preparing": "Qoşma hazırlanır...",
+        "starting": "Yükləmə başlayır...",
+        "progress": "Yükləmə prosesi:",
+        "completed": "Yükləmə tamamlandı.",
+        "aborted": "Yükləmə dayandırıldı."
+      },
+      "error": "Qoşma göndərilərkən xəta baş verdi!"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Mənim seçki məntəqəmin idarə edilməsi"
+    },
+    "info_modal": {
+      "p1": "Bu bölmədən siz seçki məntəqələrində və ya yaxın ərazilərdə müşahidə etdiyiniz hər hansı seçki pozuntusu barədə tez məlumat verə bilərsiniz.",
+      "p2": "Bu xüsusiyyət, təcili məsələlərin operativ şəkildə həllini təmin edərək, müntəzəm müşahidə formalarından kənarda təşkilatı dərhal xəbərdar etməyə imkan verir."
+    }
+  },
+  "report_new_issue": {
+    "title": "Yeni pozuntu barədə təcili bildiriş",
+    "upload": {
+      "compressing": "Əlavənin sıxılması:",
+      "preparing": "Qoşma hazırlanır...",
+      "starting": "Yükləmə başlayır...",
+      "progress": "Qoşmalar yüklənir:",
+      "completed": "Yükləmə tamamlandı.",
+      "aborted": "Yükləmə dayandırıldı.",
+      "offline": "Bu əməliyyatı yerinə yetirmək üçün sizə internet bağlantısı lazımdır."
+    },
+    "media": {
+      "heading": "Yüklənmiş media",
+      "add": "Media faylın əlavə edilməsi",
+      "error": "Əlavəni göndərən zaman xəta qeydə alındı!",
+      "menu": {
+        "load": "Qalereyadan yükləmə",
+        "take_picture": "Foto çəkmək",
+        "record_video": "Video çəkmək",
+        "upload_audio": "Audio faylın yüklənməsi"
+      }
+    },
+    "form": {
+      "polling_station_id": {
+        "label": "Seçki məntəqəsi*",
+        "placeholder": "Seçki məntəqəsini seçin",
+        "extra": "Xahiş edirik, burada bu seçki məntəqəsinə aid detalları qeyd edin (ünvan, ad, nömrə və s. kimi",
+        "required": "Bu sütun mütləqdir",
+        "options": {
+          "other": "Başqa seçki məntəqəsi",
+          "not_related": "Seçki məntəqəsi ilə əlaqədar deyil"
+        }
+      },
+      "incident_category": {
+        "label": "Hadisə kateqoriyası *",
+        "placeholder": "Kateqoriya",
+        "required": "Bu sütun mütləqdir",
+        "options": {
+          "PhysicalViolenceIntimidationPressure": "Fiziki zorakılıq/hədələmə/təzyiq",
+          "CampaigningAtPollingStation": "Seçki məntəqəsində təşviqat",
+          "RestrictionOfObserversRights": "Müşahidəçinin/nümayəndənin/media hüquqların qeyri-qanuni məhdudlaşdırılması",
+          "UnauthorizedPersonsAtPollingStation": "Səlahiyyətsiz şəxslərin seçki məntəqəsində olması",
+          "ViolationDuringVoterVerificationProcess": "Seçicinin kimliyinin müəyyən edilməsi prosesində pozuntu",
+          "VotingWithImproperDocumentation": "Qeyri-müvafiq sənəd ilə səs vermək",
+          "IllegalRestrictionOfVotersRightToVote": "Seçicinin səsvermə hüququnun qeyri-qanuni məhdudlaşdırılması",
+          "DamagingOrSeizingElectionMaterials": "Seçki materiallarına ziyan vurmaq/qaçırmaq",
+          "ImproperFilingOrHandlingOfElectionDocumentation": "Seçki sənədlərinin qeyri-müvafiq şəkildə hazırlanması/doldurulması",
+          "BallotStuffing": "Əlavə bülletenlərin qutuya atılması/saxtalaşdırma",
+          "ViolationsRelatedToControlPaper": "Nəzarət vərəqi ilə əlaqədar pozuntular",
+          "NotCheckingVoterIdentificationSafeguardMeasures": "İşarələmənin yoxlanmaması",
+          "VotingWithoutVoterIdentificationSafeguardMeasures": "İşarlənmədən keçmədən səs vermək",
+          "BreachOfSecrecyOfVote": "Səsvermənin gizliliyinin pozulması",
+          "ViolationsRelatedToMobileBallotBox": "Daşınan seçki qutusu ilə əlaqədar pozuntular",
+          "NumberOfBallotsExceedsNumberOfVoters": "Bülletenlərin sayı gələn seçicilərin sayından çoxdur",
+          "ImproperInvalidationOrValidationOfBallots": "Bülletenin etibarsız olması/həqiqiliyinə səhv qərar verilməsi",
+          "FalsificationOrImproperCorrectionOfFinalProtocol": "Yekun protokolun dəyişdirilməsi/saxtalaşdırılması",
+          "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Yekun protokolun surətinin verilməməsi/natamam surətin verilməsi (Məlumat çatmır)",
+          "ImproperFillingInOfFinalProtocol": "Yekun protokolun qeyri-müvafiq doldurulması",
+          "ViolationOfSealingProceduresOfElectionMaterials": "Seçki materialının surğuclanma qaydasının pozulması",
+          "ViolationsRelatedToVoterLists": "Seçicilər siyahısı ilə əlaqədar pozuntular",
+          "Other": "Başqa"
+        }
+      },
+      "polling_station_details": {
+        "label": "Seçki məntəqəsinin detalları",
+        "placeholder": "Xahiş edirik, burada bu seçki məntəqəsinə aid detalları qeyd edin (ünvan, ad, nömrə və s. kimi",
+        "required": "Bu sütun mütləqdir",
+        "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
+      },
+      "issue_title": {
+        "label": "Pozuntunun başlığı",
+        "placeholder": "Pozuntunun başlığını yazın",
+        "required": "Pozuntunun başlığını yazmaq mütləqdir",
+        "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
+      },
+      "issue_description": {
+        "label": "Təsvir*",
+        "placeholder": "Xahiş edirik, vəziyyəti burada ətraflı şəkildə təsvir edəsiniz",
+        "required": "Pozuntunu təsvir etmək mütləqdir",
+        "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır"
+      },
+      "submit": "Göndərmək",
+      "clear": "Təmizləmək",
+      "loading": "İşlənir...",
+      "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
+    }
+  },
+  "report_details": {
+    "title": "Sürətli hesabat başlığı",
+    "uploaded_media": "Yüklənmiş media",
+    "no_files": "Əlavə fayllar yoxdur",
+    "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
+  },
+  "guides": {
+    "title": "Bələdçilər",
+    "empty": {
+      "heading": "Bələdçi hələ əlavə edilməyib",
+      "paragraph": "Təşkilatınızdan bələdçi və resurslar əlinizdədir."
+    },
+    "list": {
+      "heading": "Bələdçilər",
+      "guide": {
+        "backup_title": "Sənəd",
+        "created_on": "Yaradılıb"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
+    },
+    "info_modal": "Bu bölmədə, seçki proseslərini müşahidə etmək və müstəqil müşahidəçi kimi rastlaşdığınız hər hansı seçki problemləri və ya qanun pozuntuları barədə məlumat vermək üçün hazırlanmış əsas məlumat və resursların olmasını gözləyin."
+  },
+  "resources": {
+    "title": "Resurslar",
+    "info": "Bu bölmədə, seçki proseslərini müşahidə etmək və vətəndaş kimi qarşılaşdığınız hər hansı seçki problemi və ya qanun pozuntuları barədə məlumat vermək üçün hazırlanmış əsas məlumat və resursların olmasını gözləyin.",
+    "empty": {
+      "heading": "Hələ oxumaq üçün bələdçi yoxdur",
+      "paragraph": "Seçki proseslərini müşahidə etmək və bir vətəndaş kimi problemlərlə bağlı məlumat verməklə bağlı təlimatlar və resurslar sizin əlinizdədir."
+    },
+    "types": {
+      "Document": "Fayl növü pdf",
+      "Website": "Xarici URL",
+      "Text": "Tətbiq bələdçisində"
+    }
+  },
+  "inbox": {
+    "title": "Bildirişlər",
+    "empty": {
+      "heading": "Bildirişlər hələ qəbul edilməyib",
+      "paragraph": "Burada sizin təşkilatdan bildirişlər və xəbərdarlıqlar görünəcək"
+    },
+    "banner": " {{ngoName}}-dən bildirişlər",
+    "today": "Bu gün",
+    "your_organization": "Sizin təşkilat",
+    "menu": {
+      "manage_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
+    },
+    "info_modal": {
+      "p1": "Bu Gələnlər qutusunda sizi müşahidəçi kimi akkreditə etmiş QHT-dən canlı yeniləmələr və mesajlar alacaqsınız.",
+      "p2": "Müşahidə fəaliyyətinizə aid olan hər hansı yeni məlumat alıb-almadığınızı görmək üçün vaxtaşırı yoxlayın."
+    }
+  },
+  "updates": {
+    "title": "Yeniləmələr",
+    "empty": {
+      "heading": "Hələ yeniləmələr alınmayıb",
+      "paragraph": "Seçki dövrü ilə bağlı yeniliklər burada görünəcək."
+    },
+    "info_modal": {
+      "p1": "Bu bölmədə vətəndaş fəallığı ilə maraqlanan bir vətəndaş kimi sizin üçün uyğun olan seçki dövrü ilə bağlı Səs Monitorinqi qrupundan canlı yeniləmələri alacağınızı gözləyin.",
+      "p2": "Hər hansı yeni məlumat alıb-almadığınızı yoxlamaq üçün vaxtaşırı yoxlayın."
+    }
+  },
+  "more": {
+    "title": "Daha artıq",
+    "change-language": "Aplikasiya dilinin dəyişdirilməsi",
+    "change-password": "Parolun dəyişdirilməsi",
+    "terms": "Qaydalar və şərtlər",
+    "privacy_policy": "Gizlilik siyasəti",
+    "about": "Vote Monitor haqqında",
+    "app_version": "Vote Monitor versiyası  {{value}}",
+    "support": "Qeyri-hökumət təşkilatının qaynar xəttinə zəng vurmaq",
+    "feedback": "Qarşılıqlı əlaqə aplikasiyası haqqında",
+    "logout": "Çıxış",
+    "logged_in": "{{user}} olaraq daxil olubsunuz",
+    "warning_modal": {
+      "logout_offline": {
+        "title": "Diqqət: Sizin məlumatlar sinxronizasiya olunmayıb",
+        "description": "Hazırda oflayn rejimdəsiniz. Əgər indi sistemdən çıxsanız oflayn rejimdə olduğunuz zaman doldurduğunuz və ya yüklədiyiniz  hər hansı forma, əlavə fayl, yaxud qeyd itəcək. Məlumatların itirilməsinin qarşısını almaq üçün xahiş edirik, çıxış edənə kimi internet bağlantı yaradın və yalnız bundan sonra çıxa bilərsiniz. ",
+        "cancel": "Ləğv etmək",
+        "action": "Çıxış"
+      },
+      "logout_online": {
+        "title": "Çıxmaq istədiyinizdən əminsiniz?",
+        "cancel": "Ləğv etmək",
+        "action": "Çıxış"
+      }
+    },
+    "feedback_toast": {
+      "success": "Əlaqə göndərildi!",
+      "offline": "Bu fəaliyyəti yerinə yetirmək üçün internet bağlantısı lazımdır.",
+      "error": "Qarşılıqlı əlaqə zamanı xəta qeydə alındı!",
+      "required": "Bu sütun mütləqdir"
+    },
+    "feedback_sheet": {
+      "heading": "Öz rəyinizi göndərin",
+      "p1": "Xahiş edirik, aplikasiyanın fəaliyyəti zamanı qarşılaşdığınız çatışmazlıqlar barədə bizə bildirin, yaxud Vote Monitorun gələcəkdə təkmilləşdirilməsi ilə bağlı tövsiyələrinizi bölüşün. Hər bir rəy bizim üçün dəyərlidir!",
+      "placeholder": "Burada öz rəyinizi yazın...",
+      "cancel": "Ləğv etmək",
+      "action": "Göndərmək",
+      "input": {
+        "max": "Əlavə edilmiş mətn  {{value}}  simvoldan artıq olmamalıdır"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi"
+    }
+  },
+  "change_password": {
+    "title": "Parolun dəyişdirilməsi",
+    "form": {
+      "current_password": {
+        "label": "Mövcud parol*",
+        "placeholder": "Mövcud parolunuzu yazın",
+        "required": "Parol mütləqdir",
+        "credentials_error": "Mövcud parol səhvdir"
+      },
+      "new_password": {
+        "label": "Yeni parol",
+        "placeholder": "Yeni parolu yazın",
+        "helper": "Ən az 8 simvoldan ibarət olmalıdır",
+        "required": "Parol mütləqdir"
+      },
+      "confirm_password": {
+        "label": "Yeni parolu təsdiq edin*",
+        "placeholder": "Parolu təsdiq edin",
+        "helper": "İki parol bir-birinə uyğun gəlməlidir",
+        "required": "Parol mütləqdir",
+        "no_match": "Parollar bir-birinə uyğun deyil"
+      },
+      "save": "Yeni parolu yadda saxlayın"
+    },
+    "confirmation": {
+      "heading": "Parol dəyişdirildi!",
+      "paragraph": "Sizin parol uğurla dəyişdirildi.",
+      "confirm": "Aplikasiyaya qayıtmaq"
+    },
+    "error": {
+      "offline": "Hazırda aplikasiya internetlə əlaqədə deyil və bu tələbi yerinə yetirə bilməz"
+    }
+  },
+  "generic_error_screen": {
+    "paragraph1": "Ups, xəta qeydə alındı!",
+    "paragraph2": "Bu xətadan sonra bərpa mümkün olmadı. Xahiş edirik, öz internet əlaqənizi yoxlayın və aplikasiyanı yenidən açın!",
+    "retry": "Yenidən cəhd edin",
+    "logout": "Çıxış"
+  },
+  "network_banner": {
+    "online": "Aplikasiya onlayn rejimdədir. Bütün cavablar serverə göndərilib.",
+    "offline": "Aplikasiya oflayn rejimdədir. Cavablar yalnız yerində saxlanılıb.",
+    "offline_citizen": "Oflayn rejim. Formanı təqdim etmək üçün internet lazımdır.",
+    "more_details": "Daha artıq detallar",
+    "offline_warning": "Görünür hazırda oflyansınız. Narahat olmayın, sizin cavablar təhlükəsiz şəkildə yerində saxlanılıb və internet ilə bağlantı yarananda serverdə sinxronlaşdırılacaq. Müşahidə formalarının doldurulmasına və insidentlərin göndərilməsinə sərbəst şəkildə davam edin.",
+    "offline_warning_citizen": "Deyəsən, hazırda oflaynsınız. Formanı təqdim etmək üçün onlayn olmalısınız."
+  },
+  "sync": {
+    "sync_data": "Oflayn məlumatların sinxronizasiyası...",
+    "warning": "Xahiş edirik, aplikasiyanı və interneti bağlamayın. Yoxsa məlumatlar itəcək.",
+    "files": "Sizin fayllar yüklənir, buna zaman lazım ola bilər"
+  }
 }

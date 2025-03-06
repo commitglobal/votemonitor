@@ -175,7 +175,7 @@ public class AnswerMapperTests
         var singleSelectAnswerRequest = new SingleSelectAnswerRequest
         {
             QuestionId = Guid.NewGuid(),
-            Selection = new SelectedOptionRequest { Text = "some text", OptionId = new Guid() }
+            Selection = new SelectedOptionRequest { Text = "some text", OptionId = Guid.Empty }
         };
 
         // Act

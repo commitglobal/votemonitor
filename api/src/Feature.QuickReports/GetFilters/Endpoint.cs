@@ -30,8 +30,8 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT MIN(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "FirstSubmissionTimestamp",
-                         MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LastSubmissionTimestamp"
+                  SELECT MIN(QR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
+                         MAX(QR."LastUpdatedAt") AS "LastSubmissionTimestamp"
                   FROM "QuickReports" QR
                   INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
                   WHERE QR."ElectionRoundId" = @electionRoundId

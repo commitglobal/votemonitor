@@ -37,7 +37,7 @@ public class ObsoleteEndpointTests
         // Act
         var request = new Obsolete.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -64,7 +64,7 @@ public class ObsoleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -96,7 +96,7 @@ public class ObsoleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        await _endpoint.ExecuteAsync(request, default);
+        await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _monitoringNgoRepository
@@ -116,7 +116,7 @@ public class ObsoleteEndpointTests
         var request = new Obsolete.Request { Id = Guid.NewGuid() };
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

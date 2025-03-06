@@ -53,7 +53,9 @@ export function AggregateCard({
     <Card key={aggregate.questionId}>
       <CardHeader>
         <CardTitle className='flex items-center justify-between text-xl gap-x-4'>
-          {aggregate.question.code}. {aggregate.question.text[language]}
+          <span>
+            {aggregate.question.code}. {aggregate.question.text[language]}
+          </span>
           {!isTextAggregate(aggregate) && !isNumberAggregate(aggregate) && (
             <Button
               className='gap-1'
@@ -65,6 +67,7 @@ export function AggregateCard({
             </Button>
           )}
         </CardTitle>
+        <span className='text-sm italic'>{aggregate.question.helptext?.[language]}</span>
         <p className='text-gray-500'>{aggregate.answersAggregated} answers</p>
       </CardHeader>
       {aggregate.answersAggregated > 0 ? (
@@ -77,7 +80,9 @@ export function AggregateCard({
 
           {isNumberAggregate(aggregate) && <NumberAggregateContent aggregate={aggregate} />}
 
-          {isRatingAggregate(aggregate) && <RatingAggregateContent ref={chartRef} aggregate={aggregate} />}
+          {isRatingAggregate(aggregate) && (
+            <RatingAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
+          )}
 
           {isSingleSelectAggregate(aggregate) && (
             <SingleSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
