@@ -1,5 +1,5 @@
-import React from "react";
-import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
+import React, { useMemo } from "react";
+import { styled, ToggleGroup, ToggleGroupSingleProps, YStack } from "tamagui";
 import { Typography } from "../Typography";
 
 const SCALES = {
@@ -16,6 +16,8 @@ const SCALES = {
 export interface RatingInputProps extends ToggleGroupSingleProps {
   id: string;
   scale: string;
+  lowerLabel?: string;
+  upperLabel?: string;
 }
 
 const StyledToggleGroupItem = styled(ToggleGroup.Item, {
@@ -39,38 +41,63 @@ export const RatingInput: React.FC<RatingInputProps> = ({
   id,
   scale,
   value,
+  lowerLabel,
+  upperLabel,
   onValueChange,
   ...rest
 }) => {
   const selectedScale = SCALES[scale as keyof typeof SCALES] || SCALES.OneTo10;
-  const fontSize = selectedScale === SCALES.OneTo10 ? 12 : 14;
+  const fontSize = useMemo(() => (selectedScale === SCALES.OneTo10 ? 12 : 14), [selectedScale]);
 
+  const maxScaleValue = selectedScale.at(-1);
   return (
-    <ToggleGroup
-      orientation="horizontal"
-      id={id}
-      height={40}
-      width="100%"
-      value={value}
-      onValueChange={onValueChange}
-      {...rest}
-    >
-      {selectedScale.map((rating, i) => (
-        <StyledToggleGroupItem
-          key={i}
-          value={rating.toString()}
-          flex={1}
-          active={rating.toString() === value}
-          padding={0}
-          justifyContent="center"
-          alignItems="center"
+    <YStack flex={1} gap="$sm">
+      <ToggleGroup
+        orientation="horizontal"
+        id={id}
+        height={40}
+        width="100%"
+        value={value}
+        onValueChange={onValueChange}
+        {...rest}
+      >
+        {selectedScale.map((rating, i) => (
+          <StyledToggleGroupItem
+            key={i}
+            value={rating.toString()}
+            flex={1}
+            active={rating.toString() === value?.toString()}
+            padding={0}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography fontSize={fontSize} allowFontScaling={false}>
+              {rating.toString()}
+            </Typography>
+          </StyledToggleGroupItem>
+        ))}
+      </ToggleGroup>
+      {lowerLabel && (
+        <Typography
+          color="$gray5"
+          fontSize={fontSize}
+          allowFontScaling={false}
+          fontStyle={"italic"}
         >
-          <Typography fontSize={fontSize} allowFontScaling={false}>
-            {rating.toString()}
-          </Typography>
-        </StyledToggleGroupItem>
-      ))}
-    </ToggleGroup>
+          1 - {lowerLabel}
+        </Typography>
+      )}
+      {upperLabel && (
+        <Typography
+          color="$gray5"
+          fontSize={fontSize}
+          allowFontScaling={false}
+          fontStyle={"italic"}
+        >
+          {maxScaleValue} - {upperLabel}
+        </Typography>
+      )}
+    </YStack>
   );
 };
 

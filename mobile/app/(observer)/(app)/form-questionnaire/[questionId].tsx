@@ -185,6 +185,7 @@ const FormQuestionnaire = () => {
           electionRoundId: activeElectionRound?.id,
           formId: currentForm?.id as string,
           answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+          lastUpdatedAt: new Date().toISOString(),
         });
       }
 
@@ -316,6 +317,7 @@ const FormQuestionnaire = () => {
         electionRoundId: activeElectionRound?.id,
         formId: currentForm?.id as string,
         answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+        lastUpdatedAt: new Date().toISOString(),
       });
     }
 
