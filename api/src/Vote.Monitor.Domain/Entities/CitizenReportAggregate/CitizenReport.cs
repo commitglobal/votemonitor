@@ -53,8 +53,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
-        int numberOfFlaggedAnswers,
-        DateTime lastUpdatedAt) =>
+        int numberOfFlaggedAnswers) =>
         new(id, electionRoundId, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void Update(IEnumerable<BaseAnswer>? answers, int? numberOfQuestionsAnswered,

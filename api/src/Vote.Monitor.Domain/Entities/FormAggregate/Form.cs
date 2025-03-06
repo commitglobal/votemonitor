@@ -166,7 +166,7 @@ public class Form : BaseForm
             lastUpdatedAt);
     }
 
-    public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers, DateTime lastUpdatedAt)
+    public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers)
     {
         answers ??= [];
 
@@ -186,8 +186,7 @@ public class Form : BaseForm
             location,
             answers,
             numberOfQuestionAnswered,
-            numberOfFlaggedAnswers,
-            lastUpdatedAt);
+            numberOfFlaggedAnswers);
     }
 
     public IncidentReport CreateIncidentReport(
