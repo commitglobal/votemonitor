@@ -41,7 +41,9 @@ export type ApiFormQuestion = {
     }
   | {
       $questionType: "ratingQuestion";
-      scale: string; // "OneTo10" //TODO: ce posibilitati mai sunt?
+      scale: "OneTo3" | "OneTo4" | "OneTo5" | "OneTo6" | "OneTo7" | "OneTo8" | "OneTo9" | "OneTo10";
+      lowerLabel?: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};
+      upperLabel?: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};
     }
   | {
       $questionType: "multiSelectQuestion" | "singleSelectQuestion";

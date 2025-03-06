@@ -53,6 +53,7 @@ export const addAttachmentQuickReportMultipartStart = ({
       fileName,
       contentType,
       numberOfUploadParts,
+      lastUpdatedAt: new Date().toISOString(),
     },
     {},
   ).then((res) => res.data);

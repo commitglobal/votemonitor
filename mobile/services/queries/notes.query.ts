@@ -34,7 +34,7 @@ export const useNotesForQuestionId = (
       (data: Note[]) => {
         return data
           .filter((note) => note.questionId === questionId)
-          .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)); // added unary '+' operator to avoid ts error that the right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type
+          .sort((a, b) => +new Date(b.lastUpdatedAt) - +new Date(a.lastUpdatedAt)); // added unary '+' operator to avoid ts error that the right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type
       },
       [electionRoundId, pollingStationId, formId, questionId],
     ),

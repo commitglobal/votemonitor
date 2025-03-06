@@ -111,6 +111,7 @@ export type PollingStationInformationAPIPayload = {
   answers?: ApiFormAnswer[];
   breaks?: Break[];
   isCompleted?: boolean;
+  lastUpdatedAt: string; // ISO String  "2024-04-01T12:58:06.670Z";
 };
 
 export type Break = {
@@ -127,6 +128,7 @@ export type PollingStationInformationAPIResponse = {
   answers: ApiFormAnswer[];
   breaks: Break[];
   isCompleted: boolean;
+  lastUpdatedAt: string; // ISO String  "2024-04-01T12:58:06.670Z";
 };
 
 export const upsertPollingStationGeneralInformation = ({
@@ -152,8 +154,7 @@ export const upsertPollingStationGeneralInformation = ({
 */
 export type PollingStationInformationFormAPIResponse = {
   id: string;
-  createdOn: string;
-  lastModifiedOn: string;
+  lastUpdatedAt: string;
   languages: string[]; // ["RO", "EN"]
   questions: ApiFormQuestion[];
   defaultLanguage: string;
@@ -210,6 +211,7 @@ export type FormAPIModel = {
   lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
   questions: ApiFormQuestion[];
   icon?: string;
+  displayOrder: number;
 };
 
 export type ElectionRoundsAllFormsAPIResponse = {
@@ -221,7 +223,15 @@ export type ElectionRoundsAllFormsAPIResponse = {
 export const getElectionRoundAllForms = (
   electionRoundId: string,
 ): Promise<ElectionRoundsAllFormsAPIResponse> => {
-  return API.get(`election-rounds/${electionRoundId}/forms:fetchAll`, {}).then((res) => res.data);
+  return API.get<ElectionRoundsAllFormsAPIResponse>(
+    `election-rounds/${electionRoundId}/forms:fetchAll`,
+    {},
+  ).then((res) => ({
+    ...res.data,
+    forms: res.data.forms.sort(
+      (a, b) => a.displayOrder - b.displayOrder || a.code.localeCompare(b.code),
+    ),
+  }));
 };
 
 /** ========================================================================
@@ -266,6 +276,7 @@ export type FormSubmission = {
   pollingStationId: string;
   answers: ApiFormAnswer[];
   isCompleted: boolean;
+  lastUpdatedAt: string;
 };
 
 export type FormSubmissionsApiResponse = {
@@ -350,6 +361,7 @@ export type UpsertNotePayload = {
   text: string;
   formId: string;
   questionId: string;
+  lastUpdatedAt: string;
 };
 
 export const upsertNote = ({
