@@ -77,9 +77,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
       formId,
       id: selectedNote ? selectedNote?.id : "",
       text: formData.noteEditedText,
-      lastUpdatedAt: new Date().toISOString(),
     };
-
     // update the note
     updateNote(updateNotePayload);
     // close dialog

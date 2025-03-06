@@ -105,7 +105,6 @@ const PollingStationQuestionnaire = () => {
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
         isCompleted: completion,
-        lastUpdatedAt: new Date().toISOString(),
       });
       router.back();
     }
@@ -180,7 +179,6 @@ const PollingStationQuestionnaire = () => {
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
         answers,
-        lastUpdatedAt: new Date().toISOString(),
       });
       router.back();
     }
