@@ -163,6 +163,7 @@ export const useMarkFormSubmissionCompletionStatusMutation = ({
             pollingStationId: updatedSubmission?.pollingStationId || payload.pollingStationId,
             answers: updatedSubmission?.answers || [],
             isCompleted: payload.isCompleted, // new value
+            lastUpdatedAt: updatedSubmission?.lastUpdatedAt || new Date().toISOString(),
           },
         ],
       });

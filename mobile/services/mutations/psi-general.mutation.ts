@@ -52,6 +52,7 @@ export const useMutatePollingStationGeneralData = ({
         answers: [],
         breaks: [],
         isCompleted: false,
+        lastUpdatedAt: new Date().toISOString(),
       };
 
       // Optimistically update to the new value

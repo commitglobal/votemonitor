@@ -5,8 +5,7 @@ export type Note = {
   formId: string;
   questionId: string;
   text: string;
-  createdAt: string;
-  updatedAt: string | null;
+  lastUpdatedAt: string;
 
   // Offline flag
   isNotSynched?: boolean;

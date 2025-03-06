@@ -51,6 +51,7 @@ const AddNoteSheetContent = ({
       text: note.noteText,
       formId,
       questionId,
+      lastUpdatedAt: new Date().toISOString(),
     };
 
     addNote({ electionRoundId, ...notePayload });
