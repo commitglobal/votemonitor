@@ -1,5 +1,4 @@
-﻿using Feature.FormTemplates.Specifications;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Create;
 

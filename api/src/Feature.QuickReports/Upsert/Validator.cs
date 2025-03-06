@@ -22,5 +22,19 @@ public class Validator : Validator<Request>
             .NotEmpty()
             .MaximumLength(1024)
             .When(x => x.QuickReportLocationType == QuickReportLocationType.OtherPollingStation);
+
+        RuleFor(x => x.LastUpdatedAt)
+            .Must(BeUtc)
+            .WithMessage("LastUpdatedAt must be in UTC format.");
+    }
+
+    private bool BeUtc(DateTime? date)
+    {
+        if (!date.HasValue)
+        {
+            return true;
+        }
+
+        return date.Value.Kind == DateTimeKind.Utc;
     }
 }

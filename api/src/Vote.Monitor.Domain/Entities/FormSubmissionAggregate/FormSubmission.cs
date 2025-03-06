@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
-public class FormSubmission : AuditableBaseEntity, IAggregateRoot
+public class FormSubmission : IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -19,6 +19,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public bool IsCompleted { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private FormSubmission(
@@ -29,7 +30,8 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         Id = Guid.NewGuid();
         ElectionRound = electionRound;
@@ -44,21 +46,23 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
+        LastUpdatedAt = lastUpdatedAt;
+
         if (isCompleted.HasValue)
         {
             IsCompleted = isCompleted.Value;
         }
     }
 
-    internal static FormSubmission Create(
-        ElectionRound electionRound,
+    internal static FormSubmission Create(ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted) =>
+        bool? isCompleted,
+        DateTime lastUpdatedAt) =>
         new(electionRound,
             pollingStation,
             monitoringObserver,
@@ -66,12 +70,14 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
             answers,
             numberOfQuestionAnswered,
             numberOfFlaggedAnswers,
-            isCompleted);
+            isCompleted,
+            lastUpdatedAt);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
         int? numberOfFlaggedAnswers,
-        bool? isCompleted)
+        bool? isCompleted, 
+        DateTime lastUpdatedAt)
     {
         if (answers is not null)
         {
@@ -92,6 +98,8 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         {
             IsCompleted = isCompleted.Value;
         }
+        
+        LastUpdatedAt = lastUpdatedAt;
     }
 
     public void ClearAnswers()

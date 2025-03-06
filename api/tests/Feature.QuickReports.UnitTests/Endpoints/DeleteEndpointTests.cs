@@ -34,7 +34,7 @@ public class DeleteEndpointTests
             ObserverId = monitoringObserverId,
             Id = attachmentId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

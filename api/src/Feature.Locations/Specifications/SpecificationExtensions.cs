@@ -13,10 +13,10 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.Level1)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.DisplayOrder)
                 : builder
                     .OrderByDescending(x => x.Level1)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.DisplayOrder);
         }
 
         if (string.Equals(request.SortColumnName, nameof(LocationAggregate.Level2),
@@ -25,10 +25,10 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.Level2)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.DisplayOrder)
                 : builder
                     .OrderByDescending(x => x.Level2)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.DisplayOrder);
         }
 
         if (string.Equals(request.SortColumnName, nameof(LocationAggregate.Level3),
@@ -37,10 +37,10 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.Level3)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.DisplayOrder)
                 : builder
                     .OrderByDescending(x => x.Level3)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.DisplayOrder);
         }
 
         if (string.Equals(request.SortColumnName, nameof(LocationAggregate.Level4),
@@ -49,10 +49,10 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.Level4)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.DisplayOrder)
                 : builder
                     .OrderByDescending(x => x.Level4)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.DisplayOrder);
         }
 
         if (string.Equals(request.SortColumnName, nameof(LocationAggregate.Level5),
@@ -61,26 +61,18 @@ public static class SpecificationExtensions
             return request.IsAscendingSorting
                 ? builder
                     .OrderBy(x => x.Level5)
-                    .ThenBy(x => x.Id)
+                    .ThenBy(x => x.DisplayOrder)
                 : builder
                     .OrderByDescending(x => x.Level5)
-                    .ThenBy(x => x.Id);
-        }
-
-        if (string.Equals(request.SortColumnName, nameof(LocationAggregate.Tags),
-                StringComparison.InvariantCultureIgnoreCase))
-        {
-            return request.IsAscendingSorting
-                ? builder
-                    .OrderBy(x => x.Tags)
-                    .ThenBy(x => x.Id)
-                : builder
-                    .OrderByDescending(x => x.Tags)
-                    .ThenBy(x => x.Id);
+                    .ThenBy(x => x.DisplayOrder);
         }
 
         return builder
-            .OrderBy(x => x.DisplayOrder)
-            .ThenBy(x => x.Id);
+            .OrderBy(x => x.Level1)
+            .ThenBy(x => x.Level2)
+            .ThenBy(x => x.Level3)
+            .ThenBy(x => x.Level4)
+            .ThenBy(x => x.Level5)
+            .ThenBy(x => x.DisplayOrder);
     }
 }

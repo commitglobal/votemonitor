@@ -14,7 +14,7 @@ public class Endpoint(IReadRepository<MonitoringNgoAggregate> repository) : Endp
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var monitoringNgos = await repository.ListAsync(new GetMonitoringNgoSpecification(request.ElectionRoundId), ct);
+        var monitoringNgos = await repository.ListAsync(new ListMonitoringNgosSpecification(request.ElectionRoundId), ct);
 
         return TypedResults.Ok(new Response { MonitoringNgos = monitoringNgos });
     }

@@ -6,9 +6,9 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
-public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
+public class PollingStationInformation : IAggregateRoot
 {
-    public Guid Id { get; internal set; }    
+    public Guid Id { get; internal set; }
     public Guid ElectionRoundId { get; internal set; }
     public ElectionRound ElectionRound { get; internal set; }
     public Guid PollingStationId { get; internal set; }
@@ -25,9 +25,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<BaseAnswer> Answers { get; internal set; } = new List<BaseAnswer>().AsReadOnly();
     public IReadOnlyList<ObservationBreak> Breaks { get; internal set; } = new List<ObservationBreak>().AsReadOnly();
     public bool IsCompleted { get; internal set; }
+    public DateTime LastUpdatedAt { get; set; }
 
     internal PollingStationInformation(
-        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -38,7 +38,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
-        ValueOrUndefined<bool> isCompleted)
+        ValueOrUndefined<bool> isCompleted,
+        DateTime lastUpdatedAt)
     {
         Id = Guid.NewGuid();
         ElectionRound = electionRound;
@@ -52,9 +53,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
-        CreatedBy = userId;
-        CreatedOn = DateTime.UtcNow;
         Answers = answers.ToList().AsReadOnly();
+        LastUpdatedAt = lastUpdatedAt;
 
         if (!isCompleted.IsUndefined)
         {
@@ -65,7 +65,6 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     }
 
     internal static PollingStationInformation Create(
-        Guid userId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -76,8 +75,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
-        ValueOrUndefined<bool> isCompleted) =>
-        new(userId,
+        ValueOrUndefined<bool> isCompleted,
+        DateTime lastUpdatedAt) =>
+        new(
             electionRound,
             pollingStation,
             monitoringObserver,
@@ -88,7 +88,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
             numberOfQuestionsAnswered,
             numberOfFlaggedAnswers,
             breaks,
-            isCompleted);
+            isCompleted,
+            lastUpdatedAt);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
@@ -96,7 +97,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         ValueOrUndefined<DateTime?> arrivalTime,
         ValueOrUndefined<DateTime?> departureTime,
         List<ObservationBreak>? breaks,
-        ValueOrUndefined<bool> isCompleted)
+        ValueOrUndefined<bool> isCompleted,
+        DateTime lastUpdatedAt)
     {
         if (answers is not null)
         {
@@ -117,8 +119,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         {
             IsCompleted = isCompleted.Value;
         }
-        
-        LastModifiedOn = DateTime.UtcNow;
+
+        LastUpdatedAt = lastUpdatedAt;
         
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }

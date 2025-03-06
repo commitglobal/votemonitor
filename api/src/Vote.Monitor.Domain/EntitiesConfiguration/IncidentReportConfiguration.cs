@@ -31,6 +31,7 @@ public class IncidentReportConfiguration : IEntityTypeConfiguration<IncidentRepo
         builder.Property(x => x.NumberOfFlaggedAnswers);
 
         builder.Property(e => e.LocationType).IsRequired();
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder
             .Property(e => e.LocationDescription)

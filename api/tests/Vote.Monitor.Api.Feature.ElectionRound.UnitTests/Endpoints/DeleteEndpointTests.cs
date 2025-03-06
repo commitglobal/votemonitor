@@ -17,7 +17,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Delete.Request { Id = electionRound.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.Received(1).DeleteAsync(electionRound);
@@ -37,7 +37,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Delete.Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<ElectionRoundAggregate>());

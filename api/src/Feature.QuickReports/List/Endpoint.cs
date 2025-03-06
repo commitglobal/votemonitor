@@ -62,13 +62,13 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 @level5 IS NULL
                 OR PS."Level5" = @level5
             )
-            AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
-            AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp);
+            AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
+            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp);
 
         SELECT
             QR."Id",
             QR."QuickReportLocationType",
-            COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS  "Timestamp",
+            QR."LastUpdatedAt" AS  "Timestamp",
             QR."Title",
             QR."Description",
             QR."IncidentCategory",
@@ -130,11 +130,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 @level5 IS NULL
                 OR PS."Level5" = @level5
             )
-            AND (@fromDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @fromDate::timestamp)
-            AND (@toDate is NULL OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @toDate::timestamp)
+            AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
+            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
         ORDER BY
-            CASE WHEN @sortExpression = 'Timestamp ASC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END ASC,
-            CASE WHEN @sortExpression = 'Timestamp DESC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END DESC
+            CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
+            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC
         OFFSET
             @offset ROWS
         FETCH NEXT

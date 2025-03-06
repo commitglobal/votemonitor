@@ -1,16 +1,16 @@
-﻿using Vote.Monitor.TestUtils.Fakes;
+﻿using Vote.Monitor.TestUtils;
 
-namespace Feature.QuickReports.UnitTests.ValidatorTests;
+namespace Feature.Attachments.UnitTests.ValidatorTests;
 
-public class AddAttachmentValidatorTests
+public class AbortUploadValidatorTests
 {
-    private readonly AddAttachment.Validator _validator = new();
+    private readonly AbortUpload.Validator _validator = new();
 
     [Fact]
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
         // Arrange
-        var request = new AddAttachment.Request { ObserverId = Guid.Empty };
+        var request = new AbortUpload.Request { ObserverId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -23,7 +23,7 @@ public class AddAttachmentValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new AddAttachment.Request { ElectionRoundId = Guid.Empty };
+        var request = new AbortUpload.Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -33,23 +33,10 @@ public class AddAttachmentValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_QuickReportId_Empty()
-    {
-        // Arrange
-        var request = new AddAttachment.Request { QuickReportId = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.QuickReportId);
-    }
-
-    [Fact]
     public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
-        var request = new AddAttachment.Request { Id = Guid.Empty };
+        var request = new AbortUpload.Request { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -58,31 +45,30 @@ public class AddAttachmentValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
-
-    [Fact]
-    public void Validation_ShouldFail_When_Attachment_Empty()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_UploadId_Empty(string uploadId)
     {
         // Arrange
-        var request = new AddAttachment.Request();
+        var request = new AbortUpload.Request { UploadId = uploadId };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Attachment);
+        result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new AddAttachment.Request
+        var request = new AbortUpload.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            QuickReportId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
-            Attachment = FakeFormFile.New().HavingFileName("image.jpg").HavingLength(256).Please()
+            UploadId = Guid.NewGuid().ToString()
         };
 
         // Act

@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Feature.QuickReports.AddAttachment;
+namespace Feature.Attachments.CompleteUpload;
 
 public class Request
 {
@@ -9,8 +9,7 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
-    public Guid QuickReportId { get; set; }
     public Guid Id { get; set; }
-
-    public IFormFile Attachment { get; set; }
+    public string UploadId { get; set; }
+    public Dictionary<int, string> Etags { get; set; }
 }

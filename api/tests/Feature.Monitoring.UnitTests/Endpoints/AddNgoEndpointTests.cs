@@ -1,4 +1,5 @@
 ﻿using Feature.Monitoring.Add;
+using Feature.Monitoring.Specifications;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
@@ -6,18 +7,24 @@ namespace Feature.Monitoring.UnitTests.Endpoints;
 
 public class AddNgoEndpointTests
 {
+    private readonly IRepository<ElectionRoundAggregate> _repository =
+        Substitute.For<IRepository<ElectionRoundAggregate>>();
+
+    private readonly IReadRepository<NgoAggregate> _ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
+    private readonly IRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
+    private readonly Endpoint _endpoint;
+
+    public AddNgoEndpointTests()
+    {
+        _endpoint = Factory.Create<Endpoint>(_repository, _ngoRepository, _monitoringNgoRepository);
+    }
+
     [Fact]
     public async Task ShouldReturnNotFound_WhenElectionRoundNotFound()
     {
-        // Arrange
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
-        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
-
-        // Act
+        // Arrange & Act 
         var request = new Request { ElectionRoundId = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -33,17 +40,12 @@ public class AddNgoEndpointTests
         // Arrange
         var electionRoundId = Guid.NewGuid();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
-
-        var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
-
-        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        _repository.FirstOrDefaultAsync(Arg.Any<GetElectionRoundByIdSpecification>())
+            .Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         // Act
         var request = new Request { ElectionRoundId = electionRoundId };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -59,20 +61,16 @@ public class AddNgoEndpointTests
         // Arrange
         var electionRoundId = Guid.NewGuid();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
+        _repository.FirstOrDefaultAsync(Arg.Any<GetElectionRoundByIdSpecification>())
+            .Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
         var ngo = new NgoAggregateFaker(status: NgoStatus.Deactivated).Generate();
 
-        ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
-
-        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        _ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
 
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -92,19 +90,15 @@ public class AddNgoEndpointTests
         var electionRoundId = Guid.NewGuid();
         var ngo = new NgoAggregateFaker(status: NgoStatus.Activated).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
         var electionRound = Substitute.For<ElectionRoundAggregate>();
-        repository.GetByIdAsync(electionRoundId).Returns(electionRound);
-
-        var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
-
-        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        _repository.FirstOrDefaultAsync(Arg.Any<GetElectionRoundByIdSpecification>()).Returns(electionRound);
+        var monitoringNgo = new MonitoringNgo(electionRound, ngo);
+        electionRound.AddMonitoringNgo(ngo).Returns(monitoringNgo);
+        _ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
 
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -112,6 +106,6 @@ public class AddNgoEndpointTests
             .Which
             .Result.Should().BeOfType<Ok<Response>>();
 
-       await monitoringNgoRepository.Received(1).AddAsync(Arg.Is<MonitoringNgoAggregate>(x=>x.NgoId == ngo.Id));
+        await _monitoringNgoRepository.Received(1).AddAsync(monitoringNgo);
     }
 }

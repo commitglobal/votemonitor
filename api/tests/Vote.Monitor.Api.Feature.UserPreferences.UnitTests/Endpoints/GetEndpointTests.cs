@@ -14,7 +14,7 @@ public class GetEndpointTests
 
         //act 
 
-        var response = await endpoint.ExecuteAsync(request, default);
+        var response = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
 
         //assert
@@ -37,7 +37,7 @@ public class GetEndpointTests
         var request = new Get.Request { Id = Guid.NewGuid() };
 
         //act 
-        var response = await endpoint.ExecuteAsync(request, default);
+        var response = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         //assert
         response.Should().BeOfType<Results<Ok<UserPreferencesModel>, NotFound<string>>>()
