@@ -26,6 +26,7 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
         builder.Property(x => x.FollowUpStatus)
             .IsRequired()
             .HasDefaultValue(SubmissionFollowUpStatus.NotApplicable);
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

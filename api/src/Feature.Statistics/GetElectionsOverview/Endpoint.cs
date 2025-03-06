@@ -180,7 +180,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         int numberOfMonitoringObservers;
         int numberOfMonitoringNgos;
         int totalNumberOfPollingStations;
-        PollingStationVisitsView pollingStationVisitsView = default!;
+        PollingStationVisitsView pollingStationVisitsView = null!;
         int numberOfSubmittedForms;
         int numberOfAnsweredQuestions;
         int numberOfFlaggedAnswers;

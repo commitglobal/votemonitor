@@ -56,7 +56,7 @@ public class Endpoint(
                 MonitoringObserverId = incidentReport.MonitoringObserverId,
                 ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
                                incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
-                TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+                TimeSubmitted = incidentReport.LastUpdatedAt,
                 FollowUpStatus = incidentReport.FollowUpStatus,
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,

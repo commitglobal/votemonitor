@@ -17,4 +17,9 @@ public class Request
     public string? LocationDescription { get; set; }
     public List<BaseAnswerRequest>? Answers { get; set; }
     public bool? IsCompleted { get; set; }
+    
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? LastUpdatedAt { get; set; }
 }

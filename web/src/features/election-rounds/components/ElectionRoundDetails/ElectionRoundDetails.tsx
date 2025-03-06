@@ -38,7 +38,7 @@ function ElectionRoundDetails() {
           <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
           <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
           <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='form-templates'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
+          <TabsTrigger value='form-templates'>{t('electionEvent.formTemplates.tabTitle')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='event-details'>
@@ -53,7 +53,7 @@ function ElectionRoundDetails() {
           <LocationsDashboard />
         </TabsContent>
 
-        <TabsContent value='form-templates'>{/* <FormsDashboard /> */}</TabsContent>
+        <TabsContent value='form-templates'>{/* <FormTemplatesAssign /> */}</TabsContent>
       </Tabs>
     </Layout>
   );

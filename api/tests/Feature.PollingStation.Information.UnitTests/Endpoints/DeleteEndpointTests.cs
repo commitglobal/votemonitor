@@ -34,7 +34,7 @@ public class DeleteEndpointTests
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).DeleteAsync(pollingStationInformation);
@@ -67,7 +67,7 @@ public class DeleteEndpointTests
                 request.ObserverId)
             .Returns(true);
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<PollingStationInformation>());
@@ -93,7 +93,7 @@ public class DeleteEndpointTests
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<PollingStationInformation>());

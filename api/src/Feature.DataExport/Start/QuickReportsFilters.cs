@@ -4,25 +4,28 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.DataExport.Start;
 
-public class QuickReportsFilters
+public record QuickReportsFilters
 {
-    public DataSource DataSource { get; set; } = DataSource.Ngo;
-    public Guid? CoalitionMemberId { get; set; }
-    public string? Level1Filter { get; set; }
-    public string? Level2Filter { get; set; }
-    public string? Level3Filter { get; set; }
-    public string? Level4Filter { get; set; }
-    public string? Level5Filter { get; set; }
-    public QuickReportFollowUpStatus? QuickReportFollowUpStatus { get; set; }
-    public QuickReportLocationType? QuickReportLocationType { get; set; }
-    public IncidentCategory? IncidentCategory { get; set; }
-    public DateTime? FromDateFilter { get; set; }
-    public DateTime? ToDateFilter { get; set; }
+    public Guid NgoId { get; init; }
+
+    public DataSource DataSource { get; init; } = DataSource.Ngo;
+    public Guid? CoalitionMemberId { get; init; }
+    public string? Level1Filter { get; init; }
+    public string? Level2Filter { get; init; }
+    public string? Level3Filter { get; init; }
+    public string? Level4Filter { get; init; }
+    public string? Level5Filter { get; init; }
+    public QuickReportFollowUpStatus? QuickReportFollowUpStatus { get; init; }
+    public QuickReportLocationType? QuickReportLocationType { get; init; }
+    public IncidentCategory? IncidentCategory { get; init; }
+    public DateTime? FromDateFilter { get; init; }
+    public DateTime? ToDateFilter { get; init; }
 
     public ExportQuickReportsFilters ToFilter()
     {
         return new ExportQuickReportsFilters
         {
+            NgoId = NgoId,
             Level1Filter = Level1Filter,
             Level2Filter = Level2Filter,
             Level3Filter = Level3Filter,

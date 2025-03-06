@@ -57,6 +57,7 @@ services:
       MP_DATA_FILE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+  
   hangfire:
     image: votemonitorhangfire
     build:
@@ -74,9 +75,24 @@ services:
       db:
         condition: service_started
 
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"  # MinIO API port
+      - "9001:9001"  # MinIO Console UI
+    volumes:
+      - minio_data:/data
+    env_file:
+      - .env
+    command: server /data --console-address ":9001"
 volumes:
   db-data:
     driver: local
+  minio_data:
+    driver: local
+    
 # docker-compose up -d
 # docker-compose down
 # docker-compose ps

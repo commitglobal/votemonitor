@@ -27,6 +27,8 @@ public class QuickReportConfiguration : IEntityTypeConfiguration<QuickReport>
             .Property(e => e.PollingStationDetails)
             .IsRequired(false)
             .HasMaxLength(1024);
+        
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

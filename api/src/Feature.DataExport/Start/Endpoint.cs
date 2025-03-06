@@ -101,28 +101,32 @@ public class Endpoint(
     {
         if (req.ExportedDataType == ExportedDataType.FormSubmissions)
         {
-            return ExportedData.CreateForFormSubmissions(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+            return ExportedData.CreateForFormSubmissions(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+                timeProvider.UtcNow,
                 req.FormSubmissionsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
         {
-            return ExportedData.CreateForQuickReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+            return ExportedData.CreateForQuickReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+                timeProvider.UtcNow,
                 req.QuickReportsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.CitizenReports)
         {
-            return ExportedData.CreateForCitizenReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+            return ExportedData.CreateForCitizenReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+                timeProvider.UtcNow,
                 req.CitizenReportsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
-            return ExportedData.CreateForIncidentReports(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow,
+            return ExportedData.CreateForIncidentReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+                timeProvider.UtcNow,
                 req.IncidentReportsFilters?.ToFilter());
         }
 
-        return ExportedData.Create(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
+        return ExportedData.Create(req.UserId, req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
     }
 }

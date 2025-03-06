@@ -30,7 +30,7 @@ public class DeleteAttachmentEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

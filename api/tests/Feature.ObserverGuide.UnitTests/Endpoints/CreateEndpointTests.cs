@@ -75,7 +75,7 @@ public class CreateEndpointTests
             Attachment = FakeFormFile.New().HavingFileName(fileName).Please(),
             GuideType = ObserverGuideType.Document
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -106,7 +106,7 @@ public class CreateEndpointTests
             Title = "my observer guide",
             Attachment = FakeFormFile.New().Please()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -150,7 +150,7 @@ public class CreateEndpointTests
             Title = observerGuideTitle,
             Attachment = FakeFormFile.New().Please()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -190,7 +190,7 @@ public class CreateEndpointTests
             Attachment = FakeFormFile.New().Please(),
             GuideType = ObserverGuideType.Document
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -230,7 +230,7 @@ public class CreateEndpointTests
             Text = guideText,
             GuideType = ObserverGuideType.Text
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         _htmlStringSanitizer

@@ -6,10 +6,10 @@ namespace Feature.Form.Submissions.ListByObserver;
 public record ObserverSubmissionOverview
 {
     public Guid MonitoringObserverId { get; init; }
-    public string ObserverName { get; init; } = default!;
-    public string Email { get; init; } = default!;
-    public string? PhoneNumber { get; init; } = default!;
-    public string NgoName { get; init; } = default!;
+    public string ObserverName { get; init; } = null!;
+    public string Email { get; init; } = null!;
+    public string? PhoneNumber { get; init; } = null!;
+    public string NgoName { get; init; } = null!;
     public string[] Tags { get; init; } = [];
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfLocations { get; init; }

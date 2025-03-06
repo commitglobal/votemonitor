@@ -72,6 +72,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     {
         FormsVersion = Guid.NewGuid();
     }
+    
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringNgo()
     {

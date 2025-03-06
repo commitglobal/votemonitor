@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-
 import { readFileSync } from "fs";
 
 import ExcelJS from "exceljs";
-import { maxBy } from "lodash-es";
 import { existsSync, readdirSync } from "node:fs";
 import path from "path";
 
@@ -40,7 +38,9 @@ const languages = [];
 readdirSync("./locales", { withFileTypes: true, recursive: true })
   .filter((file) => file.isFile() && file.name.endsWith(".json"))
   .forEach((file) => {
-    const languageCode = file.parentPath.replace("locales/", "");
+    const languageCode = file.parentPath
+      .replace("locales/", "")
+      .replace("locales\\", "");
 
     const locales = readFileSync(path.join(file.parentPath, file.name), "utf8");
 
@@ -50,7 +50,7 @@ readdirSync("./locales", { withFileTypes: true, recursive: true })
     languages.push(languageCode);
   });
 
-const keys = Object.keys(dictionary['en']);
+const keys = Object.keys(dictionary["en"]);
 
 const data = keys.map((key) => {
   const keyData = {
@@ -71,7 +71,7 @@ const worksheet = workbook.addWorksheet("locales");
 // Define columns
 worksheet.columns = [
   { header: "Key", key: "keyName", width: 90 },
-  ...languages.map((l) => ({ header: l, key: l, width: 50, })),
+  ...languages.map((l) => ({ header: l, key: l, width: 50 })),
 ];
 
 // Add rows

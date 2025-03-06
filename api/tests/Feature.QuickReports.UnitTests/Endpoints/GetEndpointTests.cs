@@ -43,7 +43,7 @@ public class GetEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             Id = quickReportId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

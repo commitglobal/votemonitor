@@ -27,8 +27,8 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT MIN(COALESCE(IR."LastModifiedOn", IR."CreatedOn")) AS "FirstSubmissionTimestamp",
-                         MAX(COALESCE(IR."LastModifiedOn", IR."CreatedOn")) AS "LastSubmissionTimestamp"
+                  SELECT MIN(IR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
+                         MAX(IR."LastUpdatedAt") AS "LastSubmissionTimestamp"
                   FROM "IncidentReports" IR
                            INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
                            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"

@@ -21,7 +21,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Request { Id = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.Received(1).DeleteAsync(ngo);
@@ -41,7 +41,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<NgoAggregate>());

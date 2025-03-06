@@ -1,6 +1,7 @@
 ﻿using Feature.CitizenReports.Models;
 using Feature.CitizenReports.Specifications;
 using Feature.CitizenReports.Upsert;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 
@@ -20,7 +21,7 @@ public class UpsertEndpointTests
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _locationsRepository = Substitute.For<IReadRepository<Location>>();
 
-        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository);
+        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository, new CurrentUtcTimeProvider());
     }
 
     [Fact]
@@ -38,7 +39,7 @@ public class UpsertEndpointTests
             CitizenReportId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -66,7 +67,7 @@ public class UpsertEndpointTests
             CitizenReportId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -110,7 +111,7 @@ public class UpsertEndpointTests
             ]
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).UpdateAsync(citizenReport);
@@ -160,7 +161,7 @@ public class UpsertEndpointTests
         };
 
         // Act
-        Func<Task> act = () => _endpoint.ExecuteAsync(request, default);
+        Func<Task> act = () => _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var exception = await act.Should().ThrowAsync<ValidationFailureException>();
@@ -208,7 +209,7 @@ public class UpsertEndpointTests
         };
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository

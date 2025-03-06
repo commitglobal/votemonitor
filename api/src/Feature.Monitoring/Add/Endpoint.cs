@@ -1,13 +1,16 @@
 ﻿using Authorization.Policies;
+using Feature.Monitoring.Specifications;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Feature.Monitoring.Add;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository,
+public class Endpoint(
+    IRepository<ElectionRoundAggregate> repository,
     IReadRepository<NgoAggregate> ngoRepository,
-    IRepository<MonitoringNgo> monitoringNgoRepository) : Endpoint<Request, Results<Ok<Response>, NotFound<string>, ValidationProblem>>
+    IRepository<MonitoringNgo> monitoringNgoRepository)
+    : Endpoint<Request, Results<Ok<Response>, NotFound<string>, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -17,9 +20,11 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<Response>, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
+        var electionRound =
+            await repository.FirstOrDefaultAsync(new GetElectionRoundByIdSpecification(req.ElectionRoundId), ct);
         if (electionRound is null)
         {
             return TypedResults.NotFound("Election round not found");
@@ -40,9 +45,6 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
         var monitoringNgo = electionRound.AddMonitoringNgo(ngo);
         await monitoringNgoRepository.AddAsync(monitoringNgo, ct);
 
-        return TypedResults.Ok(new Response
-        {
-            Id = monitoringNgo.Id
-        });
+        return TypedResults.Ok(new Response { Id = monitoringNgo.Id });
     }
 }

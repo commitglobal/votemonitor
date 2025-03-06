@@ -37,7 +37,7 @@ public class CreateEndpointTests
         // Act
         var request = new Create.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -66,7 +66,7 @@ public class CreateEndpointTests
             Languages = [LanguagesList.RO.Iso1]
         };
 
-        await _endpoint.ExecuteAsync(request, default);
+        await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _monitoringNgoRepository
@@ -93,7 +93,7 @@ public class CreateEndpointTests
             DefaultLanguage = LanguagesList.RO.Iso1,
             Languages = [LanguagesList.RO.Iso1]
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository

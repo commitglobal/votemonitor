@@ -6,7 +6,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
-public class IncidentReport : AuditableBaseEntity, IAggregateRoot
+public class IncidentReport :  IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -24,6 +24,7 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
     public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public IncidentReportFollowUpStatus FollowUpStatus { get; private set; }
+    public DateTime LastUpdatedAt { get;  private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
     private readonly List<IncidentReportNote> _notes = new();
     public virtual IReadOnlyList<IncidentReportNote> Notes => _notes.ToList().AsReadOnly();
@@ -44,7 +45,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         Id = incidentReportId;
         ElectionRoundId = electionRoundId;
@@ -57,14 +59,15 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         LocationType = locationType;
         LocationDescription = locationDescription;
         FollowUpStatus = IncidentReportFollowUpStatus.NotApplicable;
+        LastUpdatedAt = lastUpdatedAt;
+        
         if(isCompleted.HasValue)
         {
             IsCompleted = isCompleted.Value;
         }
     }
 
-    internal static IncidentReport Create(
-        Guid incidentReportId,
+    internal static IncidentReport Create(Guid incidentReportId,
         Guid electionRoundId,
         MonitoringObserver monitoringObserver,
         IncidentReportLocationType locationType,
@@ -74,7 +77,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers,
-        bool? isCompleted)
+        bool? isCompleted, 
+        DateTime lastUpdatedAt)
     {
         if (locationType == IncidentReportLocationType.PollingStation)
         {
@@ -94,7 +98,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
                 answers,
                 numberOfQuestionAnswered,
                 numberOfFlaggedAnswers,
-                isCompleted);
+                isCompleted,
+                lastUpdatedAt);
         }
 
         if (locationType == IncidentReportLocationType.OtherLocation)
@@ -115,7 +120,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
                 answers,
                 numberOfQuestionAnswered,
                 numberOfFlaggedAnswers,
-                isCompleted);
+                isCompleted,
+                lastUpdatedAt);
         }
 
         throw new ArgumentNullException(nameof(locationType),
@@ -125,7 +131,8 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
         int? numberOfFlaggedAnswers,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         if (answers is not null)
         {
@@ -146,6 +153,9 @@ public class IncidentReport : AuditableBaseEntity, IAggregateRoot
         {
             IsCompleted = isCompleted.Value;
         }
+        
+        LastUpdatedAt = lastUpdatedAt;
+
     }
 
     public void ClearAnswers()

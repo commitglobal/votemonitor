@@ -11,7 +11,7 @@ public class UpdateEndpointTests
 
         // Act
         var request = new Update.Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -39,7 +39,7 @@ public class UpdateEndpointTests
 
         // Act
         var request = new Update.Request { Id = electionRound.Id, Title = "ExistingTitle" };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -74,7 +74,7 @@ public class UpdateEndpointTests
             CountryId = updatedCountry,
             StartDate = updatedStartDate
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         electionRound.Received(1).UpdateDetails(updatedCountry, updatedTitle, updatedEnglishTitle, updatedStartDate);

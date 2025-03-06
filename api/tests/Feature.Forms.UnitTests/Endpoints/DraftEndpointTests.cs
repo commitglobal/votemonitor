@@ -35,7 +35,7 @@ public class DraftEndpointTests
         // Act
         var request = new Draft.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -63,7 +63,7 @@ public class DraftEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -96,7 +96,7 @@ public class DraftEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        await _endpoint.ExecuteAsync(request, default);
+        await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _monitoringNgoRepository
@@ -116,7 +116,7 @@ public class DraftEndpointTests
         var request = new Draft.Request { Id = Guid.NewGuid() };
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

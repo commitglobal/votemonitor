@@ -3,6 +3,7 @@ using Authorization.Policies.Requirements;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
@@ -14,7 +15,8 @@ public class Endpoint(
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IRepository<QuickReport> repository,
     IReadRepository<QuickReportAttachment> attachmentsRepository,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<QuickReportModel>, NotFound>>
 {
     public override void Configure()
@@ -47,18 +49,13 @@ public class Endpoint(
         CancellationToken ct)
     {
         var monitoringObserverSpecification =
-            new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
-        var monitoringObserver =
+            new GetMonitoringObserverIdSpecification(req.ElectionRoundId, req.ObserverId);
+        var monitoringObserverId =
             await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
-
-        if (monitoringObserver == null)
-        {
-            AddError(r => r.ObserverId, "Observer not found");
-            return TypedResults.NotFound();
-        }
-
-        var quickReport = QuickReport.Create(req.Id, req.ElectionRoundId, monitoringObserver.Id, req.Title,
-            req.Description, req.QuickReportLocationType, req.PollingStationId, req.PollingStationDetails, req.IncidentCategory);
+        
+        var quickReport = QuickReport.Create(req.Id, req.ElectionRoundId, monitoringObserverId, req.Title,
+            req.Description, req.QuickReportLocationType, req.PollingStationId, req.PollingStationDetails,
+            req.IncidentCategory, req.LastUpdatedAt ?? timeProvider.UtcNow);
 
         await repository.AddAsync(quickReport, ct);
 
@@ -72,7 +69,7 @@ public class Endpoint(
         CancellationToken ct)
     {
         quickReport.Update(req.Title, req.Description, req.QuickReportLocationType, req.PollingStationId,
-            req.PollingStationDetails, req.IncidentCategory);
+            req.PollingStationDetails, req.IncidentCategory, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(quickReport, ct);
 
         var attachments = await GetPresignedAttachments(req.ElectionRoundId, req.Id, ct);

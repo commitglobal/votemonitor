@@ -138,11 +138,11 @@ public class Form : BaseForm
         new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
             Questions);
 
-    public FormSubmission CreateFormSubmission(
-        PollingStation pollingStation,
+    public FormSubmission CreateFormSubmission(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         List<BaseAnswer>? answers,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         answers ??= [];
         var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
@@ -155,11 +155,18 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers,
-            numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
+        return FormSubmission.Create(ElectionRound,
+            pollingStation,
+            monitoringObserver,
+            this,
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers,
+            isCompleted,
+            lastUpdatedAt);
     }
 
-    public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers)
+    public CitizenReport CreateCitizenReport(Guid citizenReportId, Location location, List<BaseAnswer>? answers, DateTime lastUpdatedAt)
     {
         answers ??= [];
 
@@ -173,8 +180,14 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return CitizenReport.Create(citizenReportId, ElectionRoundId, this, location, answers, numberOfQuestionAnswered,
-            numberOfFlaggedAnswers);
+        return CitizenReport.Create(citizenReportId,
+            ElectionRoundId,
+            this,
+            location,
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers,
+            lastUpdatedAt);
     }
 
     public IncidentReport CreateIncidentReport(
@@ -184,7 +197,8 @@ public class Form : BaseForm
         string? locationDescription,
         Guid? pollingStationId,
         List<BaseAnswer>? answers,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         answers ??= [];
 
@@ -200,8 +214,13 @@ public class Form : BaseForm
 
         return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
             pollingStationId,
-            locationDescription, Id, answers,
-            numberOfQuestionAnswered, numberOfFlaggedAnswers, isCompleted);
+            locationDescription, 
+            formId: Id, 
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers, 
+            isCompleted,
+            lastUpdatedAt);
     }
 
     public override DraftFormResult DraftInternal()

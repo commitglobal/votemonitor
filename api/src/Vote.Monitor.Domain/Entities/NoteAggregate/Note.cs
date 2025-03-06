@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.NoteAggregate;
 
-public class Note : AuditableBaseEntity, IAggregateRoot
+public class Note : IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -12,6 +12,8 @@ public class Note : AuditableBaseEntity, IAggregateRoot
     public Guid FormId { get; private set; }
     public Guid QuestionId { get; private set; }
     public string Text { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }
+
     public ElectionRound ElectionRound { get; private set; }
     public Form Form { get; private set; }
     public PollingStation PollingStation { get; private set; }
@@ -23,7 +25,8 @@ public class Note : AuditableBaseEntity, IAggregateRoot
         Guid monitoringObserverId,
         Guid formId,
         Guid questionId,
-        string text)
+        string text,
+        DateTime lastUpdatedAt)
     {
         Id = id;
         ElectionRoundId = electionRoundId;
@@ -32,6 +35,13 @@ public class Note : AuditableBaseEntity, IAggregateRoot
         FormId = formId;
         QuestionId = questionId;
         Text = text;
+        LastUpdatedAt = lastUpdatedAt;
+    }
+
+    public void UpdateText(string text, DateTime lastUpdatedAt)
+    {
+        Text = text;
+        LastUpdatedAt = lastUpdatedAt;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -40,8 +50,4 @@ public class Note : AuditableBaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
-    public void UpdateText(string text)
-    {
-        Text = text;
-    }
 }

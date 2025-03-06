@@ -47,14 +47,14 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         LocationId = location.Id;
     }
 
-    internal static CitizenReport Create(
-        Guid id,
+    internal static CitizenReport Create(Guid id,
         Guid electionRoundId,
         Form form,
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
-        int numberOfFlaggedAnswers) =>
+        int numberOfFlaggedAnswers,
+        DateTime lastUpdatedAt) =>
         new(id, electionRoundId, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void Update(IEnumerable<BaseAnswer>? answers, int? numberOfQuestionsAnswered,

@@ -43,7 +43,7 @@ public class DeleteEndpointTests
         // Act
         var request = new Delete.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -76,7 +76,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
 
@@ -111,7 +111,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -140,7 +140,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).DeleteAsync(form);
@@ -171,7 +171,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        await _endpoint.ExecuteAsync(request, default);
+        await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _monitoringNgoRepository
@@ -191,7 +191,7 @@ public class DeleteEndpointTests
             .ReturnsNullForAnyArgs();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<Form>());

@@ -52,6 +52,8 @@ export default function PreviewAnswer({
       <p className='font-bold text-gray-700'>
         {question.code}: {question.text[defaultLanguage]}
       </p>
+
+      <p className='text-sm italic'> {question.helptext?.[defaultLanguage]}</p>
       {isSingleSelectQuestion(question) && (
         <RadioGroup
           defaultChecked
@@ -113,6 +115,8 @@ export default function PreviewAnswer({
           className='max-w-fit'
           scale={ratingScaleToNumber(question.scale)}
           defaultValue={answer && isRatingAnswer(answer) ? answer.value?.toString() : undefined}
+          lowerLabel={question.lowerLabel?.[defaultLanguage]}
+          upperLabel={question.upperLabel?.[defaultLanguage]}
           disabled
         />
       )}

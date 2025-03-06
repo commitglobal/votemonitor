@@ -45,7 +45,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              PSI."ElectionRoundId",
                              PSI."PollingStationId",
                              PSI."MonitoringObserverId",
-                             COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") "LatestTimestamp"
+                             PSI."LastUpdatedAt" "LatestTimestamp"
                          FROM
                              "PollingStationInformation" PSI
                          WHERE
@@ -55,7 +55,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              FS."ElectionRoundId",
                              FS."PollingStationId",
                              FS."MonitoringObserverId",
-                             COALESCE(FS."LastModifiedOn", FS."CreatedOn") "LatestTimestamp"
+                             FS."LastUpdatedAt" "LatestTimestamp"
                          FROM
                              "FormSubmissions" FS
                          WHERE

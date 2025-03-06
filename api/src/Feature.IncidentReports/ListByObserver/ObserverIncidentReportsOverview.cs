@@ -7,9 +7,9 @@ namespace Feature.IncidentReports.ListByObserver;
 public record ObserverIncidentReportsOverview
 {
     public Guid MonitoringObserverId { get; init; }
-    public string ObserverName { get; init; } = default!;
-    public string Email { get; init; } = default!;
-    public string? PhoneNumber { get; init; } = default!;
+    public string ObserverName { get; init; } = null!;
+    public string Email { get; init; } = null!;
+    public string? PhoneNumber { get; init; } = null!;
     public string[] Tags { get; init; } = [];
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfIncidentsSubmitted { get; init; }

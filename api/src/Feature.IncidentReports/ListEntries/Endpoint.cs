@@ -99,8 +99,8 @@ public class Endpoint(
                           OR (@hasNotes = FALSE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") = 0)
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
                       ))
-                    AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                    AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp);
+                    AND (@fromDate is NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
+                    AND (@toDate is NULL OR IR."LastUpdatedAt" <= @toDate::timestamp);
                       
                       
                   WITH
@@ -127,7 +127,7 @@ public class Endpoint(
                                     AND "IsCompleted" = TRUE
                               ) AS "MediaFilesCount",
                               ( SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") AS "NotesCount",
-                              COALESCE(IR."LastModifiedOn", IR."CreatedOn") AS "TimeSubmitted",
+                              IR."LastUpdatedAt" AS "TimeSubmitted",
                               IR."FollowUpStatus",
                               IR."IsCompleted"
                           FROM
@@ -147,8 +147,8 @@ public class Endpoint(
                                 OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
                                 OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
                             )
-                            AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                            AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
+                            AND (@fromDate is NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
+                            AND (@toDate is NULL OR IR."LastUpdatedAt" <= @toDate::timestamp)
                       )
                   SELECT
                       IR."IncidentReportId",

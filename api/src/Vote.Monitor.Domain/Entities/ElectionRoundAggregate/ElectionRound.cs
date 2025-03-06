@@ -92,9 +92,18 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         Status = ElectionRoundStatus.NotStarted;
     }
 
-    public MonitoringNgo AddMonitoringNgo(Ngo ngo)
+    public virtual MonitoringNgo AddMonitoringNgo(Ngo ngo)
     {
-        var monitoringNgo = new MonitoringNgo(this, ngo);
+        var monitoringNgo = _monitoringNgos.FirstOrDefault(x => x.NgoId == ngo.Id);
+
+        if (monitoringNgo != null)
+        {
+            return monitoringNgo;
+        }
+
+        monitoringNgo = new MonitoringNgo(this, ngo);
+        _monitoringNgos.Add(monitoringNgo);
+
         return monitoringNgo;
     }
 

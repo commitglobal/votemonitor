@@ -35,6 +35,9 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
             .IsRequired();
 
         builder.Property(x => x.IsDeleted);
+        
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
+
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
