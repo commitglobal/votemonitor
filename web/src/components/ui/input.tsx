@@ -1,17 +1,18 @@
-import { Input as HeadlessInput, type InputProps as HeadlessInputProps } from '@headlessui/react'
-import { clsx } from 'clsx'
-import { forwardRef } from 'react'
+import { Input as HeadlessInput, type InputProps as HeadlessInputProps } from '@headlessui/react';
+import { clsx } from 'clsx';
+import { forwardRef } from 'react';
 
-const dateTypes = ['date', 'datetime-local', 'month', 'time', 'week']
-type DateType = (typeof dateTypes)[number]
+const dateTypes = ['date', 'datetime-local', 'month', 'time', 'week'];
+type DateType = (typeof dateTypes)[number];
 
-export const Input = forwardRef<
-  HTMLInputElement,
-  { type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType } & HeadlessInputProps
->(function Input({ className, ...props }, ref) {
+export type InputProps = {
+  type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType;
+} & HeadlessInputProps;
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ className, ...props }, ref) {
   return (
     <span
-      data-slot="control"
+      data-slot='control'
       className={clsx([
         className,
 
@@ -32,8 +33,7 @@ export const Input = forwardRef<
 
         // Invalid state
         'before:has-[[data-invalid]]:shadow-red-500/10',
-      ])}
-    >
+      ])}>
       <HeadlessInput
         ref={ref}
         className={clsx([
@@ -78,5 +78,5 @@ export const Input = forwardRef<
         {...props}
       />
     </span>
-  )
-})
+  );
+});
