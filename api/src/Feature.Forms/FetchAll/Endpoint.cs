@@ -79,7 +79,7 @@ public class Endpoint(VoteMonitorContext context)
         {
             ElectionRoundId = monitoringNgo.ElectionRoundId,
             Version = DeterministicGuid.Create(resultForms.Select(x => x.Id)).ToString(),
-            Forms = resultForms.OrderBy(x => x.DisplayOrder).ToList()
+            Forms = resultForms.OrderBy(x => x.DisplayOrder).ThenBy(x => x.Code).ToList()
         });
     }
 }

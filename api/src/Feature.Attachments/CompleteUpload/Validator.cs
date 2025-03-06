@@ -1,4 +1,4 @@
-﻿namespace Feature.QuickReports.Complete;
+﻿namespace Feature.Attachments.CompleteUpload;
 
 public class Validator : Validator<Request>
 {
@@ -6,10 +6,8 @@ public class Validator : Validator<Request>
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.ObserverId).NotEmpty();
-        RuleFor(x => x.QuickReportId).NotEmpty();
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.UploadId).NotEmpty();
         RuleFor(x => x.Etags).NotEmpty();
-        RuleForEach(x => x.Etags).NotEmpty();
     }
 }

@@ -8,9 +8,9 @@ public record Response
 
 public record SubmissionsFormFilterOption
 {
-    public Guid FormId { get; init; } = default!;
-    public string FormCode { get; init; } = default!;
-    public string FormName { get; init; } = default!;
+    public Guid FormId { get; init; } = Guid.Empty!;
+    public string FormCode { get; init; } = null!;
+    public string FormName { get; init; } = null!;
 }
 
 public record SubmissionsTimestampsFilterOptions

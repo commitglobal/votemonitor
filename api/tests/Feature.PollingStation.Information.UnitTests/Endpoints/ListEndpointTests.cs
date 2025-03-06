@@ -33,7 +33,7 @@ public class ListEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

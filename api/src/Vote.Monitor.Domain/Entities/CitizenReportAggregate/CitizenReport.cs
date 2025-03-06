@@ -47,8 +47,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         LocationId = location.Id;
     }
 
-    internal static CitizenReport Create(
-        Guid id,
+    internal static CitizenReport Create(Guid id,
         Guid electionRoundId,
         Form form,
         Location location,

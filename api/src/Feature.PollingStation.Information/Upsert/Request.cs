@@ -21,7 +21,11 @@ public class Request
 
     public List<BreakRequest>? Breaks { get; set; }
 
-
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? LastUpdatedAt { get; set; }
+    
     public class BreakRequest
     {
         public DateTime Start { get; set; }

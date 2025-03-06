@@ -18,4 +18,9 @@ public class Request
     public string? PollingStationDetails { get; set; }
 
     public IncidentCategory IncidentCategory { get; set; } = IncidentCategory.Other;
+    
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? LastUpdatedAt { get; set; }
 }

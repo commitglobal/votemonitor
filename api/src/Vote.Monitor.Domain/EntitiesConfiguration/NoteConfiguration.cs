@@ -20,6 +20,8 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.Property(x => x.Text)
             .HasMaxLength(10000)
             .IsRequired();
+        
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

@@ -21,7 +21,7 @@ public class CreateEndpointTests
 
         // Act
         var request = new Request { Name = ngoName };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
@@ -49,7 +49,7 @@ public class CreateEndpointTests
 
         // Act
         var request = new Request { Name = "ExistingName" };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

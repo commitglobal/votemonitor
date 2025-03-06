@@ -17,4 +17,9 @@ public class Request
     public string FileName { get; set; }
     public string ContentType { get; set; }
     public int NumberOfUploadParts { get; set; }
+    
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? LastUpdatedAt { get; set; }
 }

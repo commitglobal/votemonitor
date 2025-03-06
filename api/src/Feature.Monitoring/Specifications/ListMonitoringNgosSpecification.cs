@@ -2,9 +2,9 @@
 
 namespace Feature.Monitoring.Specifications;
 
-public sealed class GetMonitoringNgoSpecification : SingleResultSpecification<MonitoringNgoAggregate, MonitoringNgoModel>
+public sealed class ListMonitoringNgosSpecification : SingleResultSpecification<MonitoringNgoAggregate, MonitoringNgoModel>
 {
-    public GetMonitoringNgoSpecification(Guid electionRoundId)
+    public ListMonitoringNgosSpecification(Guid electionRoundId)
     {
         Query.Where(x => x.ElectionRoundId == electionRoundId);
 

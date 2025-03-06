@@ -8,8 +8,7 @@ public record NoteModel
     public required Guid FormId { get; init; }
     public required Guid QuestionId { get; init; }
     public required string Text { get; init; }
-    public required DateTime CreatedAt { get; init; }
-    public required DateTime? UpdatedAt { get; init; }
+    public required DateTime LastUpdatedAt { get; init; }
 
     public static NoteModel FromEntity(NoteAggregate note)
         => new ()
@@ -20,7 +19,6 @@ public record NoteModel
             FormId = note.FormId,
             QuestionId = note.QuestionId,
             Text = note.Text,
-            CreatedAt = note.CreatedOn,
-            UpdatedAt = note.LastModifiedOn
+            LastUpdatedAt = note.LastUpdatedAt
         };
 }

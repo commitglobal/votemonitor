@@ -3,7 +3,7 @@ using Feature.Attachments.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
-namespace Feature.Attachments.Complete;
+namespace Feature.Attachments.CompleteUpload;
 
 public class Endpoint(
     IAuthorizationService authorizationService,

@@ -1,11 +1,8 @@
-import Layout from '@/components/layout/Layout';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { ReactNode } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -33,13 +30,11 @@ export interface PreviewFormPageProps {
   form: FormFull | FormTemplateFull;
   languageCode: string;
   onNavigateToEdit: () => void;
-  breadcrumbs?: ReactNode;
   hideEditButton?: boolean;
 }
 export default function PreviewFormPage({
   form,
   languageCode,
-  breadcrumbs,
   onNavigateToEdit,
   hideEditButton = false,
 }: PreviewFormPageProps): FunctionComponent {

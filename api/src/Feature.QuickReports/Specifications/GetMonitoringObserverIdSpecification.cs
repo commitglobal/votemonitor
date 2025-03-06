@@ -2,10 +2,12 @@
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.QuickReports.Specifications;
-public sealed class GetMonitoringObserverSpecification : SingleResultSpecification<MonitoringObserver>
+public sealed class GetMonitoringObserverIdSpecification : SingleResultSpecification<MonitoringObserver, Guid>
 {
-    public GetMonitoringObserverSpecification(Guid electionRoundId, Guid observerId)
+    public GetMonitoringObserverIdSpecification(Guid electionRoundId, Guid observerId)
     {
         Query.Where(o => o.ElectionRoundId == electionRoundId && o.ObserverId == observerId && o.MonitoringNgo.ElectionRoundId == electionRoundId);
+
+        Query.Select(x => x.Id);
     }
 }

@@ -59,7 +59,7 @@ public class Endpoint(
                   SELECT qr."Id",
                          qr."ElectionRoundId",
                          qr."QuickReportLocationType",
-                         coalesce(qr."LastModifiedOn", qr."CreatedOn") as "Timestamp",
+                         QR."LastUpdatedAt" as "Timestamp",
                          qr."Title",
                          qr."Description",
                          qr."MonitoringObserverId",
@@ -80,7 +80,7 @@ public class Endpoint(
                          qr."PollingStationDetails",
                          qr."IncidentCategory",
                          qr."FollowUpStatus",
-                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "Id", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', qr."Id", 'FileName', qra."FileName", 'MimeType', qra."MimeType", 'FilePath', qra."FilePath", 'UploadedFileName', qra."UploadedFileName", 'TimeSubmitted', qra."LastUpdatedAt"))
                                    FROM "QuickReportAttachments" qra
                                    WHERE
                                        qra."ElectionRoundId" = @electionRoundId
@@ -135,7 +135,7 @@ public class Endpoint(
                   SELECT qr."Id",
                          qr."ElectionRoundId",
                          qr."QuickReportLocationType",
-                         coalesce(qr."LastModifiedOn", qr."CreatedOn") as "Timestamp",
+                         qr."LastUpdatedAt" as "Timestamp",
                          qr."Title",
                          qr."Description",
                          qr."PollingStationId",
@@ -149,7 +149,7 @@ public class Endpoint(
                          qr."PollingStationDetails",
                          qr."IncidentCategory",
                          qr."FollowUpStatus",
-                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "Id", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', qr."Id", 'FileName', qra."FileName", 'MimeType', qra."MimeType", 'FilePath', qra."FilePath", 'UploadedFileName', qra."UploadedFileName", 'TimeSubmitted', qra."LastUpdatedAt"))
                                    FROM "QuickReportAttachments" qra
                                    WHERE
                                        qra."ElectionRoundId" = @electionRoundId

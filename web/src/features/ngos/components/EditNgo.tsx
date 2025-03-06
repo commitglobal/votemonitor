@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 import { useNgoMutations } from '../hooks/ngos-queries';
 import { EditNgoFormData, editNgoSchema, NGO } from '../models/NGO';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { DevTool } from '@hookform/devtools';
 
 interface EditNgoAdminProps {
   existingData: NGO;
@@ -122,7 +121,6 @@ export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
                 </div>
               </div>
             </form>
-            <DevTool control={form.control} /> {/* set up the dev tool */}
           </Form>
         </CardContent>
       </Card>

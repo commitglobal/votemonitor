@@ -2,7 +2,7 @@
 
 public class Request
 {
-    public string InvitationToken { get; set; } = default!;
-    public string Password { get; set; } = default!;
-    public string ConfirmPassword{ get; set; } = default!;
+    public string InvitationToken { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string ConfirmPassword{ get; set; } = null!;
 }

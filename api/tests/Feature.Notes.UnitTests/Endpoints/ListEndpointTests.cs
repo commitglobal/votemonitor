@@ -52,7 +52,7 @@ public class ListEndpointTests
             FormId = Guid.NewGuid(),
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<List<NoteModel>>>();
@@ -80,7 +80,7 @@ public class ListEndpointTests
             PollingStationId = Guid.NewGuid(),
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
