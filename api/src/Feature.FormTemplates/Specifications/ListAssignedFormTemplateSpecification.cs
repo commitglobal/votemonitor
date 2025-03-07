@@ -25,8 +25,8 @@ public sealed class ListAssignedFormTemplateSpecification : Specification<Electi
                 Description = x.FormTemplate.Description,
                 FormType = x.FormTemplate.FormType,
                 Status = x.FormTemplate.Status,
-                CreatedOn = x.FormTemplate.CreatedOn,
-                LastModifiedOn = x.FormTemplate.LastModifiedOn
+                LastModifiedOn = x.FormTemplate.LastModifiedOn ?? x.FormTemplate.CreatedOn,
+                Languages = x.FormTemplate.Languages
             });
     }
 }

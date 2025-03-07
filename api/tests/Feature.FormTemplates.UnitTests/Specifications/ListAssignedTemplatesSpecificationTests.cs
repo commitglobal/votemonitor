@@ -2,12 +2,13 @@
 using Feature.FormTemplates.Specifications;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.FormTemplates.UnitTests.Specifications;
 
 public class ListAssignedTemplatesSpecificationTests
 {
-    private readonly FormTemplateStatus DefaultStatus = FormTemplateStatus.Drafted;
+    private readonly FormStatus DefaultStatus = FormStatus.Drafted;
 
     [Fact]
     public void ListAssignedTemplatesSpecification_Should_Filter_By_ElectionRoundId_And_Return_Correct_FormTemplates()
@@ -77,7 +78,7 @@ public class ListAssignedTemplatesSpecificationTests
 
         // Assert
         result.Should().HaveCount(2);
-        result.Should().BeInAscendingOrder(x => x.CreatedOn);
+        result.Should().BeInAscendingOrder(x => x.LastModifiedOn);
     }
     
     [Theory]
