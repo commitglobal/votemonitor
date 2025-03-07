@@ -15,8 +15,8 @@ public class Endpoint(IReadRepository<ElectionRoundAggregate> repository)
     {
         var specification = new ListElectionRoundsSpecification(req);
         var electionRounds = await repository.ListAsync(specification, ct);
-        var electionRoundsCunt = await repository.CountAsync(specification, ct);
+        var electionRoundsCount = await repository.CountAsync(specification, ct);
 
-        return TypedResults.Ok(new PagedResponse<ElectionRoundModel>(electionRounds, electionRoundsCunt, req.PageNumber, req.PageSize));
+        return TypedResults.Ok(new PagedResponse<ElectionRoundModel>(electionRounds, electionRoundsCount, req.PageNumber, req.PageSize));
     }
 }
