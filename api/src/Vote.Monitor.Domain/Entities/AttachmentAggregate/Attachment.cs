@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.AttachmentAggregate;
 
-public class Attachment : AuditableBaseEntity, IAggregateRoot
+public class Attachment : IAggregateRoot
 {
     public Guid Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
@@ -23,6 +23,7 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
 
     public bool IsDeleted { get; private set; }
     public bool IsCompleted { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }
 
     private Attachment(Guid id,
         Guid electionRoundId,
@@ -33,7 +34,8 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         string fileName,
         string filePath,
         string mimeType,
-        bool? isCompleted)
+        bool? isCompleted,
+        DateTime lastUpdatedAt)
     {
         Id = id;
         ElectionRoundId = electionRoundId;
@@ -45,8 +47,8 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         FilePath = filePath;
         MimeType = mimeType;
         IsDeleted = false;
-        
-        if(isCompleted.HasValue)
+
+        if (isCompleted.HasValue)
         {
             IsCompleted = isCompleted.Value;
         }
@@ -54,6 +56,7 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
         UploadedFileName = uploadedFileName;
+        LastUpdatedAt = lastUpdatedAt;
     }
 
     public void Delete()
@@ -65,13 +68,7 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     {
         IsCompleted = true;
     }
-
-#pragma warning disable CS8618 // Required by Entity Framework
-
-    internal Attachment()
-    {
-    }
-#pragma warning restore CS8618
+    
     public static Attachment Create(Guid id,
         Guid electionRoundId,
         Guid pollingStationId,
@@ -80,15 +77,14 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         Guid questionId,
         string fileName,
         string filePath,
-        string mimeType) => new(id, electionRoundId, pollingStationId, monitoringObserverId, formId, questionId, fileName, filePath, mimeType, true);
+        string mimeType,
+        DateTime lastUpdatedAt) => new(id, electionRoundId, pollingStationId, monitoringObserverId, formId, questionId,
+        fileName, filePath, mimeType, false, lastUpdatedAt);
+    
+#pragma warning disable CS8618 // Required by Entity Framework
 
-    public static Attachment CreateV2(Guid id,
-        Guid electionRoundId,
-        Guid pollingStationId,
-        Guid monitoringObserverId,
-        Guid formId,
-        Guid questionId,
-        string fileName,
-        string filePath,
-        string mimeType) => new(id, electionRoundId, pollingStationId, monitoringObserverId, formId, questionId, fileName, filePath, mimeType, false);
+    internal Attachment()
+    {
+    }
+#pragma warning restore CS8618
 }

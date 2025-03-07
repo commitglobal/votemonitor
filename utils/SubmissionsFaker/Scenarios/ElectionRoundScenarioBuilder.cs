@@ -1,3 +1,4 @@
+using SubmissionsFaker.Clients.PollingStations;
 using SubmissionsFaker.Consts;
 using SubmissionsFaker.Extensions;
 using SubmissionsFaker.Fakers;
@@ -19,18 +20,24 @@ public class ElectionRoundScenarioBuilder
 
     public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation)
     {
-        var createdPollingStation = _platformAdmin.PostWithResponse<ResponseWithId>(
+        var createdPollingStation = _platformAdmin.PostWithResponse<CreatePollingStationsResponse>(
             $"/api/election-rounds/{ElectionRoundId}/polling-stations",
             new
             {
-                Level1 = Guid.NewGuid().ToString(),
-                Number = "1",
-                DisplayOrder = 1,
-                Address = "Address",
-                Tags = new { }
+                PollingStations = new[]
+                {
+                    new
+                    {
+                        Level1 = Guid.NewGuid().ToString(),
+                        Number = "1",
+                        DisplayOrder = 1,
+                        Address = "Address",
+                        Tags = new { }
+                    }
+                }
             });
 
-        _pollingStations[pollingStation] = createdPollingStation.Id;
+        _pollingStations[pollingStation] = createdPollingStation.PollingStations.First().Id;
         return this;
     }
 
@@ -68,7 +75,7 @@ public class ElectionRoundScenarioBuilder
             $"/api/election-rounds/{ElectionRoundId}/coalitions",
             new
             {
-                CoalitionName = Guid.NewGuid().ToString(),
+                CoalitionName = name + Guid.NewGuid().ToString(),
                 LeaderId = ParentBuilder.NgoIdByName(leader),
                 NgoMembersIds = members.Select(member => ParentBuilder.NgoIdByName(member)).ToArray(),
             });
@@ -90,7 +97,7 @@ public class ElectionRoundScenarioBuilder
         }
 
         var coalitionScenarioBuilder =
-            new CoalitionScenarioBuilder(_platformAdmin, ParentBuilder.NgoByName(leader).Admin, this, coalition);
+            new CoalitionScenarioBuilder(ParentBuilder.NgoByName(leader).Admin, this, coalition);
         cfg?.Invoke(coalitionScenarioBuilder);
 
         _coalitions.Add(name, coalitionScenarioBuilder);

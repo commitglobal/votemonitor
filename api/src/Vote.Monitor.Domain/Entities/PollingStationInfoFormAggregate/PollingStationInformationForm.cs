@@ -12,11 +12,14 @@ namespace Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 public class PollingStationInformationForm : BaseForm
 {
+    public Guid ElectionRoundId { get; private set; }
+    public ElectionRound ElectionRound { get; private set; }
+    
     private PollingStationInformationForm(
         ElectionRound electionRound,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(electionRound,
+        IEnumerable<BaseQuestion> questions) : base(
         FormType.PSI,
         "PSI",
         TranslatedString.New(languages, "PSI"),
@@ -27,6 +30,8 @@ public class PollingStationInformationForm : BaseForm
         questions,
         FormStatus.Published)
     {
+        ElectionRound = electionRound;
+        ElectionRoundId = electionRound.Id;
     }
 
     private PollingStationInformationForm(
@@ -50,14 +55,14 @@ public class PollingStationInformationForm : BaseForm
         new(electionRound, defaultLanguage, languages, questions);
 
     public PollingStationInformation CreatePollingStationInformation(
-        Guid userId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         ValueOrUndefined<DateTime?> arrivalTime,
         ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer>? answers,
         List<ObservationBreak>? breaks,
-        ValueOrUndefined<bool> isCompleted)
+        ValueOrUndefined<bool> isCompleted,
+        DateTime lastUpdatedAt)
     {
         answers ??= [];
 
@@ -71,9 +76,33 @@ public class PollingStationInformationForm : BaseForm
         var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        return PollingStationInformation.Create(userId, ElectionRound, pollingStation, monitoringObserver, this,
+        return PollingStationInformation.Create(ElectionRound,
+            pollingStation,
+            monitoringObserver,
+            this,
             arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks, isCompleted);
+            departureTime,
+            answers,
+            numberOfQuestionsAnswered,
+            numberOfFlaggedAnswers,
+            breaks,
+            isCompleted,
+            lastUpdatedAt);
+    }
+    
+    public override DraftFormResult DraftInternal()
+    {
+        return new DraftFormResult.Drafted();
+    }
+
+    public override ObsoleteFormResult ObsoleteInternal()
+    {
+        return new ObsoleteFormResult.Obsoleted();
+    }
+
+    public override PublishFormResult PublishInternal()
+    {
+        return new PublishFormResult.Published();
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -81,4 +110,5 @@ public class PollingStationInformationForm : BaseForm
     {
     }
 #pragma warning restore CS8618
+   
 }

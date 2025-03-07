@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Core.Models;
 
-public class NoteModel
+public record NoteModel
 {
     public Guid QuestionId { get; init; }
     public Guid SubmissionId { get; init; }

@@ -2,6 +2,7 @@
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
@@ -11,7 +12,8 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<QuickReportAttachment> repository,
     IFileStorageService fileStorageService,
-    IReadRepository<MonitoringObserver> monitoringObserverRepository)
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
+    ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound, Conflict>>
 {
     public override void Configure()
@@ -40,17 +42,18 @@ public class Endpoint(
             return TypedResults.Conflict();
         }
 
-        var monitoringObserverSpecification = new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
-        var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
+        var monitoringObserverSpecification = new GetMonitoringObserverIdSpecification(req.ElectionRoundId, req.ObserverId);
+        var monitoringObserverId = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
 
         var uploadPath = $"elections/{req.ElectionRoundId}/quick-reports/{req.QuickReportId}";
-        var attachment = QuickReportAttachment.CreateV2(req.Id,
+        var attachment = QuickReportAttachment.Create(req.Id,
             req.ElectionRoundId,
-            monitoringObserver!.Id,
+            monitoringObserverId,
             req.QuickReportId,
             req.FileName,
             uploadPath,
-            req.ContentType);
+            req.ContentType,
+            req.LastUpdatedAt ?? timeProvider.UtcNow);
 
         var uploadResult = await fileStorageService.CreateMultipartUploadAsync(uploadPath,
             fileName: attachment.UploadedFileName,

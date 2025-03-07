@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.PollingStation.Information.Form.Upsert;
 
@@ -37,7 +37,8 @@ public class Endpoint(
         CancellationToken ct)
     {
         pollingStationInformationForm.UpdateDetails("PSI", TranslatedString.New(languages, "PSI"),
-            TranslatedString.New(languages, "PSI"), FormType.PSI, defaultLanguage, languages, null, questions);
+            TranslatedString.New(languages, "PSI"), FormType.PSI, defaultLanguage, languages, null,
+            questions);
         await repository.UpdateAsync(pollingStationInformationForm, ct);
 
         return TypedResults.Ok(PollingStationInformationFormModel.FromEntity(pollingStationInformationForm));

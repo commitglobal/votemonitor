@@ -94,6 +94,7 @@ export default function EditGuideForm({
   type EditGuideType = z.infer<typeof editGuideFormSchema>;
   const form = useForm<EditGuideType>({
     resolver: zodResolver(editGuideFormSchema),
+    mode: 'all',
     defaultValues: {
       guidePageType: guidePageType,
       guideType: guideType,
@@ -146,16 +147,20 @@ export default function EditGuideForm({
     },
   });
 
-  useBlocker(
-    () =>
-      confirm({
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return await confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
         cancelButton: 'Stay',
-      }),
-    form.formState.isDirty
-  );
+      });
+    },
+  });
 
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {

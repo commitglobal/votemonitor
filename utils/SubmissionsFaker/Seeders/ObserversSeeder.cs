@@ -8,7 +8,7 @@ namespace SubmissionsFaker.Seeders;
 
 public class ObserversSeeder
 {
-    public static async Task<List<CreateResponse>> Seed(IPlatformAdminApi platformAdminApi,
+    public static async Task<List<ResponseWithId>> Seed(IPlatformAdminApi platformAdminApi,
         List<ApplicationUser> observers,
         Guid electionRoundId,
         Guid monitoringNgoId,
@@ -16,11 +16,11 @@ public class ObserversSeeder
     {
         progressTask.StartTask();
 
-        var observerIds = new List<CreateResponse>();
+        var observerIds = new List<ResponseWithId>();
 
         foreach (var observersChunk in observers.Chunk(SeederVars.CHUNK_SIZE))
         {
-            var tasks = new List<Task<CreateResponse>>();
+            var tasks = new List<Task<ResponseWithId>>();
             foreach (var observer in observersChunk)
             {
                 var createTask = platformAdminApi.CreateObserver(observer);
@@ -34,7 +34,7 @@ public class ObserversSeeder
 
         foreach (var observersIdsChunk in observerIds.Chunk(SeederVars.CHUNK_SIZE))
         {
-            var tasks = new List<Task<CreateResponse>>();
+            var tasks = new List<Task<ResponseWithId>>();
             foreach (var observer in observersIdsChunk)
             {
                 var assignTask = platformAdminApi.AssignObserverToMonitoring(electionRoundId, monitoringNgoId, new AssignObserverRequest(observer.Id));

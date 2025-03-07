@@ -36,7 +36,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             			FS."Answers",
             			FS."FollowUpStatus",
             			FS."IsCompleted",
-            			COALESCE(FS."LastModifiedOn", FS."CreatedOn") AS "TimeSubmitted",
+            			"LastUpdatedAt" AS "TimeSubmitted",
             			COALESCE(
             				(
             					SELECT
@@ -53,7 +53,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             								'UploadedFileName',
             								"UploadedFileName",
             								'TimeSubmitted',
-            								COALESCE("LastModifiedOn", "CreatedOn")
+            								"LastUpdatedAt"
             							)
             						)
             					FROM
@@ -78,7 +78,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             								'Text',
             								"Text",
             								'TimeSubmitted',
-            								COALESCE("LastModifiedOn", "CreatedOn")
+            								"LastUpdatedAt"
             							)
             						)
             					FROM
@@ -127,7 +127,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             			PSI."Answers",
             			PSI."FollowUpStatus",
             			PSI."IsCompleted",
-            			COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") AS "TimeSubmitted",
+            			"LastUpdatedAt" AS "TimeSubmitted",
             			'[]'::JSONB AS "Attachments",
             			'[]'::JSONB AS "Notes",
             			PS."Id" AS "PollingStationId",

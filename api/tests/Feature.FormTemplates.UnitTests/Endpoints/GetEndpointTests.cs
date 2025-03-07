@@ -28,7 +28,7 @@ public class GetEndpointTests
 
         // Act
         var request = new Get.Request();
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _authorizationService
@@ -48,7 +48,7 @@ public class GetEndpointTests
 
         // Act
         var request = new Get.Request();
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -56,8 +56,8 @@ public class GetEndpointTests
             .BeOfType<Results<Ok<FormTemplateFullModel>, NotFound>>()
             .Which.Result.Should().BeOfType<NotFound>();
 
-        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<ListFormTemplatesSpecification>());
-        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<ListFormTemplatesSpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<GetFormTemplateSpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<GetFormTemplateSpecification>());
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class GetEndpointTests
 
         // Act
         var request = new Get.Request { Id = formTemplate.Id };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -92,7 +92,7 @@ public class GetEndpointTests
         _userRoleProvider.IsPlatformAdmin().Returns(true);
         // Act
         var request = new Get.Request { Id = Guid.NewGuid() };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

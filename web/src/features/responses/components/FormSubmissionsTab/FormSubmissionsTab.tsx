@@ -17,7 +17,10 @@ import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
-import { FormSubmissionsByEntryTable, FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
+import {
+  FormSubmissionsByEntryTable,
+  FormSubmissionsSearchRequest,
+} from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColumnsVisibilitySelector/FormSubmissionsColumnsVisibilitySelector';
 
 import { DataSources, FunctionComponent } from '@/common/types';
@@ -75,7 +78,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
       formId: search.formId,
       fromDateFilter: search.submissionsFromDate?.toISOString(),
       toDateFilter: search.submissionsToDate?.toISOString(),
-      coalitionMemberId: search.coalitionMemberId
+      coalitionMemberId: search.coalitionMemberId,
     };
 
     return params;
@@ -115,7 +118,11 @@ export default function FormSubmissionsTab(): FunctionComponent {
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' });
-                    void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' } });
+                    navigate({
+                      to: '.',
+                      replace: true,
+                      search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' },
+                    });
                   }}
                   value={byFilter}>
                   {Object.entries(viewBy).map(([value, label]) => (

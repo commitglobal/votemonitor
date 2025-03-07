@@ -6,6 +6,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.Form.Submissions.GetAggregated;
@@ -84,7 +85,7 @@ public class Endpoint(
                              			0 AS "NotesCount",
                              			'[]'::JSONB AS "Attachments",
                              			'[]'::JSONB AS "Notes",
-                             			COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") "TimeSubmitted",
+                             			PSI."LastUpdatedAt" AS "TimeSubmitted",
                              			PSI."FollowUpStatus",
                              			PSIF."DefaultLanguage",
                              			PSIF."Name",
@@ -107,11 +108,11 @@ public class Endpoint(
                              			)
                              			AND (
                              				@FROMDATE IS NULL
-                             				OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @FROMDATE::TIMESTAMP
+                             				OR PSI."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
                              			)
                              			AND (
                              				@TODATE IS NULL
-                             				OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @TODATE::TIMESTAMP
+                             				OR PSI."LastUpdatedAt" <= @TODATE::TIMESTAMP
                              			)
                              			AND (
                              				@QUESTIONSANSWERED IS NULL
@@ -165,6 +166,8 @@ public class Endpoint(
                              					SELECT
                              						JSONB_AGG(
                              							JSONB_BUILD_OBJECT(
+                             							    'SubmissionId',
+                             							    FS."Id",
                              								'QuestionId',
                              								"QuestionId",
                              								'FileName',
@@ -176,7 +179,7 @@ public class Endpoint(
                              								'UploadedFileName',
                              								"UploadedFileName",
                              								'TimeSubmitted',
-                             								COALESCE("LastModifiedOn", "CreatedOn")
+                             								"LastUpdatedAt"
                              							)
                              						)
                              					FROM
@@ -196,12 +199,14 @@ public class Endpoint(
                              					SELECT
                              						JSONB_AGG(
                              							JSONB_BUILD_OBJECT(
+                             							    'SubmissionId',
+                             							    FS."Id",
                              								'QuestionId',
                              								"QuestionId",
                              								'Text',
                              								"Text",
                              								'TimeSubmitted',
-                             								COALESCE("LastModifiedOn", "CreatedOn")
+                             								"LastUpdatedAt"
                              							)
                              						)
                              					FROM
@@ -214,7 +219,7 @@ public class Endpoint(
                              				),
                              				'[]'::JSONB
                              			) AS "Notes",
-                             			COALESCE(FS."LastModifiedOn", FS."CreatedOn") AS "TimeSubmitted",
+                             			"LastUpdatedAt" AS "TimeSubmitted",
                              			FS."FollowUpStatus",
                              			F."DefaultLanguage",
                              			F."Name",
@@ -238,11 +243,11 @@ public class Endpoint(
                              			)
                              			AND (
                              				@FROMDATE IS NULL
-                             				OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @FROMDATE::TIMESTAMP
+                             				OR "LastUpdatedAt" >= @FROMDATE::TIMESTAMP
                              			)
                              			AND (
                              				@TODATE IS NULL
-                             				OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @TODATE::TIMESTAMP
+                             				OR "LastUpdatedAt" <= @TODATE::TIMESTAMP
                              			)
                              			AND (
                              				@QUESTIONSANSWERED IS NULL
@@ -412,27 +417,29 @@ public class Endpoint(
         {
             formSubmissionsAggregate.AggregateAnswers(formSubmission);
         }
+        
+        var notes = submissions
+            .SelectMany(x => x.Notes.Select(note => note with { SubmissionId = x.SubmissionId }))
+            .ToList();
 
+        var attachments = submissions
+            .SelectMany(x => x.Attachments.Select(attachment => attachment with { SubmissionId = x.SubmissionId }));
 
-        var notes = submissions.SelectMany(x => x.Notes).ToList();
-        var attachments = submissions.SelectMany(x => x.Attachments).ToList();
-
-        foreach (var attachment in attachments)
-        {
-            var result =
-                await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-            if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
+        attachments = await Task.WhenAll(
+            attachments.Select(async attachment =>
             {
-                attachment.PresignedUrl = url;
-                attachment.UrlValidityInSeconds = urlValidityInSeconds;
-            }
-        }
+                var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
+                return result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds)
+                    ? attachment with { PresignedUrl = url, UrlValidityInSeconds = urlValidityInSeconds }
+                    : attachment;
+            })
+        );
 
         return TypedResults.Ok(new Response
         {
             SubmissionsAggregate = formSubmissionsAggregate,
             Notes = notes,
-            Attachments = attachments,
+            Attachments = attachments.ToList(),
             SubmissionsFilter = new SubmissionsFilterModel
             {
                 HasAttachments = req.HasAttachments,

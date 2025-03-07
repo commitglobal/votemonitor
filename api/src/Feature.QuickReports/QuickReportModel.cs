@@ -34,7 +34,7 @@ public record QuickReportModel
             MonitoringObserverId = quickReport.MonitoringObserverId,
             PollingStationId = quickReport.PollingStationId,
             PollingStationDetails = quickReport.PollingStationDetails,
-            Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
+            Timestamp = quickReport.LastUpdatedAt,
             Attachments = attachments.ToList(),
             IncidentCategory = quickReport.IncidentCategory
         };

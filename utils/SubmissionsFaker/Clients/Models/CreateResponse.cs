@@ -1,6 +1,6 @@
 ﻿namespace SubmissionsFaker.Clients.Models;
 
-public class CreateResponse
+public class ResponseWithId
 {
     public Guid Id { get; set; }
 }

@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { FC, ReactNode } from 'react';
+import { AuthContext } from '@/context/auth.context';
+import { FC, ReactNode, useContext } from 'react';
 import { useFilteringContainer } from '../hooks/useFilteringContainer';
-import { ActiveFilters } from './ActiveFilters';
+import { NgoAdminActiveFilters } from './NgoAdminActiveFilters';
+import { PlatformAdminActiveFilters } from './PlatformAdminActiveFilters';
 
 interface FilteringContainerProps {
   children?: ReactNode;
@@ -9,6 +11,7 @@ interface FilteringContainerProps {
 
 export const FilteringContainer: FC<FilteringContainerProps> = ({ children }) => {
   const { filteringIsActive, queryParams, resetFilters } = useFilteringContainer();
+  const { isPlatformAdmin } = useContext(AuthContext);
 
   return (
     <div className='grid items-center grid-cols-6 gap-4'>
@@ -16,7 +19,8 @@ export const FilteringContainer: FC<FilteringContainerProps> = ({ children }) =>
       <Button title='Reset filters' disabled={!filteringIsActive} onClick={resetFilters} variant='ghost-primary'>
         Reset filters
       </Button>
-      {filteringIsActive && <ActiveFilters queryParams={queryParams} />}
+      {filteringIsActive && isPlatformAdmin ? <PlatformAdminActiveFilters queryParams={queryParams} /> : null}
+      {filteringIsActive && !isPlatformAdmin ? <NgoAdminActiveFilters queryParams={queryParams} /> : null}
     </div>
   );
 };

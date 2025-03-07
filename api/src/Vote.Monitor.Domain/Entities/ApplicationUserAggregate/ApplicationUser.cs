@@ -39,18 +39,22 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         if (string.IsNullOrEmpty(password.Trim()))
         {
             NewInvite();
+            Status = UserStatus.Pending;
         }
         else
         {
             var hasher = new PasswordHasher<ApplicationUser>();
             PasswordHash = hasher.HashPassword(this, password.Trim());
+            Status = UserStatus.Active;
+            EmailConfirmed = true;
         }
     }
 
     public static ApplicationUser Invite(string firstName, string lastName, string email, string? phoneNumber) =>
         new(UserRole.Observer, firstName, lastName, email, phoneNumber, string.Empty);
 
-    public static ApplicationUser CreatePlatformAdmin(string firstName, string lastName, string email, string password) =>
+    public static ApplicationUser
+        CreatePlatformAdmin(string firstName, string lastName, string email, string password) =>
         new(UserRole.PlatformAdmin, firstName, lastName, email, null, password);
 
     public static ApplicationUser CreateNgoAdmin(string firstName, string lastName, string email, string? phoneNumber,
@@ -98,5 +102,17 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
     {
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
+    }
+
+    public void UpdateStatus(UserStatus status)
+    {
+        if (status == UserStatus.Active)
+        {
+            Activate();
+        }
+        else
+        {
+            Deactivate();
+        }
     }
 }

@@ -37,7 +37,7 @@ public class IncidentReportModel
         PollingStationId = entity.PollingStationId,
         LocationDescription = entity.LocationDescription,
         LocationType = entity.LocationType,
-        Timestamp = entity.LastModifiedOn ?? entity.CreatedOn,
+        Timestamp = entity.LastUpdatedAt,
         IsCompleted = entity.IsCompleted
     };
 }

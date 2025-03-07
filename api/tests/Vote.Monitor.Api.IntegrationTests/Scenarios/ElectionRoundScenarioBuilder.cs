@@ -20,18 +20,24 @@ public class ElectionRoundScenarioBuilder
 
     public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation)
     {
-        var createdPollingStation = _platformAdmin.PostWithResponse<ResponseWithId>(
+        var createdPollingStation = _platformAdmin.PostWithResponse<CreatePollingStationsResponse>(
             $"/api/election-rounds/{ElectionRoundId}/polling-stations",
             new
             {
-                Level1 = Guid.NewGuid().ToString(),
-                Number = "1",
-                DisplayOrder = 1,
-                Address = "Address",
-                Tags = new { }
+                PollingStations = new[]
+                {
+                    new
+                    {
+                        Level1 = Guid.NewGuid().ToString(),
+                        Number = "1",
+                        DisplayOrder = 1,
+                        Address = "Address",
+                        Tags = new { }
+                    }
+                }
             });
 
-        _pollingStations[pollingStation] = createdPollingStation.Id;
+        _pollingStations[pollingStation] = createdPollingStation.PollingStations.First().Id;
         return this;
     }
 

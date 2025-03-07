@@ -17,7 +17,7 @@ public class ListEndpointTests
 
         // Act
         var request = new List.Request();
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -55,7 +55,7 @@ public class ListEndpointTests
             PageSize = pageSize,
             PageNumber = numberOfItems
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

@@ -79,6 +79,7 @@ public class ExportLocationsJob(
                       "Level3",
                       "Level4",
                       "Level5",
+                      "DisplayOrder",
                       "Tags"
                   FROM
                       "Locations"

@@ -5,7 +5,7 @@ namespace SubmissionsFaker.Forms;
 
 public class CitizenReportingFormData
 {
-    public static UpdateForm CitizenReporting(string code) => new()
+    public static UpdateFormRequest CitizenReporting(string code) => new()
     {
         Code = code,
         FormType = "CitizenReporting",

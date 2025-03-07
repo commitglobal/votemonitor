@@ -27,7 +27,7 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
 
   const navigate = useNavigate();
   const navigateToEdit = (): void => {
-    void navigate({
+    navigate({
       to: '/monitoring-observers/edit/$monitoringObserverId',
       params: { monitoringObserverId: monitoringObserver.id },
     });

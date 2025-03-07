@@ -38,7 +38,7 @@ public class ListEndpointTests
             CitizenReportId = citizenReportAttachment.CitizenReportId,
             FormId = citizenReportAttachment.FormId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var attachments = result.Attachments;
@@ -67,7 +67,7 @@ public class ListEndpointTests
             FormId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var attachments = result.Attachments;

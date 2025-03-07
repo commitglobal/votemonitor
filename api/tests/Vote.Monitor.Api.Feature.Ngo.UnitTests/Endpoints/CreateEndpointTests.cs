@@ -21,7 +21,7 @@ public class CreateEndpointTests
 
         // Act
         var request = new Request { Name = ngoName };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
@@ -29,7 +29,7 @@ public class CreateEndpointTests
             .AddAsync(Arg.Is<NgoAggregate>(x => x.Name == ngoName));
 
         result
-            .Should().BeOfType<Results<Ok<NgoModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<NgoModel>, ProblemDetails>>()!
             .Which!
             .Result.Should().BeOfType<Ok<NgoModel>>()!
             .Which!.Value!.Name.Should().Be(ngoName);
@@ -49,12 +49,12 @@ public class CreateEndpointTests
 
         // Act
         var request = new Request { Name = "ExistingName" };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<NgoModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<NgoModel>, ProblemDetails>>()
             .Which
-            .Result.Should().BeOfType<Conflict<ProblemDetails>>();
+            .Result.Should().BeOfType<ProblemDetails>();
     }
 }

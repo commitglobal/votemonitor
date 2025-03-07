@@ -1,4 +1,5 @@
 ﻿using Feature.FormTemplates.Draft;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.FormTemplates.UnitTests.Endpoints;
 public class DraftEndpointTests
@@ -7,7 +8,7 @@ public class DraftEndpointTests
     public async Task Should_DraftFormTemplate_And_Return_NoContent_WhenFormTemplateExists()
     {
         // Arrange
-        var formTemplate = new FormTemplateAggregateFaker(status: FormTemplateStatus.Published).Generate();
+        var formTemplate = new FormTemplateAggregateFaker(status: FormStatus.Published).Generate();
 
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
         repository
@@ -18,12 +19,12 @@ public class DraftEndpointTests
 
         // Act
         var request = new Request { Id = formTemplate.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
             .Received(1)
-            .UpdateAsync(Arg.Is<FormTemplateAggregate>(x => x.Status == FormTemplateStatus.Drafted));
+            .UpdateAsync(Arg.Is<FormTemplateAggregate>(x => x.Status == FormStatus.Drafted));
 
         result
             .Should().BeOfType<Results<NoContent, NotFound>>()
@@ -40,7 +41,7 @@ public class DraftEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

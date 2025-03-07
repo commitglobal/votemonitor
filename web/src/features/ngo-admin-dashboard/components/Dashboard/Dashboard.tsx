@@ -104,7 +104,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
           <div className='flex-1 space-y-4'>
             <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
               <Card>
-                <CardHeader className='flex flex-row items-center justify-between py-0!'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('observersAccounts.cardTitle')}</CardTitle>
                   <Button
                     type='button'
@@ -125,7 +125,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className='flex flex-row items-center justify-between py-0!'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('observersOnFieldCardTitle')}</CardTitle>
                   <Button
                     type='button'
@@ -151,7 +151,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('pollingStationCardTitle')}</CardTitle>
                   <Button
                     type='button'
@@ -174,7 +174,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('timeSpentObserving.cardTitle')}</CardTitle>
                   <Button
                     type='button'
@@ -204,7 +204,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 className={cn('transition-all duration-300 ease-in-out', {
                   'col-span-full': expandedCharts.has('startedFormsCard'),
                 })}>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('startedForms.cardTitle')}</CardTitle>
                   <div>
                     <Button
@@ -239,7 +239,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 className={cn('transition-all duration-300 ease-in-out', {
                   'col-span-full': expandedCharts.has('questionsAnsweredCard'),
                 })}>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('questionsAnswered.cardTitle')}</CardTitle>
                   <div>
                     <Button
@@ -274,7 +274,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 className={cn('transition-all duration-300 ease-in-out', {
                   'col-span-full': expandedCharts.has('flaggedAnswersCard'),
                 })}>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('flaggedAnswers.cardTitle')}</CardTitle>
                   <div>
                     <Button
@@ -309,7 +309,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 className={cn('transition-all duration-300 ease-in-out', {
                   'col-span-full': expandedCharts.has('quickReportsCard'),
                 })}>
-                <CardHeader className='flex flex-row items-center justify-between'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                   <CardTitle className='text-sm font-medium'>{t('quickReports.cardTitle')}</CardTitle>
                   <div>
                     <Button
@@ -345,7 +345,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   className={cn('transition-all duration-300 ease-in-out', {
                     'col-span-full': expandedCharts.has('citizenReportsCard'),
                   })}>
-                  <CardHeader className='flex flex-row items-center justify-between'>
+                  <CardHeader className='flex flex-row items-center justify-between space-y-0'>
                     <CardTitle className='text-sm font-medium'>{t('citizenReports.cardTitle')}</CardTitle>
                     <div>
                       <Button

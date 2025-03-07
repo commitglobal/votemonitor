@@ -32,13 +32,20 @@
     }
   },
   "app.input.pleaseSpecify": "Please specify",
-  "election-round.action.create": "Create new election event",
-  "election-round.field.country": "Country",
-  "election-round.field.englishTitle": "English title",
-  "election-round.field.startDate": "Start date",
-  "election-round.field.title": "Title",
-  "election-round.placeholder.englishTitle": "Title in English",
-  "election-round.placeholder.title": "Title",
+  "electionRound": {
+    "action.create": "Create new election event",
+    "field.country": "Country",
+    "field.englishTitle": "English title",
+    "field.startDate": "Start date",
+    "field.title": "Title",
+    "placeholder.englishTitle": "Title in English",
+    "placeholder.title": "Title",
+    "status": {
+      "notStarted": "Not started",
+      "started": "Started",
+      "archived": "Archived"
+    }
+  },
   "form-template.field.code": "Form Code",
   "form-template.field.name": "Form Name",
   "form-template.field.description": "Description",
@@ -133,6 +140,23 @@
       "obsolete": "Obsolete"
     }
   },
+  "form-template": {
+    "field.code": "Form Template Code",
+    "field.name": "Form Template Name",
+    "field.description": "Description",
+    "field.defaultLanguage": "Base language",
+    "field.languageCode": "Language",
+    "field.formType": "Form template type",
+    "field.icon": "Icon",
+    "field.languages": "Available languages",
+    "field.status": "Status",
+    "placeholder.code": "Form template code",
+    "placeholder.icon": "<svg>...</svg>",
+    "placeholder.name": "Form template name",
+    "placeholder.description": "Form template description",
+    "placeholder.defaultLanguage": "Select a default language",
+    "placeholder.languages": "Select available languages"
+  },
   "observers": {
     "addObserver": {
       "title": "Add a new observer",
@@ -223,9 +247,16 @@
         "level2": "Level 2",
         "level3": "Level 3",
         "level4": "Level 4",
-        "level5": "Level 5"
+        "level5": "Level 5",
+        "displayOrder": "Display order"
       },
-      "resetFilters": "Reset filters"
+      "resetFilters": "Reset filters",
+      "addPollingStation": {
+        "title": "Add a new polling station",
+        "addBtnText": "Add individual polling station",
+        "onSuccess": "Polling station created",
+        "onError": "Error adding polling station"
+      }
     },
     "guides": {
       "citizenGuidesTabTitle": "Citizen Guides",
@@ -262,6 +293,23 @@
       "createDialogTitle": "Create form",
       "resetFilters": "Reset filters"
     },
+    "formTemplates": {
+      "tabTitle": "Form templates",
+      "cardTitle": "Observation form templates",
+      "headers": {
+        "formCode": "Form Code",
+        "icon": "Icon",
+        "name": "Name",
+        "formType": "Form type",
+        "language": "Language",
+        "questions": "Questions",
+        "status": "Status",
+        "updatedOn": "Updated on",
+        "sharedWith": "Shared with"
+      },
+      "createDialogTitle": "Create form",
+      "resetFilters": "Reset filters"
+    },
     "locations": {
       "tabTitle": "Locations",
       "cardTitle": "Locations",
@@ -273,7 +321,13 @@
         "level4": "Level 4",
         "level5": "Level 5"
       },
-      "resetFilters": "Reset filters"
+      "resetFilters": "Reset filters",
+      "addLocation": {
+        "title": "Add a new location",
+        "addBtnText": "Add individual location",
+        "onSuccess": "Polling station created",
+        "onError": "Error adding location"
+      }
     },
     "form": {
       "title": "Create new form",
@@ -392,7 +446,19 @@
   },
   "responses": {
     "title": "Responses",
-    "subtitle":"View all form answers and other reports submitted by your observers.",
+    "subtitle": "View all form answers and other reports submitted by your observers.",
     "subtitleCoalitionLeader": "View all form answers and other reports submitted by coalition observers."
+  },
+  "ngo": {
+    "status": {
+      "activated": "Activated",
+      "deactivated": "Deactivated"
+    }
+  },
+  "ngo-admin": {
+    "status": {
+      "active": "Active",
+      "deactivated": "Deactivated"
+    }
   }
 }

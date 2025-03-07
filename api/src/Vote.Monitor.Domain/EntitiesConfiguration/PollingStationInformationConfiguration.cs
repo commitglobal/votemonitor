@@ -43,6 +43,7 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         
         builder.Property(x => x.NumberOfQuestionsAnswered);
         builder.Property(x => x.NumberOfFlaggedAnswers);
+        builder.Property(x => x.LastUpdatedAt).IsRequired();
 
         builder.Property(x => x.Answers)
             .HasConversion<AnswersToJsonConverter, AnswersValueComparer>()

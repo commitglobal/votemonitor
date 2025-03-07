@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.CitizenReports.Specifications;
 

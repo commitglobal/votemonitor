@@ -34,7 +34,7 @@ public class GetEndpointTests
         // Act
         var request = new Get.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -55,7 +55,7 @@ public class GetEndpointTests
 
         // Act
         var request = new Get.Request { Id = form.Id };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -76,7 +76,7 @@ public class GetEndpointTests
             .ReturnsNullForAnyArgs();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

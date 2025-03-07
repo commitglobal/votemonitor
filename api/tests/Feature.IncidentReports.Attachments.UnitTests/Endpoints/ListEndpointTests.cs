@@ -33,7 +33,7 @@ public class ListEndpointTests
             IncidentReportId = incidentReportAttachment.IncidentReportId,
             FormId = incidentReportAttachment.FormId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var attachments = result.Attachments;
@@ -62,7 +62,7 @@ public class ListEndpointTests
             FormId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var attachments = result.Attachments;

@@ -26,8 +26,8 @@
     "pl": "Polish",
     "bg": "Bulgarian",
     "sr": "Serbian",
-    "ge": "Georgian",
-    "am": "Armenian",
+    "ka": "Georgian",
+    "hy": "Armenian",
     "ru": "Russian",
     "az": "Azerbaijani"
   },
@@ -74,19 +74,21 @@
     "retry": "Retry"
   },
   "drawer": {
-    "report_as": "Report as {{value}}",
-    "citizen": "citizen",
-    "accredited_observer": "accredited observer"
+    "report_as_citizen": "Report as citizen",
+    "report_as_accredited_observer": "Report as accredited observer"
   },
   "citizen_report_issue": {
     "header_title": "Report an issue",
-    "description": "As a citizen, you can report an election-related issue, by filling-in a reporting form, from the list below.",
+    "description": "As a citizen, you can report an election-related issue by completing one of the reporting forms available below.",
+    "disclaimer": "Submitting a report through Vote Monitor Citizen is not the same as filing an official complaint with the authorities responsible for organizing elections. For more information on how reports are used, check the info button in the upper right corner. If you want to submit an official complaint, please refer to the article How to Submit an Official Complaint in the Resources section.",
     "empty_forms": "Reporting forms will appear here once Vote Monitor team will publish them in the system.",
     "error_message": "Something went wrong while retrieving the reporting forms. Please retry.",
     "retry": "Retry",
     "info_modal": {
-      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
-      "p2": "Please note that submitting a report through this application does not constitute an official complaint filed with the institutions responsible for organising elections.",
+      "p1": "Submitting a report through Vote Monitor Citizen does not constitute an official complaint to the authorities responsible for organizing elections and does not guarantee that your report will be reviewed or addressed.",
+      "p2": "After data analysis, some reports submitted through the app may be included in election observation reports prepared by organizations partnered with Code for Romania/Commit Global. Aggregated and anonymized data may also be used for statistical purposes.",
+      "p3": "In certain cases, your reports may be shared with authorities responsible for organizing elections to help improve future electoral processes, though this is not guaranteed.",
+      "p4": "You have full control over your personal data. Reporting forms allow you to choose whether to report anonymously or consent to being contacted by an organization should your report be reviewed.",
       "ok": "OK"
     }
   },
@@ -274,6 +276,8 @@
       "heading": "No election event to observe yet",
       "paragraph": "You will be able to use the app once you will be assigned to an election event by your organization"
     },
+    "no_form": "The Polling Station Information form is not configured",
+    "refresh_page": "If data is not visible, try refreshing the page to retrieve the most recent information",
     "no_visited_polling_stations": {
       "heading": "No visited polling stations yet",
       "paragraph": "Start configuring your first polling station before completing observation forms.",
@@ -475,7 +479,12 @@
         "progress": "Upload progress:",
         "completed": "Upload completed.",
         "aborted": "Upload aborted.",
-        "offline": "You need an internet connection in order to perform this action."
+        "offline": "You need an internet connection in order to perform this action.",
+        "abort_offline": "Go online to continue or abort the upload",
+        "abort_offline_button": "Cancel the upload",
+        "uploaded": "Successfully uploaded {{value}} files.",
+        "abort_offline_confirm": "Are you sure you want to abort the upload?",
+        "abort_offline_cancel": "Cancel"
       }
     },
     "notes": {
@@ -625,6 +634,36 @@
         "options": {
           "other": "Other polling station",
           "not_related": "Not related to a polling station"
+        }
+      },
+      "incident_category": {
+        "label": "Incident category *",
+        "placeholder": "Category",
+        "required": "This field is required.",
+        "options": {
+          "PhysicalViolenceIntimidationPressure": "Physical violence/intimidation/pressure",
+          "CampaigningAtPollingStation": "Campaigning at the polling station",
+          "RestrictionOfObserversRights": "Restriction of observer's (representative's/media) rights",
+          "UnauthorizedPersonsAtPollingStation": "Unauthorized person(s) at the polling station",
+          "ViolationDuringVoterVerificationProcess": "Violation during voter verification process",
+          "VotingWithImproperDocumentation": "Voting with improper documentation",
+          "IllegalRestrictionOfVotersRightToVote": "Illegal restriction of voter's right to vote",
+          "DamagingOrSeizingElectionMaterials": "Damaging of/seizing election materials",
+          "ImproperFilingOrHandlingOfElectionDocumentation": "Improper filing/handling of election documentation",
+          "BallotStuffing": "Ballot stuffing",
+          "ViolationsRelatedToControlPaper": "Violations related to the control paper",
+          "NotCheckingVoterIdentificationSafeguardMeasures": "Not checking the voter identification safeguard measures",
+          "VotingWithoutVoterIdentificationSafeguardMeasures": "Voting without voter identification safeguard measures",
+          "BreachOfSecrecyOfVote": "Breach of secrecy of vote",
+          "ViolationsRelatedToMobileBallotBox": "Violations related to the mobile ballot box",
+          "NumberOfBallotsExceedsNumberOfVoters": "Number of ballots exceed the number of voters",
+          "ImproperInvalidationOrValidationOfBallots": "Improper invalidation/validation of ballots",
+          "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsification/improper correction of the final protocol",
+          "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Refusal to issue a copy of the final protocol/issuing an improper copy",
+          "ImproperFillingInOfFinalProtocol": "Improper filling in of the final protocol",
+          "ViolationOfSealingProceduresOfElectionMaterials": "Violation of the sealing procedures of the election materials",
+          "ViolationsRelatedToVoterLists": "Violations related to the voter lists",
+          "Other": "Other"
         }
       },
       "polling_station_details": {

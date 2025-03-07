@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Mappers;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
@@ -13,7 +14,8 @@ public class Endpoint(
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<Coalition> coalitionRepository,
     IReadRepository<FormAggregate> formRepository,
-    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
+    IAuthorizationService authorizationService,
+    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -71,17 +73,17 @@ public class Endpoint(
 
         return formSubmission is null
             ? await AddFormSubmissionAsync(req, form, answers, ct)
-            : await UpdateFormSubmissionAsync(form, formSubmission, answers, req.IsCompleted, ct);
+            : await UpdateFormSubmissionAsync(form, formSubmission, answers, req.IsCompleted, req.LastUpdatedAt, ct);
     }
 
-    private async Task<Results<Ok<FormSubmissionModel>, NotFound>> UpdateFormSubmissionAsync(
-        FormAggregate form,
+    private async Task<Results<Ok<FormSubmissionModel>, NotFound>> UpdateFormSubmissionAsync(FormAggregate form,
         FormSubmission submission,
         List<BaseAnswer>? answers,
         bool? isCompleted,
+        DateTime? lastUpdatedAt,
         CancellationToken ct)
     {
-        submission = form.FillIn(submission, answers, isCompleted);
+        submission = form.FillIn(submission, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
@@ -108,7 +110,8 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted,
+            req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

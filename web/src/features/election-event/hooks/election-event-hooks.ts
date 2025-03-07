@@ -1,7 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { electionRoundKeys } from '@/features/election-round/queries';
+import { electionRoundKeys } from '@/features/election-rounds/queries';
 import { ElectionEvent } from '../models/election-event';
 
 const STALE_TIME = 1000 * 60 * 5; // five minutes

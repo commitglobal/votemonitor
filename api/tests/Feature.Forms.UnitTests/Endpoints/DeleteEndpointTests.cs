@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -42,7 +43,7 @@ public class DeleteEndpointTests
         // Act
         var request = new Delete.Request();
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -75,7 +76,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
 
@@ -110,7 +111,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -139,7 +140,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.Received(1).DeleteAsync(form);
@@ -170,7 +171,7 @@ public class DeleteEndpointTests
             NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
-        await _endpoint.ExecuteAsync(request, default);
+        await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _monitoringNgoRepository
@@ -190,7 +191,7 @@ public class DeleteEndpointTests
             .ReturnsNullForAnyArgs();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<Form>());

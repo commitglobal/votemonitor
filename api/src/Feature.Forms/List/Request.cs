@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.Forms.List;
 

@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
@@ -15,7 +16,8 @@ public partial class FormTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages,[]);
+            description, languages, icon: null,
+            []);
 
         var formBefore = formTemplate.DeepClone();
 
@@ -35,7 +37,8 @@ public partial class FormTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages, []);
+            description, languages, icon: null,
+            []);
 
         // Act
         formTemplate.RemoveTranslation(LanguagesList.UK.Iso1);
@@ -55,7 +58,8 @@ public partial class FormTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages, []);
+            description, languages, icon: null,
+            []);
 
         // Act
         var act = () => formTemplate.RemoveTranslation(LanguagesList.RO.Iso1);
@@ -84,8 +88,9 @@ public partial class FormTests
         ];
 
         var formTemplate = FormTemplate.Create(FormType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages,questions);
-        
+            description, languages, icon: null,
+            questions);
+
         // Act
         formTemplate.RemoveTranslation(LanguagesList.UK.Iso1);
 
@@ -104,7 +109,7 @@ public partial class FormTests
             .OfType<NumberQuestion>()
             .Should()
             .AllSatisfy(q => q.InputPlaceholder.Should().NotContainKey(LanguagesList.UK.Iso1));
-        
+
         formTemplate
             .Questions
             .OfType<RatingQuestion>()

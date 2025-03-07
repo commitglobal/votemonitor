@@ -101,12 +101,17 @@ export function PollingStationsFilters(): FunctionComponent {
 
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
-      void navigate({
-        search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number| Date | boolean> = { ...prev, ...search };
+      navigate({
+        to: '.',
+        search: (prev: Record<string, string | undefined | string[] | number | Date | boolean>) => {
+          const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {
+            ...prev,
+            ...search,
+          };
           setPrevSearch(newSearch);
           return newSearch;
         },
+        replace: true
       });
     },
     [navigate, setPrevSearch]

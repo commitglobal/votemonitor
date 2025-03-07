@@ -7,9 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useFormTemplates } from '@/features/form-templates/queries';
 import { useCreateFormFromTemplate, usePreviewTemplateDialog } from '@/features/forms/hooks';
-import { FormBase } from '@/features/forms/models/form';
-import { useFormTemplates } from '@/features/forms/queries';
 import { cn, mapFormType } from '@/lib/utils';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -17,6 +16,7 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PreviewTemplateDialog } from './PreviewDialogs';
+import { FormBase } from '@/common/types';
 
 export const FormBuilderScreenTemplate: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.form' });
@@ -120,7 +120,7 @@ export const FormBuilderScreenTemplate: FC = () => {
     <Layout title={t('template.title')} subtitle={t('template.description')}>
       <QueryParamsDataTable
         columns={templatesColDefs}
-        useQuery={() => useFormTemplates()}
+        useQuery={useFormTemplates}
         getSubrows={getSubrows}
         getRowClassName={getRowClassName}
       />

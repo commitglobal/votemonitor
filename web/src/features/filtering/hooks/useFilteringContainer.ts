@@ -1,7 +1,7 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useMemo } from 'react';
-import { HIDDEN_FILTERS } from '../components/ActiveFilters';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { HIDDEN_FILTERS } from '../common';
 import { FILTER_KEY } from '../filtering-enums';
 
 function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Partial<T> {
@@ -19,9 +19,15 @@ export function useFilteringContainer() {
       .some(([_, value]) => !!value);
   }, [queryParams]);
 
+  const [isFilteringContainerVisible, setIsFilteringContainerVisible] = useState(filteringIsActive);
+
+  useEffect(() => {
+    setIsFilteringContainerVisible(filteringIsActive);
+  }, [filteringIsActive]);
+
   const navigateHandler = useCallback(
     (search: Record<string, any | undefined>) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number | Date | boolean> = {
@@ -37,12 +43,24 @@ export function useFilteringContainer() {
     [navigate, setPrevSearch]
   );
 
+  const toggleFilteringContainerVisibility = () => setIsFilteringContainerVisible((prev) => !prev);
+
   const resetFilters = () => {
     navigate({
+      to: '.',
+      replace: true,
       search: filterObject(queryParams, HIDDEN_FILTERS),
     });
     setPrevSearch(filterObject(queryParams, HIDDEN_FILTERS));
   };
 
-  return { queryParams, filteringIsActive, navigate, navigateHandler, resetFilters };
+  return {
+    queryParams,
+    filteringIsActive,
+    isFilteringContainerVisible,
+    toggleFilteringContainerVisibility,
+    navigate,
+    navigateHandler,
+    resetFilters,
+  };
 }

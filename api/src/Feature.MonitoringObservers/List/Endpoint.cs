@@ -44,6 +44,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         SELECT
             "Id",
             "DisplayName",
+            "FirstName",
+            "LastName",
             "PhoneNumber",
             "Email",
             "Tags",
@@ -53,6 +55,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             SELECT
                 MO."Id",
                 U."DisplayName",
+                U."FirstName",
+                U."LastName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
@@ -71,7 +75,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                         (
                             SELECT
                                 PSI."MonitoringObserverId",
-                                MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LatestActivityAt"
+                                MAX(PSI."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "PollingStationInformation" PSI
                             WHERE
@@ -81,7 +85,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             UNION ALL
                             SELECT
                                 N."MonitoringObserverId",
-                                MAX(COALESCE(N."LastModifiedOn", N."CreatedOn")) AS "LatestActivityAt"
+                                MAX(N."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "Notes" N
                             WHERE
@@ -91,7 +95,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             UNION ALL
                             SELECT
                                 A."MonitoringObserverId",
-                                MAX(COALESCE(A."LastModifiedOn", A."CreatedOn")) AS "LatestActivityAt"
+                                MAX(A."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "Attachments" A
                             WHERE
@@ -101,7 +105,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             UNION ALL
                             SELECT
                                 QR."MonitoringObserverId",
-                                MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LatestActivityAt"
+                                MAX(QR."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "QuickReports" QR
                             WHERE
@@ -126,6 +130,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             GROUP BY
                 MO."Id",
                 U."DisplayName",
+                U."FirstName",
+                U."LastName",
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",

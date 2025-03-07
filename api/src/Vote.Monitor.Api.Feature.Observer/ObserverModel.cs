@@ -7,7 +7,7 @@ public record ObserverModel
     public string LastName { get; init; }
     public string Email { get; init; }
 
-    public string PhoneNumber { get; init; }
+    public string? PhoneNumber { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
     public UserStatus Status { get; init; }
