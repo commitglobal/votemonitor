@@ -366,7 +366,7 @@
     "forms": {
       "heading": "Formulare",
       "list": {
-        "empty": "Nu există date de afișat",
+        "empty": "Formularele de observare vor apărea aici odată ce organizația ta o să le publice în sistem.",
         "error": {
           "paragraph1": "Ups, ceva nu a mers bine!",
           "paragraph2": "Nu am putut obține datele. Apasă pe butonul de mai jos pentru a încerca din nou!",
