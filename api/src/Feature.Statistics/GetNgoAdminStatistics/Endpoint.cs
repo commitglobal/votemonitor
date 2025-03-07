@@ -432,7 +432,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                         'hour',
                         TIMEZONE (
                                 'utc',
-                                COALESCE(FS."LastModifiedOn", FS."CreatedOn")
+                                FS."LastUpdatedAt"
                         )
                 )::TIMESTAMPTZ AS "Bucket",
                 COUNT(1) AS "FormsSubmitted",
@@ -449,7 +449,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                         'hour',
                         TIMEZONE (
                                 'utc',
-                                COALESCE(QR."LastModifiedOn", QR."CreatedOn")
+                                QR."LastUpdatedAt"
                         )
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"
@@ -483,7 +483,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                         'hour',
                         TIMEZONE (
                                 'utc',
-                                COALESCE(IR."LastModifiedOn", IR."CreatedOn")
+                                IR."LastUpdatedAt"
                         )
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"

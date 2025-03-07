@@ -37,13 +37,18 @@ public class RequestModelBinder() : IRequestBinder<Request>
 
         var isCompletedPropertyExist =
             jsonDocument.RootElement.TryGetProperty("isCompleted", out var isCompletedElement);
-
+        
+        var lastUpdatedAtPropertyExist =
+            jsonDocument.RootElement.TryGetProperty("lastUpdatedAt", out var lastUpdatedAtElement);
+        
         var request = new Request
         {
             ElectionRoundId = Guid.Parse(ctx.HttpContext.Request.RouteValues["electionRoundId"]?.ToString()!),
             PollingStationId = Guid.Parse(ctx.HttpContext.Request.RouteValues["pollingStationId"]?.ToString()!),
             ObserverId = Guid.Parse(ctx.HttpContext.User.ClaimValue(ApplicationClaimTypes.UserId)!),
-
+            LastUpdatedAt = lastUpdatedAtPropertyExist
+                ? ParseDateTime(lastUpdatedAtElement).Value
+                : null,
             ArrivalTime = arrivalTimePropertyExist
                 ? ParseDateTime(arrivalTimeElement)
                 : ValueOrUndefined<DateTime?>.Undefined(),

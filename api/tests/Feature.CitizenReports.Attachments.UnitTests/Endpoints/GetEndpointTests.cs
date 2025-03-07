@@ -38,7 +38,7 @@ public class GetEndpointTests
             CitizenReportId = citizenReportAttachment.CitizenReportId,
             Id = citizenReportAttachment.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<CitizenReportAttachmentModel>>();
@@ -60,7 +60,7 @@ public class GetEndpointTests
             CitizenReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

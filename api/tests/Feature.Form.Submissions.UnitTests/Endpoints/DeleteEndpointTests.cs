@@ -33,7 +33,7 @@ public class DeleteEndpointTests
             FormId = Guid.NewGuid()
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

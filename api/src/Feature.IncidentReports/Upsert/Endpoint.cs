@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Feature.IncidentReports.Specifications;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -13,7 +14,8 @@ public class Endpoint(
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<FormAggregate> formRepository,
-    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound>>
+    IAuthorizationService authorizationService,
+    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -64,7 +66,8 @@ public class Endpoint(
 
         return incidentReport is null
             ? await AddIncidentReportAsync(req, form, answers, ct)
-            : await UpdateIncidentReportAsync(form, incidentReport, answers, req.IsCompleted, ct);
+            : await UpdateIncidentReportAsync(form, incidentReport, answers, req.IsCompleted,
+                req.LastUpdatedAt ?? timeProvider.UtcNow, ct);
     }
 
     private async Task<Results<Ok<IncidentReportModel>, NotFound>> UpdateIncidentReportAsync(
@@ -72,9 +75,10 @@ public class Endpoint(
         IncidentReport incidentReport,
         List<BaseAnswer>? answers,
         bool? isCompleted,
+        DateTime? lastUpdatedAt,
         CancellationToken ct)
     {
-        incidentReport = form.FillIn(incidentReport, answers, isCompleted);
+        incidentReport = form.FillIn(incidentReport, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(incidentReport, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
@@ -107,7 +111,8 @@ public class Endpoint(
         }
 
         var incidentReport = form.CreateIncidentReport(req.Id, monitoringObserver, req.LocationType,
-            req.LocationDescription, req.PollingStationId, answers, req.IsCompleted);
+            req.LocationDescription, req.PollingStationId, answers, req.IsCompleted,
+            req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(incidentReport, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));

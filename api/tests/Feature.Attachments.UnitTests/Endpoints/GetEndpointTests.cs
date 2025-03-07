@@ -44,7 +44,8 @@ public class GetEndpointTests
         var fakePollingStationAttachment = new AttachmentFaker(attachmentId, fileName).Generate();
         var pollingStationId = Guid.NewGuid();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _repository.GetByIdAsync(fakePollingStationAttachment.Id)
@@ -58,7 +59,7 @@ public class GetEndpointTests
             ObserverId = fakeMonitoringObserver.Id,
             Id = attachmentId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<AttachmentModel>>();
@@ -74,7 +75,8 @@ public class GetEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var pollingStationId = Guid.NewGuid();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
         // Act
@@ -84,7 +86,7 @@ public class GetEndpointTests
             PollingStationId = pollingStationId,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -98,15 +100,16 @@ public class GetEndpointTests
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
+        var fakeMonitoringObserverId = Guid.NewGuid();
         var pollingStationId = Guid.NewGuid();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _monitoringObserverRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(fakeMonitoringObserver);
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverIdSpecification>())
+            .Returns(fakeMonitoringObserverId);
 
         _repository
             .GetByIdAsync(Arg.Any<Guid>())
@@ -117,9 +120,9 @@ public class GetEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = pollingStationId,
-            ObserverId = fakeMonitoringObserver.Id
+            ObserverId = fakeMonitoringObserverId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

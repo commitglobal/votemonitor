@@ -33,7 +33,7 @@ public class GetEndpointTests
             IncidentReportId = incidentReportAttachment.IncidentReportId,
             Id = incidentReportAttachment.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<IncidentReportAttachmentModel>>();
@@ -55,7 +55,7 @@ public class GetEndpointTests
             IncidentReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

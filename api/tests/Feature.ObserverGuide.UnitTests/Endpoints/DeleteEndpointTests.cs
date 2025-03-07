@@ -49,7 +49,7 @@ public class DeleteEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             Id = observerGuideId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -86,7 +86,7 @@ public class DeleteEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             Id = observerGuideId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -115,7 +115,7 @@ public class DeleteEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             Id = observerGuideId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

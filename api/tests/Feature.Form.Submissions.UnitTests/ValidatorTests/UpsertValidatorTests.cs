@@ -92,7 +92,8 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid()
+            ObserverId = Guid.NewGuid(),
+            LastUpdatedAt = DateTime.UtcNow,
         };
 
         // Act
@@ -121,7 +122,36 @@ public class UpsertValidatorTests
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
     }
+    
+    [Fact]
+    public void Validation_ShouldPass_When_LastUpdatedAt_Null()
+    {
+        // Arrange
+        var request = new Upsert.Request
+        {
+            LastUpdatedAt = null
+        };
 
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x=>x.LastUpdatedAt);
+    }
+
+    [Fact]
+    public void Validation_ShouldFail_When_LastUpdatedAt_NotUtc()
+    {
+        // Arrange
+        var request = new Upsert.Request { LastUpdatedAt = new DateTime(2025, 04, 20, 06, 9, 00, DateTimeKind.Local) };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.LastUpdatedAt);
+    }
+    
     [Fact]
     public void Validation_ShouldPass_When_Answers_Null()
     {
@@ -132,7 +162,7 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            Answers = null
+            Answers = null,
         };
 
         // Act

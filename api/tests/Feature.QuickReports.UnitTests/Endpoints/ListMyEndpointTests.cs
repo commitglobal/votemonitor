@@ -2,7 +2,6 @@
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
@@ -13,7 +12,6 @@ public class ListMyEndpointTests
     private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<QuickReport> _repository;
     private readonly IReadRepository<QuickReportAttachment> _quickReportAttachmentRepository;
-    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IFileStorageService _fileStorageService;
     private readonly ListMy.Endpoint _endpoint;
 
@@ -23,7 +21,6 @@ public class ListMyEndpointTests
         _repository = Substitute.For<IReadRepository<QuickReport>>();
         _quickReportAttachmentRepository = Substitute.For<IReadRepository<QuickReportAttachment>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
-        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
 
         _endpoint = Factory.Create<ListMy.Endpoint>(_authorizationService,
             _repository,
@@ -72,7 +69,7 @@ public class ListMyEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<List<QuickReportModel>>>().Value!;
@@ -122,7 +119,7 @@ public class ListMyEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -164,7 +161,7 @@ public class ListMyEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        _ = await _endpoint.ExecuteAsync(request, default);
+        _ = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _fileStorageService
@@ -186,10 +183,6 @@ public class ListMyEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _monitoringObserverRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(fakeMonitoringObserver);
-
         _repository
             .ListAsync(Arg.Any<ListObserverQuickReportsSpecification>(), CancellationToken.None)
             .Returns([]);
@@ -204,7 +197,7 @@ public class ListMyEndpointTests
             ElectionRoundId = fakeElectionRound.Id,
             ObserverId = fakeMonitoringObserver.Id
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         var model = result.Result.As<Ok<List<QuickReportModel>>>();

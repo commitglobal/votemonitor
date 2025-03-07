@@ -57,7 +57,7 @@ public record QuickReportDetailedModel
             Number = quickReport.PollingStation?.Number,
             Address = quickReport.PollingStation?.Address,
             PollingStationDetails = quickReport.PollingStationDetails,
-            Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
+            Timestamp = quickReport.LastUpdatedAt,
             Attachments = attachments.ToArray(),
             FollowUpStatus = quickReport.FollowUpStatus,
             IncidentCategory = quickReport.IncidentCategory

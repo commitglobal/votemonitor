@@ -95,7 +95,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
-            LocationId = Guid.NewGuid()
+            LocationId = Guid.NewGuid(),
         };
 
         // Act
@@ -104,7 +104,7 @@ public class UpsertValidatorTests
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
     }
-
+    
     [Fact]
     public void Validation_ShouldPass_When_Answers_Empty()
     {

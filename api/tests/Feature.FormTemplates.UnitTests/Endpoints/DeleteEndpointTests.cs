@@ -19,7 +19,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Request { Id = formTemplate.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.Received(1).DeleteAsync(formTemplate);
@@ -39,7 +39,7 @@ public class DeleteEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<FormTemplateAggregate>());

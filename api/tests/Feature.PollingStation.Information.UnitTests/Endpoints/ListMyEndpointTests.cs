@@ -33,7 +33,7 @@ public class ListMyEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid()
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

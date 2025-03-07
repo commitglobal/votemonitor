@@ -21,7 +21,7 @@ public class PublishEndpointTests
 
         // Act
         var request = new Request { Id = formTemplate.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
@@ -43,7 +43,7 @@ public class PublishEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -75,7 +75,7 @@ public class PublishEndpointTests
 
         // Act
         var request = new Request { Id = formTemplate.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
