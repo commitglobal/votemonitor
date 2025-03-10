@@ -312,11 +312,10 @@ export const importPollingStationSchema = z
   .object({
     id: z.string().default(() => crypto.randomUUID()),
     level1: z.string().min(1, 'Level 1 is required'),
-    level2: z.string().optional(),
-    level3: z.string().optional(),
-    level4: z.string().optional(),
-    level5: z.string().optional(),
-
+    level2: z.string().optional().catch(''),
+    level3: z.string().optional().catch(''),
+    level4: z.string().optional().catch(''),
+    level5: z.string().optional().catch(''),
     address: z.string().min(1, 'Address is required'),
     number: z.string().min(1, 'Number is required'),
     displayOrder: z.coerce.number().catch(0),
