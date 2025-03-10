@@ -12,7 +12,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Options(x => x.WithTags("form-submissions"));
         Policies(PolicyNames.NgoAdminsOnly);
 
-        Summary(x => { x.Summary = "Form submissions aggregated by observer"; });
+        Summary(x => { x.Summary = "Form submissions aggregated by form"; });
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req,
