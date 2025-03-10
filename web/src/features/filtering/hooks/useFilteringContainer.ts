@@ -1,6 +1,6 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { HIDDEN_FILTERS } from '../common';
 import { FILTER_KEY } from '../filtering-enums';
 
@@ -11,6 +11,7 @@ function filterObject<T extends object>(obj: T, keysToRemove: FILTER_KEY[]): Par
 export function useFilteringContainer() {
   const navigate = useNavigate();
   const queryParams = useSearch({ strict: false });
+  const hasRenderedBefore = useRef(false);
 
   const setPrevSearch = useSetPrevSearch();
   const filteringIsActive = useMemo(() => {
@@ -22,6 +23,8 @@ export function useFilteringContainer() {
   const [isFilteringContainerVisible, setIsFilteringContainerVisible] = useState(filteringIsActive);
 
   useEffect(() => {
+    if (hasRenderedBefore.current) return;
+    hasRenderedBefore.current = true;
     setIsFilteringContainerVisible(filteringIsActive);
   }, [filteringIsActive]);
 

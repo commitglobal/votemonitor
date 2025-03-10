@@ -36,6 +36,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.FormTemplateTypeFilter, FILTER_LABEL.FormTemplateType],
   [FILTER_KEY.CountryIdFilter, FILTER_LABEL.CountryId],
   [FILTER_KEY.ElectionRoundStatusFilter, FILTER_LABEL.ElectionRoundStatus],
+  [FILTER_KEY.ObserverStatus, FILTER_LABEL.ObserverStatus],
 ]);
 
 const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([

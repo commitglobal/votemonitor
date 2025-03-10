@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import BackButton from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,11 @@ import { observerDetailsQueryOptions } from '@/routes/observers/$observerId';
 import { Route } from '@/routes/observers_.$observerId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useObserverMutations } from '../../hooks/observers-queries';
+import { EditObserverFormData, editObserverFormSchema } from '../../models/observer';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -21,25 +22,14 @@ export default function EditObserver() {
   const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
   const observer = observerQuery.data;
   const confirm = useConfirm();
+  const { deleteObserverWithConfirmation, editObserverMutation } = useObserverMutations();
 
-  const editObserverFormSchema = z.object({
-    lastName: z.string().min(1, {
-      message: 'Last name must be at least 1 characters long',
-    }),
-    firstName: z.string().min(1, {
-      message: 'First name must be at least 1 characters long',
-    }),
-    email: z.string().min(1, { message: 'Email is required' }).email('Please enter a valid email address'),
-    phoneNumber: z.string(),
-  });
-
-  const form = useForm<z.infer<typeof editObserverFormSchema>>({
+  const form = useForm<EditObserverFormData>({
     resolver: zodResolver(editObserverFormSchema),
     mode: 'all',
     defaultValues: {
       firstName: observer.firstName,
       lastName: observer.lastName,
-      email: observer.email,
       phoneNumber: observer.phoneNumber,
     },
   });
@@ -59,34 +49,28 @@ export default function EditObserver() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof editObserverFormSchema>) {
-    editMutation.mutate({
+  function onSubmit(values: EditObserverFormData) {
+    editObserverMutation.mutate({
       observerId: observer.id,
-      obj: values,
+      values,
+      form,
     });
   }
 
-  const deleteMutation = useMutation({
-    mutationFn: (observerId: string) => {
-      return authApi.delete<void>(`/observers/${observerId}`);
-    },
-    onSuccess: () => {
-      navigate({ to: '/observers' });
-    },
-  });
-
-  const editMutation = useMutation({
-    mutationFn: ({ observerId, obj }: any) => {
-      return authApi.put<void>(`/observers/${observerId}`, obj);
-    },
-  });
-
-  const handleDelete = () => {
-    deleteMutation.mutate(observer.id);
+  const handleDelete = async () => {
+    await deleteObserverWithConfirmation({
+      observerId,
+      name: observer.firstName + ' ' + observer.lastName,
+      onMutationSuccess: () => {
+        navigate({ to: '/observers' });
+      },
+    });
   };
 
   return (
-    <Layout title={`Edit ${observer.firstName + ' ' + observer.lastName}`}>
+    <Layout
+      title={`Edit ${observer.firstName + ' ' + observer.lastName}`}
+      backButton={<BackButton rootRoute='/observers' />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
@@ -127,21 +111,7 @@ export default function EditObserver() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field, fieldState }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Email <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder='Email address' {...field} {...fieldState} type='email' />
-                    </FormControl>
-                    <FormMessage className='mt-2' />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name='phoneNumber'

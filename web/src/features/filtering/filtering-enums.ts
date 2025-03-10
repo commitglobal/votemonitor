@@ -34,6 +34,7 @@ export const enum FILTER_KEY {
   CoalitionMemberId = 'coalitionMemberId',
   CountryIdFilter = 'countryId',
   ElectionRoundStatusFilter = 'electionRoundStatus',
+  ObserverStatus = 'observerStatus',
 }
 
 export const enum FILTER_LABEL {
@@ -65,4 +66,5 @@ export const enum FILTER_LABEL {
   CoalitionMemberId = 'NGO',
   CountryId = 'Country',
   ElectionRoundStatus = 'Election round status',
+  ObserverStatus = 'Observer status',
 }
