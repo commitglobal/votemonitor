@@ -38,13 +38,6 @@ public class Endpoint(IReadRepository<ElectionRoundFormTemplate> repository,
         
         var specification = new ListAssignedFormTemplateSpecification(req);
         var assignedFormTemplates = await repository.ListAsync(specification, ct);
-
-        if (!assignedFormTemplates.Any())
-        {
-            return TypedResults.Ok(new PagedResponse<FormTemplateSlimModel>(assignedFormTemplates,
-                0, req.PageNumber, req.PageSize));
-        }
-        
         var assignedFormTemplatesCount = await repository.CountAsync(specification, ct);
         
         return TypedResults.Ok(new PagedResponse<FormTemplateSlimModel>(assignedFormTemplates,
