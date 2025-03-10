@@ -1,7 +1,6 @@
 import Layout from '@/components/layout/Layout';
 import PasswordSetterDialog from '@/components/PasswordSetterDialog/PasswordSetterDialog';
 import { usePasswordSetterDialog } from '@/components/PasswordSetterDialog/usePasswordSetterDialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
@@ -61,14 +60,17 @@ export default function ObserversDashboard(): ReactElement {
     }),
 
     columnHelper.display({
-      id: 'status',
-      header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
+      id: 'isAccountVerified',
       enableSorting: true,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <Badge className={'badge-' + status}>{status}</Badge>,
+      header: ({ column }) => <DataTableColumnHeader title='Is email verified' column={column} />,
+      cell: ({ row }) => <div className='truncate'>{row.original.isAccountVerified ? 'Yes' : 'No'}</div>,
+    }),
+
+    columnHelper.display({
+      id: 'monitoredElections',
+      enableSorting: true,
+      header: ({ column }) => <DataTableColumnHeader title='Elections monitored' column={column} />,
+      cell: ({ row }) => <div className='truncate'>{row.original.monitoredElections?.length}</div>,
     }),
     {
       header: '',

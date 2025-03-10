@@ -13,6 +13,8 @@ export interface Observer {
   email: string;
   status: ObserverStatus;
   phoneNumber: string;
+  isAccountVerified: boolean;
+  monitoredElections: Array<unknown>;
 }
 
 export const addObserverFormSchema = z.object({
