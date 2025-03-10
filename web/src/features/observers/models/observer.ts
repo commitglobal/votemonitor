@@ -25,7 +25,7 @@ export const addObserverFormSchema = z.object({
     message: 'First name must be at least 1 characters long',
   }),
   email: z.string().min(1, { message: 'Email is required' }).email('Please enter a valid email address'),
-  phoneNumber: z.string(),
+  phoneNumber: z.string().catch(''),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 });
 

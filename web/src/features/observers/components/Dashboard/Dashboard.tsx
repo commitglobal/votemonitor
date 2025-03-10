@@ -56,7 +56,9 @@ export default function ObserversDashboard(): ReactElement {
       id: 'phoneNumber',
       enableSorting: true,
       header: ({ column }) => <DataTableColumnHeader title='Phone number' column={column} />,
-      cell: ({ row }) => <div className='truncate'>{row.original.phoneNumber}</div>,
+      cell: ({ row }) => (
+        <div className='truncate'>{row.original.phoneNumber === '' ? 'N/A' : row.original.phoneNumber}</div>
+      ),
     }),
 
     columnHelper.display({
