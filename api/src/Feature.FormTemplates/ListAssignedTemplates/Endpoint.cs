@@ -31,10 +31,6 @@ public class Endpoint(IReadRepository<ElectionRoundFormTemplate> repository,
                 return TypedResults.NotFound();
             }
         }
-        else
-        {
-            return TypedResults.NotFound();
-        }
         
         var specification = new ListAssignedFormTemplateSpecification(req);
         var assignedFormTemplates = await repository.ListAsync(specification, ct);

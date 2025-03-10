@@ -38,23 +38,25 @@ public class ListAssignedEndpointTests
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
-        result.Should()
-            .BeOfType<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>()
-            .Which.Result.Should()
-            .BeOfType<NotFound>();
+        await _authorizationService
+            .DidNotReceiveWithAnyArgs()
+            .AuthorizeAsync(
+                Arg.Any<ClaimsPrincipal>(),
+                Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>());
     }
-    
+
     [Fact]
     public async Task Should_Return_NotFound_When_NgoAdmin_is_True_and_Authorization_Fails()
     {
         // Arrange
         _userRoleProvider.IsNgoAdmin().Returns(true);
         _authorizationService.AuthorizeAsync(
-                Arg.Any<ClaimsPrincipal>(), 
-                Arg.Any<object?>(), 
+                Arg.Any<ClaimsPrincipal>(),
+                Arg.Any<object?>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
-        
+
         // Act
         var request = new Request();
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -65,23 +67,23 @@ public class ListAssignedEndpointTests
             .Which.Result.Should()
             .BeOfType<NotFound>();
     }
-    
+
     [Fact]
     public async Task Should_Return_Ok_With_Empty_List_When_No_Assigned_Templates()
     {
         // Arrange
         _userRoleProvider.IsNgoAdmin().Returns(true);
-        
+
         _authorizationService.AuthorizeAsync(
-                Arg.Any<ClaimsPrincipal>(), 
-                Arg.Any<object?>(), 
+                Arg.Any<ClaimsPrincipal>(),
+                Arg.Any<object?>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
-        
+
         _electionRoundFormTemplateRepository
             .ListAsync(Arg.Any<ListAssignedFormTemplateSpecification>())
             .Returns([]);
-        
+
         // Act
         var request = new Request();
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -90,19 +92,19 @@ public class ListAssignedEndpointTests
         result.Should()
             .BeOfType<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>();
     }
-    
+
     [Fact]
     public async Task Should_Return_Ok_With_Paginated_List_When_Assigned_Templates_Exist()
     {
         // Arrange
         _userRoleProvider.IsNgoAdmin().Returns(true);
-        
+
         _authorizationService.AuthorizeAsync(
-                Arg.Any<ClaimsPrincipal>(), 
-                Arg.Any<object?>(), 
+                Arg.Any<ClaimsPrincipal>(),
+                Arg.Any<object?>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
-        
+
         var numberOfFormTemplates = 3;
         var totalCount = 154;
         var pageSize = 100;
@@ -118,11 +120,7 @@ public class ListAssignedEndpointTests
             .Returns(totalCount);
 
         // Act
-        var request = new Request
-        {
-            PageSize = pageSize,
-            PageNumber = numberOfFormTemplates
-        };
+        var request = new Request { PageSize = pageSize, PageNumber = numberOfFormTemplates };
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -139,5 +137,4 @@ public class ListAssignedEndpointTests
         pagedResult.TotalCount.Should().Be(totalCount);
         pagedResult.Items.Should().BeEquivalentTo(formTemplates);
     }
-    
 }
