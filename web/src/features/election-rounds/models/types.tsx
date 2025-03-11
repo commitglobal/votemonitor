@@ -1,4 +1,11 @@
 import { ElectionRoundStatus } from '@/common/types';
+import { NGOStatus } from '@/features/ngos/models/NGO';
+
+export interface MonitoringNgoModel {
+  id: string;
+  name: string;
+  status: NGOStatus;
+}
 
 export interface ElectionRoundModel {
   id: string;
@@ -10,5 +17,5 @@ export interface ElectionRoundModel {
   status: ElectionRoundStatus;
   createdOn: string;
   lastModifiedOn: string;
-  numberOfNgosMonitoring: number;
+  monitoringNgos: MonitoringNgoModel[];
 }
