@@ -52,10 +52,10 @@ export const electionRoundColDefs: ColumnDef<ElectionRoundModel>[] = [
     }) => <ElectionRoundStatusBadge status={status} />,
   }),
   columnHelper.display({
-    id: 'numberOfNgosMonitoring',
+    id: 'monitoringNgos',
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='NGOs' column={column} />,
-    cell: ({ row }) => row.original.numberOfNgosMonitoring,
+    cell: ({ row }) => row.original.monitoringNgos.length,
   }),
   {
     id: 'actions',

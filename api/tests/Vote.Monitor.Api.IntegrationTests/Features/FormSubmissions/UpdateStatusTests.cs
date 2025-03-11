@@ -68,7 +68,7 @@ public class UpdateStatusTests : BaseApiTestFixture
     }
 
      [Test]
-    public void CoalitionMemberAdminsCanUpdateStatusForFormSubmissionButNotForOhterMembersObservers()
+    public void CoalitionMemberAdminsCanUpdateStatusForFormSubmissionButNotForOtherMembersObservers()
     {
         // Arrange
         var scenarioData = ScenarioBuilder.New(CreateClient)
@@ -95,8 +95,7 @@ public class UpdateStatusTests : BaseApiTestFixture
         var electionRoundId = scenarioData.ElectionRoundId;
         var aliceSubmissionId = scenarioData.ElectionRound.Coalition.GetSubmissionId("Common", ScenarioObserver.Alice, ScenarioPollingStation.Cluj);
         var bobSubmissionId = scenarioData.ElectionRound.Coalition.GetSubmissionId("Common", ScenarioObserver.Bob, ScenarioPollingStation.Iasi);
-
-
+        
         // Act
         scenarioData.NgoByName(ScenarioNgos.Beta).Admin
             .PutWithoutResponse(
