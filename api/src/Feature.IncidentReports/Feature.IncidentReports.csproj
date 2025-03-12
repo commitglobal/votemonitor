@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<?xml version='1.0' encoding='utf-8'?>
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
-    <PackageReference Include="FastEndpoints" Version="5.24.0" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.24.0" />
-    <PackageReference Include="PolyJson" Version="1.4.0" />
+    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" />
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="FastEndpoints.Security" />
+    <PackageReference Include="PolyJson" />
   </ItemGroup>
 
   <ItemGroup>
