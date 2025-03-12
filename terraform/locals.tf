@@ -5,12 +5,12 @@ locals {
   images = {
     api = {
       image = "commitglobal/votemonitor"
-      tag   = "0.2.50"
+      tag   = "0.2.51"
     }
 
     hangfire = {
       image = "commitglobal/votemonitor-hangfire"
-      tag   = "0.2.50"
+      tag   = "0.2.51"
     }
   }
 
