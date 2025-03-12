@@ -117,9 +117,7 @@ export default function EditObserver() {
                 name='phoneNumber'
                 render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Phone number <span className='text-red-500'>*</span>
-                    </FormLabel>
+                    <FormLabel>Phone numbe</FormLabel>
                     <FormControl>
                       <Input placeholder='Phone number' {...field} {...fieldState} />
                     </FormControl>
