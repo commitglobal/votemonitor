@@ -56,6 +56,7 @@ public record MonitoringNgoModel
     public string Name { get; private set; }
     public NgoStatus Status { get; private set; }
 
+    [JsonConstructor]
     private MonitoringNgoModel(Guid id, string name, NgoStatus status)
     {
         Name = name;
