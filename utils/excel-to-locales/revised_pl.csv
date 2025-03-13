@@ -1,0 +1,524 @@
+Key,pl,pl
+common.skip,Pomiń,Pomiń
+common.search,Szukaj,Szukaj
+common.loading,Ładowanie...,Ładowanie...
+common.status.completed,Ukończono,Ukończony
+common.status.in_progress,W toku,W toku
+common.status.not_started,Nie rozpoczęto,Nierozpoczęty
+common.status.marked_as_completed,Oznaczono jako ukończone,Oznaczono jako ukończone
+common.forms.mark_as_done,Zaznacz formularz jako ukończony,Zaznacz formularz jako ukończony
+common.forms.mark_as_in_progress,Zaznacz formularz jako w trakcie,Zaznacz formularz jako w toku
+common.cancel,Anuluj,Anuluj
+common.save,Zapisz,Zapisz
+common.no_data,Nie znaleziono danych.,Nie znaleziono danych.
+common.select,Wybierz,Wybierz
+common.done,Zrobione,Zrobione
+common.ok,Dobry,Ok
+languages.ro,rumuński,rumuński
+languages.en,język angielski,angielski
+languages.pl,polski,polski
+languages.bg,bułgarski,bułgarski
+languages.sr,serbski,serbski
+languages.ka,gruziński,gruziński
+languages.hy,ormiański,ormiański
+languages.ru,rosyjski,rosyjski
+languages.az,azerbejdżański,azerbejdżański
+onboarding.language.heading,Wybierz język,Wybierz język
+onboarding.language.description,To będzie język wyświetlania aplikacji. Możesz go zmienić w dowolnym momencie w aplikacji w sekcji 'więcej'.,"To będzie język, w którym apliakcja będzie wyświetlana. Możesz go zmienić w dowolnym momencie w aplikacji w sekcji 'Więcej'."
+onboarding.language.save,Zastosuj wybór,Zastosuj wybór
+onboarding.polling_stations.heading,Obserwuj komisje,Obserwuj prace komisji
+onboarding.polling_stations.description,i dokumentuj na bieżąco przebieg procesu w formularzach przygotowanych przez Twoją organizację,i dokumentuj na bieżąco przebieg procesu w formularzach przygotowanych przez Twoją organizację
+onboarding.forms.heading,Wypełnij formularze obserwacji,Wypełnij formularze obserwacji
+onboarding.forms.description,i śledź postęp w trakcie kolejnych etapów,"i przekaż formularze w trakcie kolejnych etapów, aby pomóc przeprowadzić transparentne i uczciwe wybory"
+onboarding.media.heading,Dodaj notatki i pliki z nagraniami lub zdjęciami,Dodaj notatki i pliki z nagraniami lub zdjęciami
+onboarding.media.description,"jeśli odnotowałeś jakieś problemy, by dookreślić udzieloną odpowiedź","jeśli odnotowałeś jakieś problemy, by dookreślić udzieloną odpowiedź"
+onboarding.media.save,Przejdź do aplikacji,Przejdź do aplikacji
+select_app_mode.heading,Wybór trybu aplikacji,Wybór trybu aplikacji
+select_app_mode.description,Możesz monitorować proces wyborczy jako akredytowany obserwator lub po prostu jako obywatel zainteresowany wspieraniem uczciwych i demokratycznych wyborów.,Możesz monitorować proces wyborczy jako obserwator lub po prostu jako wyborca zainteresowany wspieraniem uczciwych i demokratycznych wyborów.
+select_app_mode.accredited_observer.title,Monitor głosowania dla akredytowanych obserwatorów,Vote Monitor dla Obserwatorów
+select_app_mode.accredited_observer.description,"Jestem akredytowanym niezależnym obserwatorem, zaproszonym przez organizację pozarządową do obserwowania procesu wyborczego. **",Jestem apolitycznym obserwatorem z zaświadczeniem wystawionym przez organizację pozarządową uprawnioną do obserwowania procesu wyborczego
+select_app_mode.citizen.title,Monitor głosowania dla obywateli,Vote Monitor dla Wyborców
+select_app_mode.citizen.description,"Jestem obywatelem i chcę zgłosić nieprawidłowości wyborcze, które widzę podczas kampanii wyborczej lub w dniu wyborów.","Jestem wyborcą i chcę zgłosić nieprawidłowości wyborcze, które widzę podczas kampanii lub w dniu wyborów."
+select_app_mode.helper,**Jako akredytowany obserwator będziesz mógł przełączyć się na tryb obywatela w dowolnym momencie z menu aplikacji.,**Jako obserwator będziesz mógł przełączyć się w tryb wyborcy w dowolnym momencie z menu aplikacji.
+select_app_mode.continue,Kontynuuj,Kontynuuj
+select_election_event.heading,Dostępne wydarzenia wyborcze,Dostępne akcja wyborcza
+select_election_event.description,"Wybierz wydarzenie, dla którego chcesz przesłać raport:","Wybierz akcję, do której chcesz przesłać formularz:"
+select_election_event.continue,Kontynuuj,Kontynuuj
+select_election_event.empty_description,"W tej chwili nie ma aktywnych wydarzeń wyborczych, dla których można zgłaszać incydenty jako obywatel. Gdy wydarzenie będzie dostępne, pojawi się w tej sekcji.","W tej chwili nie ma aktywnych akcji wyborczych, dla których można zgłaszać incydenty jako wyborca. Gdy akcja będzie dodana, pojawi się w tej sekcji."
+select_election_event.error_description,Coś poszło nie tak podczas pobierania dostępnych wydarzeń wyborczych. Spróbuj ponownie.,Coś poszło nie tak podczas pobierania dostępnych akcji wyborczych. Spróbuj ponownie.
+select_election_event.retry,Ponów próbę,Ponów próbę
+drawer.report_as_citizen,Zgłoś jako obywatel,Zgłoś jako wyborca
+drawer.report_as_accredited_observer,Zgłoś jako akredytowany obserwator,Zgłoś jako obserwator
+citizen_report_issue.header_title,Zgłoś problem,Zgłoś problem
+citizen_report_issue.description,"Jako obywatel możesz zgłosić kwestię związaną z wyborami, wypełniając formularz zgłoszeniowy z poniższej listy.","Jako wyborca możesz zgłosić kwestię związaną z wyborami, wypełniając formularz z poniższej listy."
+citizen_report_issue.disclaimer,,"Złożenie zgłoszenia poprzez Vote Monitor dla Wyborców nie jest równoznaczne ze złożeniem oficjalnej skargi do organów odpowiedzialnych za organizację wyborów czy organów ścigania ani jej nie zastępuje. Aby uzyskać więcej informacji na temat wykorzystania raportów, kliknij przycisk informacji w prawym górnym rogu. Jeśli chcesz złożyć oficjalną skargę, zapoznaj się z artykułem Jak złożyć oficjalną skargę w sekcji Zasoby."
+citizen_report_issue.empty_forms,"Formularze sprawozdawcze pojawią się tutaj, gdy zespół Vote Monitor opublikuje je w systemie.","Formularze pojawią się tutaj, gdy zespół Vote Monitor opublikuje je w systemie."
+citizen_report_issue.error_message,Coś poszło nie tak podczas pobierania formularzy raportowania. Spróbuj ponownie.,Coś poszło nie tak podczas pobierania formularzy raportowania. Spróbuj ponownie.
+citizen_report_issue.retry,Ponów próbę,Ponów próbę
+citizen_report_issue.info_modal.p1,Raporty przesłane za pośrednictwem Vote Monitor Citizen będą analizowane przez organizacje pozarządowe monitorujące wybory i mogą zostać włączone do raportów z obserwacji wyborów. W niektórych przypadkach raporty mogą zostać przekazane instytucjom odpowiedzialnym za organizację wyborów w celu usprawnienia przyszłych procesów wyborczych.,Raporty przesłane za pośrednictwem Vote Monitor dla Wyborców będą analizowane przez organizacje pozarządowe monitorujące wybory i mogą zostać włączone do raportów z obserwacji wyborów. W niektórych przypadkach raporty mogą zostać przekazane instytucjom odpowiedzialnym za organizację wyborów w celu usprawnienia przyszłych procesów wyborczych.
+citizen_report_issue.info_modal.p2,"Należy pamiętać, że przesłanie zgłoszenia za pośrednictwem tej aplikacji nie stanowi oficjalnej skargi złożonej do instytucji odpowiedzialnych za organizację wyborów.","Należy pamiętać, że przesłanie zgłoszenia za pośrednictwem tej aplikacji nie stanowi ani nie zastępuje oficjalnej skargi złożonej do instytucji odpowiedzialnych za organizację wyborów ani organów ścigania."
+citizen_report_issue.info_modal.p3,,"W niektórych przypadkach Twoje raporty mogą zostać udostępnione organom odpowiedzialnym za organizację wyborów, aby pomóc w usprawnieniu przyszłych procesów wyborczych, choć nie jest to gwarantowane."
+citizen_report_issue.info_modal.p4,,"Masz pełną kontrolę nad swoimi danymi osobowymi. Formularze pozwalają wybrać, czy chcesz zgłosić sprawę anonimowo, czy też wyrazić zgodę na kontakt ze strony organizacji w przypadku sprawdzenia Twojego zgłoszenia."
+citizen_report_issue.info_modal.ok,OK,OK
+citizen_form.review.heading,Przejrzyj swój raport,Przejrzyj swój raport
+citizen_form.review.send,Wyślij raport,Wyślij raport
+citizen_form.review.sending_report,Wysyłamy raport. Proszę czekać...,Wysyłamy raport. Proszę czekać...
+citizen_form.progress_bar_label,Postęp formy,Postęp formularza
+citizen_form.success.title,Twój raport został pomyślnie wysłany!,Twój raport został pomyślnie wysłany!
+citizen_form.success.description,Dziękujemy za zaangażowanie obywatelskie. Możesz wysłać kopię swoich odpowiedzi na adres e-mail lub powrócić do strony głównej.,Dziękujemy za zaangażowanie obywatelskie. Możesz wysłać kopię swoich odpowiedzi na adres e-mail lub powrócić do strony głównej.
+citizen_form.success.back_to_main,Powrót do strony głównej,Powrót do strony głównej
+citizen_form.success.send_copy,Wyślij mi kopię,Wyślij mi kopię
+citizen_form.error,Wystąpił problem podczas wysyłania recenzji.,Wystąpił problem podczas wysyłania recenzji.
+citizen_form.email_copy.title,"Wprowadź swój adres e-mail, aby otrzymać kopię formularza","Wprowadź swój adres e-mail, aby otrzymać kopię formularza"
+citizen_form.email_copy.description,"Aby otrzymać kopię formularza, wprowadź poniżej swój adres e-mail. Ten adres e-mail zostanie wykorzystany wyłącznie do wysłania kopii i nie będzie przechowywany ani wykorzystywany w żadnym innym celu.","Aby otrzymać kopię formularza, wprowadź poniżej swój adres e-mail. Ten adres e-mail zostanie wykorzystany wyłącznie do wysłania kopii i nie będzie przechowywany ani wykorzystywany w żadnym innym celu."
+citizen_form.email_copy.placeholder,Wprowadź swój adres e-mail,Wprowadź swój adres e-mail
+citizen_form.email_copy.required,E-mail jest obowiązkowy,E-mail jest obowiązkowy
+citizen_form.email_copy.invalid,Format wiadomości e-mail jest nieprawidłowy,Format wiadomości e-mail jest nieprawidłowy
+citizen_form.email_copy.cancel,Anuluj,Anuluj
+citizen_form.email_copy.send,Wyślij,Wyślij
+citizen_form.copy_sent.title,Twoja kopia została wysłana,Twoja kopia została wysłana
+citizen_form.copy_sent.description,"Kopia powinna dotrzeć natychmiast, ale w rzadkich przypadkach jej przetworzenie może zająć kilka minut. W międzyczasie możesz powrócić do strony głównej.","Kopia powinna dotrzeć natychmiast, ale w rzadkich przypadkach jej przetworzenie może zająć kilka minut. W międzyczasie możesz powrócić do strony głównej."
+citizen_form.unsaved_changes_dialog.title,Masz niezapisane zmiany,Masz niezapisane zmiany
+citizen_form.unsaved_changes_dialog.description,Opuszczenie tej strony spowoduje utratę wszystkich postępów w formularzu. Czy na pewno chcesz wrócić?,Opuszczenie tej strony spowoduje utratę wszystkich postępów w formularzu. Czy na pewno chcesz wrócić?
+citizen_form.unsaved_changes_dialog.actions.discard,Wróć,Wróć
+citizen_form.unsaved_changes_dialog.actions.save,Zostań tutaj,Zostań tutaj
+citizen_form.attachments.heading,Przesłane multimedia,Przesłane multimedia
+citizen_form.attachments.loading,Dodawanie załącznika... ,Dodawanie załącznika... 
+citizen_form.attachments.error,Błąd podczas wysyłania załącznika!,Błąd podczas wysyłania załącznika!
+citizen_form.attachments.add,Dodawanie plików multimedialnych,Dodawanie plików multimedialnych
+citizen_form.attachments.menu.load,Załaduj z galerii,Załaduj z galerii
+citizen_form.attachments.menu.take_picture,Zrób zdjęcie,Zrób zdjęcie
+citizen_form.attachments.menu.record_video,Nagraj wideo,Nagraj wideo
+citizen_form.attachments.menu.upload_audio,Wgraj nagranie,Wgraj nagranie
+citizen_form.attachments.upload.compressing,Kompresowanie załącznika: ,Kompresowanie załącznika: 
+citizen_form.attachments.upload.preparing,Przygotowanie załącznika...,Przygotowanie załącznika...
+citizen_form.attachments.upload.starting,Rozpoczynanie wysyłania...,Rozpoczynanie wysyłania...
+citizen_form.attachments.upload.progress,Wysyłanie załączników: ,Wysyłanie załączników: 
+citizen_form.attachments.upload.completed,Wysyłanie zakończone.,Wysyłanie zakończone.
+citizen_form.attachments.upload.aborted,Wysyłanie przerwane.,Wysyłanie przerwane.
+citizen_form.attachments.upload.offline,"Aby wykonać tę akcję, potrzebujesz połączenia z Internetem.","Aby wykonać tę akcję, potrzebujesz połączenia z Internetem."
+citizen_form.attachments.delete.title,Usuń plik(i),Usuń plik(i)
+citizen_form.attachments.delete.description,Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.,Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.
+citizen_form.attachments.delete.actions.cancel,Anuluj,Anuluj
+citizen_form.attachments.delete.actions.clear,Usuń,Usuń
+login.disclaimer.paragraph1,"Pamiętaj, że jeśli nie jesteś akredytowany jako niezależny obserwator przez organizację monitorującą procesy wyborcze w Twoim kraju, nie możesz korzystać z aplikacji Vote Monitor.","Jeśli nie jesteś obserwatorem skierowanym przez organizację monitorującą procesy wyborcze w Twoim kraju, nie możesz korzystać z Vote Monitor dla Obserwatorów."
+login.disclaimer.paragraph2.slice1,"Jeśli nie jesteś akredytowanym obserwatorem, nadal możesz","Jeśli nie jesteś obserwatorem, nadal możesz"
+login.disclaimer.paragraph2.link,zgłaszać nieprawidłowości jako obywatel,zgłaszać nieprawidłowości jako wyborca
+login.disclaimer.paragraph2.slice2,"w przypadku trwających wyborów, bez konieczności posiadania konta.","w przypadku bieżących wyborów, bez konieczności posiadania konta."
+login.heading,Zaloguj,Zaloguj
+login.paragraph,"Podaj proszę adres e-mail, który podałeś/aś przy rejestracji w roli obserwatora:","Podaj proszę adres e-mail, który podałeś/aś przy rejestracji w roli obserwatora:"
+login.form.email.label,E-mail *,E-mail *
+login.form.email.placeholder,E-mail,E-mail
+login.form.email.required,Adres e-mail jest obowiązkowy,Adres e-mail jest obowiązkowy
+login.form.email.pattern,Format adresu e-mail jest nieprawidłowy,Format adresu e-mail jest nieprawidłowy
+login.form.password.label,Hasło *,Hasło *
+login.form.password.placeholder,Hasło,Hasło
+login.form.password.required,Hasło jest obowiązkowe,Hasło jest obowiązkowe
+login.form.submit.save,Zaloguj,Zaloguj
+login.form.submit.loading,Zaloguj...,Zaloguj...
+login.form.errors.invalid_credentials,Wystąpił błąd z Twoimi danymi logowania. Spróbuj ponownie.,Wystąpił błąd z Twoimi danymi logowania. Spróbuj ponownie.
+login.form.errors.offline,"Aby się zalogować, potrzebujesz połączenia z Internetem.","Aby się zalogować, potrzebujesz połączenia z Internetem."
+login.actions.forgot_password,Zapomniałeś/aś hasła?,Zapomniałeś/aś hasła?
+login.email_toast,Adres e-mail został skopiowany do schowka,Adres e-mail został skopiowany do schowka
+forgot_password.header.title,Zapomniane hasło,Zapomniane hasło
+forgot_password.heading,Zapomniałeś/aś hasła?,Zapomniałeś/aś hasła?
+forgot_password.paragraph,"Podaj proszę adres e-mail, który podałeś/aś przy rejestracji w roli obserwatora, a wyslemy Ci link potrzebny do zresetowania hasła.","Podaj proszę adres e-mail, który podałeś/aś przy rejestracji w roli obserwatora, a wyslemy Ci link potrzebny do zresetowania hasła."
+forgot_password.form.email.label,E-mail *,E-mail *
+forgot_password.form.email.placeholder,E-mail,E-mail
+forgot_password.form.email.required,Adres e-mail jest obowiązkowy,Adres e-mail jest obowiązkowy
+forgot_password.form.email.pattern,Format adresu e-mail jest nieprawidłowy,Format adresu e-mail jest nieprawidłowy
+forgot_password.form.submit.loading,Wysyłanie...,Wysyłanie...
+forgot_password.form.submit.save,Wysłać,Wyślij
+forgot_password.form.errors.invalid_email,Bieżący adres e-mail nie jest zarejestrowany w systemie. Proszę spróbuj ponownie.,Bieżący adres e-mail nie jest zarejestrowany w systemie. Proszę spróbuj ponownie.
+forgot_password.confirmation.heading,E-mail wysłany,E-mail wysłany
+forgot_password.confirmation.paragraph,"Sprawdź prosze e-mail i otwórz link, który wysłaliśmy. Jeśli nie widzisz e-maila, upewnij się, że nie wpadł do folderu 'spam'.","Sprawdź proszę e-mail i otwórz link, który wysłaliśmy. Jeśli nie widzisz e-maila, upewnij się, że nie wpadł do folderu 'spam'."
+forgot_password.confirmation.confirm,Wróć do logowania,Wróć do logowania
+about_app.title,O Vote Monitor,O Vote Monitor
+about_app.title_observer,Informacje o Vote Monitor Observer,Informacje o Vote Monitor Observer
+about_app.general,Vote Monitor to dedykowane narzędzie cyfrowe przeznaczone dla niezależnych obserwatorów i organizacji międzynarodowych zajmujących się monitorowaniem wyborów. Vote Monitor jest rozwijany i zarządzany przez Code for Rumunia/Commit Global.,Vote Monitor to dedykowane narzędzie cyfrowe przeznaczone dla niezależnych obserwatorów i organizacji międzynarodowych zajmujących się monitorowaniem wyborów. Vote Monitor jest rozwijany i zarządzany przez Code for Romania/Commit Global.
+about_app.purpose,"Aplikacja pomaga niezależnym obserwatorom monitorować lokale wyborcze i dokumentować przebieg głosowania w czasie rzeczywistym w danej turze wyborów. Wszystkie dane zebrane za pośrednictwem aplikacji mobilnej są przesyłane w czasie rzeczywistym do organizacji akredytujących w celu zidentyfikowania potencjalnych sygnałów ostrzegawczych, które mogą wskazywać na nadużycia lub inne nieprawidłowości. Ostatecznie naszym celem jest zapewnienie jasnego, prostego i realistycznego obrazu przebiegu procesu wyborczego.","Aplikacja pomaga niezależnym obserwatorom monitorować lokale wyborcze i dokumentować przebieg głosowania w czasie rzeczywistym w danej turze wyborów. Wszystkie dane zebrane za pośrednictwem aplikacji mobilnej są przesyłane w czasie rzeczywistym do organizacji akredytujących w celu zidentyfikowania potencjalnych sygnałów ostrzegawczych, które mogą wskazywać na nadużycia lub inne nieprawidłowości. Ostatecznie naszym celem jest zapewnienie jasnego, prostego i realistycznego obrazu przebiegu procesu wyborczego."
+about_app.app_provides.paragraph,Aplikacja zapewnia obserwatorom:,Aplikacja zapewnia obserwatorom:
+about_app.app_provides.item1,Sposób na zarządzanie wieloma odwiedzanymi lokalami wyborczymi,Sposób na zarządzanie wieloma odwiedzanymi lokalami wyborczymi
+about_app.app_provides.item2,Skuteczna metoda monitorowania przebiegu procesu głosowania poprzez formularze utworzone przez organizacje akredytujące,Skuteczna metoda monitorowania przebiegu procesu głosowania poprzez formularze utworzone przez organizacje akredytujące
+about_app.app_provides.item3,Sposób na szybkie zgłaszanie innych problematycznych kwestii poza standardowymi formularzami,Sposób na szybkie zgłaszanie innych problematycznych kwestii poza standardowymi formularzami
+about_app.usage,Z aplikacji Vote Monitor można korzystać podczas dowolnych wyborów w dowolnym kraju na świecie. Od 2016 r. jest używany w wielu turach wyborów w Rumunii i Polsce.,Z aplikacji Vote Monitor można korzystać podczas dowolnych wyborów w dowolnym kraju na świecie. Od 2016 r. wielokrotnie był wykorzystywany w Europie i na świecie m.in. w Rumunii i Polsce.
+about_app.version,Wersja Vote Monitor {{value}},Wersja Vote Monitor {{value}}
+about_app_citizen.title,Informacje o Vote Monitor ,Informacje o Vote Monitor 
+about_app_citizen.title_observer,Informacje o Vote Monitor Citizen,Informacje o Vote Monitor dla Wyborców
+about_app_citizen.p1,"Vote Monitor Citizen umożliwia zwykłym obywatelom aktywny udział w monitorowaniu wyborów poprzez zgłaszanie wszelkich nieprawidłowości, które napotkają w okresie wyborczym, w tym działań związanych z kampanią, działaniami w lokalach wyborczych i procedurami w dniu głosowania.","Vote Monitor dla Wyborców umożliwia zwykłym obywatelom aktywny udział w monitorowaniu wyborów poprzez zgłaszanie wszelkich nieprawidłowości, które napotkają w okresie wyborczym, w tym sytuacji związanych z kampanią, działaniami w lokalach wyborczych i procedurami w dniu głosowania."
+about_app_citizen.p2,"Vote Monitor Citizen to rozszerzenie aplikacji Vote Monitor, która została początkowo opracowana przez Code for Romania/Commit Global dla niezależnych obserwatorów współpracujących z organizacjami pozarządowymi w zakresie monitorowania wyborów.","Vote Monitor dla Wyborców to rozszerzenie aplikacji Vote Monitor, która została początkowo opracowana przez Code for Romania/Commit Global dla apolitycznych obserwatorów współpracujących z organizacjami pozarządowymi w zakresie monitorowania wyborów."
+about_app_citizen.p3,"Użytkownicy mogą przesyłać raporty w czasie rzeczywistym, które będą analizowane przez organizacje pozarządowe zaangażowane w proces wyborczy. Raporty te mogą przyczynić się do powstania szczegółowych dokumentów obserwacyjnych, a w niektórych przypadkach mogą zostać przekazane odpowiednim instytucjom w celu usprawnienia przyszłych wyborów.","Użytkownicy mogą przesyłać raportyna bieżąco, które będą analizowane przez organizacje pozarządowe zaangażowane w proces wyborczy. Raporty te mogą przyczynić się do powstania raportów z obserwacji, a w szczególnych przypadkach mogą zostać przekazane odpowiednim instytucjom w celu usprawnienia przyszłych wyborów."
+about_app_citizen.p4,"Chociaż raporty obywatelskie odgrywają istotną rolę w promowaniu przejrzystości, należy pamiętać, że przesłanie raportu za pośrednictwem tej aplikacji nie stanowi oficjalnej skargi do instytucji odpowiedzialnych za organizację wyborów.","Chociaż zgłoszenia obywatelskie odgrywają istotną rolę w promowaniu przejrzystości, należy pamiętać, że przesłanie raportu za pośrednictwem tej aplikacji nie stanowi ani nie zastępuje oficjalnej skargi do instytucji odpowiedzialnych za organizację wyborów czy organów ścigania."
+about_app_citizen.version,Wersja monitora głosowania {{value}},Wersja Vote Monitor: {{value}}
+loading_screen.heading,Ładowanie ...,Ładowanie ...
+loading_screen.paragraph,"Przygotowujemy wszystkie dane, proszę czekać!","Przygotowujemy wszystkie dane, proszę czekać!"
+tabs.observation,Obserwacja,Obserwacja
+tabs.quick_report,Szybki raport,Szybki raport
+tabs.guides,Podręczniki,Podręczniki
+tabs.inbox,Poczta,Poczta
+tabs.more,Więcej,Więcej
+tabs.report,Szybki raport,Szybki raport
+tabs.resources,Zasoby,Zasoby
+tabs.updates,Aktualizacje,Aktualizacje
+add_polling_station.title,Dodaj komisję wyborczą,Dodaj komisję wyborczą
+add_polling_station.progress.location,Dodaj komisję wyborczą z {{value}},Dodaj komisję wyborczą z: {{value}}
+add_polling_station.actions.next_step,Dalej,Dalej
+add_polling_station.actions.back,Wróć,Wróć
+add_polling_station.actions.finalize,Sfinalizuj,Ukończ
+add_polling_station.error,Błąd podczas ładowania lokali wyborczych!,Błąd podczas ładowania lokali wyborczych!
+observation.title,Obserwacja punktów wyborczych,Obserwacja punktów wyborczych
+observation.no_election_round.heading,Brak zdarzeń dotyczących wyborów,Brak zdarzeń dotyczących wyborów
+observation.no_election_round.paragraph,"Możesz używać tej aplikacji, gdy zostaniesz przypisany/a przez swoją organizację do wydarzenia wyborczego.",Będziesz mógł korzystać z aplikacji po przypisaniu Cię do akcji wyborczej przez Twoją organizację
+observation.no_form,Formularz Informacje o lokalu wyborczym nie jest skonfigurowany,Formularz Informacje o lokalu wyborczym nie jest skonfigurowany
+observation.refresh_page,"Jeśli dane nie są widoczne, spróbuj odświeżyć stronę, aby pobrać najnowsze informacje","Jeśli dane nie są widoczne, spróbuj odświeżyć stronę, aby pobrać najnowsze informacje"
+observation.no_visited_polling_stations.heading,Brak odwiedzonych komisji wyborczych,Brak odwiedzonych komisji wyborczych
+observation.no_visited_polling_stations.paragraph,Uzupełnij dane dla pierwszej komisji wyborczej zanim zaczniesz wypełniać formularze obserwacyjne.,Uzupełnij dane dla pierwszej obserwowanej komisji wyborczej zanim zaczniesz wypełniać formularze obserwacyjne.
+observation.no_visited_polling_stations.add,Dodaj pierwszą komisję wyborczą,Dodaj pierwszą komisję wyborczą
+observation.my_polling_stations.heading,Moje komisje wyborcze,Moje komisje wyborcze
+observation.my_polling_stations.paragraph,Możesz zmienć komisję wyborczą jeśli chcesz dokonac rewizji formularza lub zmienić informacje dotyczące komisji wyborczej.,"Możesz przełączać się między lokalami wyborczymi, jeśli chcesz ponownie przeglądać odpowiedzi lub informacje o komisjach wyborczych."
+observation.my_polling_stations.add,Dodaj komisję wyborczą,Dodaj komisję wyborczą
+observation.polling_stations_information.heading,Informacje o stacjach wyborczych,Informacje o komisjach wyborczych
+observation.polling_stations_information.time_select.not_defined,Nie zdefiniowano,Nie zdefiniowano
+observation.polling_stations_information.time_select.arrival_time,Czas przybycia,Czas przybycia
+observation.polling_stations_information.time_select.departure_time,Czas wyjścia,Czas wyjścia
+observation.polling_stations_information.time_select.save,Zrobione,Zrobione
+observation.polling_stations_information.time_select.error.arrival_first,Najpierw wybierz godzinę przyjazdu.,Najpierw wybierz godzinę przyjazdu.
+observation.polling_stations_information.time_select.error.later_departure,Proszę wybrać godzinę odjazdu późniejszą niż godzina przylotu.,Proszę wybrać godzinę odjazdu późniejszą niż godzina przylotu.
+observation.polling_stations_information.time_select.error.earlier_arrival,Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu.,Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu.
+observation.polling_stations_information.time_select.error.server,Nie mogliśmy wysłać informacji na serwer.,Nie mogliśmy wysłać informacji na serwer.
+observation.polling_stations_information.observation_time.observation_time,Czas obserwacji,Czas obserwacji
+observation.polling_stations_information.observation_time.not_defined,Nie określono,Nie wskazano
+observation.polling_stations_information.observation_time.no_of_breaks,{{value}} przerwy,{{value}} przerw/y
+observation.polling_stations_information.observation_time.one_break,{{value}} przerwa,{{value}} przerwa
+"shit, you in the Polish numbers trap... in Polish: 1 przerwa; 2-4 przerwy; 5-21 przerw; 22-24 przerwy; 25-31 przerw;...  🫠",Czas przyjazdu i odjazdu,Czas przybycia i wyjścia
+observation.polling_stations_information.observation_time.arrival_time,Czas przybycia,Czas przybycia
+observation.polling_stations_information.observation_time.departure_time,Czas odlotu,Czas wyjścia
+observation.polling_stations_information.observation_time.departure_after_arrival,Godzina odlotu musi przypadać po godzinie przylotu,Godzina wyjścia musi być po godzinie przybycia
+observation.polling_stations_information.observation_time.select_arrival_time,Wybierz czas przybycia,Wybierz czas przybycia
+observation.polling_stations_information.observation_time.select_departure_time,Wybierz godzinę odlotu,Wybierz godzinę odlotu
+observation.polling_stations_information.observation_time.add_break,Dodaj nową przerwę w obserwacji,Dodaj nową przerwę w obserwacji
+observation.polling_stations_information.observation_time.break,Przerwa {{value}},Przerwa {{value}}.
+observation.polling_stations_information.observation_time.start_time,Czas rozpoczęcia,Czas rozpoczęcia
+observation.polling_stations_information.observation_time.select_start_time,Wybierz czas rozpoczęcia,Wybierz czas rozpoczęcia
+observation.polling_stations_information.observation_time.end_time,Czas zakończenia,Czas zakończenia
+observation.polling_stations_information.observation_time.select_end_time,Wybierz czas zakończenia,Wybierz czas zakończenia
+observation.polling_stations_information.observation_time.undefined_date,DD/MM/RRRR,DD/MM/RRRR
+observation.polling_stations_information.observation_time.undefined_time,GG:MM,gg:mm
+observation.polling_stations_information.observation_time.save,Oszczędność czasu obserwacji,Zapisz czas obserwacji
+observation.polling_stations_information.observation_time.clear,Wyraźny czas obserwacji,Wyczyść czas obserwacji
+observation.polling_stations_information.observation_time.confirmation_modals.clear.title,Wyraźny czas obserwacji,Wyczyść czas obserwacji
+observation.polling_stations_information.observation_time.confirmation_modals.clear.description,"Ta czynność spowoduje usunięcie czasu przyjazdu i wyjazdu, w tym wszystkich przerw wprowadzonych do tej pory dla tego punktu wyborczego. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić godziny.","Ta czynność spowoduje usunięcie czasu przybycia i wyjścia, w tym wszystkich przerw wprowadzonych do tej pory dla tego punktu wyborczego. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić godziny."
+observation.polling_stations_information.observation_time.confirmation_modals.clear.actions.cancel,Anuluj,Anuluj
+observation.polling_stations_information.observation_time.confirmation_modals.clear.actions.clear,Wyraźny czas obserwacji,Wyczyść czas obserwacji
+observation.polling_stations_information.observation_time.confirmation_modals.delete.title,Usuń przerwę,Usuń przerwę
+observation.polling_stations_information.observation_time.confirmation_modals.delete.description,"Ta czynność spowoduje usunięcie przerwy. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić czas.","Ta czynność spowoduje usunięcie przerwy. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić czas."
+observation.polling_stations_information.observation_time.confirmation_modals.delete.actions.cancel,Anuluj,Anuluj
+observation.polling_stations_information.observation_time.confirmation_modals.delete.actions.delete,Usuń przerwę,Usuń przerwę
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.title,Zapisywanie zmian czasu obserwacji,Zapisywanie zmian czasu obserwacji
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.description,Masz niezapisane zmiany związane z wprowadzonym czasem obserwacji. Czy chcesz zapisać zmiany przed opuszczeniem strony?,Masz niezapisane zmiany związane z wprowadzonym czasem obserwacji. Czy chcesz zapisać zmiany przed opuszczeniem strony?
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.actions.discard,Odrzucenie,Odrzuć
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.actions.save,Zapisz zmiany,Zapisz zmiany
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.title,Nie można zapisać czasu obserwacji,Nie można zapisać czasu obserwacji
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.p1,Wprowadzone godziny nie mogą zostać zapisane z powodu konfliktu między okresami przerw a godzinami przyjazdu/wyjazdu.,Wprowadzone godziny nie mogą zostać zapisane z powodu konfliktu między okresami przerw a godzinami przyjazdu/wyjazdu.
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.p2,"Należy upewnić się, że okresy przerw nie przekraczają przedziału czasu określonego przez czas obserwacji przylotu i odlotu. Prosimy o sprawdzenie i odpowiednie dostosowanie czasów.","Należy upewnić się, że okresy przerw nie przekraczają przedziału czasu określonego przez czas obserwacji przylotu i odlotu. Prosimy o sprawdzenie i odpowiednie dostosowanie czasów."
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.ok,OK,OK
+observation.polling_stations_information.polling_station_form.paragraph,Udziel krótkich odpowiedzi dotyczących tej komisji wyborczej.,Odpowiedz na kilka krótkich pytań dotyczących lokalu wyborczego.
+observation.polling_stations_information.polling_station_form.form_details_button_label,Informacje dotyczące komisji wyborczej,Informacje dotyczące komisji wyborczej
+observation.polling_stations_information.polling_station_form.number_of_questions,{{value}} pytań,{{value}} pytań/pytanie/pytania
+observation.polling_stations_information.polling_station_form.answer_questions,Udziel odpowiedzi,Udziel odpowiedzi
+observation.forms.heading,Formularze,Formularze
+observation.forms.list.empty,Brak danych do wyświetlenia,Brak danych do wyświetlenia
+observation.forms.list.error.paragraph1,Coś poszło nie tak!,Coś poszło nie tak!
+observation.forms.list.error.paragraph2,"Nie udało się pobrać danych. Naciśnij przycisk ponownej próby, aby spróbować ponownie!","Nie udało się pobrać danych. Naciśnij przycisk ponownej próby, aby spróbować ponownie!"
+observation.forms.list.error.retry,Spróbować ponownie,Spróbować ponownie
+observation.forms.select_language_modal.header,Wybierz język formularza,Wybierz język formularza
+observation.forms.select_language_modal.helper,"Wybrany formularz dostępny jest w kilku językach. Wybierz proszę język, w którym chcesz kontynnuować pracę.","Wybrany formularz dostępny jest w kilku językach. Wybierz proszę język, w którym chcesz kontynnuować pracę."
+observation.forms.select_language_modal.error,Proszę wybrać jedną z opcji,Proszę wybrać jedną z opcji
+observation.options_menu.manage_my_polling_stations,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+polling_station_information_form.title,Informacje dotyczące komisji wyborczej,Informacje dotyczące komisji wyborczej
+polling_station_information_form.submit,Zatwierdź odpowiedzi,Zatwierdź odpowiedzi
+polling_station_information_form.form.max,Dane wejściowe nie mogą przekraczać {{value}} znaków,Dane wejściowe nie mogą przekraczać {{value}} znaków
+polling_station_information_form.form.placeholder,Proszę wpisać tekst...,Proszę wpisać tekst...
+polling_station_information_form.menu.clear,Wyczyść formularz (usuń wszystkie odpowiedzi),Wyczyść formularz (usuń wszystkie odpowiedzi)
+polling_station_information_form.warning_modal.title,Wyczyść formularz informacyjny komisji wyborczej,Wyczyść formularz informacyjny komisji wyborczej
+polling_station_information_form.warning_modal.description,"Ta czynność usunie wszystkie odpowiedzi wprowadzone do formularza. Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś formularz zanim wykonasz tę akcję.","Ta czynność usunie wszystkie odpowiedzi wprowadzone do formularza. Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś formularz zanim wykonasz tę akcję."
+polling_station_information_form.warning_modal.actions.cancel,Anuluj,Anuluj
+polling_station_information_form.warning_modal.actions.clear,Wyczyść formularz,Wyczyść formularz
+polling_station_information_form.unsaved_changes_dialog.title,Zapisz zmiany w formularzu,Zapisz zmiany w formularzu
+polling_station_information_form.unsaved_changes_dialog.description,Masz niezapisane zmiany w tym formularzu. Czy chcesz zapisać zmiany przed wyjściem?,Masz niezapisane zmiany w tym formularzu. Czy chcesz zapisać zmiany przed wyjściem?
+polling_station_information_form.unsaved_changes_dialog.actions.discard,Odrzucenie,Odrzuć
+polling_station_information_form.unsaved_changes_dialog.actions.save,Zapisz zmiany,Zapisz zmiany
+form_overview.overview.heading,Podgląd formularza,Podgląd formularza
+form_overview.overview.status,Status formularza,Status formularza
+form_overview.overview.answered_questions,Wypełnione pytania,Wypełnione pytania
+form_overview.overview.resume,Formularz wznawiać,Wznów formularz
+form_overview.overview.start_form,Uruchom formularz,Uruchom formularz
+form_overview.overview.progress,postęp,postęp
+form_overview.questions.title,Pytania,Pytania
+form_overview.questions.not_answered,Nie udzielono odpowiedzi,Nieodpowiedziane
+form_overview.questions.answered,Udzielono odpowiedzi,Odpowiedziane
+form_overview.questions.no_notes,Brak dołączonych notatek,Brak notatek
+form_overview.questions.notes,Zawiera załączone notatki,Zawiera notatki
+form_overview.attachments.notes,{{count}} Notatki,{{count}} notatek/notatka/notatki
+form_overview.attachments.media,{{count}} Pliki z nagraniami/zdjęciami,{{count}} plików/plik/pliki/z nagraniami/zdjęciami
+form_overview.error,Błąd podczas ładowania danych formularza!,Błąd podczas ładowania danych formularza!
+form_overview.menu.clear,Wyczyść formularz (usuń wszystkie odpowiedzi),Wyczyść formularz (usuń wszystkie odpowiedzi)
+form_overview.menu.change_language,Zmień język,Zmień język
+form_overview.clear_answers_modal.title,Clear form {{value}},Wyczyść formularz {{value}}
+form_overview.clear_answers_modal.description.p1,"Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nie udzielono odpowiedzi'.","Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nieodpowiedziane'."
+form_overview.clear_answers_modal.description.p2,"Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś dane dotyczące komisji wyborczej zanim wykonasz tę akcję.","Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś dane dotyczące komisji wyborczej zanim wykonasz tę akcję."
+form_overview.clear_answers_modal.actions.clear,Wyczyść formularz,Wyczyść formularz
+form_overview.clear_answers_modal.actions.cancel,Anuluj,Anuluj
+polling_station_form_wizard.progress_bar.label,Postęp formy,Postęp formy
+polling_station_form_wizard.progress_bar.clear_answer,Wyczyść odpowiedź,Wyczyść odpowiedź
+polling_station_form_wizard.form.min,Pole musi mieć długość co najmniej {{value}} znaków,Pole musi mieć długość co najmniej {{value}} znak
+polling_station_form_wizard.form.max,Pole musi zawierać maksymalnie {{value}} znaków,Pole musi zawierać maksymalnie {{value}} znaków
+polling_station_form_wizard.form.required,To pole jest wymagane,To pole jest wymagane
+polling_station_form_wizard.form.date_placeholder,Proszę wprowadzić datę,Proszę wprowadzić datę
+polling_station_form_wizard.form.text_placeholder,Proszę wpisać tekst,Proszę wpisać tekst
+polling_station_form_wizard.save_and_continue,Zapisz i kontynuuj,Zapisz i kontynuuj
+polling_station_form_wizard.attachments.heading,Wybrane media,Wybrane media
+polling_station_form_wizard.attachments.loading,Dodawanie załącznika... ,Dodawanie załącznika... 
+polling_station_form_wizard.attachments.error,Błąd podczas wysyłania załącznika!,Błąd podczas wysyłania załącznika!
+polling_station_form_wizard.attachments.add,"Dodaj notatkę, zdjęcie lub wideo","Dodaj notatkę, zdjęcie lub wideo"
+polling_station_form_wizard.attachments.menu.add_note,Dodaj notatkę,Dodaj notatkę
+polling_station_form_wizard.attachments.menu.load,Dodaj z galerii,Dodaj z galerii
+polling_station_form_wizard.attachments.menu.take_picture,Zrób zdjęcie,Zrób zdjęcie
+polling_station_form_wizard.attachments.menu.record_video,Nagraj wideo,Nagraj wideo
+polling_station_form_wizard.attachments.menu.upload_audio,Wgraj nagranie,Wgraj nagranie
+polling_station_form_wizard.attachments.upload.compressing,Kompresowanie załącznika: ,Kompresowanie załącznika: 
+polling_station_form_wizard.attachments.upload.preparing,Przygotowanie załącznika...,Przygotowanie załącznika...
+polling_station_form_wizard.attachments.upload.starting,Rozpoczynanie wysyłania...,Rozpoczynanie wysyłania...
+polling_station_form_wizard.attachments.upload.progress,Postęp wysyłania:,Postęp wysyłania:
+polling_station_form_wizard.attachments.upload.completed,Wysyłanie zakończone.,Wysyłanie zakończone.
+polling_station_form_wizard.attachments.upload.aborted,Wysyłanie przerwane.,Wysyłanie przerwane.
+polling_station_form_wizard.attachments.upload.offline,"Potrzebujesz połączenia internetowego, aby wykonać tę akcję.","Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+polling_station_form_wizard.attachments.upload.abort_offline,"Przejdź do internetu, aby kontynuować lub ponownie rozpocząć wysyłanie","Przejdź do internetu, aby kontynuować lub ponownie rozpocząć wysyłanie"
+polling_station_form_wizard.attachments.upload.abort_offline_button,Ponowne wysyłanie,Ponowne wysyłanie
+polling_station_form_wizard.attachments.upload.uploaded,Pomyślnie wysłano {{value}} plików.,Pomyślnie wysłano {{value}} plik/pliki/plików.
+polling_station_form_wizard.attachments.upload.abort_offline_confirm,Czy na pewno chcesz przerwać wysyłanie?,Czy na pewno chcesz przerwać wysyłanie?
+polling_station_form_wizard.attachments.upload.abort_offline_cancel,Anuluj,Anuluj
+polling_station_form_wizard.notes.heading,Notatki,Notatki
+polling_station_form_wizard.notes.add.heading,Dodaj notatkę,Dodaj notatkę
+polling_station_form_wizard.notes.add.form.input.placeholder,Dodaj istotne informacje dotyczące tego pytania.,Dodaj istotne informacje dotyczące tego pytania.
+polling_station_form_wizard.notes.add.form.input.max,"Dane wejściowe nie mogą przekraczać 10,000 znaków","Dane wejściowe nie mogą przekraczać 10,000 znaków"
+polling_station_form_wizard.notes.add.form.input.required,To pole jest wymagane,To pole jest wymagane
+polling_station_form_wizard.notes.edit.heading,Edytuj notatkę,Edytuj notatkę
+polling_station_form_wizard.notes.edit.delete,Usuń notatkę,Usuń notatkę
+polling_station_form_wizard.notes.delete.title,Usuń notatkę,Usuń notatkę
+polling_station_form_wizard.notes.delete.description,Ta akcja nie może być cofnięta. Usunięte notatki nie mogą zostać przywrócone.,Ta akcja nie może być cofnięta. Usunięte notatki nie mogą zostać przywrócone.
+polling_station_form_wizard.notes.delete.actions.cancel,Anuluj,Anuluj
+polling_station_form_wizard.notes.delete.actions.delete,Usuń,Usuń
+polling_station_form_wizard.warning_modal.question.title,Wyczyść odpowiedź dla pytania{{value}},Wyczyść odpowiedź dla pytania {{value}}.
+polling_station_form_wizard.warning_modal.question.description,Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nie udzielono odpowiedzi'.,Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nieodpowiedziano'.
+polling_station_form_wizard.warning_modal.question.actions.cancel,Anuluj,Anuluj
+polling_station_form_wizard.warning_modal.question.actions.clear,Wyczyść odpowiedź,Wyczyść odpowiedź
+polling_station_form_wizard.warning_modal.attachment.title,Usuń plik(i),Usuń plik(i)
+polling_station_form_wizard.warning_modal.attachment.description,Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.,Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.
+polling_station_form_wizard.warning_modal.attachment.actions.cancel,Anuluj,Anuluj
+polling_station_form_wizard.warning_modal.attachment.actions.clear,Usuń,Usuń
+polling_station_form_wizard.warning_modal.unsaved_answer.title,Zapisz zmiany w pytaniu,Zapisz zmiany w pytaniu
+polling_station_form_wizard.warning_modal.unsaved_answer.description,Masz niezapisane zmiany w tym pytaniu. Czy chcesz zapisać zmiany przed wyjściem?,Masz niezapisane zmiany w tym pytaniu. Czy chcesz zapisać zmiany przed wyjściem?
+polling_station_form_wizard.warning_modal.unsaved_answer.actions.cancel,Odrzucenie,Odrzuć
+polling_station_form_wizard.warning_modal.unsaved_answer.actions.save,Zapisz zmiany,Zapisz zmiany
+polling_station_form_wizard.error,Błąd podczas ładowania danych pytania!,Błąd podczas ładowania danych do pytania!
+manage_my_polling_stations.empty.title,Brak odwiedzonych komisji wyborczych,Brak odwiedzonych komisji wyborczych
+manage_my_polling_stations.general_text,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+manage_my_polling_stations.ps_card.header,Komisję wyborczą #{{value}},Komisja wyborcza #{{value}}
+manage_my_polling_stations.ps_card.l1,[Location L1],[Lokalizacja L1]
+manage_my_polling_stations.ps_card.l2,[Location L2],[Lokalizacja L2]
+manage_my_polling_stations.ps_card.l3,[Location L3],[Lokalizacja L3]
+manage_my_polling_stations.ps_card.l4,[Location L4],[Lokalizacja L4]
+manage_my_polling_stations.ps_card.l5,[Location L5],[Lokalizacja L5]
+manage_my_polling_stations.ps_card.street,Ulica,Ulica
+manage_my_polling_stations.ps_card.ps_number,Numer komisji wyborczej,Numer komisji wyborczej
+manage_my_polling_stations.warning_dialog.title,Usuń komisję wyborczą #{{value}},Usuń komisję wyborczą #{{value}}
+manage_my_polling_stations.warning_dialog.description,Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces Dodaj nową komisję wyborczą.,"Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces ""Dodaj nową komisję wyborczą""."
+manage_my_polling_stations.warning_dialog.actions.cancel,Anuluj,Anuluj
+manage_my_polling_stations.warning_dialog.actions.remove,Usuń,Usuń
+manage_my_polling_stations.warning_dialog.actions.loading,Wysyłanie...,Wysyłanie...
+manage_my_polling_stations.removal_unallowed_dialog.title,Usunięcie komisję wyborczą #{{value}} nie jest dozwolone,Usunięcie komisji wyborczej #{{value}} nie jest dozwolone
+manage_my_polling_stations.removal_unallowed_dialog.description,"Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera ona dane (informacje o komisję wyborczą i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, usuń zaznaczenie komisję wyborczą informacji i formularza odpowiedzi ręcznie, a następnie spróbuj ponownie wykonać tę czynność.","Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera dane (informacje o komisji wyborczej i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, najpierw usuń ręcznie wszystkie informacje o komisji i odpowiedzi w formularzach, a następnie ponó próbę usunięcia komisji."
+manage_my_polling_stations.delete_success,Komisja wyborcza została pomyślnie usunięta!,Komisja wyborcza została pomyślnie usunięta!
+manage_my_polling_stations.delete_error,Napotkaliśmy problem podczas usuwania wizyty komisji wyborczej. Spróbuj ponownie.,Napotkaliśmy problem podczas usuwania wizyty komisji wyborczej. Spróbuj ponownie.
+manage_my_polling_stations.offline_error_toast_msg,"Aby wykonać tę czynność, potrzebujesz połączenia internetowego.","Aby wykonać tę czynność, potrzebujesz połączenia internetowego."
+quick_report.list.title,Szybki raport,Szybki raport
+quick_report.list.heading,Moje zgłoszone sprawy,Moje zgłoszone sprawy
+quick_report.list.error,Błąd podczas ładowania raportów!,Błąd podczas ładowania raportów!
+quick_report.list.empty,Wyślij 'szybki raport' do swojej organizacji jeśli zauważyłeś/aś jakieś nieregularności w komisji wyborczej lub jej otoczeniu.,Wyślij 'szybki raport' do swojej organizacji jeśli zauważyłeś/aś jakieś nieprawidłowości w komisji wyborczej lub jej otoczeniu.
+quick_report.list.add,Zgłoś nową sprawę,Zgłoś nową sprawę
+quick_report.list.no_files,Brak załączonych plików,Brak załączonych plików
+quick_report.list.attachment_one,{{count}} plik załącznika,{{count}} załącznik
+quick_report.list.attachment_other,{{count}} pliki załączników,{{count}} załączniki/załączników
+quick_report.attachments.heading,Przesłane multimedia,Przesłane multimedia
+quick_report.attachments.loading,Dodawanie załącznika...,Dodawanie załącznika...
+quick_report.attachments.upload.preparing,Przygotowanie załącznika...,Przygotowanie załącznika...
+quick_report.attachments.upload.starting,Rozpoczęcie przesyłania...,Rozpoczęcie przesyłania...
+quick_report.attachments.upload.progress,Postęp przesyłania:,Postęp przesyłania:
+quick_report.attachments.upload.completed,Przesyłanie zakończone.,Przesyłanie zakończone.
+quick_report.attachments.upload.aborted,Przesyłanie zostało przerwane.,Przesyłanie zostało przerwane.
+quick_report.attachments.error,Błąd podczas wysyłania załącznika!,Błąd podczas wysyłania załącznika!
+quick_report.options_menu.manage_my_polling_stations,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+quick_report.info_modal.p1,W tej sekcji można szybko zgłosić wszelkie nieprawidłowości wyborcze zaobserwowane w lokalach wyborczych lub pobliskich obszarach.,W tej sekcji można szybko zgłosić wszelkie nieprawidłowości wyborcze zaobserwowane w lokalach wyborczych lub pobliskich obszarach.
+quick_report.info_modal.p2,"Funkcja ta umożliwia natychmiastowe powiadamianie organizacji, poza zwykłymi formularzami obserwacji, zapewniając szybkie zajęcie się pilnymi kwestiami.","Funkcja ta umożliwia natychmiastowe powiadamianie organizacji, poza zwykłymi formularzami obserwacji, zapewniając szybkie zajęcie się pilnymi kwestiami."
+report_new_issue.title,Zgłoś nową sprawę,Zgłoś nową sprawę
+report_new_issue.upload.compressing,Kompresowanie załącznika: ,Kompresowanie załącznika: 
+report_new_issue.upload.preparing,Przygotowanie załącznika...,Przygotowanie załącznika...
+report_new_issue.upload.starting,Rozpoczynanie wysyłania...,Rozpoczynanie wysyłania...
+report_new_issue.upload.progress,Wysyłanie załączników: ,Wysyłanie załączników: 
+report_new_issue.upload.completed,Wysyłanie zakończone.,Wysyłanie zakończone.
+report_new_issue.upload.aborted,Wysyłanie przerwane.,Wysyłanie przerwane.
+report_new_issue.upload.offline,"Potrzebujesz połączenia internetowego, aby wykonać tę akcję.","Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+report_new_issue.media.heading,Wybrane media,Wybrane media
+report_new_issue.media.add,Dodaj pliki multimedialne,Dodaj pliki multimedialne
+report_new_issue.media.error,Błąd podczas wysyłania załącznika!,Błąd podczas wysyłania załącznika!
+report_new_issue.media.menu.load,Załaduj z galerii,Załaduj z galerii
+report_new_issue.media.menu.take_picture,Zrób zdjęcie,Zrób zdjęcie
+report_new_issue.media.menu.record_video,Nagraj wideo,Nagraj wideo
+report_new_issue.media.menu.upload_audio,Wgraj nagranie,Wgraj nagranie
+report_new_issue.form.polling_station_id.label,Komisja wyborcza *,Komisja wyborcza *
+report_new_issue.form.polling_station_id.placeholder,Wybierz komisję wyborczą,Wybierz komisję wyborczą
+report_new_issue.form.polling_station_id.extra,"Zapisz proszę szczegóły komisji wyborczej , które pozwolą ją zidentyfikować (adres, nazwa, numer itd)","Zapisz proszę szczegóły komisji wyborczej , które pozwolą ją zidentyfikować (adres, nazwa, numer itd)"
+report_new_issue.form.polling_station_id.required,To pole jest wymagane.,To pole jest wymagane.
+report_new_issue.form.polling_station_id.options.other,Inna komisja wyborcza,Inna komisja wyborcza
+report_new_issue.form.polling_station_id.options.not_related,Bez związku z komisją wyborczą,Bez związku z komisją wyborczą
+report_new_issue.form.incident_category.label,Kategoria incydentu*,Kategoria incydentu*
+report_new_issue.form.incident_category.placeholder,Kategoria,Kategoria
+report_new_issue.form.incident_category.required,To pole jest wymagane.,To pole jest wymagane.
+report_new_issue.form.incident_category.options.PhysicalViolenceIntimidationPressure,Przemoc fizyczna/zastraszanie/nacisk,Przemoc fizyczna/zastraszanie/nacisk
+report_new_issue.form.incident_category.options.CampaigningAtPollingStation,Kampania w lokalu wyborczym,Kampania w lokalu wyborczym
+report_new_issue.form.incident_category.options.RestrictionOfObserversRights,Ograniczenie praw obserwatora (przedstawiciela/mediów),Ograniczenie praw obserwatora (przedstawiciela/mediów)
+report_new_issue.form.incident_category.options.UnauthorizedPersonsAtPollingStation,Osoby nieupoważnione w lokalu wyborczym,Osoby nieupoważnione w lokalu wyborczym
+report_new_issue.form.incident_category.options.ViolationDuringVoterVerificationProcess,Naruszenie podczas procesu weryfikacji wyborców,Naruszenie podczas procesu weryfikacji wyborców
+report_new_issue.form.incident_category.options.VotingWithImproperDocumentation,Głosowanie z nieprawidłową dokumentacją,Głosowanie z nieprawidłową dokumentacją
+report_new_issue.form.incident_category.options.IllegalRestrictionOfVotersRightToVote,Nielegalne ograniczenie prawa wyborcy do głosowania,Nielegalne ograniczenie prawa wyborcy do głosowania
+report_new_issue.form.incident_category.options.DamagingOrSeizingElectionMaterials,Zniszczenie/zajęcie materiałów wyborczych,Zniszczenie/zajęcie materiałów wyborczych
+report_new_issue.form.incident_category.options.ImproperFilingOrHandlingOfElectionDocumentation,Niewłaściwe składanie/obsługa dokumentacji wyborczej,Niewłaściwe składanie/obsługa dokumentacji wyborczej
+report_new_issue.form.incident_category.options.BallotStuffing,Fałszowanie głosów,Fałszowanie głosów
+report_new_issue.form.incident_category.options.ViolationsRelatedToControlPaper,Naruszenia związane z dokumentacją kontrolną,Naruszenia związane z dokumentacją kontrolną
+report_new_issue.form.incident_category.options.NotCheckingVoterIdentificationSafeguardMeasures,Niesprawdzanie środków bezpieczeństwa identyfikacji wyborców,Niesprawdzanie środków bezpieczeństwa identyfikacji wyborców
+report_new_issue.form.incident_category.options.VotingWithoutVoterIdentificationSafeguardMeasures,Głosowanie bez identyfikacji wyborcy – środki bezpieczeństwa,Głosowanie bez identyfikacji wyborcy – środki bezpieczeństwa
+report_new_issue.form.incident_category.options.BreachOfSecrecyOfVote,Naruszenie tajności głosowania,Naruszenie tajności głosowania
+report_new_issue.form.incident_category.options.ViolationsRelatedToMobileBallotBox,Naruszenia związane z mobilną urną wyborczą,Naruszenia związane z mobilną urną wyborczą
+report_new_issue.form.incident_category.options.NumberOfBallotsExceedsNumberOfVoters,Liczba oddanych głosów przekracza liczbę wyborców,Liczba oddanych głosów przekracza liczbę wyborców
+report_new_issue.form.incident_category.options.ImproperInvalidationOrValidationOfBallots,Nieprawidłowe unieważnianie/walidowanie głosów,Nieprawidłowe unieważnianie/walidowanie głosów
+report_new_issue.form.incident_category.options.FalsificationOrImproperCorrectionOfFinalProtocol,Fałszowanie/nieprawidłowa korekta protokołu końcowego,Fałszowanie/nieprawidłowa korekta protokołu końcowego
+report_new_issue.form.incident_category.options.RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy,Odmowa wydania kopii protokołu końcowego/wydanie niewłaściwej kopii,Odmowa wydania kopii protokołu końcowego/wydanie niewłaściwej kopii
+report_new_issue.form.incident_category.options.ImproperFillingInOfFinalProtocol,Nieprawidłowe wypełnienie protokołu końcowego,Nieprawidłowe wypełnienie protokołu końcowego
+report_new_issue.form.incident_category.options.ViolationOfSealingProceduresOfElectionMaterials,Naruszenie procedur pieczętowania materiałów wyborczych,Naruszenie procedur pieczętowania materiałów wyborczych
+report_new_issue.form.incident_category.options.ViolationsRelatedToVoterLists,Naruszenia związane z listami wyborców,Naruszenia związane z listami wyborców
+report_new_issue.form.incident_category.options.Other,Inny,Inny
+report_new_issue.form.polling_station_details.label,Szczegóły komisji wyborczej *,Szczegóły komisji wyborczej *
+report_new_issue.form.polling_station_details.placeholder,"Zapisz proszę szczegóły komisji wyborczej , które pozwolą ją zidentyfikować (adres, nazwa, numer itd)","Zapisz proszę szczegóły komisji wyborczej , które pozwolą ją zidentyfikować (adres, nazwa, numer itd)"
+report_new_issue.form.polling_station_details.required,To pole jest wymagane.,To pole jest wymagane.
+report_new_issue.form.polling_station_details.max,Dane wejściowe nie mogą przekraczać {{value}} znaków,Dane wejściowe nie mogą przekraczać {{value}} znaków
+report_new_issue.form.issue_title.label,Temat *,Temat *
+report_new_issue.form.issue_title.placeholder,Określ temat sytuacji,Określ temat sprawy
+report_new_issue.form.issue_title.required,Tytuł problemu jest wymagany,Temat sprawy jest wymagany
+report_new_issue.form.issue_title.max,Dane wejściowe nie mogą przekraczać {{value}} znaków,Dane wejściowe nie mogą przekraczać {{value}} znaków
+report_new_issue.form.issue_description.label,Opis *,Opis *
+report_new_issue.form.issue_description.placeholder,Opisz szczegóły sytuacji,Opisz szczegóły sprawy
+report_new_issue.form.issue_description.required,Wymagany jest opis problemu,Wymagany jest opis problemu
+report_new_issue.form.issue_description.max,Dane wejściowe nie mogą przekraczać {{value}} znaków,Dane wejściowe nie mogą przekraczać {{value}} znaków
+report_new_issue.form.submit,Zgłoś sprawę,Zgłoś sprawę
+report_new_issue.form.clear,Wyczyść,Wyczyść
+report_new_issue.form.loading,Przetwarzanie...,Przetwarzanie...
+report_new_issue.form.error,Błąd podczas ładowania raportu,Błąd podczas ładowania raportu
+report_details.title,Szybki tytuł raportu,Szybki tytuł raportu
+report_details.uploaded_media,Wybrane media,Wybrane media
+report_details.no_files,Brak załączonych plików,Brak załączonych plików
+report_details.error,Błąd podczas ładowania raportu,Błąd podczas ładowania raportu
+guides.title,Zasoby,Zasoby
+guides.empty.heading,Brak nowych podręczników,Brak nowych podręczników
+guides.empty.paragraph,Podręczniki i inne zasoby udostępnione przez Twoją organizację.,Podręczniki i inne zasoby udostępnione przez Twoją organizację.
+guides.list.heading,Podręczniki,Podręczniki
+guides.list.guide.backup_title,Dokument,Dokument
+guides.list.guide.created_on,Utworzono dnia,Utworzono
+guides.options_sheet.manage_my_polling_stations,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+guides.info_modal,"W tej sekcji znajdują się kluczowe informacje i zasoby mające pomóc w obserwowaniu procesów wyborczych i zgłaszaniu wszelkich kwestii wyborczych lub nieprawidłowości, które napotkasz jako niezależny obserwator.","W tej sekcji znajdują się kluczowe informacje i zasoby mające pomóc w obserwowaniu procesów wyborczych i zgłaszaniu wszelkich kwestii wyborczych lub nieprawidłowości, które napotkasz jako niezależny obserwator."
+resources.title,Zasoby,Zasoby
+resources.info,"W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel.","W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel."
+resources.empty.heading,Brak jeszcze przewodników do przeczytania,Brak jeszcze przewodników do przeczytania
+resources.empty.paragraph,Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako obywatel są na wyciągnięcie ręki.,Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako wyborca są na wyciągnięcie ręki.
+resources.types.Document,Typ pliku PDF,Typ pliku PDF
+resources.types.Website,Zewnętrzny adres URL,Zewnętrzny adres URL
+resources.types.Text,Przewodnik w aplikacji,Przewodnik po aplikacji
+inbox.title,Skrzynka odbiorcza,Poczta
+inbox.empty.heading,Brak wiadomości,Brak wiadomości
+inbox.empty.paragraph,Tu pojawią się wiadomości i alerty przesłane przez Twoją organizację.,Tu pojawią się wiadomości i alerty przesłane przez Twoją organizację.
+inbox.banner,Wiadomości od {{ngoName}},Wiadomości od: {{ngoName}}
+inbox.today,Dzisiaj,Dzisiaj
+inbox.your_organization,twoja organizacja,twoja organizacja
+inbox.menu.manage_polling_stations,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+inbox.info_modal.p1,"W tej skrzynce odbiorczej będziesz otrzymywać aktualizacje na żywo i wiadomości od organizacji pozarządowej, która akredytowała Cię jako obserwatora.","W tej skrzynce odbiorczej będziesz otrzymywać aktualizacje na żywo i wiadomości od organizacji pozarządowej, która akredytowała Cię jako obserwatora."
+inbox.info_modal.p2,"Sprawdzaj okresowo, czy nie otrzymałeś nowych informacji istotnych dla Twojej aktywności obserwacyjnej.","Sprawdzaj okresowo, czy nie otrzymałeś nowych informacji istotnych dla Twojej aktywności obserwacyjnej."
+updates.title,Aktualizacje,Aktualizacje
+updates.empty.heading,Nie otrzymano jeszcze żadnych aktualizacji,Nie otrzymano jeszcze żadnych aktualizacji
+updates.empty.paragraph,Tutaj pojawią się aktualizacje dotyczące okresu wyborczego.,Tutaj pojawią się aktualizacje dotyczące wyborów.
+updates.info_modal.p1,"W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące wyborów, istotne dla Ciebie jako obywatela zainteresowanego zaangażowaniem obywatelskim.","W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące wyborów, istotne dla Ciebie jako zaangażowanego obywatela."
+updates.info_modal.p2,"Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje.","Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
+more.title,Więcej,Więcej
+more.change-language,Zmień język appki,Zmień język aplikacji
+more.change-password,Zmień hasło,Zmień hasło
+more.terms,Zasady i warunki,Regulamin
+more.privacy_policy,Polityka prywatności,Polityka prywatności
+more.about,O Vote Monitor,O Vote Monitor
+more.app_version,Wersja Vote Monitor {{value}},Wersja Vote Monitor {{value}}
+more.support,Zadzwoń na hotline NGO,Zadzwoń na infolinię dla organizacji pozarządowych
+more.feedback,Masz uwagi do aplikacji?,Przekaż opinię o aplikacji
+more.logout,Wyloguj,Wyloguj
+more.logged_in,Zalogowano jako {{user}},Zalogowano jako {{user}}
+more.warning_modal.logout_offline.title,Ostrzeżenie: Twoje dane nie są zsynchronizowane,Ostrzeżenie: Twoje dane nie są zsynchronizowane
+more.warning_modal.logout_offline.description,"Aktualnie jesteś offline. Jeśli się teraz wylogujesz, wszystkie formularze, załączniki i notatki wypełnione lub przesłane offline zostaną utracone.
+
+Aby uniknąć utraty danych, przed wylogowaniem połącz się ponownie z internetem.","Aktualnie jesteś offline. Jeśli się teraz wylogujesz, wszystkie formularze, załączniki i notatki wypełnione lub przesłane offline zostaną utracone.
+
+Aby uniknąć utraty danych, przed wylogowaniem połącz się ponownie z internetem."
+more.warning_modal.logout_offline.cancel,Anuluj,Anuluj
+more.warning_modal.logout_offline.action,Wyloguj,Wyloguj
+more.warning_modal.logout_online.title,Czy na pewno chcesz się wylogować?,Czy na pewno chcesz się wylogować?
+more.warning_modal.logout_online.cancel,Anuluj,Anuluj
+more.warning_modal.logout_online.action,Wyloguj,Wyloguj
+more.feedback_toast.success,Wysłano opinię!,Wysłano opinię!
+more.feedback_toast.offline,"Aby wykonać tę akcję, potrzebujesz połączenia z Internetem.","Aby wykonać tę akcję, potrzebujesz połączenia z Internetem."
+more.feedback_toast.error,Błąd podczas dodawania opinii!,Błąd podczas dodawania opinii!
+more.feedback_toast.required,To pole jest wymagane,To pole jest wymagane
+more.feedback_sheet.heading,Prześlij nam swoją opinię,Prześlij nam swoją opinię
+more.feedback_sheet.p1,"Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!","Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!"
+more.feedback_sheet.placeholder,Napisz tutaj swoją opinię...,Napisz tutaj swoją opinię...
+more.feedback_sheet.cancel,Anuluj,Anuluj
+more.feedback_sheet.action,Wysłać,Wyślij
+more.feedback_sheet.input.max,Dane wejściowe nie mogą przekraczać {{value}} znaków,Dane wejściowe nie mogą przekraczać {{value}} znaków
+more.options_sheet.manage_my_polling_stations,Zarządzanie moimi komisjami wyborczymi,Zarządzanie moimi komisjami wyborczymi
+change_password.title,Zmień hasło,Zmień hasło
+change_password.form.current_password.label,Obecne hasło *,Obecne hasło *
+change_password.form.current_password.placeholder,Wpisz aktualne hasło,Wpisz aktualne hasło
+change_password.form.current_password.required,Hasło jest obowiązkowe,Hasło jest obowiązkowe
+change_password.form.current_password.credentials_error,Bieżące hasło jest nieprawidłowe,Bieżące hasło jest nieprawidłowe
+change_password.form.new_password.label,Nowe hasło *,Nowe hasło *
+change_password.form.new_password.placeholder,Wprowadź nowe hasło,Wprowadź nowe hasło
+change_password.form.new_password.helper,Musi zawierać co najmniej 8 znaków.,Musi zawierać co najmniej 8 znaków.
+change_password.form.new_password.required,Hasło jest obowiązkowe,Nowe hasło jest obowiązkowe
+change_password.form.confirm_password.label,Potwierdź nowe hasło *,Potwierdź nowe hasło *
+change_password.form.confirm_password.placeholder,Potwierdź hasło,Potwierdź hasło
+change_password.form.confirm_password.helper,Oba hasła muszą być takie same.,Oba hasła muszą być takie same.
+change_password.form.confirm_password.required,Hasło jest obowiązkowe,Nowe hasło jest obowiązkowe
+change_password.form.confirm_password.no_match,Hasła nie są takie same.,Hasła nie są takie same.
+change_password.form.save,Zapisz nowe hasło,Zapisz nowe hasło
+change_password.confirmation.heading,Hasła zmienione!,Hasła zmienione!
+change_password.confirmation.paragraph,Hasło zostało skutecznie zmienione.,Hasło zostało skutecznie zmienione.
+change_password.confirmation.confirm,Wróć do aplikacji,Wróć do aplikacji
+change_password.error.offline,Aplikacja jest w trybie offline i nie może wykonać żądania,Aplikacja jest w trybie offline i nie można wykonać żądania
+generic_error_screen.paragraph1,Coś poszło nie tak!,Coś poszło nie tak!
+generic_error_screen.paragraph2,Nie mogliśmy odzyskać danych po tym błędzie. Sprawdź swoje połączenie internetowe i uruchom ponownie aplikację!,Nie mogliśmy odzyskać danych po tym błędzie. Sprawdź swoje połączenie internetowe i uruchom ponownie aplikację!
+generic_error_screen.retry,Spróbować ponownie,Spróbować ponownie
+generic_error_screen.logout,Wyloguj,Wyloguj
+network_banner.online,Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.,Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.
+network_banner.offline,Tryb offline. Dane zachowane lokalnie.,Tryb offline. Dane zachowane lokalnie.
+network_banner.offline_citizen,"Tryb offline. Potrzebujesz internetu, aby wypełnić formularz.","Tryb offline. Potrzebujesz internetu, aby wypełnić formularz."
+network_banner.more_details,Więcej szczegółów,Więcej szczegółów
+network_banner.offline_warning,"Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty.","Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
+network_banner.offline_warning_citizen,"Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu.","Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu."
+sync.sync_data,Synchronizowanie danych offline...,Synchronizowanie danych offline...
+sync.warning,"NIE ZAMKNIJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.","NIE ZAMYKAJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone."
+sync.files,"Przesyłamy Twoje pliki, może to chwilę potrwać...","Przesyłamy Twoje pliki, może to chwilę potrwać..."
