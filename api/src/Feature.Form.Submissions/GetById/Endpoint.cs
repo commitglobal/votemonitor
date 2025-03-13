@@ -42,6 +42,9 @@ public class Endpoint(
                       (SELECT "DefaultLanguage"
                       FROM "PollingStationInformationForms"
                       WHERE "ElectionRoundId" = @electionRoundId) AS "DefaultLanguage",
+                      (SELECT "Languages"
+                      FROM "PollingStationInformationForms"
+                      WHERE "ElectionRoundId" = @electionRoundId) AS "Languages",
                       psi."FollowUpStatus" as "FollowUpStatus",
                       '[]'::jsonb AS "Attachments",
                       '[]'::jsonb AS "Notes",
@@ -63,6 +66,7 @@ public class Endpoint(
                           fs."Answers",
                           f."Questions",
                           f."DefaultLanguage",
+                          f."Languages",
                           fs."FollowUpStatus",
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Attachments" a
@@ -113,6 +117,7 @@ public class Endpoint(
                          s."Answers",
                          s."Questions",
                          s."DefaultLanguage",
+                         s."Languages",
                          s."FollowUpStatus",
                          s."ArrivalTime",
                          s."DepartureTime",
