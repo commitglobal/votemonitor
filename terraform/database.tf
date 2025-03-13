@@ -43,6 +43,7 @@ resource "aws_db_instance" "main" {
   lifecycle {
     ignore_changes = [
       availability_zone,
+      engine_version,
     ]
   }
 }
