@@ -42,7 +42,7 @@ export default function EditObserver() {
     tags: z.any(),
     firstName: z.string(),
     lastName: z.string(),
-    phoneNumber: z.string(),
+    phoneNumber: z.string().optional().catch(''),
   });
 
   const form = useForm<z.infer<typeof editObserverFormSchema>>({
@@ -63,7 +63,7 @@ export default function EditObserver() {
       status: values.status,
       firstName: values.firstName,
       lastName: values.lastName,
-      phoneNumber: values.phoneNumber,
+      phoneNumber: values.phoneNumber ?? '',
     };
 
     editMutation.mutate({ electionRoundId: currentElectionRoundId, request });
