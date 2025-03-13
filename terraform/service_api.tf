@@ -8,7 +8,7 @@ module "ecs_api" {
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
   min_capacity = 1
-  max_capacity = 1
+  max_capacity = 3
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag
@@ -23,8 +23,8 @@ module "ecs_api" {
   lb_health_check_enabled = true
   lb_path                 = "/health"
 
-  container_memory_soft_limit = 512
-  container_memory_hard_limit = 1024
+  container_memory_soft_limit = 1024
+  container_memory_hard_limit = 2048
 
   log_group_name                 = module.ecs_cluster.log_group_name
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
