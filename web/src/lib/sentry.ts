@@ -7,7 +7,8 @@ export const SENTRY_INIT_OPTIONS: Sentry.BrowserOptions = {
   debug: import.meta.env.DEV,
   environment: import.meta.env.MODE,
   tracesSampleRate: import.meta.env.PROD ? 0.2 : 0,
-  enabled: import.meta.env.PROD,
+  enabled: !import.meta.env.PROD,
+  tracePropagationTargets: ['localhost'],
   integrations: [],
 };
 
