@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,17 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="FluentValidation" Version="11.9.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="NSubstitute" Version="5.1.0" />
-    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.7.1" />
-    <PackageReference Include="Xunit.Priority" Version="1.1.6" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="Xunit.Priority" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
 
   <ItemGroup>

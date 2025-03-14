@@ -9,6 +9,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Packages.props", "."]
 COPY ["src/Vote.Monitor.Hangfire/Vote.Monitor.Hangfire.csproj", "src/Vote.Monitor.Hangfire/"]
 COPY ["src/Job.Contracts/Job.Contracts.csproj", "src/Job.Contracts/"]
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]

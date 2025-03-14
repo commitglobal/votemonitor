@@ -10,8 +10,6 @@ public record FormSubmissionModel
     public required Guid Id { get; init; }
     public required Guid FormId { get; init; }
     public required Guid PollingStationId { get; init; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
     public bool IsCompleted { get; init; }
