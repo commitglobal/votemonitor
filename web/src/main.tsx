@@ -1,16 +1,18 @@
+import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, ErrorComponent, RouterProvider } from '@tanstack/react-router';
 import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import { AlertDialogProvider } from './components/ui/alert-dialog-provider.tsx';
-import AuthContextProvider, { AuthContext } from './context/auth.context';
-import i18n from './i18n';
-import { routeTree } from './routeTree.gen.ts';
-import './styles/tailwind.css';
-import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
 import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
 import { TanStackRouterDevelopmentTools } from './components/utils/development-tools/TanStackRouterDevelopmentTools.tsx';
+import AuthContextProvider, { AuthContext } from './context/auth.context';
+import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
+import i18n from './i18n';
+import { SENTRY_INIT_OPTIONS } from './lib/sentry.ts';
+import { routeTree } from './routeTree.gen.ts';
+import './styles/tailwind.css';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +41,8 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
+
+Sentry.init(SENTRY_INIT_OPTIONS);
 
 function App() {
   const authContext = useContext(AuthContext);

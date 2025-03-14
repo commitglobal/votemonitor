@@ -194,8 +194,17 @@ export type LevelNode = {
   parentId: number;
 };
 
+export enum JWT_CLAIMS {
+  EMAIL = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+  ROLE = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
+  USER_ID = 'user-id',
+  USER_ROLE = 'user-role',
+}
+
 export type UserPayload = {
-  'user-role': string;
+  [JWT_CLAIMS.USER_ID]: string;
+  [JWT_CLAIMS.USER_ROLE]: string;
+  [JWT_CLAIMS.EMAIL]: string;
 };
 
 export enum FormSubmissionFollowUpStatus {
