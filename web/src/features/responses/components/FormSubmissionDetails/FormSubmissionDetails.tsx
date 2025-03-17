@@ -20,7 +20,7 @@ import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { usePrevSearch } from '@/common/prev-search-store';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { LanguageBadge } from '@/components/ui/language-badge';
 
 export default function FormSubmissionDetails(): FunctionComponent {
