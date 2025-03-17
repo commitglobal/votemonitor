@@ -21,6 +21,7 @@ export interface FormSubmissionByEntry {
   formType: FormType;
   formName: TranslatedString;
   defaultLanguage: string;
+  languages: string[];
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfQuestionsAnswered: number;
@@ -65,7 +66,7 @@ export interface FormSubmissionByForm {
   numberOfMediaFiles: number;
 }
 
-export interface ObservationBreak{
+export interface ObservationBreak {
   end: string;
   start: string;
 }
@@ -95,7 +96,7 @@ export interface FormFilterOption {
   formName: string;
 }
 
-export interface FormSubmissionsFilters  {
+export interface FormSubmissionsFilters {
   timestampsFilterOptions: TimestampsFilterOptions;
   formFilterOptions: FormFilterOption[];
 }
