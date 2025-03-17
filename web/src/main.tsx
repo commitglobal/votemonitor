@@ -10,7 +10,6 @@ import { TanStackRouterDevelopmentTools } from './components/utils/development-t
 import AuthContextProvider, { AuthContext } from './context/auth.context';
 import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
 import i18n from './i18n';
-import { SENTRY_INIT_OPTIONS } from './lib/sentry.ts';
 import { routeTree } from './routeTree.gen.ts';
 import './styles/tailwind.css';
 
@@ -42,7 +41,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
-Sentry.init(SENTRY_INIT_OPTIONS);
+Sentry.init({
+  dsn: import.meta.env['VITE_SENTRY_DSN'],
+  debug: import.meta.env.DEV,
+  environment: import.meta.env.MODE,
+  tracesSampleRate: import.meta.env.PROD ? 0.2 : 0,
+  enabled: !import.meta.env.PROD,
+  tracePropagationTargets: ['localhost'],
+  integrations: [Sentry.browserTracingIntegration(), Sentry.tanstackRouterBrowserTracingIntegration(router)],
+  normalizeDepth: 5,
+});
 
 function App() {
   const authContext = useContext(AuthContext);

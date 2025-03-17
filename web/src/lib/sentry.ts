@@ -1,16 +1,7 @@
-import { JWT_CLAIMS } from '@/common/types';
+import { JWT_CLAIMS, ProblemDetails } from '@/common/types';
 import * as Sentry from '@sentry/react';
+import { AxiosError } from 'axios';
 import { parseJwt } from './utils';
-
-export const SENTRY_INIT_OPTIONS: Sentry.BrowserOptions = {
-  dsn: import.meta.env['VITE_SENTRY_DSN'],
-  debug: import.meta.env.DEV,
-  environment: import.meta.env.MODE,
-  tracesSampleRate: import.meta.env.PROD ? 0.2 : 0,
-  enabled: !import.meta.env.PROD,
-  tracePropagationTargets: ['localhost'],
-  integrations: [],
-};
 
 export const parseAndSetUserInSentry = (token: string) => {
   try {
@@ -25,4 +16,11 @@ export const parseAndSetUserInSentry = (token: string) => {
     Sentry.captureException(error);
     console.error('Error decoding token:', error);
   }
+};
+
+type ReportedError = Error | AxiosError<unknown | ProblemDetails>;
+
+export const sendErrorToSentry = (error: ReportedError, message: string) => {
+  Sentry.captureMessage(message, 'error');
+  Sentry.captureException(error);
 };
