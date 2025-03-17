@@ -1,6 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
 import { ProblemDetails } from '@/common/types';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -77,9 +78,11 @@ export const usePasswordSetterDialog = () => {
     },
 
     onError: (error: AxiosError<ProblemDetails>) => {
+      const title = 'Error setting password';
       addFormValidationErrorsFromBackend<PasswordSetterFormData>(form, error);
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error setting password',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });

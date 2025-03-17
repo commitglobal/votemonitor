@@ -1,5 +1,7 @@
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { AxiosError } from 'axios';
 import { z } from 'zod';
+import { ProblemDetails } from './types';
 
 export type FunctionComponent = React.ReactElement | null;
 
@@ -426,3 +428,4 @@ export interface ProblemDetails {
   instance?: string;
   errors?: { name: string; reason: string }[]; // Maps field names to error messages
 }
+export type ReportedError = Error | AxiosError<unknown | ProblemDetails>;

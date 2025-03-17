@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse, PollingStation } from '@/common/types';
+import { DataTableParameters, PageResponse, PollingStation, ReportedError } from '@/common/types';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
@@ -51,7 +51,7 @@ export function useUpdatePollingStationMutation() {
       pollingStationId: string;
       pollingStation: PollingStation;
       onSuccess?: () => void;
-      onError?: () => void;
+      onError?: (error: ReportedError) => void;
     }) => {
       return authApi.put<PollingStation>(
         `/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`,
@@ -61,7 +61,7 @@ export function useUpdatePollingStationMutation() {
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),
 
-    onError: (_, { onError }) => onError?.(),
+    onError: (error: ReportedError, { onError }) => onError?.(error),
   });
 }
 
@@ -74,13 +74,13 @@ export function useDeletePollingStationMutation() {
       electionRoundId: string;
       pollingStationId: string;
       onSuccess?: () => void;
-      onError?: () => void;
+      onError?: (error: ReportedError) => void;
     }) => {
       return authApi.delete<PollingStation>(`/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`);
     },
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),
 
-    onError: (_, { onError }) => onError?.(),
+    onError: (error: ReportedError, { onError }) => onError?.(error),
   });
 }

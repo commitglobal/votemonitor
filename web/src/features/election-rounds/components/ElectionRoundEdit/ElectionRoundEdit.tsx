@@ -1,10 +1,12 @@
 import { authApi } from '@/common/auth-api';
 import { DateOnlyFormat } from '@/common/formats';
+import { ReportedError } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/election-rounds/$electionRoundId/edit';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
@@ -46,9 +48,11 @@ function ElectionRoundEdit() {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error creating election round';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error creating election round',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });
@@ -71,7 +75,9 @@ function ElectionRoundEdit() {
           <ElectionRoundForm onSubmit={submitData} electionRound={electionRound}>
             <div className='px-6 w-full flex justify-end gap-4'>
               <Link to='/election-rounds/$electionRoundId' params={{ electionRoundId }}>
-                <Button title='Cancel' type='button' variant='outline'>Cancel</Button>
+                <Button title='Cancel' type='button' variant='outline'>
+                  Cancel
+                </Button>
               </Link>
               <Button title='Save' type='submit'>
                 Save

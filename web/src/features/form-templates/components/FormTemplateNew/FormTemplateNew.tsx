@@ -47,8 +47,9 @@ function FormTemplateNew() {
     },
 
     onError: () => {
+      const title = 'Error creating form template';
       toast({
-        title: 'Error creating form template',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

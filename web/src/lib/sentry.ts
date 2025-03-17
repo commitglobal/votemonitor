@@ -1,6 +1,5 @@
-import { JWT_CLAIMS, ProblemDetails } from '@/common/types';
+import { JWT_CLAIMS, ReportedError } from '@/common/types';
 import * as Sentry from '@sentry/react';
-import { AxiosError } from 'axios';
 import { parseJwt } from './utils';
 
 export const parseAndSetUserInSentry = (token: string) => {
@@ -18,9 +17,12 @@ export const parseAndSetUserInSentry = (token: string) => {
   }
 };
 
-type ReportedError = Error | AxiosError<unknown | ProblemDetails>;
+type SendErrorToSentry = {
+  error: ReportedError;
+  title: string;
+};
 
-export const sendErrorToSentry = (error: ReportedError, message: string) => {
-  Sentry.captureMessage(message, 'error');
+export const sendErrorToSentry = ({ error, title }: SendErrorToSentry) => {
+  Sentry.captureMessage(title, 'error');
   Sentry.captureException(error);
 };

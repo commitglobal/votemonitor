@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { FormBase, FormStatus } from '@/common/types';
+import { FormBase, FormStatus, ReportedError } from '@/common/types';
 import AddFormTranslationsDialog, {
   useAddFormTranslationsDialog,
 } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
@@ -25,6 +25,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormTemplatesSearchParams, Route } from '@/routes/form-templates/index';
@@ -434,10 +435,11 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
 
     onError: (error) => {
+      const title = 'Error publishing form template';
       // @ts-ignore
       if (error.response.status === 400) {
         toast({
-          title: 'Error publishing form template',
+          title,
           description: 'You are missing translations. Please translate all fields and try again',
           variant: 'destructive',
         });
@@ -445,10 +447,11 @@ export default function FormTemplatesDashboard(): ReactElement {
         return;
       }
       toast({
-        title: 'Error publishing form template',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
+      sendErrorToSentry({ error: error as ReportedError, title });
     },
   });
 
@@ -467,9 +470,11 @@ export default function FormTemplatesDashboard(): ReactElement {
       router.invalidate();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error obsoleting form';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error obsoleting form',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
@@ -491,9 +496,11 @@ export default function FormTemplatesDashboard(): ReactElement {
       router.invalidate();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error cloning form template';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error cloning form template',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
