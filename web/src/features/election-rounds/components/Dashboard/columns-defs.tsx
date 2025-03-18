@@ -1,16 +1,8 @@
-import { Button } from '@/components/ui/button';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import { Link } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import ElectionRoundStatusBadge from '../../../../components/ElectionRoundStatusBadge/ElectionRoundStatusBadge';
 import { ElectionRoundModel } from '../../models/types';
+import { ElectionRoundDataTableRowActions } from './ElectionRoundDataTableRowActions';
 
 const columnHelper = createColumnHelper<ElectionRoundModel>();
 
@@ -59,29 +51,6 @@ export const electionRoundColDefs: ColumnDef<ElectionRoundModel>[] = [
   }),
   {
     id: 'actions',
-    cell: ({ row }) => {
-      return (
-        <div className='text-right'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost-primary' size='icon'>
-                <span className='sr-only'>Actions</span>
-                <EllipsisVerticalIcon className='w-6 h-6' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <Link
-                to='/election-rounds/$electionRoundId'
-                params={{ electionRoundId: row.original.id }}
-                preload='intent'>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem>Archive</DropdownMenuItem>
-              <DropdownMenuItem className='text-red-600'>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ElectionRoundDataTableRowActions electionRound={row.original} />,
   },
 ];
