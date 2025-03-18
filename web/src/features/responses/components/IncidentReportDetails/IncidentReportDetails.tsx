@@ -1,23 +1,29 @@
 import { authApi } from '@/common/auth-api';
-import { IncidentReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
+import { DateTimeFormat } from '@/common/formats';
+import {
+  ElectionRoundStatus,
+  IncidentReportFollowUpStatus,
+  ReportedError,
+  type FunctionComponent,
+} from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { incidentReportDetailsQueryOptions, Route } from '@/routes/responses/incident-reports/$incidentReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
 import { incidentReportsByEntryKeys, incidentReportsByObserverKeys } from '../../hooks/incident-reports-queries';
 import { SubmissionType } from '../../models/common';
 import { mapIncidentReportFollowUpStatus, mapIncidentReportLocationType } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
-import { format } from 'date-fns';
-import { DateTimeFormat } from '@/common/formats';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function IncidentReportDetails(): FunctionComponent {
   const { incidentReportId } = Route.useParams();
@@ -56,9 +62,11 @@ export default function IncidentReportDetails(): FunctionComponent {
       router.invalidate();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error updating follow up status';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error updating follow up status',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

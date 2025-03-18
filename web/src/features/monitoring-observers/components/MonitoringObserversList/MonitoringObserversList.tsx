@@ -26,7 +26,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus } from '@/common/types';
+import { ElectionRoundStatus, ReportedError } from '@/common/types';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { toast } from '@/components/ui/use-toast';
@@ -35,6 +35,7 @@ import { useElectionRoundDetails } from '@/features/election-event/hooks/electio
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/monitoring-observers/$tab';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -207,9 +208,11 @@ function MonitoringObserversList() {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error resending invitation';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error resending invitation',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });

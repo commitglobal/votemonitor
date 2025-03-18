@@ -1,7 +1,6 @@
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { z } from 'zod';
-import { ProblemDetails } from './types';
 
 export type FunctionComponent = React.ReactElement | null;
 

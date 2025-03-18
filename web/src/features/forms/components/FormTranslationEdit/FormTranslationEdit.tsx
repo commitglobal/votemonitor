@@ -1,22 +1,24 @@
 import { authApi } from '@/common/auth-api';
 import { mapToQuestionRequest } from '@/common/form-requests';
+import { ReportedError } from '@/common/types';
+import { FormDetailsBreadcrumbs } from '@/components/FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import { EditFormType } from '@/components/FormEditor/FormEditor';
 import FormTranslationEditor from '@/components/FormTranslationEditor/FormTranslationEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { useToast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
+import { Route } from '@/routes/forms/$formId_.edit-translation.$languageCode';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { UpdateFormRequest } from '../../models';
-import { formsKeys, formDetailsQueryOptions } from '../../queries';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
-import { Route } from '@/routes/forms/$formId_.edit-translation.$languageCode';
-import { FormDetailsBreadcrumbs } from '@/components/FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
+import { formDetailsQueryOptions, formsKeys } from '../../queries';
 
 function FormTranslationEdit() {
   const { formId, languageCode } = Route.useParams();
@@ -65,9 +67,11 @@ function FormTranslationEdit() {
       }
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error saving form';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error saving form ',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

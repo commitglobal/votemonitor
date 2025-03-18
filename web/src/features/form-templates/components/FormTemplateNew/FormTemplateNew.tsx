@@ -1,9 +1,11 @@
 import { authApi } from '@/common/auth-api';
 import { mapToQuestionRequest } from '@/common/form-requests';
+import { ReportedError } from '@/common/types';
 import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useToast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
@@ -46,8 +48,9 @@ function FormTemplateNew() {
       }
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
       const title = 'Error creating form template';
+      sendErrorToSentry({ error, title });
       toast({
         title,
         description: 'Please contact tech support',

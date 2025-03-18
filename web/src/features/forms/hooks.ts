@@ -1,6 +1,8 @@
 import { authApi } from '@/common/auth-api';
+import { ReportedError } from '@/common/types';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { create } from 'zustand';
@@ -33,7 +35,7 @@ export const useCreateFormFromTemplate = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const createFormFromTemplateMutation = useMutation({
     mutationFn: ({ templateId, languageCode }: FormFromTemplateDto) => {
       return authApi.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromTemplate`, {
@@ -51,12 +53,15 @@ export const useCreateFormFromTemplate = () => {
       navigate({ to: '/forms/$formId/edit', params: { formId: response.data.id } });
     },
 
-    onError: (err) =>
+    onError: (error: ReportedError) => {
+      const title = 'Error creating form from template';
+      sendErrorToSentry({ title, error });
       toast({
-        title: 'Error creating form from template',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
-      }),
+      });
+    },
 
     onSettled: () => {
       if (isOpen) dismiss();
@@ -110,12 +115,15 @@ export const useCreateFormFromForm = () => {
       navigate({ to: '/forms/$formId/edit', params: { formId: response.data.id } });
     },
 
-    onError: (err) =>
+    onError: (error: ReportedError) => {
+      const title = 'Error creating form from template';
+      sendErrorToSentry({ title, error });
       toast({
-        title: 'Error creating form from template',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
-      }),
+      });
+    },
 
     onSettled: () => {
       if (isOpen) dismiss();

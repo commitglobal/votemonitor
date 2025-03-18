@@ -1,4 +1,4 @@
-import { FunctionComponent, importLocationSchema } from '@/common/types';
+import { FunctionComponent, importLocationSchema, ReportedError } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileUploader } from '@/components/ui/file-uploader';
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { locationsKeys } from '@/hooks/locations-levels';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
@@ -63,9 +64,11 @@ export function LocationsImport(): FunctionComponent {
       queryClient.invalidateQueries({ queryKey: locationsKeys.all(electionRoundId) });
       navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId } });
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = t('onError');
+      sendErrorToSentry({ error, title });
       toast({
-        title: t('onError'),
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

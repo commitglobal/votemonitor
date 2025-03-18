@@ -1,4 +1,4 @@
-import { FunctionComponent, importPollingStationSchema } from '@/common/types';
+import { FunctionComponent, importPollingStationSchema, ReportedError } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileUploader } from '@/components/ui/file-uploader';
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
@@ -71,12 +72,14 @@ export function PollingStationsImport(): FunctionComponent {
       queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(electionRoundId) });
       navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId } });
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = t('onError');
       toast({
-        title: t('onError'),
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
+      sendErrorToSentry({ error, title });
     },
   });
 

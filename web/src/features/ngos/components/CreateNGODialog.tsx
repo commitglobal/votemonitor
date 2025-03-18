@@ -1,13 +1,17 @@
+import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
+import { ProblemDetails, ReportedError } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError } from 'axios';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateNgo } from '../hooks/ngos-queries';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
-import { useCallback, useEffect } from 'react';
 
 export interface CreateNGODialogProps {
   open: boolean;
@@ -53,13 +57,13 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
           description: 'New organization created',
         });
       },
-      onMutationError: (error) => {
-        error?.errors?.forEach((error) => {
-          form.setError(error.name as keyof NgoCreationFormData, { type: 'custom', message: error.reason });
-        });
+      onMutationError: (error: ReportedError) => {
+        const title = 'Error adding NGO admin';
+        addFormValidationErrorsFromBackend(form, error as AxiosError<ProblemDetails>);
+        sendErrorToSentry({ error, title });
 
         toast({
-          title: 'Error adding NGO admin',
+          title,
           description: 'Please contact Platform admins',
           variant: 'destructive',
         });
