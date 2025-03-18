@@ -43,7 +43,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                            WHERE NA."NgoId" = N."Id") AS "NumberOfNgoAdmins",
                           (SELECT COUNT(1) 
                            FROM "MonitoringNgos" MN 
-                           WHERE MN."NgoId" = N."Id") AS "NumberOfElectionsMonitoring",
+                           WHERE MN."NgoId" = N."Id") AS "NumberOfMonitoredElections",
                           (
                             SELECT MAX(ER."StartDate") 
                             FROM "MonitoringNgos" MN
@@ -81,10 +81,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                           WHEN @sortExpression = 'NumberOfNgoAdmins DESC' THEN "NumberOfNgoAdmins"
                           END DESC,  
                       CASE
-                          WHEN @sortExpression = 'NumberOfElectionsMonitoring ASC' THEN "NumberOfElectionsMonitoring"
+                          WHEN @sortExpression = 'NumberOfMonitoredElections ASC' THEN "NumberOfMonitoredElections"
                           END ASC,
                       CASE
-                          WHEN @sortExpression = 'NumberOfElectionsMonitoring DESC' THEN "NumberOfElectionsMonitoring"
+                          WHEN @sortExpression = 'NumberOfMonitoredElections DESC' THEN "NumberOfMonitoredElections"
                           END DESC,
                       CASE
                           WHEN @sortExpression = 'DateOfLastElection ASC' THEN "DateOfLastElection"
@@ -140,10 +140,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             return $"{nameof(NgoModel.NumberOfNgoAdmins)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(NgoModel.NumberOfElectionsMonitoring),
+        if (string.Equals(sortColumnName, nameof(NgoModel.NumberOfMonitoredElections),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(NgoModel.NumberOfElectionsMonitoring)} {sortOrder}";
+            return $"{nameof(NgoModel.NumberOfMonitoredElections)} {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(NgoModel.DateOfLastElection),

@@ -62,7 +62,7 @@ export default function NGOsDashboard(): ReactElement {
     },
 
     {
-      accessorKey: 'numberOfElectionsMonitoring',
+      accessorKey: 'numberOfMonitoredElections',
       enableSorting: true,
       header: ({ column }) => <DataTableColumnHeader title='Election events' column={column} />,
     },

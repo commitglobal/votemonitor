@@ -1,13 +1,23 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 
+import { ElectionRoundStatus } from '@/common/types';
 import { z } from 'zod';
+
+export interface MonitoredElectionModel {
+  id: string;
+  title: string;
+  englishTitle: string;
+  startDate: string;
+  status: ElectionRoundStatus;
+}
 
 export interface NGO {
   id: string;
   name: string;
   status: NGOStatus;
   numberOfNgoAdmins: number;
-  numberOfElectionsMonitoring: number;
+  numberOfMonitoredElections: number;
+  monitoredElections: MonitoredElectionModel[];
   dateOfLastElection: string;
 }
 
