@@ -88,6 +88,7 @@ public class Endpoint(
                              			PSI."LastUpdatedAt" AS "TimeSubmitted",
                              			PSI."FollowUpStatus",
                              			PSIF."DefaultLanguage",
+                             			PSIF."Languages",
                              			PSIF."Name",
                              			PSI."IsCompleted",
                              			PSI."Answers"
@@ -222,6 +223,7 @@ public class Endpoint(
                              			"LastUpdatedAt" AS "TimeSubmitted",
                              			FS."FollowUpStatus",
                              			F."DefaultLanguage",
+                             			F."Languages",
                              			F."Name",
                              			FS."IsCompleted",
                              			FS."Answers"
@@ -271,6 +273,7 @@ public class Endpoint(
                              	S."FormCode",
                              	S."FormType",
                              	S."DefaultLanguage",
+                             	S."Languages",
                              	S."Name" AS "FormName",
                              	PS."Id" AS "PollingStationId",
                              	PS."Level1",

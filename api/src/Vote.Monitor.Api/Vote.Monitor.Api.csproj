@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -10,78 +10,78 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.Hangfire" Version="8.0.1"/>
-        <PackageReference Include="FastEndpoints" Version="5.24.0"/>
-        <PackageReference Include="FastEndpoints.Security" Version="5.24.0"/>
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.24.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+        <PackageReference Include="AspNetCore.HealthChecks.Hangfire" />
+        <PackageReference Include="FastEndpoints" />
+        <PackageReference Include="FastEndpoints.Security" />
+        <PackageReference Include="FastEndpoints.Swagger" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.5"/>
-        <PackageReference Include="Sentry" Version="4.12.1" />
-        <PackageReference Include="Sentry.AspNetCore" Version="4.12.1" />
-        <PackageReference Include="Sentry.OpenTelemetry" Version="4.12.1" />
-        <PackageReference Include="Sentry.Serilog" Version="4.12.1" />
-        <PackageReference Include="Serilog" Version="4.0.2" />
-        <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
-        <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0"/>
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.0"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0"/>
-        <PackageReference Include="Hangfire" Version="1.8.12"/>
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12"/>
-        <PackageReference Include="Hangfire.Core" Version="1.8.12"/>
-        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.8"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
+        <PackageReference Include="Sentry" />
+        <PackageReference Include="Sentry.AspNetCore" />
+        <PackageReference Include="Sentry.OpenTelemetry" />
+        <PackageReference Include="Sentry.Serilog" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Enrichers.Environment" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Settings.Configuration" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+        <PackageReference Include="Hangfire" />
+        <PackageReference Include="Hangfire.AspNetCore" />
+        <PackageReference Include="Hangfire.Core" />
+        <PackageReference Include="Hangfire.PostgreSql" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj"/>
-        <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj"/>
-        <ProjectReference Include="..\Feature.Citizen.Notifications\Feature.Citizen.Notifications.csproj"/>
-        <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj"/>
-        <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj"/>
-        <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj"/>
-        <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj"/>
-        <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj"/>
-        <ProjectReference Include="..\Feature.Feedback\Feature.Feedback.csproj"/>
-        <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj"/>
-        <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj"/>
-        <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj"/>
-        <ProjectReference Include="..\Feature.ImportErrors\Feature.ImportErrors.csproj"/>
-        <ProjectReference Include="..\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj"/>
-        <ProjectReference Include="..\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj"/>
-        <ProjectReference Include="..\Feature.IncidentReports\Feature.IncidentReports.csproj"/>
-        <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj"/>
-        <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj"/>
+        <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+        <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
+        <ProjectReference Include="..\Feature.Citizen.Notifications\Feature.Citizen.Notifications.csproj" />
+        <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj" />
+        <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
+        <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
+        <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
+        <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
+        <ProjectReference Include="..\Feature.Feedback\Feature.Feedback.csproj" />
+        <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
+        <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
+        <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
+        <ProjectReference Include="..\Feature.ImportErrors\Feature.ImportErrors.csproj" />
+        <ProjectReference Include="..\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj" />
+        <ProjectReference Include="..\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj" />
+        <ProjectReference Include="..\Feature.IncidentReports\Feature.IncidentReports.csproj" />
+        <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj" />
+        <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
         <ProjectReference Include="..\Feature.Coalitions\Feature.Coalitions.csproj" />
-        <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj"/>
-        <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj"/>
-        <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj"/>
-        <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj"/>
-        <ProjectReference Include="..\Feature.QuickReports\Feature.QuickReports.csproj"/>
-        <ProjectReference Include="..\Feature.Statistics\Feature.Statistics.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj"/>
-        <ProjectReference Include="..\Feature.Monitoring\Feature.Monitoring.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj"/>
-        <ProjectReference Include="..\Feature.Notifications\Feature.Notifications.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj"/>
-        <ProjectReference Include="..\Feature.Attachments\Feature.Attachments.csproj"/>
-        <ProjectReference Include="..\Feature.Notes\Feature.Notes.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj"/>
-        <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj"/>
+        <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
+        <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
+        <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />
+        <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />
+        <ProjectReference Include="..\Feature.QuickReports\Feature.QuickReports.csproj" />
+        <ProjectReference Include="..\Feature.Statistics\Feature.Statistics.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
+        <ProjectReference Include="..\Feature.Monitoring\Feature.Monitoring.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />
+        <ProjectReference Include="..\Feature.Notifications\Feature.Notifications.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
+        <ProjectReference Include="..\Feature.Attachments\Feature.Attachments.csproj" />
+        <ProjectReference Include="..\Feature.Notes\Feature.Notes.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
+        <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -98,7 +98,7 @@
 
     <ProjectExtensions>
         <VisualStudio>
-            <UserProperties/>
+            <UserProperties />
         </VisualStudio>
     </ProjectExtensions>
 

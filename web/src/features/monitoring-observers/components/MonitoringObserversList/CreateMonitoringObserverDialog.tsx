@@ -31,7 +31,7 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().email(),
-    phoneNumber: z.string(),
+    phoneNumber: z.string().optional().catch(''),
     tags: z.any(),
   });
 

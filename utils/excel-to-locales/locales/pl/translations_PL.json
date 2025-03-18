@@ -4,25 +4,25 @@
         "search": "Szukaj",
         "loading": "Ładowanie...",
         "status": {
-            "completed": "Ukończono",
+            "completed": "Ukończony",
             "in_progress": "W toku",
-            "not_started": "Nie rozpoczęto",
-            "marked_as_completed": "TODO: Oznaczono jako ukończone"
+            "not_started": "Nierozpoczęty",
+            "marked_as_completed": "Oznaczono jako ukończone"
         },
         "forms": {
-            "mark_as_done": "TODO: Zaznacz formularz jako zakończony",
-            "mark_as_in_progress": "TODO: Zaznacz formularz jako w trakcie"
+            "mark_as_done": "Zaznacz formularz jako ukończony",
+            "mark_as_in_progress": "Zaznacz formularz jako w toku"
         },
         "cancel": "Anuluj",
         "save": "Zapisz",
         "no_data": "Nie znaleziono danych.",
         "select": "Wybierz",
         "done": "Zrobione",
-        "ok": "Dobry"
+        "ok": "Ok"
     },
     "languages": {
         "ro": "rumuński",
-        "en": "język angielski",
+        "en": "angielski",
         "pl": "polski",
         "bg": "bułgarski",
         "sr": "serbski",
@@ -34,16 +34,16 @@
     "onboarding": {
         "language": {
             "heading": "Wybierz język",
-            "description": "To będzie język wyświetlania aplikacji. Możesz go zmienić w dowolnym momencie w aplikacji w sekcji 'więcej'.",
+            "description": "To będzie język, w którym apliakcja będzie wyświetlana. Możesz go zmienić w dowolnym momencie w aplikacji w sekcji 'Więcej'.",
             "save": "Zastosuj wybór"
         },
         "polling_stations": {
-            "heading": "Obserwuj komisje",
+            "heading": "Obserwuj prace komisji",
             "description": "i dokumentuj na bieżąco przebieg procesu w formularzach przygotowanych przez Twoją organizację"
         },
         "forms": {
             "heading": "Wypełnij formularze obserwacji",
-            "description": "i śledź postęp w trakcie kolejnych etapów"
+            "description": "i przekaż formularze w trakcie kolejnych etapów, aby pomóc przeprowadzić transparentne i uczciwe wybory"
         },
         "media": {
             "heading": "Dodaj notatki i pliki z nagraniami lub zdjęciami",
@@ -53,40 +53,42 @@
     },
     "select_app_mode": {
         "heading": "Wybór trybu aplikacji",
-        "description": "Możesz monitorować proces wyborczy jako akredytowany obserwator lub po prostu jako obywatel zainteresowany wspieraniem uczciwych i demokratycznych wyborów.",
+        "description": "Możesz monitorować proces wyborczy jako obserwator lub po prostu jako wyborca zainteresowany wspieraniem uczciwych i demokratycznych wyborów.",
         "accredited_observer": {
-            "title": "Monitor głosowania dla akredytowanych obserwatorów",
-            "description": "Jestem akredytowanym niezależnym obserwatorem, zaproszonym przez organizację pozarządową do obserwowania procesu wyborczego. **"
+            "title": "Vote Monitor dla Obserwatorów",
+            "description": "Jestem apolitycznym obserwatorem z zaświadczeniem wystawionym przez organizację pozarządową uprawnioną do obserwowania procesu wyborczego"
         },
         "citizen": {
-            "title": "Monitor głosowania dla obywateli",
-            "description": "Jestem obywatelem i chcę zgłosić nieprawidłowości wyborcze, które widzę podczas kampanii wyborczej lub w dniu wyborów."
+            "title": "Vote Monitor dla Wyborców",
+            "description": "Jestem wyborcą i chcę zgłosić nieprawidłowości wyborcze, które widzę podczas kampanii lub w dniu wyborów."
         },
-        "helper": "**Jako akredytowany obserwator będziesz mógł przełączyć się na tryb obywatela w dowolnym momencie z menu aplikacji.",
+        "helper": "**Jako obserwator będziesz mógł przełączyć się w tryb wyborcy w dowolnym momencie z menu aplikacji.",
         "continue": "Kontynuuj"
     },
     "select_election_event": {
-        "heading": "Dostępne wydarzenia wyborcze",
-        "description": "Wybierz wydarzenie, dla którego chcesz przesłać raport:",
+        "heading": "Dostępne akcja wyborcza",
+        "description": "Wybierz akcję, do której chcesz przesłać formularz:",
         "continue": "Kontynuuj",
-        "empty_description": "W tej chwili nie ma aktywnych wydarzeń wyborczych, dla których można zgłaszać incydenty jako obywatel. Gdy wydarzenie będzie dostępne, pojawi się w tej sekcji.",
-        "error_description": "Coś poszło nie tak podczas pobierania dostępnych wydarzeń wyborczych. Spróbuj ponownie.",
+        "empty_description": "W tej chwili nie ma aktywnych akcji wyborczych, dla których można zgłaszać incydenty jako wyborca. Gdy akcja będzie dodana, pojawi się w tej sekcji.",
+        "error_description": "Coś poszło nie tak podczas pobierania dostępnych akcji wyborczych. Spróbuj ponownie.",
         "retry": "Ponów próbę"
     },
     "drawer": {
-        "report_as": "Zgłoś jako {{value}}",
-        "citizen": "obywatel",
-        "accredited_observer": "akredytowany obserwator"
+        "report_as_citizen": "Zgłoś jako wyborca",
+        "report_as_accredited_observer": "Zgłoś jako obserwator"
     },
     "citizen_report_issue": {
         "header_title": "Zgłoś problem",
-        "description": "Jako obywatel możesz zgłosić kwestię związaną z wyborami, wypełniając formularz zgłoszeniowy z poniższej listy.",
-        "empty_forms": "Formularze sprawozdawcze pojawią się tutaj, gdy zespół „Vote Monitor” opublikuje je w systemie.",
+        "description": "Jako wyborca możesz zgłosić kwestię związaną z wyborami, wypełniając formularz z poniższej listy.",
+        "disclaimer": "Złożenie zgłoszenia poprzez Vote Monitor dla Wyborców nie jest równoznaczne ze złożeniem oficjalnej skargi do organów odpowiedzialnych za organizację wyborów czy organów ścigania ani jej nie zastępuje. Aby uzyskać więcej informacji na temat wykorzystania raportów, kliknij przycisk informacji w prawym górnym rogu. Jeśli chcesz złożyć oficjalną skargę, zapoznaj się z artykułem Jak złożyć oficjalną skargę w sekcji Zasoby.",
+        "empty_forms": "Formularze pojawią się tutaj, gdy zespół Vote Monitor opublikuje je w systemie.",
         "error_message": "Coś poszło nie tak podczas pobierania formularzy raportowania. Spróbuj ponownie.",
         "retry": "Ponów próbę",
         "info_modal": {
-            "p1": "Raporty przesłane za pośrednictwem Vote Monitor Citizen będą analizowane przez organizacje pozarządowe monitorujące wybory i mogą zostać włączone do raportów z obserwacji wyborów. W niektórych przypadkach raporty mogą zostać przekazane instytucjom odpowiedzialnym za organizację wyborów w celu usprawnienia przyszłych procesów wyborczych.",
-            "p2": "Należy pamiętać, że przesłanie zgłoszenia za pośrednictwem tej aplikacji nie stanowi oficjalnej skargi złożonej do instytucji odpowiedzialnych za organizację wyborów.",
+            "p1": "Raporty przesłane za pośrednictwem Vote Monitor dla Wyborców będą analizowane przez organizacje pozarządowe monitorujące wybory i mogą zostać włączone do raportów z obserwacji wyborów. W niektórych przypadkach raporty mogą zostać przekazane instytucjom odpowiedzialnym za organizację wyborów w celu usprawnienia przyszłych procesów wyborczych.",
+            "p2": "Należy pamiętać, że przesłanie zgłoszenia za pośrednictwem tej aplikacji nie stanowi ani nie zastępuje oficjalnej skargi złożonej do instytucji odpowiedzialnych za organizację wyborów ani organów ścigania.",
+            "p3": "W niektórych przypadkach Twoje raporty mogą zostać udostępnione organom odpowiedzialnym za organizację wyborów, aby pomóc w usprawnieniu przyszłych procesów wyborczych, choć nie jest to gwarantowane.",
+            "p4": "Masz pełną kontrolę nad swoimi danymi osobowymi. Formularze pozwalają wybrać, czy chcesz zgłosić sprawę anonimowo, czy też wyrazić zgodę na kontakt ze strony organizacji w przypadku sprawdzenia Twojego zgłoszenia.",
             "ok": "OK"
         }
     },
@@ -96,7 +98,7 @@
             "send": "Wyślij raport",
             "sending_report": "Wysyłamy raport. Proszę czekać..."
         },
-        "progress_bar_label": "Postęp formy",
+        "progress_bar_label": "Postęp formularza",
         "success": {
             "title": "Twój raport został pomyślnie wysłany!",
             "description": "Dziękujemy za zaangażowanie obywatelskie. Możesz wysłać kopię swoich odpowiedzi na adres e-mail lub powrócić do strony głównej.",
@@ -124,13 +126,45 @@
                 "discard": "Wróć",
                 "save": "Zostań tutaj"
             }
+        },
+        "attachments": {
+            "heading": "Przesłane multimedia",
+            "loading": "Dodawanie załącznika... ",
+            "error": "Błąd podczas wysyłania załącznika!",
+            "add": "Dodawanie plików multimedialnych",
+            "menu": {
+                "load": "Załaduj z galerii",
+                "take_picture": "Zrób zdjęcie",
+                "record_video": "Nagraj wideo",
+                "upload_audio": "Wgraj nagranie"
+            },
+            "upload": {
+                "compressing": "Kompresowanie załącznika: ",
+                "preparing": "Przygotowanie załącznika...",
+                "starting": "Rozpoczynanie wysyłania...",
+                "progress": "Wysyłanie załączników: ",
+                "completed": "Wysyłanie zakończone.",
+                "aborted": "Wysyłanie przerwane.",
+                "offline": "Aby wykonać tę akcję, potrzebujesz połączenia z Internetem."
+            },
+            "delete": {
+                "title": "Usuń plik(i)",
+                "description": "Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.",
+                "actions": {
+                    "cancel": "Anuluj",
+                    "clear": "Usuń"
+                }
+            }
         }
     },
     "login": {
         "disclaimer": {
-            "paragraph1": "Pamiętaj, że jeśli nie jesteś akredytowany jako niezależny obserwator przez organizację monitorującą procesy wyborcze w Twoim kraju, nie możesz korzystać z aplikacji Vote Monitor.",
-            "paragraph2": "Aby dowiedzieć się, jakie kroki należy podjąć, aby zostać obserwatorem wyborów, skontaktuj się z takimi organizacjami lub skontaktuj się z nami, aby uzyskać dalsze informacje pod adresem ",
-            "email": "info@commitglobal.org"
+            "paragraph1": "Jeśli nie jesteś obserwatorem skierowanym przez organizację monitorującą procesy wyborcze w Twoim kraju, nie możesz korzystać z Vote Monitor dla Obserwatorów.",
+            "paragraph2": {
+                "slice1": "Jeśli nie jesteś obserwatorem, nadal możesz",
+                "link": "zgłaszać nieprawidłowości jako wyborca",
+                "slice2": "w przypadku bieżących wyborów, bez konieczności posiadania konta."
+            }
         },
         "heading": "Zaloguj",
         "paragraph": "Podaj proszę adres e-mail, który podałeś/aś przy rejestracji w roli obserwatora:",
@@ -175,7 +209,7 @@
             },
             "submit": {
                 "loading": "Wysyłanie...",
-                "save": "Wysłać"
+                "save": "Wyślij"
             },
             "errors": {
                 "invalid_email": "Bieżący adres e-mail nie jest zarejestrowany w systemie. Proszę spróbuj ponownie."
@@ -183,14 +217,14 @@
         },
         "confirmation": {
             "heading": "E-mail wysłany",
-            "paragraph": "Sprawdź prosze e-mail i otwórz link, który wysłaliśmy. Jeśli nie widzisz e-maila, upewnij się, że nie wpadł do folderu 'spam'.",
+            "paragraph": "Sprawdź proszę e-mail i otwórz link, który wysłaliśmy. Jeśli nie widzisz e-maila, upewnij się, że nie wpadł do folderu 'spam'.",
             "confirm": "Wróć do logowania"
         }
     },
     "about_app": {
         "title": "O Vote Monitor",
         "title_observer": "Informacje o Vote Monitor Observer",
-        "general": "Vote Monitor to dedykowane narzędzie cyfrowe przeznaczone dla niezależnych obserwatorów i organizacji międzynarodowych zajmujących się monitorowaniem wyborów. Vote Monitor jest rozwijany i zarządzany przez Code for Rumunia/Commit Global.",
+        "general": "Vote Monitor to dedykowane narzędzie cyfrowe przeznaczone dla niezależnych obserwatorów i organizacji międzynarodowych zajmujących się monitorowaniem wyborów. Vote Monitor jest rozwijany i zarządzany przez Code for Romania/Commit Global.",
         "purpose": "Aplikacja pomaga niezależnym obserwatorom monitorować lokale wyborcze i dokumentować przebieg głosowania w czasie rzeczywistym w danej turze wyborów. Wszystkie dane zebrane za pośrednictwem aplikacji mobilnej są przesyłane w czasie rzeczywistym do organizacji akredytujących w celu zidentyfikowania potencjalnych sygnałów ostrzegawczych, które mogą wskazywać na nadużycia lub inne nieprawidłowości. Ostatecznie naszym celem jest zapewnienie jasnego, prostego i realistycznego obrazu przebiegu procesu wyborczego.",
         "app_provides": {
             "paragraph": "Aplikacja zapewnia obserwatorom:",
@@ -198,17 +232,17 @@
             "item2": "Skuteczna metoda monitorowania przebiegu procesu głosowania poprzez formularze utworzone przez organizacje akredytujące",
             "item3": "Sposób na szybkie zgłaszanie innych problematycznych kwestii poza standardowymi formularzami"
         },
-        "usage": "Z aplikacji Vote Monitor można korzystać podczas dowolnych wyborów w dowolnym kraju na świecie. Od 2016 r. jest używany w wielu turach wyborów w Rumunii i Polsce.",
+        "usage": "Z aplikacji Vote Monitor można korzystać podczas dowolnych wyborów w dowolnym kraju na świecie. Od 2016 r. wielokrotnie był wykorzystywany w Europie i na świecie m.in. w Rumunii i Polsce.",
         "version": "Wersja Vote Monitor {{value}}"
     },
     "about_app_citizen": {
         "title": "Informacje o Vote Monitor ",
-        "title_observer": "Informacje o Vote Monitor Citizen",
-        "p1": "Vote Monitor Citizen umożliwia zwykłym obywatelom aktywny udział w monitorowaniu wyborów poprzez zgłaszanie wszelkich nieprawidłowości, które napotkają w okresie wyborczym, w tym działań związanych z kampanią, działaniami w lokalach wyborczych i procedurami w dniu głosowania.",
-        "p2": "Vote Monitor Citizen to rozszerzenie aplikacji Vote Monitor, która została początkowo opracowana przez Code for Romania/Commit Global dla niezależnych obserwatorów współpracujących z organizacjami pozarządowymi w zakresie monitorowania wyborów.",
-        "p3": "Użytkownicy mogą przesyłać raporty w czasie rzeczywistym, które będą analizowane przez organizacje pozarządowe zaangażowane w proces wyborczy. Raporty te mogą przyczynić się do powstania szczegółowych dokumentów obserwacyjnych, a w niektórych przypadkach mogą zostać przekazane odpowiednim instytucjom w celu usprawnienia przyszłych wyborów.",
-        "p4": "Chociaż raporty obywatelskie odgrywają istotną rolę w promowaniu przejrzystości, należy pamiętać, że przesłanie raportu za pośrednictwem tej aplikacji nie stanowi oficjalnej skargi do instytucji odpowiedzialnych za organizację wyborów.",
-        "version": "Wersja monitora głosowania {{value}}"
+        "title_observer": "Informacje o Vote Monitor dla Wyborców",
+        "p1": "Vote Monitor dla Wyborców umożliwia zwykłym obywatelom aktywny udział w monitorowaniu wyborów poprzez zgłaszanie wszelkich nieprawidłowości, które napotkają w okresie wyborczym, w tym sytuacji związanych z kampanią, działaniami w lokalach wyborczych i procedurami w dniu głosowania.",
+        "p2": "Vote Monitor dla Wyborców to rozszerzenie aplikacji Vote Monitor, która została początkowo opracowana przez Code for Romania/Commit Global dla apolitycznych obserwatorów współpracujących z organizacjami pozarządowymi w zakresie monitorowania wyborów.",
+        "p3": "Użytkownicy mogą przesyłać raportyna bieżąco, które będą analizowane przez organizacje pozarządowe zaangażowane w proces wyborczy. Raporty te mogą przyczynić się do powstania raportów z obserwacji, a w szczególnych przypadkach mogą zostać przekazane odpowiednim instytucjom w celu usprawnienia przyszłych wyborów.",
+        "p4": "Chociaż zgłoszenia obywatelskie odgrywają istotną rolę w promowaniu przejrzystości, należy pamiętać, że przesłanie raportu za pośrednictwem tej aplikacji nie stanowi ani nie zastępuje oficjalnej skargi do instytucji odpowiedzialnych za organizację wyborów czy organów ścigania.",
+        "version": "Wersja Vote Monitor: {{value}}"
     },
     "loading_screen": {
         "heading": "Ładowanie ...",
@@ -219,17 +253,20 @@
         "quick_report": "Szybki raport",
         "guides": "Podręczniki",
         "inbox": "Poczta",
-        "more": "Więcej"
+        "more": "Więcej",
+        "report": "Szybki raport",
+        "resources": "Zasoby",
+        "updates": "Aktualizacje"
     },
     "add_polling_station": {
         "title": "Dodaj komisję wyborczą",
         "progress": {
-            "location": "Dodaj komisję wyborczą z {{value}}"
+            "location": "Dodaj komisję wyborczą z: {{value}}"
         },
         "actions": {
             "next_step": "Dalej",
             "back": "Wróć",
-            "finalize": "Sfinalizuj"
+            "finalize": "Ukończ"
         },
         "error": "Błąd podczas ładowania lokali wyborczych!"
     },
@@ -237,20 +274,22 @@
         "title": "Obserwacja punktów wyborczych",
         "no_election_round": {
             "heading": "Brak zdarzeń dotyczących wyborów",
-            "paragraph": "Możesz używać tej aplikacji, gdy zostaniesz przypisany/a przez swoją organizację do wydarzenia wyborczego."
+            "paragraph": "Będziesz mógł korzystać z aplikacji po przypisaniu Cię do akcji wyborczej przez Twoją organizację"
         },
+        "no_form": "Formularz Informacje o lokalu wyborczym nie jest skonfigurowany",
+        "refresh_page": "Jeśli dane nie są widoczne, spróbuj odświeżyć stronę, aby pobrać najnowsze informacje",
         "no_visited_polling_stations": {
             "heading": "Brak odwiedzonych komisji wyborczych",
-            "paragraph": "Uzupełnij dane dla pierwszej komisji wyborczej zanim zaczniesz wypełniać formularze obserwacyjne.",
+            "paragraph": "Uzupełnij dane dla pierwszej obserwowanej komisji wyborczej zanim zaczniesz wypełniać formularze obserwacyjne.",
             "add": "Dodaj pierwszą komisję wyborczą"
         },
         "my_polling_stations": {
             "heading": "Moje komisje wyborcze",
-            "paragraph": "Możesz zmienć komisję wyborczą jeśli chcesz dokonac rewizji formularza lub zmienić informacje dotyczące komisji wyborczej.",
+            "paragraph": "Możesz przełączać się między lokalami wyborczymi, jeśli chcesz ponownie przeglądać odpowiedzi lub informacje o komisjach wyborczych.",
             "add": "Dodaj komisję wyborczą"
         },
         "polling_stations_information": {
-            "heading": "Informacje o stacjach wyborczych",
+            "heading": "Informacje o komisjach wyborczych",
             "time_select": {
                 "not_defined": "Nie zdefiniowano",
                 "arrival_time": "Czas przybycia",
@@ -265,32 +304,31 @@
             },
             "observation_time": {
                 "observation_time": "Czas obserwacji",
-                "not_defined": "Nie określono",
-                "no_of_breaks": "{{value}} przerwy",
+                "not_defined": "Nie wskazano",
+                "no_of_breaks": "{{value}} przerw/y",
                 "one_break": "{{value}} przerwa",
-                "arrival_and_departure": "Czas przyjazdu i odjazdu",
                 "arrival_time": "Czas przybycia",
-                "departure_time": "Czas odlotu",
-                "departure_after_arrival": "Godzina odlotu musi przypadać po godzinie przylotu",
+                "departure_time": "Czas wyjścia",
+                "departure_after_arrival": "Godzina wyjścia musi być po godzinie przybycia",
                 "select_arrival_time": "Wybierz czas przybycia",
                 "select_departure_time": "Wybierz godzinę odlotu",
                 "add_break": "Dodaj nową przerwę w obserwacji",
-                "break": "Przerwa {{value}}",
+                "break": "Przerwa {{value}}.",
                 "start_time": "Czas rozpoczęcia",
                 "select_start_time": "Wybierz czas rozpoczęcia",
                 "end_time": "Czas zakończenia",
                 "select_end_time": "Wybierz czas zakończenia",
                 "undefined_date": "DD/MM/RRRR",
-                "undefined_time": "GG:MM",
-                "save": "Oszczędność czasu obserwacji",
-                "clear": "Wyraźny czas obserwacji",
+                "undefined_time": "gg:mm",
+                "save": "Zapisz czas obserwacji",
+                "clear": "Wyczyść czas obserwacji",
                 "confirmation_modals": {
                     "clear": {
-                        "title": "Wyraźny czas obserwacji",
-                        "description": "Ta czynność spowoduje usunięcie czasu przyjazdu i wyjazdu, w tym wszystkich przerw wprowadzonych do tej pory dla tego punktu wyborczego. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić godziny.",
+                        "title": "Wyczyść czas obserwacji",
+                        "description": "Ta czynność spowoduje usunięcie czasu przybycia i wyjścia, w tym wszystkich przerw wprowadzonych do tej pory dla tego punktu wyborczego. Aby uniknąć niezamierzonej utraty informacji, przed wykonaniem tej czynności należy sprawdzić godziny.",
                         "actions": {
                             "cancel": "Anuluj",
-                            "clear": "Wyraźny czas obserwacji"
+                            "clear": "Wyczyść czas obserwacji"
                         }
                     },
                     "delete": {
@@ -305,7 +343,7 @@
                         "title": "Zapisywanie zmian czasu obserwacji",
                         "description": "Masz niezapisane zmiany związane z wprowadzonym czasem obserwacji. Czy chcesz zapisać zmiany przed opuszczeniem strony?",
                         "actions": {
-                            "discard": "Odrzucenie",
+                            "discard": "Odrzuć",
                             "save": "Zapisz zmiany"
                         }
                     },
@@ -318,9 +356,9 @@
                 }
             },
             "polling_station_form": {
-                "paragraph": "Udziel krótkich odpowiedzi dotyczących tej komisji wyborczej.",
+                "paragraph": "Odpowiedz na kilka krótkich pytań dotyczących lokalu wyborczego.",
                 "form_details_button_label": "Informacje dotyczące komisji wyborczej",
-                "number_of_questions": "{{value}} pytań",
+                "number_of_questions": "{{value}} pytań/pytanie/pytania",
                 "answer_questions": "Udziel odpowiedzi"
             }
         },
@@ -342,6 +380,11 @@
         },
         "options_menu": {
             "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
+        }
+    },
+    "shit, you in the Polish numbers trap": {
+        " in Polish: 1 przerwa; 2-4 przerwy; 5-21 przerw; 22-24 przerwy; 25-31 przerw;": {
+            "  🫠": "Czas przybycia i wyjścia"
         }
     },
     "polling_station_information_form": {
@@ -366,7 +409,7 @@
             "title": "Zapisz zmiany w formularzu",
             "description": "Masz niezapisane zmiany w tym formularzu. Czy chcesz zapisać zmiany przed wyjściem?",
             "actions": {
-                "discard": "Odrzucenie",
+                "discard": "Odrzuć",
                 "save": "Zapisz zmiany"
             }
         }
@@ -376,20 +419,20 @@
             "heading": "Podgląd formularza",
             "status": "Status formularza",
             "answered_questions": "Wypełnione pytania",
-            "resume": "Formularz wznawiać",
+            "resume": "Wznów formularz",
             "start_form": "Uruchom formularz",
             "progress": "postęp"
         },
         "questions": {
             "title": "Pytania",
-            "not_answered": "Nie udzielono odpowiedzi",
-            "answered": "Udzielono odpowiedzi",
-            "no_notes": "Brak dołączonych notatek",
-            "notes": "Zawiera załączone notatki"
+            "not_answered": "Nieodpowiedziane",
+            "answered": "Odpowiedziane",
+            "no_notes": "Brak notatek",
+            "notes": "Zawiera notatki"
         },
         "attachments": {
-            "notes": "{{count}} Notatki",
-            "media": "{{count}} Pliki z nagraniami/zdjęciami"
+            "notes": "{{count}} notatek/notatka/notatki",
+            "media": "{{count}} plików/plik/pliki/z nagraniami/zdjęciami"
         },
         "error": "Błąd podczas ładowania danych formularza!",
         "menu": {
@@ -397,9 +440,9 @@
             "change_language": "Zmień język"
         },
         "clear_answers_modal": {
-            "title": "Clear form {{value}}",
+            "title": "Wyczyść formularz {{value}}",
             "description": {
-                "p1": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nie udzielono odpowiedzi'.",
+                "p1": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nieodpowiedziane'.",
                 "p2": "Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś dane dotyczące komisji wyborczej zanim wykonasz tę akcję."
             },
             "actions": {
@@ -414,12 +457,13 @@
             "clear_answer": "Wyczyść odpowiedź"
         },
         "form": {
-            "min": "Pole musi mieć długość co najmniej {{value}} znaków",
+            "min": "Pole musi mieć długość co najmniej {{value}} znak",
             "max": "Pole musi zawierać maksymalnie {{value}} znaków",
             "required": "To pole jest wymagane",
             "date_placeholder": "Proszę wprowadzić datę",
             "text_placeholder": "Proszę wpisać tekst"
         },
+        "save_and_continue": "Zapisz i kontynuuj",
         "attachments": {
             "heading": "Wybrane media",
             "loading": "Dodawanie załącznika... ",
@@ -439,7 +483,12 @@
                 "progress": "Postęp wysyłania:",
                 "completed": "Wysyłanie zakończone.",
                 "aborted": "Wysyłanie przerwane.",
-                "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję."
+                "offline": "Potrzebujesz połączenia internetowego, aby wykonać tę akcję.",
+                "abort_offline": "Przejdź do internetu, aby kontynuować lub ponownie rozpocząć wysyłanie",
+                "abort_offline_button": "Ponowne wysyłanie",
+                "uploaded": "Pomyślnie wysłano {{value}} plik/pliki/plików.",
+                "abort_offline_confirm": "Czy na pewno chcesz przerwać wysyłanie?",
+                "abort_offline_cancel": "Anuluj"
             }
         },
         "notes": {
@@ -469,8 +518,8 @@
         },
         "warning_modal": {
             "question": {
-                "title": "Wyczyść odpowiedź dla pytania{{value}}",
-                "description": "Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nie udzielono odpowiedzi'.",
+                "title": "Wyczyść odpowiedź dla pytania {{value}}.",
+                "description": "Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nieodpowiedziano'.",
                 "actions": {
                     "cancel": "Anuluj",
                     "clear": "Wyczyść odpowiedź"
@@ -488,12 +537,12 @@
                 "title": "Zapisz zmiany w pytaniu",
                 "description": "Masz niezapisane zmiany w tym pytaniu. Czy chcesz zapisać zmiany przed wyjściem?",
                 "actions": {
-                    "cancel": "Odrzucenie",
+                    "cancel": "Odrzuć",
                     "save": "Zapisz zmiany"
                 }
             }
         },
-        "error": "Błąd podczas ładowania danych pytania!"
+        "error": "Błąd podczas ładowania danych do pytania!"
     },
     "manage_my_polling_stations": {
         "empty": {
@@ -501,18 +550,18 @@
         },
         "general_text": "Zarządzanie moimi komisjami wyborczymi",
         "ps_card": {
-            "header": "Komisję wyborczą #{{value}}",
-            "l1": "[Location L1]",
-            "l2": "[Location L2]",
-            "l3": "[Location L3]",
-            "l4": "[Location L4]",
-            "l5": "[Location L5]",
+            "header": "Komisja wyborcza #{{value}}",
+            "l1": "[Lokalizacja L1]",
+            "l2": "[Lokalizacja L2]",
+            "l3": "[Lokalizacja L3]",
+            "l4": "[Lokalizacja L4]",
+            "l5": "[Lokalizacja L5]",
             "street": "Ulica",
-            "ps_number": "Numer komisję wyborczą"
+            "ps_number": "Numer komisji wyborczej"
         },
         "warning_dialog": {
             "title": "Usuń komisję wyborczą #{{value}}",
-            "description": "Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces Dodaj nową komisję wyborczą.",
+            "description": "Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces \"Dodaj nową komisję wyborczą\".",
             "actions": {
                 "cancel": "Anuluj",
                 "remove": "Usuń",
@@ -520,8 +569,8 @@
             }
         },
         "removal_unallowed_dialog": {
-            "title": "Usunięcie komisję wyborczą #{{value}} nie jest dozwolone",
-            "description": "Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera ona dane (informacje o komisję wyborczą i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, usuń zaznaczenie komisję wyborczą informacji i formularza odpowiedzi ręcznie, a następnie spróbuj ponownie wykonać tę czynność."
+            "title": "Usunięcie komisji wyborczej #{{value}} nie jest dozwolone",
+            "description": "Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera dane (informacje o komisji wyborczej i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, najpierw usuń ręcznie wszystkie informacje o komisji i odpowiedzi w formularzach, a następnie ponó próbę usunięcia komisji."
         },
         "delete_success": "Komisja wyborcza została pomyślnie usunięta!",
         "delete_error": "Napotkaliśmy problem podczas usuwania wizyty komisji wyborczej. Spróbuj ponownie.",
@@ -532,11 +581,11 @@
             "title": "Szybki raport",
             "heading": "Moje zgłoszone sprawy",
             "error": "Błąd podczas ładowania raportów!",
-            "empty": "Wyślij 'szybki raport' do swojej organizacji jeśli zauważyłeś/aś jakieś nieregularności w komisji wyborczej lub jej otoczeniu.",
+            "empty": "Wyślij 'szybki raport' do swojej organizacji jeśli zauważyłeś/aś jakieś nieprawidłowości w komisji wyborczej lub jej otoczeniu.",
             "add": "Zgłoś nową sprawę",
             "no_files": "Brak załączonych plików",
-            "attachment_one": "{{count}} plik załącznika",
-            "attachment_other": "{{count}} pliki załączników"
+            "attachment_one": "{{count}} załącznik",
+            "attachment_other": "{{count}} załączniki/załączników"
         },
         "attachments": {
             "heading": "Przesłane multimedia",
@@ -629,13 +678,13 @@
             },
             "issue_title": {
                 "label": "Temat *",
-                "placeholder": "Określ temat sytuacji",
-                "required": "Tytuł problemu jest wymagany",
+                "placeholder": "Określ temat sprawy",
+                "required": "Temat sprawy jest wymagany",
                 "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
             },
             "issue_description": {
                 "label": "Opis *",
-                "placeholder": "Opisz szczegóły sytuacji",
+                "placeholder": "Opisz szczegóły sprawy",
                 "required": "Wymagany jest opis problemu",
                 "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
             },
@@ -646,7 +695,7 @@
         }
     },
     "report_details": {
-        "title": "Szczegóły szybkiego raportu",
+        "title": "Szybki tytuł raportu",
         "uploaded_media": "Wybrane media",
         "no_files": "Brak załączonych plików",
         "error": "Błąd podczas ładowania raportu"
@@ -661,7 +710,7 @@
             "heading": "Podręczniki",
             "guide": {
                 "backup_title": "Dokument",
-                "created_on": "Utworzono dnia"
+                "created_on": "Utworzono"
             }
         },
         "options_sheet": {
@@ -670,25 +719,25 @@
         "info_modal": "W tej sekcji znajdują się kluczowe informacje i zasoby mające pomóc w obserwowaniu procesów wyborczych i zgłaszaniu wszelkich kwestii wyborczych lub nieprawidłowości, które napotkasz jako niezależny obserwator."
     },
     "resources": {
-        "title": "TODO:Zasoby",
-        "info": "TODO:W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel.",
+        "title": "Zasoby",
+        "info": "W tej sekcji znajdziesz kluczowe informacje i zasoby zaprojektowane, aby pomóc Ci obserwować procesy wyborcze i zgłaszać wszelkie problemy lub nieprawidłowości wyborcze, które napotkasz jako obywatel.",
         "empty": {
-            "heading": "TODO:Brak jeszcze przewodników do przeczytania",
-            "paragraph": "TODO:Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako obywatel są na wyciągnięcie ręki."
+            "heading": "Brak jeszcze przewodników do przeczytania",
+            "paragraph": "Przewodniki i zasoby dotyczące obserwacji procesów wyborczych i zgłaszania problemów jako wyborca są na wyciągnięcie ręki."
         },
         "types": {
-            "Document": "TODO:Typ pliku PDF",
-            "Website": "TODO:Zewnętrzny adres URL",
-            "Text": "TODO:Przewodnik w aplikacji"
+            "Document": "Typ pliku PDF",
+            "Website": "Zewnętrzny adres URL",
+            "Text": "Przewodnik po aplikacji"
         }
     },
     "inbox": {
-        "title": "Skrzynka odbiorcza",
+        "title": "Poczta",
         "empty": {
             "heading": "Brak wiadomości",
             "paragraph": "Tu pojawią się wiadomości i alerty przesłane przez Twoją organizację."
         },
-        "banner": "Wiadomości od {{ngoName}}",
+        "banner": "Wiadomości od: {{ngoName}}",
         "today": "Dzisiaj",
         "your_organization": "twoja organizacja",
         "menu": {
@@ -700,26 +749,26 @@
         }
     },
     "updates": {
-        "title": "TODO:Aktualizacje",
+        "title": "Aktualizacje",
         "empty": {
-            "heading": "TODO:Nie otrzymano jeszcze żadnych aktualizacji",
-            "paragraph": "TODO:Tutaj pojawią się aktualizacje dotyczące okresu wyborczego."
+            "heading": "Nie otrzymano jeszcze żadnych aktualizacji",
+            "paragraph": "Tutaj pojawią się aktualizacje dotyczące wyborów."
         },
         "info_modal": {
-            "p1": "TODO:W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące okresu wyborczego, istotne dla Ciebie jako obywatela zainteresowanego zaangażowaniem obywatelskim.",
-            "p2": "TODO:Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
+            "p1": "W tej sekcji spodziewaj się otrzymywać bieżące aktualizacje od zespołu Vote Monitor dotyczące wyborów, istotne dla Ciebie jako zaangażowanego obywatela.",
+            "p2": "Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
         }
     },
     "more": {
         "title": "Więcej",
-        "change-language": "Zmień język appki",
+        "change-language": "Zmień język aplikacji",
         "change-password": "Zmień hasło",
-        "terms": "Zasady i warunki",
+        "terms": "Regulamin",
         "privacy_policy": "Polityka prywatności",
         "about": "O Vote Monitor",
         "app_version": "Wersja Vote Monitor {{value}}",
-        "support": "Zadzwoń na hotline NGO",
-        "feedback": "Masz uwagi do aplikacji?",
+        "support": "Zadzwoń na infolinię dla organizacji pozarządowych",
+        "feedback": "Przekaż opinię o aplikacji",
         "logout": "Wyloguj",
         "logged_in": "Zalogowano jako {{user}}",
         "warning_modal": {
@@ -746,7 +795,7 @@
             "p1": "Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!",
             "placeholder": "Napisz tutaj swoją opinię...",
             "cancel": "Anuluj",
-            "action": "Wysłać",
+            "action": "Wyślij",
             "input": {
                 "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
             }
@@ -768,13 +817,13 @@
                 "label": "Nowe hasło *",
                 "placeholder": "Wprowadź nowe hasło",
                 "helper": "Musi zawierać co najmniej 8 znaków.",
-                "required": "Hasło jest obowiązkowe"
+                "required": "Nowe hasło jest obowiązkowe"
             },
             "confirm_password": {
                 "label": "Potwierdź nowe hasło *",
                 "placeholder": "Potwierdź hasło",
                 "helper": "Oba hasła muszą być takie same.",
-                "required": "Hasło jest obowiązkowe",
+                "required": "Nowe hasło jest obowiązkowe",
                 "no_match": "Hasła nie są takie same."
             },
             "save": "Zapisz nowe hasło"
@@ -785,7 +834,7 @@
             "confirm": "Wróć do aplikacji"
         },
         "error": {
-            "offline": "Aplikacja jest w trybie offline i nie może wykonać żądania"
+            "offline": "Aplikacja jest w trybie offline i nie można wykonać żądania"
         }
     },
     "generic_error_screen": {
@@ -797,14 +846,14 @@
     "network_banner": {
         "online": "Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.",
         "offline": "Tryb offline. Dane zachowane lokalnie.",
-        "offline_citizen": "TODO: Tryb offline. Potrzebujesz internetu, aby wypełnić formularz.",
+        "offline_citizen": "Tryb offline. Potrzebujesz internetu, aby wypełnić formularz.",
         "more_details": "Więcej szczegółów",
         "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty.",
-        "offline_warning_citizen": "TODO: Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu."
+        "offline_warning_citizen": "Wygląda na to, że jesteś offline. Aby wypełnić formularz, potrzebujesz internetu."
     },
     "sync": {
         "sync_data": "Synchronizowanie danych offline...",
-        "warning": "NIE ZAMKNIJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.",
+        "warning": "NIE ZAMYKAJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.",
         "files": "Przesyłamy Twoje pliki, może to chwilę potrwać..."
     }
 }

@@ -11,6 +11,7 @@ import {
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LanguageBadge } from '@/components/ui/language-badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
@@ -23,6 +24,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
@@ -75,6 +77,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
     },
   });
 
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(formSubmission.defaultLanguage);
+
   function handleFollowUpStatusChange(followUpStatus: FormSubmissionFollowUpStatus): void {
     updateSubmissionFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
@@ -86,61 +90,86 @@ export default function FormSubmissionDetails(): FunctionComponent {
       title={`#${formSubmission.submissionId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
-          <CardContent className='flex flex-col gap-4 pt-6'>
-            <div className='flex gap-2'>
-              <p>Observer:</p>
-              <Link
-                className='flex gap-1 font-bold text-purple-500'
-                to='/responses'
-                search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
-                target='_blank'
-                preload={false}>
-                {formSubmission.observerName}
-                <ArrowTopRightOnSquareIcon className='w-4' />
-              </Link>
-            </div>
-
-            <div>
-              <p className='font-bold'>Time submitted</p>
-              {formSubmission.timeSubmitted && <p>{format(formSubmission.timeSubmitted, DateTimeFormat)}</p>}
-            </div>
-
-            {formSubmission.level1 && (
-              <div className='flex gap-4'>
-                <div>
-                  <p className='font-bold'>Location - L1</p>
-                  {formSubmission.level1}
-                </div>
-                {formSubmission.level2 && (
-                  <div>
-                    <p className='font-bold'>Location - L2</p>
-                    {formSubmission.level2}
-                  </div>
-                )}
-                {formSubmission.level3 && (
-                  <div>
-                    <p className='font-bold'>Location - L3</p>
-                    {formSubmission.level3}
-                  </div>
-                )}
-                {formSubmission.level4 && (
-                  <div>
-                    <p className='font-bold'>Location - L4</p>
-                    {formSubmission.level4}
-                  </div>
-                )}
-                {formSubmission.level5 && (
-                  <div>
-                    <p className='font-bold'>Location - L5</p>
-                    {formSubmission.level5}
-                  </div>
-                )}
-                <div>
-                  <p className='font-bold'>Number</p>
-                  <p>{formSubmission.number}</p>
-                </div>
+          <CardContent className='flex flex-row justify-between gap-4'>
+            <section className='flex flex-col gap-4 pt-6'>
+              <div className='flex gap-2'>
+                <p>Observer:</p>
+                <Link
+                  className='flex gap-1 font-bold text-purple-500'
+                  to='/responses'
+                  search={{ searchText: formSubmission.monitoringObserverId, tab: 'form-answers', viewBy: 'byEntry' }}
+                  target='_blank'
+                  preload={false}>
+                  {formSubmission.observerName}
+                  <ArrowTopRightOnSquareIcon className='w-4' />
+                </Link>
               </div>
-            )}
+
+              <div>
+                <p className='font-bold'>Time submitted</p>
+                {formSubmission.timeSubmitted && <p>{format(formSubmission.timeSubmitted, DateTimeFormat)}</p>}
+              </div>
+
+              {formSubmission.level1 && (
+                <div className='flex gap-4'>
+                  <div>
+                    <p className='font-bold'>Location - L1</p>
+                    {formSubmission.level1}
+                  </div>
+                  {formSubmission.level2 && (
+                    <div>
+                      <p className='font-bold'>Location - L2</p>
+                      {formSubmission.level2}
+                    </div>
+                  )}
+                  {formSubmission.level3 && (
+                    <div>
+                      <p className='font-bold'>Location - L3</p>
+                      {formSubmission.level3}
+                    </div>
+                  )}
+                  {formSubmission.level4 && (
+                    <div>
+                      <p className='font-bold'>Location - L4</p>
+                      {formSubmission.level4}
+                    </div>
+                  )}
+                  {formSubmission.level5 && (
+                    <div>
+                      <p className='font-bold'>Location - L5</p>
+                      {formSubmission.level5}
+                    </div>
+                  )}
+                  <div>
+                    <p className='font-bold'>Number</p>
+                    <p>{formSubmission.number}</p>
+                  </div>
+                </div>
+              )}
+            </section>
+            <section className='flex flex-col pt-10'>
+              {formSubmission.languages.length > 1 ? (
+                <div>
+                  <div className='mb-2'>
+                    <p className='font-bold'>Preffered language</p>
+                  </div>
+                  <Select onValueChange={setSelectedLanguage} defaultValue={selectedLanguage} value={selectedLanguage}>
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Language' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {formSubmission.languages.map((language) => (
+                          <SelectItem key={language} value={language}>
+                            {LanguageBadge({ languageCode: language, variant: 'unstyled', displayMode: 'english' })}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : null}
+            </section>
           </CardContent>
         </Card>
         {formSubmission.formType === FormType.PSI ? (
@@ -232,7 +261,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                   answer={answer}
                   notes={notes}
                   attachments={attachments}
-                  defaultLanguage={formSubmission.defaultLanguage}
+                  defaultLanguage={selectedLanguage}
                 />
               );
             })}
