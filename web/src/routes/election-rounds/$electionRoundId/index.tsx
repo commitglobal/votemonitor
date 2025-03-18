@@ -14,5 +14,11 @@ export const Route = createFileRoute('/election-rounds/$electionRoundId/')({
 
 function Component() {
   const { electionRoundId } = Route.useParams();
-  return <Navigate to='/election-rounds/$electionRoundId/$tab' params={{ electionRoundId, tab: 'event-details' }} />;
+  return (
+    <Navigate
+      to='/election-rounds/$electionRoundId/$tab'
+      params={{ electionRoundId, tab: 'event-details' }}
+      replace={true}
+    />
+  );
 }

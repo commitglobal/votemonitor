@@ -56,7 +56,7 @@ export const NGODetailsView: FC<NGODetailsProps> = ({ data }) => {
 
         <div className='flex flex-col gap-1'>
           <p className='font-bold text-gray-700'>Election events</p>
-          <p className='font-normal text-gray-900'>{data.numberOfElectionsMonitoring}</p>
+          <p className='font-normal text-gray-900'>{data.numberOfMonitoredElections}</p>
         </div>
 
         <div className='flex flex-col gap-1'>

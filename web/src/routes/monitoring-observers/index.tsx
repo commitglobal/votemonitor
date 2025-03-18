@@ -9,5 +9,5 @@ export const Route = createFileRoute('/monitoring-observers/')({
 });
 
 function Component() {
-  return <Navigate to={`/monitoring-observers/$tab`} params={{ tab: 'list' }} />;
+  return <Navigate to={`/monitoring-observers/$tab`} params={{ tab: 'list' }} replace={true} />;
 }
