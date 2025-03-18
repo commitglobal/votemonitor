@@ -19,7 +19,6 @@ import ElectionsRoundFilter from './ElectionsRoundFilter';
 
 export default function ElectionRoundsDashboard(): ReactElement {
   const search = Route.useSearch();
-  const navigate = Route.useNavigate();
 
   const { filteringIsActive, navigateHandler } = useFilteringContainer();
   const [filtersExpanded, setFiltersExpanded] = useState<boolean>(false);
@@ -30,7 +29,7 @@ export default function ElectionRoundsDashboard(): ReactElement {
     const params: ElectionsRoundsQueryParams = {
       countryId: search.countryId,
       electionRoundStatus: search.electionRoundStatus,
-      searchText: search.searchText,      
+      searchText: search.searchText,
     };
 
     return params;
@@ -77,14 +76,7 @@ export default function ElectionRoundsDashboard(): ReactElement {
           {filtersExpanded && <ElectionsRoundFilter />}
         </CardHeader>
         <CardContent>
-          <QueryParamsDataTable
-            columns={electionRoundColDefs}
-            useQuery={useElectionRounds}
-            queryParams={queryParams}
-            onRowClick={(electionRoundId: string) =>
-              navigate({ to: `/election-rounds/$electionRoundId`, params: { electionRoundId } })
-            }
-          />
+          <QueryParamsDataTable columns={electionRoundColDefs} useQuery={useElectionRounds} queryParams={queryParams} />
         </CardContent>
       </Card>
       {createElectionEventDialog.dialogProps.open && (
