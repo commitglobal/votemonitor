@@ -13,10 +13,12 @@ import { format } from 'date-fns/format';
 import { useCallback } from 'react';
 import { electionRoundDetailsQueryOptions, electionRoundKeys } from '../../queries';
 import ElectionRoundForm, { ElectionRoundRequest } from '../ElectionRoundForm/ElectionRoundForm';
+import { ElectionRoundStatus } from '@/common/types';
 function ElectionRoundEdit() {
   const router = useRouter();
   const { electionRoundId } = Route.useParams();
   const { data: electionRound } = useSuspenseQuery(electionRoundDetailsQueryOptions(electionRoundId));
+  const disableEdit = (electionRound?.status || ElectionRoundStatus.NotStarted) !== ElectionRoundStatus.NotStarted;
 
   const editElectionRoundMutation = useMutation({
     mutationFn: ({
@@ -71,9 +73,11 @@ function ElectionRoundEdit() {
           <ElectionRoundForm onSubmit={submitData} electionRound={electionRound}>
             <div className='px-6 w-full flex justify-end gap-4'>
               <Link to='/election-rounds/$electionRoundId' params={{ electionRoundId }}>
-                <Button title='Cancel' type='button' variant='outline'>Cancel</Button>
+                <Button title='Cancel' type='button' variant='outline'>
+                  Cancel
+                </Button>
               </Link>
-              <Button title='Save' type='submit'>
+              <Button title='Save' type='submit' disabled={disableEdit}>
                 Save
               </Button>
             </div>

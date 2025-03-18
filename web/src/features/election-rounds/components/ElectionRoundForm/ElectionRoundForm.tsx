@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { ElectionRoundModel } from '../../models/types';
 import { parse } from 'date-fns';
+import { ElectionRoundStatus } from '@/common/types';
 
 const electionRoundSchema = z.object({
   countryId: z.string().min(1, {
@@ -67,6 +68,8 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
+  const disableEdit = (electionRound?.status || ElectionRoundStatus.NotStarted) !== ElectionRoundStatus.NotStarted;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
@@ -79,7 +82,7 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
                 Election event title <span className='text-red-500'>*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder='Title' {...field} {...fieldState} />
+                <Input placeholder='Title' {...field} {...fieldState} disabled={disableEdit} />
               </FormControl>
               <FormMessage className='mt-2' />
             </FormItem>
@@ -95,7 +98,7 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
                 Election event English title <span className='text-red-500'>*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder='English title' {...field} {...fieldState} />
+                <Input placeholder='English title' {...field} {...fieldState} disabled={disableEdit} />
               </FormControl>
               <FormMessage className='mt-2' />
             </FormItem>
@@ -114,6 +117,7 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
+                      disabled={disableEdit}
                       variant='outline'
                       role='combobox'
                       className={cn('w-full pl-3 justify-between', !field.value && 'text-muted-foreground')}>
@@ -175,6 +179,7 @@ function ElectionRoundForm({ electionRound, children, onSubmit }: ElectionRoundF
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
+                      disabled={disableEdit}
                       variant='outline'
                       className={cn('w-[200px] pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}>
                       {field.value ? format(field.value, DateOnlyFormat) : <span>Select start date</span>}

@@ -30,7 +30,6 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
 
   const newPollingStationMutation = useMutation({
     mutationFn: ({ electionRoundId, values }: { electionRoundId: string; values: ImportPollingStationRow }) => {
-      console.log(values);
       return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, values);
     },
 
