@@ -329,6 +329,19 @@
         "onError": "Error adding location"
       }
     },
+    "monitoringNgos": {
+      "tabTitle": "Monitoring NGOs",
+      "cardTitle": "Monitoring NGOs",
+      "resetFilters": "Reset filters"
+    },
+    "citizenReporting": {
+      "tabTitle": "Citizen reporting",
+      "cardTitle": "Citizen reporting"
+    },
+    "psiForm": {
+      "tabTitle": "PSI Form",
+      "cardTitle": "Polling Station Information Form"
+    },
     "form": {
       "title": "Create new form",
       "subtitle": "Choose how you'd like to start your form.",

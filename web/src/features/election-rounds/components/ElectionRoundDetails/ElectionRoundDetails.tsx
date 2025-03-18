@@ -10,7 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { electionRoundDetailsQueryOptions } from '../../queries';
 import PollingStationsDashboard from '@/components/PollingStationsDashboard/PollingStationsDashboard';
 import { useNavigate } from '@tanstack/react-router';
-
+import PsiFormDashboard from '../PsiFormDashboard/PsiFormDashboard';
+import MonitoringNgosDashboard from '../MonitoringNgosDashboard/MonitoringNgosDashboard';
+import CitizenReportingDashboard from '../CitizenReportingDashboard/CitizenReportingDashboard';
+import AssignedFormTemplatesDashboard from '../AssignedFormTemplatesDashboard/AssignedFormTemplatesDashboard';
+import { ElectionRoundDetailsTab } from './tabs';
 function ElectionRoundDetails() {
   const navigate = useNavigate();
   const { electionRoundId, tab } = Route.useParams();
@@ -26,34 +30,64 @@ function ElectionRoundDetails() {
   return (
     <Layout title={electionRound.title} subtitle={electionRound.englishTitle} enableBreadcrumbs={false}>
       <Tabs
-        defaultValue={tab ?? 'event-details'}
+        defaultValue={tab ?? ElectionRoundDetailsTab.EventDetails}
         onValueChange={(tab) => {
           navigate({
             to: '/election-rounds/$electionRoundId/$tab',
             params: { electionRoundId, tab },
-            replace: true,
           });
         }}>
-        <TabsList className='grid grid-cols-4 bg-gray-200 w-[800px]'>
-          <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='form-templates'>{t('electionEvent.formTemplates.tabTitle')}</TabsTrigger>
+        <TabsList className='grid grid-cols-7 bg-gray-200'>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.EventDetails}>
+            {t('electionEvent.eventDetails.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.PsiForm}>
+            {t('electionEvent.psiForm.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.PollingStations}>
+            {t('electionEvent.pollingStations.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.MonitoringNgos}>
+            {t('electionEvent.monitoringNgos.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.CitizenReporting}>
+            {t('electionEvent.citizenReporting.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.Locations}>
+            {t('electionEvent.locations.tabTitle')}
+          </TabsTrigger>
+          <TabsTrigger className='whitespace-normal text-wrap' value={ElectionRoundDetailsTab.FormTemplates}>
+            {t('electionEvent.formTemplates.tabTitle')}
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value='event-details'>
+        <TabsContent value={ElectionRoundDetailsTab.EventDetails}>
           <ElectionEventDescription />
         </TabsContent>
 
-        <TabsContent value='polling-stations'>
+        <TabsContent value={ElectionRoundDetailsTab.PsiForm}>
+          <PsiFormDashboard electionRoundId={electionRoundId} />
+        </TabsContent>
+
+        <TabsContent value={ElectionRoundDetailsTab.PollingStations}>
           <PollingStationsDashboard />
         </TabsContent>
 
-        <TabsContent value='locations'>
+        <TabsContent value={ElectionRoundDetailsTab.MonitoringNgos}>
+          <MonitoringNgosDashboard electionRoundId={electionRoundId} />
+        </TabsContent>
+
+        <TabsContent value={ElectionRoundDetailsTab.CitizenReporting}>
+          <CitizenReportingDashboard electionRoundId={electionRoundId} />
+        </TabsContent>
+
+        <TabsContent value={ElectionRoundDetailsTab.Locations}>
           <LocationsDashboard />
         </TabsContent>
 
-        <TabsContent value='form-templates'>{/* <FormTemplatesAssign /> */}</TabsContent>
+        <TabsContent value={ElectionRoundDetailsTab.FormTemplates}>
+          <AssignedFormTemplatesDashboard electionRoundId={electionRoundId} />
+        </TabsContent>
       </Tabs>
     </Layout>
   );
