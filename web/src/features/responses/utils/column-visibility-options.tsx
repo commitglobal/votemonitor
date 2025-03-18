@@ -36,7 +36,8 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   monitoringObserverId: false,
   phoneNumber: false,
   pollingStationId: false,
-  isOwnObserver: false
+  isOwnObserver: false,
+  languages: false,
 };
 
 export const formSubmissionsByObserverDefaultColumns: TableColumnVisibilityState<FormSubmissionByObserver> = {
@@ -93,6 +94,7 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   tags: false,
   ngoName: false,
   isOwnObserver: false,
+  languages: false,
 };
 
 export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
@@ -174,7 +176,6 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'pollingStationDetails', label: 'Polling station details', enableHiding: true },
-
 ];
 
 export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport> = {
@@ -202,7 +203,6 @@ export const quickReportsDefaultColumns: TableColumnVisibilityState<QuickReport>
   monitoringObserverId: false,
   pollingStationId: false,
   isOwnObserver: false,
-
 };
 
 export const observerQuickReportsColumns: TableColumnVisibilityState<QuickReport> = {
@@ -378,7 +378,6 @@ export const incidentReportsByEntryDefaultColumns: TableColumnVisibilityState<In
   ngoName: false,
   pollingStationId: false,
   isOwnObserver: false,
-
 };
 
 export const incidentReportsByObserverDefaultColumns: TableColumnVisibilityState<IncidentReportByObserver> = {
