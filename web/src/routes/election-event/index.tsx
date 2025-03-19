@@ -1,9 +1,9 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/election-event/')({
-  component: Component
+  component: Component,
 });
 
 function Component() {
-  return <Navigate to="/election-event/$tab" params={{ tab: 'event-details' }} />
+  return <Navigate to='/election-event/$tab' params={{ tab: 'event-details' }} replace={true} />;
 }

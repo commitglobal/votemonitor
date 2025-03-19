@@ -26,6 +26,8 @@ export default function ElectionEventDescription() {
   const { t } = useTranslation();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
+  if (!electionEvent) return <>Loading...</>;
+
   const { userRole } = useContext(AuthContext);
 
   const { toast } = useToast();
