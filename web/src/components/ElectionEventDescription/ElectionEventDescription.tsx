@@ -26,7 +26,6 @@ export default function ElectionEventDescription() {
   const { t } = useTranslation();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
-  if (!electionEvent) return <>Loading...</>;
 
   const { userRole } = useContext(AuthContext);
 
@@ -39,6 +38,7 @@ export default function ElectionEventDescription() {
   const { mutate: startElectionRound } = useStartElectionRound();
   const { mutate: archiveElectionRound } = useArchiveElectionRound();
   const { mutate: unarchiveElectionRound } = useUnarchiveElectionRound();
+  if (!electionEvent) return <>Loading...</>;
 
   const handleArchiveElectionRound = useCallback(async () => {
     if (
