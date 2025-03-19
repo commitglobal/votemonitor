@@ -47,11 +47,6 @@ export const NGOElectionsListView: FC<NGODetailsProps> = ({ ngo }: NGODetailsPro
   const rows = table.getRowModel().rows;
 
   const navigate = useNavigate();
-  const navigateToElectionRoundPage = (id: string) => {
-    navigate({
-      to: `/election-rounds/${id}/event-details`,
-    });
-  };
 
   return (
     <Card className='w-[1400px] pt-0'>
@@ -61,7 +56,6 @@ export const NGOElectionsListView: FC<NGODetailsProps> = ({ ngo }: NGODetailsPro
         </div>
         <Separator />
       </CardHeader>
-      ``
       <CardContent className='flex flex-col items-baseline gap-6'>
         <Table>
           <TableHeader>
@@ -82,9 +76,12 @@ export const NGOElectionsListView: FC<NGODetailsProps> = ({ ngo }: NGODetailsPro
             {rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className='cursor-pointer'
                   key={row.id}
                   onClick={() => {
-                    navigateToElectionRoundPage(row.original.id);
+                    navigate({
+                      to: `/election-rounds/${row.original.id}/event-details`,
+                    });
                   }}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
