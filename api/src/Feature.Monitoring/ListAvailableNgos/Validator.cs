@@ -1,13 +1,11 @@
-﻿namespace Feature.MonitoringObservers.List;
+﻿namespace Feature.Monitoring.ListAvailableNgos;
 
 public class Validator : Validator<Request>
 {
     public Validator()
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
-        RuleFor(x => x.NgoId).NotEmpty();
-        RuleForEach(x => x.Tags).NotEmpty();
-
+        
         RuleFor(x => x.PageNumber)
             .GreaterThanOrEqualTo(1);
 
