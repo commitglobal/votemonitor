@@ -47,7 +47,7 @@ Sentry.init({
   environment: import.meta.env.MODE,
   tracesSampleRate: import.meta.env.PROD ? 0.2 : 0,
   enabled: !import.meta.env.PROD,
-  tracePropagationTargets: ['localhost'],
+  tracePropagationTargets: ['localhost', /^https:\/\/api\.votemonitor\.org/, /^https:\/\/votemonitor\.staging\.heroesof\.tech\/api\//],
   integrations: [Sentry.browserTracingIntegration(), Sentry.tanstackRouterBrowserTracingIntegration(router)],
   normalizeDepth: 5,
 });
