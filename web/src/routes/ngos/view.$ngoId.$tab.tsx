@@ -10,7 +10,7 @@ export type NgoAdminsSearchParams = z.infer<typeof ngoAdminsSearchParamsSchema>;
 
 export const NgosDetailsdPageSearchParamsSchema = ngoAdminsSearchParamsSchema.merge(
   z.object({
-    tab: z.enum(['details', 'admins']).catch('details').optional(),
+    tab: z.enum(['details', 'admins', 'elections']).catch('details').optional(),
   })
 );
 
@@ -35,6 +35,7 @@ export const Route = createFileRoute('/ngos/view/$ngoId/$tab')({
 const coerceTabSlug = (slug: string) => {
   if (slug?.toLowerCase()?.trim() === 'details') return 'details';
   if (slug?.toLowerCase()?.trim() === 'admins') return 'admins';
+  if (slug?.toLowerCase()?.trim() === 'elections') return 'elections';
 
   return 'details';
 };
