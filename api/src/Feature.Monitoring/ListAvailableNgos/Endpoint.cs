@@ -81,7 +81,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var queryArgs = new
         {
             electionRoundId = request.ElectionRoundId,
-            searchText = request.SearchText,
+            searchText = $"%{request.SearchText?.Trim() ?? string.Empty}%",
             offset = PaginationHelper.CalculateSkip(request.PageSize, request.PageNumber),
             pageSize = request.PageSize,
             sortExpression = GetSortExpression(request.SortColumnName, request.IsAscendingSorting)
