@@ -46,11 +46,13 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                          u."PhoneNumber",
                          u."Status",
                          u."EmailConfirmed"                                      as "IsAccountVerified",
-                         COALESCE((select jsonb_agg(jsonb_build_object('ElectionTitle', er."Title",
-                                                                       'ElectionEnglishTitle', er."EnglishTitle",
-                                                                       'ElectionDate', er."StartDate",
-                                                                       'NgoName', n."Name"
-                                                    ))
+                         COALESCE((select jsonb_agg(jsonb_build_object('Id', er."Id",
+                                                                'Title', er."Title",
+                                                                'EnglishTitle', er."EnglishTitle",
+                                                                'StartDate', er."StartDate",
+                                                                'Status', er."Status",
+                                                                'NgoName', n."Name"
+                                             ))
                                    FROM "MonitoringObservers" mo
                                             left join "ElectionRounds" er on er."Id" = mo."ElectionRoundId"
                                             left join "MonitoringNgos" mn on mo."MonitoringNgoId" = mn."Id"

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer;
+﻿using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+
+namespace Vote.Monitor.Api.Feature.Observer;
 
 public record ObserverModel
 {
@@ -11,15 +13,15 @@ public record ObserverModel
 
     public string? PhoneNumber { get; init; }
     public UserStatus Status { get; init; }
-    
+
     public MonitoredElectionsDetails[] MonitoredElections { get; init; } = [];
 
     public record MonitoredElectionsDetails
     {
-        public string ElectionTitle { get; init; }
-        public string ElectionEnglishTitle { get; init; }
-        public string ElectionDate { get; init; }
+        public string Title { get; init; }
+        public string EnglishTitle { get; init; }
+        public string StartDate { get; init; }
+        public ElectionRoundStatus Status { get; init; }
         public string NgoName { get; init; }
-        
     }
 }
