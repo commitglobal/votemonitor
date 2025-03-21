@@ -18,6 +18,7 @@ public record ObserverModel
 
     public record MonitoredElectionsDetails
     {
+        public Guid Id { get; init; }
         public string Title { get; init; }
         public string EnglishTitle { get; init; }
         public string StartDate { get; init; }
