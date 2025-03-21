@@ -1,15 +1,17 @@
-import { DefaultSearchParamsSchema } from '@/common/zod-schemas';
+import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useDebouncedSearch } from '@/hooks/debounced-search';
-import { Route } from '@/routes/election-rounds/$electionRoundId/$tab';
+import { toast } from '@/components/ui/use-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
+import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import { MonitoringNgoModel } from '../../models/types';
-import { useAvailableMonitoringNgos } from './queries';
+import { monitoringNgoKeys, useAvailableMonitoringNgos } from './queries';
 
 export interface AddMonitoringNgoDialogProps {
   electionRoundId: string;
@@ -17,8 +19,42 @@ export interface AddMonitoringNgoDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const useMonitoringNgoSearch = () => {
+  const [searchText, setSearchText] = useState('');
+  const debouncedSearchText = useDebounce(searchText, 300);
+
+  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
+    setSearchText(ev.currentTarget.value);
+  };
+
+  const queryParams = useMemo(() => {
+    const params = [['searchText', debouncedSearchText]].filter(([_, value]) => value);
+
+    return Object.fromEntries(params);
+  }, [debouncedSearchText]);
+
+  return { searchText, queryParams, handleSearchInput };
+};
+
 function AddMonitoringNgoDialog({ open, onOpenChange, electionRoundId }: AddMonitoringNgoDialogProps) {
-  const { searchText, handleSearchInput, queryParams } = useDebouncedSearch(Route.id, DefaultSearchParamsSchema);
+  const { searchText, handleSearchInput, queryParams } = useMonitoringNgoSearch();
+  const queryClient = useQueryClient();
+  const addMonitoringNgoMutation = useMutation({
+    mutationFn: async (ngoId: string) => {
+      return await authApi.post(`election-rounds/${electionRoundId}/monitoring-ngos`, { ngoId });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: monitoringNgoKeys.all(electionRoundId) });
+      onOpenChange(false);
+      toast({
+        title: 'Success',
+        description: 'Added monitoring NGO',
+      });
+    },
+    //TODO Add error handling
+  });
+
   const monitoringNgosColDefs: ColumnDef<MonitoringNgoModel>[] = [
     {
       accessorKey: 'name',
@@ -32,7 +68,11 @@ function AddMonitoringNgoDialog({ open, onOpenChange, electionRoundId }: AddMoni
         const ngoId = row.original.id;
 
         return (
-          <Button title='Add' onClick={() => {}}>
+          <Button
+            title='Add'
+            onClick={() => {
+              addMonitoringNgoMutation.mutate(ngoId);
+            }}>
             <Plus className='mr-2' width={18} height={18} />
             Add
           </Button>

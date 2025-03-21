@@ -11,16 +11,23 @@ export interface ElectionsRoundsQueryParams {
 }
 
 export const monitoringNgoKeys = {
-  currentlyMonitoring: (electionRoundId: string) => ['monitoringNgos', electionRoundId] as const,
+  all: (electionRoundId: string) => ['monitoringNgos', electionRoundId] as const,
   availableForMonitoring: (electionRoundId: string, params: DataTableParameters) =>
-    [...monitoringNgoKeys.currentlyMonitoring(electionRoundId), 'available', { ...params }] as const,
+    [...monitoringNgoKeys.all(electionRoundId), 'available', { ...params }] as const,
 };
 
-export function useMonitoringNgos(electionRoundId: string): UseQueryResult<PageResponse<MonitoringNgoModel>, Error> {
+type MonitoringNgosPageResponse = {
+  monitoringNgos: MonitoringNgoModel[];
+};
+
+export function useMonitoringNgos(electionRoundId: string): UseQueryResult<MonitoringNgosPageResponse, Error> {
   return useQuery({
-    queryKey: monitoringNgoKeys.currentlyMonitoring(electionRoundId),
+    queryKey: monitoringNgoKeys.all(electionRoundId),
+    placeholderData: { monitoringNgos: [] },
     queryFn: async () => {
-      const response = await authApi.get<MonitoringNgoModel>(`election-rounds/${electionRoundId}/monitoring-ngos`);
+      const response = await authApi.get<MonitoringNgosPageResponse>(
+        `election-rounds/${electionRoundId}/monitoring-ngos`
+      );
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch monitoring NGOs for election round');
