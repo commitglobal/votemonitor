@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
@@ -11,6 +12,7 @@ import { format } from 'date-fns/format';
 import { ElectionRoundModel } from '../../models/types';
 import { electionRoundKeys } from '../../queries';
 import ElectionRoundForm, { ElectionRoundRequest } from '../ElectionRoundForm/ElectionRoundForm';
+import { ReportedError } from '@/common/types';
 
 export interface ElectionRoundFormProps {
   open: boolean;
@@ -43,9 +45,11 @@ function CreateElectionRoundDialog({ open, onOpenChange }: ElectionRoundFormProp
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error creating election round';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error creating election round',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });

@@ -1,8 +1,9 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
+import { DataTableParameters, PageResponse, ProblemDetails, ReportedError } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import {
   queryOptions,
   useMutation,
@@ -113,9 +114,11 @@ export const useNgoAdminMutations = (ngoId: string) => {
       router.invalidate();
       navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error editing NGO admin';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error editing NGO admin',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -139,9 +142,11 @@ export const useNgoAdminMutations = (ngoId: string) => {
       if (onMutationSuccess) onMutationSuccess();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error deleting NGO admin';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error deleting NGO admin',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -163,9 +168,11 @@ export const useNgoAdminMutations = (ngoId: string) => {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error deactivating the NGO admin';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error deactivating the NGO admin',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -187,9 +194,11 @@ export const useNgoAdminMutations = (ngoId: string) => {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error activating the NGO admin';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error activating the NGO admin',
+        title,
         description: '',
         variant: 'destructive',
       });

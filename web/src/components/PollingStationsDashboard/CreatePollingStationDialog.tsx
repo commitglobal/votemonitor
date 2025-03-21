@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { importPollingStationSchema } from '@/common/types';
+import { importPollingStationSchema, ReportedError } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -8,6 +8,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -44,9 +45,11 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
       form.reset({});
       onOpenChange(false);
     },
-    onError: (err) => {
+    onError: (error: ReportedError) => {
+      const title = t('addPollingStation.onError');
+      sendErrorToSentry({ error, title });
       toast({
-        title: t('addPollingStation.onError'),
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

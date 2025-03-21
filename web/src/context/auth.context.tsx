@@ -1,8 +1,9 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
 import { useToast } from '@/components/ui/use-toast';
+import { parseAndSetUserInSentry } from '@/lib/sentry';
 import { parseJwt } from '@/lib/utils';
+import * as Sentry from '@sentry/react';
 import { createContext, useEffect, useState } from 'react';
-
 export type AuthContextType = {
   signIn: (user: LoginDTO) => Promise<boolean>;
   signOut: () => void;
@@ -33,16 +34,19 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-    setIsLoading(false);
-    if (token) {
-      setToken(token);
-      const role = parseJwt(token)[`user-role`];
+    try {
+      const token = localStorage.getItem('token');
+      setIsAuthenticated(!!token);
+      setIsLoading(false);
+      if (token) {
+        setToken(token);
+        const role = parseJwt(token)[`user-role`];
 
-      setUserRole(role);
-      setIsPlatformAdmin(role === 'PlatformAdmin');
-    }
+        setUserRole(role);
+        setIsPlatformAdmin(role === 'PlatformAdmin');
+        parseAndSetUserInSentry(token);
+      }
+    } catch (error) {}
   }, []);
 
   const signIn = async (user: LoginDTO): Promise<boolean> => {
@@ -53,6 +57,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       setToken(response.data.token);
       setUserRole(response.data.role);
       setIsPlatformAdmin(response.data.role === 'PlatformAdmin');
+      parseAndSetUserInSentry(response.data.token);
 
       return true;
     } catch (error: any) {
@@ -63,16 +68,23 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
           variant: 'destructive',
         });
       }
+      Sentry.captureException(error);
       return false;
     }
   };
 
   const signOut = (): void => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-    setToken('');
-    setUserRole('');
-    setIsPlatformAdmin(false);
+    try {
+      localStorage.removeItem('token');
+      setIsAuthenticated(false);
+      setToken('');
+      setUserRole('');
+      setIsPlatformAdmin(false);
+      Sentry.setUser(null);
+    } catch (error) {
+      Sentry.captureMessage(`Logout error`);
+      Sentry.captureException(error);
+    }
   };
 
   return (

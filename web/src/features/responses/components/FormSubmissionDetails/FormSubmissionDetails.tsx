@@ -1,27 +1,34 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FunctionComponent, FormType } from '@/common/types';
+import { usePrevSearch } from '@/common/prev-search-store';
+import {
+  ElectionRoundStatus,
+  FormSubmissionFollowUpStatus,
+  FormType,
+  FunctionComponent,
+  ReportedError,
+} from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LanguageBadge } from '@/components/ui/language-badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/form-submissions/$submissionId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
-import { usePrevSearch } from '@/common/prev-search-store';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useState } from 'react';
-import { LanguageBadge } from '@/components/ui/language-badge';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -59,9 +66,11 @@ export default function FormSubmissionDetails(): FunctionComponent {
       router.invalidate();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error updating follow up status';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error updating follow up status',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

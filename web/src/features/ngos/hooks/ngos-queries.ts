@@ -1,13 +1,14 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
+import { DataTableParameters, PageResponse, ProblemDetails, ReportedError } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 import axios, { AxiosError } from 'axios';
+import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
@@ -64,7 +65,7 @@ export const useCreateNgo = () => {
     }: {
       values: NgoCreationFormData;
       onMutationSuccess: () => void;
-      onMutationError: (error?: ProblemDetails) => void;
+      onMutationError: (error: ReportedError) => void;
     }) => {
       return authApi.post('/ngos', { name: values.name });
     },
@@ -78,14 +79,13 @@ export const useCreateNgo = () => {
         const axiosError = error as AxiosError<ProblemDetails>;
 
         if (axiosError.response?.status === 400) {
-          const problemDetails = axiosError.response.data;
-          return onMutationError(problemDetails);
+          return onMutationError(axiosError);
         }
       }
 
       // Handle non-Axios or unexpected errors
       console.error('Unexpected error:', error);
-      onMutationError();
+      onMutationError(error);
       toast({
         title: 'Error creating a new NGO',
         description: '',
@@ -114,9 +114,11 @@ export const useNgoMutations = () => {
       router.invalidate();
       navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: ngoId!, tab: 'details' } });
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error editing NGO';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error editing NGO',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -138,9 +140,11 @@ export const useNgoMutations = () => {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error deactivating NGO';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error deactivating NGO',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -162,9 +166,11 @@ export const useNgoMutations = () => {
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error activating NGO';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error activating NGO',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -188,9 +194,11 @@ export const useNgoMutations = () => {
       if (onMutationSuccess) onMutationSuccess();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error deleting NGO';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error deleting NGO',
+        title,
         description: '',
         variant: 'destructive',
       });
