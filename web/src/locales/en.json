@@ -46,6 +46,7 @@
       "archived": "Archived"
     }
   },
+
   "form-template.field.code": "Form Code",
   "form-template.field.name": "Form Name",
   "form-template.field.description": "Description",
@@ -167,6 +168,11 @@
       "addBtnText": "Add individual observer",
       "onSuccess": "Observer created",
       "onError": "Error adding observer"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "deactivated": "Deactivated"
     }
   },
   "ngoAdminDashboard": {

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 
-interface ObserversProps {
+interface ObserversMonitoredElectionsProps {
   observer: Observer;
 }
 
@@ -36,7 +36,9 @@ const observersMonitoredElectionsColDefs: ColumnDef<ObserversMonitoredElectionMo
   },
 ];
 
-export const ObserversMonitoredElectionView: FC<ObserversProps> = ({ observer }: ObserversProps) => {
+export const ObserversMonitoredElections: FC<ObserversMonitoredElectionsProps> = ({
+  observer,
+}: ObserversMonitoredElectionsProps) => {
   const table = useReactTable({
     columns: observersMonitoredElectionsColDefs,
     data: observer.monitoredElections,
