@@ -46,7 +46,6 @@ export const ObserversMonitoredElectionView: FC<ObserversProps> = ({ observer }:
 
   const rows = table.getRowModel().rows;
   const navigate = useNavigate();
-  console.log(observer.monitoredElections);
   return (
     <Card className='w-[1400px] pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
