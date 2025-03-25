@@ -37,34 +37,33 @@ public class Endpoint(
             {
                 return TypedResults.NotFound();
             }
-
-            if ((req.ExportedDataType == ExportedDataType.FormSubmissions
-                 || req.ExportedDataType == ExportedDataType.QuickReports
-                 || req.ExportedDataType == ExportedDataType.CitizenReports
-                 || req.ExportedDataType == ExportedDataType.IncidentReports))
+        }
+        
+        if ((req.ExportedDataType == ExportedDataType.FormSubmissions
+             || req.ExportedDataType == ExportedDataType.QuickReports
+             || req.ExportedDataType == ExportedDataType.CitizenReports
+             || req.ExportedDataType == ExportedDataType.IncidentReports))
+        {
+            if (!userRoleProvider.IsNgoAdmin())
             {
-                if (!userRoleProvider.IsNgoAdmin())
-                {
-                    AddError(x => x.ExportedDataType, "Only ngo admins can export this type of data");
-                    return new ProblemDetails(ValidationFailures);
-                }
+                AddError(x => x.ExportedDataType, "Only ngo admins can export this type of data");
+                return new ProblemDetails(ValidationFailures);
+            }
 
-                if (!userProvider.GetNgoId().HasValue)
-                {
-                    AddError("ngoId", "Ngo Id is required");
-                    return new ProblemDetails(ValidationFailures);
-                }
+            if (!userProvider.GetNgoId().HasValue)
+            {
+                AddError("ngoId", "Ngo Id is required");
+                return new ProblemDetails(ValidationFailures);
             }
         }
 
         var exportedData = CreateExportedData(req);
 
         await repository.AddAsync(exportedData, ct);
-
+        
         if (req.ExportedDataType == ExportedDataType.FormSubmissions)
         {
-            jobService.EnqueueExportFormSubmissions(req.ElectionRoundId, userProvider.GetNgoId()!.Value,
-                exportedData.Id);
+            jobService.EnqueueExportFormSubmissions(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
         }
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
@@ -74,14 +73,12 @@ public class Endpoint(
 
         if (req.ExportedDataType == ExportedDataType.CitizenReports)
         {
-            jobService.EnqueueExportCitizenReports(req.ElectionRoundId, userProvider.GetNgoId()!.Value,
-                exportedData.Id);
+            jobService.EnqueueExportCitizenReports(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
         }
 
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
-            jobService.EnqueueExportIncidentReports(req.ElectionRoundId, userProvider.GetNgoId()!.Value,
-                exportedData.Id);
+            jobService.EnqueueExportIncidentReports(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
         }
 
         if (req.ExportedDataType == ExportedDataType.PollingStations)
@@ -101,32 +98,32 @@ public class Endpoint(
     {
         if (req.ExportedDataType == ExportedDataType.FormSubmissions)
         {
-            return ExportedData.CreateForFormSubmissions(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+            return ExportedData.CreateForFormSubmissions(req.UserId, req.ExportedDataType,
                 timeProvider.UtcNow,
                 req.FormSubmissionsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
         {
-            return ExportedData.CreateForQuickReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+            return ExportedData.CreateForQuickReports(req.UserId, req.ExportedDataType,
                 timeProvider.UtcNow,
                 req.QuickReportsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.CitizenReports)
         {
-            return ExportedData.CreateForCitizenReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+            return ExportedData.CreateForCitizenReports(req.UserId, req.ExportedDataType,
                 timeProvider.UtcNow,
                 req.CitizenReportsFilters?.ToFilter());
         }
 
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
-            return ExportedData.CreateForIncidentReports(req.UserId, req.ElectionRoundId, req.ExportedDataType,
+            return ExportedData.CreateForIncidentReports(req.UserId, req.ExportedDataType,
                 timeProvider.UtcNow,
                 req.IncidentReportsFilters?.ToFilter());
         }
 
-        return ExportedData.Create(req.UserId, req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
+        return ExportedData.Create(req.UserId, req.ExportedDataType, timeProvider.UtcNow);
     }
 }

@@ -49,12 +49,9 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
 
   const downloadExportedData = useCallback(async (): Promise<void> => {
-    const response = await authApi.get<Blob>(
-      `/election-rounds/${currentElectionRoundId}/exported-data/${exportedDataId}`,
-      {
-        responseType: 'blob',
-      }
-    );
+    const response = await authApi.get<Blob>(`/exported-data/${exportedDataId}`, {
+      responseType: 'blob',
+    });
 
     const exportedData = response.data;
     const blob = new Blob([exportedData], {

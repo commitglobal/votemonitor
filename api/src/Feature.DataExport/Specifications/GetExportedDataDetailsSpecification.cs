@@ -6,9 +6,9 @@ namespace Feature.DataExport.Specifications;
 
 public sealed class GetExportedDataDetailsSpecification : SingleResultSpecification<ExportedData, Response>
 {
-    public GetExportedDataDetailsSpecification(Guid electionRoundId, Guid exportedDataId)
+    public GetExportedDataDetailsSpecification(Guid exportedDataId, Guid userId)
     {
-        Query.Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId);
+        Query.Where(x => x.OwnerId == userId && x.Id == exportedDataId);
 
         Query.Select(x => new Response
         {

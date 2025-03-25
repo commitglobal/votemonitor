@@ -5,9 +5,8 @@ namespace Feature.DataExport.Start;
 
 public class Request
 {
-    public Guid ElectionRoundId { get; set; }
-
     public ExportedDataType ExportedDataType { get; set; }
+    public Guid ElectionRoundId { get; set; }
     
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid UserId { get; set; }

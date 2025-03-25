@@ -20,7 +20,7 @@ public class ExportLocationsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
@@ -89,10 +89,7 @@ public class ExportLocationsJob(
                       "DisplayOrder" ASC;
                   """;
 
-        var queryArgs = new
-        {
-            electionRoundId,
-        };
+        var queryArgs = new { electionRoundId, };
 
         IEnumerable<LocationModel> locations;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))

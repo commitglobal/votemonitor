@@ -25,7 +25,7 @@ public class ExportCitizenReportsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
@@ -217,7 +217,7 @@ public class ExportCitizenReportsJob(
             hasNotes = filters?.HasNotes,
             questionsAnswered = filters?.QuestionsAnswered?.ToString(),
         };
-        
+
         IEnumerable<CitizenReportModel> citizenReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
