@@ -41,9 +41,5 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
         builder.HasOne(x => x.Owner)
             .WithMany()
             .HasForeignKey(x => x.OwnerId);
-        
-        builder.HasOne(x => x.ElectionRound)
-            .WithMany()
-            .HasForeignKey(x => x.ElectionRoundId);
     }
 }

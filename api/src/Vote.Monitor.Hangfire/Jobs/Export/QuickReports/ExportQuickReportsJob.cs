@@ -25,7 +25,7 @@ public class ExportQuickReportsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
@@ -91,7 +91,7 @@ public class ExportQuickReportsJob(
     private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId,
         ExportQuickReportsFilters filters, CancellationToken ct)
     {
-        var sql = 
+        var sql =
             """
             SELECT
             	QR."Id",

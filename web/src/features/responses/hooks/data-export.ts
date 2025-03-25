@@ -15,7 +15,7 @@ export function useStartDataExport(
   {
     electionRoundId,
     exportedDataType,
-    filterParams
+    filterParams,
   }: {
     electionRoundId: string;
     exportedDataType: ExportedDataType;
@@ -25,7 +25,8 @@ export function useStartDataExport(
 ): UseMutationResult<DataExport, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const response = await authApi.post<DataExport>(`/election-rounds/${electionRoundId}/exported-data`, {
+      const response = await authApi.post<DataExport>(`/exported-data`, {
+        electionRoundId,
         exportedDataType,
         formSubmissionsFilters: exportedDataType === ExportedDataType.FormSubmissions ? filterParams : undefined,
         quickReportsFilters: exportedDataType === ExportedDataType.QuickReports ? filterParams : undefined,
@@ -54,9 +55,7 @@ export function useExportedDataDetails(
   return useQuery({
     queryKey: ['exported-data-details', exportedDataId],
     queryFn: async () => {
-      const response = await authApi.get<ExportedDataDetails>(
-        `/election-rounds/${electionRoundId}/exported-data/${exportedDataId}:details`
-      );
+      const response = await authApi.get<ExportedDataDetails>(`/exported-data/${exportedDataId}:details`);
 
       return response.data;
     },

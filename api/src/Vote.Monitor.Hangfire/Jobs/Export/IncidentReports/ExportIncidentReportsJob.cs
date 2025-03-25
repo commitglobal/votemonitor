@@ -25,7 +25,7 @@ public class ExportIncidentReportsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
