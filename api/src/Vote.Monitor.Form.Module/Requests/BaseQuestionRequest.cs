@@ -12,6 +12,7 @@ namespace Vote.Monitor.Form.Module.Requests;
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestionRequest), QuestionTypes.SingleSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestionRequest), QuestionTypes.MultiSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(RatingQuestionRequest), QuestionTypes.RatingQuestionType)]
+[PolyJsonConverter.SubType(typeof(MatrixQuestionRequest), QuestionTypes.MatrixQuestionType)]
 public abstract class BaseQuestionRequest
 {
     [JsonPropertyName("$questionType")] public string QuestionType => DiscriminatorValue.Get(GetType())!;
