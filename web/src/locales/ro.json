@@ -20,6 +20,7 @@
       "export": "Export",
       "filter": "Filter",
       "leave": "Leave",
+      "publish": "Publish",
       "remove": "Remove",
       "reset": "Reset",
       "restore": "Restore",
@@ -27,48 +28,207 @@
       "select": "Select",
       "update": "Update",
       "upload": "Upload",
-      "view": "View",
-      "publish": "Publish"
+      "view": "View"
     }
   },
   "app.input.pleaseSpecify": "Please specify",
-  "election-round.action.create": "Create new election event",
-  "election-round.field.country": "Country",
-  "election-round.field.englishTitle": "English title",
-  "election-round.field.startDate": "Start date",
-  "election-round.field.title": "Title",
-  "election-round.placeholder.englishTitle": "Title in English",
-  "election-round.placeholder.title": "Title",
+  "containers": {
+    "countrySelect": {
+      "noResults": "No country found.",
+      "placeholder": "Select country...",
+      "searchPlaceholder": "Search country..."
+    },
+    "languageSelect": {
+      "noResults": "No language found.",
+      "placeholder": "Select language...",
+      "searchPlaceholder": "Search language..."
+    }
+  },
+  "electionEvent": {
+    "eventDetails": {
+      "cardTitle": "Event details",
+      "coalition": {
+        "cardTitle": "Details on assigned organization(s)"
+      },
+      "country": "Country",
+      "englishTitle": "Election event English title",
+      "startDate": "Start date",
+      "status": "Status",
+      "tabTitle": "Event Details",
+      "title": "Election event title"
+    },
+    "form": {
+      "subtitle": "Alege modul în care vrei să începi.",
+      "title": "Creează un nou formular"
+    },
+    "guides": {
+      "buttonUploadCitizenGuide": "Upload citizen guide",
+      "buttonUploadObserverGuide": "Upload observer guide",
+      "citizenGuidesCardTitle": "Citizen guides",
+      "citizenGuidesTabTitle": "Citizen Guides",
+      "citizenNotificationsCardTitle": "Citizen notifications",
+      "citizenNotificationsTabTitle": "Citizen Notifications",
+      "documentGuide": "Attachment guide",
+      "headers": {
+        "createdBy": "Created by",
+        "title": "Title",
+        "uploadedOn": "Uploaded on"
+      },
+      "observerGuidesCardTitle": "Observer guides",
+      "observerGuidesTabTitle": "Observer Guides",
+      "textGuide": "Text guide",
+      "urlGuide": "Url guide"
+    },
+    "locations": {
+      "cardTitle": "Locations",
+      "headers": {
+        "level1": "Level 1",
+        "level2": "Level 2",
+        "level3": "Level 3",
+        "level4": "Level 4",
+        "level5": "Level 5",
+        "tags": "Location tags"
+      },
+      "resetFilters": "Reset filters",
+      "tabTitle": "Locations"
+    },
+    "observerForms": {
+      "cardTitle": "Observation forms",
+      "createDialogTitle": "Create form",
+      "headers": {
+        "formCode": "Form Code",
+        "formType": "Form type",
+        "language": "Language",
+        "name": "Name",
+        "questions": "Questions",
+        "sharedWith": "Shared with",
+        "status": "Status",
+        "updatedOn": "Updated on"
+      },
+      "resetFilters": "Reset filters",
+      "tabTitle": "Observer Forms"
+    },
+    "pollingStations": {
+      "cardTitle": "Polling stations",
+      "headers": {
+        "address": "Address",
+        "level1": "Level 1",
+        "level2": "Level 2",
+        "level3": "Level 3",
+        "level4": "Level 4",
+        "level5": "Level 5",
+        "number": "Number",
+        "tags": "Polling station tags"
+      },
+      "resetFilters": "Reset filters",
+      "tabTitle": "Polling Stations"
+    }
+  },
+  "form": {
+    "field.code": "Form Code",
+    "field.defaultLanguage": "Base language",
+    "field.description": "Description",
+    "field.formType": "Form type",
+    "field.languageCode": "Language",
+    "field.languages": "Available languages",
+    "field.name": "Form Name",
+    "field.status": "Status",
+    "placeholder.code": "Form code",
+    "placeholder.defaultLanguage": "Select a default language",
+    "placeholder.description": "Form description",
+    "placeholder.languages": "Select available languages",
+    "placeholder.name": "Form name"
+  },
   "form-template.field.code": "Form Code",
-  "form-template.field.name": "Form Name",
-  "form-template.field.description": "Description",
   "form-template.field.defaultLanguage": "Base language",
+  "form-template.field.description": "Description",
   "form-template.field.formTemplateType": "Form template type",
   "form-template.field.languages": "Available languages",
+  "form-template.field.name": "Form Name",
   "form-template.field.status": "Status",
   "form-template.placeholder.code": "Form code",
-  "form-template.placeholder.name": "Form name",
-  "form-template.placeholder.description": "Form description",
   "form-template.placeholder.defaultLanguage": "Select a default language",
+  "form-template.placeholder.description": "Form description",
   "form-template.placeholder.languages": "Select available languages",
+  "form-template.placeholder.name": "Form name",
+  "formTemplateType": {
+    "closingAndCounting": "Closing And Counting",
+    "opening": "Opening",
+    "other": "Other",
+    "voting": "Voting"
+  },
   "navigation.button.back": "Back",
   "navigation.button.next": "Next",
   "navigation.button.submit": "Submit",
-  "questionEditor.questionType.textQuestion": "Text question",
-  "questionEditor.questionType.numberQuestion": "Number question",
-  "questionEditor.questionType.dateQuestion": "Date question",
-  "questionEditor.questionType.singleSelectQuestion": "Single select question",
-  "questionEditor.questionType.multiSelectQuestion": "Multi select question",
-  "questionEditor.questionType.ratingQuestion": "Rating question",
+  "ngoAdminDashboard": {
+    "citizenReports": {
+      "cardTitle": "Citizen reports",
+      "indicatorTitle": "citizen reports were signalled between {{interval}}"
+    },
+    "flaggedAnswers": {
+      "cardTitle": "Flagged answers",
+      "indicatorTitle": "answers were flagged through forms between {{interval}}"
+    },
+    "observersAccounts": {
+      "cardTitle": "Observers Accounts",
+      "indicatorTitle": "Total accounts"
+    },
+    "observersInPollingStations": {
+      "indicatorTitle": "Observers in polling stations",
+      "metricLabel": "With at least one question answered"
+    },
+    "observersOnFieldCardTitle": "Observers on field",
+    "pollingStationCardTitle": "Polling stations",
+    "pollingStationsLevelsCards": {
+      "flaggedAnswers": "Flagged answers",
+      "onFieldObservers": "On field observers",
+      "pollingStationsCoverage": "Polling station coverage (%)",
+      "questionsAnswered": "Questions answered",
+      "quickReports": "Quick reports",
+      "timeSpentObserving": "Time spent observing (hours)",
+      "visitedPollingStations": "Visited polling stations"
+    },
+    "questionsAnswered": {
+      "cardTitle": "Questions answered",
+      "indicatorTitle": "questions answered between {{interval}}"
+    },
+    "quickReports": {
+      "cardTitle": "Quick reports",
+      "indicatorTitle": "quick reports were signalled between {{interval}}"
+    },
+    "startedForms": {
+      "cardTitle": "Started forms",
+      "indicatorTitle": "forms started between {{interval}}"
+    },
+    "stationsVisitedByAtLeastOneObserver": {
+      "indicatorTitle": "Stations visited by at least one observer",
+      "metricLabel": "coverage"
+    },
+    "subtitle": "Key indicators",
+    "timeSpentObserving": {
+      "cardTitle": "Time spent observing",
+      "indicatorTitle": "Based on start-end times reported"
+    },
+    "title": "Dashboard"
+  },
+  "pagination": {
+    "dataTable": {
+      "goToFirstPage": "Go to first page",
+      "goToLastPage": "Go to last page",
+      "goToNextPage": "Go to next page",
+      "goToPreviousPage": "Go to previous page",
+      "perPage": "per pagină",
+      "resultsSummary": "Showing {{start}} to {{end}} of {{total}} results"
+    }
+  },
   "questionEditor.question.code": "ID code",
   "questionEditor.question.codeDescription": "Maximum limit of 16 characters. You can use combinations of letters and numbers.",
-  "questionEditor.question.text": "Question text",
-  "questionEditor.question.textRequired": "Question text is required",
-  "questionEditor.question.helptext": "Details (helptext)",
-  "questionEditor.question.inputPlaceholder": "Placeholder",
   "questionEditor.question.displayLogic": "Apply display logic to this question",
   "questionEditor.question.displayLogic.chooseQuestion": "Display this question only when answer for previous question",
   "questionEditor.question.displayLogic.invalid": "You need to have a prior question of type number question/rating question/single select / multiple select to enable display logic",
+  "questionEditor.question.helptext": "Details (helptext)",
+  "questionEditor.question.inputPlaceholder": "Placeholder",
+  "questionEditor.question.ratingScale.oneTo10": "One to 10",
   "questionEditor.question.ratingScale.oneTo3": "One to 3",
   "questionEditor.question.ratingScale.oneTo4": "One to 4",
   "questionEditor.question.ratingScale.oneTo5": "One to 5",
@@ -76,213 +236,18 @@
   "questionEditor.question.ratingScale.oneTo7": "One to 7",
   "questionEditor.question.ratingScale.oneTo8": "One to 8",
   "questionEditor.question.ratingScale.oneTo9": "One to 9",
-  "questionEditor.question.ratingScale.oneTo10": "One to 10",
   "questionEditor.question.scale.lowerLabel": "Lower label",
   "questionEditor.question.scale.upperLabel": "Upper label",
+  "questionEditor.question.text": "Question text",
+  "questionEditor.question.textRequired": "Question text is required",
+  "questionEditor.questionType.dateQuestion": "Date question",
+  "questionEditor.questionType.multiSelectQuestion": "Multi select question",
+  "questionEditor.questionType.numberQuestion": "Number question",
+  "questionEditor.questionType.ratingQuestion": "Rating question",
+  "questionEditor.questionType.singleSelectQuestion": "Single select question",
+  "questionEditor.questionType.textQuestion": "Text question",
   "questionEditor.ratingQuestion.scale": "Scale",
-  "questionEditor.selectQuestion.toMultiSelectQuestion": "Convert to multi select question",
-  "questionEditor.selectQuestion.toSingleSelectQuestion": "Convert to single select question",
   "questionEditor.selectQuestion.addFreeTextOption": "Add free text option",
-  "containers": {
-    "languageSelect": {
-      "placeholder": "Select language...",
-      "searchPlaceholder": "Search language...",
-      "noResults": "No language found."
-    },
-    "countrySelect": {
-      "placeholder": "Select country...",
-      "searchPlaceholder": "Search country...",
-      "noResults": "No country found."
-    }
-  },
-  "formTemplateType": {
-    "opening": "Opening",
-    "voting": "Voting",
-    "closingAndCounting": "Closing And Counting",
-    "other": "Other"
-  },
-  "formType": {
-    "opening": "Opening",
-    "voting": "Voting",
-    "closingAndCounting": "Closing And Counting",
-    "psi": "PSI",
-    "other": "Other",
-    "citizenReporting": "Citizen reporting",
-    "incidentReporting": "Incident reporting"
-  },
-  "form": {
-    "field.code": "Form Code",
-    "field.name": "Form Name",
-    "field.description": "Description",
-    "field.defaultLanguage": "Base language",
-    "field.languageCode": "Language",
-    "field.formType": "Form type",
-    "field.Icon": "Icon",
-    "field.languages": "Available languages",
-    "field.status": "Status",
-    "placeholder.code": "Form code",
-    "placeholder.name": "Form name",
-    "placeholder.description": "Form description",
-    "placeholder.defaultLanguage": "Select a default language",
-    "placeholder.languages": "Select available languages"
-  },
-  "ngoAdminDashboard": {
-    "title": "Dashboard",
-    "subtitle": "Key indicators",
-
-    "observersAccounts": {
-      "cardTitle": "Observers Accounts",
-      "indicatorTitle": "Total accounts"
-    },
-
-    "observersOnFieldCardTitle": "Observers on field",
-
-    "observersInPollingStations": {
-      "indicatorTitle": "Observers in polling stations",
-      "metricLabel": "With at least one question answered"
-    },
-
-    "pollingStationCardTitle": "Polling stations",
-
-    "stationsVisitedByAtLeastOneObserver": {
-      "indicatorTitle": "Stations visited by at least one observer",
-      "metricLabel": "coverage"
-    },
-
-    "timeSpentObserving": {
-      "cardTitle": "Time spent observing",
-      "indicatorTitle": "Based on start-end times reported"
-    },
-
-    "startedForms": {
-      "cardTitle": "Started forms",
-      "indicatorTitle": "forms started between {{interval}}"
-    },
-
-    "questionsAnswered": {
-      "cardTitle": "Questions answered",
-      "indicatorTitle": "questions answered between {{interval}}"
-    },
-
-    "flaggedAnswers": {
-      "cardTitle": "Flagged answers",
-      "indicatorTitle": "answers were flagged through forms between {{interval}}"
-    },
-
-    "quickReports": {
-      "cardTitle": "Quick reports",
-      "indicatorTitle": "quick reports were signalled between {{interval}}"
-    },
-
-    "citizenReports": {
-      "cardTitle": "Citizen reports",
-      "indicatorTitle": "citizen reports were signalled between {{interval}}"
-    },
-
-    "pollingStationsLevelsCards": {
-      "onFieldObservers": "On field observers",
-      "questionsAnswered": "Questions answered",
-      "flaggedAnswers": "Flagged answers",
-      "visitedPollingStations": "Visited polling stations",
-      "pollingStationsCoverage": "Polling station coverage (%)",
-      "timeSpentObserving": "Time spent observing (hours)",
-      "quickReports": "Quick reports"
-    }
-  },
-  "electionEvent": {
-    "eventDetails": {
-      "tabTitle": "Event Details",
-      "cardTitle": "Event details",
-      "title": "Election event title",
-      "englishTitle": "Election event English title",
-      "country": "Country",
-      "startDate": "Start date",
-      "status": "Status",
-      "coalition": {
-        "cardTitle": "Details on assigned organization(s)"
-      }
-    },
-    "pollingStations": {
-      "tabTitle": "Polling Stations",
-      "cardTitle": "Polling stations",
-      "headers": {
-        "number": "Number",
-        "address": "Address",
-        "tags": "Polling station tags",
-        "level1": "Level 1",
-        "level2": "Level 2",
-        "level3": "Level 3",
-        "level4": "Level 4",
-        "level5": "Level 5"
-      },
-      "resetFilters": "Reset filters"
-    },
-    "guides": {
-      "citizenGuidesTabTitle": "Citizen Guides",
-      "citizenGuidesCardTitle": "Citizen guides",
-
-      "citizenNotificationsTabTitle": "Citizen Notifications",
-      "citizenNotificationsCardTitle": "Citizen notifications",
-
-      "observerGuidesTabTitle": "Observer Guides",
-      "observerGuidesCardTitle": "Observer guides",
-      "headers": {
-        "title": "Title",
-        "uploadedOn": "Uploaded on",
-        "createdBy": "Created by"
-      },
-      "textGuide": "Text guide",
-      "urlGuide": "Url guide",
-      "documentGuide": "Attachment guide",
-      "buttonUploadCitizenGuide": "Upload citizen guide",
-      "buttonUploadObserverGuide": "Upload observer guide"
-    },
-    "observerForms": {
-      "tabTitle": "Observer Forms",
-      "cardTitle": "Observation forms",
-      "headers": {
-        "formCode": "Form Code",
-        "name": "Name",
-        "formType": "Form type",
-        "language": "Language",
-        "questions": "Questions",
-        "status": "Status",
-        "updatedOn": "Updated on",
-        "sharedWith": "Shared with"
-      },
-      "createDialogTitle": "Create form",
-      "resetFilters": "Reset filters"
-    },
-    "locations": {
-      "tabTitle": "Locations",
-      "cardTitle": "Locations",
-      "headers": {
-        "tags": "Location tags",
-        "level1": "Level 1",
-        "level2": "Level 2",
-        "level3": "Level 3",
-        "level4": "Level 4",
-        "level5": "Level 5"
-      },
-      "resetFilters": "Reset filters"
-    },
-    "form": {
-      "title": "Creează un nou formular",
-      "subtitle": "Alege modul în care vrei să începi."
-    }
-  },
-  "pagination": {
-    "dataTable": {
-      "resultsSummary": "Showing {{start}} to {{end}} of {{total}} results",
-      "perPage": "per pagină",
-      "goToFirstPage": "Go to first page",
-      "goToPreviousPage": "Go to previous page",
-      "goToNextPage": "Go to next page",
-      "goToLastPage": "Go to last page"
-    }
-  },
-  "responses": {
-    "title": "",
-    "subtitle":""
-  }
+  "questionEditor.selectQuestion.toMultiSelectQuestion": "Convert to multi select question",
+  "questionEditor.selectQuestion.toSingleSelectQuestion": "Convert to single select question"
 }
