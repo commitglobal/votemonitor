@@ -217,6 +217,7 @@ public class Endpoint(
         }
 
         var ngo = await context.MonitoringNgos
+            .Where(x=>x.ElectionRoundId == electionRoundId)
             .Where(x => x.MonitoringObservers.Any(mo => mo.ObserverId == observerId))
             .Select(x => new { x.NgoId })
             .FirstOrDefaultAsync(ct);
