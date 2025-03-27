@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TypographyImport } from './routes/typography'
 import { Route as ThankYouImport } from './routes/thank-you'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -22,6 +23,12 @@ import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 
 // Create/Update Routes
+
+const TypographyRoute = TypographyImport.update({
+  id: '/typography',
+  path: '/typography',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ThankYouRoute = ThankYouImport.update({
   id: '/thank-you',
@@ -103,6 +110,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThankYouImport
       parentRoute: typeof rootRoute
     }
+    '/typography': {
+      id: '/typography'
+      path: '/typography'
+      fullPath: '/typography'
+      preLoaderRoute: typeof TypographyImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId': {
       id: '/forms/$formId'
       path: '/forms/$formId'
@@ -154,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
@@ -166,6 +181,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
@@ -179,6 +195,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
@@ -193,6 +210,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
     | '/forms/$formId'
     | '/guides/$guideId'
     | '/notifications/$notificationId'
@@ -204,6 +222,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
     | '/forms/$formId'
     | '/guides/$guideId'
     | '/notifications/$notificationId'
@@ -215,6 +234,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
     | '/forms/$formId'
     | '/guides/$guideId'
     | '/notifications/$notificationId'
@@ -228,6 +248,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ThankYouRoute: typeof ThankYouRoute
+  TypographyRoute: typeof TypographyRoute
   FormsFormIdRoute: typeof FormsFormIdRoute
   GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   NotificationsNotificationIdRoute: typeof NotificationsNotificationIdRoute
@@ -240,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ThankYouRoute: ThankYouRoute,
+  TypographyRoute: TypographyRoute,
   FormsFormIdRoute: FormsFormIdRoute,
   GuidesGuideIdRoute: GuidesGuideIdRoute,
   NotificationsNotificationIdRoute: NotificationsNotificationIdRoute,
@@ -261,6 +283,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/thank-you",
+        "/typography",
         "/forms/$formId",
         "/guides/$guideId",
         "/notifications/$notificationId",
@@ -277,6 +300,9 @@ export const routeTree = rootRoute
     },
     "/thank-you": {
       "filePath": "thank-you.tsx"
+    },
+    "/typography": {
+      "filePath": "typography.tsx"
     },
     "/forms/$formId": {
       "filePath": "forms/$formId.tsx"
