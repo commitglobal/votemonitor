@@ -10,11 +10,6 @@ public partial class MatrixQuestionTests
         var text = CreateTranslatedString("some text");
         var helptext = CreateTranslatedString("some other text");
         
-        string[] languages = [_defaultLanguageCode, _languageCode];
-
-        
-        MatrixRow[] rows = [.. new MatrixRowFaker(languageList: languages).Generate(1)];
-        
         var matrixQuestion = MatrixQuestion.Create(id, "C!", text, helptext, null, [_translatedOption],[_translatedRow]);
         
         
@@ -36,7 +31,6 @@ public partial class MatrixQuestionTests
         // Arrange
         var id = Guid.NewGuid();
         var text = CreateTranslatedString("some text");     
-        string[] languages = [_defaultLanguageCode, _languageCode];
         
         var matrixQuestion = MatrixQuestion.Create(id, "C!", text, null, null, [_translatedOption],[_translatedRow]);
     

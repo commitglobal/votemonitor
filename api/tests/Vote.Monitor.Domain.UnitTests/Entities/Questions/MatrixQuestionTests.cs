@@ -96,8 +96,8 @@ public partial class MatrixQuestionTests
 
         var id = Guid.NewGuid();
 
-        var textQuestion1 = MatrixQuestion.Create(id, "C!", text1,null,null, options1,rows1);
-        var textQuestion2 = MatrixQuestion.Create(id, "C!", text2, null,null, options2, rows2);
+        var textQuestion1 = MatrixQuestion.Create(id, "C!", text1,helptext1,null, options1,rows1);
+        var textQuestion2 = MatrixQuestion.Create(id, "C!", text2, helptext2,null, options2, rows2);
 
         // Act
         var result = textQuestion1 == textQuestion2;
