@@ -13,6 +13,9 @@ import { TanStackRouterDevelopmentTools } from "./components/utils/development-t
 import "./styles.css";
 
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
+
+const STALE_TIME = 1000 * 60 * 15; // 15 minutes
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
@@ -33,7 +36,7 @@ declare module "@tanstack/react-router" {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
+      staleTime: STALE_TIME,
     },
   },
 });
@@ -62,7 +65,7 @@ if (rootElement && !rootElement.innerHTML) {
             <Toaster />
             <TanStackRouterDevelopmentTools
               router={router}
-              position="bottom-left"
+              position="bottom-right"
             />
             <TanStackQueryDevelopmentTools
               client={queryClient}
