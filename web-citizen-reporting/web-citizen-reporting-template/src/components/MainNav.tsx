@@ -41,7 +41,7 @@ export default function MainNav() {
             className: "text-foreground",
           }}
         >
-          Forms
+          Guides
         </Link>
         <Link
           to="/notifications"
