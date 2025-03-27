@@ -1,5 +1,6 @@
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 
+import Footer from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createRootRoute({
@@ -11,6 +12,7 @@ export const Route = createRootRoute({
           <section className="scroll-mt-20">
             <Outlet />
           </section>
+          <Footer />
         </div>
       </div>
     </>
