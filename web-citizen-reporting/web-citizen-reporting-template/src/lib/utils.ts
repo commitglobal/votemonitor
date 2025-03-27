@@ -95,3 +95,6 @@ export function isTextQuestion(
 ): question is TextQuestion {
   return question.$questionType === QuestionType.TextQuestionType;
 }
+export const downloadFile = (presignedUrl: string) => {
+  window.open(presignedUrl, "_blank");
+};
