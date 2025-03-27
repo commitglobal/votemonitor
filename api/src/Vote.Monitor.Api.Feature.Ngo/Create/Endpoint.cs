@@ -4,7 +4,7 @@ using Vote.Monitor.Api.Feature.Ngo.Specifications;
 namespace Vote.Monitor.Api.Feature.Ngo.Create;
 
 public class Endpoint(IRepository<NgoAggregate> repository) :
-    Endpoint<Request, Results<Ok<NgoModel>, Conflict<ProblemDetails>>>
+    Endpoint<Request, Results<Ok<NgoModel>, ProblemDetails>>
 {
     public override void Configure()
     {
@@ -14,7 +14,7 @@ public class Endpoint(IRepository<NgoAggregate> repository) :
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<Ok<NgoModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<NgoModel>, ProblemDetails>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var specification = new GetNgoByNameSpecification(req.Name);
@@ -23,7 +23,7 @@ public class Endpoint(IRepository<NgoAggregate> repository) :
         if (hasNgoWithSameName)
         {
             AddError(r => r.Name, "A Ngo with same name already exists");
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+            return new ProblemDetails(ValidationFailures);
         }
 
         var ngo = new NgoAggregate(req.Name);
@@ -34,7 +34,7 @@ public class Endpoint(IRepository<NgoAggregate> repository) :
             Id = ngo.Id,
             Name = ngo.Name,
             Status = ngo.Status,
-            NumberOfElectionsMonitoring = 0,
+            NumberOfMonitoredElections = 0,
             NumberOfNgoAdmins = 0,
             DateOfLastElection = null
         });

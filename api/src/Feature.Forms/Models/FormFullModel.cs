@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Form.Module.Mappers;
 using Vote.Monitor.Form.Module.Models;
 
@@ -9,17 +8,15 @@ namespace Feature.Forms.Models;
 
 public class FormFullModel
 {
-    public TranslatedString Description { get; set; }
+    public TranslatedString Description { get; init; }
 
     public required Guid Id { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public required FormType FormType { get; init; }
 
     public required string Code { get; init; }
     public TranslatedString Name { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]
     public required FormStatus Status { get; init; }
 
     public required string DefaultLanguage { get; init; }
@@ -32,6 +29,7 @@ public class FormFullModel
 
     public int DisplayOrder { get; init; }
 
+    
     public static FormFullModel FromEntity(FormAggregate form) => form == null
         ? null
         : new FormFullModel
@@ -47,6 +45,7 @@ public class FormFullModel
             NumberOfQuestions = form.NumberOfQuestions,
             Description = form.Description,
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
-            Icon = form.Icon
+            Icon = form.Icon,
+            DisplayOrder = form.DisplayOrder
         };
 }

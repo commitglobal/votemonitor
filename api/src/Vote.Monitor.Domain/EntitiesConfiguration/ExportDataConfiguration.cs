@@ -38,8 +38,8 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
             .HasConversion<ExportCitizenReportsFilersToJsonConverter, ExportCitizenReportsFilersValueComparer>()
             .HasColumnType("jsonb");
         
-        builder.HasOne(x => x.ElectionRound)
+        builder.HasOne(x => x.Owner)
             .WithMany()
-            .HasForeignKey(x => x.ElectionRoundId);
+            .HasForeignKey(x => x.OwnerId);
     }
 }

@@ -41,7 +41,7 @@ export function CitizenReportsTab(): FunctionComponent {
   useEffect(() => {
     if (byFilter === 'byEntry') {
       setPrevSearch({ [FILTER_KEY.ViewBy]: 'byEntry' });
-      void navigate({ search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
+      navigate({ to: '.', search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
     }
   }, [byFilter]);
 
@@ -61,7 +61,7 @@ export function CitizenReportsTab(): FunctionComponent {
           <CardTitle>Citizen reports</CardTitle>
 
           <div className='flex items-center gap-4'>
-            <ExportDataButton exportedDataType={ExportedDataType.CitizenReports} filterParams={queryParams}/>
+            <ExportDataButton exportedDataType={ExportedDataType.CitizenReports} filterParams={queryParams} />
 
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -74,7 +74,11 @@ export function CitizenReportsTab(): FunctionComponent {
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
                     setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' });
-                    void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' } });
+                    navigate({
+                      to: '.',
+                      replace: true,
+                      search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' },
+                    });
                     setIsFiltering(false);
                   }}
                   value={byFilter}>

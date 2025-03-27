@@ -1,34 +1,35 @@
 ﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Form.Module.Models;
 
 namespace Vote.Monitor.Answer.Module.Models;
 
-public class FormSubmissionView
+public record FormSubmissionView
 {
     public Guid SubmissionId { get; init; }
     public DateTime TimeSubmitted { get; init; }
     public string FormCode { get; init; }
     public string DefaultLanguage { get; init; }
-    public FormType FormType { get; init; } = default!;
+    public string[] Languages { get; init; } = [];
+    public FormType FormType { get; init; } = null!;
 
-    public SubmissionFollowUpStatus FollowUpStatus { get; init; } = default!;
+    public SubmissionFollowUpStatus FollowUpStatus { get; init; } = null!;
 
     public Guid PollingStationId { get; init; }
-    public string Level1 { get; init; } = default!;
-    public string Level2 { get; init; } = default!;
-    public string Level3 { get; init; } = default!;
-    public string Level4 { get; init; } = default!;
-    public string Level5 { get; init; } = default!;
-    public string Number { get; init; } = default!;
+    public string Level1 { get; init; } = null!;
+    public string Level2 { get; init; } = null!;
+    public string Level3 { get; init; } = null!;
+    public string Level4 { get; init; } = null!;
+    public string Level5 { get; init; } = null!;
+    public string Number { get; init; } = null!;
     public Guid MonitoringObserverId { get; init; }
     public bool IsOwnObserver { get; init; }
-    public string ObserverName { get; init; } = default!;
-    public string Email { get; init; } = default!;
-    public string PhoneNumber { get; init; } = default!;
+    public string ObserverName { get; init; } = null!;
+    public string Email { get; init; } = null!;
+    public string? PhoneNumber { get; init; } = null!;
     public string[] Tags { get; init; } = [];
-    public string NgoName { get; init; } = default!;
+    public string NgoName { get; init; } = null!;
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfQuestionsAnswered { get; init; }
 

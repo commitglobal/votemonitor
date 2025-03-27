@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
-    <PackageReference Include="FastEndpoints" Version="5.24.0" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.24.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.4" />
+    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" />
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="FastEndpoints.Security" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
   </ItemGroup>
 

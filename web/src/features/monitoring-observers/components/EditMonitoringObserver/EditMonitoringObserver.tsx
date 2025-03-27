@@ -17,6 +17,7 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
+import { targetedObserversKeys } from '../../hooks/push-messages-queries';
 import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
@@ -41,11 +42,12 @@ export default function EditObserver() {
     tags: z.any(),
     firstName: z.string(),
     lastName: z.string(),
-    phoneNumber: z.string(),
+    phoneNumber: z.string().optional().catch(''),
   });
 
   const form = useForm<z.infer<typeof editObserverFormSchema>>({
     resolver: zodResolver(editObserverFormSchema),
+    mode: 'all',
     defaultValues: {
       status: monitoringObserver.status,
       tags: monitoringObserver.tags,
@@ -61,7 +63,7 @@ export default function EditObserver() {
       status: values.status,
       firstName: values.firstName,
       lastName: values.lastName,
-      phoneNumber: values.phoneNumber,
+      phoneNumber: values.phoneNumber ?? '',
     };
 
     editMutation.mutate({ electionRoundId: currentElectionRoundId, request });
@@ -87,6 +89,7 @@ export default function EditObserver() {
       });
       router.invalidate();
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
+      queryClient.invalidateQueries({ queryKey: targetedObserversKeys.all(electionRoundId) });
 
       navigate({
         to: '/monitoring-observers/view/$monitoringObserverId/$tab',
@@ -209,7 +212,7 @@ export default function EditObserver() {
                     variant='outline'
                     type='button'
                     onClick={() => {
-                      void navigate({
+                      navigate({
                         to: '/monitoring-observers/view/$monitoringObserverId/$tab',
                         params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
                       });

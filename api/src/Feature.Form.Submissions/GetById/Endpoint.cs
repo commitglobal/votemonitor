@@ -18,7 +18,8 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<FormSubmissionView>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<FormSubmissionView>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
@@ -26,7 +27,7 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-        
+
         var sql = """
                   WITH submissions AS
                   (SELECT psi."Id" AS "SubmissionId",
@@ -41,10 +42,13 @@ public class Endpoint(
                       (SELECT "DefaultLanguage"
                       FROM "PollingStationInformationForms"
                       WHERE "ElectionRoundId" = @electionRoundId) AS "DefaultLanguage",
+                      (SELECT "Languages"
+                      FROM "PollingStationInformationForms"
+                      WHERE "ElectionRoundId" = @electionRoundId) AS "Languages",
                       psi."FollowUpStatus" as "FollowUpStatus",
                       '[]'::jsonb AS "Attachments",
                       '[]'::jsonb AS "Notes",
-                      COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
+                      "LastUpdatedAt" AS "TimeSubmitted",
                       psi."ArrivalTime",
                       psi."DepartureTime",
                       psi."Breaks",
@@ -62,8 +66,9 @@ public class Endpoint(
                           fs."Answers",
                           f."Questions",
                           f."DefaultLanguage",
+                          f."Languages",
                           fs."FollowUpStatus",
-                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Attachments" a
                           WHERE 
                               a."ElectionRoundId" = @electionRoundId
@@ -72,7 +77,7 @@ public class Endpoint(
                               AND a."IsDeleted" = false AND a."IsCompleted" = true
                               AND fs."PollingStationId" = a."PollingStationId"),'[]'::JSONB) AS "Attachments",
                   
-                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Notes" n
                           WHERE 
                               n."ElectionRoundId" = @electionRoundId
@@ -80,7 +85,7 @@ public class Endpoint(
                               AND n."MonitoringObserverId" = fs."MonitoringObserverId"
                               AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
                               
-                          COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted",
+                          "LastUpdatedAt" AS "TimeSubmitted",
                           NULL AS "ArrivalTime",
                           NULL AS "DepartureTime",
                           '[]'::jsonb AS "Breaks",
@@ -112,6 +117,7 @@ public class Endpoint(
                          s."Answers",
                          s."Questions",
                          s."DefaultLanguage",
+                         s."Languages",
                          s."FollowUpStatus",
                          s."ArrivalTime",
                          s."DepartureTime",
@@ -124,9 +130,7 @@ public class Endpoint(
 
         var queryArgs = new
         {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            submissionId = req.SubmissionId
+            electionRoundId = req.ElectionRoundId, ngoId = req.NgoId, submissionId = req.SubmissionId
         };
 
         FormSubmissionView submission = null;
@@ -141,16 +145,19 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        foreach (var attachment in submission.Attachments)
+        submission = submission with
         {
-            var result =
-                await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-            if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
-            {
-                attachment.PresignedUrl = url;
-                attachment.UrlValidityInSeconds = urlValidityInSeconds;
-            }
-        }
+            Attachments = await Task.WhenAll(
+                submission.Attachments.Select(async attachment =>
+                {
+                    var result =
+                        await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
+                    return result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds)
+                        ? attachment with { PresignedUrl = url, UrlValidityInSeconds = urlValidityInSeconds }
+                        : attachment;
+                })
+            )
+        };
 
         return TypedResults.Ok(submission);
     }

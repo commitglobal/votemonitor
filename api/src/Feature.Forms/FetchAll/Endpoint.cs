@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.Forms.FetchAll;
 
@@ -78,7 +79,7 @@ public class Endpoint(VoteMonitorContext context)
         {
             ElectionRoundId = monitoringNgo.ElectionRoundId,
             Version = DeterministicGuid.Create(resultForms.Select(x => x.Id)).ToString(),
-            Forms = resultForms.OrderBy(x => x.DisplayOrder).ToList()
+            Forms = resultForms.OrderBy(x => x.DisplayOrder).ThenBy(x => x.Code).ToList()
         });
     }
 }

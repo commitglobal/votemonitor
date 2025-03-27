@@ -30,16 +30,8 @@ public class Endpoint(
                   WITH "CombinedTimestamps" AS (
                     -- First subquery for FormSubmissions
                     SELECT 
-                      MIN(
-                        COALESCE(
-                          FS."LastModifiedOn", FS."CreatedOn"
-                        )
-                      ) AS "FirstSubmissionTimestamp", 
-                      MAX(
-                        COALESCE(
-                          FS."LastModifiedOn", FS."CreatedOn"
-                        )
-                      ) AS "LastSubmissionTimestamp" 
+                      MIN("LastUpdatedAt") AS "FirstSubmissionTimestamp", 
+                      MAX("LastUpdatedAt") AS "LastSubmissionTimestamp" 
                     FROM 
                       "FormSubmissions" FS 
                       INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId" 
@@ -49,16 +41,8 @@ public class Endpoint(
                     UNION ALL 
                       -- Second subquery for PollingStationInformation
                     SELECT 
-                      MIN(
-                        COALESCE(
-                          PSI."LastModifiedOn", PSI."CreatedOn"
-                        )
-                      ) AS "FirstSubmissionTimestamp", 
-                      MAX(
-                        COALESCE(
-                          PSI."LastModifiedOn", PSI."CreatedOn"
-                        )
-                      ) AS "LastSubmissionTimestamp" 
+                      MIN("LastUpdatedAt") AS "FirstSubmissionTimestamp", 
+                      MAX("LastUpdatedAt") AS "LastSubmissionTimestamp" 
                     FROM 
                       "PollingStationInformation" PSI 
                       INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId" 

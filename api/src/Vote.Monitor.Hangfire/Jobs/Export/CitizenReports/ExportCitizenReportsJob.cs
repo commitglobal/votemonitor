@@ -9,6 +9,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
@@ -24,7 +25,7 @@ public class ExportCitizenReportsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
@@ -216,7 +217,7 @@ public class ExportCitizenReportsJob(
             hasNotes = filters?.HasNotes,
             questionsAnswered = filters?.QuestionsAnswered?.ToString(),
         };
-        
+
         IEnumerable<CitizenReportModel> citizenReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {

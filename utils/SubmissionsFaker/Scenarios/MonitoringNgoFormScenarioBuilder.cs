@@ -10,13 +10,13 @@ public class MonitoringNgoFormScenarioBuilder
 {
     public readonly MonitoringNgoScenarioBuilder ParentBuilder;
 
-    private readonly UpdateFormResponse _form;
+    private readonly CreateFormRequest _form;
     public Guid FormId => _form.Id;
-    public UpdateFormResponse Form => _form;
+    public CreateFormRequest Form => _form;
 
     public MonitoringNgoFormScenarioBuilder(
         MonitoringNgoScenarioBuilder parentBuilder,
-        UpdateFormResponse form)
+        CreateFormRequest form)
     {
         ParentBuilder = parentBuilder;
         _form = form;

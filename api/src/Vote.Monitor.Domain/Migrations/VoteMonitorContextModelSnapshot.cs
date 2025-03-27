@@ -19,7 +19,7 @@ namespace Vote.Monitor.Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "hstore");
@@ -282,12 +282,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -310,10 +304,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MimeType")
@@ -3373,6 +3364,40 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("ElectionRounds");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate.ElectionRoundFormTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FormTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormTemplateId");
+
+                    b.HasIndex("ElectionRoundId", "FormTemplateId")
+                        .IsUnique();
+
+                    b.ToTable("ElectionRoundFormTemplates");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ExportedDataAggregate.ExportedData", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3390,9 +3415,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ElectionRoundId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("ExportStatus")
                         .IsRequired()
@@ -3412,6 +3434,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("IncidentReportsFilters")
                         .HasColumnType("jsonb");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("QuickReportsFilters")
                         .HasColumnType("jsonb");
 
@@ -3420,9 +3445,9 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ElectionRoundId");
-
                     b.HasIndex("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("ExportedData", (string)null);
                 });
@@ -3554,12 +3579,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -3575,10 +3594,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MonitoringObserverId")
@@ -3637,9 +3653,16 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
                     b.Property<string[]>("Languages")
                         .IsRequired()
                         .HasColumnType("text[]");
+
+                    b.Property<string>("LanguagesTranslationStatus")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
@@ -3715,12 +3738,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -3736,10 +3753,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LocationDescription")
@@ -5601,22 +5615,13 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MonitoringObserverId")
@@ -5932,12 +5937,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("jsonb")
                         .HasDefaultValueSql("'[]'::JSONB");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime?>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -5953,10 +5952,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MonitoringObserverId")
@@ -6068,12 +6064,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(10000)
@@ -6094,10 +6084,7 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("text")
                         .HasDefaultValue("Other");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MonitoringObserverId")
@@ -6138,12 +6125,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -6161,10 +6142,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
+                    b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MimeType")
@@ -6529,7 +6507,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("MonitoringNgoForCitizenReporting");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ExportedDataAggregate.ExportedData", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate.ElectionRoundFormTemplate", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
                         .WithMany()
@@ -6537,7 +6515,26 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate", "FormTemplate")
+                        .WithMany()
+                        .HasForeignKey("FormTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ElectionRound");
+
+                    b.Navigation("FormTemplate");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ExportedDataAggregate.ExportedData", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.FeedbackAggregate.Feedback", b =>

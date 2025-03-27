@@ -32,14 +32,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(true));
+            isCompleted: ValueOrUndefined<bool>.Some(true),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -48,7 +48,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined()
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -60,14 +61,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(true));
+            isCompleted: ValueOrUndefined<bool>.Some(true),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -76,7 +77,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -88,14 +90,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -104,7 +106,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined()
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -116,14 +119,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(true));
+            isCompleted: ValueOrUndefined<bool>.Some(true),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -132,7 +135,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -144,14 +148,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -160,7 +164,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined()
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -172,14 +177,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(true));
+            isCompleted: ValueOrUndefined<bool>.Some(true),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -188,7 +193,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -202,14 +208,14 @@ public class PollingStationInformationTests
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [observationBreak],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -218,7 +224,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: null,
-            isCompleted: ValueOrUndefined<bool>.Undefined()
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -233,14 +240,14 @@ public class PollingStationInformationTests
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [observationBreak],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -249,7 +256,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -263,14 +271,14 @@ public class PollingStationInformationTests
         var observationBreak = ObservationBreak.Create(_now, _now.AddDays(3));
 
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -279,7 +287,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             breaks: [observationBreak],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -291,14 +300,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: Answers,
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: null,
@@ -307,7 +316,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             breaks: null,
-            isCompleted: ValueOrUndefined<bool>.Undefined()
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -320,14 +330,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: Answers,
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: [],
@@ -336,7 +346,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert
@@ -348,14 +359,14 @@ public class PollingStationInformationTests
     {
         // Arrange
         var submission = _form.CreatePollingStationInformation(
-            _userId,
             pollingStation: _pollingStation,
             monitoringObserver: _monitoringObserver,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
             answers: [],
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Undefined());
+            isCompleted: ValueOrUndefined<bool>.Undefined(),
+            lastUpdatedAt: DateTime.UtcNow);
 
         // Act
         submission.Update(answers: Answers,
@@ -364,7 +375,8 @@ public class PollingStationInformationTests
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             breaks: [],
-            isCompleted: ValueOrUndefined<bool>.Some(false)
+            isCompleted: ValueOrUndefined<bool>.Some(false),
+            lastUpdatedAt: DateTime.UtcNow
         );
 
         // Assert

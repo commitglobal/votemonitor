@@ -1,7 +1,8 @@
 import { usePrevSearch } from '@/common/prev-search-store';
-import type { FunctionComponent } from '@/common/types';
 import { Link, useRouter } from '@tanstack/react-router';
 import { FC } from 'react';
+
+import type { LinkProps } from '@tanstack/react-router';
 
 export const BackButtonIcon: FC = () => {
   return (
@@ -16,7 +17,13 @@ export const BackButtonIcon: FC = () => {
   );
 };
 
-const BackButton = (): FunctionComponent => {
+type OmitStrings<T, U extends string> = T extends U ? never : T;
+
+interface BackButtonProps {
+  rootRoute?: OmitStrings<LinkProps['to'], '.' | '..'>;
+}
+
+const BackButton: FC<BackButtonProps> = ({ rootRoute }) => {
   const { latestLocation } = useRouter();
   const prevSearch = usePrevSearch();
   const links = latestLocation.pathname.split('/').filter((crumb: string) => crumb !== '');
@@ -24,7 +31,7 @@ const BackButton = (): FunctionComponent => {
   if (links.length <= 1) return <></>;
 
   return (
-    <Link title='Go back' search={prevSearch} to='../' preload='intent'>
+    <Link title='Go back' search={prevSearch} to={rootRoute ?? '..'} preload='intent'>
       <BackButtonIcon />
     </Link>
   );

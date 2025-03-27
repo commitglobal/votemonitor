@@ -8,18 +8,16 @@ namespace SubmissionsFaker.Scenarios;
 
 public class CoalitionScenarioBuilder
 {
-    private readonly HttpClient _platformAdmin;
     private readonly HttpClient _coalitionLeaderAdminAdmin;
     public readonly ElectionRoundScenarioBuilder ParentBuilder;
     private readonly CoalitionModel _coalition;
     private readonly Dictionary<string, CoalitionFormScenarioBuilder> _forms = new();
-    
-    public CoalitionScenarioBuilder(HttpClient platformAdmin,
-        HttpClient coalitionLeaderAdmin,
+    private readonly Dictionary<string, Guid> _guides = new();
+
+    public CoalitionScenarioBuilder(HttpClient coalitionLeaderAdmin,
         ElectionRoundScenarioBuilder parentBuilder,
         CoalitionModel coalition)
     {
-        _platformAdmin = platformAdmin;
         _coalitionLeaderAdminAdmin = coalitionLeaderAdmin;
         ParentBuilder = parentBuilder;
         _coalition = coalition;
@@ -34,9 +32,9 @@ public class CoalitionScenarioBuilder
         sharedWithMembers ??= Array.Empty<ScenarioNgo>();
         formCode ??= Guid.NewGuid().ToString();
 
-        var formRequest = FormData.OpeningForm(formCode);
+        var formRequest = ObservationForms.OpeningForm(formCode);
         var ngoForm =
-            _coalitionLeaderAdminAdmin.PostWithResponse<UpdateFormResponse>(
+            _coalitionLeaderAdminAdmin.PostWithResponse<CreateFormRequest>(
                 $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/forms",
                 formRequest);
 
@@ -70,13 +68,15 @@ public class CoalitionScenarioBuilder
         var observerClient = ParentBuilder.WithQuickReport(observer, pollingStation);
         return this;
     }
-    
-    
 
-    public UpdateFormResponse Form => _forms.First().Value.Form;
-    public CoalitionFormScenarioBuilder FormDetails => _forms.First().Value;
+
+    public CreateFormRequest Form => _forms.First().Value.Form;
+    public CoalitionFormScenarioBuilder FormData => _forms.First().Value;
     public Guid FormId => _forms.First().Value.FormId;
-    public UpdateFormResponse FormByCode(string formCode) => _forms[formCode].Form;
+    public CreateFormRequest FormByCode(string formCode) => _forms[formCode].Form;
+
+    public Guid GuideId => _guides.First().Value;
+    public Guid GuideIdByTitle(string title) => _guides[title];
 
     public Guid GetSubmissionId(string formCode, ScenarioObserver observer, ScenarioPollingStation pollingStation) =>
         _forms[formCode].GetSubmissionId(observer, pollingStation);

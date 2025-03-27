@@ -8,5 +8,8 @@ public enum FileStorageType
     LocalDisk,
 
     [EnumMember(Value = "S3")]
-    S3
+    S3,
+    
+    [EnumMember(Value = "MiniIO")]
+    MiniIO
 }

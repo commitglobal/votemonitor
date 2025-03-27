@@ -16,7 +16,7 @@ public class RemoveNgoEndpointTests
 
         // Act
         var request = new Request { ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -41,7 +41,7 @@ public class RemoveNgoEndpointTests
 
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, NgoId = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -74,7 +74,7 @@ public class RemoveNgoEndpointTests
 
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngoId };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

@@ -9,3 +9,4 @@
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 // Allow upsert 
 [assembly: InternalsVisibleTo("Feature.PollingStation.Information")]
+[assembly: InternalsVisibleTo("Feature.Monitoring.UnitTests")]

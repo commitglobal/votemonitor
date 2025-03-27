@@ -20,7 +20,7 @@ public class DeactivateEndpointTests
 
         // Act
         var request = new Request { Id = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         ngo
@@ -42,7 +42,7 @@ public class DeactivateEndpointTests
 
         // Act
         var request = new Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

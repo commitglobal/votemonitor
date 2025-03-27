@@ -18,7 +18,7 @@ const RatingItem = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.
           Number(value) === 1 && 'rounded-l-md',
           'relative inline-flex items-center px-4 py-2 text-sm text-center font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0 w-full justify-center',
           (selectedValue ?? -1) === Number(value) &&
-          'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+            'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
           Number(value) === scale && 'rounded-r-md',
           className
         )}
@@ -39,12 +39,11 @@ interface RatingGroupProps extends React.ComponentPropsWithoutRef<typeof RadioGr
 
 const RatingGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.Root>, RatingGroupProps>(
   ({ className, scale = 5, lowerLabel, upperLabel, ...props }, ref) => {
-
     const [selectedValue, setSelectedValue] = React.useState<number | null>(null);
 
     React.useEffect(() => {
-      setSelectedValue(props.defaultValue ? Number(props.defaultValue) : null)
-    }, [props.defaultValue])
+      setSelectedValue(props.defaultValue ? Number(props.defaultValue) : null);
+    }, [props.defaultValue]);
 
     return (
       <RadioGroupPrimitive.Root
@@ -61,14 +60,16 @@ const RatingGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive
             <RatingItem key={value} value={value.toString()} selectedValue={selectedValue} scale={scale} />
           ))}
         </div>
-        <div className="mt-4 flex justify-between px-1.5 leading-6 break-all">
-          <p className="w-1/2 text-left" dir="auto">
-            {lowerLabel}
-          </p>
-          <p className="w-1/2 text-right" dir="auto">
-            {upperLabel}
-          </p>
-        </div>
+        <p className='text-sm italic' dir='auto'>
+          {lowerLabel && <> 1 - {lowerLabel}</>}
+        </p>
+        <p className='text-sm italic' dir='auto'>
+          {upperLabel && (
+            <>
+              {scale} - {upperLabel}
+            </>
+          )}
+        </p>
       </RadioGroupPrimitive.Root>
     );
   }

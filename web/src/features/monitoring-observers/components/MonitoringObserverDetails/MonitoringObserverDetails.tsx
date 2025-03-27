@@ -28,6 +28,8 @@ export default function MonitoringObserverDetails(): FunctionComponent {
   function handleTabChange(tab: string): void {
     setCurrentTab(tab);
     navigate({
+      to: '.',
+      replace: true,
       params(prev: any) {
         return { ...prev, tab };
       },

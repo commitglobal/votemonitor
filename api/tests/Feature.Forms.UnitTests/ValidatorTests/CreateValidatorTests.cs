@@ -1,7 +1,6 @@
 ﻿using Vote.Monitor.Core.Constants;
-using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Form.Module.Requests;
-using Vote.Monitor.TestUtils.Utils;
 
 namespace Feature.Forms.UnitTests.ValidatorTests;
 
@@ -88,11 +87,6 @@ public class CreateValidatorTests
         new()
         {
             [LanguagesList.IT.Iso1] = "an italian string"
-        },
-        new()
-        {
-            [LanguagesList.RO.Iso1] = "a long string",
-            [LanguagesList.EN.Iso1] = "a".Repeat(10_001)
         },
         new() { [""] = "an empty" },
         new() { ["aaa"] = "an invalid iso" },

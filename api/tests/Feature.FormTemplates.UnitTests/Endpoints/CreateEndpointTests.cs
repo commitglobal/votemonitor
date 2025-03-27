@@ -25,9 +25,10 @@ public class CreateEndpointTests
         {
             Name = templateName,
             Code = "a code",
-            Languages = [LanguagesList.RO.Iso1]
+            Languages = [LanguagesList.RO.Iso1],
+            DefaultLanguage = LanguagesList.RO.Iso1
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await repository
@@ -35,32 +36,7 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()!
-            .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateSlimModel>>()!
+            .Should().BeOfType<Ok<FormTemplateFullModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
-    }
-
-    [Fact]
-    public async Task ShouldReturnConflict_WhenFormTemplateWithSameCodeExists()
-    {
-        // Arrange
-        var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
-
-        repository
-            .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
-            .Returns(true);
-
-        var endpoint = Factory.Create<Endpoint>(repository);
-
-        // Act
-        var request = new Request();
-        var result = await endpoint.ExecuteAsync(request, default);
-
-        // Assert
-        result
-            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()
-            .Which
-            .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
 }

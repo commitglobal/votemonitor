@@ -17,7 +17,7 @@ public class UpdateEndpointTests
 
         //act 
 
-        var response = await endpoint.ExecuteAsync(request, default);
+        var response = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         //assert
         await repository.Received().SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -38,7 +38,7 @@ public class UpdateEndpointTests
         var request = new Request { Id = Guid.NewGuid(), LanguageCode = "UNKNOWN" };
 
         //act 
-        var response = await endpoint.ExecuteAsync(request, default);
+        var response = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         //assert
 

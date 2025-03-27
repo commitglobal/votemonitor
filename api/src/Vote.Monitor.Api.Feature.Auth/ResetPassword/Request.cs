@@ -2,9 +2,9 @@
 
 public class Request
 {
-    public string Email { get; set; } = default!;
+    public string Email { get; set; } = null!;
 
-    public string Password { get; set; } = default!;
+    public string Password { get; set; } = null!;
 
-    public string Token { get; set; } = default!;
+    public string Token { get; set; } = null!;
 }

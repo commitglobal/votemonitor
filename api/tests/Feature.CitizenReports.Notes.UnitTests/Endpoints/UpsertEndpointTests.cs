@@ -42,7 +42,7 @@ public class UpsertEndpointTests
             Text = noteText,
             Id = noteId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository
@@ -81,7 +81,7 @@ public class UpsertEndpointTests
             Text = updatedText,
             QuestionId = fakeNote.QuestionId
         };
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _repository

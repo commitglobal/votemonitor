@@ -8,14 +8,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/exported-data/{id}");
+        Get("/api/exported-data/{id}");
         DontAutoTag();
         Options(x => x.WithTags("exported-data"));
         Summary(s =>
         {
             s.Summary = "Gets exported data excel";
         });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.AdminsOnly);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -23,13 +23,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         var sql = """
             SELECT "Base64EncodedData", "FileName"
             FROM "ExportedData"
-            WHERE "ElectionRoundId" = @electionRoundId AND "Id" =@exportedDataId;
+            WHERE "Id" = @exportedDataId and "OwnerId" = @ownerId;
         """;
 
         var queryParams = new
         {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
+            ownerId = req.UserId,
             exportedDataId = req.Id
         };
 

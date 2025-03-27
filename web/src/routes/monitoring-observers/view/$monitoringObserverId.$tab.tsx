@@ -6,7 +6,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { monitoringObserverDetailsQueryOptions } from '../edit.$monitoringObserverId';
 
 export const Route = createFileRoute('/monitoring-observers/view/$monitoringObserverId/$tab')({
-  beforeLoad: ({params}) => {
+  beforeLoad: ({ params }) => {
     redirectIfNotAuth();
 
     const coercedTab = coerceTabSlug(params.tab);
@@ -34,9 +34,5 @@ const coerceTabSlug = (slug: string) => {
   return 'details';
 };
 function Details(): FunctionComponent {
-  return (
-    <div className='p-2'>
-      <MonitoringObserverDetails />
-    </div>
-  );
+  return <MonitoringObserverDetails />;
 }

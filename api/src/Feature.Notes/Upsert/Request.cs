@@ -14,4 +14,9 @@ public class Request
     public Guid QuestionId { get; set; }
     public Guid Id { get; set; }
     public string Text { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? LastUpdatedAt { get; set; }
 }

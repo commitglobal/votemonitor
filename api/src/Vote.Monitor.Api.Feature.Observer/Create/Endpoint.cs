@@ -3,7 +3,8 @@ using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Api.Feature.Observer.Create;
 
-public class Endpoint(UserManager<ApplicationUser> userManager,
+public class Endpoint(
+    UserManager<ApplicationUser> userManager,
     IRepository<ObserverAggregate> repository)
     : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {
@@ -14,7 +15,8 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
         Summary(x => { x.Description = "Creates account for an observer"; });
     }
 
-    public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
         var user = await userManager.FindByEmailAsync(req.Email);
 
@@ -24,7 +26,8 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var applicationUser = ApplicationUser.CreateObserver(req.FirstName, req.LastName, req.Email, req.PhoneNumber, req.Password);
+        var applicationUser =
+            ApplicationUser.CreateObserver(req.FirstName, req.LastName, req.Email, req.PhoneNumber, req.Password);
 
         var result = await userManager.CreateAsync(applicationUser);
         if (!result.Succeeded)
@@ -42,10 +45,10 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             FirstName = applicationUser.FirstName,
             LastName = applicationUser.LastName,
             Email = applicationUser.Email!,
-            PhoneNumber = applicationUser.PhoneNumber!,
+            PhoneNumber = applicationUser.PhoneNumber,
             Status = applicationUser.Status,
-            CreatedOn = observer.CreatedOn,
-            LastModifiedOn = observer.LastModifiedOn
+            MonitoredElections = [],
+            IsAccountVerified = applicationUser.EmailConfirmed
         });
     }
 }

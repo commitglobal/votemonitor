@@ -8,7 +8,7 @@ public class Endpoint(IReadRepository<ExportedData> repository) : Endpoint<Reque
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/exported-data/{id}:details");
+        Get("/api/exported-data/{id}:details");
         DontAutoTag();
         Options(x => x.WithTags("exported-data"));
         Summary(s =>
@@ -16,12 +16,12 @@ public class Endpoint(IReadRepository<ExportedData> repository) : Endpoint<Reque
             s.Summary = "Gets details about an exported data";
         });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.AdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetExportedDataDetailsSpecification(req.ElectionRoundId, req.Id);
+        var specification = new GetExportedDataDetailsSpecification(req.Id, req.UserId);
 
         var exportedDataDetails = await repository.SingleOrDefaultAsync(specification, ct);
 

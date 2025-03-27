@@ -26,7 +26,7 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
 
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
-      void navigate({
+      navigate({
         // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number| Date> = {

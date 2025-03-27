@@ -16,7 +16,7 @@ public class StartEndpointTests
 
         // Act
         var request = new Start.Request { Id = electionRound.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         electionRound
@@ -38,7 +38,7 @@ public class StartEndpointTests
 
         // Act
         var request = new Start.Request { Id = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result

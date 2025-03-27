@@ -18,7 +18,7 @@ public record QuickReportDetailedModel
     public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; }
     public string Email { get; init; }
-    public string PhoneNumber { get; init; }
+    public string? PhoneNumber { get; init; }
     public string[] Tags { get; init; } = [];
     public Guid? PollingStationId { get; init; }
     public string? Level1 { get; init; }
@@ -57,7 +57,7 @@ public record QuickReportDetailedModel
             Number = quickReport.PollingStation?.Number,
             Address = quickReport.PollingStation?.Address,
             PollingStationDetails = quickReport.PollingStationDetails,
-            Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
+            Timestamp = quickReport.LastUpdatedAt,
             Attachments = attachments.ToArray(),
             FollowUpStatus = quickReport.FollowUpStatus,
             IncidentCategory = quickReport.IncidentCategory

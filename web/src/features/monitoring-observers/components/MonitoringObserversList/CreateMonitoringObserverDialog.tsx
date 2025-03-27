@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
+import { targetedObserversKeys } from '../../hooks/push-messages-queries';
 
 export interface CreateMonitoringObserverDialogProps {
   open: boolean;
@@ -28,13 +29,14 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().email(),
-    phoneNumber: z.string(),
+    phoneNumber: z.string().optional().catch(''),
     tags: z.any(),
   });
 
   type ObserverFormData = z.infer<typeof newObserverSchema>;
 
   const form = useForm<ObserverFormData>({
+    mode: 'all',
     resolver: zodResolver(newObserverSchema),
   });
 
@@ -54,6 +56,8 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
       });
 
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
+      queryClient.invalidateQueries({ queryKey: targetedObserversKeys.all(electionRoundId) });
+
       form.reset({});
       onOpenChange(false);
     },

@@ -17,7 +17,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string Email { get; init; }
-        public string PhoneNumber { get; init; }
+        public string? PhoneNumber { get; init; }
         public string[] Tags { get; init; }
         public DateTime? LatestActivityAt { get; init; }
 

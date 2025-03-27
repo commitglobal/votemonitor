@@ -7,7 +7,7 @@ import { z } from 'zod';
 export const MonitoringObserversSearchParamsSchema = z.object({
   searchText: z.coerce.string().optional(),
   tags: z.array(z.string()).optional(),
-  monitoringObserverStatus: z.nativeEnum(MonitoringObserverStatus).optional()
+  monitoringObserverStatus: z.nativeEnum(MonitoringObserverStatus).optional(),
 });
 
 export type MonitoringObserversSearchParams = z.infer<typeof MonitoringObserversSearchParamsSchema>;
@@ -33,9 +33,5 @@ const coerceTabSlug = (slug: string) => {
 };
 
 function MonitoringObservers() {
-  return (
-    <div className='p-2'>
-      <MonitoringObserversDashboard />
-    </div>
-  );
+  return <MonitoringObserversDashboard />;
 }

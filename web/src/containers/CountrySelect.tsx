@@ -24,11 +24,11 @@ export interface CountrySelectProps {
 }
 
 function CountrySelect({ countryId, onSelect }: CountrySelectProps) {
-    const { data: countries } = useCountries();
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(countryId);
     const { t } = useTranslation();
-
+    
+    const { data: countries } = useCountries();
     const placeholder = useMemo(() => {
         if (value && countries?.length) {
             const country = countries?.find((l) => l.id === value);

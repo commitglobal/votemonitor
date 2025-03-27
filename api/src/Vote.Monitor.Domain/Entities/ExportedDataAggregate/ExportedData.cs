@@ -4,8 +4,8 @@ namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 
 public class ExportedData : BaseEntity, IAggregateRoot
 {
-    public Guid ElectionRoundId { get; private set; }
-    public ElectionRound ElectionRound { get; private set; }
+    public Guid OwnerId { get; private set; }
+    public ApplicationUser Owner { get; private set; }
     public ExportedDataType ExportedDataType { get; private set; }
     public ExportedDataStatus ExportStatus { get; private set; }
     public string? FileName { get; private set; }
@@ -17,7 +17,8 @@ public class ExportedData : BaseEntity, IAggregateRoot
     public ExportCitizenReportsFilers? CitizenReportsFilers { get; private set; }
     public ExportIncidentReportsFilters? IncidentReportsFilters { get; private set; }
 
-    private ExportedData(Guid electionRoundId,
+    private ExportedData(
+        Guid ownerId,
         ExportedDataType exportedDataType,
         DateTime startedAt,
         ExportFormSubmissionsFilters? formSubmissionsFilters,
@@ -25,7 +26,7 @@ public class ExportedData : BaseEntity, IAggregateRoot
         ExportCitizenReportsFilers? citizenReportsFilers,
         ExportIncidentReportsFilters? incidentReportsFilters) : base(Guid.NewGuid())
     {
-        ElectionRoundId = electionRoundId;
+        OwnerId = ownerId;
         ExportStatus = ExportedDataStatus.Started;
         StartedAt = startedAt;
         ExportedDataType = exportedDataType;
@@ -35,9 +36,9 @@ public class ExportedData : BaseEntity, IAggregateRoot
         IncidentReportsFilters = incidentReportsFilters;
     }
 
-    public static ExportedData Create(Guid electionRoundId, ExportedDataType dataType, DateTime startedAt)
+    public static ExportedData Create(Guid ownerId, ExportedDataType dataType, DateTime startedAt)
     {
-        return new ExportedData(electionRoundId: electionRoundId,
+        return new ExportedData(ownerId: ownerId,
             exportedDataType: dataType,
             startedAt: startedAt,
             formSubmissionsFilters: null,
@@ -59,10 +60,10 @@ public class ExportedData : BaseEntity, IAggregateRoot
         CompletedAt = completedAt;
     }
 
-    public static ExportedData CreateForFormSubmissions(Guid electionRoundId, ExportedDataType dataType,
+    public static ExportedData CreateForFormSubmissions(Guid ownerId, ExportedDataType dataType,
         DateTime startedAt, ExportFormSubmissionsFilters? filters)
     {
-        return new ExportedData(electionRoundId: electionRoundId,
+        return new ExportedData(ownerId: ownerId,
             exportedDataType: dataType,
             startedAt: startedAt,
             formSubmissionsFilters: filters,
@@ -71,10 +72,10 @@ public class ExportedData : BaseEntity, IAggregateRoot
             incidentReportsFilters: null);
     }
 
-    public static ExportedData CreateForQuickReports(Guid electionRoundId, ExportedDataType dataType,
+    public static ExportedData CreateForQuickReports(Guid ownerId, ExportedDataType dataType,
         DateTime startedAt, ExportQuickReportsFilters? filters)
     {
-        return new ExportedData(electionRoundId: electionRoundId,
+        return new ExportedData(ownerId: ownerId,
             exportedDataType: dataType,
             startedAt: startedAt,
             formSubmissionsFilters: null,
@@ -83,10 +84,10 @@ public class ExportedData : BaseEntity, IAggregateRoot
             incidentReportsFilters: null);
     }
 
-    public static ExportedData CreateForCitizenReports(Guid electionRoundId, ExportedDataType dataType,
+    public static ExportedData CreateForCitizenReports(Guid ownerId, ExportedDataType dataType,
         DateTime startedAt, ExportCitizenReportsFilers? filters)
     {
-        return new ExportedData(electionRoundId: electionRoundId,
+        return new ExportedData(ownerId: ownerId,
             exportedDataType: dataType,
             startedAt: startedAt,
             formSubmissionsFilters: null,
@@ -95,10 +96,10 @@ public class ExportedData : BaseEntity, IAggregateRoot
             incidentReportsFilters: null);
     }
 
-    public static ExportedData CreateForIncidentReports(Guid electionRoundId, ExportedDataType dataType,
+    public static ExportedData CreateForIncidentReports(Guid ownerId, ExportedDataType dataType,
         DateTime startedAt, ExportIncidentReportsFilters? filters)
     {
-        return new ExportedData(electionRoundId: electionRoundId,
+        return new ExportedData(ownerId: ownerId,
             exportedDataType: dataType,
             startedAt: startedAt,
             formSubmissionsFilters: null,

@@ -1,3 +1,4 @@
+import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { z } from 'zod';
 
 export type FunctionComponent = React.ReactElement | null;
@@ -230,22 +231,22 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
-export const ZFormType = z.enum([
-  'PSI',
-  'Opening',
-  'Voting',
-  'ClosingAndCounting',
-  'CitizenReporting',
-  'IncidentReporting',
-  'Other',
-]);
+export enum FormType {
+  PSI = 'PSI',
+  Opening = 'Opening',
+  Voting = 'Voting',
+  ClosingAndCounting = 'ClosingAndCounting',
+  CitizenReporting = 'CitizenReporting',
+  IncidentReporting = 'IncidentReporting',
+  Other = 'Other',
+}
 
-export type FormType = z.infer<typeof ZFormType>;
+export enum TranslationStatus {
+  Translated = 'Translated',
+  MissingTranslations = 'MissingTranslations',
+}
 
-export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
-export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
-
-const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
+const ZLanguagesTranslationStatus = z.record(z.string(), z.nativeEnum(TranslationStatus));
 export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
 
 export interface Country {
@@ -281,4 +282,138 @@ export interface Coalition {
 export enum DataSources {
   Ngo = 'ngo',
   Coalition = 'coalition',
+}
+
+export interface PollingStation {
+  id: string;
+  level1: string;
+  level2?: string;
+  level3?: string;
+  level4?: string;
+  level5?: string;
+  number: string;
+  address: string;
+  displayOrder: number;
+  tags?: Record<string, string>;
+}
+
+export interface Location {
+  id: string;
+  level1: string;
+  level2?: string;
+  level3?: string;
+  level4?: string;
+  level5?: string;
+  displayOrder: number;
+  tags?: Record<string, any>;
+}
+
+export const importPollingStationSchema = z
+  .object({
+    id: z.string().default(() => crypto.randomUUID()),
+    level1: z.string().min(1, 'Level 1 is required'),
+    level2: z.string().optional().catch(''),
+    level3: z.string().optional().catch(''),
+    level4: z.string().optional().catch(''),
+    level5: z.string().optional().catch(''),
+    address: z.string().min(1, 'Address is required'),
+    number: z.string().min(1, 'Number is required'),
+    displayOrder: z.coerce.number().catch(0),
+    tags: z.record(z.string()).optional().catch({}),
+  })
+  .superRefine((val, ctx) => {
+    if (isNilOrWhitespace(val.level2) && isNotNilOrWhitespace(val.level3)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 2 is required if Level 3 is filled in.`,
+        path: ['level2'],
+      });
+    }
+
+    if (isNilOrWhitespace(val.level3) && isNotNilOrWhitespace(val.level4)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 3 is required if Level 4 is filled in.`,
+        path: ['level3'],
+      });
+    }
+
+    if (isNilOrWhitespace(val.level4) && isNotNilOrWhitespace(val.level5)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 4 is required if Level 5 is filled in.`,
+        path: ['level4'],
+      });
+    }
+  });
+
+export const importLocationSchema = z
+  .object({
+    id: z.string().default(() => crypto.randomUUID()),
+    level1: z.string().min(1, 'Level 1 is required'),
+    level2: z.string().optional(),
+    level3: z.string().optional(),
+    level4: z.string().optional(),
+    level5: z.string().optional(),
+
+    displayOrder: z.coerce.number().catch(0),
+    tags: z.record(z.string()).optional().catch({}),
+  })
+  .superRefine((val, ctx) => {
+    if (isNilOrWhitespace(val.level2) && isNotNilOrWhitespace(val.level3)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 2 is required if Level 3 is filled in.`,
+        path: ['level2'],
+      });
+    }
+
+    if (isNilOrWhitespace(val.level3) && isNotNilOrWhitespace(val.level4)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 3 is required if Level 4 is filled in.`,
+        path: ['level3'],
+      });
+    }
+
+    if (isNilOrWhitespace(val.level4) && isNotNilOrWhitespace(val.level5)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Level 4 is required if Level 5 is filled in.`,
+        path: ['level4'],
+      });
+    }
+  });
+
+export enum FormStatus {
+  Drafted = 'Drafted',
+  Published = 'Published',
+  Obsolete = 'Obsolete',
+}
+
+export const FormStatusList: FormStatus[] = [FormStatus.Drafted, FormStatus.Published, FormStatus.Obsolete];
+
+export interface FormBase {
+  id: string;
+  formType: FormType;
+  code: string;
+  defaultLanguage: string;
+  icon?: string;
+  name: TranslatedString;
+  description?: TranslatedString;
+  status: FormStatus;
+  languages: string[];
+  lastModifiedOn: string;
+  lastModifiedBy: string;
+  numberOfQuestions: number;
+  languagesTranslationStatus: LanguagesTranslationStatus;
+}
+
+export interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+  errors?: { name: string; reason: string }[]; // Maps field names to error messages
 }

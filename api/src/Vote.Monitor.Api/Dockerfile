@@ -7,6 +7,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Packages.props", "."]
 COPY ["src/Vote.Monitor.Api/Vote.Monitor.Api.csproj", "src/Vote.Monitor.Api/"]
 COPY ["src/Authorization.Policies/Authorization.Policies.csproj", "src/Authorization.Policies/"]
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
@@ -49,6 +50,7 @@ COPY ["src/Feature.Notes/Feature.Notes.csproj", "src/Feature.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
 COPY ["src/Feature.Citizen.Notifications/Feature.Citizen.Notifications.csproj", "src/Feature.Citizen.Notifications/"]
+COPY ["src/Feature.Coalitions/Feature.Coalitions.csproj", "src/Feature.Coalitions/"]
 
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
 COPY . .

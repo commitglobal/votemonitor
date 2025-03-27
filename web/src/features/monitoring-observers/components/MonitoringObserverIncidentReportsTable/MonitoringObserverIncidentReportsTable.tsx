@@ -47,7 +47,7 @@ export function MonitoringObserverIncidentReportsTable({
 
   const navigateToIncidentReport = useCallback(
     (incidentReportId: string) => {
-      void navigate({ to: '/responses/incident-reports/$incidentReportId', params: { incidentReportId } });
+      navigate({ to: '/responses/incident-reports/$incidentReportId', params: { incidentReportId } });
     },
     [navigate]
   );

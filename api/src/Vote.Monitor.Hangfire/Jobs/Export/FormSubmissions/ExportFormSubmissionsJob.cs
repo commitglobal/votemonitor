@@ -24,7 +24,7 @@ public class ExportFormSubmissionsJob(
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
+            .Where(x => x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
@@ -58,7 +58,7 @@ public class ExportFormSubmissionsJob(
                 .FromSqlInterpolated(
                     @$"SELECT f.* FROM ""Forms"" f 
                        INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
-                .Where(x=>x.Status == FormStatus.Published)
+                .Where(x => x.Status == FormStatus.Published)
                 .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
                 .ToListAsync(ct);
@@ -139,7 +139,7 @@ public class ExportFormSubmissionsJob(
             			PSI."NumberOfFlaggedAnswers",
             			'[]'::JSONB AS "Attachments",
             			'[]'::JSONB AS "Notes",
-            			COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") "TimeSubmitted",
+            			psi."LastUpdatedAt" "TimeSubmitted",
             			PSI."IsCompleted",
             			MO."NgoName",
             			MO."DisplayName",
@@ -165,11 +165,11 @@ public class ExportFormSubmissionsJob(
             			)
             			AND (
             				@FROMDATE IS NULL
-            				OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") >= @FROMDATE::TIMESTAMP
+            				OR psi."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
             			)
             			AND (
             				@TODATE IS NULL
-            				OR COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") <= @TODATE::TIMESTAMP
+            				OR psi."LastUpdatedAt" <= @TODATE::TIMESTAMP
             			)
             			AND (
             				@ISCOMPLETED IS NULL
@@ -241,7 +241,7 @@ public class ExportFormSubmissionsJob(
             				),
             				'[]'::JSONB
             			) AS "Notes",
-            			COALESCE(FS."LastModifiedOn", FS."CreatedOn") "TimeSubmitted",
+            			FS."LastUpdatedAt" "TimeSubmitted",
             			FS."IsCompleted",
             			MO."NgoName",
             			MO."DisplayName",
@@ -268,11 +268,11 @@ public class ExportFormSubmissionsJob(
             			)
             			AND (
             				@FROMDATE IS NULL
-            				OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= @FROMDATE::TIMESTAMP
+            				OR FS."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
             			)
             			AND (
             				@TODATE IS NULL
-            				OR COALESCE(FS."LastModifiedOn", FS."CreatedOn") <= @TODATE::TIMESTAMP
+            				OR FS."LastUpdatedAt" <= @TODATE::TIMESTAMP
             			)
             			AND (
             				@ISCOMPLETED IS NULL

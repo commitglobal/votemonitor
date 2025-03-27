@@ -49,7 +49,7 @@ public class Endpoint(
             .AsReadOnly();
 
         form.UpdateDetails(req.Code, req.Name, req.Description, req.FormType, req.DefaultLanguage, req.Languages,
-            req.Icon, displayOrder: 0, questions);
+            req.Icon, questions);
 
         await formsRepository.UpdateAsync(form, ct);
 

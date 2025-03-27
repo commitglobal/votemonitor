@@ -83,6 +83,7 @@ export default function AddGuideForm({
 
   const form = useForm<NewGuideType>({
     resolver: zodResolver(newGuideFormSchema),
+    mode: 'all',
     defaultValues: {
       guideType: guideType,
       title: '',
@@ -159,16 +160,20 @@ export default function AddGuideForm({
     uploadGuideMutation.mutate({ electionRoundId: currentElectionRoundId, guidePageType, guide });
   }
 
-  useBlocker(
-    () =>
-      confirm({
+  useBlocker({
+    shouldBlockFn: async () => {
+      if (!form.formState.isDirty) {
+        return false;
+      }
+
+      return await confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
         cancelButton: 'Stay',
-      }),
-    form.formState.isDirty
-  );
+      });
+    },
+  });
 
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {

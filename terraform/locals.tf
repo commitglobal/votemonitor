@@ -5,20 +5,20 @@ locals {
   images = {
     api = {
       image = "commitglobal/votemonitor"
-      tag   = "0.2.47"
+      tag   = "0.2.53"
     }
 
     hangfire = {
       image = "commitglobal/votemonitor-hangfire"
-      tag   = "0.2.47"
+      tag   = "0.2.53"
     }
   }
 
   ecs = {
     instance_types = {
-      "t3a.medium" = ""
-      # "m5.large"  = ""
-      # "m5a.large" = ""
+      # "t3a.medium" = ""
+      "m5.large"  = ""
+      "m5a.large" = ""
     }
   }
 

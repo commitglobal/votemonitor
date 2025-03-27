@@ -55,7 +55,7 @@ public class UpsertEndpointTests
             ]
         };
 
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _formRepository.Received(1).UpdateAsync(pollingStationInformationForm);
@@ -87,7 +87,7 @@ public class UpsertEndpointTests
             .ReturnsNull();
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         result
@@ -128,7 +128,7 @@ public class UpsertEndpointTests
             .Returns(electionRound);
 
         // Act
-        var result = await _endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
         await _formRepository

@@ -2,8 +2,6 @@
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
@@ -11,7 +9,6 @@ namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
 
 public class NumberAnswerAggregateTests
 {
-    private readonly FormSubmission _submission = new FormSubmissionFaker().Generate();
     private readonly NumberQuestion _question = new NumberQuestionFaker().Generate();
     private readonly NumberAnswerAggregate _aggregate;
 
