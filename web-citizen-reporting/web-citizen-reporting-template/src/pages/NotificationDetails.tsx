@@ -1,6 +1,7 @@
 import Notification from "@/components/notifications";
 import { useNotifications } from "@/queries/use-notifications";
 import { Route } from "@/routes/notifications/$notificationId";
+import { notFound } from "@tanstack/react-router";
 
 function NotificationDetails() {
   const { notificationId } = Route.useParams();
@@ -8,7 +9,7 @@ function NotificationDetails() {
     notification.notifications.find((n) => n.id == notificationId)
   );
 
-  if (!notification) return <></>;
+  if (!notification) throw notFound();
 
   return (
     <Notification

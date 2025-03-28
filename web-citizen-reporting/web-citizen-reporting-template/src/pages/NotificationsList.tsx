@@ -6,8 +6,8 @@ function NotificationsList() {
   const { data: notification } = useNotifications();
 
   return (
-    <div>
-      <h1 className={`${typographyClasses.h1} mb-16`}>
+    <div className="flex flex-col gap-12">
+      <h1 className={typographyClasses.h1}>
         Notifications from {notification?.ngoName}
       </h1>
       <div className="flex flex-col gap-12">
