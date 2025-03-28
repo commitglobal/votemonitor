@@ -15,7 +15,7 @@ export default function About() {
         The King's Plan
       </h2>
       <p className={typographyClasses.p}>
-        The king thought long and hard, and finally came up with{" "}
+        The king thought long and hard, and finally came up with
         <a
           href="#"
           className={typographyClasses.a}
