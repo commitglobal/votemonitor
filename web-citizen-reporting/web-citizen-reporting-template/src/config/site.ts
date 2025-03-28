@@ -15,7 +15,7 @@ export const META_THEME_COLORS = {
   dark: "#09090b",
 };
 
-export const typographyClasses = {
+export const typography = {
   h1: "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl",
   p: "leading-7 [&:not(:first-child)]:mt-6",
   h2: "mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0",

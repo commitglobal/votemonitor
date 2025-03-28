@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { FileQuestion } from "lucide-react";
-import { typographyClasses } from "../config/site";
+import { typography } from "../config/site";
 
 export default function NotFound() {
   return (
@@ -10,13 +10,13 @@ export default function NotFound() {
         <FileQuestion className="h-24 w-24 mx-auto text-muted-foreground" />
 
         <div className="space-y-2">
-          <h1 className={typographyClasses.h1}>
+          <h1 className={typography.h1}>
             404
           </h1>
-          <h2 className={typographyClasses.h2}>
+          <h2 className={typography.h2}>
             Page not found
           </h2>
-          <p className={typographyClasses.p}>
+          <p className={typography.p}>
             Sorry, we couldn't find the page you're looking for. It might have
             been moved, deleted, or never existed.
           </p>
