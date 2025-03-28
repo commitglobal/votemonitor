@@ -1,5 +1,9 @@
+import { useForms } from "@/queries/use-forms";
+
 function FormsList() {
-  return <div>FormsList</div>;
+  const { data: form } = useForms();
+
+  return <>{JSON.stringify(form)}</>;
 }
 
 export default FormsList;

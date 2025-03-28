@@ -1,4 +1,10 @@
-export default function About() {
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/typography")({
+  component: TypographyDemo,
+});
+
+function TypographyDemo() {
   return (
     <div>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
