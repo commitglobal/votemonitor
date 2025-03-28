@@ -1,26 +1,16 @@
-import type { ElectionModel } from "@/common/types";
-import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "@/api/get-notifications";
+import type { NotificationsModel } from "@/common/types";
+import { electionRoundId } from "@/lib/utils";
+import { skipToken, useQuery } from "@tanstack/react-query";
+const STALE_TIME = 1000 * 60 * 15; // 15 minutes
 
-export const useElections = <TResult = Array<ElectionModel>,>(
-  select?: (elections: Array<ElectionModel>) => TResult
+export const useNotifications = <TResult = NotificationsModel,>(
+  select?: (elections: NotificationsModel) => TResult
 ) => {
   return useQuery({
-    queryKey: ["elections"],
-    placeholderData: [],
-    queryFn: async () => {
-      const response = await fetch(`/elections.json`);
-      return await response.json();
-    },
+    queryKey: ["notifications"],
+    queryFn: electionRoundId ? () => getNotifications() : skipToken,
     select,
+    staleTime: STALE_TIME,
   });
 };
-
-export function useElectionById(electionId: string) {
-  return useQuery({
-    queryKey: ["elections", electionId],
-    queryFn: async (): Promise<ElectionModel> => {
-      const response = await fetch(`/elections-data/${electionId}.json`);
-      return await response.json();
-    },
-  });
-}

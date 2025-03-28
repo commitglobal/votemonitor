@@ -1,5 +1,9 @@
+import { useNotifications } from "@/queries/use-notifications";
+
 function NotificationsList() {
-  return <div>NotificationsList</div>;
+  const { data: notification } = useNotifications();
+
+  return <>{JSON.stringify(notification)}</>;
 }
 
 export default NotificationsList;

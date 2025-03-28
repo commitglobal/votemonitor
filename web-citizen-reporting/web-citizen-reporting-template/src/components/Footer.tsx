@@ -1,51 +1,91 @@
+import { Button } from "./ui/button";
+
 export default function Footer() {
   return (
-    <footer className="border-t">
+    <footer className="border-t mt-4">
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:py-12">
         <div className="grid flex-1 grid-cols-2 gap-12 sm:grid-cols-3">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Our work</h3>
-            <ul className="flex flex-col gap-2 text-sm">
-              <a
-                target="_blank"
-                href="https://www.commitglobal.org/en/civic-infrastructure"
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Our work
+            </h3>
+            <div className="flex flex-col">
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto justify-start  text-left font-normal"
               >
-                {" "}
-                Civic Infrastructure
-              </a>
-              <a
-                target="_blank"
-                href="https://www.commitglobal.org/en/humanitarian-infrastructure"
+                <a
+                  target="_blank"
+                  href="https://www.commitglobal.org/en/civic-infrastructure"
+                  rel="noreferrer"
+                >
+                  Civic Infrastructure
+                </a>
+              </Button>
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto justify-start text-left font-normal"
               >
-                Humanitarian Infrastructure
-              </a>
-              <a
-                target="_blank"
-                href="https://www.commitglobal.org/en/climate-infrastructure"
+                <a
+                  target="_blank"
+                  href="https://www.commitglobal.org/en/humanitarian-infrastructure"
+                  rel="noreferrer"
+                >
+                  Humanitarian Infrastructure
+                </a>
+              </Button>
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto justify-start text-left font-normal"
               >
-                Climatic infrastructure
-              </a>
-            </ul>
+                <a
+                  target="_blank"
+                  href="https://www.commitglobal.org/en/climate-infrastructure"
+                  rel="noreferrer"
+                >
+                  Climatic infrastructure
+                </a>
+              </Button>
+            </div>
           </div>
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Useful links</h3>
-            <ul className="flex flex-col gap-2 text-sm">
-              <a
-                target="_blank"
-                href="https://www.commitglobal.org/en/forms/subscribe-to-our-newsletter"
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Useful links
+            </h3>
+            <div className="flex flex-col">
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto justify-start text-left font-normal"
               >
-                Subscribe to our newsletter
-              </a>
-              <a
-                target="_blank"
-                href="https://www.commitglobal.org/en/contact-us"
+                <a
+                  target="_blank"
+                  href="https://www.commitglobal.org/en/forms/subscribe-to-our-newsletter"
+                  rel="noreferrer"
+                >
+                  Subscribe to our newsletter
+                </a>
+              </Button>
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto justify-start text-left font-normal"
               >
-                Contact us
-              </a>
-            </ul>
+                <a
+                  target="_blank"
+                  href="https://www.commitglobal.org/en/contact-us"
+                  rel="noreferrer"
+                >
+                  Contact us
+                </a>
+              </Button>
+            </div>
           </div>
 
-          <div>
+          <div className="space-y-4 ">
             <svg
               className="fill-current h-6 sm:h-8 shrink-0"
               viewBox="0 0 401.5 114.5"

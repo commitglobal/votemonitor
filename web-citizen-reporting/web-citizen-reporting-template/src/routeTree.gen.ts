@@ -11,17 +11,27 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TypographyImport } from './routes/typography'
 import { Route as ThankYouImport } from './routes/thank-you'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as NotificationsIndexImport } from './routes/notifications/index'
 import { Route as GuidesIndexImport } from './routes/guides/index'
 import { Route as FormsIndexImport } from './routes/forms/index'
+import { Route as NotificationsNotificationIdImport } from './routes/notifications/$notificationId'
 import { Route as NotificationsIdImport } from './routes/notifications/$id'
 import { Route as GuidesIdImport } from './routes/guides/$id'
+import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
 import { Route as FormsIdImport } from './routes/forms/$id'
+import { Route as FormsFormIdImport } from './routes/forms/$formId'
 
 // Create/Update Routes
+
+const TypographyRoute = TypographyImport.update({
+  id: '/typography',
+  path: '/typography',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ThankYouRoute = ThankYouImport.update({
   id: '/thank-you',
@@ -59,6 +69,13 @@ const FormsIndexRoute = FormsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const NotificationsNotificationIdRoute =
+  NotificationsNotificationIdImport.update({
+    id: '/notifications/$notificationId',
+    path: '/notifications/$notificationId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const NotificationsIdRoute = NotificationsIdImport.update({
   id: '/notifications/$id',
   path: '/notifications/$id',
@@ -71,9 +88,21 @@ const GuidesIdRoute = GuidesIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const GuidesGuideIdRoute = GuidesGuideIdImport.update({
+  id: '/guides/$guideId',
+  path: '/guides/$guideId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormsIdRoute = FormsIdImport.update({
   id: '/forms/$id',
   path: '/forms/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsFormIdRoute = FormsFormIdImport.update({
+  id: '/forms/$formId',
+  path: '/forms/$formId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,11 +131,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThankYouImport
       parentRoute: typeof rootRoute
     }
+    '/typography': {
+      id: '/typography'
+      path: '/typography'
+      fullPath: '/typography'
+      preLoaderRoute: typeof TypographyImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/$formId': {
+      id: '/forms/$formId'
+      path: '/forms/$formId'
+      fullPath: '/forms/$formId'
+      preLoaderRoute: typeof FormsFormIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$id': {
       id: '/forms/$id'
       path: '/forms/$id'
       fullPath: '/forms/$id'
       preLoaderRoute: typeof FormsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/guides/$guideId': {
+      id: '/guides/$guideId'
+      path: '/guides/$guideId'
+      fullPath: '/guides/$guideId'
+      preLoaderRoute: typeof GuidesGuideIdImport
       parentRoute: typeof rootRoute
     }
     '/guides/$id': {
@@ -121,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications/$id'
       fullPath: '/notifications/$id'
       preLoaderRoute: typeof NotificationsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/notifications/$notificationId': {
+      id: '/notifications/$notificationId'
+      path: '/notifications/$notificationId'
+      fullPath: '/notifications/$notificationId'
+      preLoaderRoute: typeof NotificationsNotificationIdImport
       parentRoute: typeof rootRoute
     }
     '/forms/': {
@@ -153,9 +210,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
+  '/forms/$formId': typeof FormsFormIdRoute
   '/forms/$id': typeof FormsIdRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/$id': typeof GuidesIdRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
   '/forms': typeof FormsIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/notifications': typeof NotificationsIndexRoute
@@ -165,9 +226,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
+  '/forms/$formId': typeof FormsFormIdRoute
   '/forms/$id': typeof FormsIdRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/$id': typeof GuidesIdRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
   '/forms': typeof FormsIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/notifications': typeof NotificationsIndexRoute
@@ -178,9 +243,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/thank-you': typeof ThankYouRoute
+  '/typography': typeof TypographyRoute
+  '/forms/$formId': typeof FormsFormIdRoute
   '/forms/$id': typeof FormsIdRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/$id': typeof GuidesIdRoute
   '/notifications/$id': typeof NotificationsIdRoute
+  '/notifications/$notificationId': typeof NotificationsNotificationIdRoute
   '/forms/': typeof FormsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/notifications/': typeof NotificationsIndexRoute
@@ -192,9 +261,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
+    | '/forms/$formId'
     | '/forms/$id'
+    | '/guides/$guideId'
     | '/guides/$id'
     | '/notifications/$id'
+    | '/notifications/$notificationId'
     | '/forms'
     | '/guides'
     | '/notifications'
@@ -203,9 +276,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
+    | '/forms/$formId'
     | '/forms/$id'
+    | '/guides/$guideId'
     | '/guides/$id'
     | '/notifications/$id'
+    | '/notifications/$notificationId'
     | '/forms'
     | '/guides'
     | '/notifications'
@@ -214,9 +291,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/thank-you'
+    | '/typography'
+    | '/forms/$formId'
     | '/forms/$id'
+    | '/guides/$guideId'
     | '/guides/$id'
     | '/notifications/$id'
+    | '/notifications/$notificationId'
     | '/forms/'
     | '/guides/'
     | '/notifications/'
@@ -227,9 +308,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ThankYouRoute: typeof ThankYouRoute
+  TypographyRoute: typeof TypographyRoute
+  FormsFormIdRoute: typeof FormsFormIdRoute
   FormsIdRoute: typeof FormsIdRoute
+  GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   GuidesIdRoute: typeof GuidesIdRoute
   NotificationsIdRoute: typeof NotificationsIdRoute
+  NotificationsNotificationIdRoute: typeof NotificationsNotificationIdRoute
   FormsIndexRoute: typeof FormsIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   NotificationsIndexRoute: typeof NotificationsIndexRoute
@@ -239,9 +324,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ThankYouRoute: ThankYouRoute,
+  TypographyRoute: TypographyRoute,
+  FormsFormIdRoute: FormsFormIdRoute,
   FormsIdRoute: FormsIdRoute,
+  GuidesGuideIdRoute: GuidesGuideIdRoute,
   GuidesIdRoute: GuidesIdRoute,
   NotificationsIdRoute: NotificationsIdRoute,
+  NotificationsNotificationIdRoute: NotificationsNotificationIdRoute,
   FormsIndexRoute: FormsIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   NotificationsIndexRoute: NotificationsIndexRoute,
@@ -260,9 +349,13 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/thank-you",
+        "/typography",
+        "/forms/$formId",
         "/forms/$id",
+        "/guides/$guideId",
         "/guides/$id",
         "/notifications/$id",
+        "/notifications/$notificationId",
         "/forms/",
         "/guides/",
         "/notifications/"
@@ -277,14 +370,26 @@ export const routeTree = rootRoute
     "/thank-you": {
       "filePath": "thank-you.tsx"
     },
+    "/typography": {
+      "filePath": "typography.tsx"
+    },
+    "/forms/$formId": {
+      "filePath": "forms/$formId.tsx"
+    },
     "/forms/$id": {
       "filePath": "forms/$id.tsx"
+    },
+    "/guides/$guideId": {
+      "filePath": "guides/$guideId.tsx"
     },
     "/guides/$id": {
       "filePath": "guides/$id.tsx"
     },
     "/notifications/$id": {
       "filePath": "notifications/$id.tsx"
+    },
+    "/notifications/$notificationId": {
+      "filePath": "notifications/$notificationId.tsx"
     },
     "/forms/": {
       "filePath": "forms/index.tsx"
