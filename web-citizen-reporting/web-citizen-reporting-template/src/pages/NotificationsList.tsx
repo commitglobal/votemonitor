@@ -1,6 +1,6 @@
 import Notification from "@/components/notifications";
 import { useNotifications } from "@/queries/use-notifications";
-import { typographyClasses } from "@/routes/typography";
+import { typographyClasses } from "../config/site";
 
 function NotificationsList() {
   const { data: notification } = useNotifications();
