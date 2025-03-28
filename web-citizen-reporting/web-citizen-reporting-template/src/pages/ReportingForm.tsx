@@ -1,4 +1,8 @@
-import type { BaseQuestion } from "@/common/types";
+import type {
+  BaseQuestion,
+  MultiSelectQuestion,
+  SingleSelectQuestion,
+} from "@/common/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -41,6 +45,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 function QuestionText({
@@ -75,13 +80,59 @@ function ReportingForm() {
   const { formId } = Route.useParams();
   const { data: citizenReportFoms } = useSuspenseQuery(formsOptions());
 
-  const citizenReportFom = citizenReportFoms.find((f) => f.id === formId);
+  const citizenReportForm = citizenReportFoms.find((f) => f.id === formId);
 
-  if (citizenReportFom === undefined) {
+  if (citizenReportForm === undefined) {
     throw notFound({ throw: false });
   }
 
   const form = useForm();
+  const formValues = form.watch();
+
+  useEffect(() => {
+    citizenReportForm.questions.forEach((question) => {
+      if (isMultiSelectQuestion(question)) {
+        form.setValue(`question-${question.id}`, []);
+      }
+
+      if (isTextQuestion(question)) {
+        form.setValue(`question-${question.id}`, "");
+      }
+    });
+  }, [form.setValue, citizenReportForm]);
+
+  const questionHasFreeTextOption = useCallback(
+    (question: SingleSelectQuestion | MultiSelectQuestion) => {
+      return question.options.some((option) => option.isFreeText);
+    },
+    []
+  );
+
+  const getFreeTextOption = useCallback(
+    (question: SingleSelectQuestion | MultiSelectQuestion) => {
+      return question.options.find((option) => option.isFreeText);
+    },
+    []
+  );
+
+  const isFreeTextOptionSelected = useCallback(
+    (question: SingleSelectQuestion | MultiSelectQuestion) => {
+      console.log("formValues", formValues);
+      const freeTextOption = getFreeTextOption(question);
+      const answer = formValues[`question-${question.id}`];
+      if (!answer) {
+        return false;
+      }
+
+      if (isSingleSelectQuestion(question)) {
+        return !!answer || answer === freeTextOption?.id;
+      } else {
+        const selection = answer as string[];
+        return selection.some((s) => s === freeTextOption?.id);
+      }
+    },
+    [formValues]
+  );
 
   function onSubmit() {
     console.log("submit");
@@ -91,38 +142,38 @@ function ReportingForm() {
     <Card>
       <CardHeader>
         <CardTitle>
-          {citizenReportFom.name[citizenReportFom.defaultLanguage]}
+          {citizenReportForm.name[citizenReportForm.defaultLanguage]}
         </CardTitle>
         <CardDescription>
-          {citizenReportFom.description[citizenReportFom.defaultLanguage]}
+          {citizenReportForm.description[citizenReportForm.defaultLanguage]}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {citizenReportFom.questions.map((question) => (
+            {citizenReportForm.questions.map((question) => (
               <div className="w-full" key={question.id}>
                 {isTextQuestion(question) && (
                   <FormField
                     control={form.control}
-                    name="username"
+                    name={`question-${question.id}`}
                     render={({ field }) => (
                       <FormItem>
                         <QuestionText
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
                         <QuestionDescription
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
 
                         <FormControl>
                           <Textarea
                             placeholder={
                               question?.inputPlaceholder?.[
-                                citizenReportFom.defaultLanguage
+                                citizenReportForm.defaultLanguage
                               ]
                             }
                             {...field}
@@ -137,23 +188,23 @@ function ReportingForm() {
                 {isNumberQuestion(question) && (
                   <FormField
                     control={form.control}
-                    name="username"
+                    name={`question-${question.id}`}
                     render={({ field }) => (
                       <FormItem>
                         <QuestionText
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
                         <QuestionDescription
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
                         <FormControl>
                           <Input
                             type="number"
                             placeholder={
                               question?.inputPlaceholder?.[
-                                citizenReportFom.defaultLanguage
+                                citizenReportForm.defaultLanguage
                               ]
                             }
                             {...field}
@@ -169,16 +220,16 @@ function ReportingForm() {
                 {isDateQuestion(question) && (
                   <FormField
                     control={form.control}
-                    name="dob"
+                    name={`question-${question.id}`}
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <QuestionText
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
                         <QuestionDescription
                           question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
+                          languageCode={citizenReportForm.defaultLanguage}
                         />
                         <Popover>
                           <PopoverTrigger asChild>
@@ -219,111 +270,161 @@ function ReportingForm() {
                 )}
 
                 {isSingleSelectQuestion(question) && (
-                  <FormField
-                    control={form.control}
-                    name="type"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <QuestionText
-                          question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
-                        />
-                        <QuestionDescription
-                          question={question}
-                          languageCode={citizenReportFom.defaultLanguage}
-                        />
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1"
-                          >
-                            {question.options.map((option) => (
-                              <FormItem
-                                className="flex items-center space-x-3 space-y-0"
-                                key={`${question.id}-${option.id}`}
-                              >
-                                <FormControl>
-                                  <RadioGroupItem value={option.id} />
-                                </FormControl>
-                                <FormLabel className="font-normal">
-                                  {
-                                    option.text[
-                                      citizenReportFom.defaultLanguage
-                                    ]
-                                  }
-                                </FormLabel>
-                              </FormItem>
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                {isMultiSelectQuestion(question) && (
-                  <FormField
-                    control={form.control}
-                    name="items"
-                    render={() => (
-                      <FormItem>
-                        <div className="mb-4">
+                  <div className="flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`question-${question.id}`}
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
                           <QuestionText
                             question={question}
-                            languageCode={citizenReportFom.defaultLanguage}
+                            languageCode={citizenReportForm.defaultLanguage}
                           />
                           <QuestionDescription
                             question={question}
-                            languageCode={citizenReportFom.defaultLanguage}
+                            languageCode={citizenReportForm.defaultLanguage}
                           />
-                        </div>
-                        {question.options.map((option) => (
-                          <FormField
-                            key={option.id}
-                            control={form.control}
-                            name="items"
-                            render={({ field }) => {
-                              return (
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-1"
+                            >
+                              {question.options.map((option) => (
                                 <FormItem
-                                  key={option.id}
-                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                  className="flex items-center space-x-3 space-y-0"
+                                  key={`${question.id}-${option.id}`}
                                 >
                                   <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(option.id)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([
-                                              ...field.value,
-                                              option.id,
-                                            ])
-                                          : field.onChange(
-                                              field.value?.filter(
-                                                (value: string) =>
-                                                  value !== option.id
-                                              )
-                                            );
-                                      }}
-                                    />
+                                    <RadioGroupItem value={option.id} />
                                   </FormControl>
-                                  <FormLabel className="text-sm font-normal">
+                                  <FormLabel className="font-normal">
                                     {
                                       option.text[
-                                        citizenReportFom.defaultLanguage
+                                        citizenReportForm.defaultLanguage
                                       ]
                                     }
                                   </FormLabel>
                                 </FormItem>
-                              );
-                            }}
-                          />
-                        ))}
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {questionHasFreeTextOption(question) &&
+                      isFreeTextOptionSelected(question) && (
+                        <FormField
+                          control={form.control}
+                          name={`question-${question.id}-freeText`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  placeholder={
+                                    getFreeTextOption(question)?.text?.[
+                                      citizenReportForm.defaultLanguage
+                                    ]
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                  </div>
+                )}
+
+                {isMultiSelectQuestion(question) && (
+                  <div className="flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`question-${question.id}`}
+                      render={() => (
+                        <FormItem>
+                          <div className="mb-4">
+                            <QuestionText
+                              question={question}
+                              languageCode={citizenReportForm.defaultLanguage}
+                            />
+                            <QuestionDescription
+                              question={question}
+                              languageCode={citizenReportForm.defaultLanguage}
+                            />
+                          </div>
+                          {question.options.map((option) => (
+                            <FormField
+                              key={option.id}
+                              control={form.control}
+                              name={`question-${question.id}`}
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={option.id}
+                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(
+                                          option.id
+                                        )}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                option.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value: string) =>
+                                                    value !== option.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="text-sm font-normal">
+                                      {
+                                        option.text[
+                                          citizenReportForm.defaultLanguage
+                                        ]
+                                      }
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {questionHasFreeTextOption(question) &&
+                      isFreeTextOptionSelected(question) && (
+                        <FormField
+                          control={form.control}
+                          name={`question-${question.id}-freeText`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  placeholder={
+                                    getFreeTextOption(question)?.text?.[
+                                      citizenReportForm.defaultLanguage
+                                    ]
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                  </div>
                 )}
               </div>
             ))}
