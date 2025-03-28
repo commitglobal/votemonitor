@@ -1,24 +1,28 @@
 import {
   Outlet,
   createRootRouteWithContext,
+  useLocation,
   useRouterState,
 } from "@tanstack/react-router";
 
 import Footer from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
-import type { QueryClient } from "@tanstack/react-query";
-import NotFound from "@/pages/NotFound";
 import { Spinner } from "@/components/Spinner";
+import NotFound from "@/pages/NotFound";
+import type { QueryClient } from "@tanstack/react-query";
 
 function RouterSpinner() {
   const isLoading = useRouterState({ select: (s) => s.status === "pending" });
   return <Spinner show={isLoading} />;
 }
 
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
-}>()({
-  component: () => (
+function RootComponent() {
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  });
+  const isFooterHidden = pathname === "/thank-you";
+
+  return (
     <>
       <SiteHeader />
       <div className="container-wrapper">
@@ -29,10 +33,16 @@ export const Route = createRootRouteWithContext<{
             </div>
             <Outlet />
           </section>
-          <Footer />
+          {!isFooterHidden && <Footer />}
         </div>
       </div>
     </>
-  ),
+  );
+}
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
+  component: () => <RootComponent />,
   notFoundComponent: () => <NotFound />,
 });
