@@ -4,7 +4,8 @@ import { NGOStatus } from '@/features/ngos/models/NGO';
 export interface MonitoringNgoModel {
   id: string;
   name: string;
-  status: NGOStatus;
+  ngoId: string;
+  ngoStatus: NGOStatus;
 }
 
 export interface ElectionRoundModel {
