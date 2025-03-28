@@ -16,14 +16,24 @@ import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 const STALE_TIME = 1000 * 60 * 15; // 15 minutes
 
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: STALE_TIME,
+    },
+  },
+});
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {},
+  context: {
+    queryClient,
+  },
   defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultPreloadDelay: 100,
 });
 
 // Register the router instance for type safety
@@ -32,14 +42,6 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: STALE_TIME,
-    },
-  },
-});
 
 // Render the app
 const rootElement = document.getElementById("app");
