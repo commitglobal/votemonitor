@@ -47,7 +47,7 @@ export const Notification: FC<NotificationProps> = ({
             to="/notifications/$notificationId"
             params={{ notificationId: id }}
           >
-            <Button>Read more</Button>{" "}
+            <Button>Read more</Button>
           </Link>
         )}
       </CardFooter>
