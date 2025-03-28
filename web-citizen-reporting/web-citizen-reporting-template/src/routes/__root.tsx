@@ -1,10 +1,18 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 
 import Footer from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createRootRoute({
-  component: () => (
+  component: () => <RootComponent />,
+});
+
+const RootComponent = () => {
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  });
+  const isFooterHidden = pathname === "/thank-you";
+  return (
     <>
       <SiteHeader />
       <div className="container-wrapper">
@@ -12,9 +20,9 @@ export const Route = createRootRoute({
           <section className="scroll-mt-20">
             <Outlet />
           </section>
-          <Footer />
+          {!isFooterHidden && <Footer />}
         </div>
       </div>
     </>
-  ),
-});
+  );
+};
