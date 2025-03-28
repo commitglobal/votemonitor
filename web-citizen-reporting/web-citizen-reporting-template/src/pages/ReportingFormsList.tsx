@@ -34,13 +34,8 @@ function ReportingFormsList() {
               <p className="leading-7 [&:not(:first-child)]:mt-6 line-clamp-3">
                 {form.description[form.defaultLanguage]}
               </p>
-              <div className="mt-2 flex items-center text-xs text-muted-foreground">
+              <div className="mt-4 flex items-center text-xs text-muted-foreground">
                 <span>{form.numberOfQuestions} questions</span>
-                <span className="mx-2">•</span>
-                {/* - form.lastModifiedOn nu este primit de la API */}
-                <span>
-                  {new Date(form.lastModifiedOn).toLocaleDateString()}
-                </span>
               </div>
             </section>
 
