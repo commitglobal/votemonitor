@@ -1,7 +1,7 @@
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { ElectionRoundStatus, type Location } from '@/common/types';
+import { ElectionRoundStatus, ReportedError, type Location } from '@/common/types';
 import { LocationsFilters } from '@/components/LocationsFilters/LocationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { ExportDataButton } from '@/features/responses/components/ExportDataButt
 import { ExportedDataType } from '@/features/responses/models/data-export';
 import { locationsKeys } from '@/hooks/locations-levels';
 import i18n from '@/i18n';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { ArrowUpTrayIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
@@ -49,11 +50,14 @@ export default function LocationsDashboard(): ReactElement {
             description: 'Location deleted',
           });
         },
-        onError: () =>
+        onError: (error: ReportedError) => {
+          const title = 'Error occured when deleting location';
+          sendErrorToSentry({ error, title });
           toast({
-            title: 'Error occured when deleting location',
+            title,
             variant: 'destructive',
-          }),
+          });
+        },
       }),
     [currentElectionRoundId, deleteLocationMutation]
   );
@@ -73,11 +77,14 @@ export default function LocationsDashboard(): ReactElement {
             description: 'Location updated',
           });
         },
-        onError: () =>
+        onError: (error: ReportedError) => {
+          const title = 'Error occured when updating location';
+          sendErrorToSentry({ error, title });
           toast({
-            title: 'Error occured when updating location',
+            title,
             variant: 'destructive',
-          }),
+          });
+        },
       }),
     [currentElectionRoundId, updateLocationMutation]
   );
