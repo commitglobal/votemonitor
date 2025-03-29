@@ -8,4 +8,5 @@ public static class QuestionTypes
     public const string SingleSelectQuestionType = "singleSelectQuestion";
     public const string MultiSelectQuestionType = "multiSelectQuestion";
     public const string RatingQuestionType = "ratingQuestion";
+    public const string MatrixQuestionType = "matrixQuestion";
 }

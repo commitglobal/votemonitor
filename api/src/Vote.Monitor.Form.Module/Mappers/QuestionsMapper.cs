@@ -90,6 +90,18 @@ public static class QuestionsMapper
                      ratingQuestion.LowerLabel,
                      ratingQuestion.UpperLabel,
                      ToEntity(ratingQuestion.DisplayLogic));
+            
+            case MatrixQuestionRequest matrixQuestion:
+                var matrixQuestionOptions = ToEntities(matrixQuestion.Options);
+                var matrixQuestionRows = ToEntities(matrixQuestion.Rows);
+
+                return MatrixQuestion.Create(matrixQuestion.Id,
+                    matrixQuestion.Code,
+                    matrixQuestion.Text,
+                    matrixQuestion.Helptext,
+                    ToEntity(matrixQuestion.DisplayLogic),
+                    matrixQuestionOptions,
+                    matrixQuestionRows);
 
             default: throw new ApplicationException("Unknown question type received");
         }
@@ -99,6 +111,22 @@ public static class QuestionsMapper
     {
         return options
             .Select(o => SelectOption.Create(o.Id, o.Text, o.IsFreeText, o.IsFlagged))
+            .ToList()
+            .AsReadOnly();
+    }
+    
+    private static IReadOnlyList<MatrixOption> ToEntities(IEnumerable<MatrixOptionRequest> options)
+    {
+        return options
+            .Select(o => MatrixOption.Create(o.Id, o.Text, o.IsFlagged))
+            .ToList()
+            .AsReadOnly();
+    }
+    
+    private static IReadOnlyList<MatrixRow> ToEntities(IEnumerable<MatrixRowRequest> options)
+    {
+        return options
+            .Select(o => MatrixRow.Create(o.Id, o.Text))
             .ToList()
             .AsReadOnly();
     }
