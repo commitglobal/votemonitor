@@ -1,9 +1,19 @@
 import { z } from 'zod';
+import { ElectionRoundStatus } from '@/common/types';
 
 export enum ObserverStatus {
   Active = 'Active',
   Pending = 'Pending',
   Deactivated = 'Deactivated',
+}
+
+export interface ObserversMonitoredElectionModel {
+  id: string;
+  englishTitle: string;
+  title: string;
+  startDate: string;
+  ngoName: string;
+  status: ElectionRoundStatus;
 }
 
 export interface Observer {
@@ -14,7 +24,7 @@ export interface Observer {
   status: ObserverStatus;
   phoneNumber: string;
   isAccountVerified: boolean;
-  monitoredElections: Array<unknown>;
+  monitoredElections: ObserversMonitoredElectionModel[];
 }
 
 export const addObserverFormSchema = z.object({

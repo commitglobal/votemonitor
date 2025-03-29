@@ -2,6 +2,7 @@ import {
   ElectionRoundStatus,
   FormStatus,
   FormType,
+  ObserverStatus,
   RatingScaleType,
   TranslatedString,
   UserPayload,
@@ -349,6 +350,20 @@ export function mapElectionRoundStatus(electionRoundStatus: ElectionRoundStatus)
       return i18n.t('electionRound.status.started');
     case ElectionRoundStatus.Archived:
       return i18n.t('electionRound.status.archived');
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export function mapObserverStatus(observerStatus: ObserverStatus): string {
+  switch (observerStatus) {
+    case ObserverStatus.Active:
+      return i18n.t('observers.status.active');
+    case ObserverStatus.Pending:
+      return i18n.t('observers.status.pending');
+    case ObserverStatus.Deactivated:
+      return i18n.t('observers.status.deactivated');
 
     default:
       return 'Unknown';

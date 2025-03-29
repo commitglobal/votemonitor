@@ -231,6 +231,12 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
+export enum ObserverStatus {
+  Active = 'Active',
+  Pending = 'Pending',
+  Deactivated = 'Deactivated',
+}
+
 export enum FormType {
   PSI = 'PSI',
   Opening = 'Opening',

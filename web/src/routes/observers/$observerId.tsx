@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import ObserverDetails from '@/features/observers/components/ObserverDetails/ObserverDetails';
+import ObserverProfile from '@/features/observers/components/ObserverProfile/ObserverProfile';
 import { observersKeys } from '@/features/observers/hooks/observers-queries';
 import { Observer } from '@/features/observers/models/observer';
 import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
@@ -31,5 +31,5 @@ export const Route = createFileRoute('/observers/$observerId')({
 });
 
 function Details() {
-  return <ObserverDetails />;
+  return <ObserverProfile />;
 }
