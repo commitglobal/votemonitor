@@ -82,6 +82,7 @@ function ReportLocationStep() {
     selectedLevel1,
     selectedLevel2,
     selectedLevel3,
+    selectedLevel4,
     selectedLevel5,
   ]);
 
