@@ -1,4 +1,4 @@
-import Notification from "@/components/notifications";
+import Notification from "@/components/Notification";
 import { useNotifications } from "@/queries/use-notifications";
 import { Route } from "@/routes/notifications/$notificationId";
 import { notFound } from "@tanstack/react-router";
