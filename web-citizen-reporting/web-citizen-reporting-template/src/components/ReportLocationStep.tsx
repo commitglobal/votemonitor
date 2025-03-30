@@ -44,24 +44,46 @@ function ReportLocationStep() {
   const selectedLevel5 = form.watch("selectedLevel5");
 
   const selectedLevel1Node = useMemo(() => {
-    locationsByLevels[1]?.find((n) => n.id.toString() === selectedLevel1);
+    return locationsByLevels[1]?.find(
+      (n) => n.id.toString() === selectedLevel1
+    );
   }, [locationsByLevels, selectedLevel1]);
 
   const selectedLevel2Node = useMemo(() => {
-    locationsByLevels[2]?.find((n) => n.id.toString() === selectedLevel2);
-  }, [locationsByLevels, selectedLevel2]);
+    return locationsByLevels[2]?.find(
+      (n) => n.id.toString() === selectedLevel2
+    );
+  }, [locationsByLevels, selectedLevel1, selectedLevel2]);
 
   const selectedLevel3Node = useMemo(() => {
-    locationsByLevels[3]?.find((n) => n.id.toString() === selectedLevel3);
-  }, [locationsByLevels, selectedLevel3]);
+    return locationsByLevels[3]?.find(
+      (n) => n.id.toString() === selectedLevel3
+    );
+  }, [locationsByLevels, selectedLevel1, selectedLevel2, selectedLevel3]);
 
   const selectedLevel4Node = useMemo(() => {
-    locationsByLevels[4]?.find((n) => n.id.toString() === selectedLevel4);
-  }, [locationsByLevels, selectedLevel4]);
+    return locationsByLevels[4]?.find(
+      (n) => n.id.toString() === selectedLevel4
+    );
+  }, [
+    locationsByLevels,
+    selectedLevel1,
+    selectedLevel2,
+    selectedLevel3,
+    selectedLevel4,
+  ]);
 
   const selectedLevel5Node = useMemo(() => {
-    locationsByLevels[5]?.find((n) => n.id.toString() === selectedLevel5);
-  }, [locationsByLevels, selectedLevel5]);
+    return locationsByLevels[5]?.find(
+      (n) => n.id.toString() === selectedLevel5
+    );
+  }, [
+    locationsByLevels,
+    selectedLevel1,
+    selectedLevel2,
+    selectedLevel3,
+    selectedLevel5,
+  ]);
 
   const filteredLevel2Nodes = useMemo(
     () =>
@@ -96,23 +118,48 @@ function ReportLocationStep() {
   );
 
   useEffect(() => {
+    form.setValue("locationId", "");
     form.setValue("selectedLevel2", "");
+    form.setValue("selectedLevel3", "");
+    form.setValue("selectedLevel4", "");
+    form.setValue("selectedLevel5", "");
   }, [selectedLevel1]);
 
   useEffect(() => {
+    form.setValue("locationId", "");
     form.setValue("selectedLevel3", "");
     form.setValue("selectedLevel4", "");
     form.setValue("selectedLevel5", "");
   }, [selectedLevel1, selectedLevel2]);
 
   useEffect(() => {
+    form.setValue("locationId", "");
     form.setValue("selectedLevel4", "");
     form.setValue("selectedLevel5", "");
   }, [selectedLevel1, selectedLevel2, selectedLevel3]);
 
   useEffect(() => {
+    form.setValue("locationId", "");
     form.setValue("selectedLevel5", "");
   }, [selectedLevel1, selectedLevel2, selectedLevel3, selectedLevel4]);
+
+  useEffect(() => {
+    form.setValue(
+      "locationId",
+      selectedLevel5Node?.locationId ??
+        selectedLevel4Node?.locationId ??
+        selectedLevel3Node?.locationId ??
+        selectedLevel2Node?.locationId ??
+        selectedLevel1Node?.locationId ??
+        ""
+    );
+  }, [
+    selectedLevel1,
+    selectedLevel2,
+    selectedLevel3,
+    selectedLevel4,
+    selectedLevel5,
+  ]);
 
   return (
     <Card className="w-full">
