@@ -41,6 +41,27 @@ function ReportLocationStep() {
   const selectedLevel2 = form.watch("selectedLevel2");
   const selectedLevel3 = form.watch("selectedLevel3");
   const selectedLevel4 = form.watch("selectedLevel4");
+  const selectedLevel5 = form.watch("selectedLevel5");
+
+  const selectedLevel1Node = useMemo(() => {
+    locationsByLevels[1]?.find((n) => n.id.toString() === selectedLevel1);
+  }, [locationsByLevels, selectedLevel1]);
+
+  const selectedLevel2Node = useMemo(() => {
+    locationsByLevels[2]?.find((n) => n.id.toString() === selectedLevel2);
+  }, [locationsByLevels, selectedLevel2]);
+
+  const selectedLevel3Node = useMemo(() => {
+    locationsByLevels[3]?.find((n) => n.id.toString() === selectedLevel3);
+  }, [locationsByLevels, selectedLevel3]);
+
+  const selectedLevel4Node = useMemo(() => {
+    locationsByLevels[4]?.find((n) => n.id.toString() === selectedLevel4);
+  }, [locationsByLevels, selectedLevel4]);
+
+  const selectedLevel5Node = useMemo(() => {
+    locationsByLevels[5]?.find((n) => n.id.toString() === selectedLevel5);
+  }, [locationsByLevels, selectedLevel5]);
 
   const filteredLevel2Nodes = useMemo(
     () =>
