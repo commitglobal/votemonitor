@@ -44,7 +44,7 @@ public class Endpoint(
                                   """)
             .Where(x => x.Id == req.FormId)
             .Where(x => x.Status == FormStatus.Published)
-            .Where(x => x.FormType != FormType.CitizenReporting && x.FormType != FormType.IncidentReporting)
+            .Where(x => x.FormType != FormType.CitizenReporting)
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
 
