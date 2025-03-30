@@ -284,7 +284,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             	LEFT JOIN FILTERED_SUBMISSIONS FS ON FS."FormId" = AF."FormId"
             WHERE
             	AF."FormStatus" = 'Published'
-            	AND AF."FormType" NOT IN ('CitizenReporting', 'IncidentReporting')
+            	AND AF."FormType" NOT IN ('CitizenReporting')
             GROUP BY
             	AF."FormId",
             	AF."FormCode",
