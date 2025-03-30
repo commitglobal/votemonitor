@@ -1,13 +1,15 @@
 import Notification from "@/components/notifications";
+import { Spinner } from "@/components/Spinner";
 import { useNotifications } from "@/queries/use-notifications";
 import { Route } from "@/routes/notifications/$notificationId";
 import { notFound } from "@tanstack/react-router";
 
 function NotificationDetails() {
   const { notificationId } = Route.useParams();
-  const { data: notification } = useNotifications((notification) =>
+  const { data: notification, isLoading } = useNotifications((notification) =>
     notification.notifications.find((n) => n.id == notificationId)
   );
+  if (isLoading) return <Spinner show={isLoading} />;
 
   if (!notification) throw notFound();
 
