@@ -77,7 +77,7 @@ function QuestionDescription({
   );
 }
 
-function AnswersForm() {
+function ReportAnswersStep() {
   const { formId } = Route.useParams();
   const { data: citizenReportFoms } = useSuspenseQuery(formsOptions());
   const [loading, setLoading] = React.useState(false);
@@ -469,4 +469,4 @@ function AnswersForm() {
   );
 }
 
-export default AnswersForm;
+export default ReportAnswersStep;

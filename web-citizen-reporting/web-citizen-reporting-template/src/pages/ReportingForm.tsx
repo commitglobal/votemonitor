@@ -1,12 +1,14 @@
-import { DevTool } from "@hookform/devtools";
-import { useForm, type FieldValues } from "react-hook-form";
-
-import AnswersForm from "@/components/AnswersForm";
-import LocationForm from "@/components/LocationForm";
+import ReportAnswersStep from "@/components/ReportAnswersStep";
+import ReportLocationStep, {
+  locationSchema,
+} from "@/components/ReportLocationStep";
+import ReportReviewStep from "@/components/ReportReviewStep";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { defineStepper } from "@/components/ui/stepper";
-import ThankYou from "./ThankYou";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type FieldValues } from "react-hook-form";
+
 const {
   StepperProvider,
   StepperControls,
@@ -18,17 +20,20 @@ const {
   {
     id: "location",
     title: "Location",
-    Component: LocationForm,
+    Component: ReportLocationStep,
+    schema: locationSchema,
   },
   {
     id: "answers",
     title: "Answers",
-    Component: AnswersForm,
+    Component: ReportAnswersStep,
+    schema: undefined,
   },
   {
-    id: "complete",
-    title: "Complete",
-    Component: ThankYou,
+    id: "review",
+    title: "Review",
+    Component: ReportReviewStep,
+    schema: undefined,
   }
 );
 
@@ -45,10 +50,32 @@ const CitizenReportStepperComponent = () => {
 
   const form = useForm({
     mode: "onSubmit",
+    resolver: methods.current.schema
+      ? zodResolver(methods.current.schema)
+      : undefined,
+    // Pre-populate with any existing values for this step
+    defaultValues: {
+      selectedLevel1: "",
+      selectedLevel2: "",
+      selectedLevel3: "",
+      selectedLevel4: "",
+      selectedLevel5: "",
+      locationId: "",
+    },
   });
+
+  // // Reset form when step changes
+  // React.useEffect(() => {
+  //   form.reset(formValues[methods.current.id] || {});
+  // }, [methods.current.id, form.reset, formValues]);
 
   const onSubmit = (values: FieldValues) => {
     console.log(`Form values for step ${methods.current.id}:`, values);
+
+    // Move to next step if not on the last step
+    // if (!methods.isLast) {
+    //   methods.next();
+    // }
   };
 
   return (
@@ -73,10 +100,10 @@ const CitizenReportStepperComponent = () => {
         {methods.switch({
           location: ({ Component }) => <Component />,
           answers: ({ Component }) => <Component />,
-          complete: ({ Component }) => <Component />,
+          review: ({ Component }) => <Component />,
         })}
         <StepperControls>
-          {!methods.isLast && !methods.isFirst && (
+          {!methods.isLast && (
             <Button
               variant="secondary"
               onClick={methods.prev}
@@ -88,17 +115,25 @@ const CitizenReportStepperComponent = () => {
           <Button
             type="submit"
             onClick={() => {
+              if (methods.isLast) {
+                return methods.reset();
+              }
               methods.beforeNext(async () => {
-                const valid = await form.trigger();
+                const fieldsToValidate: any = methods.current.schema
+                  ? (Object.keys(methods.current.schema.shape) as string[])
+                  : undefined;
+
+                console.log(fieldsToValidate);
+                const valid = await form.trigger(fieldsToValidate);
                 if (!valid) return false;
+
                 return true;
               });
             }}
           >
-            {methods.isLast ? "Send" : "Next"}
+            {methods.isLast ? "Reset" : "Next"}
           </Button>
         </StepperControls>
-        <DevTool control={form.control} /> {/* set up the dev tool */}
       </form>
     </Form>
   );
