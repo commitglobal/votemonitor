@@ -1,8 +1,11 @@
 import { Spinner } from "@/components/Spinner";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { downloadFile } from "@/lib/utils";
 import { useGuides } from "@/queries/use-guides";
 import { Route } from "@/routes/guides/$guideId";
 import { notFound } from "@tanstack/react-router";
+import { Download, ExternalLink } from "lucide-react";
 
 function GuideDetails() {
   const { guideId } = Route.useParams();
@@ -11,22 +14,6 @@ function GuideDetails() {
     guides.find((g) => g.id === guideId)
   );
 
-  {
-    console.log(guide);
-  }
-  // return <>{JSON.stringify(guide)}</>;
-
-  /* 
-    {guide.guideType === GuideType.Text && (
-              <BookOpen className="h-5 w-5" />
-            )}
-            {guide.guideType === GuideType.Website && (
-              <Globe className="h-5 w-5" />
-            )}
-            {guide.guideType === GuideType.Document && (
-              <FileDown className="h-5 w-5" />
-            )}
-  */
   if (isLoading) return <Spinner show={isLoading} />;
 
   if (!guide) throw notFound();
@@ -37,9 +24,25 @@ function GuideDetails() {
           <CardTitle>{guide.title}</CardTitle>
         </CardHeader>
         {guide.guideType === "Text" && (
-          <CardContent>
+          <CardContent className="h-full w-full">
             <div dangerouslySetInnerHTML={{ __html: guide.text }} />
           </CardContent>
+        )}
+        {guide.guideType === "Website" && (
+          <Button variant="link" className="cursor-pointer">
+            <a href={guide.websiteUrl}>Visit Website</a>
+            <ExternalLink className="h-4 w-4" />
+          </Button>
+        )}
+        {guide.guideType === "Document" && (
+          <Button
+            variant="link"
+            className="cursor-pointer"
+            onClick={() => downloadFile(guide.presignedUrl)}
+          >
+            Download
+            <Download className="h-4 w-4" />
+          </Button>
         )}
       </Card>
     </>
