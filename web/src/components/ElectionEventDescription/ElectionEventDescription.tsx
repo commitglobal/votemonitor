@@ -38,7 +38,6 @@ export default function ElectionEventDescription() {
   const { mutate: startElectionRound } = useStartElectionRound();
   const { mutate: archiveElectionRound } = useArchiveElectionRound();
   const { mutate: unarchiveElectionRound } = useUnarchiveElectionRound();
-  if (!electionEvent) return <>Loading...</>;
 
   const handleArchiveElectionRound = useCallback(async () => {
     if (
@@ -143,6 +142,8 @@ export default function ElectionEventDescription() {
       });
     }
   }, [electionEvent, confirm]);
+
+  if (!electionEvent) return <>Loading...</>;
 
   return (
     <div className='space-y-4'>
