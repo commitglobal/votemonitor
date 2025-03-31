@@ -4,6 +4,8 @@ Welcome to web citizen reporting template
 
 To run this application:
 
+copy `.env.example` to `.env`
+
 ```bash
 pnpm install
 pnpm start
@@ -16,4 +18,3 @@ To build this application for production:
 ```bash
 pnpm build
 ```
-

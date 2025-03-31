@@ -30,6 +30,7 @@ export const Notification: FC<NotificationProps> = ({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
+        {/* convert to local time from utc */}
         <CardDescription>
           Sent at: {new Date(sentAt).toLocaleString("en-GB")}
         </CardDescription>

@@ -1,4 +1,5 @@
-import Notification from "@/components/notifications";
+import Notification from "@/components/Notification";
+
 import { Spinner } from "@/components/Spinner";
 import { useNotifications } from "@/queries/use-notifications";
 import { Route } from "@/routes/notifications/$notificationId";
