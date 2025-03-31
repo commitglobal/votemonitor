@@ -98,7 +98,7 @@ public class ExportQuickReportsJob(
             	QR."QuickReportLocationType",
             	QR."IncidentCategory",
             	QR."MonitoringObserverId",
-            	COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS "Timestamp",
+            	QR."LastUpdatedAt" AS "Timestamp",
             	QR."Title",
             	QR."Description",
             	QR."FollowUpStatus",
@@ -118,7 +118,7 @@ public class ExportQuickReportsJob(
             						'UploadedFileName',
             						"UploadedFileName",
             						'TimeSubmitted',
-            						COALESCE("LastModifiedOn", "CreatedOn")
+            						QRA."LastUpdatedAt"
             					)
             				)
             			FROM
@@ -185,14 +185,14 @@ public class ExportQuickReportsJob(
             	)
             	AND (
             		@FROMDATE IS NULL
-            		OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= @FROMDATE::TIMESTAMP
+            		OR QR."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
             	)
             	AND (
             		@TODATE IS NULL
-            		OR COALESCE(QR."LastModifiedOn", QR."CreatedOn") <= @TODATE::TIMESTAMP
+            		OR QR."LastUpdatedAt" <= @TODATE::TIMESTAMP
             	)
             ORDER BY
-            	COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
+            	QR."LastUpdatedAt" DESC
             """;
 
         var queryArgs = new
