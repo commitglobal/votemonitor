@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { typography } from "../config/site";
 
 interface CheckmarkProps {
   size?: number;
@@ -102,10 +103,10 @@ export default function ThankYou() {
             <Checkmark size={80} strokeWidth={4} />
           </div>
         </motion.div>
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+        <h1 className={typography.h1}>
           Thank you for your submission
         </h1>
-        <p className="leading-7 [&:not(:first-child)]:mt-6">
+        <p className={typography.p}>
           We will investigate and will contact you if you selected that
         </p>
       </CardContent>
