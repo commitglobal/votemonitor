@@ -1,4 +1,4 @@
-mport Notification from "@/components/notifications";
+import Notification from "@/components/notifications";
 import { Spinner } from "@/components/Spinner";
 import { useNotifications } from "@/queries/use-notifications";
 import { Route } from "@/routes/notifications/$notificationId";
