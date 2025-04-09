@@ -16,8 +16,9 @@ export default function MainNav() {
           to="/"
           className={cn("transition-colors hover:text-foreground/80")}
           activeProps={{
-            className: "text-foreground",
+            className: "text-foreground font-bold",
           }}
+          preload={"intent"}
         >
           Home
         </Link>
@@ -27,8 +28,9 @@ export default function MainNav() {
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
           activeProps={{
-            className: "text-foreground",
+            className: "text-foreground font-bold",
           }}
+          preload={"intent"}
         >
           Forms
         </Link>
@@ -38,8 +40,9 @@ export default function MainNav() {
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
           activeProps={{
-            className: "text-foreground",
+            className: "text-foreground font-bold",
           }}
+          preload={"intent"}
         >
           Guides
         </Link>
@@ -49,8 +52,9 @@ export default function MainNav() {
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
           activeProps={{
-            className: "text-foreground",
+            className: "text-foreground font-bold",
           }}
+          preload={"intent"}
         >
           Notifications
         </Link>
@@ -60,8 +64,9 @@ export default function MainNav() {
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
           activeProps={{
-            className: "text-foreground",
+            className: "text-foreground font-bold",
           }}
+          preload={"intent"}
         >
           About
         </Link>
