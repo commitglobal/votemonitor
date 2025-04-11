@@ -46,8 +46,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 function QuestionText({
   languageCode,
@@ -94,6 +102,9 @@ function ReportAnswersStep() {
   const form = useFormContext();
 
   const formValues = form.watch();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    citizenReportForm.defaultLanguage
+  );
 
   useEffect(() => {
     citizenReportForm.questions.forEach((question) => {
@@ -145,13 +156,34 @@ function ReportAnswersStep() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
-          {citizenReportForm.name[citizenReportForm.defaultLanguage]}
-        </CardTitle>
-        <CardDescription>
-          {citizenReportForm.description[citizenReportForm.defaultLanguage]}
-        </CardDescription>
+      <CardHeader className="flex flex-row gap-4 justify-between">
+        <section>
+          <CardTitle>{citizenReportForm.name[selectedLanguage]}</CardTitle>
+          <CardDescription>
+            {citizenReportForm.description[selectedLanguage]}
+          </CardDescription>
+        </section>
+        <section>
+          <div className="p-1 mb-1">Language:</div>
+          <Select
+            onValueChange={setSelectedLanguage}
+            defaultValue={selectedLanguage}
+            value={selectedLanguage}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {citizenReportForm.languages.map((language) => (
+                  <SelectItem key={language} value={language}>
+                    {language}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>{" "}
+        </section>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-8">
@@ -166,19 +198,17 @@ function ReportAnswersStep() {
                   <FormItem>
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
 
                     <FormControl>
                       <Textarea
                         placeholder={
-                          question?.inputPlaceholder?.[
-                            citizenReportForm.defaultLanguage
-                          ]
+                          question?.inputPlaceholder?.[selectedLanguage]
                         }
                         {...field}
                       />
@@ -198,19 +228,17 @@ function ReportAnswersStep() {
                   <FormItem>
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <FormControl>
                       <Input
                         type="number"
                         placeholder={
-                          question?.inputPlaceholder?.[
-                            citizenReportForm.defaultLanguage
-                          ]
+                          question?.inputPlaceholder?.[selectedLanguage]
                         }
                         {...field}
                       />
@@ -231,11 +259,11 @@ function ReportAnswersStep() {
                   <FormItem className="flex flex-col">
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <Popover>
                       <PopoverTrigger asChild>
@@ -284,11 +312,11 @@ function ReportAnswersStep() {
                     <FormItem className="space-y-3">
                       <QuestionText
                         question={question}
-                        languageCode={citizenReportForm.defaultLanguage}
+                        languageCode={selectedLanguage}
                       />
                       <QuestionDescription
                         question={question}
-                        languageCode={citizenReportForm.defaultLanguage}
+                        languageCode={selectedLanguage}
                       />
                       <FormControl>
                         <RadioGroup
@@ -305,7 +333,7 @@ function ReportAnswersStep() {
                                 <RadioGroupItem value={option.id} />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                {option.text[citizenReportForm.defaultLanguage]}
+                                {option.text[selectedLanguage]}
                               </FormLabel>
                             </FormItem>
                           ))}
@@ -330,7 +358,7 @@ function ReportAnswersStep() {
                               {...field}
                               placeholder={
                                 getFreeTextOption(question)?.text?.[
-                                  citizenReportForm.defaultLanguage
+                                  selectedLanguage
                                 ]
                               }
                             />
@@ -353,11 +381,11 @@ function ReportAnswersStep() {
                       <div className="mb-4">
                         <QuestionText
                           question={question}
-                          languageCode={citizenReportForm.defaultLanguage}
+                          languageCode={selectedLanguage}
                         />
                         <QuestionDescription
                           question={question}
-                          languageCode={citizenReportForm.defaultLanguage}
+                          languageCode={selectedLanguage}
                         />
                       </div>
                       {question.options.map((option) => (
@@ -391,11 +419,7 @@ function ReportAnswersStep() {
                                   />
                                 </FormControl>
                                 <FormLabel className="text-sm font-normal">
-                                  {
-                                    option.text[
-                                      citizenReportForm.defaultLanguage
-                                    ]
-                                  }
+                                  {option.text[selectedLanguage]}
                                 </FormLabel>
                               </FormItem>
                             );
@@ -421,7 +445,7 @@ function ReportAnswersStep() {
                               {...field}
                               placeholder={
                                 getFreeTextOption(question)?.text?.[
-                                  citizenReportForm.defaultLanguage
+                                  selectedLanguage
                                 ]
                               }
                             />
