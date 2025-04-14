@@ -1,7 +1,7 @@
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { ElectionRoundStatus, type PollingStation } from '@/common/types';
+import { ElectionRoundStatus, ReportedError, type PollingStation } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { ExportDataButton } from '@/features/responses/components/ExportDataButt
 import { ExportedDataType } from '@/features/responses/models/data-export';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import i18n from '@/i18n';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { ArrowUpTrayIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
@@ -52,11 +53,14 @@ export default function PollingStationsDashboard(): ReactElement {
             description: 'Polling station deleted',
           });
         },
-        onError: () =>
+        onError: (error: ReportedError) => {
+          const title = 'Error occured when deleting polling station';
+          sendErrorToSentry({ error, title });
           toast({
-            title: 'Error occured when deleting polling station',
+            title,
             variant: 'destructive',
-          }),
+          });
+        },
       }),
     [currentElectionRoundId, deletePollingStationMutation]
   );
@@ -76,11 +80,14 @@ export default function PollingStationsDashboard(): ReactElement {
             description: 'Polling station updated',
           });
         },
-        onError: () =>
+        onError: (error: ReportedError) => {
+          const title = 'Error occured when updating polling station';
+          sendErrorToSentry({ error, title });
           toast({
-            title: 'Error occured when updating polling station',
+            title,
             variant: 'destructive',
-          }),
+          });
+        },
       }),
     [currentElectionRoundId, updatePollingStationMutation]
   );

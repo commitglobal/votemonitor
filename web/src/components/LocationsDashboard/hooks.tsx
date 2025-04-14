@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse, Location } from '@/common/types';
+import { DataTableParameters, Location, PageResponse, ReportedError } from '@/common/types';
 import { locationsKeys } from '@/hooks/locations-levels';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
@@ -48,14 +48,14 @@ export function useUpdateLocationMutation() {
       locationId: string;
       location: Location;
       onSuccess?: () => void;
-      onError?: () => void;
+      onError?: (error: ReportedError) => void;
     }) => {
       return authApi.put<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`, location);
     },
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),
 
-    onError: (_, { onError }) => onError?.(),
+    onError: (error: ReportedError, { onError }) => onError?.(error),
   });
 }
 
@@ -68,13 +68,13 @@ export function useDeleteLocationMutation() {
       electionRoundId: string;
       locationId: string;
       onSuccess?: () => void;
-      onError?: () => void;
+      onError?: (error: ReportedError) => void;
     }) => {
       return authApi.delete<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`);
     },
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),
 
-    onError: (_, { onError }) => onError?.(),
+    onError: (error: ReportedError, { onError }) => onError?.(error),
   });
 }

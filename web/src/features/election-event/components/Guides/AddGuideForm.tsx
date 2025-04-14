@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { FunctionComponent } from '@/common/types';
+import { FunctionComponent, ReportedError } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { FileUploader } from '@/components/ui/file-uploader';
@@ -7,7 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { sendErrorToSentry } from '@/lib/sentry';
+import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -145,12 +146,14 @@ export default function AddGuideForm({
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error uploading citizen guide';
       toast({
-        title: 'Error uploading citizen guide',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });
+      sendErrorToSentry({ error, title });
 
       onError?.();
     },

@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, FormStatus, FormType } from '@/common/types';
+import { ElectionRoundStatus, FormStatus, FormType, ReportedError } from '@/common/types';
 import AddFormTranslationsDialog, {
   useAddFormTranslationsDialog,
 } from '@/components/AddFormTranslationsDialog/AddFormTranslationsDialog';
@@ -27,6 +27,7 @@ import { useElectionRoundDetails } from '@/features/election-event/hooks/electio
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { cn, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
@@ -682,11 +683,12 @@ export default function FormsDashboard(): ReactElement {
       router.invalidate();
     },
 
-    onError: (error) => {
+    onError: (error: ReportedError) => {
+      const title = 'Error publishing form';
       // @ts-ignore
       if (error.response.status === 400) {
         toast({
-          title: 'Error publishing form',
+          title,
           description: 'You are missing translations. Please translate all fields and try again',
           variant: 'destructive',
         });
@@ -694,10 +696,11 @@ export default function FormsDashboard(): ReactElement {
         return;
       }
       toast({
-        title: 'Error publishing form',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
+      sendErrorToSentry({ error, title });
     },
   });
 
@@ -716,9 +719,11 @@ export default function FormsDashboard(): ReactElement {
       router.invalidate();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error obsoleting form';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error obsoleting form',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });
@@ -740,9 +745,11 @@ export default function FormsDashboard(): ReactElement {
       router.invalidate();
     },
 
-    onError: (error) => {
+    onError: (error: ReportedError) => {
+      const title = 'Error cloning form';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error cloning form',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

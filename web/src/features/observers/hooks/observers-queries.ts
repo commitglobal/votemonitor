@@ -1,9 +1,10 @@
 import { authApi } from '@/common/auth-api';
 import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
-import type { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
+import type { DataTableParameters, PageResponse, ProblemDetails, ReportedError } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { type UseQueryResult, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { AxiosError } from 'axios';
@@ -73,9 +74,11 @@ export const useObserverMutations = () => {
     },
     onError: (error: AxiosError<ProblemDetails>, { form }) => {
       console.error(error);
+      const title = 'Error adding observer';
       addFormValidationErrorsFromBackend(form, error);
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error adding observer',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -100,11 +103,11 @@ export const useObserverMutations = () => {
       navigate({ to: '/observers/$observerId', params: { observerId } });
     },
     onError: (error: AxiosError<ProblemDetails>, { form }) => {
-      console.error(error);
+      const title = 'Error editing observer';
       addFormValidationErrorsFromBackend(form, error);
-
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error editing observer',
+        title,
         description: '',
         variant: 'destructive',
       });
@@ -128,11 +131,12 @@ export const useObserverMutations = () => {
       });
     },
 
-    onError: (err, { isObserverActive }) => {
-      console.error(err);
+    onError: (error: ReportedError, { isObserverActive }) => {
+      const description = `Error ${isObserverActive ? 'deactivating' : 'activating'} observer`;
+      sendErrorToSentry({ error, title: description });
       toast({
         title: `Error`,
-        description: `Error ${isObserverActive ? 'deactivating' : 'activating'} observer`,
+        description,
         variant: 'destructive',
       });
     },
@@ -155,9 +159,11 @@ export const useObserverMutations = () => {
       if (onMutationSuccess) onMutationSuccess();
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error deleting observer';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error deleting observer',
+        title,
         description: '',
         variant: 'destructive',
       });
