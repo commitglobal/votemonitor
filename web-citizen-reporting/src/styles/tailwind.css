@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+
+    --radius: 0.5rem;
+  }
+}
+
+.badge-Active {
+  background-color: #f2fdf5;
+  color: #147638;
+}
+
+.badge-Pending {
+  background-color: #fffbeb;
+  color: #a96e09;
+}
+
+.badge-Suspended {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.breadcrumbs .crumb:after {
+  content: '>';
+  margin-left: 0.5rem;
+}
+
+.breadcrumbs .crumb {
+  color: #7833b3;
+}
+
+.breadcrumbs .crumb:last-child {
+  color: #71717a;
+}
+
+.breadcrumbs .crumb:last-child:after {
+  display: none;
+}
+
+.election-text {
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
