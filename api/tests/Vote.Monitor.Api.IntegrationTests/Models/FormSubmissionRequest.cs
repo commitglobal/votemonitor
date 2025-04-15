@@ -1,4 +1,4 @@
-using Vote.Monitor.Answer.Module.Requests;
+using Module.Answers.Requests;
 
 namespace Vote.Monitor.Api.IntegrationTests.Models;
 

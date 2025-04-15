@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
+﻿using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Form.Module.Mappers;
+using Module.Forms.Mappers;
 using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
 using NoteModel = Feature.CitizenReports.Models.NoteModel;
 

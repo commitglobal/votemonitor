@@ -84,7 +84,10 @@ function FormNew() {
   );
 
   return (
-    <Layout backButton={<NavigateBack to='/election-rounds' />} title={`Create new form template`} breadcrumbs={<></>}>
+    <Layout
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      title={`Create new form template`}
+      breadcrumbs={<></>}>
       <FormEditor
         onSaveForm={(formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) =>
           saveForm(currentElectionRoundId, formData, shouldNavigateAwayAfterSubmit)

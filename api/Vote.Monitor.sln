@@ -23,43 +23,43 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Domain", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Policies", "src\Authorization.Policies\Authorization.Policies.csproj", "{C0D1C49C-8595-4698-854B-7A42EA69124D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Auth", "src\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj", "{C6871F49-3C12-4461-B4A0-598EFD51D75D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Auth", "src\Feature.Auth\Feature.Auth.csproj", "{C6871F49-3C12-4461-B4A0-598EFD51D75D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ngo", "src\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj", "{5A17BFD7-C13C-48E6-A04C-D20B049268DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Ngos", "src\Feature.Ngos\Feature.Ngos.csproj", "{5A17BFD7-C13C-48E6-A04C-D20B049268DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.NgoAdmin", "src\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj", "{43821974-5992-471F-8374-6F68109FF6E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.NgoAdmins", "src\Feature.NgoAdmins\Feature.NgoAdmins.csproj", "{43821974-5992-471F-8374-6F68109FF6E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.ElectionRound", "src\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj", "{76C3755C-6509-4215-8520-6475A9250B4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ElectionRounds", "src\Feature.ElectionRounds\Feature.ElectionRounds.csproj", "{76C3755C-6509-4215-8520-6475A9250B4C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Observer", "src\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj", "{9D328132-7F55-4444-9B25-F3F8529D4E34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Observers", "src\Feature.Observers\Feature.Observers.csproj", "{9D328132-7F55-4444-9B25-F3F8529D4E34}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Country", "src\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj", "{9D19DBEA-7447-4C46-AAFD-E25D64784469}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Countries", "src\Feature.Countries\Feature.Countries.csproj", "{9D19DBEA-7447-4C46-AAFD-E25D64784469}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.IntegrationTests", "tests\Vote.Monitor.Api.IntegrationTests\Vote.Monitor.Api.IntegrationTests.csproj", "{91738C86-9A9D-44D9-86C0-67C7CF43FB0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.UnitTests\Vote.Monitor.Api.Feature.PollingStation.UnitTests.csproj", "{272F6196-AB33-461D-8E12-FB1260D6D4C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStations.UnitTests", "tests\Feature.PollingStations.UnitTests\Feature.PollingStations.UnitTests.csproj", "{272F6196-AB33-461D-8E12-FB1260D6D4C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Observer.UnitTests", "tests\Vote.Monitor.Api.Feature.Observer.UnitTests\Vote.Monitor.Api.Feature.Observer.UnitTests.csproj", "{F2F0F834-34D8-4609-8306-9C09AF9F773D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Observers.UnitTests", "tests\Feature.Observers.UnitTests\Feature.Observers.UnitTests.csproj", "{F2F0F834-34D8-4609-8306-9C09AF9F773D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Language", "src\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj", "{6E76FA49-5CD3-4C64-B7A8-6BA859EB29A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Languages", "src\Feature.Languages\Feature.Languages.csproj", "{6E76FA49-5CD3-4C64-B7A8-6BA859EB29A2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Domain.UnitTests", "tests\Vote.Monitor.Domain.UnitTests\Vote.Monitor.Domain.UnitTests.csproj", "{8B2B7748-4AE3-4B88-BB2C-2E185060C617}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.TestUtils", "tests\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj", "{60704C93-C08E-448C-8179-45D075AD76E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ngo.UnitTests", "tests\Vote.Monitor.Api.Feature.Ngo.UnitTests\Vote.Monitor.Api.Feature.Ngo.UnitTests.csproj", "{A8A81B88-EB7D-47F3-9D76-25DF1C3B9EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Ngos.UnitTests", "tests\Feature.Ngos.UnitTests\Feature.Ngos.UnitTests.csproj", "{A8A81B88-EB7D-47F3-9D76-25DF1C3B9EA2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.ElectionRound.UnitTests", "tests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests.csproj", "{ABECD575-6B9F-48DE-97CA-0E962259CA10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ElectionRounds.UnitTests", "tests\Feature.ElectionRounds.UnitTests\Feature.ElectionRounds.UnitTests.csproj", "{ABECD575-6B9F-48DE-97CA-0E962259CA10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Monitoring", "src\Feature.Monitoring\Feature.Monitoring.csproj", "{37E75B1E-5D9D-4C8B-B87F-03E629FAE30B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Monitoring.UnitTests", "tests\Feature.Monitoring.UnitTests\Feature.Monitoring.UnitTests.csproj", "{A1CD7BD9-A7A6-44D9-838F-210D437582A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences", "src\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj", "{60EA51FE-1118-485E-9500-43B5A97B763B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.UserPreferences", "src\Feature.UserPreferences\Feature.UserPreferences.csproj", "{60EA51FE-1118-485E-9500-43B5A97B763B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences.UnitTests", "tests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests.csproj", "{D582065C-5A1F-4214-B3EF-94C83A84176C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.UserPreferences.UnitTests", "tests\Feature.UserPreferences.UnitTests\Feature.UserPreferences.UnitTests.csproj", "{D582065C-5A1F-4214-B3EF-94C83A84176C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation", "src\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj", "{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStations", "src\Feature.PollingStations\Feature.PollingStations.csproj", "{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.FormTemplates", "src\Feature.FormTemplates\Feature.FormTemplates.csproj", "{0321A760-1AD8-486E-A3B0-DC2F090C75A0}"
 EndProject
@@ -79,17 +79,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Notifications.UnitT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Forms", "src\Feature.Forms\Feature.Forms.csproj", "{AEF250A9-2105-408D-99F3-AFDEF374EC5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Form", "src\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj", "{46DD5C48-94FB-44F9-8C20-037313D86C95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Forms", "src\Feature.PollingStation.Information.Forms\Feature.PollingStation.Information.Forms.csproj", "{46DD5C48-94FB-44F9-8C20-037313D86C95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Form.Module", "src\Vote.Monitor.Form.Module\Vote.Monitor.Form.Module.csproj", "{5525ED0D-9098-4D43-918D-D810A148C2A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Forms", "src\Module.Forms\Module.Forms.csproj", "{5525ED0D-9098-4D43-918D-D810A148C2A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Form.Module.UnitTests", "tests\Vote.Monitor.Form.Module.UnitTests\Vote.Monitor.Form.Module.UnitTests.csproj", "{819E51B2-F24C-4E0B-AD50-72A0DED131E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Forms.UnitTests", "tests\Module.Forms.UnitTests\Module.Forms.UnitTests.csproj", "{819E51B2-F24C-4E0B-AD50-72A0DED131E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Answer.Module", "src\Vote.Monitor.Answer.Module\Vote.Monitor.Answer.Module.csproj", "{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Answers", "src\Module.Answers\Module.Answers.csproj", "{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Answer.Module.UnitTests", "tests\Vote.Monitor.Answer.Module.UnitTests\Vote.Monitor.Answer.Module.UnitTests.csproj", "{53015FDA-E099-44B5-A14A-82045ACEE4D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Module.Answers.UnitTests", "tests\Module.Answers.UnitTests\Module.Answers.UnitTests.csproj", "{53015FDA-E099-44B5-A14A-82045ACEE4D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Form.UnitTests", "tests\Feature.PollingStation.Information.Form.UnitTests\Feature.PollingStation.Information.Form.UnitTests.csproj", "{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Forms.UnitTests", "tests\Feature.PollingStation.Information.Forms.UnitTests\Feature.PollingStation.Information.Forms.UnitTests.csproj", "{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Policies.UnitTests", "tests\Authorization.Policies.UnitTests\Authorization.Policies.UnitTests.csproj", "{30A02DD8-57C5-47AB-AB62-6726E9B62F58}"
 EndProject
@@ -97,7 +97,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ObserverGuide", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ObserverGuide.UnitTests", "tests\Feature.ObserverGuide.UnitTests\Feature.ObserverGuide.UnitTests.csproj", "{AFCF6942-941F-4A69-A58B-CE8486B64E5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Visit", "src\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj", "{686AFB6A-23D5-4ECA-B26C-87A2EF893F1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Visits", "src\Feature.PollingStation.Visits\Feature.PollingStation.Visits.csproj", "{686AFB6A-23D5-4ECA-B26C-87A2EF893F1A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.MonitoringObservers", "src\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj", "{2BE577FC-2F96-43FD-B9AF-A3BE3A924F4A}"
 EndProject
@@ -122,8 +122,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.QuickReports", "src\Feature.QuickReports\Feature.QuickReports.csproj", "{E5DCBEC6-B0A0-453D-9CAC-B15E44BB7B3A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.QuickReports.UnitTests", "tests\Feature.QuickReports.UnitTests\Feature.QuickReports.UnitTests.csproj", "{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ImportErrors", "src\Feature.ImportErrors\Feature.ImportErrors.csproj", "{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.DataExport", "src\Feature.DataExport\Feature.DataExport.csproj", "{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}"
 EndProject
@@ -389,10 +387,6 @@ Global
 		{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -536,7 +530,6 @@ Global
 		{2E321B70-9032-4D48-8D91-238548AEBC1C} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{E5DCBEC6-B0A0-453D-9CAC-B15E44BB7B3A} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C} = {3441EE1D-E3C6-45BE-A020-553816015081}
-		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{CECF7A46-6F58-469E-BAF1-AEC44A201786} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{9EA9693F-E673-40E5-948D-DA12885D74A3} = {3441EE1D-E3C6-45BE-A020-553816015081}

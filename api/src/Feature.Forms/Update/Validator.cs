@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Core.Validators;
-using Vote.Monitor.Form.Module.Validators;
+using Module.Forms.Validators;
 
 namespace Feature.Forms.Update;
 
