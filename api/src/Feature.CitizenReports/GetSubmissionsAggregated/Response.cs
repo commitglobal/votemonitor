@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Module.Answers.Aggregators;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
 using NoteModel = Feature.CitizenReports.Models.NoteModel;

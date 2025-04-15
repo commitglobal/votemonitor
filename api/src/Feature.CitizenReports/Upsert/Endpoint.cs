@@ -1,6 +1,6 @@
 ﻿using Feature.CitizenReports.Models;
 using Feature.CitizenReports.Specifications;
-using Vote.Monitor.Answer.Module.Mappers;
+using Module.Answers.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.LocationAggregate;

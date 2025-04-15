@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Answer.Module.Mappers;
-using Vote.Monitor.Answer.Module.Models;
+using Module.Answers.Mappers;
+using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
 namespace Feature.CitizenReports.Models;
