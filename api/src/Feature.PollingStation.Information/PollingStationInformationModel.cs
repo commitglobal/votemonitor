@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
-using Vote.Monitor.Answer.Module.Models;
+﻿using Module.Answers.Mappers;
+using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information;

@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Module.Answers.Aggregators;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
 using NoteModel = Feature.IncidentReports.Models.NoteModel;

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Answer.Module.Models;
+using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
 namespace Feature.IncidentReports.Models;

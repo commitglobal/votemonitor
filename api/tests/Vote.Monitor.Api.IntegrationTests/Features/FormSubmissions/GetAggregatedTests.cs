@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Module.Answers.Aggregators;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Api.IntegrationTests.TestCases;

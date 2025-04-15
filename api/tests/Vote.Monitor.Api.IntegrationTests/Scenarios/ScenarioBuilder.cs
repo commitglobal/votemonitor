@@ -1,4 +1,4 @@
-using Vote.Monitor.Api.Feature.Ngo;
+using Feature.Ngos;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Models;
 using Vote.Monitor.Domain.Constants;
