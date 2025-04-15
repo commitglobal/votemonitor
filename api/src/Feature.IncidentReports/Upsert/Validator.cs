@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Validators;
+﻿using Module.Answers.Validators;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
 namespace Feature.IncidentReports.Upsert;

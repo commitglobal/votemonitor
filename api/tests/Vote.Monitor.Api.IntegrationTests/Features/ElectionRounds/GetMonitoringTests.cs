@@ -1,6 +1,6 @@
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
-using ElectionRoundsMonitoringResult = Vote.Monitor.Api.Feature.ElectionRound.Monitoring.Result;
+using ElectionRoundsMonitoringResult = Feature.ElectionRounds.Monitoring.Result;
 
 namespace Vote.Monitor.Api.IntegrationTests.Features.ElectionRounds;
 

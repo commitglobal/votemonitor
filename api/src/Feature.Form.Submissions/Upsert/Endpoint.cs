@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
+﻿using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;

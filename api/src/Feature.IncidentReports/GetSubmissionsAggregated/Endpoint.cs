@@ -1,5 +1,5 @@
 ﻿using Feature.IncidentReports.Requests;
-using Vote.Monitor.Answer.Module.Aggregators;
+using Module.Answers.Aggregators;
 using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
 using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
