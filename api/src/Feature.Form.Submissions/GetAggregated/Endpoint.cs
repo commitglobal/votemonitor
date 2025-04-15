@@ -1,7 +1,7 @@
 ﻿using Feature.Form.Submissions.Requests;
 using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Answer.Module.Aggregators;
-using Vote.Monitor.Answer.Module.Models;
+using Module.Answers.Aggregators;
+using Module.Answers.Models;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;

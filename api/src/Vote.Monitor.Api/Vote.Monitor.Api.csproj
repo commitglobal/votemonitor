@@ -54,7 +54,6 @@
         <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
         <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
         <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
-        <ProjectReference Include="..\Feature.ImportErrors\Feature.ImportErrors.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports\Feature.IncidentReports.csproj" />
@@ -62,24 +61,24 @@
         <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
         <ProjectReference Include="..\Feature.Coalitions\Feature.Coalitions.csproj" />
         <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
-        <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
+        <ProjectReference Include="..\Feature.PollingStation.Information.Forms\Feature.PollingStation.Information.Forms.csproj" />
         <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />
-        <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />
+        <ProjectReference Include="..\Feature.PollingStation.Visits\Feature.PollingStation.Visits.csproj" />
         <ProjectReference Include="..\Feature.QuickReports\Feature.QuickReports.csproj" />
         <ProjectReference Include="..\Feature.Statistics\Feature.Statistics.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
+        <ProjectReference Include="..\Feature.Auth\Feature.Auth.csproj" />
+        <ProjectReference Include="..\Feature.Countries\Feature.Countries.csproj" />
+        <ProjectReference Include="..\Feature.ElectionRounds\Feature.ElectionRounds.csproj" />
+        <ProjectReference Include="..\Feature.Languages\Feature.Languages.csproj" />
         <ProjectReference Include="..\Feature.Monitoring\Feature.Monitoring.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />
+        <ProjectReference Include="..\Feature.NgoAdmins\Feature.NgoAdmins.csproj" />
+        <ProjectReference Include="..\Feature.Ngos\Feature.Ngos.csproj" />
         <ProjectReference Include="..\Feature.Notifications\Feature.Notifications.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
+        <ProjectReference Include="..\Feature.Observers\Feature.Observers.csproj" />
         <ProjectReference Include="..\Feature.Attachments\Feature.Attachments.csproj" />
         <ProjectReference Include="..\Feature.Notes\Feature.Notes.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />
-        <ProjectReference Include="..\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj" />
+        <ProjectReference Include="..\Feature.PollingStations\Feature.PollingStations.csproj" />
+        <ProjectReference Include="..\Feature.UserPreferences\Feature.UserPreferences.csproj" />
         <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
         <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     </ItemGroup>
@@ -92,7 +91,7 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="..\..\.dockerignore">
-            <Link>.dockerignore</Link>
+          <Link>.dockerignore</Link>
         </Content>
     </ItemGroup>
 

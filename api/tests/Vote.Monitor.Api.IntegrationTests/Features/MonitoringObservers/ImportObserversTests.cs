@@ -2,7 +2,7 @@
 using Feature.MonitoringObservers;
 using NSubstitute;
 using NSubstitute.Extensions;
-using Vote.Monitor.Api.Feature.Observer;
+using Feature.Observers;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Core.Models;

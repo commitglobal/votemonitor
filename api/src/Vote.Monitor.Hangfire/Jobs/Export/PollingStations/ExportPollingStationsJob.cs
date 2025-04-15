@@ -84,7 +84,7 @@ public class ExportPollingStationsJob(
                       PS."Number",
                       PS."Address",
                       ps."DisplayOrder",
-                      PS."Tags"
+                      coalesce(PS."Tags", '{}') as "Tags"
                   FROM
                       "PollingStations" PS
                   WHERE

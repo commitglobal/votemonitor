@@ -118,7 +118,7 @@ public class ExportQuickReportsJob(
             						'UploadedFileName',
             						"UploadedFileName",
             						'TimeSubmitted',
-            						COALESCE("LastModifiedOn", "CreatedOn")
+            						QRA."LastUpdatedAt"
             					)
             				)
             			FROM

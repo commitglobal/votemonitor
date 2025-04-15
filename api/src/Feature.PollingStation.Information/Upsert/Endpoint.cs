@@ -3,7 +3,7 @@ using Authorization.Policies.Requirements;
 using Feature.PollingStation.Information.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Answer.Module.Mappers;
+using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
