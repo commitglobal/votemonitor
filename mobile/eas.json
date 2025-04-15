@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.13.3"
+    "version": ">= 3.13.3",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -33,8 +34,9 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "testing", // https://github.com/expo/eas-cli#eas-channeledit-name
+      "channel": "testing",
       "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://votemonitor.staging.heroesof.tech/api/",
         "EXPO_PUBLIC_ENVIRONMENT": "preview",
         "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
       }
@@ -42,6 +44,7 @@
     "production": {
       "channel": "production",
       "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.votemonitor.org/api/",
         "EXPO_PUBLIC_ENVIRONMENT": "production",
         "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
       }
@@ -49,6 +52,7 @@
     "staging": {
       "channel": "staging",
       "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://votemonitor.staging.heroesof.tech/api/",
         "EXPO_PUBLIC_ENVIRONMENT": "staging",
         "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
       }
