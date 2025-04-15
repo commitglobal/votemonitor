@@ -46,8 +46,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 function QuestionText({
   languageCode,
@@ -94,6 +102,10 @@ function ReportAnswersStep() {
   const form = useFormContext();
 
   const formValues = form.watch();
+
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    citizenReportForm.defaultLanguage
+  );
 
   useEffect(() => {
     citizenReportForm.questions.forEach((question) => {
@@ -146,11 +158,33 @@ function ReportAnswersStep() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {citizenReportForm.name[citizenReportForm.defaultLanguage]}
+        <CardTitle className="flex justify-between mb-4">
+          <div>{citizenReportForm.name[selectedLanguage]}</div>
+
+          <div className="flex flex-row gap-2 items-center">
+            <div className="p-1 mb-1">Language:</div>
+            <Select
+              onValueChange={setSelectedLanguage}
+              defaultValue={selectedLanguage}
+              value={selectedLanguage}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {citizenReportForm.languages.map((language) => (
+                    <SelectItem key={language} value={language}>
+                      {language}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </CardTitle>
         <CardDescription>
-          {citizenReportForm.description[citizenReportForm.defaultLanguage]}
+          {citizenReportForm.description[selectedLanguage]}
         </CardDescription>
       </CardHeader>
 
@@ -166,11 +200,11 @@ function ReportAnswersStep() {
                   <FormItem>
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
 
                     <FormControl>
@@ -198,11 +232,11 @@ function ReportAnswersStep() {
                   <FormItem>
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <FormControl>
                       <Input
@@ -231,11 +265,11 @@ function ReportAnswersStep() {
                   <FormItem className="flex flex-col">
                     <QuestionText
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <QuestionDescription
                       question={question}
-                      languageCode={citizenReportForm.defaultLanguage}
+                      languageCode={selectedLanguage}
                     />
                     <Popover>
                       <PopoverTrigger asChild>
@@ -284,11 +318,11 @@ function ReportAnswersStep() {
                     <FormItem className="space-y-3">
                       <QuestionText
                         question={question}
-                        languageCode={citizenReportForm.defaultLanguage}
+                        languageCode={selectedLanguage}
                       />
                       <QuestionDescription
                         question={question}
-                        languageCode={citizenReportForm.defaultLanguage}
+                        languageCode={selectedLanguage}
                       />
                       <FormControl>
                         <RadioGroup
@@ -305,7 +339,7 @@ function ReportAnswersStep() {
                                 <RadioGroupItem value={option.id} />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                {option.text[citizenReportForm.defaultLanguage]}
+                                {option.text[selectedLanguage]}
                               </FormLabel>
                             </FormItem>
                           ))}
@@ -353,11 +387,11 @@ function ReportAnswersStep() {
                       <div className="mb-4">
                         <QuestionText
                           question={question}
-                          languageCode={citizenReportForm.defaultLanguage}
+                          languageCode={selectedLanguage}
                         />
                         <QuestionDescription
                           question={question}
-                          languageCode={citizenReportForm.defaultLanguage}
+                          languageCode={selectedLanguage}
                         />
                       </div>
                       {question.options.map((option) => (
