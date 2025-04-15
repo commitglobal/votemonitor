@@ -80,7 +80,7 @@ public class ExportLocationsJob(
                       "Level4",
                       "Level5",
                       "DisplayOrder",
-                      "Tags"
+                      coalesce("Tags", '{}') as "Tags"
                   FROM
                       "Locations"
                   WHERE
