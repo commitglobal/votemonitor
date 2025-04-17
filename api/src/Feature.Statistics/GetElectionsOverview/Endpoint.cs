@@ -28,7 +28,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
             WHERE
                 "ElectionRoundId" = ANY (@electionRoundIds)
-                AND MO."Status" = 'Active'
+                AND U."Status" = 'Active'
                 AND MO."Status" = 'Active';
             ------------------------------
             

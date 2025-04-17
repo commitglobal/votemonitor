@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Authorization.Policies;
+using Dapper;
 using Feature.Statistics.GetNgoAdminStatistics.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -13,6 +14,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
         DontAutoTag();
         Options(x => x.WithTags("statistics"));
         Summary(s => { s.Summary = "Statistics for an election round"; });
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)

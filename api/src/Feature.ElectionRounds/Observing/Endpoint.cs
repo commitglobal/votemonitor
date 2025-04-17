@@ -15,7 +15,7 @@ public class Endpoint(IReadRepository<ElectionRoundAggregate> repository,
         Summary(s =>
         {
             s.Summary = "Lists election rounds which are observed by current observer";
-            s.Description = "Election rounds with status NotStarted and Started are listed";
+            s.Description = "Only election rounds with status Started are listed";
         });
         Policies(PolicyNames.ObserversOnly);
     }
