@@ -35,6 +35,7 @@ using Feature.CitizenReports.Attachments;
 using Feature.Citizen.Guides;
 using Feature.Citizen.Notifications;
 using Feature.CitizenReports.Notes;
+using Feature.DataCleanup;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.IncidentReports;
@@ -166,6 +167,7 @@ builder.Services.AddIncidentReportsNotesFeature();
 builder.Services.AddIncidentReportAttachmentsFeature();
 builder.Services.AddCitizenNotificationsFeature();
 builder.Services.AddCoalitionsFeature();
+builder.Services.AddDataCleanupFeature();
 
 builder.Services.AddAuthorization();
 

@@ -49,6 +49,7 @@
         <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
         <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
         <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
+        <ProjectReference Include="..\Feature.DataCleanup\Feature.DataCleanup.csproj" />
         <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
         <ProjectReference Include="..\Feature.Feedback\Feature.Feedback.csproj" />
         <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
