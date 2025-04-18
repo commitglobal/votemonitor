@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Answer.Module.Models;
+using Module.Answers.Models;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Core.Models;
-using Vote.Monitor.Form.Module.Models;
+using Module.Forms.Models;
 
 namespace Feature.Form.Submissions;
 

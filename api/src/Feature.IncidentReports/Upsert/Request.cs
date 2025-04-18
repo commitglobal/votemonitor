@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Answer.Module.Requests;
+﻿using Module.Answers.Requests;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 

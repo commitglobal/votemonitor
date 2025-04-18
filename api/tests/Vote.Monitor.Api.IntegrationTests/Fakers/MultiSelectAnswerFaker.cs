@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Answer.Module.Requests;
-using Vote.Monitor.Form.Module.Requests;
+﻿using Module.Answers.Requests;
+using Module.Forms.Requests;
 
 namespace Vote.Monitor.Api.IntegrationTests.Fakers;
 

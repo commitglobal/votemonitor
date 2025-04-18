@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase;
-using Vote.Monitor.Form.Module.Requests;
+using Module.Forms.Requests;
 
 namespace Feature.FormTemplates.Create;
 

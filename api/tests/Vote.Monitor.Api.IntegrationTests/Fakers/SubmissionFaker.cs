@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Api.IntegrationTests.Models;
-using Vote.Monitor.Form.Module.Requests;
+using Module.Forms.Requests;
 
 namespace Vote.Monitor.Api.IntegrationTests.Fakers;
 

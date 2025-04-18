@@ -272,3 +272,4 @@ log*.txt
 
 OfflineCapabilities
 /api/src/Vote.Monitor.Api/Uploads
+**/**/dist

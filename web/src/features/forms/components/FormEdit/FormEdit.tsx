@@ -98,7 +98,7 @@ function FormEdit() {
 
   return (
     <Layout
-      backButton={<NavigateBack to='/form-templates' />}
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
       breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[form.defaultLanguage] ?? ''} />}
       title={`${form.code} - ${form.name[form.defaultLanguage] ?? ''}`}>
       <FormEditor

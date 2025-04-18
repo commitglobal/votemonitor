@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Vote.Monitor.Api.Feature.Ngo.UnitTests")]
-[assembly: InternalsVisibleTo("Vote.Monitor.Api.Feature.ElectionRound.UnitTests")]
-[assembly: InternalsVisibleTo("Vote.Monitor.Answer.Module.UnitTests")]
+[assembly: InternalsVisibleTo("Feature.Ngos.UnitTests")]
+[assembly: InternalsVisibleTo("Feature.ElectionRounds.UnitTests")]
+[assembly: InternalsVisibleTo("Module.Answers.UnitTests")]
 [assembly: InternalsVisibleTo("Vote.Monitor.Domain.UnitTests")]
 [assembly: InternalsVisibleTo("Vote.Monitor.TestUtils")]
-[assembly: InternalsVisibleTo("Vote.Monitor.Form.Module.UnitTests")]
+[assembly: InternalsVisibleTo("Module.Forms.UnitTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 // Allow upsert 
 [assembly: InternalsVisibleTo("Feature.PollingStation.Information")]
