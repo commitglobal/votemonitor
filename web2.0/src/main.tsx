@@ -13,10 +13,22 @@ import { TanStackRouterDevelopmentTools } from "./components/utils/development-t
 import "./styles.css";
 
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
+import { AuthProvider, useAuth } from "./contexts/auth.context.tsx";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {},
+  context: {
+    queryClient,
+    auth: undefined!, // This will be set after we wrap the app in an AuthProvider
+  },
   defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,
@@ -29,50 +41,50 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
-  },
-});
+function InnerApp() {
+  const auth = useAuth();
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      enableColorScheme
+    >
+      <TooltipProvider>
+        <div vaul-drawer-wrapper="">
+          <div className="relative flex min-h-screen flex-col bg-background">
+            <RouterProvider router={router} context={{ auth, queryClient }} />
+          </div>
+        </div>
+        <TailwindIndicator />
+        <Toaster />
+        <TanStackRouterDevelopmentTools
+          router={router}
+          position="bottom-left"
+        />
+        <TanStackQueryDevelopmentTools client={queryClient} position="right" />
+      </TooltipProvider>
+    </ThemeProvider>
+  );
+}
+function App() {
+  return (
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <InnerApp />
+        </AuthProvider>
+      </QueryClientProvider>
+    </StrictMode>
+  );
+}
 
 // Render the app
 const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          enableColorScheme
-        >
-          <TooltipProvider>
-            <div vaul-drawer-wrapper="">
-              <div className="relative flex min-h-screen flex-col bg-background">
-                <RouterProvider router={router} />
-              </div>
-            </div>
-            <TailwindIndicator />
-            <Toaster />
-            <TanStackRouterDevelopmentTools
-              router={router}
-              position="bottom-left"
-            />
-            <TanStackQueryDevelopmentTools
-              client={queryClient}
-              position="right"
-            />
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </StrictMode>
-  );
+  root.render(<App />);
 }
 
 // If you want to start measuring performance in your app, pass a function

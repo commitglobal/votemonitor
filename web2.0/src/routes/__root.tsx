@@ -1,18 +1,16 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import type { AuthContext } from "@/contexts/auth.context";
+import type { QueryClient } from "@tanstack/react-query";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
-import { SiteHeader } from "@/components/SiteHeader";
+interface RouterContext {
+  auth: AuthContext;
+  queryClient: QueryClient;
+}
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
-      <SiteHeader />
-      <div className="container-wrapper">
-        <div className="container py-6">
-          <section>
-            <Outlet />
-          </section>
-        </div>
-      </div>
+      <Outlet />
     </>
   ),
 });

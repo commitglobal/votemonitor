@@ -46,7 +46,7 @@ export function MobileNav() {
       <DrawerContent className="max-h-[80svh] p-0" title="navigation menu">
         <div className="overflow-auto p-6">
           <div className="flex flex-col space-y-3">
-            <MobileLink to="/" onOpenChange={setOpen}>
+            {/* <MobileLink to="/" onOpenChange={setOpen}>
               Home
             </MobileLink>
             <MobileLink to="/elections" onOpenChange={setOpen}>
@@ -54,7 +54,7 @@ export function MobileNav() {
             </MobileLink>
             <MobileLink to="/about" onOpenChange={setOpen}>
               About us
-            </MobileLink>
+            </MobileLink> */}
           </div>
         </div>
       </DrawerContent>

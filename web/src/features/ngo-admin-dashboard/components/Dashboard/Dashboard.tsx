@@ -2,7 +2,6 @@ import DoughnutChart from '@/components/charts/doughnut-chart/DoughnutChart';
 import GaugeChart from '@/components/charts/gauge-chart/GaugeChart';
 import MetricChart from '@/components/charts/metric-chart/MetricChart';
 import TimeLineChart from '@/components/charts/time-line-chart/TimeLineChart';
-import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon, ArrowsPointingInIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/solid';
@@ -18,9 +17,12 @@ import {
   timeSpentObservingDataConfig,
 } from '../../utils/chart-defs';
 
+import { useDataSource } from '@/common/data-source-store';
 import { DateTimeHourBucketFormat } from '@/common/formats';
+import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -28,9 +30,6 @@ import { useElectionRoundStatistics } from '../../hooks/statistics-queries';
 import { HistogramEntry } from '../../models/ngo-admin-statistics-models';
 import LevelStatistics from '../LevelStatisticsCard/LevelStatisticsCard';
 import useDashboardExpandedChartsStore from './dashboard-config.store';
-import { DataSourceSwitcher } from '@/components/DataSourceSwitcher/DataSourceSwitcher';
-import { useDataSource } from '@/common/data-source-store';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function NgoAdminDashboard(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'ngoAdminDashboard' });
