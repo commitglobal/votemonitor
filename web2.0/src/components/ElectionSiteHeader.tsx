@@ -1,13 +1,12 @@
 import { siteConfig } from "@/config/site";
+import { useAuth } from "@/contexts/auth.context";
+import { Link } from "@tanstack/react-router";
 import { Icons } from "./Icons";
 import MainNav from "./MainNav";
-import { MobileNav } from "./MobileNav";
-import { Button } from "./ui/button";
-import { Link } from "@tanstack/react-router";
 import { ModeSwitcher } from "./ModeSwitcher";
-import { useAuth } from "@/contexts/auth.context";
 import NgoAdminNav from "./NgoAdminNav";
 import PlatformAdminNav from "./PlatformAdminNav";
+import { Button } from "./ui/button";
 
 export interface ElectionSiteHeaderProps {
   electionId: string;
@@ -30,7 +29,6 @@ export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
               </Link>
             </Button>
           </div>
-          <MobileNav />
           <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
             <nav className="flex items-center gap-0.5">
               <Button
@@ -65,8 +63,6 @@ export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
           ) : (
             <PlatformAdminNav electionRoundId={electionId} />
           )}
-
-          <MobileNav />
         </div>
       </div>
     </header>
