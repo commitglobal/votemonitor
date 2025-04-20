@@ -1,5 +1,4 @@
 import { sleep } from "@/lib/utils";
-import { redirect } from "@tanstack/react-router";
 import * as React from "react";
 
 export type UserRole = "PlatformAdmin" | "NgoAdmin";
@@ -38,7 +37,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setStoredUser(null);
     setUserRole(null);
-    throw redirect({ to: "/login" });
   }, []);
 
   const login = React.useCallback(async (userRole: UserRole) => {

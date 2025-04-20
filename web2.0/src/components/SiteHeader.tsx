@@ -1,13 +1,12 @@
 import { siteConfig } from "@/config/site";
-import { useAuth } from "@/contexts/auth.context";
 import { Link } from "@tanstack/react-router";
 import { Icons } from "./Icons";
 import MainNav from "./MainNav";
 import { ModeSwitcher } from "./ModeSwitcher";
+import { ProfileDropdown } from "./ProfileDropdown";
 import { Button } from "./ui/button";
 
 export function SiteHeader() {
-  const auth = useAuth();
   return (
     <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container-wrapper">
@@ -31,13 +30,7 @@ export function SiteHeader() {
                 </Link>
               </Button>
               <ModeSwitcher />
-              <Button
-                variant={"link"}
-                className="cursor-pointer"
-                onClick={() => auth.logout()}
-              >
-                log out
-              </Button>
+              <ProfileDropdown />
             </nav>
           </div>
         </div>

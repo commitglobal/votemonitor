@@ -19,6 +19,7 @@ import { Route as authSetPasswordImport } from './routes/(auth)/set-password'
 import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as authForgotPasswordImport } from './routes/(auth)/forgot-password'
 import { Route as authAcceptInviteImport } from './routes/(auth)/accept-invite'
+import { Route as appSettingsImport } from './routes/(app)/settings'
 import { Route as appElectionsIndexImport } from './routes/(app)/elections/index'
 import { Route as appElectionsElectionRoundIdRouteImport } from './routes/(app)/elections/$electionRoundId/route'
 import { Route as appElectionsElectionRoundIdIndexImport } from './routes/(app)/elections/$electionRoundId/index'
@@ -27,13 +28,13 @@ import { Route as appElectionsElectionRoundIdDashboardImport } from './routes/(a
 import { Route as appElectionsElectionRoundIdResponsesIndexImport } from './routes/(app)/elections/$electionRoundId/responses/index'
 import { Route as appElectionsElectionRoundIdQuickReportsIndexImport } from './routes/(app)/elections/$electionRoundId/quick-reports/index'
 import { Route as appElectionsElectionRoundIdPushMessagesIndexImport } from './routes/(app)/elections/$electionRoundId/push-messages/index'
-import { Route as appElectionsElectionRoundIdOnserversIndexImport } from './routes/(app)/elections/$electionRoundId/onservers/index'
+import { Route as appElectionsElectionRoundIdObserversIndexImport } from './routes/(app)/elections/$electionRoundId/observers/index'
 import { Route as appElectionsElectionRoundIdGuidesIndexImport } from './routes/(app)/elections/$electionRoundId/guides/index'
 import { Route as appElectionsElectionRoundIdFormsIndexImport } from './routes/(app)/elections/$electionRoundId/forms/index'
 import { Route as appElectionsElectionRoundIdResponsesResponseIdImport } from './routes/(app)/elections/$electionRoundId/responses/$responseId'
 import { Route as appElectionsElectionRoundIdQuickReportsQuickReportIdImport } from './routes/(app)/elections/$electionRoundId/quick-reports/$quickReportId'
 import { Route as appElectionsElectionRoundIdPushMessagesPushMessageIdImport } from './routes/(app)/elections/$electionRoundId/push-messages/$pushMessageId'
-import { Route as appElectionsElectionRoundIdOnserversObserverIdImport } from './routes/(app)/elections/$electionRoundId/onservers/$observerId'
+import { Route as appElectionsElectionRoundIdObserversObserverIdImport } from './routes/(app)/elections/$electionRoundId/observers/$observerId'
 import { Route as appElectionsElectionRoundIdGuidesGuideIdImport } from './routes/(app)/elections/$electionRoundId/guides/$guideId'
 import { Route as appElectionsElectionRoundIdFormsFormIdImport } from './routes/(app)/elections/$electionRoundId/forms/$formId'
 import { Route as appElectionsElectionRoundIdResponsesAggregatedFormIdImport } from './routes/(app)/elections/$electionRoundId/responses/aggregated.$formId'
@@ -85,6 +86,12 @@ const authAcceptInviteRoute = authAcceptInviteImport.update({
   id: '/(auth)/accept-invite',
   path: '/accept-invite',
   getParentRoute: () => rootRoute,
+} as any)
+
+const appSettingsRoute = appSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => appRouteRoute,
 } as any)
 
 const appElectionsIndexRoute = appElectionsIndexImport.update({
@@ -142,10 +149,10 @@ const appElectionsElectionRoundIdPushMessagesIndexRoute =
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 
-const appElectionsElectionRoundIdOnserversIndexRoute =
-  appElectionsElectionRoundIdOnserversIndexImport.update({
-    id: '/onservers/',
-    path: '/onservers/',
+const appElectionsElectionRoundIdObserversIndexRoute =
+  appElectionsElectionRoundIdObserversIndexImport.update({
+    id: '/observers/',
+    path: '/observers/',
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 
@@ -184,10 +191,10 @@ const appElectionsElectionRoundIdPushMessagesPushMessageIdRoute =
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 
-const appElectionsElectionRoundIdOnserversObserverIdRoute =
-  appElectionsElectionRoundIdOnserversObserverIdImport.update({
-    id: '/onservers/$observerId',
-    path: '/onservers/$observerId',
+const appElectionsElectionRoundIdObserversObserverIdRoute =
+  appElectionsElectionRoundIdObserversObserverIdImport.update({
+    id: '/observers/$observerId',
+    path: '/observers/$observerId',
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 
@@ -229,6 +236,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/typography'
       preLoaderRoute: typeof TypographyImport
       parentRoute: typeof rootRoute
+    }
+    '/(app)/settings': {
+      id: '/(app)/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof appSettingsImport
+      parentRoute: typeof appRouteImport
     }
     '/(auth)/accept-invite': {
       id: '/(auth)/accept-invite'
@@ -321,11 +335,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appElectionsElectionRoundIdGuidesGuideIdImport
       parentRoute: typeof appElectionsElectionRoundIdRouteImport
     }
-    '/(app)/elections/$electionRoundId/onservers/$observerId': {
-      id: '/(app)/elections/$electionRoundId/onservers/$observerId'
-      path: '/onservers/$observerId'
-      fullPath: '/elections/$electionRoundId/onservers/$observerId'
-      preLoaderRoute: typeof appElectionsElectionRoundIdOnserversObserverIdImport
+    '/(app)/elections/$electionRoundId/observers/$observerId': {
+      id: '/(app)/elections/$electionRoundId/observers/$observerId'
+      path: '/observers/$observerId'
+      fullPath: '/elections/$electionRoundId/observers/$observerId'
+      preLoaderRoute: typeof appElectionsElectionRoundIdObserversObserverIdImport
       parentRoute: typeof appElectionsElectionRoundIdRouteImport
     }
     '/(app)/elections/$electionRoundId/push-messages/$pushMessageId': {
@@ -363,11 +377,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appElectionsElectionRoundIdGuidesIndexImport
       parentRoute: typeof appElectionsElectionRoundIdRouteImport
     }
-    '/(app)/elections/$electionRoundId/onservers/': {
-      id: '/(app)/elections/$electionRoundId/onservers/'
-      path: '/onservers'
-      fullPath: '/elections/$electionRoundId/onservers'
-      preLoaderRoute: typeof appElectionsElectionRoundIdOnserversIndexImport
+    '/(app)/elections/$electionRoundId/observers/': {
+      id: '/(app)/elections/$electionRoundId/observers/'
+      path: '/observers'
+      fullPath: '/elections/$electionRoundId/observers'
+      preLoaderRoute: typeof appElectionsElectionRoundIdObserversIndexImport
       parentRoute: typeof appElectionsElectionRoundIdRouteImport
     }
     '/(app)/elections/$electionRoundId/push-messages/': {
@@ -409,13 +423,13 @@ interface appElectionsElectionRoundIdRouteRouteChildren {
   appElectionsElectionRoundIdIndexRoute: typeof appElectionsElectionRoundIdIndexRoute
   appElectionsElectionRoundIdFormsFormIdRoute: typeof appElectionsElectionRoundIdFormsFormIdRoute
   appElectionsElectionRoundIdGuidesGuideIdRoute: typeof appElectionsElectionRoundIdGuidesGuideIdRoute
-  appElectionsElectionRoundIdOnserversObserverIdRoute: typeof appElectionsElectionRoundIdOnserversObserverIdRoute
+  appElectionsElectionRoundIdObserversObserverIdRoute: typeof appElectionsElectionRoundIdObserversObserverIdRoute
   appElectionsElectionRoundIdPushMessagesPushMessageIdRoute: typeof appElectionsElectionRoundIdPushMessagesPushMessageIdRoute
   appElectionsElectionRoundIdQuickReportsQuickReportIdRoute: typeof appElectionsElectionRoundIdQuickReportsQuickReportIdRoute
   appElectionsElectionRoundIdResponsesResponseIdRoute: typeof appElectionsElectionRoundIdResponsesResponseIdRoute
   appElectionsElectionRoundIdFormsIndexRoute: typeof appElectionsElectionRoundIdFormsIndexRoute
   appElectionsElectionRoundIdGuidesIndexRoute: typeof appElectionsElectionRoundIdGuidesIndexRoute
-  appElectionsElectionRoundIdOnserversIndexRoute: typeof appElectionsElectionRoundIdOnserversIndexRoute
+  appElectionsElectionRoundIdObserversIndexRoute: typeof appElectionsElectionRoundIdObserversIndexRoute
   appElectionsElectionRoundIdPushMessagesIndexRoute: typeof appElectionsElectionRoundIdPushMessagesIndexRoute
   appElectionsElectionRoundIdQuickReportsIndexRoute: typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   appElectionsElectionRoundIdResponsesIndexRoute: typeof appElectionsElectionRoundIdResponsesIndexRoute
@@ -434,8 +448,8 @@ const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundId
       appElectionsElectionRoundIdFormsFormIdRoute,
     appElectionsElectionRoundIdGuidesGuideIdRoute:
       appElectionsElectionRoundIdGuidesGuideIdRoute,
-    appElectionsElectionRoundIdOnserversObserverIdRoute:
-      appElectionsElectionRoundIdOnserversObserverIdRoute,
+    appElectionsElectionRoundIdObserversObserverIdRoute:
+      appElectionsElectionRoundIdObserversObserverIdRoute,
     appElectionsElectionRoundIdPushMessagesPushMessageIdRoute:
       appElectionsElectionRoundIdPushMessagesPushMessageIdRoute,
     appElectionsElectionRoundIdQuickReportsQuickReportIdRoute:
@@ -446,8 +460,8 @@ const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundId
       appElectionsElectionRoundIdFormsIndexRoute,
     appElectionsElectionRoundIdGuidesIndexRoute:
       appElectionsElectionRoundIdGuidesIndexRoute,
-    appElectionsElectionRoundIdOnserversIndexRoute:
-      appElectionsElectionRoundIdOnserversIndexRoute,
+    appElectionsElectionRoundIdObserversIndexRoute:
+      appElectionsElectionRoundIdObserversIndexRoute,
     appElectionsElectionRoundIdPushMessagesIndexRoute:
       appElectionsElectionRoundIdPushMessagesIndexRoute,
     appElectionsElectionRoundIdQuickReportsIndexRoute:
@@ -464,12 +478,14 @@ const appElectionsElectionRoundIdRouteRouteWithChildren =
   )
 
 interface appRouteRouteChildren {
+  appSettingsRoute: typeof appSettingsRoute
   appIndexRoute: typeof appIndexRoute
   appElectionsElectionRoundIdRouteRoute: typeof appElectionsElectionRoundIdRouteRouteWithChildren
   appElectionsIndexRoute: typeof appElectionsIndexRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
+  appSettingsRoute: appSettingsRoute,
   appIndexRoute: appIndexRoute,
   appElectionsElectionRoundIdRouteRoute:
     appElectionsElectionRoundIdRouteRouteWithChildren,
@@ -483,6 +499,7 @@ const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof appIndexRoute
   '/typography': typeof TypographyRoute
+  '/settings': typeof appSettingsRoute
   '/accept-invite': typeof authAcceptInviteRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/login': typeof authLoginRoute
@@ -495,13 +512,13 @@ export interface FileRoutesByFullPath {
   '/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
   '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
-  '/elections/$electionRoundId/onservers/$observerId': typeof appElectionsElectionRoundIdOnserversObserverIdRoute
+  '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
   '/elections/$electionRoundId/push-messages/$pushMessageId': typeof appElectionsElectionRoundIdPushMessagesPushMessageIdRoute
   '/elections/$electionRoundId/quick-reports/$quickReportId': typeof appElectionsElectionRoundIdQuickReportsQuickReportIdRoute
   '/elections/$electionRoundId/responses/$responseId': typeof appElectionsElectionRoundIdResponsesResponseIdRoute
   '/elections/$electionRoundId/forms': typeof appElectionsElectionRoundIdFormsIndexRoute
   '/elections/$electionRoundId/guides': typeof appElectionsElectionRoundIdGuidesIndexRoute
-  '/elections/$electionRoundId/onservers': typeof appElectionsElectionRoundIdOnserversIndexRoute
+  '/elections/$electionRoundId/observers': typeof appElectionsElectionRoundIdObserversIndexRoute
   '/elections/$electionRoundId/push-messages': typeof appElectionsElectionRoundIdPushMessagesIndexRoute
   '/elections/$electionRoundId/quick-reports': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/elections/$electionRoundId/responses': typeof appElectionsElectionRoundIdResponsesIndexRoute
@@ -510,6 +527,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/typography': typeof TypographyRoute
+  '/settings': typeof appSettingsRoute
   '/accept-invite': typeof authAcceptInviteRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/login': typeof authLoginRoute
@@ -522,13 +540,13 @@ export interface FileRoutesByTo {
   '/elections/$electionRoundId': typeof appElectionsElectionRoundIdIndexRoute
   '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
-  '/elections/$electionRoundId/onservers/$observerId': typeof appElectionsElectionRoundIdOnserversObserverIdRoute
+  '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
   '/elections/$electionRoundId/push-messages/$pushMessageId': typeof appElectionsElectionRoundIdPushMessagesPushMessageIdRoute
   '/elections/$electionRoundId/quick-reports/$quickReportId': typeof appElectionsElectionRoundIdQuickReportsQuickReportIdRoute
   '/elections/$electionRoundId/responses/$responseId': typeof appElectionsElectionRoundIdResponsesResponseIdRoute
   '/elections/$electionRoundId/forms': typeof appElectionsElectionRoundIdFormsIndexRoute
   '/elections/$electionRoundId/guides': typeof appElectionsElectionRoundIdGuidesIndexRoute
-  '/elections/$electionRoundId/onservers': typeof appElectionsElectionRoundIdOnserversIndexRoute
+  '/elections/$electionRoundId/observers': typeof appElectionsElectionRoundIdObserversIndexRoute
   '/elections/$electionRoundId/push-messages': typeof appElectionsElectionRoundIdPushMessagesIndexRoute
   '/elections/$electionRoundId/quick-reports': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/elections/$electionRoundId/responses': typeof appElectionsElectionRoundIdResponsesIndexRoute
@@ -539,6 +557,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/(app)': typeof appRouteRouteWithChildren
   '/typography': typeof TypographyRoute
+  '/(app)/settings': typeof appSettingsRoute
   '/(auth)/accept-invite': typeof authAcceptInviteRoute
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/login': typeof authLoginRoute
@@ -552,13 +571,13 @@ export interface FileRoutesById {
   '/(app)/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
   '/(app)/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
   '/(app)/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
-  '/(app)/elections/$electionRoundId/onservers/$observerId': typeof appElectionsElectionRoundIdOnserversObserverIdRoute
+  '/(app)/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
   '/(app)/elections/$electionRoundId/push-messages/$pushMessageId': typeof appElectionsElectionRoundIdPushMessagesPushMessageIdRoute
   '/(app)/elections/$electionRoundId/quick-reports/$quickReportId': typeof appElectionsElectionRoundIdQuickReportsQuickReportIdRoute
   '/(app)/elections/$electionRoundId/responses/$responseId': typeof appElectionsElectionRoundIdResponsesResponseIdRoute
   '/(app)/elections/$electionRoundId/forms/': typeof appElectionsElectionRoundIdFormsIndexRoute
   '/(app)/elections/$electionRoundId/guides/': typeof appElectionsElectionRoundIdGuidesIndexRoute
-  '/(app)/elections/$electionRoundId/onservers/': typeof appElectionsElectionRoundIdOnserversIndexRoute
+  '/(app)/elections/$electionRoundId/observers/': typeof appElectionsElectionRoundIdObserversIndexRoute
   '/(app)/elections/$electionRoundId/push-messages/': typeof appElectionsElectionRoundIdPushMessagesIndexRoute
   '/(app)/elections/$electionRoundId/quick-reports/': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/(app)/elections/$electionRoundId/responses/': typeof appElectionsElectionRoundIdResponsesIndexRoute
@@ -570,6 +589,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/typography'
+    | '/settings'
     | '/accept-invite'
     | '/forgot-password'
     | '/login'
@@ -582,13 +602,13 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId/'
     | '/elections/$electionRoundId/forms/$formId'
     | '/elections/$electionRoundId/guides/$guideId'
-    | '/elections/$electionRoundId/onservers/$observerId'
+    | '/elections/$electionRoundId/observers/$observerId'
     | '/elections/$electionRoundId/push-messages/$pushMessageId'
     | '/elections/$electionRoundId/quick-reports/$quickReportId'
     | '/elections/$electionRoundId/responses/$responseId'
     | '/elections/$electionRoundId/forms'
     | '/elections/$electionRoundId/guides'
-    | '/elections/$electionRoundId/onservers'
+    | '/elections/$electionRoundId/observers'
     | '/elections/$electionRoundId/push-messages'
     | '/elections/$electionRoundId/quick-reports'
     | '/elections/$electionRoundId/responses'
@@ -596,6 +616,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/typography'
+    | '/settings'
     | '/accept-invite'
     | '/forgot-password'
     | '/login'
@@ -608,13 +629,13 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId'
     | '/elections/$electionRoundId/forms/$formId'
     | '/elections/$electionRoundId/guides/$guideId'
-    | '/elections/$electionRoundId/onservers/$observerId'
+    | '/elections/$electionRoundId/observers/$observerId'
     | '/elections/$electionRoundId/push-messages/$pushMessageId'
     | '/elections/$electionRoundId/quick-reports/$quickReportId'
     | '/elections/$electionRoundId/responses/$responseId'
     | '/elections/$electionRoundId/forms'
     | '/elections/$electionRoundId/guides'
-    | '/elections/$electionRoundId/onservers'
+    | '/elections/$electionRoundId/observers'
     | '/elections/$electionRoundId/push-messages'
     | '/elections/$electionRoundId/quick-reports'
     | '/elections/$electionRoundId/responses'
@@ -623,6 +644,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(app)'
     | '/typography'
+    | '/(app)/settings'
     | '/(auth)/accept-invite'
     | '/(auth)/forgot-password'
     | '/(auth)/login'
@@ -636,13 +658,13 @@ export interface FileRouteTypes {
     | '/(app)/elections/$electionRoundId/'
     | '/(app)/elections/$electionRoundId/forms/$formId'
     | '/(app)/elections/$electionRoundId/guides/$guideId'
-    | '/(app)/elections/$electionRoundId/onservers/$observerId'
+    | '/(app)/elections/$electionRoundId/observers/$observerId'
     | '/(app)/elections/$electionRoundId/push-messages/$pushMessageId'
     | '/(app)/elections/$electionRoundId/quick-reports/$quickReportId'
     | '/(app)/elections/$electionRoundId/responses/$responseId'
     | '/(app)/elections/$electionRoundId/forms/'
     | '/(app)/elections/$electionRoundId/guides/'
-    | '/(app)/elections/$electionRoundId/onservers/'
+    | '/(app)/elections/$electionRoundId/observers/'
     | '/(app)/elections/$electionRoundId/push-messages/'
     | '/(app)/elections/$electionRoundId/quick-reports/'
     | '/(app)/elections/$electionRoundId/responses/'
@@ -692,6 +714,7 @@ export const routeTree = rootRoute
     "/(app)": {
       "filePath": "(app)/route.tsx",
       "children": [
+        "/(app)/settings",
         "/(app)/",
         "/(app)/elections/$electionRoundId",
         "/(app)/elections/"
@@ -699,6 +722,10 @@ export const routeTree = rootRoute
     },
     "/typography": {
       "filePath": "typography.tsx"
+    },
+    "/(app)/settings": {
+      "filePath": "(app)/settings.tsx",
+      "parent": "/(app)"
     },
     "/(auth)/accept-invite": {
       "filePath": "(auth)/accept-invite.tsx"
@@ -728,13 +755,13 @@ export const routeTree = rootRoute
         "/(app)/elections/$electionRoundId/",
         "/(app)/elections/$electionRoundId/forms/$formId",
         "/(app)/elections/$electionRoundId/guides/$guideId",
-        "/(app)/elections/$electionRoundId/onservers/$observerId",
+        "/(app)/elections/$electionRoundId/observers/$observerId",
         "/(app)/elections/$electionRoundId/push-messages/$pushMessageId",
         "/(app)/elections/$electionRoundId/quick-reports/$quickReportId",
         "/(app)/elections/$electionRoundId/responses/$responseId",
         "/(app)/elections/$electionRoundId/forms/",
         "/(app)/elections/$electionRoundId/guides/",
-        "/(app)/elections/$electionRoundId/onservers/",
+        "/(app)/elections/$electionRoundId/observers/",
         "/(app)/elections/$electionRoundId/push-messages/",
         "/(app)/elections/$electionRoundId/quick-reports/",
         "/(app)/elections/$electionRoundId/responses/",
@@ -765,8 +792,8 @@ export const routeTree = rootRoute
       "filePath": "(app)/elections/$electionRoundId/guides/$guideId.tsx",
       "parent": "/(app)/elections/$electionRoundId"
     },
-    "/(app)/elections/$electionRoundId/onservers/$observerId": {
-      "filePath": "(app)/elections/$electionRoundId/onservers/$observerId.tsx",
+    "/(app)/elections/$electionRoundId/observers/$observerId": {
+      "filePath": "(app)/elections/$electionRoundId/observers/$observerId.tsx",
       "parent": "/(app)/elections/$electionRoundId"
     },
     "/(app)/elections/$electionRoundId/push-messages/$pushMessageId": {
@@ -789,8 +816,8 @@ export const routeTree = rootRoute
       "filePath": "(app)/elections/$electionRoundId/guides/index.tsx",
       "parent": "/(app)/elections/$electionRoundId"
     },
-    "/(app)/elections/$electionRoundId/onservers/": {
-      "filePath": "(app)/elections/$electionRoundId/onservers/index.tsx",
+    "/(app)/elections/$electionRoundId/observers/": {
+      "filePath": "(app)/elections/$electionRoundId/observers/index.tsx",
       "parent": "/(app)/elections/$electionRoundId"
     },
     "/(app)/elections/$electionRoundId/push-messages/": {

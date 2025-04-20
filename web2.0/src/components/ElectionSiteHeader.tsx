@@ -7,6 +7,7 @@ import { ModeSwitcher } from "./ModeSwitcher";
 import NgoAdminNav from "./NgoAdminNav";
 import PlatformAdminNav from "./PlatformAdminNav";
 import { Button } from "./ui/button";
+import { ProfileDropdown } from "./ProfileDropdown";
 
 export interface ElectionSiteHeaderProps {
   electionId: string;
@@ -47,13 +48,7 @@ export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
                 </Link>
               </Button>
               <ModeSwitcher />
-              <Button
-                variant={"link"}
-                className="cursor-pointer"
-                onClick={() => auth.logout()}
-              >
-                log out
-              </Button>
+              <ProfileDropdown />
             </nav>
           </div>
         </div>
