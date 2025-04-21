@@ -1,11 +1,11 @@
+import Page from "@/pages/NgoAdmin/MonitoringObservers/Page";
+import { monitoringObserversSearchSchema } from "@/types/monitoring-observers";
 import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 
 export const Route = createFileRoute(
   "/(app)/elections/$electionRoundId/observers/"
 )({
-  component: RouteComponent,
+  validateSearch: zodValidator(monitoringObserversSearchSchema),
+  component: Page,
 });
-
-function RouteComponent() {
-  return <div>Hello "/(app)/elections/$electionRoundId/observers"!</div>;
-}

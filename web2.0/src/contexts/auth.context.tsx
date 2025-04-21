@@ -1,57 +1,81 @@
-import { sleep } from "@/lib/utils";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { decodeToken } from "@/lib/jwt";
+import { setAuthTokens } from "@/lib/utils";
+import API from "@/services/api";
 import * as React from "react";
 
 export type UserRole = "PlatformAdmin" | "NgoAdmin";
 
 export interface AuthContext {
   isAuthenticated: boolean;
-  login: (userRole: UserRole) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   userRole: UserRole | null;
+  email: string | null;
 }
 
 const AuthContext = React.createContext<AuthContext | null>(null);
 
-const key = "tanstack.auth.user";
-
-function getStoredUserRole() {
-  return localStorage.getItem(key) as UserRole;
-}
-
-function setStoredUser(userRole: string | null) {
-  if (userRole) {
-    localStorage.setItem(key, userRole);
-  } else {
-    localStorage.removeItem(key);
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [userRole, setUserRole] = React.useState<UserRole | null>(
-    getStoredUserRole()
-  );
-  const isAuthenticated = !!userRole;
-
-  const logout = React.useCallback(async () => {
-    await sleep(250);
-
-    setStoredUser(null);
-    setUserRole(null);
-  }, []);
-
-  const login = React.useCallback(async (userRole: UserRole) => {
-    await sleep(500);
-
-    setStoredUser(userRole);
-    setUserRole(userRole);
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+  const [userRole, setUserRole] = React.useState<UserRole | null>(null);
+  const [email, setEmail] = React.useState<UserRole | null>(null);
 
   React.useEffect(() => {
-    setUserRole(getStoredUserRole());
+    init();
   }, []);
 
+  const init = async () => {
+    try {
+      const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+      if (token) {
+        const decodedToken = decodeToken(token);
+        setUserRole(decodedToken.role);
+        setEmail(decodedToken.email);
+      }
+      setIsAuthenticated(!!token);
+    } catch (err) {
+      console.error(err);
+      localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN_EXPIRY_TIME);
+    }
+  };
+
+  const logout = React.useCallback(async () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN_EXPIRY_TIME);
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      debugger;
+      const {
+        data: { token, refreshToken, refreshTokenExpiryTime },
+      } = await API.post("auth/login", {
+        email,
+        password,
+      });
+
+      setAuthTokens(token, refreshToken, refreshTokenExpiryTime);
+      const decodedToken = decodeToken(token);
+      setUserRole(decodedToken.role);
+      setEmail(decodedToken.email);
+
+      setIsAuthenticated(true);
+    } catch (err: unknown) {
+      console.log("Error while trying to sign in", err);
+      setIsAuthenticated(false);
+      throw new Error("Error while trying to sign in");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, userRole, email, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

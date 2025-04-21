@@ -1,0 +1,29 @@
+import { listMonitoringObservers } from "@/services/api/monitoring-observers/list.api";
+import type { MonitoringObserversSearch } from "@/types/monitoring-observers";
+import { queryOptions } from "@tanstack/react-query";
+
+export const monitoringObserversKeys = {
+  all: (electionRoundId: string) =>
+    ["monitoring-observers", electionRoundId] as const,
+  lists: (electionRoundId: string) =>
+    [...monitoringObserversKeys.all(electionRoundId), "list"] as const,
+  list: (electionRoundId: string, search: MonitoringObserversSearch) =>
+    [...monitoringObserversKeys.lists(electionRoundId), { ...search }] as const,
+  details: (electionRoundId: string) =>
+    [...monitoringObserversKeys.all(electionRoundId), "detail"] as const,
+  detail: (electionRoundId: string, id: string) =>
+    [...monitoringObserversKeys.details(electionRoundId), id] as const,
+};
+
+const STALE_TIME = 1000 * 60 * 15; // 15 minutes
+
+export const listMonitoringObserversQueryOptions = (
+  electionRoundId: string,
+  search: MonitoringObserversSearch
+) =>
+  queryOptions({
+    queryKey: monitoringObserversKeys.list(electionRoundId, search),
+    queryFn: async () => await listMonitoringObservers(electionRoundId, search),
+    enabled: !!electionRoundId,
+    staleTime: STALE_TIME,
+  });
