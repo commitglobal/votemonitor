@@ -36,6 +36,9 @@ export function getMonitoringObserversTableColumns({
       cell: ({ row }) => (
         <div className="w-20 truncate">{row.original.displayName}</div>
       ),
+      meta: {
+        label: "Name",
+      },
       enableSorting: true,
       enableHiding: true,
     },
@@ -48,6 +51,9 @@ export function getMonitoringObserversTableColumns({
       cell: ({ row }) => (
         <div className="w-20 truncate">{row.original.email}</div>
       ),
+      meta: {
+        label: "Email",
+      },
       enableSorting: true,
       enableHiding: true,
     },

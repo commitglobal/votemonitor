@@ -1,0 +1,55 @@
+import { DataTableToolbar } from "@/components/data-table-toolbar";
+import { DataTable } from "@/components/ui/data-table";
+import { useDataTable } from "@/hooks/use-data-table";
+import type { PageResponse } from "@/types/common";
+import type { DataTableRowAction } from "@/types/data-table";
+import type { MonitoringObserver } from "@/types/monitoring-observers";
+import React from "react";
+import { getMonitoringObserversTableColumns } from "./TableColumns";
+import TableFilters from "./TableFilters";
+export interface TableProps {
+  data?: PageResponse<MonitoringObserver>;
+}
+function Table({ data }: TableProps) {
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<MonitoringObserver> | null>(null);
+
+  const columns = React.useMemo(
+    () =>
+      getMonitoringObserversTableColumns({
+        setRowAction,
+      }),
+    [setRowAction]
+  );
+
+  const { table } = useDataTable({
+    data: data?.items || [],
+    columns,
+    pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
+    initialState: {
+      sorting: [{ id: "displayName", desc: false }],
+      columnPinning: { right: ["actions"] },
+    },
+    getRowId: (originalRow) => originalRow.id,
+    clearOnDefault: true,
+  });
+  return (
+    <DataTable table={table}>
+      <DataTableToolbar table={table}>
+        <TableFilters table={table} />
+      </DataTableToolbar>
+    </DataTable>
+  );
+
+  {
+    /* <DeleteTasksDialog
+  open={rowAction?.variant === "delete"}
+  onOpenChange={() => setRowAction(null)}
+  tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
+  showTrigger={false}
+  onSuccess={() => rowAction?.row.toggleSelected(false)}
+/> */
+  }
+}
+
+export default Table;

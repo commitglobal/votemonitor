@@ -4,20 +4,12 @@ declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
-    placeholder?: string;
-    // variant?: FilterVariant;
-    // options?: Option[];
-    // range?: [number, number];
-    // unit?: string;
-    // icon?: React.FC<React.SVGProps<SVGSVGElement>>;
   }
 }
 
 export interface Option {
   label: string;
   value: string;
-  count?: number;
-  icon?: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
 // export type FilterOperator = DataTableConfig["operators"][number];
