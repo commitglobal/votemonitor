@@ -49,7 +49,7 @@ const CitizenReportStepperComponent = () => {
   const methods = useStepper();
 
   const form = useForm({
-    mode: "onSubmit",
+    mode: "onChange",
     resolver: methods.current.schema
       ? zodResolver(methods.current.schema)
       : undefined,

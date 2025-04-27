@@ -22,7 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -48,6 +47,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { NumberInput } from "./ui/number-input";
 import {
   Select,
   SelectContent,
@@ -243,8 +243,7 @@ function ReportAnswersStep() {
                       languageCode={selectedLanguage}
                     />
                     <FormControl>
-                      <Input
-                        type="number"
+                      <NumberInput
                         placeholder={
                           question?.inputPlaceholder?.[
                             citizenReportForm.defaultLanguage
