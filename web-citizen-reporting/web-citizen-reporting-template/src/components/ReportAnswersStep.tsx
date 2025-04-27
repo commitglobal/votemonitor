@@ -108,16 +108,20 @@ function ReportAnswersStep() {
   );
 
   useEffect(() => {
+    const dirtyFieldsSet = new Set(Object.keys(form.formState.dirtyFields));
     citizenReportForm.questions.forEach((question) => {
+      // do not reset if the user typed anything in that field
+      if (dirtyFieldsSet.has(`question-${question.id}`)) return;
+
       if (isMultiSelectQuestion(question)) {
         form.setValue(`question-${question.id}.selection`, []);
       }
 
-      if (isTextQuestion(question)) {
+      if (isTextQuestion(question) || isNumberQuestion(question)) {
         form.setValue(`question-${question.id}`, "");
       }
     });
-  }, [form.setValue, citizenReportForm]);
+  }, [form.setValue, form.formState.dirtyFields, citizenReportForm]);
 
   const questionHasFreeTextOption = useCallback(
     (question: SingleSelectQuestion | MultiSelectQuestion) => {
