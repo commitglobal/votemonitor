@@ -1,5 +1,6 @@
 import {
   type BaseQuestion,
+  type FormModel,
   type MultiSelectQuestion,
   type SingleSelectQuestion,
 } from "@/common/types";
@@ -39,10 +40,8 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from "@/lib/utils";
-import { formsOptions } from "@/queries/use-forms";
 import { Route } from "@/routes/forms/$formId";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -87,17 +86,14 @@ function QuestionDescription({
 
 function ReportAnswersStep() {
   const { formId } = Route.useParams();
-  const { data: citizenReportFoms } = useSuspenseQuery(formsOptions());
   const [loading, setLoading] = React.useState(false);
   const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile({
     defaultUploadedFiles: [],
   });
 
-  const citizenReportForm = citizenReportFoms.find((f) => f.id === formId);
-
-  if (citizenReportForm === undefined) {
-    throw notFound({ throw: false });
-  }
+  const citizenReportForm = useLoaderData({
+    from: "/forms/$formId",
+  }) as FormModel;
 
   const form = useFormContext();
 
