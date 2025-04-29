@@ -41,7 +41,6 @@ import {
   isTextQuestion,
 } from "@/lib/utils";
 import { Route } from "@/routes/forms/$formId";
-import { useLoaderData } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -85,15 +84,12 @@ function QuestionDescription({
 }
 
 function ReportAnswersStep() {
-  const { formId } = Route.useParams();
   const [loading, setLoading] = React.useState(false);
   const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile({
     defaultUploadedFiles: [],
   });
 
-  const citizenReportForm = useLoaderData({
-    from: "/forms/$formId",
-  }) as FormModel;
+  const citizenReportForm = Route.useLoaderData() as FormModel;
 
   const form = useFormContext();
 
