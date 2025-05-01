@@ -22,7 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -31,6 +30,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormDisplayLogic } from "@/features/forms/hooks/useDisplayLogic";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import {
   cn,
@@ -40,14 +40,12 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from "@/lib/utils";
-import { formsOptions } from "@/queries/use-forms";
 import { Route } from "@/routes/forms/$formId";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { NumberInput } from "./ui/number-input";
 import {
   Select,
   SelectContent,
@@ -86,18 +84,15 @@ function QuestionDescription({
 }
 
 function ReportAnswersStep() {
-  const { formId } = Route.useParams();
-  const { data: citizenReportFoms } = useSuspenseQuery(formsOptions());
   const [loading, setLoading] = React.useState(false);
   const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile({
     defaultUploadedFiles: [],
   });
 
-  const citizenReportForm = citizenReportFoms.find((f) => f.id === formId);
-
-  if (citizenReportForm === undefined) {
-    throw notFound({ throw: false });
-  }
+  const citizenReportForm = Route.useLoaderData();
+  const { shouldDisplayQuestion } = useFormDisplayLogic(
+    citizenReportForm.questions
+  );
 
   const form = useFormContext();
 
@@ -108,16 +103,20 @@ function ReportAnswersStep() {
   );
 
   useEffect(() => {
+    const dirtyFieldsSet = new Set(Object.keys(form.formState.dirtyFields));
     citizenReportForm.questions.forEach((question) => {
+      // do not reset if the user typed anything in that field
+      if (dirtyFieldsSet.has(`question-${question.id}`)) return;
+
       if (isMultiSelectQuestion(question)) {
         form.setValue(`question-${question.id}.selection`, []);
       }
 
-      if (isTextQuestion(question)) {
+      if (isTextQuestion(question) || isNumberQuestion(question)) {
         form.setValue(`question-${question.id}`, "");
       }
     });
-  }, [form.setValue, citizenReportForm]);
+  }, [form.setValue, form.formState.dirtyFields, citizenReportForm]);
 
   const questionHasFreeTextOption = useCallback(
     (question: SingleSelectQuestion | MultiSelectQuestion) => {
@@ -191,7 +190,7 @@ function ReportAnswersStep() {
       <CardContent className="flex flex-col gap-8">
         {citizenReportForm.questions.map((question) => (
           <div className="w-full flex flex-col gap-4" key={question.id}>
-            {isTextQuestion(question) && (
+            {shouldDisplayQuestion(question) && isTextQuestion(question) && (
               <FormField
                 control={form.control}
                 name={`question-${question.id}`}
@@ -223,7 +222,7 @@ function ReportAnswersStep() {
                 )}
               />
             )}
-            {isNumberQuestion(question) && (
+            {shouldDisplayQuestion(question) && isNumberQuestion(question) && (
               <FormField
                 control={form.control}
                 name={`question-${question.id}`}
@@ -239,8 +238,7 @@ function ReportAnswersStep() {
                       languageCode={selectedLanguage}
                     />
                     <FormControl>
-                      <Input
-                        type="number"
+                      <NumberInput
                         placeholder={
                           question?.inputPlaceholder?.[
                             citizenReportForm.defaultLanguage
@@ -256,7 +254,7 @@ function ReportAnswersStep() {
               />
             )}
 
-            {isDateQuestion(question) && (
+            {shouldDisplayQuestion(question) && isDateQuestion(question) && (
               <FormField
                 control={form.control}
                 name={`question-${question.id}`}
@@ -308,83 +306,15 @@ function ReportAnswersStep() {
               />
             )}
 
-            {isSingleSelectQuestion(question) && (
-              <div className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name={`question-${question.id}.selection`}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <QuestionText
-                        question={question}
-                        languageCode={selectedLanguage}
-                      />
-                      <QuestionDescription
-                        question={question}
-                        languageCode={selectedLanguage}
-                      />
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          {question.options.map((option) => (
-                            <FormItem
-                              className="flex items-center space-x-3 space-y-0"
-                              key={`${question.id}-${option.id}`}
-                            >
-                              <FormControl>
-                                <RadioGroupItem value={option.id} />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {option.text[selectedLanguage]}
-                              </FormLabel>
-                            </FormItem>
-                          ))}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {questionHasFreeTextOption(question) &&
-                  isFreeTextOptionSelected(question) && (
-                    <FormField
-                      control={form.control}
-                      name={`question-${question.id}.${
-                        getFreeTextOption(question)?.id
-                      }`}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={
-                                getFreeTextOption(question)?.text?.[
-                                  citizenReportForm.defaultLanguage
-                                ]
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-              </div>
-            )}
-
-            {isMultiSelectQuestion(question) && (
-              <div className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name={`question-${question.id}.selection`}
-                  render={() => (
-                    <FormItem>
-                      <div className="mb-4">
+            {shouldDisplayQuestion(question) &&
+              isSingleSelectQuestion(question) && (
+                <div className="flex flex-col gap-4">
+                  <FormField
+                    control={form.control}
+                    name={`question-${question.id}.selection`}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
                         <QuestionText
                           question={question}
                           languageCode={selectedLanguage}
@@ -393,80 +323,150 @@ function ReportAnswersStep() {
                           question={question}
                           languageCode={selectedLanguage}
                         />
-                      </div>
-                      {question.options.map((option) => (
-                        <FormField
-                          key={option.id}
-                          control={form.control}
-                          name={`question-${question.id}.selection`}
-                          rules={{ required: true, minLength: 1 }}
-                          render={({ field }) => {
-                            return (
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-1"
+                          >
+                            {question.options.map((option) => (
                               <FormItem
-                                key={option.id}
-                                className="flex flex-row items-start space-x-3 space-y-0"
+                                className="flex items-center space-x-3 space-y-0"
+                                key={`${question.id}-${option.id}`}
                               >
                                 <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(option.id)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...field.value,
-                                            option.id,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value: string) =>
-                                                value !== option.id
-                                            )
-                                          );
-                                    }}
-                                  />
+                                  <RadioGroupItem value={option.id} />
                                 </FormControl>
-                                <FormLabel className="text-sm font-normal">
-                                  {
-                                    option.text[
-                                      citizenReportForm.defaultLanguage
-                                    ]
-                                  }
+                                <FormLabel className="font-normal">
+                                  {option.text[selectedLanguage]}
                                 </FormLabel>
                               </FormItem>
-                            );
-                          }}
-                        />
-                      ))}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {questionHasFreeTextOption(question) &&
-                  isFreeTextOptionSelected(question) && (
-                    <FormField
-                      control={form.control}
-                      name={`question-${question.id}.${
-                        getFreeTextOption(question)?.id
-                      }`}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={
-                                getFreeTextOption(question)?.text?.[
-                                  citizenReportForm.defaultLanguage
-                                ]
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-              </div>
-            )}
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {questionHasFreeTextOption(question) &&
+                    isFreeTextOptionSelected(question) && (
+                      <FormField
+                        control={form.control}
+                        name={`question-${question.id}.${
+                          getFreeTextOption(question)?.id
+                        }`}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                placeholder={
+                                  getFreeTextOption(question)?.text?.[
+                                    citizenReportForm.defaultLanguage
+                                  ]
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                </div>
+              )}
+
+            {shouldDisplayQuestion(question) &&
+              isMultiSelectQuestion(question) && (
+                <div className="flex flex-col gap-4">
+                  <FormField
+                    control={form.control}
+                    name={`question-${question.id}.selection`}
+                    render={() => (
+                      <FormItem>
+                        <div className="mb-4">
+                          <QuestionText
+                            question={question}
+                            languageCode={selectedLanguage}
+                          />
+                          <QuestionDescription
+                            question={question}
+                            languageCode={selectedLanguage}
+                          />
+                        </div>
+                        {question.options.map((option) => (
+                          <FormField
+                            key={option.id}
+                            control={form.control}
+                            name={`question-${question.id}.selection`}
+                            rules={{ required: true, minLength: 1 }}
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(option.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              option.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value: string) =>
+                                                  value !== option.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-sm font-normal">
+                                    {
+                                      option.text[
+                                        citizenReportForm.defaultLanguage
+                                      ]
+                                    }
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {questionHasFreeTextOption(question) &&
+                    isFreeTextOptionSelected(question) && (
+                      <FormField
+                        control={form.control}
+                        name={`question-${question.id}.${
+                          getFreeTextOption(question)?.id
+                        }`}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                placeholder={
+                                  getFreeTextOption(question)?.text?.[
+                                    citizenReportForm.defaultLanguage
+                                  ]
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                </div>
+              )}
 
             <FormField
               control={form.control}
