@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import NgoAdminHomePage from "@/pages/NgoAdmin/Home/Page";
-import PlatformAdminHomepage from "@/pages/PlatformAdmin/HomePage";
+import PlatformAdminHomepage from "@/pages/PlatformAdmin/Home/Page";
 import { useAuth } from "@/contexts/auth.context";
 import Layout from "@/components/Layout";
 

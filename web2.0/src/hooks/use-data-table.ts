@@ -40,7 +40,6 @@ interface UseDataTableProps<TData>
     sorting?: ExtendedColumnSort<TData>[];
   };
   history?: "push" | "replace";
-  clearOnDefault?: boolean;
   startTransition?: React.TransitionStartFunction;
 }
 
@@ -50,7 +49,6 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     pageCount = -1,
     initialState,
     history = "replace",
-    clearOnDefault = false,
     startTransition,
     ...tableProps
   } = props;

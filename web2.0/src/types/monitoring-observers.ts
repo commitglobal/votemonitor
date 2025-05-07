@@ -7,7 +7,7 @@ export enum MonitoringObserverStatus {
   Suspended = "Suspended",
 }
 
-export interface MonitoringObserver {
+export interface MonitoringObserverModel {
   id: string;
   firstName: string;
   lastName: string;
