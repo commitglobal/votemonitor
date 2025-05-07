@@ -26,7 +26,7 @@ public class Endpoint(
 
     public override async Task<Results<Ok, ProblemHttpResult>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var user = await userManager.FindByEmailAsync(request.Email.Normalize());
+        var user = await userManager.FindByEmailAsync(request.Email.Normalize().Trim());
         if (user is null || !await userManager.IsEmailConfirmedAsync(user))
         {
             logger.LogWarning("Possible user enumeration. Unknown email received {email}", request.Email);
