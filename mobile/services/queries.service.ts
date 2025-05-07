@@ -13,6 +13,7 @@ import { PollingStationNomenclatorNodeVM } from "../common/models/polling-statio
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Sentry from "@sentry/react-native";
 import { exists } from "i18next";
+import { ElectionRoundVM } from "../common/models/election-round.model";
 
 export const electionRoundsKeys = {
   all: ["election-rounds"] as const,
@@ -131,10 +132,13 @@ export const feedbackKeys = {
     ["addFeedback", "electionRoundId", electionRoundId] as const,
 };
 
-export const useElectionRoundsQuery = () => {
+export const useElectionRoundsQuery = <TResult = ElectionRoundVM[]>(
+  select?: (data: ElectionRoundVM[]) => TResult,
+) => {
   return useQuery({
     queryKey: electionRoundsKeys.all,
     queryFn: getElectionRounds,
+    select,
   });
 };
 

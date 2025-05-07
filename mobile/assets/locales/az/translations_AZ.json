@@ -567,7 +567,8 @@
     },
     "delete_success": "Seçki məntəqəsi uğurla silindi!",
     "delete_error": "Seçki məntəqəsinə baş çəkmə silinərkən problem aşkarlandı. Xahiş edirik, yenidən cəhd edin.",
-    "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır."
+    "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır.",
+    "add": "Add new polling station"
   },
   "quick_report": {
     "list": {

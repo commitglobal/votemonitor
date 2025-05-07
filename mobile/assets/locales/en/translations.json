@@ -570,7 +570,8 @@
     },
     "delete_success": "Polling station deleted successfully!",
     "delete_error": "We encountered a problem while deleting the polling station visit. Please try again.",
-    "offline_error_toast_msg": "You need an internet connection in order to perform this action."
+    "offline_error_toast_msg": "You need an internet connection in order to perform this action.",
+    "add": "Add new polling station"
   },
   "quick_report": {
     "list": {

@@ -4,7 +4,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "npm run lint && expo start -c",
-    "start:dev": "npm run lint && expo start -c --dev-client",
+    "start:dev": "expo start -c --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "start:ios": "eas build:run -p ios",
