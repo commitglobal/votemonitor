@@ -25,7 +25,7 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
     public async Task<Results<Ok<TokenResponse>, ValidationProblem>> GetTokenAsync(string email, string password, CancellationToken cancellationToken)
     {
         var validationCtx = ValidationContext.Instance;
-        if (await userManager.FindByEmailAsync(email.Trim().Normalize()) is not { }
+        if (await userManager.FindByEmailAsync(email.Trim().Normalize().Trim()) is not { }
                 user
             || !await userManager.CheckPasswordAsync(user, password))
         {

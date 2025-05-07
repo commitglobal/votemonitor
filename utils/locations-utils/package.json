@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "form-parser": " node questions-generator -l ./Romania/localities.csv -s ./Romania/romanian-polling-stations.csv ./ro",
-    "cleanup": "tsx clean-localities.ts"
+    "cleanup": "tsx clean-localities.ts",
+    "generate": "tsx generate-polling-stations.ts"
   },
   "author": "",
   "license": "MIT",
