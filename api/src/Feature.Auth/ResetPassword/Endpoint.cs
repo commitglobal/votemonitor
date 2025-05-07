@@ -15,7 +15,7 @@ public class Endpoint(ILogger<Endpoint> logger, UserManager<ApplicationUser> use
 
     public override async Task<Results<Ok, ProblemHttpResult>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var user = await userManager.FindByEmailAsync(request.Email.Normalize().Trim());
+        var user = await userManager.FindByEmailAsync(request.Email.Trim());
 
         // Don't reveal that the user does not exist
         if (user is null)
