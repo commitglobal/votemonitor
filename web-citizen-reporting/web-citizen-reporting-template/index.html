@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site for collecting citizen reports for vote monitor" />
+  <link rel="apple-touch-icon" href="/logo192.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>Vote Monitor Citizen Web</title>
+  <script>
+    try {
+      if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', `'${META_THEME_COLORS.dark}'`)
+      }
+    } catch (_) { }
+  </script>
+</head>
+
+<body class="min-h-svh bg-background font-sans antialiased">
+  <div id="app"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
