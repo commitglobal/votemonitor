@@ -2,16 +2,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { noAuthApi } from '@/common/no-auth-api';
+import { ReportedError } from '@/common/types';
+import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Logo from '@/components/layout/Header/Logo';
+import { toast } from '@/components/ui/use-toast';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { Route as AcceptInviteRoute } from '@/routes/accept-invite/index';
 import { useMutation } from '@tanstack/react-query';
-import { noAuthApi } from '@/common/no-auth-api';
-import { toast } from '@/components/ui/use-toast';
+import { useNavigate } from '@tanstack/react-router';
 
 const formSchema = z
   .object({
@@ -60,9 +62,11 @@ function AcceptInvite() {
       navigate({ to: '/accept-invite/success' });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error accepting invite';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error accepting invite',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

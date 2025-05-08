@@ -1,4 +1,5 @@
 import { authApi } from '@/common/auth-api';
+import { ReportedError } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -7,6 +8,7 @@ import TagsSelectFormField from '@/components/ui/tag-selector';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -61,9 +63,11 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
       form.reset({});
       onOpenChange(false);
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = t('onError');
+      sendErrorToSentry({ error, title });
       toast({
-        title: t('onError'),
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

@@ -1,16 +1,18 @@
-import { FunctionComponent } from '@/common/types';
+import { FunctionComponent, ReportedError } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { Separator } from '@/components/ui/separator';
 import Papa from 'papaparse';
 import { useMemo, useState } from 'react';
-import { ZodIssue, ZodIssueCode, z } from 'zod';
+import { z, ZodIssue, ZodIssueCode } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { sendErrorToSentry } from '@/lib/sentry';
+import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
@@ -19,7 +21,6 @@ import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { ImportedObserversDataTable } from './ImportedObserversDataTable';
-import { downloadImportExample, TemplateType } from '@/lib/utils';
 
 export const importObserversSchema = z.object({
   firstName: z
@@ -80,9 +81,11 @@ export function MonitoringObserversImport(): FunctionComponent {
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       navigate({ to: '/monitoring-observers' });
     },
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = t('onError');
+      sendErrorToSentry({ error, title });
       toast({
-        title: t('onError'),
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

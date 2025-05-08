@@ -1,7 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
 import { usePrevSearch } from '@/common/prev-search-store';
-import { QuickReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
+import { ElectionRoundStatus, QuickReportFollowUpStatus, ReportedError, type FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { queryClient } from '@/main';
 import { Route, quickReportDetailsQueryOptions } from '@/routes/responses/quick-reports/$quickReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -53,9 +54,11 @@ export default function QuickReportDetails(): FunctionComponent {
       void queryClient.invalidateQueries({ queryKey: quickReportKeys.all(electionRoundId) });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
+      const title = 'Error updating follow up status';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error updating follow up status',
+        title,
         description: 'Please contact tech support',
         variant: 'destructive',
       });

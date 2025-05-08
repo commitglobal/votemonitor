@@ -1,11 +1,12 @@
 import { authApi } from '@/common/auth-api';
-import { FunctionComponent } from '@/common/types';
+import { FunctionComponent, ReportedError } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { sendErrorToSentry } from '@/lib/sentry';
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -136,11 +137,12 @@ export default function EditGuideForm({
       });
     },
 
-    onError: () => {
+    onError: (error: ReportedError) => {
       onError?.();
-
+      const title = 'Error updating guide';
+      sendErrorToSentry({ error, title });
       toast({
-        title: 'Error updating guide',
+        title,
         description: 'Please contact Platform admins',
         variant: 'destructive',
       });
