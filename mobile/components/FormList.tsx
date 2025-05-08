@@ -27,6 +27,7 @@ import {
 } from "../services/queries.service";
 import FormListEmptyComponent from "./FormListEmptyComponent";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import SearchInput from "./SearchInput";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -60,6 +61,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
+  const [search, setSearch] = useState("");
 
   const {
     data: allForms,
@@ -97,8 +99,10 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   };
 
   const formList: FormListItem[] = useMemo(() => {
-    return mapFormToFormListItem(allForms?.forms, formSubmissions);
-  }, [allForms, formSubmissions]);
+    return mapFormToFormListItem(allForms?.forms, formSubmissions).filter((f) =>
+      f.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+    );
+  }, [allForms, formSubmissions, search]);
 
   const {
     control,
@@ -160,7 +164,12 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     <YStack flex={1}>
       <ListView<FormListItem>
         data={formList}
-        ListHeaderComponent={ListHeaderComponent}
+        ListHeaderComponent={
+          <YStack marginBottom="$xs">
+            {ListHeaderComponent}
+            <SearchInput onSearch={setSearch} placeholder="Search forms" />
+          </YStack>
+        }
         contentContainerStyle={{ paddingVertical: 16 }}
         ListEmptyComponent={<FormListEmptyComponent />}
         showsVerticalScrollIndicator={false}

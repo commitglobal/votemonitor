@@ -1,16 +1,22 @@
 import { Icon } from "./Icon";
 import { Input, XStack, styled, Button } from "tamagui";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 interface SearchInputProps {
   onSearch: (value: string) => void;
+  placeholder?: string;
 }
 
 // TODO: Update this to reuse in all the application
-const Search = ({ onSearch }: SearchInputProps) => {
+const Search = ({ onSearch, placeholder }: SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { t } = useTranslation();
+
+  const inputPlaceholder = useMemo(
+    () => placeholder ?? t("search", { ns: "common" }),
+    [t, placeholder],
+  );
 
   const debouncedSearch = useCallback(
     (value: string) => {
@@ -40,7 +46,7 @@ const Search = ({ onSearch }: SearchInputProps) => {
         value={searchTerm}
         onChangeText={setSearchTerm}
         maxFontSizeMultiplier={1.2}
-        placeholder={t("search", { ns: "common" })}
+        placeholder={inputPlaceholder}
       />
       {searchTerm !== "" && (
         <Button

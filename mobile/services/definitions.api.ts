@@ -17,7 +17,7 @@ export type ElectionRoundsAPIResponse = {
 };
 
 export const getElectionRounds = (): Promise<ElectionRoundVM[]> => {
-  return API.get<ElectionRoundsAPIResponse>("election-rounds:my").then(
+  return API.get<ElectionRoundsAPIResponse>("election-rounds:myV2").then(
     (res) => res.data.electionRounds,
   );
 };
