@@ -3,16 +3,17 @@ import { Drawer } from "expo-router/drawer";
 import React, { useMemo } from "react";
 import { ScrollViewProps } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme, XStack, YStack } from "tamagui";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
+import { useRouter } from "expo-router";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
 import { electionRoundSorter } from "../../../../helpers/election-rounds";
-import { useRouter } from "expo-router";
+import { PastElectionsNavigateButton } from "../../../../components/PastElectionsNavigateButton";
+import { useTranslation } from "react-i18next";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -21,7 +22,8 @@ type DrawerContentProps = ScrollViewProps & {
 
 export const DrawerContent = (props: DrawerContentProps) => {
   const { electionRounds, activeElectionRound, setSelectedElectionRoundId } = useUserData();
-  const router = useRouter();
+  const { t } = useTranslation("drawer");
+
   const startedElectionRounds = useMemo(
     () =>
       electionRounds
@@ -31,7 +33,6 @@ export const DrawerContent = (props: DrawerContentProps) => {
   );
 
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
 
   return (
     <YStack flex={1}>
@@ -44,7 +45,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
         <YStack paddingLeft="$md" backgroundColor={theme.purple5?.val}>
           <Icon icon="vmObserverLogo" width={211} height={65} />
           <Typography preset="subheading" color="white">
-            Active elections
+            {t("active_elections")}
           </Typography>
         </YStack>
         {startedElectionRounds?.map((round, index) => {
@@ -79,22 +80,9 @@ export const DrawerContent = (props: DrawerContentProps) => {
         })}
       </DrawerContentScrollView>
 
-      {/* app mode switch */}
+      {/* past elections */}
       <YStack padding="$md" backgroundColor={theme.purple5?.val}>
-        <XStack
-          marginTop="auto"
-          gap="$xxs"
-          alignItems="center"
-          paddingHorizontal="$md"
-          paddingVertical="$xxxs"
-          pressStyle={{ opacity: 0.5 }}
-          onPress={() => router.push("/past-elections")}
-        >
-          <Icon icon="appModeSwitch" color={theme.purple5?.val} size={32} />
-          <Typography color="white" preset="body2" textDecorationLine="underline" flex={1}>
-            See past elections data
-          </Typography>
-        </XStack>
+        <PastElectionsNavigateButton />
       </YStack>
       {/* app mode switch */}
       <YStack padding="$md" backgroundColor={theme.purple5?.val}>

@@ -74,6 +74,8 @@
     "retry": "Retry"
   },
   "drawer": {
+    "active_elections": "Active elections",
+    "past_elections": "Past elections",
     "report_as_citizen": "Report as citizen",
     "report_as_accredited_observer": "Report as accredited observer"
   },
@@ -852,5 +854,19 @@
     "sync_data": "Synchronizing offline data...",
     "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
     "files": "We are uploading your files, it may take a while..."
+  },
+  "er_statistics": {
+    "header": "Statistics",
+    "title": "Your past monitoring activity",
+    "empty": {
+      "heading": "Election",
+      "paragraph": "Past elections you monitored will appear here."
+    },
+    "forms_submitted": "Forms Submitted: {{value}}",
+    "questions_answered": "Questions Answered: {{value}}",
+    "quick_reports": "Quick Reports: {{value}}",
+    "notes_taken": "Notes Taken: {{value}}",
+    "attachments_sent": "Attachments sent: {{value}}",
+    "visited_ps": "Polling Stations Visited: {{value}}"
   }
 }

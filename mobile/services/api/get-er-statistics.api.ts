@@ -10,5 +10,5 @@ export interface ERStatisticsModel {
 }
 
 export const getERStatistics = (electionRoundId: string): Promise<ERStatisticsModel> => {
-  return API.get(`election-rounds/${electionRoundId}/statistics`).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/statistics:my`).then((res) => res.data);
 };

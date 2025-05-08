@@ -1,5 +1,5 @@
+import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 import { YStack } from "tamagui";
 import { ElectionRoundVM } from "../common/models/election-round.model";
@@ -8,22 +8,22 @@ import Card, { CardProps } from "./Card";
 import { EmptyContent, LoadingContent } from "./ListContent";
 import { ListView } from "./ListView";
 import { Typography } from "./Typography";
-import { useRouter } from "expo-router";
 
 interface PastElectionCardProps extends CardProps {
   electionRound: ElectionRoundVM;
 }
 
 const PastElectionCard = ({ electionRound, ...rest }: PastElectionCardProps) => {
-  const { t } = useTranslation(["er-statistics"]);
   const router = useRouter();
 
   return (
     <Card gap="$xxs" onPress={() => router.push(`/er-statistics/${electionRound.id}`)} {...rest}>
       <Typography preset="body1" fontWeight="700">
-        {electionRound.title}
+        {electionRound.title || ""}
       </Typography>
-
+      <Typography preset="body1" color="$gray6">
+        {electionRound.englishTitle || ""}
+      </Typography>
       <Typography preset="body1" color="$gray6">
         {electionRound.startDate}
       </Typography>
@@ -73,7 +73,7 @@ const PastElectionsList = ({
         ListHeaderComponent={header}
         ListEmptyComponent={
           <EmptyContent
-            translationKey={"er-statistics"}
+            translationKey={"er_statistics"}
             illustrationIconKey="undrawReading"
             emptyContainerMarginTop={emptyContainerMarginTop}
           />

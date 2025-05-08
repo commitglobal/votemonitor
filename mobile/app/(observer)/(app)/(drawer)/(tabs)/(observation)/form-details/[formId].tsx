@@ -2,9 +2,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
-import { ScrollView, Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
+import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
 import { setFormLanguagePreference } from "../../../../../../../common/language.preferences";
-import Button from "../../../../../../../components/Button";
 import ChangeLanguageDialog from "../../../../../../../components/ChangeLanguageDialog";
 import FormOverview from "../../../../../../../components/FormOverview";
 import FormQuestionListItem, {

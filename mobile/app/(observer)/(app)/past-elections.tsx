@@ -1,5 +1,5 @@
 import { DrawerActions } from "@react-navigation/native";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { YStack } from "tamagui";
@@ -12,9 +12,8 @@ import { electionRoundSorter } from "../../../helpers/election-rounds";
 import { useElectionRoundsQuery } from "../../../services/queries.service";
 
 const PastElections = () => {
-  const { t } = useTranslation("er-statistics");
+  const { t } = useTranslation("er_statistics");
   const navigation = useNavigation();
-
   const [search, setSearch] = useState("");
 
   const {
@@ -48,8 +47,11 @@ const PastElections = () => {
           title={t("title")}
           titleColor="white"
           barStyle="light-content"
-          leftIcon={<Icon icon="menuAlt2" color="white" />}
-          onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => {
+            navigation.dispatch(DrawerActions.closeDrawer);
+            router.back();
+          }}
         />
         <YStack backgroundColor="$purple5" padding="$md">
           <SearchInput onSearch={handleSearch} />
