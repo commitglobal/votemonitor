@@ -3,17 +3,16 @@ import { Drawer } from "expo-router/drawer";
 import React, { useMemo } from "react";
 import { ScrollViewProps } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useTheme, XStack, YStack } from "tamagui";
+import { useTheme, YStack } from "tamagui";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
-import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";
+import { PastElectionsNavigateButton } from "../../../../components/PastElectionsNavigateButton";
 import { Typography } from "../../../../components/Typography";
 import { electionRoundSorter } from "../../../../helpers/election-rounds";
-import { PastElectionsNavigateButton } from "../../../../components/PastElectionsNavigateButton";
-import { useTranslation } from "react-i18next";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
