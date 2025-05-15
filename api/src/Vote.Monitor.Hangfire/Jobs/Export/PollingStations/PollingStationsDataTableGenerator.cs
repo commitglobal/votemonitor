@@ -34,6 +34,8 @@ public class PollingStationsDataTableGenerator
             pollingStation.Level5,
             pollingStation.Number,
             pollingStation.Address,
+            pollingStation.Latitude?.ToString() ?? "",
+            pollingStation.Longitude?.ToString() ?? "",
             pollingStation.DisplayOrder
         };
 

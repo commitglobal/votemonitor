@@ -55,6 +55,8 @@ public class Endpoint(
                 x.Address,
                 x.DisplayOrder,
                 x.Tags.ToTagsObject(),
+                x.Latitude,
+                x.Longitude,
                 timeProvider.UtcNow,
                 userProvider.GetUserId()!.Value))
             .ToList();

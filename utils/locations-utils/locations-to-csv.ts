@@ -1,7 +1,7 @@
 import { stringify } from "csv-stringify/sync";
 import { promises as fs } from "fs"; // 'fs/promises' not available in node 12
 
-const rawLocations = await fs.readFile("diaspora-locations.json", "utf-8");
+const rawLocations = await fs.readFile("locations.json", "utf-8");
 
 const featuresCollection = JSON.parse(rawLocations);
 
@@ -23,4 +23,4 @@ const output = stringify(
   }
 );
 
-await fs.writeFile(`vd-locations.csv`, output, "utf8");
+await fs.writeFile(`diaspora-import.csv`, output, "utf8");

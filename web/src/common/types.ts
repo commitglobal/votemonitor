@@ -1,4 +1,5 @@
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { Row } from '@tanstack/react-table';
 import { z } from 'zod';
 
 export type FunctionComponent = React.ReactElement | null;
@@ -300,6 +301,8 @@ export interface PollingStation {
   number: string;
   address: string;
   displayOrder: number;
+  latitude?: number;
+  longitude?: number;
   tags?: Record<string, string>;
 }
 
@@ -325,6 +328,8 @@ export const importPollingStationSchema = z
     address: z.string().min(1, 'Address is required'),
     number: z.string().min(1, 'Number is required'),
     displayOrder: z.coerce.number().catch(0),
+    latitude: z.coerce.number().optional(),
+    longitude: z.coerce.number().optional(),
     tags: z.record(z.string()).optional().catch({}),
   })
   .superRefine((val, ctx) => {
@@ -422,4 +427,9 @@ export interface ProblemDetails {
   detail: string;
   instance?: string;
   errors?: { name: string; reason: string }[]; // Maps field names to error messages
+}
+
+export interface DataTableRowAction<TData, TAction> {
+  row?: Row<TData>;
+  variant: TAction;
 }

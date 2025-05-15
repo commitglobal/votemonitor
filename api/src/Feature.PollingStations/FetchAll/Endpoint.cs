@@ -35,7 +35,6 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         {
             var pollingStations = await context.PollingStations
                 .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .OrderBy(x => x.DisplayOrder)
                 .Select(x => new PollingStationModel
                 {
                     Id = x.Id,
@@ -134,7 +133,9 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
                 Name = ps.Address,
                 ParentId = parentNode!.Id,
                 Number = ps.Number,
-                PollingStationId = ps.Id
+                PollingStationId = ps.Id,
+                Latitude = ps.Latitude,
+                Longitude = ps.Longitude
             });
         }
 

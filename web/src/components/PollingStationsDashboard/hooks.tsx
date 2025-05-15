@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse, PollingStation } from '@/common/types';
+import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
@@ -40,47 +41,24 @@ export function usePollingStations(
   });
 }
 
-export function useUpdatePollingStationMutation() {
+export const useDeletePollingStationMutation = (onSuccess?: () => void, onError?: () => void) => {
   return useMutation({
-    mutationFn: ({
-      electionRoundId,
-      pollingStationId,
-      pollingStation,
-    }: {
-      electionRoundId: string;
-      pollingStationId: string;
-      pollingStation: PollingStation;
-      onSuccess?: () => void;
-      onError?: () => void;
-    }) => {
-      return authApi.put<PollingStation>(
-        `/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`,
-        pollingStation
-      );
-    },
-
-    onSuccess: (_, { onSuccess }) => onSuccess?.(),
-
-    onError: (_, { onError }) => onError?.(),
-  });
-}
-
-export function useDeletePollingStationMutation() {
-  return useMutation({
-    mutationFn: ({
-      electionRoundId,
-      pollingStationId,
-    }: {
-      electionRoundId: string;
-      pollingStationId: string;
-      onSuccess?: () => void;
-      onError?: () => void;
-    }) => {
+    mutationFn: ({ electionRoundId, pollingStationId }: { electionRoundId: string; pollingStationId: string }) => {
       return authApi.delete<PollingStation>(`/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`);
     },
 
-    onSuccess: (_, { onSuccess }) => onSuccess?.(),
-
-    onError: (_, { onError }) => onError?.(),
+    onSuccess: () => onSuccess?.(),
+    onError: () => onError?.(),
   });
-}
+};
+
+export const useUpsertPollingStation = (onSucces?: () => void, onError?: () => void) =>
+  useMutation({
+    mutationFn: ({ electionRoundId, values }: { electionRoundId: string; values: ImportPollingStationRow }) => {
+      return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, {
+        pollingStations: [values],
+      });
+    },
+    onSuccess: onSucces,
+    onError: onError,
+  });

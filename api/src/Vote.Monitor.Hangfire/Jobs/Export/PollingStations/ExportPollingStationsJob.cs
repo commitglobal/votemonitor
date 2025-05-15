@@ -84,6 +84,8 @@ public class ExportPollingStationsJob(
                       PS."Number",
                       PS."Address",
                       ps."DisplayOrder",
+                      ps."Latitude",
+                      ps."Longitude",
                       coalesce(PS."Tags", '{}') as "Tags"
                   FROM
                       "PollingStations" PS

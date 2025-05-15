@@ -1,10 +1,18 @@
-import i18n from "@/i18n";
-import { DataTableColumnHeader } from "../ui/DataTable/DataTableColumnHeader";
-import { ColumnDef } from "@tanstack/react-table";
-import { PollingStation } from "@/common/types";
-import TableTagList from "../table-tag-list/TableTagList";
+import { DataTableRowAction, PollingStation } from '@/common/types';
+import i18n from '@/i18n';
+import { ColumnDef } from '@tanstack/react-table';
+import TableTagList from '../table-tag-list/TableTagList';
+import { Button } from '../ui/button';
+import { DataTableColumnHeader } from '../ui/DataTable/DataTableColumnHeader';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+export type PollingStationAction = 'edit' | 'delete' | 'add';
 
-export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
+export const getPollingStationColDefs = (
+  userRole: string | undefined,
+  setRowAction: React.Dispatch<React.SetStateAction<DataTableRowAction<PollingStation, PollingStationAction> | null>>
+): ColumnDef<PollingStation>[] => {
+  const columns: ColumnDef<PollingStation>[] = [
     {
       header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.level1')} column={column} />
@@ -117,6 +125,31 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
     },
     {
       header: ({ column }) => (
+        <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.coordinates')} column={column} />
+      ),
+      accessorKey: 'coordinates',
+      enableSorting: false,
+      enableGlobalFilter: true,
+      cell: ({
+        row: {
+          original: { latitude, longitude },
+        },
+      }) =>
+        latitude && longitude ? (
+          <Button asChild variant={'link'}>
+            <a
+              href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+              target='_blank'
+              rel='noopener noreferrer'>
+              {latitude},{longitude}
+            </a>
+          </Button>
+        ) : (
+          '-'
+        ),
+    },
+    {
+      header: ({ column }) => (
         <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.tags')} column={column} />
       ),
       accessorKey: 'tags',
@@ -129,4 +162,26 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
       }) => <TableTagList tags={Object.entries(tags ?? {}).map(([key, value]) => `${key} : ${value}`)} />,
     },
   ];
-  
+
+  if (userRole === 'PlatformAdmin') {
+    columns.push({
+      id: 'actions',
+      header: '',
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button aria-label='Open menu' variant='ghost' className='flex size-8 p-0 data-[state=open]:bg-muted'>
+              <MoreHorizontal className='size-4' aria-hidden='true' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end' className='w-40'>
+            <DropdownMenuItem onSelect={() => setRowAction({ row, variant: 'edit' })}>Edit</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setRowAction({ row, variant: 'delete' })}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    });
+  }
+
+  return columns;
+};

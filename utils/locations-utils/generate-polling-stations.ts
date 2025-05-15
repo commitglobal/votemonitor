@@ -13,7 +13,7 @@ interface LocationRow {
   Address: string;
 }
 
-const rawLocations = await fs.readFile("buenos-aires.csv", "utf-8");
+const rawLocations = await fs.readFile("buenos-aires-new.csv", "utf-8");
 
 const parseResults = Papa.parse<LocationRow>(rawLocations, {
   header: true,
@@ -33,8 +33,8 @@ if (parseResults.errors.length) {
 const result = parseResults.data.flatMap((row) => {
   const nationalsPollingStations = row.Nationals
     ? Array.from({ length: row.Nationals }, (_, i) => ({
-        Level1: row.Level1.trim(),
-        Level2: "Nationals Table",
+        Level1: row.Level1.replace(/[a-zA-Z]/g, "").trim(),
+        Level2: "Argentinos(as)",
         Level3: "",
         Level4: "",
         Level5: "",
@@ -45,8 +45,8 @@ const result = parseResults.data.flatMap((row) => {
 
   const foreignResidentsPollingStations = row.ForeignResidents
     ? Array.from({ length: row.ForeignResidents }, (_, i) => ({
-        Level1: row.Level1,
-        Level2: "Foreign Residents Table",
+        Level1: row.Level1.replace(/[a-zA-Z]/g, "").trim(),
+        Level2: "Extranjeros(as)",
         Level3: "",
         Level4: "",
         Level5: "",
