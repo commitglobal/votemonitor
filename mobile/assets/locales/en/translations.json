@@ -74,6 +74,8 @@
     "retry": "Retry"
   },
   "drawer": {
+    "active_elections": "Active elections",
+    "past_elections": "Past elections",
     "report_as_citizen": "Report as citizen",
     "report_as_accredited_observer": "Report as accredited observer"
   },
@@ -381,7 +383,8 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Manage my polling stations"
-    }
+    },
+    "search": "Search forms"
   },
   "polling_station_information_form": {
     "title": "Polling station information",
@@ -445,7 +448,8 @@
         "clear": "Clear form",
         "cancel": "Cancel"
       }
-    }
+    },
+    "search": "Search questions"
   },
   "polling_station_form_wizard": {
     "progress_bar": {
@@ -570,7 +574,8 @@
     },
     "delete_success": "Polling station deleted successfully!",
     "delete_error": "We encountered a problem while deleting the polling station visit. Please try again.",
-    "offline_error_toast_msg": "You need an internet connection in order to perform this action."
+    "offline_error_toast_msg": "You need an internet connection in order to perform this action.",
+    "add": "Add new polling station"
   },
   "quick_report": {
     "list": {
@@ -851,5 +856,19 @@
     "sync_data": "Synchronizing offline data...",
     "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
     "files": "We are uploading your files, it may take a while..."
+  },
+  "er_statistics": {
+    "header": "Statistics",
+    "title": "Your past monitoring activity",
+    "empty": {
+      "heading": "Election",
+      "paragraph": "Past elections you monitored will appear here."
+    },
+    "forms_submitted": "Forms Submitted: {{value}}",
+    "questions_answered": "Questions Answered: {{value}}",
+    "quick_reports": "Quick Reports: {{value}}",
+    "notes_taken": "Notes Taken: {{value}}",
+    "attachments_sent": "Attachments sent: {{value}}",
+    "visited_ps": "Polling Stations Visited: {{value}}"
   }
 }

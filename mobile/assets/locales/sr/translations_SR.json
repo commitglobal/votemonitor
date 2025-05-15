@@ -567,7 +567,8 @@
     },
     "delete_success": "Biračko mesto uspešno obrisano!",
     "delete_error": "Naišli smo na problem prilikom brisanja posete biračkom mestu. Pokušajte ponovo.",
-    "offline_error_toast_msg": "Potrebna vam je internet veza da biste izvršili ovu radnju"
+    "offline_error_toast_msg": "Potrebna vam je internet veza da biste izvršili ovu radnju",
+    "add": "Add new polling station"
   },
   "quick_report": {
     "list": {

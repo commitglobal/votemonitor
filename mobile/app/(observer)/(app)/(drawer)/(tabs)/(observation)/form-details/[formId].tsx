@@ -1,33 +1,34 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Screen } from "../../../../../../../components/Screen";
-import Header from "../../../../../../../components/Header";
-import { Icon } from "../../../../../../../components/Icon";
-import { useUserData } from "../../../../../../../contexts/user/UserContext.provider";
-import { Typography } from "../../../../../../../components/Typography";
-import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
 import { useMemo, useState } from "react";
-import { ListView } from "../../../../../../../components/ListView";
-import OptionsSheet from "../../../../../../../components/OptionsSheet";
-import ChangeLanguageDialog from "../../../../../../../components/ChangeLanguageDialog";
+import { useTranslation } from "react-i18next";
+import { RefreshControl } from "react-native";
+import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
 import { setFormLanguagePreference } from "../../../../../../../common/language.preferences";
-import { useFormById } from "../../../../../../../services/queries/forms.query";
-import { useFormSubmissionByFormId } from "../../../../../../../services/queries/form-submissions.query";
+import ChangeLanguageDialog from "../../../../../../../components/ChangeLanguageDialog";
+import FormOverview from "../../../../../../../components/FormOverview";
 import FormQuestionListItem, {
   FormQuestionListItemProps,
   QuestionStatus,
 } from "../../../../../../../components/FormQuestionListItem";
-import FormOverview from "../../../../../../../components/FormOverview";
-import { useTranslation } from "react-i18next";
+import Header from "../../../../../../../components/Header";
+import { Icon } from "../../../../../../../components/Icon";
+import { ListView } from "../../../../../../../components/ListView";
+import OptionsSheet from "../../../../../../../components/OptionsSheet";
+import { Screen } from "../../../../../../../components/Screen";
+import SearchInput from "../../../../../../../components/SearchInput";
+import { Typography } from "../../../../../../../components/Typography";
+import WarningDialog from "../../../../../../../components/WarningDialog";
+import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
+import { useUserData } from "../../../../../../../contexts/user/UserContext.provider";
+import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
 import {
   useFormSubmissionMutation,
   useMarkFormSubmissionCompletionStatusMutation,
 } from "../../../../../../../services/mutations/form-submission.mutation";
-import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
-import WarningDialog from "../../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../../services/queries/attachments.query";
+import { useFormSubmissionByFormId } from "../../../../../../../services/queries/form-submissions.query";
+import { useFormById } from "../../../../../../../services/queries/forms.query";
 import { useNotesForFormId } from "../../../../../../../services/queries/notes.query";
-import { RefreshControl } from "react-native";
-import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -50,6 +51,8 @@ const FormDetails = () => {
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [search, setSearch] = useState("");
+
   const { width } = useWindowDimensions();
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
@@ -238,6 +241,12 @@ const FormDetails = () => {
     }
   };
 
+  const filteredQuestions = useMemo(() => {
+    return questions?.filter((q) =>
+      q.question.toLowerCase().includes(search.trim().toLocaleLowerCase()),
+    );
+  }, [questions, search]);
+
   if (isLoadingCurrentForm || isLoadingAnswers) {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
@@ -299,18 +308,16 @@ const FormDetails = () => {
             numberOfNotes: number;
           }
         >
-          data={questions}
+          data={filteredQuestions}
           ListHeaderComponent={
-            <YStack gap="$xl" paddingBottom="$xxs">
+            <YStack marginBottom="$xs" gap="$md">
               <FormOverview
                 completedAnswers={Object.keys(answers || {}).length}
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
                 isCompleted={isCompleted}
               />
-              <Typography preset="body1" fontWeight="700" gap="$xxs">
-                {t("questions.title")}
-              </Typography>
+              <SearchInput onSearch={setSearch} placeholder={t("search")} />
             </YStack>
           }
           showsVerticalScrollIndicator={false}

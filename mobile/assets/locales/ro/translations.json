@@ -570,7 +570,8 @@
     },
     "delete_success": "Secția de votare a fost ștearsă cu succes!",
     "delete_error": "Am întâmpinat o problemă la ștergerea secției de votare. Te rugăm să încerci din nou.",
-    "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
+    "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune.",
+    "add": "Add new polling station"
   },
   "quick_report": {
     "list": {

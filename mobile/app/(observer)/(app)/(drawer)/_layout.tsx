@@ -1,16 +1,18 @@
-import React, { useMemo } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Drawer } from "expo-router/drawer";
-import { ScrollViewProps } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useTheme, XStack } from "tamagui";
-import { useUserData } from "../../../../contexts/user/UserContext.provider";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Drawer } from "expo-router/drawer";
+import React, { useMemo } from "react";
+import { ScrollViewProps } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useTheme, YStack } from "tamagui";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
+import { useTranslation } from "react-i18next";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";
+import { PastElectionsNavigateButton } from "../../../../components/PastElectionsNavigateButton";
 import { Typography } from "../../../../components/Typography";
+import { electionRoundSorter } from "../../../../helpers/election-rounds";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -19,59 +21,73 @@ type DrawerContentProps = ScrollViewProps & {
 
 export const DrawerContent = (props: DrawerContentProps) => {
   const { electionRounds, activeElectionRound, setSelectedElectionRoundId } = useUserData();
+  const { t } = useTranslation("drawer");
 
   const startedElectionRounds = useMemo(
-    () => electionRounds?.filter((electionRound) => electionRound.status === "Started"),
+    () =>
+      electionRounds
+        ?.filter((electionRound) => electionRound.status === "Started")
+        .sort(electionRoundSorter),
     [electionRounds],
   );
 
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
 
   return (
-    <DrawerContentScrollView
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 32 }}
-      bounces={false}
-      stickyHeaderIndices={[0]}
-      {...props}
-    >
-      <XStack paddingTop={16} paddingLeft="$md" paddingBottom="$xl">
-        <Icon icon="vmObserverLogo" width={211} height={65} />
-      </XStack>
-      {startedElectionRounds?.map((round, index) => {
-        return (
-          <DrawerItem
-            key={index}
-            // use a custom component for the label, as the default one only displays one line of text
-            label={({ color }) => (
-              <Typography preset="body2" color={color}>
-                {`${round.status} - ${round.title}`}
-              </Typography>
-            )}
-            focused={activeElectionRound?.id === round.id}
-            activeTintColor={theme.purple5?.val}
-            activeBackgroundColor={theme.yellow5?.val}
-            inactiveTintColor="white"
-            onPress={() => {
-              if (activeElectionRound?.id !== round.id) {
-                setSelectedElectionRoundId(round.id);
-              }
-            }}
-            style={{
-              paddingVertical: 4,
-              paddingHorizontal: 16,
-              marginVertical: 0,
-              marginHorizontal: 0,
-              borderRadius: 0,
-            }}
-            allowFontScaling={false}
-          />
-        );
-      })}
+    <YStack flex={1}>
+      <DrawerContentScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        bounces={false}
+        stickyHeaderIndices={[0]}
+        {...props}
+      >
+        <YStack paddingLeft="$md" backgroundColor={theme.purple5?.val}>
+          <Icon icon="vmObserverLogo" width={211} height={65} />
+          <Typography preset="subheading" color="white">
+            {t("active_elections")}
+          </Typography>
+        </YStack>
+        {startedElectionRounds?.map((round, index) => {
+          return (
+            <DrawerItem
+              key={index}
+              // use a custom component for the label, as the default one only displays one line of text
+              label={({ color }) => (
+                <Typography preset="body2" color={color}>
+                  {`${round.status} - ${round.title}`}
+                </Typography>
+              )}
+              focused={activeElectionRound?.id === round.id}
+              activeTintColor={theme.purple5?.val}
+              activeBackgroundColor={theme.yellow5?.val}
+              inactiveTintColor="white"
+              onPress={() => {
+                if (activeElectionRound?.id !== round.id) {
+                  setSelectedElectionRoundId(round.id);
+                }
+              }}
+              style={{
+                paddingVertical: 4,
+                paddingHorizontal: 16,
+                marginVertical: 0,
+                marginHorizontal: 0,
+                borderRadius: 0,
+              }}
+              allowFontScaling={false}
+            />
+          );
+        })}
+      </DrawerContentScrollView>
 
+      {/* past elections */}
+      <YStack padding="$md" backgroundColor={theme.purple5?.val}>
+        <PastElectionsNavigateButton />
+      </YStack>
       {/* app mode switch */}
-      <AppModeSwitchButton switchToMode={AppMode.CITIZEN} />
-    </DrawerContentScrollView>
+      <YStack padding="$md" backgroundColor={theme.purple5?.val}>
+        <AppModeSwitchButton switchToMode={AppMode.CITIZEN} />
+      </YStack>
+    </YStack>
   );
 };
 

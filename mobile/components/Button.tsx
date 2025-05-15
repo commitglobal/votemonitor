@@ -10,7 +10,7 @@ import { Typography } from "./Typography";
 
 type PresetType = "default" | "outlined" | "chromeless" | "red" | "yellow";
 export interface ButtonProps extends TamaguiButtonProps {
-  children: string;
+  children?: string;
   /**
    * Style overrides
    */

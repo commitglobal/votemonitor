@@ -1,24 +1,25 @@
-import { Screen } from "../../../components/Screen";
+import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { XStack, YStack } from "tamagui";
+import { PollingStationVisitVM } from "../../../common/models/polling-station.model";
+import Button from "../../../components/Button";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { YStack } from "tamagui";
-import { router } from "expo-router";
-import { useUserData } from "../../../contexts/user/UserContext.provider";
-import { useTranslation } from "react-i18next";
-import PollingStationCard from "../../../components/PollingStationCard";
-import { useMemo, useState } from "react";
-import { PollingStationVisitVM } from "../../../common/models/polling-station.model";
-import WarningDialog from "../../../components/WarningDialog";
-import { useWindowDimensions } from "react-native";
 import { ListView } from "../../../components/ListView";
-import { useDeletePollingStationVisitMutation } from "../../../services/mutations/delete-polling-station.mutation";
-import { usePSHasFormSubmissions } from "../../../services/queries/form-submissions.query";
-import { pollingStationsKeys } from "../../../services/queries.service";
-import { useQueryClient } from "@tanstack/react-query";
-import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../../components/NoVisitsMPS";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import PollingStationCard from "../../../components/PollingStationCard";
+import { Screen } from "../../../components/Screen";
+import WarningDialog from "../../../components/WarningDialog";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
+import { useUserData } from "../../../contexts/user/UserContext.provider";
+import { useDeletePollingStationVisitMutation } from "../../../services/mutations/delete-polling-station.mutation";
+import { pollingStationsKeys } from "../../../services/queries.service";
+import { usePSHasFormSubmissions } from "../../../services/queries/form-submissions.query";
 
 const ESTIMATED_ITEM_SIZE = 225;
 
@@ -101,67 +102,88 @@ const ManagePollingStation = () => {
   };
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
-      <Header
-        title={t("general_text")}
-        titleColor="white"
-        barStyle="light-content"
-        leftIcon={<Icon icon="chevronLeft" color="white" />}
-        onLeftPress={() => router.back()}
-      />
+    <>
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
+        <Header
+          title={t("general_text")}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
 
-      <YStack
-        flex={1}
+        <YStack
+          flex={1}
+          paddingHorizontal="$md"
+          paddingTop="$lg"
+          paddingBottom={shouldDisplayBanner ? 16 : insets.bottom + 16}
+        >
+          <ListView<PollingStationVisitVM>
+            data={visits}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            renderItem={({ item, index }) => {
+              return (
+                <PollingStationCard
+                  key={item.pollingStationId + index}
+                  visit={item}
+                  marginBottom="$md"
+                  onPress={() => setSelectedPS(item)}
+                />
+              );
+            }}
+            estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
+            estimatedItemSize={ESTIMATED_ITEM_SIZE}
+          />
+        </YStack>
+        {selectedPS && (
+          <WarningDialog
+            title={
+              removalAllowed
+                ? t("warning_dialog.title", { value: selectedPS.number })
+                : t("removal_unallowed_dialog.title", { value: selectedPS.number })
+            }
+            description={
+              removalAllowed
+                ? t("warning_dialog.description")
+                : t("removal_unallowed_dialog.description")
+            }
+            action={onConfirmDelete}
+            onCancel={() => {
+              setSelectedPS(null);
+              setRemovalAllowed(true);
+            }}
+            actionBtnText={
+              isPendingPSHasFormSubmissions || isPendingDeletePSVisit
+                ? t("warning_dialog.actions.loading")
+                : removalAllowed
+                  ? t("warning_dialog.actions.remove")
+                  : ""
+            }
+            cancelBtnText={t("warning_dialog.actions.cancel")}
+          />
+        )}
+      </Screen>
+
+      <XStack
+        backgroundColor="white"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingTop="$xs"
+        paddingBottom={insets.bottom + 10}
         paddingHorizontal="$md"
-        paddingTop="$lg"
-        paddingBottom={shouldDisplayBanner ? 16 : insets.bottom + 16}
+        elevation={2}
+        gap="$sm"
       >
-        <ListView<PollingStationVisitVM>
-          data={visits}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          renderItem={({ item, index }) => {
-            return (
-              <PollingStationCard
-                key={item.pollingStationId + index}
-                visit={item}
-                marginBottom="$md"
-                onPress={() => setSelectedPS(item)}
-              />
-            );
-          }}
-          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-          estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        />
-      </YStack>
-      {selectedPS && (
-        <WarningDialog
-          title={
-            removalAllowed
-              ? t("warning_dialog.title", { value: selectedPS.number })
-              : t("removal_unallowed_dialog.title", { value: selectedPS.number })
-          }
-          description={
-            removalAllowed
-              ? t("warning_dialog.description")
-              : t("removal_unallowed_dialog.description")
-          }
-          action={onConfirmDelete}
-          onCancel={() => {
-            setSelectedPS(null);
-            setRemovalAllowed(true);
-          }}
-          actionBtnText={
-            isPendingPSHasFormSubmissions || isPendingDeletePSVisit
-              ? t("warning_dialog.actions.loading")
-              : removalAllowed
-                ? t("warning_dialog.actions.remove")
-                : ""
-          }
-          cancelBtnText={t("warning_dialog.actions.cancel")}
-        />
-      )}
-    </Screen>
+        <Button
+          preset="outlined"
+          backgroundColor="white"
+          onPress={router.push.bind(null, "/polling-station-wizzard")}
+        >
+          {t("add")}
+        </Button>
+      </XStack>
+    </>
   );
 };
 
