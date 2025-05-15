@@ -14,6 +14,7 @@ import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
 import { useNavigate } from '@tanstack/react-router';
 import type { FunctionComponent } from '@/common/types';
+import { PasswordInput } from '@/components/ui/password-input';
 
 interface ResetPasswordRequest {
   password: string;
@@ -48,7 +49,7 @@ function ResetPassword(): FunctionComponent {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -113,7 +114,13 @@ function ResetPassword(): FunctionComponent {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type='password' {...field} />
+                      <PasswordInput
+                        autoCorrect='off'
+                        autoCapitalize='off'
+                        autoComplete='off'
+                        spellCheck='false'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -127,7 +134,13 @@ function ResetPassword(): FunctionComponent {
                   <FormItem>
                     <FormLabel>Confirm your password</FormLabel>
                     <FormControl>
-                      <Input type='password' autoCorrect='off' autoCapitalize='none' autoComplete='off' {...field} />
+                      <PasswordInput
+                        autoCorrect='off'
+                        autoCapitalize='off'
+                        autoComplete='off'
+                        spellCheck='false'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

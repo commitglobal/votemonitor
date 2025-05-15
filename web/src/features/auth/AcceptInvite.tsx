@@ -12,6 +12,7 @@ import { Route as AcceptInviteRoute } from '@/routes/accept-invite/index';
 import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
+import { PasswordInput } from '@/components/ui/password-input';
 
 const formSchema = z
   .object({
@@ -39,7 +40,7 @@ function AcceptInvite() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       password: '',
       confirmPassword: '',
@@ -99,7 +100,13 @@ function AcceptInvite() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type='password' autoCorrect='off' autoCapitalize='none' autoComplete='off' {...field} />
+                      <PasswordInput
+                        autoCorrect='off'
+                        autoCapitalize='off'
+                        autoComplete='off'
+                        spellCheck='false'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -113,7 +120,13 @@ function AcceptInvite() {
                   <FormItem>
                     <FormLabel>Confirm password</FormLabel>
                     <FormControl>
-                      <Input type='password' {...field} />
+                      <PasswordInput
+                        autoCorrect='off'
+                        autoCapitalize='off'
+                        autoComplete='off'
+                        spellCheck='false'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
