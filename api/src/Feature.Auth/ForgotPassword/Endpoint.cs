@@ -27,13 +27,24 @@ public class Endpoint(
     public override async Task<Results<Ok, ProblemHttpResult>> ExecuteAsync(Request request, CancellationToken ct)
     {
         var user = await userManager.FindByEmailAsync(request.Email.Trim());
-        if (user is null || !await userManager.IsEmailConfirmedAsync(user))
+        if (user is null)
         {
             logger.LogWarning("Possible user enumeration. Unknown email received {email}", request.Email);
             // Don't reveal that the user does not exist or is not confirmed
             return TypedResults.Ok();
         }
 
+        var mail = await userManager.IsEmailConfirmedAsync(user)
+            ? await GetResetPasswordEmail(user)
+            : GetAcceptInviteEmail(user);
+
+        jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body);
+
+        return TypedResults.Ok();
+    }
+
+    private async Task<EmailModel> GetResetPasswordEmail(ApplicationUser user)
+    {
         // For more information on how to enable account confirmation and password reset please
         // visit https://go.microsoft.com/fwlink/?LinkID=532713
         var code = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -45,8 +56,21 @@ public class Endpoint(
         var emailProps = new ResetPasswordEmailProps(FullName: user.DisplayName, CdnUrl: _apiConfig.WebAppUrl, ResetPasswordUrl: passwordResetUrl);
         var mail = emailFactory.GenerateResetPasswordEmail(emailProps);
 
-        jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body);
+        return mail;
+    }
 
-        return TypedResults.Ok();
+    private EmailModel GetAcceptInviteEmail(ApplicationUser user)
+    {
+        var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
+        string acceptInviteUrl =
+            QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", user.InvitationToken);
+
+        var confirmEmailProps = new ConfirmEmailProps(
+            CdnUrl: _apiConfig.WebAppUrl,
+            FullName: user.DisplayName,
+            ConfirmUrl: acceptInviteUrl);
+
+        var mail = emailFactory.GenerateConfirmAccountEmail(confirmEmailProps);
+        return mail;
     }
 }
