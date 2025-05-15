@@ -165,9 +165,9 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
       <ListView<FormListItem>
         data={formList}
         ListHeaderComponent={
-          <YStack marginBottom="$xs">
+          <YStack marginBottom="$xs" gap="$md">
             {ListHeaderComponent}
-            <SearchInput onSearch={setSearch} placeholder="Search forms" />
+            <SearchInput onSearch={setSearch} placeholder={t("search")} />
           </YStack>
         }
         contentContainerStyle={{ paddingVertical: 16 }}

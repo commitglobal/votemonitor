@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { YStack } from "tamagui";
-import Button from "../../../components/Button";
+import { XStack, YStack } from "tamagui";
 import { PollingStationVisitVM } from "../../../common/models/polling-station.model";
+import Button from "../../../components/Button";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { ListView } from "../../../components/ListView";
@@ -165,7 +165,16 @@ const ManagePollingStation = () => {
         )}
       </Screen>
 
-      <YStack width="100%" paddingHorizontal="$md" marginVertical="$xxs">
+      <XStack
+        backgroundColor="white"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingTop="$xs"
+        paddingBottom={insets.bottom + 10}
+        paddingHorizontal="$md"
+        elevation={2}
+        gap="$sm"
+      >
         <Button
           preset="outlined"
           backgroundColor="white"
@@ -173,7 +182,7 @@ const ManagePollingStation = () => {
         >
           {t("add")}
         </Button>
-      </YStack>
+      </XStack>
     </>
   );
 };

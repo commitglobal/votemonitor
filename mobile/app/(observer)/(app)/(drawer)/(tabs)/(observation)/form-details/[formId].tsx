@@ -310,14 +310,14 @@ const FormDetails = () => {
         >
           data={filteredQuestions}
           ListHeaderComponent={
-            <YStack marginBottom="$xs">
+            <YStack marginBottom="$xs" gap="$md">
               <FormOverview
                 completedAnswers={Object.keys(answers || {}).length}
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
                 isCompleted={isCompleted}
               />
-              <SearchInput onSearch={setSearch} placeholder="Search questions" />
+              <SearchInput onSearch={setSearch} placeholder={t("search")} />
             </YStack>
           }
           showsVerticalScrollIndicator={false}

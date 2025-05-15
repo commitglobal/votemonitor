@@ -4,6 +4,8 @@ export type PollingStationNomenclatorNodeVM = {
   parentId?: number; // available for the leafs
   number?: string; // available for the leafs
   pollingStationId?: string; // available for the leafs
+  latitude?: number;
+  longitude?: number;
 };
 
 export type PollingStationVisitVM = {

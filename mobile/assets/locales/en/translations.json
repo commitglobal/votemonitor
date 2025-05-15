@@ -383,7 +383,8 @@
     },
     "options_menu": {
       "manage_my_polling_stations": "Manage my polling stations"
-    }
+    },
+    "search": "Search forms"
   },
   "polling_station_information_form": {
     "title": "Polling station information",
@@ -447,7 +448,8 @@
         "clear": "Clear form",
         "cancel": "Cancel"
       }
-    }
+    },
+    "search": "Search questions"
   },
   "polling_station_form_wizard": {
     "progress_bar": {

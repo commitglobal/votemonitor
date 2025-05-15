@@ -67,6 +67,7 @@ import CoffeeBreak from "../assets/icons/coffee-break.svg";
 import Updates from "../assets/icons/updates.svg";
 import VMObserverLogo from "../assets/icons/VMObserverLogo.svg";
 import Archive from "../assets/icons/archive.svg";
+import Map from "../assets/icons/map.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -181,6 +182,7 @@ export const defaultIcon = React.forwardRef(
       updates: <Updates fill={color} width={size} height={size} />,
       vmObserverLogo: <VMObserverLogo fill="none" width={width} height={height} />,
       archive: <Archive stroke={color} width={size} height={size} />,
+      map: <Map stroke={color} width={size} height={size} />,
     };
 
     return (
