@@ -10,7 +10,7 @@
     "generate": "tsx generate-polling-stations.ts",
     "vd-locations": "tsx features-to-csv.ts",
     "diaspora-to-import": "tsx diaspora-to-import.ts"
-  },
+ },
   "author": "",
   "license": "MIT",
   "bin": {
