@@ -11,6 +11,7 @@ import ka from "../../assets/locales/ka/translations_KA.json";
 import hy from "../../assets/locales/hy/translations_HY.json";
 import ru from "../../assets/locales/ru/translations_RU.json";
 import az from "../../assets/locales/az/translations_AZ.json";
+import es from "../../assets/locales/es/translations_ES.json";
 
 import { SECURE_STORAGE_KEYS } from "../constants";
 import { getSecureStoreItem } from "../../helpers/SecureStoreWrapper";
@@ -27,9 +28,9 @@ export const isRTL = language?.textDirection === "rtl";
 i18n.use(initReactI18next).init<ResourceLanguage>({
   // default language app is currently the system locale or english
   lng: systemLocale || "en",
-  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
+  fallbackLng: ["en", "ro", "pl", "bg", "sr", "ka", "hy", "ru", "az", "es"],
   compatibilityJSON: "v3",
-  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ka", "hy", "ru", "az"],
+  supportedLngs: ["ro", "en", "pl", "bg", "sr", "ka", "hy", "ru", "az", "es"],
   resources: {
     en,
     ro,
@@ -40,6 +41,7 @@ i18n.use(initReactI18next).init<ResourceLanguage>({
     hy,
     ru,
     az,
+    es,
   },
   debug: true,
   interpolation: {
