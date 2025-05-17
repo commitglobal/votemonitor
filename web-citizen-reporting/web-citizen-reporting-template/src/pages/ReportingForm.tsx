@@ -49,7 +49,7 @@ const CitizenReportStepperComponent = () => {
   const methods = useStepper();
 
   const form = useForm({
-    mode: "onSubmit",
+    mode: "onChange",
     resolver: methods.current.schema
       ? zodResolver(methods.current.schema)
       : undefined,
@@ -80,7 +80,7 @@ const CitizenReportStepperComponent = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
         <StepperNavigation>
           {methods.all.map((step) => (
             <StepperStep
@@ -112,26 +112,31 @@ const CitizenReportStepperComponent = () => {
               Previous
             </Button>
           )}
+          {methods.isLast && (
+            <Button variant="secondary" onClick={methods.reset}>
+              Reset
+            </Button>
+          )}
           <Button
-            type="submit"
             onClick={() => {
               if (methods.isLast) {
-                return methods.reset();
+                return form.handleSubmit(onSubmit)();
               }
               methods.beforeNext(async () => {
                 const fieldsToValidate: any = methods.current.schema
                   ? (Object.keys(methods.current.schema.shape) as string[])
                   : undefined;
 
-                console.log(fieldsToValidate);
-                const valid = await form.trigger(fieldsToValidate);
+                const valid = fieldsToValidate
+                  ? await form.trigger(fieldsToValidate)
+                  : await form.trigger();
                 if (!valid) return false;
 
                 return true;
               });
             }}
           >
-            {methods.isLast ? "Reset" : "Next"}
+            {methods.isLast ? "Submit" : "Next"}
           </Button>
         </StepperControls>
       </form>
