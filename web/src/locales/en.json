@@ -254,7 +254,8 @@
         "level3": "Level 3",
         "level4": "Level 4",
         "level5": "Level 5",
-        "displayOrder": "Display order"
+        "displayOrder": "Display order",
+        "coordinates": "GPS coordinates"
       },
       "resetFilters": "Reset filters",
       "addPollingStation": {

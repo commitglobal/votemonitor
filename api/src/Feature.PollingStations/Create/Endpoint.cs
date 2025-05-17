@@ -30,8 +30,7 @@ public class Endpoint(
         }
 
         var userId = userProvider.GetUserId()!.Value;
-
-        var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(electionRound,
+        var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(ps.Id, electionRound,
                 ps.Level1,
                 ps.Level2,
                 ps.Level3,
@@ -41,12 +40,14 @@ public class Endpoint(
                 ps.Address,
                 ps.DisplayOrder,
                 ps.Tags.ToTagsObject(),
+                ps.Latitude,
+                ps.Longitude,
                 timeProvider.UtcNow,
                 userId))
             .ToArray();
 
-        await context.BulkInsertAsync(pollingStations, cancellationToken: ct);
-
+        await context.BulkInsertOrUpdateAsync(pollingStations, cancellationToken: ct);
+        
         electionRound.UpdatePollingStationsVersion();
 
         await electionRoundRepository.UpdateAsync(electionRound, cancellationToken: ct);
@@ -68,4 +69,6 @@ public class Endpoint(
             }).ToArray()
         });
     }
+
+
 }

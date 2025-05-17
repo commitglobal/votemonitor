@@ -103,10 +103,10 @@ public class PollingStationParserTests
         var reader = new CsvReader<PollingStationImportModel>();
         var sut = new PollingStationParser(reader, NullLogger<PollingStationParser>.Instance, _parserConfig);
 
-        var csvData = "Level1,Level2,Level3,Level4,Level5,Number,DisplayOrder,Address,Tag1,Tag2\n" +
-                      "Level1,Level2,Level3,Level4,Level5,Number 1,1,Address1,TagA,TagB\n" +
-                      "Level1,Level2,Level3,Level4,Level5,Number 2,2,Address2,TagC,TagD\n" +
-                      "Level1,Level2,Level3,Level4,Level5,Number 3,3,Address3,TagE,TagF";
+        var csvData = "Level1,Level2,Level3,Level4,Level5,Number,DisplayOrder,Address,Latitude,Longitude,Tag1,Tag2\n" +
+                      "Level1,Level2,Level3,Level4,Level5,Number 1,1,Address1,,,TagA,TagB\n" +
+                      "Level1,Level2,Level3,Level4,Level5,Number 2,2,Address2,,,TagC,TagD\n" +
+                      "Level1,Level2,Level3,Level4,Level5,Number 3,3,Address3,,,TagE,TagF";
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream);
         writer.Write(csvData);
@@ -133,6 +133,8 @@ public class PollingStationParserTests
                 Number = "Number 1",
                 DisplayOrder = 1,
                 Address = "Address1",
+                Latitude =null,
+                Longitude = null,
                 Tags = new List<TagImportModel>
                 {
                     new()
