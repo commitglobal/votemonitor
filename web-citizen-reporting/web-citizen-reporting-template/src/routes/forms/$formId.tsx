@@ -1,19 +1,33 @@
+import { currentFormLanguageAtom } from "@/features/forms/atoms";
 import NotFound from "@/pages/NotFound";
 import SubmitCitizenReport from "@/pages/ReportingForm";
-import { formsOptions } from "@/queries/use-forms";
+import { formQueryOptions } from "@/queries/use-forms";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/forms/$formId")({
   loader: async (opts) => {
     const { formId } = opts.params;
-    const allForms = await opts.context.queryClient.ensureQueryData(
-      formsOptions()
+    const formData = await opts.context.queryClient.ensureQueryData(
+      formQueryOptions(formId)
     );
-    const formsMap = new Map(allForms.map((form) => [form.id, form]));
-    if (!formsMap.has(formId)) throw notFound({ throw: false });
 
-    return formsMap.get(formId);
+    if (!formData) throw notFound();
+    return formData;
   },
-  component: SubmitCitizenReport,
+  component: () => {
+    const { formId } = Route.useParams();
+    const { data } = useSuspenseQuery(formQueryOptions(formId));
+    const setCurrentLanguage = useSetAtom(currentFormLanguageAtom);
+
+    useEffect(() => {
+      if (!data?.defaultLanguage) return;
+      setCurrentLanguage(data.defaultLanguage);
+    }, [data]);
+
+    return <SubmitCitizenReport />;
+  },
   notFoundComponent: NotFound,
 });
