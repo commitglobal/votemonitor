@@ -40,6 +40,18 @@ export default function NgoAdminNav({ electionRoundId }: NgoAdminNavProps) {
           Observers
         </Link>
         <Link
+          to="/elections/$electionRoundId/guides"
+          params={{ electionRoundId }}
+          className={cn(
+            "transition-colors hover:text-foreground/80 text-foreground/80"
+          )}
+          activeProps={{
+            className: "text-foreground",
+          }}
+        >
+          Guides
+        </Link>
+        <Link
           to="/elections/$electionRoundId/submissions"
           params={{ electionRoundId }}
           className={cn(
