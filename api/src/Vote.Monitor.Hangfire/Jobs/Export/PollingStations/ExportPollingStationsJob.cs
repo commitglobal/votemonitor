@@ -84,7 +84,7 @@ public class ExportPollingStationsJob(
                       PS."Number",
                       PS."Address",
                       ps."DisplayOrder",
-                      coalesce(PS."Tags", '{}') as "Tags"
+                      COALESCE(NULLIF(PS."Tags", 'null'::jsonb), '{}'::jsonb) AS "Tags"
                   FROM
                       "PollingStations" PS
                   WHERE
