@@ -27,7 +27,7 @@ interface ForgotPasswordRequest {
 function ForgotPassword() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       email: '',
     },
@@ -72,7 +72,7 @@ function ForgotPassword() {
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type='email' {...field} />
                     </FormControl>
@@ -83,7 +83,7 @@ function ForgotPassword() {
             </CardContent>
             <CardFooter>
               <Button type='submit' className='w-full'>
-                Reset password
+                Request password reset
               </Button>
             </CardFooter>
           </Card>
