@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/election-rounds/$electionRoundId/edit';
+import { Route } from '@/routes/(app)/election-rounds/$electionRoundId/edit';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns/format';

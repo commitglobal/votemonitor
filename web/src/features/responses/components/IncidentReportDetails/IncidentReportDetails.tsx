@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
-import { incidentReportDetailsQueryOptions, Route } from '@/routes/responses/incident-reports/$incidentReportId';
+import { incidentReportDetailsQueryOptions, Route } from '@/routes/(app)/responses/incident-reports/$incidentReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';

@@ -10,7 +10,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
+const routeApi = getRouteApi('/(app)/monitoring-observers/view/$monitoringObserverId/$tab');
 
 type FormSubmissionsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -47,7 +47,7 @@ export function MonitoringObserverFormSubmissionsTable({
 
   const navigateToFormSubmission = useCallback(
     (submissionId: string) => {
-      navigate({ to: '/responses/form-submissions/$submissionId', params: { submissionId }});
+      navigate({ to: '/responses/form-submissions/$submissionId', params: { submissionId } });
     },
     [navigate]
   );

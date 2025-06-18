@@ -10,7 +10,10 @@ import TagsSelectFormField from '@/components/ui/tag-selector';
 import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { Route, monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
+import {
+  Route,
+  monitoringObserverDetailsQueryOptions,
+} from '@/routes/(app)/monitoring-observers/edit.$monitoringObserverId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';

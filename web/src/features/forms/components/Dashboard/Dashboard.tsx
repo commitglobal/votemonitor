@@ -29,7 +29,7 @@ import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
 import { cn, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
+import { FormsSearchParams, Route } from '@/routes/(app)/election-event/$tab';
 import {
   ChevronDownIcon,
   ChevronUpIcon,

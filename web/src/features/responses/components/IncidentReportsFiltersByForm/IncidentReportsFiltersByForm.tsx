@@ -4,7 +4,7 @@ import { PollingStationsFilters } from '@/components/PollingStationsFilters/Poll
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { IncidentReportLocationType } from '../../models/incident-report';
@@ -29,7 +29,7 @@ export function IncidentReportsFiltersByForm(): FunctionComponent {
       navigate({
         // @ts-ignore
         search: (prev) => {
-          const newSearch: Record<string, string | undefined | string[] | number| Date> = {
+          const newSearch: Record<string, string | undefined | string[] | number | Date> = {
             ...prev,
             ...search,
           };

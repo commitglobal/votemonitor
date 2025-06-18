@@ -15,7 +15,7 @@ import type {
   FormSubmissionByObserver,
   FormSubmissionsFilters,
 } from '../models/form-submission';
-import { SubmissionsAggregatedByFormParams } from '@/routes/responses/form-submissions/$formId.aggregated';
+import { SubmissionsAggregatedByFormParams } from '@/routes/(app)/responses/form-submissions/$formId.aggregated';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -130,7 +130,6 @@ export function useFormSubmissionsFilters(electionRoundId: string, dataSource: D
   return useQuery({
     queryKey: formSubmissionsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
-
       const response = await authApi.get<FormSubmissionsFilters>(
         `/election-rounds/${electionRoundId}/form-submissions:filters?dataSource=${dataSource}`
       );

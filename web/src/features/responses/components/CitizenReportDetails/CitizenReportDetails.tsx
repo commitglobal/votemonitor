@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
-import { citizenReportDetailsQueryOptions, Route } from '@/routes/responses/citizen-reports/$citizenReportId';
+import { citizenReportDetailsQueryOptions, Route } from '@/routes/(app)/responses/citizen-reports/$citizenReportId';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { citizenReportKeys } from '../../hooks/citizen-reports';

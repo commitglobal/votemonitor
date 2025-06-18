@@ -9,7 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
-import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/form-submissions/$submissionId';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/(app)/responses/form-submissions/$submissionId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';

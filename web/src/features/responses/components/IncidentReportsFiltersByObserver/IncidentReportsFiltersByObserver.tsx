@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';

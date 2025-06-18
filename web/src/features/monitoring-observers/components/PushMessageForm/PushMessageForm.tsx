@@ -27,7 +27,7 @@ import { QuickReportsFollowUpFilter } from '@/features/filtering/components/Quic
 import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/components/QuickReportsIncidentCategoryFilter';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { toBoolean } from '@/lib/utils';
-import { Route } from '@/routes/monitoring-observers/create-new-message';
+import { Route } from '@/routes/(app)/monitoring-observers/create-new-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';

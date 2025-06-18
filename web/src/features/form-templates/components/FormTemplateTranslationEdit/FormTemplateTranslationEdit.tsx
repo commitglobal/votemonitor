@@ -8,7 +8,7 @@ import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { useToast } from '@/components/ui/use-toast';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/form-templates/$formTemplateId_.edit-translation.$languageCode';
+import { Route } from '@/routes/(app)/form-templates/$formTemplateId_.edit-translation.$languageCode';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';

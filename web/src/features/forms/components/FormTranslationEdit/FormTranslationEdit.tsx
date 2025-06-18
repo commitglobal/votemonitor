@@ -15,7 +15,7 @@ import { UpdateFormRequest } from '../../models';
 import { formsKeys, formDetailsQueryOptions } from '../../queries';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
-import { Route } from '@/routes/forms/$formId_.edit-translation.$languageCode';
+import { Route } from '@/routes/(app)/forms/$formId_.edit-translation.$languageCode';
 import { FormDetailsBreadcrumbs } from '@/components/FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 function FormTranslationEdit() {

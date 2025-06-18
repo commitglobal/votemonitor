@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Route } from '@/routes/ngos/admin/$ngoId.$adminId.edit';
+import { Route } from '@/routes/(app)/ngos/admin/$ngoId.$adminId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useBlocker, useNavigate } from '@tanstack/react-router';

@@ -6,7 +6,7 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Route } from '@/routes/ngos/view.$ngoId.$tab';
+import { Route } from '@/routes/(app)/ngos/view.$ngoId.$tab';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { NGO } from '../models/NGO';

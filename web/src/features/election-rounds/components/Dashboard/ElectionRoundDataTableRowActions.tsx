@@ -14,7 +14,7 @@ import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Dialog } from '@/components/ui/dialog';
 import { ArchiveIcon, MoreHorizontal, Pencil, PlayIcon, Trash2, FileEdit, Eye } from 'lucide-react';
 import { ElectionRoundModel } from '../../models/types';
-import { Route } from '@/routes/election-rounds';
+import { Route } from '@/routes/(app)/election-rounds';
 import { ElectionRoundStatus } from '@/common/types';
 import {
   useArchiveElectionRound,

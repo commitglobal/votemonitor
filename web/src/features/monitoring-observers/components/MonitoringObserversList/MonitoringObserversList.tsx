@@ -36,7 +36,7 @@ import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/monitoring-observers/$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/$tab';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { Plus } from 'lucide-react';

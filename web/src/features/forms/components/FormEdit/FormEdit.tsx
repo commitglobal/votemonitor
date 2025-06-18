@@ -10,7 +10,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/forms/$formId_.edit';
+import { Route } from '@/routes/(app)/forms/$formId_.edit';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';

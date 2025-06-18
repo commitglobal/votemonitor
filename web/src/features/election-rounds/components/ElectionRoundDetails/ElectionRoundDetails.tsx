@@ -3,7 +3,7 @@ import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import LocationsDashboard from '@/components/LocationsDashboard/LocationsDashboard';
-import { Route } from '@/routes/election-rounds/$electionRoundId/$tab';
+import { Route } from '@/routes/(app)/election-rounds/$electionRoundId/$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -4,7 +4,7 @@ import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';

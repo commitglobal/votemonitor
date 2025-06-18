@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
-import { Route, quickReportDetailsQueryOptions } from '@/routes/responses/quick-reports/$quickReportId';
+import { Route, quickReportDetailsQueryOptions } from '@/routes/(app)/responses/quick-reports/$quickReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';

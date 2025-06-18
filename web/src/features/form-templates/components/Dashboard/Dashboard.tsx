@@ -27,7 +27,7 @@ import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { FormTemplatesSearchParams, Route } from '@/routes/form-templates/index';
+import { FormTemplatesSearchParams, Route } from '@/routes/(app)/form-templates/index';
 import {
   ChevronDownIcon,
   ChevronUpIcon,

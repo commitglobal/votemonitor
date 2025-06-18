@@ -8,13 +8,15 @@ import type { FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn } from '@/lib/utils';
-import { citizenNotificationQueryOptions, Route } from '@/routes/citizen-notifications/view.$notificationId';
+import { citizenNotificationQueryOptions, Route } from '@/routes/(app)/citizen-notifications/view.$notificationId';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 export default function CitizenNotificationDetails(): FunctionComponent {
   const { notificationId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: pushMessage } = useSuspenseQuery(citizenNotificationQueryOptions(currentElectionRoundId, notificationId));
+  const { data: pushMessage } = useSuspenseQuery(
+    citizenNotificationQueryOptions(currentElectionRoundId, notificationId)
+  );
 
   return (
     <Layout backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'citizen-notifications' }} />} title=''>

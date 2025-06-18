@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/layout/Header/Logo';
 
-import { Route as ResetPasswordRoute } from '@/routes/reset-password/index';
+import { Route as ResetPasswordRoute } from '@/routes/(auth)/reset-password/index';
 import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
