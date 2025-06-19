@@ -9,15 +9,17 @@ import {
 import { z } from 'zod';
 import { IncidentCategory, QuickReportLocationType } from './quick-report';
 import { IncidentReportLocationType } from './incident-report';
-import { ZDataSourceSearchSchema } from '@/routes';
+import { ZDataSourceSearchSchema } from '@/routes/(app)';
 
-export const ResponsesPageSearchParamsSchema = z.object({
-  viewBy: z.enum(['byEntry', 'byObserver', 'byForm']).catch('byEntry').default('byEntry'),
-  tab: z
-    .enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports'])
-    .catch('form-answers')
-    .optional(),
-}).merge(ZDataSourceSearchSchema);
+export const ResponsesPageSearchParamsSchema = z
+  .object({
+    viewBy: z.enum(['byEntry', 'byObserver', 'byForm']).catch('byEntry').default('byEntry'),
+    tab: z
+      .enum(['form-answers', 'quick-reports', 'citizen-reports', 'incident-reports'])
+      .catch('form-answers')
+      .optional(),
+  })
+  .merge(ZDataSourceSearchSchema);
 
 export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema.merge(
   z.object({
@@ -48,7 +50,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
 
     submissionsFromDate: z.coerce.date().optional(),
     submissionsToDate: z.coerce.date().optional(),
-    coalitionMemberId: z.string().optional()
+    coalitionMemberId: z.string().optional(),
   })
 );
 

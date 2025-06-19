@@ -1,3 +1,8 @@
+import { LOCAL_STORAGE_KEYS } from '@/common/constants';
+import { NGOStatus } from '@/features/ngos/models/NGO';
+import { NgoAdminStatus } from '@/features/ngos/models/NgoAdmin';
+import API from '@/services/api';
+
 import {
   ElectionRoundStatus,
   FormStatus,
@@ -584,10 +589,6 @@ export function omit<T, K extends keyof T>(obj: T, key: K): Omit<T, K> {
   return rest;
 }
 
-import { authApi } from '@/common/auth-api';
-import { NGOStatus } from '@/features/ngos/models/NGO';
-import { NgoAdminStatus } from '@/features/ngos/models/NgoAdmin';
-
 export enum TemplateType {
   MonitoringObservers = 'monitoring-observers',
   PollingStations = 'polling-stations',
@@ -613,7 +614,7 @@ const templateConfigs = {
 };
 
 export const downloadImportExample = async (templateType: TemplateType) => {
-  const res = await authApi.get(templateConfigs[templateType].endpoint);
+  const res = await API.get(templateConfigs[templateType].endpoint);
   const csvData = res.data;
 
   const blob = new Blob([csvData], { type: templateConfigs[templateType].fileType });
@@ -653,3 +654,9 @@ export function mapNgoAdminStatus(ngoAdminStatus: NgoAdminStatus): string {
       return 'Unknown';
   }
 }
+
+export const setAuthTokens = (token: string, refreshToken: string, refreshTokenExpiryTime: string) => {
+  localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, token);
+  localStorage.setItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+  localStorage.setItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXPIRY_TIME, refreshTokenExpiryTime);
+};

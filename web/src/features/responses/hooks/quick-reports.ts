@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataSources, DataTableParameters, PageResponse } from '@/common/types';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import type { QuickReport, QuickReportsFilters } from '../models/quick-report';
@@ -25,7 +25,6 @@ export function useQuickReports(electionRoundId: string, queryParams: DataTableP
   return useQuery({
     queryKey: quickReportKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-
       const params = {
         ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
@@ -36,24 +35,22 @@ export function useQuickReports(electionRoundId: string, queryParams: DataTableP
 
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<QuickReportsResponse>(`/election-rounds/${electionRoundId}/quick-reports`, {
+      const response = await API.get<QuickReportsResponse>(`/election-rounds/${electionRoundId}/quick-reports`, {
         params: searchParams,
       });
 
       return response.data;
     },
     staleTime: STALE_TIME,
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
-
-
 
 export function useQuickReportsFilters(electionRoundId: string, dataSource: DataSources) {
   return useQuery({
     queryKey: quickReportKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
-      const response = await authApi.get<QuickReportsFilters>(
+      const response = await API.get<QuickReportsFilters>(
         `/election-rounds/${electionRoundId}/quick-reports:filters?dataSource=${dataSource}`
       );
 

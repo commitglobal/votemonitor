@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, PageResponse, Location } from '@/common/types';
 import { locationsKeys } from '@/hooks/locations-levels';
 import { buildURLSearchParams } from '@/lib/utils';
@@ -22,7 +22,7 @@ export function useLocations(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<Location>>(`/election-rounds/${electionRoundId}/locations:list`, {
+      const response = await API.get<PageResponse<Location>>(`/election-rounds/${electionRoundId}/locations:list`, {
         params: searchParams,
       });
 
@@ -50,7 +50,7 @@ export function useUpdateLocationMutation() {
       onSuccess?: () => void;
       onError?: () => void;
     }) => {
-      return authApi.put<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`, location);
+      return API.put<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`, location);
     },
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),
@@ -70,7 +70,7 @@ export function useDeleteLocationMutation() {
       onSuccess?: () => void;
       onError?: () => void;
     }) => {
-      return authApi.delete<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`);
+      return API.delete<Location>(`/election-rounds/${electionRoundId}/locations/${locationId}`);
     },
 
     onSuccess: (_, { onSuccess }) => onSuccess?.(),

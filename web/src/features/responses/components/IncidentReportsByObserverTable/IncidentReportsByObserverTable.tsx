@@ -10,7 +10,7 @@ import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { useIncidentReportsByObserverColumns } from '../../store/column-visibility';
 import { incidentReportsByObserverColumnDefs } from '../../utils/column-defs';
 
-const routeApi = getRouteApi('/responses/');
+const routeApi = getRouteApi('/(app)/responses/');
 
 type IncidentReportsByObserverTableProps = {
   searchText: string;
@@ -20,7 +20,7 @@ export function IncidentReportsByObserverTable({ searchText }: IncidentReportsBy
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const columnsVisibility = useIncidentReportsByObserverColumns();
 
   const queryParams = useMemo(() => {

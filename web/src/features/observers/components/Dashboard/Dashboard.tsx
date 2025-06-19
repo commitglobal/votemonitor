@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useDebouncedSearch } from '@/hooks/debounced-search';
-import { observersRouteSearchSchema, Route } from '@/routes/observers';
+import { observersRouteSearchSchema, Route } from '@/routes/(app)/observers';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';

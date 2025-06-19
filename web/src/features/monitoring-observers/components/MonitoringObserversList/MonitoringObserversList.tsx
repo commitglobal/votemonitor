@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
+import API from '@/services/api';
 import {
   ArrowUpTrayIcon,
   Cog8ToothIcon,
@@ -29,17 +29,17 @@ import { DateTimeFormat } from '@/common/formats';
 import { ElectionRoundStatus } from '@/common/types';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import i18n from '@/i18n';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/monitoring-observers/$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/$tab';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
 import { monitoringObserversKeys, useMonitoringObservers } from '../../hooks/monitoring-observers-queries';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
@@ -190,7 +190,7 @@ function MonitoringObserversList() {
       electionRoundId: string;
       monitoringObserverId: string | undefined;
     }) => {
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/monitoring-observers:resend-invites`, {
+      return API.put<void>(`/election-rounds/${electionRoundId}/monitoring-observers:resend-invites`, {
         ids: [monitoringObserverId].filter((id) => !!id),
       });
     },
@@ -201,17 +201,12 @@ function MonitoringObserversList() {
 
       setMonitoringObserverId(undefined);
 
-      toast({
-        title: 'Success',
-        description: 'Invitation sent',
-      });
+      toast.success('Invitation sent');
     },
 
     onError: () => {
-      toast({
-        title: 'Error resending invitation',
+      toast.error('Error resending invitation', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
     },
   });
@@ -228,7 +223,7 @@ function MonitoringObserversList() {
   }
 
   const exportMonitoringObservers = async () => {
-    const res = await authApi.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, {
+    const res = await API.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, {
       responseType: 'blob',
     });
     const csvData = res.data;

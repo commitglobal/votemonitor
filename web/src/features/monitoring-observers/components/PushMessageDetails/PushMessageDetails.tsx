@@ -8,7 +8,7 @@ import type { FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn } from '@/lib/utils';
-import { pushMessageDetailsQueryOptions, Route } from '@/routes/monitoring-observers/push-messages.$id_.view';
+import { pushMessageDetailsQueryOptions, Route } from '@/routes/(app)/monitoring-observers/push-messages.$id_.view';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
@@ -18,9 +18,10 @@ export default function PushMessageDetails(): FunctionComponent {
   const { data: pushMessage } = useSuspenseQuery(pushMessageDetailsQueryOptions(currentElectionRoundId, id));
 
   return (
-    <Layout backButton={<NavigateBack to='/monitoring-observers/$tab' params={{ tab: 'push-messages' }} />} 
-    breadcrumbs={<></>}
-    title={id}>
+    <Layout
+      backButton={<NavigateBack to='/monitoring-observers/$tab' params={{ tab: 'push-messages' }} />}
+      breadcrumbs={<></>}
+      title={id}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex gap-2 flex-column'>
           <div className='flex flex-row items-center justify-between'>
@@ -49,9 +50,7 @@ export default function PushMessageDetails(): FunctionComponent {
               <p className='font-bold text-gray-700'>Total targeted observers {pushMessage?.receivers?.length ?? 0}</p>
               {pushMessage?.receivers?.map((receiver) => (
                 <div className='flex gap-1' key={receiver.id}>
-                  <p className='font-normal text-gray-900'>
-                    {receiver.name}
-                  </p>
+                  <p className='font-normal text-gray-900'>{receiver.name}</p>
                   {receiver.hasReadNotification && (
                     <CheckIcon title='Notification read' className='self-center w-4 h-4' color='#147638' />
                   )}

@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, ElectionRoundStatus, PageResponse } from '@/common/types';
 import { UseQueryResult, queryOptions, useQuery } from '@tanstack/react-query';
 import { ElectionRoundModel } from './models/types';
@@ -34,8 +34,8 @@ export function useElectionRounds(
       };
 
       const searchParams = buildURLSearchParams(params);
-      
-      const response = await authApi.get<PageResponse<ElectionRoundModel>>(`/election-rounds`, {
+
+      const response = await API.get<PageResponse<ElectionRoundModel>>(`/election-rounds`, {
         params: searchParams,
       });
 
@@ -53,7 +53,7 @@ export const electionRoundDetailsQueryOptions = (electionRoundId: string) => {
   return queryOptions({
     queryKey: electionRoundKeys.detail(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<ElectionRoundModel>(`/election-rounds/${electionRoundId}`);
+      const response = await API.get<ElectionRoundModel>(`/election-rounds/${electionRoundId}`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch election round');

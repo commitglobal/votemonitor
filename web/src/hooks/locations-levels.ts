@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataTableParameters, LevelNode } from '@/common/types';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
@@ -21,9 +21,7 @@ export function useLocationsLevels(electionRoundId: string): UseLocationsLevelsR
   return useQuery({
     queryKey: locationsKeys.levels(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<LocationsLevelsResponse>(
-        `/election-rounds/${electionRoundId}/locations:fetchAll`
-      );
+      const response = await API.get<LocationsLevelsResponse>(`/election-rounds/${electionRoundId}/locations:fetchAll`);
 
       return response.data.nodes.reduce<Record<string, LevelNode[]>>(
         (group, node) => ({ ...group, [node.depth]: [...(group[node.depth] ?? []), node] }),

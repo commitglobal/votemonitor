@@ -2,20 +2,20 @@ import Layout from '@/components/layout/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import API from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { authApi } from '@/common/auth-api';
 import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
-import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { citizenNotificationsKeys } from '../hooks/citizen-notifications-queries';
-import { Button } from '@/components/ui/button';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -45,7 +45,7 @@ function CitizenNotificationMessageForm(): FunctionComponent {
 
   const sendNotificationMutation = useMutation({
     mutationFn: ({ electionRoundId, title, body }: { electionRoundId: string; title: string; body: string }) => {
-      return authApi.post<{
+      return API.post<{
         title: string;
         body: string;
       }>(`/election-rounds/${electionRoundId}/citizen-notifications:send`, { title, body });
@@ -53,10 +53,7 @@ function CitizenNotificationMessageForm(): FunctionComponent {
 
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: citizenNotificationsKeys.all(currentElectionRoundId) });
-      toast({
-        title: 'Success',
-        description: 'Notification sent',
-      });
+      toast.success('Notification sent');
 
       router.invalidate();
       await navigate({ to: '/election-event/$tab', params: { tab: 'citizen-notifications' } });

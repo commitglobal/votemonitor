@@ -15,7 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useDebouncedSearch } from '@/hooks/debounced-search';
-import { ngoAdminsSearchParamsSchema, Route } from '@/routes/ngos/view.$ngoId.$tab';
+import { ngoAdminsSearchParamsSchema, Route } from '@/routes/(app)/ngos/view.$ngoId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';

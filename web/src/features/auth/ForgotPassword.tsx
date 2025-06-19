@@ -2,14 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Logo from '@/components/layout/Header/Logo';
-import { noAuthApi } from '@/common/no-auth-api';
+import API from '@/services/api';
 import { useMutation } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   email: z
@@ -35,14 +35,11 @@ function ForgotPassword() {
 
   const forgotPasswordMutation = useMutation({
     mutationFn: async (obj: ForgotPasswordRequest) => {
-      return await noAuthApi.post<ForgotPasswordRequest>(`auth/forgot-password`, obj);
+      return await API.post<ForgotPasswordRequest>(`auth/forgot-password`, obj);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'An email was sent with reset password instructions',
-      });
+      toast.success('An email was sent with reset password instructions');
     },
   });
 

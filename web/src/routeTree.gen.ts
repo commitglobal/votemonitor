@@ -8,1116 +8,625 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as appRouteRouteImport } from './routes/(app)/route'
+import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
+import { Route as authResetPasswordIndexRouteImport } from './routes/(auth)/reset-password/index'
+import { Route as authAcceptInviteIndexRouteImport } from './routes/(auth)/accept-invite/index'
+import { Route as appResponsesIndexRouteImport } from './routes/(app)/responses/index'
+import { Route as appObserversIndexRouteImport } from './routes/(app)/observers/index'
+import { Route as appNgosIndexRouteImport } from './routes/(app)/ngos/index'
+import { Route as appMonitoringObserversIndexRouteImport } from './routes/(app)/monitoring-observers/index'
+import { Route as appFormTemplatesIndexRouteImport } from './routes/(app)/form-templates/index'
+import { Route as appElectionRoundsIndexRouteImport } from './routes/(app)/election-rounds/index'
+import { Route as appElectionEventIndexRouteImport } from './routes/(app)/election-event/index'
+import { Route as authResetPasswordSuccessRouteImport } from './routes/(auth)/reset-password/success'
+import { Route as authAcceptInviteSuccessRouteImport } from './routes/(auth)/accept-invite/success'
+import { Route as appObserversObserverIdRouteImport } from './routes/(app)/observers/$observerId'
+import { Route as appObserverGuidesNewRouteImport } from './routes/(app)/observer-guides/new'
+import { Route as appMonitoringObserversImportRouteImport } from './routes/(app)/monitoring-observers/import'
+import { Route as appMonitoringObserversCreateNewMessageRouteImport } from './routes/(app)/monitoring-observers/create-new-message'
+import { Route as appMonitoringObserversTabRouteImport } from './routes/(app)/monitoring-observers/$tab'
+import { Route as appFormsNewRouteImport } from './routes/(app)/forms/new'
+import { Route as appFormsFormIdRouteImport } from './routes/(app)/forms/$formId'
+import { Route as appFormTemplatesNewRouteImport } from './routes/(app)/form-templates/new'
+import { Route as appFormTemplatesFormTemplateIdRouteImport } from './routes/(app)/form-templates/$formTemplateId'
+import { Route as appElectionEventTabRouteImport } from './routes/(app)/election-event/$tab'
+import { Route as appCitizenNotificationsNewRouteImport } from './routes/(app)/citizen-notifications/new'
+import { Route as appCitizenGuidesNewRouteImport } from './routes/(app)/citizen-guides/new'
+import { Route as appElectionRoundsElectionRoundIdIndexRouteImport } from './routes/(app)/election-rounds/$electionRoundId/index'
+import { Route as appResponsesQuickReportsQuickReportIdRouteImport } from './routes/(app)/responses/quick-reports/$quickReportId'
+import { Route as appResponsesIncidentReportsIncidentReportIdRouteImport } from './routes/(app)/responses/incident-reports/$incidentReportId'
+import { Route as appResponsesFormSubmissionsSubmissionIdRouteImport } from './routes/(app)/responses/form-submissions/$submissionId'
+import { Route as appResponsesCitizenReportsCitizenReportIdRouteImport } from './routes/(app)/responses/citizen-reports/$citizenReportId'
+import { Route as appObserversObserverIdEditRouteImport } from './routes/(app)/observers/$observerId.edit'
+import { Route as appObserverGuidesViewGuideIdRouteImport } from './routes/(app)/observer-guides/view.$guideId'
+import { Route as appObserverGuidesEditGuideIdRouteImport } from './routes/(app)/observer-guides/edit.$guideId'
+import { Route as appMonitoringObserversPushMessagesIdRouteImport } from './routes/(app)/monitoring-observers/push-messages.$id'
+import { Route as appMonitoringObserversEditMonitoringObserverIdRouteImport } from './routes/(app)/monitoring-observers/edit.$monitoringObserverId'
+import { Route as appFormsNewTemplateRouteImport } from './routes/(app)/forms/new_.template'
+import { Route as appFormsNewScratchRouteImport } from './routes/(app)/forms/new_.scratch'
+import { Route as appFormsNewReuseRouteImport } from './routes/(app)/forms/new_.reuse'
+import { Route as appFormsFormIdEditRouteImport } from './routes/(app)/forms/$formId_.edit'
+import { Route as appFormsFormIdLanguageCodeRouteImport } from './routes/(app)/forms/$formId_.$languageCode'
+import { Route as appFormTemplatesFormTemplateIdEditRouteImport } from './routes/(app)/form-templates/$formTemplateId_.edit'
+import { Route as appFormTemplatesFormTemplateIdLanguageCodeRouteImport } from './routes/(app)/form-templates/$formTemplateId_.$languageCode'
+import { Route as appElectionRoundsElectionRoundIdEditRouteImport } from './routes/(app)/election-rounds/$electionRoundId/edit'
+import { Route as appElectionRoundsElectionRoundIdTabRouteImport } from './routes/(app)/election-rounds/$electionRoundId/$tab'
+import { Route as appCitizenNotificationsViewNotificationIdRouteImport } from './routes/(app)/citizen-notifications/view.$notificationId'
+import { Route as appCitizenGuidesViewGuideIdRouteImport } from './routes/(app)/citizen-guides/view.$guideId'
+import { Route as appCitizenGuidesEditGuideIdRouteImport } from './routes/(app)/citizen-guides/edit.$guideId'
+import { Route as appResponsesIncidentReportsFormIdAggregatedRouteImport } from './routes/(app)/responses/incident-reports/$formId.aggregated'
+import { Route as appResponsesFormSubmissionsFormIdAggregatedRouteImport } from './routes/(app)/responses/form-submissions/$formId.aggregated'
+import { Route as appResponsesCitizenReportsFormIdAggregatedRouteImport } from './routes/(app)/responses/citizen-reports/$formId.aggregated'
+import { Route as appNgosViewNgoIdTabRouteImport } from './routes/(app)/ngos/view.$ngoId.$tab'
+import { Route as appMonitoringObserversViewMonitoringObserverIdTabRouteImport } from './routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab'
+import { Route as appMonitoringObserversPushMessagesIdViewRouteImport } from './routes/(app)/monitoring-observers/push-messages.$id_.view'
+import { Route as appFormsFormIdEditTranslationLanguageCodeRouteImport } from './routes/(app)/forms/$formId_.edit-translation.$languageCode'
+import { Route as appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRouteImport } from './routes/(app)/form-templates/$formTemplateId_.edit-translation.$languageCode'
+import { Route as appElectionRoundsElectionRoundIdPollingStationsImportRouteImport } from './routes/(app)/election-rounds/$electionRoundId/polling-stations/import'
+import { Route as appElectionRoundsElectionRoundIdLocationsImportRouteImport } from './routes/(app)/election-rounds/$electionRoundId/locations/import'
+import { Route as appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRouteImport } from './routes/(app)/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
+import { Route as appNgosEditNgoIdRouteImport } from './routes/(app)/ngos/edit.$ngoId.'
+import { Route as appNgosAdminNgoIdAdminIdViewRouteImport } from './routes/(app)/ngos/admin/$ngoId.$adminId.view'
+import { Route as appNgosAdminNgoIdAdminIdEditRouteImport } from './routes/(app)/ngos/admin/$ngoId.$adminId.edit'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as ResponsesIndexImport } from './routes/responses/index'
-import { Route as ResetPasswordIndexImport } from './routes/reset-password/index'
-import { Route as ObserversIndexImport } from './routes/observers/index'
-import { Route as NgosIndexImport } from './routes/ngos/index'
-import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
-import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
-import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
-import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
-import { Route as ElectionEventIndexImport } from './routes/election-event/index'
-import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
-import { Route as ResetPasswordSuccessImport } from './routes/reset-password/success'
-import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
-import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
-import { Route as MonitoringObserversImportImport } from './routes/monitoring-observers/import'
-import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
-import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
-import { Route as FormsNewImport } from './routes/forms/new'
-import { Route as FormsFormIdImport } from './routes/forms/$formId'
-import { Route as FormTemplatesNewImport } from './routes/form-templates/new'
-import { Route as FormTemplatesFormTemplateIdImport } from './routes/form-templates/$formTemplateId'
-import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
-import { Route as CitizenNotificationsNewImport } from './routes/citizen-notifications/new'
-import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
-import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
-import { Route as ElectionRoundsElectionRoundIdIndexImport } from './routes/election-rounds/$electionRoundId/index'
-import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
-import { Route as ResponsesIncidentReportsIncidentReportIdImport } from './routes/responses/incident-reports/$incidentReportId'
-import { Route as ResponsesFormSubmissionsSubmissionIdImport } from './routes/responses/form-submissions/$submissionId'
-import { Route as ResponsesCitizenReportsCitizenReportIdImport } from './routes/responses/citizen-reports/$citizenReportId'
-import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
-import { Route as ObserverGuidesViewGuideIdImport } from './routes/observer-guides/view.$guideId'
-import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guides/edit.$guideId'
-import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
-import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
-import { Route as FormsNewTemplateImport } from './routes/forms/new_.template'
-import { Route as FormsNewScratchImport } from './routes/forms/new_.scratch'
-import { Route as FormsNewReuseImport } from './routes/forms/new_.reuse'
-import { Route as FormsFormIdEditImport } from './routes/forms/$formId_.edit'
-import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
-import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId_.edit'
-import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
-import { Route as ElectionRoundsElectionRoundIdEditImport } from './routes/election-rounds/$electionRoundId/edit'
-import { Route as ElectionRoundsElectionRoundIdTabImport } from './routes/election-rounds/$electionRoundId/$tab'
-import { Route as CitizenNotificationsViewNotificationIdImport } from './routes/citizen-notifications/view.$notificationId'
-import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
-import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
-import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
-import { Route as ResponsesFormSubmissionsFormIdAggregatedImport } from './routes/responses/form-submissions/$formId.aggregated'
-import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
-import { Route as NgosViewNgoIdTabImport } from './routes/ngos/view.$ngoId.$tab'
-import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
-import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
-import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms/$formId_.edit-translation.$languageCode'
-import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates/$formTemplateId_.edit-translation.$languageCode'
-import { Route as ElectionRoundsElectionRoundIdPollingStationsImportImport } from './routes/election-rounds/$electionRoundId/polling-stations/import'
-import { Route as ElectionRoundsElectionRoundIdLocationsImportImport } from './routes/election-rounds/$electionRoundId/locations/import'
-import { Route as CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport } from './routes/citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId'
-import { Route as NgosEditNgoIdImport } from './routes/ngos/edit.$ngoId.'
-import { Route as NgosAdminNgoIdAdminIdViewImport } from './routes/ngos/admin/$ngoId.$adminId.view'
-import { Route as NgosAdminNgoIdAdminIdEditImport } from './routes/ngos/admin/$ngoId.$adminId.edit'
-
-// Create/Update Routes
-
-const IndexRoute = IndexImport.update({
+const appRouteRoute = appRouteRouteImport.update({
+  id: '/(app)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appIndexRoute = appIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const ResponsesIndexRoute = ResponsesIndexImport.update({
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
+  id: '/(auth)/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authResetPasswordIndexRoute = authResetPasswordIndexRouteImport.update({
+  id: '/(auth)/reset-password/',
+  path: '/reset-password/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authAcceptInviteIndexRoute = authAcceptInviteIndexRouteImport.update({
+  id: '/(auth)/accept-invite/',
+  path: '/accept-invite/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appResponsesIndexRoute = appResponsesIndexRouteImport.update({
   id: '/responses/',
   path: '/responses/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const ResetPasswordIndexRoute = ResetPasswordIndexImport.update({
-  id: '/reset-password/',
-  path: '/reset-password/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ObserversIndexRoute = ObserversIndexImport.update({
+const appObserversIndexRoute = appObserversIndexRouteImport.update({
   id: '/observers/',
   path: '/observers/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const NgosIndexRoute = NgosIndexImport.update({
+const appNgosIndexRoute = appNgosIndexRouteImport.update({
   id: '/ngos/',
   path: '/ngos/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
-  id: '/monitoring-observers/',
-  path: '/monitoring-observers/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginIndexRoute = LoginIndexImport.update({
-  id: '/login/',
-  path: '/login/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FormTemplatesIndexRoute = FormTemplatesIndexImport.update({
+const appMonitoringObserversIndexRoute =
+  appMonitoringObserversIndexRouteImport.update({
+    id: '/monitoring-observers/',
+    path: '/monitoring-observers/',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appFormTemplatesIndexRoute = appFormTemplatesIndexRouteImport.update({
   id: '/form-templates/',
   path: '/form-templates/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const ForgotPasswordIndexRoute = ForgotPasswordIndexImport.update({
-  id: '/forgot-password/',
-  path: '/forgot-password/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ElectionRoundsIndexRoute = ElectionRoundsIndexImport.update({
+const appElectionRoundsIndexRoute = appElectionRoundsIndexRouteImport.update({
   id: '/election-rounds/',
   path: '/election-rounds/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const ElectionEventIndexRoute = ElectionEventIndexImport.update({
+const appElectionEventIndexRoute = appElectionEventIndexRouteImport.update({
   id: '/election-event/',
   path: '/election-event/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const AcceptInviteIndexRoute = AcceptInviteIndexImport.update({
-  id: '/accept-invite/',
-  path: '/accept-invite/',
-  getParentRoute: () => rootRoute,
+const authResetPasswordSuccessRoute =
+  authResetPasswordSuccessRouteImport.update({
+    id: '/(auth)/reset-password/success',
+    path: '/reset-password/success',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const authAcceptInviteSuccessRoute = authAcceptInviteSuccessRouteImport.update({
+  id: '/(auth)/accept-invite/success',
+  path: '/accept-invite/success',
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ResetPasswordSuccessRoute = ResetPasswordSuccessImport.update({
-  id: '/reset-password/success',
-  path: '/reset-password/success',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ObserversObserverIdRoute = ObserversObserverIdImport.update({
+const appObserversObserverIdRoute = appObserversObserverIdRouteImport.update({
   id: '/observers/$observerId',
   path: '/observers/$observerId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const ObserverGuidesNewRoute = ObserverGuidesNewImport.update({
+const appObserverGuidesNewRoute = appObserverGuidesNewRouteImport.update({
   id: '/observer-guides/new',
   path: '/observer-guides/new',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const MonitoringObserversImportRoute = MonitoringObserversImportImport.update({
-  id: '/monitoring-observers/import',
-  path: '/monitoring-observers/import',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const MonitoringObserversCreateNewMessageRoute =
-  MonitoringObserversCreateNewMessageImport.update({
+const appMonitoringObserversImportRoute =
+  appMonitoringObserversImportRouteImport.update({
+    id: '/monitoring-observers/import',
+    path: '/monitoring-observers/import',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appMonitoringObserversCreateNewMessageRoute =
+  appMonitoringObserversCreateNewMessageRouteImport.update({
     id: '/monitoring-observers/create-new-message',
     path: '/monitoring-observers/create-new-message',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const MonitoringObserversTabRoute = MonitoringObserversTabImport.update({
-  id: '/monitoring-observers/$tab',
-  path: '/monitoring-observers/$tab',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FormsNewRoute = FormsNewImport.update({
+const appMonitoringObserversTabRoute =
+  appMonitoringObserversTabRouteImport.update({
+    id: '/monitoring-observers/$tab',
+    path: '/monitoring-observers/$tab',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appFormsNewRoute = appFormsNewRouteImport.update({
   id: '/forms/new',
   path: '/forms/new',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormsFormIdRoute = FormsFormIdImport.update({
+const appFormsFormIdRoute = appFormsFormIdRouteImport.update({
   id: '/forms/$formId',
   path: '/forms/$formId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormTemplatesNewRoute = FormTemplatesNewImport.update({
+const appFormTemplatesNewRoute = appFormTemplatesNewRouteImport.update({
   id: '/form-templates/new',
   path: '/form-templates/new',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormTemplatesFormTemplateIdRoute =
-  FormTemplatesFormTemplateIdImport.update({
+const appFormTemplatesFormTemplateIdRoute =
+  appFormTemplatesFormTemplateIdRouteImport.update({
     id: '/form-templates/$formTemplateId',
     path: '/form-templates/$formTemplateId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ElectionEventTabRoute = ElectionEventTabImport.update({
+const appElectionEventTabRoute = appElectionEventTabRouteImport.update({
   id: '/election-event/$tab',
   path: '/election-event/$tab',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const CitizenNotificationsNewRoute = CitizenNotificationsNewImport.update({
-  id: '/citizen-notifications/new',
-  path: '/citizen-notifications/new',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CitizenGuidesNewRoute = CitizenGuidesNewImport.update({
+const appCitizenNotificationsNewRoute =
+  appCitizenNotificationsNewRouteImport.update({
+    id: '/citizen-notifications/new',
+    path: '/citizen-notifications/new',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appCitizenGuidesNewRoute = appCitizenGuidesNewRouteImport.update({
   id: '/citizen-guides/new',
   path: '/citizen-guides/new',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
-  id: '/accept-invite/success',
-  path: '/accept-invite/success',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ElectionRoundsElectionRoundIdIndexRoute =
-  ElectionRoundsElectionRoundIdIndexImport.update({
+const appElectionRoundsElectionRoundIdIndexRoute =
+  appElectionRoundsElectionRoundIdIndexRouteImport.update({
     id: '/election-rounds/$electionRoundId/',
     path: '/election-rounds/$electionRoundId/',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesQuickReportsQuickReportIdRoute =
-  ResponsesQuickReportsQuickReportIdImport.update({
+const appResponsesQuickReportsQuickReportIdRoute =
+  appResponsesQuickReportsQuickReportIdRouteImport.update({
     id: '/responses/quick-reports/$quickReportId',
     path: '/responses/quick-reports/$quickReportId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesIncidentReportsIncidentReportIdRoute =
-  ResponsesIncidentReportsIncidentReportIdImport.update({
+const appResponsesIncidentReportsIncidentReportIdRoute =
+  appResponsesIncidentReportsIncidentReportIdRouteImport.update({
     id: '/responses/incident-reports/$incidentReportId',
     path: '/responses/incident-reports/$incidentReportId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesFormSubmissionsSubmissionIdRoute =
-  ResponsesFormSubmissionsSubmissionIdImport.update({
+const appResponsesFormSubmissionsSubmissionIdRoute =
+  appResponsesFormSubmissionsSubmissionIdRouteImport.update({
     id: '/responses/form-submissions/$submissionId',
     path: '/responses/form-submissions/$submissionId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesCitizenReportsCitizenReportIdRoute =
-  ResponsesCitizenReportsCitizenReportIdImport.update({
+const appResponsesCitizenReportsCitizenReportIdRoute =
+  appResponsesCitizenReportsCitizenReportIdRouteImport.update({
     id: '/responses/citizen-reports/$citizenReportId',
     path: '/responses/citizen-reports/$citizenReportId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
-  id: '/observers_/$observerId/edit',
-  path: '/observers/$observerId/edit',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ObserverGuidesViewGuideIdRoute = ObserverGuidesViewGuideIdImport.update({
-  id: '/observer-guides/view/$guideId',
-  path: '/observer-guides/view/$guideId',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ObserverGuidesEditGuideIdRoute = ObserverGuidesEditGuideIdImport.update({
-  id: '/observer-guides/edit/$guideId',
-  path: '/observer-guides/edit/$guideId',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const MonitoringObserversPushMessagesIdRoute =
-  MonitoringObserversPushMessagesIdImport.update({
+const appObserversObserverIdEditRoute =
+  appObserversObserverIdEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => appObserversObserverIdRoute,
+  } as any)
+const appObserverGuidesViewGuideIdRoute =
+  appObserverGuidesViewGuideIdRouteImport.update({
+    id: '/observer-guides/view/$guideId',
+    path: '/observer-guides/view/$guideId',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appObserverGuidesEditGuideIdRoute =
+  appObserverGuidesEditGuideIdRouteImport.update({
+    id: '/observer-guides/edit/$guideId',
+    path: '/observer-guides/edit/$guideId',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appMonitoringObserversPushMessagesIdRoute =
+  appMonitoringObserversPushMessagesIdRouteImport.update({
     id: '/monitoring-observers/push-messages/$id',
     path: '/monitoring-observers/push-messages/$id',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const MonitoringObserversEditMonitoringObserverIdRoute =
-  MonitoringObserversEditMonitoringObserverIdImport.update({
+const appMonitoringObserversEditMonitoringObserverIdRoute =
+  appMonitoringObserversEditMonitoringObserverIdRouteImport.update({
     id: '/monitoring-observers/edit/$monitoringObserverId',
     path: '/monitoring-observers/edit/$monitoringObserverId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const FormsNewTemplateRoute = FormsNewTemplateImport.update({
+const appFormsNewTemplateRoute = appFormsNewTemplateRouteImport.update({
   id: '/forms/new_/template',
   path: '/forms/new/template',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormsNewScratchRoute = FormsNewScratchImport.update({
+const appFormsNewScratchRoute = appFormsNewScratchRouteImport.update({
   id: '/forms/new_/scratch',
   path: '/forms/new/scratch',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormsNewReuseRoute = FormsNewReuseImport.update({
+const appFormsNewReuseRoute = appFormsNewReuseRouteImport.update({
   id: '/forms/new_/reuse',
   path: '/forms/new/reuse',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormsFormIdEditRoute = FormsFormIdEditImport.update({
+const appFormsFormIdEditRoute = appFormsFormIdEditRouteImport.update({
   id: '/forms/$formId_/edit',
   path: '/forms/$formId/edit',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
-  id: '/forms/$formId_/$languageCode',
-  path: '/forms/$formId/$languageCode',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FormTemplatesFormTemplateIdEditRoute =
-  FormTemplatesFormTemplateIdEditImport.update({
+const appFormsFormIdLanguageCodeRoute =
+  appFormsFormIdLanguageCodeRouteImport.update({
+    id: '/forms/$formId_/$languageCode',
+    path: '/forms/$formId/$languageCode',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appFormTemplatesFormTemplateIdEditRoute =
+  appFormTemplatesFormTemplateIdEditRouteImport.update({
     id: '/form-templates/$formTemplateId_/edit',
     path: '/form-templates/$formTemplateId/edit',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const FormTemplatesFormTemplateIdLanguageCodeRoute =
-  FormTemplatesFormTemplateIdLanguageCodeImport.update({
+const appFormTemplatesFormTemplateIdLanguageCodeRoute =
+  appFormTemplatesFormTemplateIdLanguageCodeRouteImport.update({
     id: '/form-templates/$formTemplateId_/$languageCode',
     path: '/form-templates/$formTemplateId/$languageCode',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ElectionRoundsElectionRoundIdEditRoute =
-  ElectionRoundsElectionRoundIdEditImport.update({
+const appElectionRoundsElectionRoundIdEditRoute =
+  appElectionRoundsElectionRoundIdEditRouteImport.update({
     id: '/election-rounds/$electionRoundId/edit',
     path: '/election-rounds/$electionRoundId/edit',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ElectionRoundsElectionRoundIdTabRoute =
-  ElectionRoundsElectionRoundIdTabImport.update({
+const appElectionRoundsElectionRoundIdTabRoute =
+  appElectionRoundsElectionRoundIdTabRouteImport.update({
     id: '/election-rounds/$electionRoundId/$tab',
     path: '/election-rounds/$electionRoundId/$tab',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const CitizenNotificationsViewNotificationIdRoute =
-  CitizenNotificationsViewNotificationIdImport.update({
+const appCitizenNotificationsViewNotificationIdRoute =
+  appCitizenNotificationsViewNotificationIdRouteImport.update({
     id: '/citizen-notifications/view/$notificationId',
     path: '/citizen-notifications/view/$notificationId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const CitizenGuidesViewGuideIdRoute = CitizenGuidesViewGuideIdImport.update({
-  id: '/citizen-guides/view/$guideId',
-  path: '/citizen-guides/view/$guideId',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CitizenGuidesEditGuideIdRoute = CitizenGuidesEditGuideIdImport.update({
-  id: '/citizen-guides/edit/$guideId',
-  path: '/citizen-guides/edit/$guideId',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ResponsesIncidentReportsFormIdAggregatedRoute =
-  ResponsesIncidentReportsFormIdAggregatedImport.update({
+const appCitizenGuidesViewGuideIdRoute =
+  appCitizenGuidesViewGuideIdRouteImport.update({
+    id: '/citizen-guides/view/$guideId',
+    path: '/citizen-guides/view/$guideId',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appCitizenGuidesEditGuideIdRoute =
+  appCitizenGuidesEditGuideIdRouteImport.update({
+    id: '/citizen-guides/edit/$guideId',
+    path: '/citizen-guides/edit/$guideId',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appResponsesIncidentReportsFormIdAggregatedRoute =
+  appResponsesIncidentReportsFormIdAggregatedRouteImport.update({
     id: '/responses/incident-reports/$formId/aggregated',
     path: '/responses/incident-reports/$formId/aggregated',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesFormSubmissionsFormIdAggregatedRoute =
-  ResponsesFormSubmissionsFormIdAggregatedImport.update({
+const appResponsesFormSubmissionsFormIdAggregatedRoute =
+  appResponsesFormSubmissionsFormIdAggregatedRouteImport.update({
     id: '/responses/form-submissions/$formId/aggregated',
     path: '/responses/form-submissions/$formId/aggregated',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ResponsesCitizenReportsFormIdAggregatedRoute =
-  ResponsesCitizenReportsFormIdAggregatedImport.update({
+const appResponsesCitizenReportsFormIdAggregatedRoute =
+  appResponsesCitizenReportsFormIdAggregatedRouteImport.update({
     id: '/responses/citizen-reports/$formId/aggregated',
     path: '/responses/citizen-reports/$formId/aggregated',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const NgosViewNgoIdTabRoute = NgosViewNgoIdTabImport.update({
+const appNgosViewNgoIdTabRoute = appNgosViewNgoIdTabRouteImport.update({
   id: '/ngos/view/$ngoId/$tab',
   path: '/ngos/view/$ngoId/$tab',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const MonitoringObserversViewMonitoringObserverIdTabRoute =
-  MonitoringObserversViewMonitoringObserverIdTabImport.update({
+const appMonitoringObserversViewMonitoringObserverIdTabRoute =
+  appMonitoringObserversViewMonitoringObserverIdTabRouteImport.update({
     id: '/monitoring-observers/view/$monitoringObserverId/$tab',
     path: '/monitoring-observers/view/$monitoringObserverId/$tab',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const MonitoringObserversPushMessagesIdViewRoute =
-  MonitoringObserversPushMessagesIdViewImport.update({
+const appMonitoringObserversPushMessagesIdViewRoute =
+  appMonitoringObserversPushMessagesIdViewRouteImport.update({
     id: '/monitoring-observers/push-messages/$id_/view',
     path: '/monitoring-observers/push-messages/$id/view',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const FormsFormIdEditTranslationLanguageCodeRoute =
-  FormsFormIdEditTranslationLanguageCodeImport.update({
+const appFormsFormIdEditTranslationLanguageCodeRoute =
+  appFormsFormIdEditTranslationLanguageCodeRouteImport.update({
     id: '/forms/$formId_/edit-translation/$languageCode',
     path: '/forms/$formId/edit-translation/$languageCode',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute =
-  FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport.update({
+const appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute =
+  appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRouteImport.update({
     id: '/form-templates/$formTemplateId_/edit-translation/$languageCode',
     path: '/form-templates/$formTemplateId/edit-translation/$languageCode',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ElectionRoundsElectionRoundIdPollingStationsImportRoute =
-  ElectionRoundsElectionRoundIdPollingStationsImportImport.update({
+const appElectionRoundsElectionRoundIdPollingStationsImportRoute =
+  appElectionRoundsElectionRoundIdPollingStationsImportRouteImport.update({
     id: '/election-rounds/$electionRoundId/polling-stations/import',
     path: '/election-rounds/$electionRoundId/polling-stations/import',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const ElectionRoundsElectionRoundIdLocationsImportRoute =
-  ElectionRoundsElectionRoundIdLocationsImportImport.update({
+const appElectionRoundsElectionRoundIdLocationsImportRoute =
+  appElectionRoundsElectionRoundIdLocationsImportRouteImport.update({
     id: '/election-rounds/$electionRoundId/locations/import',
     path: '/election-rounds/$electionRoundId/locations/import',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => appRouteRoute,
   } as any)
-
-const CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
-  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport.update(
+const appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute =
+  appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRouteImport.update(
     {
       id: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId',
       path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId',
-      getParentRoute: () => rootRoute,
+      getParentRoute: () => appRouteRoute,
     } as any,
   )
-
-const NgosEditNgoIdRoute = NgosEditNgoIdImport.update({
+const appNgosEditNgoIdRoute = appNgosEditNgoIdRouteImport.update({
   id: '/ngos/edit/$ngoId/',
   path: '/ngos/edit/$ngoId/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appRouteRoute,
 } as any)
-
-const NgosAdminNgoIdAdminIdViewRoute = NgosAdminNgoIdAdminIdViewImport.update({
-  id: '/ngos/admin/$ngoId/$adminId/view',
-  path: '/ngos/admin/$ngoId/$adminId/view',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const NgosAdminNgoIdAdminIdEditRoute = NgosAdminNgoIdAdminIdEditImport.update({
-  id: '/ngos/admin/$ngoId/$adminId/edit',
-  path: '/ngos/admin/$ngoId/$adminId/edit',
-  getParentRoute: () => rootRoute,
-} as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/accept-invite/success': {
-      id: '/accept-invite/success'
-      path: '/accept-invite/success'
-      fullPath: '/accept-invite/success'
-      preLoaderRoute: typeof AcceptInviteSuccessImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-guides/new': {
-      id: '/citizen-guides/new'
-      path: '/citizen-guides/new'
-      fullPath: '/citizen-guides/new'
-      preLoaderRoute: typeof CitizenGuidesNewImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-notifications/new': {
-      id: '/citizen-notifications/new'
-      path: '/citizen-notifications/new'
-      fullPath: '/citizen-notifications/new'
-      preLoaderRoute: typeof CitizenNotificationsNewImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-event/$tab': {
-      id: '/election-event/$tab'
-      path: '/election-event/$tab'
-      fullPath: '/election-event/$tab'
-      preLoaderRoute: typeof ElectionEventTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId': {
-      id: '/form-templates/$formTemplateId'
-      path: '/form-templates/$formTemplateId'
-      fullPath: '/form-templates/$formTemplateId'
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/new': {
-      id: '/form-templates/new'
-      path: '/form-templates/new'
-      fullPath: '/form-templates/new'
-      preLoaderRoute: typeof FormTemplatesNewImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/$formId': {
-      id: '/forms/$formId'
-      path: '/forms/$formId'
-      fullPath: '/forms/$formId'
-      preLoaderRoute: typeof FormsFormIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/new': {
-      id: '/forms/new'
-      path: '/forms/new'
-      fullPath: '/forms/new'
-      preLoaderRoute: typeof FormsNewImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/$tab': {
-      id: '/monitoring-observers/$tab'
-      path: '/monitoring-observers/$tab'
-      fullPath: '/monitoring-observers/$tab'
-      preLoaderRoute: typeof MonitoringObserversTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/create-new-message': {
-      id: '/monitoring-observers/create-new-message'
-      path: '/monitoring-observers/create-new-message'
-      fullPath: '/monitoring-observers/create-new-message'
-      preLoaderRoute: typeof MonitoringObserversCreateNewMessageImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/import': {
-      id: '/monitoring-observers/import'
-      path: '/monitoring-observers/import'
-      fullPath: '/monitoring-observers/import'
-      preLoaderRoute: typeof MonitoringObserversImportImport
-      parentRoute: typeof rootRoute
-    }
-    '/observer-guides/new': {
-      id: '/observer-guides/new'
-      path: '/observer-guides/new'
-      fullPath: '/observer-guides/new'
-      preLoaderRoute: typeof ObserverGuidesNewImport
-      parentRoute: typeof rootRoute
-    }
-    '/observers/$observerId': {
-      id: '/observers/$observerId'
-      path: '/observers/$observerId'
-      fullPath: '/observers/$observerId'
-      preLoaderRoute: typeof ObserversObserverIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/reset-password/success': {
-      id: '/reset-password/success'
-      path: '/reset-password/success'
-      fullPath: '/reset-password/success'
-      preLoaderRoute: typeof ResetPasswordSuccessImport
-      parentRoute: typeof rootRoute
-    }
-    '/accept-invite/': {
-      id: '/accept-invite/'
-      path: '/accept-invite'
-      fullPath: '/accept-invite'
-      preLoaderRoute: typeof AcceptInviteIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-event/': {
-      id: '/election-event/'
-      path: '/election-event'
-      fullPath: '/election-event'
-      preLoaderRoute: typeof ElectionEventIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/': {
-      id: '/election-rounds/'
-      path: '/election-rounds'
-      fullPath: '/election-rounds'
-      preLoaderRoute: typeof ElectionRoundsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/forgot-password/': {
-      id: '/forgot-password/'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/': {
-      id: '/form-templates/'
-      path: '/form-templates'
-      fullPath: '/form-templates'
-      preLoaderRoute: typeof FormTemplatesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/': {
-      id: '/monitoring-observers/'
-      path: '/monitoring-observers'
-      fullPath: '/monitoring-observers'
-      preLoaderRoute: typeof MonitoringObserversIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/': {
-      id: '/ngos/'
-      path: '/ngos'
-      fullPath: '/ngos'
-      preLoaderRoute: typeof NgosIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/observers/': {
-      id: '/observers/'
-      path: '/observers'
-      fullPath: '/observers'
-      preLoaderRoute: typeof ObserversIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/reset-password/': {
-      id: '/reset-password/'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/': {
-      id: '/responses/'
-      path: '/responses'
-      fullPath: '/responses'
-      preLoaderRoute: typeof ResponsesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-guides/edit/$guideId': {
-      id: '/citizen-guides/edit/$guideId'
-      path: '/citizen-guides/edit/$guideId'
-      fullPath: '/citizen-guides/edit/$guideId'
-      preLoaderRoute: typeof CitizenGuidesEditGuideIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-guides/view/$guideId': {
-      id: '/citizen-guides/view/$guideId'
-      path: '/citizen-guides/view/$guideId'
-      fullPath: '/citizen-guides/view/$guideId'
-      preLoaderRoute: typeof CitizenGuidesViewGuideIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-notifications/view/$notificationId': {
-      id: '/citizen-notifications/view/$notificationId'
-      path: '/citizen-notifications/view/$notificationId'
-      fullPath: '/citizen-notifications/view/$notificationId'
-      preLoaderRoute: typeof CitizenNotificationsViewNotificationIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId/$tab': {
-      id: '/election-rounds/$electionRoundId/$tab'
-      path: '/election-rounds/$electionRoundId/$tab'
-      fullPath: '/election-rounds/$electionRoundId/$tab'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId/edit': {
-      id: '/election-rounds/$electionRoundId/edit'
-      path: '/election-rounds/$electionRoundId/edit'
-      fullPath: '/election-rounds/$electionRoundId/edit'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId_/$languageCode': {
-      id: '/form-templates/$formTemplateId_/$languageCode'
-      path: '/form-templates/$formTemplateId/$languageCode'
-      fullPath: '/form-templates/$formTemplateId/$languageCode'
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId_/edit': {
-      id: '/form-templates/$formTemplateId_/edit'
-      path: '/form-templates/$formTemplateId/edit'
-      fullPath: '/form-templates/$formTemplateId/edit'
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/$formId_/$languageCode': {
-      id: '/forms/$formId_/$languageCode'
-      path: '/forms/$formId/$languageCode'
-      fullPath: '/forms/$formId/$languageCode'
-      preLoaderRoute: typeof FormsFormIdLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/$formId_/edit': {
-      id: '/forms/$formId_/edit'
-      path: '/forms/$formId/edit'
-      fullPath: '/forms/$formId/edit'
-      preLoaderRoute: typeof FormsFormIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/new_/reuse': {
-      id: '/forms/new_/reuse'
-      path: '/forms/new/reuse'
-      fullPath: '/forms/new/reuse'
-      preLoaderRoute: typeof FormsNewReuseImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/new_/scratch': {
-      id: '/forms/new_/scratch'
-      path: '/forms/new/scratch'
-      fullPath: '/forms/new/scratch'
-      preLoaderRoute: typeof FormsNewScratchImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/new_/template': {
-      id: '/forms/new_/template'
-      path: '/forms/new/template'
-      fullPath: '/forms/new/template'
-      preLoaderRoute: typeof FormsNewTemplateImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/edit/$monitoringObserverId': {
-      id: '/monitoring-observers/edit/$monitoringObserverId'
-      path: '/monitoring-observers/edit/$monitoringObserverId'
-      fullPath: '/monitoring-observers/edit/$monitoringObserverId'
-      preLoaderRoute: typeof MonitoringObserversEditMonitoringObserverIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/push-messages/$id': {
-      id: '/monitoring-observers/push-messages/$id'
-      path: '/monitoring-observers/push-messages/$id'
-      fullPath: '/monitoring-observers/push-messages/$id'
-      preLoaderRoute: typeof MonitoringObserversPushMessagesIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/observer-guides/edit/$guideId': {
-      id: '/observer-guides/edit/$guideId'
-      path: '/observer-guides/edit/$guideId'
-      fullPath: '/observer-guides/edit/$guideId'
-      preLoaderRoute: typeof ObserverGuidesEditGuideIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/observer-guides/view/$guideId': {
-      id: '/observer-guides/view/$guideId'
-      path: '/observer-guides/view/$guideId'
-      fullPath: '/observer-guides/view/$guideId'
-      preLoaderRoute: typeof ObserverGuidesViewGuideIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/observers_/$observerId/edit': {
-      id: '/observers_/$observerId/edit'
-      path: '/observers/$observerId/edit'
-      fullPath: '/observers/$observerId/edit'
-      preLoaderRoute: typeof ObserversObserverIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/citizen-reports/$citizenReportId': {
-      id: '/responses/citizen-reports/$citizenReportId'
-      path: '/responses/citizen-reports/$citizenReportId'
-      fullPath: '/responses/citizen-reports/$citizenReportId'
-      preLoaderRoute: typeof ResponsesCitizenReportsCitizenReportIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/form-submissions/$submissionId': {
-      id: '/responses/form-submissions/$submissionId'
-      path: '/responses/form-submissions/$submissionId'
-      fullPath: '/responses/form-submissions/$submissionId'
-      preLoaderRoute: typeof ResponsesFormSubmissionsSubmissionIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/incident-reports/$incidentReportId': {
-      id: '/responses/incident-reports/$incidentReportId'
-      path: '/responses/incident-reports/$incidentReportId'
-      fullPath: '/responses/incident-reports/$incidentReportId'
-      preLoaderRoute: typeof ResponsesIncidentReportsIncidentReportIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/quick-reports/$quickReportId': {
-      id: '/responses/quick-reports/$quickReportId'
-      path: '/responses/quick-reports/$quickReportId'
-      fullPath: '/responses/quick-reports/$quickReportId'
-      preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId/': {
-      id: '/election-rounds/$electionRoundId/'
-      path: '/election-rounds/$electionRoundId'
-      fullPath: '/election-rounds/$electionRoundId'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/edit/$ngoId/': {
-      id: '/ngos/edit/$ngoId/'
-      path: '/ngos/edit/$ngoId'
-      fullPath: '/ngos/edit/$ngoId'
-      preLoaderRoute: typeof NgosEditNgoIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
-      id: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
-      path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
-      fullPath: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
-      preLoaderRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId/locations/import': {
-      id: '/election-rounds/$electionRoundId/locations/import'
-      path: '/election-rounds/$electionRoundId/locations/import'
-      fullPath: '/election-rounds/$electionRoundId/locations/import'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdLocationsImportImport
-      parentRoute: typeof rootRoute
-    }
-    '/election-rounds/$electionRoundId/polling-stations/import': {
-      id: '/election-rounds/$electionRoundId/polling-stations/import'
-      path: '/election-rounds/$electionRoundId/polling-stations/import'
-      fullPath: '/election-rounds/$electionRoundId/polling-stations/import'
-      preLoaderRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId_/edit-translation/$languageCode': {
-      id: '/form-templates/$formTemplateId_/edit-translation/$languageCode'
-      path: '/form-templates/$formTemplateId/edit-translation/$languageCode'
-      fullPath: '/form-templates/$formTemplateId/edit-translation/$languageCode'
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/forms/$formId_/edit-translation/$languageCode': {
-      id: '/forms/$formId_/edit-translation/$languageCode'
-      path: '/forms/$formId/edit-translation/$languageCode'
-      fullPath: '/forms/$formId/edit-translation/$languageCode'
-      preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/push-messages/$id_/view': {
-      id: '/monitoring-observers/push-messages/$id_/view'
-      path: '/monitoring-observers/push-messages/$id/view'
-      fullPath: '/monitoring-observers/push-messages/$id/view'
-      preLoaderRoute: typeof MonitoringObserversPushMessagesIdViewImport
-      parentRoute: typeof rootRoute
-    }
-    '/monitoring-observers/view/$monitoringObserverId/$tab': {
-      id: '/monitoring-observers/view/$monitoringObserverId/$tab'
-      path: '/monitoring-observers/view/$monitoringObserverId/$tab'
-      fullPath: '/monitoring-observers/view/$monitoringObserverId/$tab'
-      preLoaderRoute: typeof MonitoringObserversViewMonitoringObserverIdTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/view/$ngoId/$tab': {
-      id: '/ngos/view/$ngoId/$tab'
-      path: '/ngos/view/$ngoId/$tab'
-      fullPath: '/ngos/view/$ngoId/$tab'
-      preLoaderRoute: typeof NgosViewNgoIdTabImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/citizen-reports/$formId/aggregated': {
-      id: '/responses/citizen-reports/$formId/aggregated'
-      path: '/responses/citizen-reports/$formId/aggregated'
-      fullPath: '/responses/citizen-reports/$formId/aggregated'
-      preLoaderRoute: typeof ResponsesCitizenReportsFormIdAggregatedImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/form-submissions/$formId/aggregated': {
-      id: '/responses/form-submissions/$formId/aggregated'
-      path: '/responses/form-submissions/$formId/aggregated'
-      fullPath: '/responses/form-submissions/$formId/aggregated'
-      preLoaderRoute: typeof ResponsesFormSubmissionsFormIdAggregatedImport
-      parentRoute: typeof rootRoute
-    }
-    '/responses/incident-reports/$formId/aggregated': {
-      id: '/responses/incident-reports/$formId/aggregated'
-      path: '/responses/incident-reports/$formId/aggregated'
-      fullPath: '/responses/incident-reports/$formId/aggregated'
-      preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/admin/$ngoId/$adminId/edit': {
-      id: '/ngos/admin/$ngoId/$adminId/edit'
-      path: '/ngos/admin/$ngoId/$adminId/edit'
-      fullPath: '/ngos/admin/$ngoId/$adminId/edit'
-      preLoaderRoute: typeof NgosAdminNgoIdAdminIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/ngos/admin/$ngoId/$adminId/view': {
-      id: '/ngos/admin/$ngoId/$adminId/view'
-      path: '/ngos/admin/$ngoId/$adminId/view'
-      fullPath: '/ngos/admin/$ngoId/$adminId/view'
-      preLoaderRoute: typeof NgosAdminNgoIdAdminIdViewImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
+const appNgosAdminNgoIdAdminIdViewRoute =
+  appNgosAdminNgoIdAdminIdViewRouteImport.update({
+    id: '/ngos/admin/$ngoId/$adminId/view',
+    path: '/ngos/admin/$ngoId/$adminId/view',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const appNgosAdminNgoIdAdminIdEditRoute =
+  appNgosAdminNgoIdAdminIdEditRouteImport.update({
+    id: '/ngos/admin/$ngoId/$adminId/edit',
+    path: '/ngos/admin/$ngoId/$adminId/edit',
+    getParentRoute: () => appRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/accept-invite/success': typeof AcceptInviteSuccessRoute
-  '/citizen-guides/new': typeof CitizenGuidesNewRoute
-  '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
-  '/election-event/$tab': typeof ElectionEventTabRoute
-  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
-  '/form-templates/new': typeof FormTemplatesNewRoute
-  '/forms/$formId': typeof FormsFormIdRoute
-  '/forms/new': typeof FormsNewRoute
-  '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
-  '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
-  '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/observer-guides/new': typeof ObserverGuidesNewRoute
-  '/observers/$observerId': typeof ObserversObserverIdRoute
-  '/reset-password/success': typeof ResetPasswordSuccessRoute
-  '/accept-invite': typeof AcceptInviteIndexRoute
-  '/election-event': typeof ElectionEventIndexRoute
-  '/election-rounds': typeof ElectionRoundsIndexRoute
-  '/forgot-password': typeof ForgotPasswordIndexRoute
-  '/form-templates': typeof FormTemplatesIndexRoute
-  '/login': typeof LoginIndexRoute
-  '/monitoring-observers': typeof MonitoringObserversIndexRoute
-  '/ngos': typeof NgosIndexRoute
-  '/observers': typeof ObserversIndexRoute
-  '/reset-password': typeof ResetPasswordIndexRoute
-  '/responses': typeof ResponsesIndexRoute
-  '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
-  '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
-  '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
-  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
-  '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
-  '/form-templates/$formTemplateId/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
-  '/form-templates/$formTemplateId/edit': typeof FormTemplatesFormTemplateIdEditRoute
-  '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
-  '/forms/$formId/edit': typeof FormsFormIdEditRoute
-  '/forms/new/reuse': typeof FormsNewReuseRoute
-  '/forms/new/scratch': typeof FormsNewScratchRoute
-  '/forms/new/template': typeof FormsNewTemplateRoute
-  '/monitoring-observers/edit/$monitoringObserverId': typeof MonitoringObserversEditMonitoringObserverIdRoute
-  '/monitoring-observers/push-messages/$id': typeof MonitoringObserversPushMessagesIdRoute
-  '/observer-guides/edit/$guideId': typeof ObserverGuidesEditGuideIdRoute
-  '/observer-guides/view/$guideId': typeof ObserverGuidesViewGuideIdRoute
-  '/observers/$observerId/edit': typeof ObserversObserverIdEditRoute
-  '/responses/citizen-reports/$citizenReportId': typeof ResponsesCitizenReportsCitizenReportIdRoute
-  '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
-  '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
-  '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
-  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
-  '/ngos/edit/$ngoId': typeof NgosEditNgoIdRoute
-  '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
-  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
-  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
-  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
-  '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
-  '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
-  '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
-  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
-  '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
-  '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
-  '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
-  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
-  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
+  '/': typeof appIndexRoute
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
+  '/citizen-guides/new': typeof appCitizenGuidesNewRoute
+  '/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
+  '/election-event/$tab': typeof appElectionEventTabRoute
+  '/form-templates/$formTemplateId': typeof appFormTemplatesFormTemplateIdRoute
+  '/form-templates/new': typeof appFormTemplatesNewRoute
+  '/forms/$formId': typeof appFormsFormIdRoute
+  '/forms/new': typeof appFormsNewRoute
+  '/monitoring-observers/$tab': typeof appMonitoringObserversTabRoute
+  '/monitoring-observers/create-new-message': typeof appMonitoringObserversCreateNewMessageRoute
+  '/monitoring-observers/import': typeof appMonitoringObserversImportRoute
+  '/observer-guides/new': typeof appObserverGuidesNewRoute
+  '/observers/$observerId': typeof appObserversObserverIdRouteWithChildren
+  '/accept-invite/success': typeof authAcceptInviteSuccessRoute
+  '/reset-password/success': typeof authResetPasswordSuccessRoute
+  '/election-event': typeof appElectionEventIndexRoute
+  '/election-rounds': typeof appElectionRoundsIndexRoute
+  '/form-templates': typeof appFormTemplatesIndexRoute
+  '/monitoring-observers': typeof appMonitoringObserversIndexRoute
+  '/ngos': typeof appNgosIndexRoute
+  '/observers': typeof appObserversIndexRoute
+  '/responses': typeof appResponsesIndexRoute
+  '/accept-invite': typeof authAcceptInviteIndexRoute
+  '/reset-password': typeof authResetPasswordIndexRoute
+  '/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
+  '/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
+  '/citizen-notifications/view/$notificationId': typeof appCitizenNotificationsViewNotificationIdRoute
+  '/election-rounds/$electionRoundId/$tab': typeof appElectionRoundsElectionRoundIdTabRoute
+  '/election-rounds/$electionRoundId/edit': typeof appElectionRoundsElectionRoundIdEditRoute
+  '/form-templates/$formTemplateId/$languageCode': typeof appFormTemplatesFormTemplateIdLanguageCodeRoute
+  '/form-templates/$formTemplateId/edit': typeof appFormTemplatesFormTemplateIdEditRoute
+  '/forms/$formId/$languageCode': typeof appFormsFormIdLanguageCodeRoute
+  '/forms/$formId/edit': typeof appFormsFormIdEditRoute
+  '/forms/new/reuse': typeof appFormsNewReuseRoute
+  '/forms/new/scratch': typeof appFormsNewScratchRoute
+  '/forms/new/template': typeof appFormsNewTemplateRoute
+  '/monitoring-observers/edit/$monitoringObserverId': typeof appMonitoringObserversEditMonitoringObserverIdRoute
+  '/monitoring-observers/push-messages/$id': typeof appMonitoringObserversPushMessagesIdRoute
+  '/observer-guides/edit/$guideId': typeof appObserverGuidesEditGuideIdRoute
+  '/observer-guides/view/$guideId': typeof appObserverGuidesViewGuideIdRoute
+  '/observers/$observerId/edit': typeof appObserversObserverIdEditRoute
+  '/responses/citizen-reports/$citizenReportId': typeof appResponsesCitizenReportsCitizenReportIdRoute
+  '/responses/form-submissions/$submissionId': typeof appResponsesFormSubmissionsSubmissionIdRoute
+  '/responses/incident-reports/$incidentReportId': typeof appResponsesIncidentReportsIncidentReportIdRoute
+  '/responses/quick-reports/$quickReportId': typeof appResponsesQuickReportsQuickReportIdRoute
+  '/election-rounds/$electionRoundId': typeof appElectionRoundsElectionRoundIdIndexRoute
+  '/ngos/edit/$ngoId': typeof appNgosEditNgoIdRoute
+  '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/election-rounds/$electionRoundId/locations/import': typeof appElectionRoundsElectionRoundIdLocationsImportRoute
+  '/election-rounds/$electionRoundId/polling-stations/import': typeof appElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
+  '/forms/$formId/edit-translation/$languageCode': typeof appFormsFormIdEditTranslationLanguageCodeRoute
+  '/monitoring-observers/push-messages/$id/view': typeof appMonitoringObserversPushMessagesIdViewRoute
+  '/monitoring-observers/view/$monitoringObserverId/$tab': typeof appMonitoringObserversViewMonitoringObserverIdTabRoute
+  '/ngos/view/$ngoId/$tab': typeof appNgosViewNgoIdTabRoute
+  '/responses/citizen-reports/$formId/aggregated': typeof appResponsesCitizenReportsFormIdAggregatedRoute
+  '/responses/form-submissions/$formId/aggregated': typeof appResponsesFormSubmissionsFormIdAggregatedRoute
+  '/responses/incident-reports/$formId/aggregated': typeof appResponsesIncidentReportsFormIdAggregatedRoute
+  '/ngos/admin/$ngoId/$adminId/edit': typeof appNgosAdminNgoIdAdminIdEditRoute
+  '/ngos/admin/$ngoId/$adminId/view': typeof appNgosAdminNgoIdAdminIdViewRoute
 }
-
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/accept-invite/success': typeof AcceptInviteSuccessRoute
-  '/citizen-guides/new': typeof CitizenGuidesNewRoute
-  '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
-  '/election-event/$tab': typeof ElectionEventTabRoute
-  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
-  '/form-templates/new': typeof FormTemplatesNewRoute
-  '/forms/$formId': typeof FormsFormIdRoute
-  '/forms/new': typeof FormsNewRoute
-  '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
-  '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
-  '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/observer-guides/new': typeof ObserverGuidesNewRoute
-  '/observers/$observerId': typeof ObserversObserverIdRoute
-  '/reset-password/success': typeof ResetPasswordSuccessRoute
-  '/accept-invite': typeof AcceptInviteIndexRoute
-  '/election-event': typeof ElectionEventIndexRoute
-  '/election-rounds': typeof ElectionRoundsIndexRoute
-  '/forgot-password': typeof ForgotPasswordIndexRoute
-  '/form-templates': typeof FormTemplatesIndexRoute
-  '/login': typeof LoginIndexRoute
-  '/monitoring-observers': typeof MonitoringObserversIndexRoute
-  '/ngos': typeof NgosIndexRoute
-  '/observers': typeof ObserversIndexRoute
-  '/reset-password': typeof ResetPasswordIndexRoute
-  '/responses': typeof ResponsesIndexRoute
-  '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
-  '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
-  '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
-  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
-  '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
-  '/form-templates/$formTemplateId/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
-  '/form-templates/$formTemplateId/edit': typeof FormTemplatesFormTemplateIdEditRoute
-  '/forms/$formId/$languageCode': typeof FormsFormIdLanguageCodeRoute
-  '/forms/$formId/edit': typeof FormsFormIdEditRoute
-  '/forms/new/reuse': typeof FormsNewReuseRoute
-  '/forms/new/scratch': typeof FormsNewScratchRoute
-  '/forms/new/template': typeof FormsNewTemplateRoute
-  '/monitoring-observers/edit/$monitoringObserverId': typeof MonitoringObserversEditMonitoringObserverIdRoute
-  '/monitoring-observers/push-messages/$id': typeof MonitoringObserversPushMessagesIdRoute
-  '/observer-guides/edit/$guideId': typeof ObserverGuidesEditGuideIdRoute
-  '/observer-guides/view/$guideId': typeof ObserverGuidesViewGuideIdRoute
-  '/observers/$observerId/edit': typeof ObserversObserverIdEditRoute
-  '/responses/citizen-reports/$citizenReportId': typeof ResponsesCitizenReportsCitizenReportIdRoute
-  '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
-  '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
-  '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
-  '/election-rounds/$electionRoundId': typeof ElectionRoundsElectionRoundIdIndexRoute
-  '/ngos/edit/$ngoId': typeof NgosEditNgoIdRoute
-  '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
-  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
-  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
-  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
-  '/forms/$formId/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
-  '/monitoring-observers/push-messages/$id/view': typeof MonitoringObserversPushMessagesIdViewRoute
-  '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
-  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
-  '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
-  '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
-  '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
-  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
-  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
+  '/': typeof appIndexRoute
+  '/citizen-guides/new': typeof appCitizenGuidesNewRoute
+  '/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
+  '/election-event/$tab': typeof appElectionEventTabRoute
+  '/form-templates/$formTemplateId': typeof appFormTemplatesFormTemplateIdRoute
+  '/form-templates/new': typeof appFormTemplatesNewRoute
+  '/forms/$formId': typeof appFormsFormIdRoute
+  '/forms/new': typeof appFormsNewRoute
+  '/monitoring-observers/$tab': typeof appMonitoringObserversTabRoute
+  '/monitoring-observers/create-new-message': typeof appMonitoringObserversCreateNewMessageRoute
+  '/monitoring-observers/import': typeof appMonitoringObserversImportRoute
+  '/observer-guides/new': typeof appObserverGuidesNewRoute
+  '/observers/$observerId': typeof appObserversObserverIdRouteWithChildren
+  '/accept-invite/success': typeof authAcceptInviteSuccessRoute
+  '/reset-password/success': typeof authResetPasswordSuccessRoute
+  '/election-event': typeof appElectionEventIndexRoute
+  '/election-rounds': typeof appElectionRoundsIndexRoute
+  '/form-templates': typeof appFormTemplatesIndexRoute
+  '/monitoring-observers': typeof appMonitoringObserversIndexRoute
+  '/ngos': typeof appNgosIndexRoute
+  '/observers': typeof appObserversIndexRoute
+  '/responses': typeof appResponsesIndexRoute
+  '/accept-invite': typeof authAcceptInviteIndexRoute
+  '/reset-password': typeof authResetPasswordIndexRoute
+  '/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
+  '/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
+  '/citizen-notifications/view/$notificationId': typeof appCitizenNotificationsViewNotificationIdRoute
+  '/election-rounds/$electionRoundId/$tab': typeof appElectionRoundsElectionRoundIdTabRoute
+  '/election-rounds/$electionRoundId/edit': typeof appElectionRoundsElectionRoundIdEditRoute
+  '/form-templates/$formTemplateId/$languageCode': typeof appFormTemplatesFormTemplateIdLanguageCodeRoute
+  '/form-templates/$formTemplateId/edit': typeof appFormTemplatesFormTemplateIdEditRoute
+  '/forms/$formId/$languageCode': typeof appFormsFormIdLanguageCodeRoute
+  '/forms/$formId/edit': typeof appFormsFormIdEditRoute
+  '/forms/new/reuse': typeof appFormsNewReuseRoute
+  '/forms/new/scratch': typeof appFormsNewScratchRoute
+  '/forms/new/template': typeof appFormsNewTemplateRoute
+  '/monitoring-observers/edit/$monitoringObserverId': typeof appMonitoringObserversEditMonitoringObserverIdRoute
+  '/monitoring-observers/push-messages/$id': typeof appMonitoringObserversPushMessagesIdRoute
+  '/observer-guides/edit/$guideId': typeof appObserverGuidesEditGuideIdRoute
+  '/observer-guides/view/$guideId': typeof appObserverGuidesViewGuideIdRoute
+  '/observers/$observerId/edit': typeof appObserversObserverIdEditRoute
+  '/responses/citizen-reports/$citizenReportId': typeof appResponsesCitizenReportsCitizenReportIdRoute
+  '/responses/form-submissions/$submissionId': typeof appResponsesFormSubmissionsSubmissionIdRoute
+  '/responses/incident-reports/$incidentReportId': typeof appResponsesIncidentReportsIncidentReportIdRoute
+  '/responses/quick-reports/$quickReportId': typeof appResponsesQuickReportsQuickReportIdRoute
+  '/election-rounds/$electionRoundId': typeof appElectionRoundsElectionRoundIdIndexRoute
+  '/ngos/edit/$ngoId': typeof appNgosEditNgoIdRoute
+  '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/election-rounds/$electionRoundId/locations/import': typeof appElectionRoundsElectionRoundIdLocationsImportRoute
+  '/election-rounds/$electionRoundId/polling-stations/import': typeof appElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/form-templates/$formTemplateId/edit-translation/$languageCode': typeof appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
+  '/forms/$formId/edit-translation/$languageCode': typeof appFormsFormIdEditTranslationLanguageCodeRoute
+  '/monitoring-observers/push-messages/$id/view': typeof appMonitoringObserversPushMessagesIdViewRoute
+  '/monitoring-observers/view/$monitoringObserverId/$tab': typeof appMonitoringObserversViewMonitoringObserverIdTabRoute
+  '/ngos/view/$ngoId/$tab': typeof appNgosViewNgoIdTabRoute
+  '/responses/citizen-reports/$formId/aggregated': typeof appResponsesCitizenReportsFormIdAggregatedRoute
+  '/responses/form-submissions/$formId/aggregated': typeof appResponsesFormSubmissionsFormIdAggregatedRoute
+  '/responses/incident-reports/$formId/aggregated': typeof appResponsesIncidentReportsFormIdAggregatedRoute
+  '/ngos/admin/$ngoId/$adminId/edit': typeof appNgosAdminNgoIdAdminIdEditRoute
+  '/ngos/admin/$ngoId/$adminId/view': typeof appNgosAdminNgoIdAdminIdViewRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/accept-invite/success': typeof AcceptInviteSuccessRoute
-  '/citizen-guides/new': typeof CitizenGuidesNewRoute
-  '/citizen-notifications/new': typeof CitizenNotificationsNewRoute
-  '/election-event/$tab': typeof ElectionEventTabRoute
-  '/form-templates/$formTemplateId': typeof FormTemplatesFormTemplateIdRoute
-  '/form-templates/new': typeof FormTemplatesNewRoute
-  '/forms/$formId': typeof FormsFormIdRoute
-  '/forms/new': typeof FormsNewRoute
-  '/monitoring-observers/$tab': typeof MonitoringObserversTabRoute
-  '/monitoring-observers/create-new-message': typeof MonitoringObserversCreateNewMessageRoute
-  '/monitoring-observers/import': typeof MonitoringObserversImportRoute
-  '/observer-guides/new': typeof ObserverGuidesNewRoute
-  '/observers/$observerId': typeof ObserversObserverIdRoute
-  '/reset-password/success': typeof ResetPasswordSuccessRoute
-  '/accept-invite/': typeof AcceptInviteIndexRoute
-  '/election-event/': typeof ElectionEventIndexRoute
-  '/election-rounds/': typeof ElectionRoundsIndexRoute
-  '/forgot-password/': typeof ForgotPasswordIndexRoute
-  '/form-templates/': typeof FormTemplatesIndexRoute
-  '/login/': typeof LoginIndexRoute
-  '/monitoring-observers/': typeof MonitoringObserversIndexRoute
-  '/ngos/': typeof NgosIndexRoute
-  '/observers/': typeof ObserversIndexRoute
-  '/reset-password/': typeof ResetPasswordIndexRoute
-  '/responses/': typeof ResponsesIndexRoute
-  '/citizen-guides/edit/$guideId': typeof CitizenGuidesEditGuideIdRoute
-  '/citizen-guides/view/$guideId': typeof CitizenGuidesViewGuideIdRoute
-  '/citizen-notifications/view/$notificationId': typeof CitizenNotificationsViewNotificationIdRoute
-  '/election-rounds/$electionRoundId/$tab': typeof ElectionRoundsElectionRoundIdTabRoute
-  '/election-rounds/$electionRoundId/edit': typeof ElectionRoundsElectionRoundIdEditRoute
-  '/form-templates/$formTemplateId_/$languageCode': typeof FormTemplatesFormTemplateIdLanguageCodeRoute
-  '/form-templates/$formTemplateId_/edit': typeof FormTemplatesFormTemplateIdEditRoute
-  '/forms/$formId_/$languageCode': typeof FormsFormIdLanguageCodeRoute
-  '/forms/$formId_/edit': typeof FormsFormIdEditRoute
-  '/forms/new_/reuse': typeof FormsNewReuseRoute
-  '/forms/new_/scratch': typeof FormsNewScratchRoute
-  '/forms/new_/template': typeof FormsNewTemplateRoute
-  '/monitoring-observers/edit/$monitoringObserverId': typeof MonitoringObserversEditMonitoringObserverIdRoute
-  '/monitoring-observers/push-messages/$id': typeof MonitoringObserversPushMessagesIdRoute
-  '/observer-guides/edit/$guideId': typeof ObserverGuidesEditGuideIdRoute
-  '/observer-guides/view/$guideId': typeof ObserverGuidesViewGuideIdRoute
-  '/observers_/$observerId/edit': typeof ObserversObserverIdEditRoute
-  '/responses/citizen-reports/$citizenReportId': typeof ResponsesCitizenReportsCitizenReportIdRoute
-  '/responses/form-submissions/$submissionId': typeof ResponsesFormSubmissionsSubmissionIdRoute
-  '/responses/incident-reports/$incidentReportId': typeof ResponsesIncidentReportsIncidentReportIdRoute
-  '/responses/quick-reports/$quickReportId': typeof ResponsesQuickReportsQuickReportIdRoute
-  '/election-rounds/$electionRoundId/': typeof ElectionRoundsElectionRoundIdIndexRoute
-  '/ngos/edit/$ngoId/': typeof NgosEditNgoIdRoute
-  '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
-  '/election-rounds/$electionRoundId/locations/import': typeof ElectionRoundsElectionRoundIdLocationsImportRoute
-  '/election-rounds/$electionRoundId/polling-stations/import': typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
-  '/form-templates/$formTemplateId_/edit-translation/$languageCode': typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
-  '/forms/$formId_/edit-translation/$languageCode': typeof FormsFormIdEditTranslationLanguageCodeRoute
-  '/monitoring-observers/push-messages/$id_/view': typeof MonitoringObserversPushMessagesIdViewRoute
-  '/monitoring-observers/view/$monitoringObserverId/$tab': typeof MonitoringObserversViewMonitoringObserverIdTabRoute
-  '/ngos/view/$ngoId/$tab': typeof NgosViewNgoIdTabRoute
-  '/responses/citizen-reports/$formId/aggregated': typeof ResponsesCitizenReportsFormIdAggregatedRoute
-  '/responses/form-submissions/$formId/aggregated': typeof ResponsesFormSubmissionsFormIdAggregatedRoute
-  '/responses/incident-reports/$formId/aggregated': typeof ResponsesIncidentReportsFormIdAggregatedRoute
-  '/ngos/admin/$ngoId/$adminId/edit': typeof NgosAdminNgoIdAdminIdEditRoute
-  '/ngos/admin/$ngoId/$adminId/view': typeof NgosAdminNgoIdAdminIdViewRoute
+  __root__: typeof rootRouteImport
+  '/(app)': typeof appRouteRouteWithChildren
+  '/(auth)/forgot-password': typeof authForgotPasswordRoute
+  '/(auth)/login': typeof authLoginRoute
+  '/(app)/': typeof appIndexRoute
+  '/(app)/citizen-guides/new': typeof appCitizenGuidesNewRoute
+  '/(app)/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
+  '/(app)/election-event/$tab': typeof appElectionEventTabRoute
+  '/(app)/form-templates/$formTemplateId': typeof appFormTemplatesFormTemplateIdRoute
+  '/(app)/form-templates/new': typeof appFormTemplatesNewRoute
+  '/(app)/forms/$formId': typeof appFormsFormIdRoute
+  '/(app)/forms/new': typeof appFormsNewRoute
+  '/(app)/monitoring-observers/$tab': typeof appMonitoringObserversTabRoute
+  '/(app)/monitoring-observers/create-new-message': typeof appMonitoringObserversCreateNewMessageRoute
+  '/(app)/monitoring-observers/import': typeof appMonitoringObserversImportRoute
+  '/(app)/observer-guides/new': typeof appObserverGuidesNewRoute
+  '/(app)/observers/$observerId': typeof appObserversObserverIdRouteWithChildren
+  '/(auth)/accept-invite/success': typeof authAcceptInviteSuccessRoute
+  '/(auth)/reset-password/success': typeof authResetPasswordSuccessRoute
+  '/(app)/election-event/': typeof appElectionEventIndexRoute
+  '/(app)/election-rounds/': typeof appElectionRoundsIndexRoute
+  '/(app)/form-templates/': typeof appFormTemplatesIndexRoute
+  '/(app)/monitoring-observers/': typeof appMonitoringObserversIndexRoute
+  '/(app)/ngos/': typeof appNgosIndexRoute
+  '/(app)/observers/': typeof appObserversIndexRoute
+  '/(app)/responses/': typeof appResponsesIndexRoute
+  '/(auth)/accept-invite/': typeof authAcceptInviteIndexRoute
+  '/(auth)/reset-password/': typeof authResetPasswordIndexRoute
+  '/(app)/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
+  '/(app)/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
+  '/(app)/citizen-notifications/view/$notificationId': typeof appCitizenNotificationsViewNotificationIdRoute
+  '/(app)/election-rounds/$electionRoundId/$tab': typeof appElectionRoundsElectionRoundIdTabRoute
+  '/(app)/election-rounds/$electionRoundId/edit': typeof appElectionRoundsElectionRoundIdEditRoute
+  '/(app)/form-templates/$formTemplateId_/$languageCode': typeof appFormTemplatesFormTemplateIdLanguageCodeRoute
+  '/(app)/form-templates/$formTemplateId_/edit': typeof appFormTemplatesFormTemplateIdEditRoute
+  '/(app)/forms/$formId_/$languageCode': typeof appFormsFormIdLanguageCodeRoute
+  '/(app)/forms/$formId_/edit': typeof appFormsFormIdEditRoute
+  '/(app)/forms/new_/reuse': typeof appFormsNewReuseRoute
+  '/(app)/forms/new_/scratch': typeof appFormsNewScratchRoute
+  '/(app)/forms/new_/template': typeof appFormsNewTemplateRoute
+  '/(app)/monitoring-observers/edit/$monitoringObserverId': typeof appMonitoringObserversEditMonitoringObserverIdRoute
+  '/(app)/monitoring-observers/push-messages/$id': typeof appMonitoringObserversPushMessagesIdRoute
+  '/(app)/observer-guides/edit/$guideId': typeof appObserverGuidesEditGuideIdRoute
+  '/(app)/observer-guides/view/$guideId': typeof appObserverGuidesViewGuideIdRoute
+  '/(app)/observers/$observerId/edit': typeof appObserversObserverIdEditRoute
+  '/(app)/responses/citizen-reports/$citizenReportId': typeof appResponsesCitizenReportsCitizenReportIdRoute
+  '/(app)/responses/form-submissions/$submissionId': typeof appResponsesFormSubmissionsSubmissionIdRoute
+  '/(app)/responses/incident-reports/$incidentReportId': typeof appResponsesIncidentReportsIncidentReportIdRoute
+  '/(app)/responses/quick-reports/$quickReportId': typeof appResponsesQuickReportsQuickReportIdRoute
+  '/(app)/election-rounds/$electionRoundId/': typeof appElectionRoundsElectionRoundIdIndexRoute
+  '/(app)/ngos/edit/$ngoId/': typeof appNgosEditNgoIdRoute
+  '/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': typeof appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  '/(app)/election-rounds/$electionRoundId/locations/import': typeof appElectionRoundsElectionRoundIdLocationsImportRoute
+  '/(app)/election-rounds/$electionRoundId/polling-stations/import': typeof appElectionRoundsElectionRoundIdPollingStationsImportRoute
+  '/(app)/form-templates/$formTemplateId_/edit-translation/$languageCode': typeof appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
+  '/(app)/forms/$formId_/edit-translation/$languageCode': typeof appFormsFormIdEditTranslationLanguageCodeRoute
+  '/(app)/monitoring-observers/push-messages/$id_/view': typeof appMonitoringObserversPushMessagesIdViewRoute
+  '/(app)/monitoring-observers/view/$monitoringObserverId/$tab': typeof appMonitoringObserversViewMonitoringObserverIdTabRoute
+  '/(app)/ngos/view/$ngoId/$tab': typeof appNgosViewNgoIdTabRoute
+  '/(app)/responses/citizen-reports/$formId/aggregated': typeof appResponsesCitizenReportsFormIdAggregatedRoute
+  '/(app)/responses/form-submissions/$formId/aggregated': typeof appResponsesFormSubmissionsFormIdAggregatedRoute
+  '/(app)/responses/incident-reports/$formId/aggregated': typeof appResponsesIncidentReportsFormIdAggregatedRoute
+  '/(app)/ngos/admin/$ngoId/$adminId/edit': typeof appNgosAdminNgoIdAdminIdEditRoute
+  '/(app)/ngos/admin/$ngoId/$adminId/view': typeof appNgosAdminNgoIdAdminIdViewRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/accept-invite/success'
+    | '/forgot-password'
+    | '/login'
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
@@ -1130,18 +639,17 @@ export interface FileRouteTypes {
     | '/monitoring-observers/import'
     | '/observer-guides/new'
     | '/observers/$observerId'
+    | '/accept-invite/success'
     | '/reset-password/success'
-    | '/accept-invite'
     | '/election-event'
     | '/election-rounds'
-    | '/forgot-password'
     | '/form-templates'
-    | '/login'
     | '/monitoring-observers'
     | '/ngos'
     | '/observers'
-    | '/reset-password'
     | '/responses'
+    | '/accept-invite'
+    | '/reset-password'
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
@@ -1180,8 +688,9 @@ export interface FileRouteTypes {
     | '/ngos/admin/$ngoId/$adminId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/forgot-password'
+    | '/login'
     | '/'
-    | '/accept-invite/success'
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
@@ -1194,18 +703,17 @@ export interface FileRouteTypes {
     | '/monitoring-observers/import'
     | '/observer-guides/new'
     | '/observers/$observerId'
+    | '/accept-invite/success'
     | '/reset-password/success'
-    | '/accept-invite'
     | '/election-event'
     | '/election-rounds'
-    | '/forgot-password'
     | '/form-templates'
-    | '/login'
     | '/monitoring-observers'
     | '/ngos'
     | '/observers'
-    | '/reset-password'
     | '/responses'
+    | '/accept-invite'
+    | '/reset-password'
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
     | '/citizen-notifications/view/$notificationId'
@@ -1244,482 +752,693 @@ export interface FileRouteTypes {
     | '/ngos/admin/$ngoId/$adminId/view'
   id:
     | '__root__'
-    | '/'
-    | '/accept-invite/success'
-    | '/citizen-guides/new'
-    | '/citizen-notifications/new'
-    | '/election-event/$tab'
-    | '/form-templates/$formTemplateId'
-    | '/form-templates/new'
-    | '/forms/$formId'
-    | '/forms/new'
-    | '/monitoring-observers/$tab'
-    | '/monitoring-observers/create-new-message'
-    | '/monitoring-observers/import'
-    | '/observer-guides/new'
-    | '/observers/$observerId'
-    | '/reset-password/success'
-    | '/accept-invite/'
-    | '/election-event/'
-    | '/election-rounds/'
-    | '/forgot-password/'
-    | '/form-templates/'
-    | '/login/'
-    | '/monitoring-observers/'
-    | '/ngos/'
-    | '/observers/'
-    | '/reset-password/'
-    | '/responses/'
-    | '/citizen-guides/edit/$guideId'
-    | '/citizen-guides/view/$guideId'
-    | '/citizen-notifications/view/$notificationId'
-    | '/election-rounds/$electionRoundId/$tab'
-    | '/election-rounds/$electionRoundId/edit'
-    | '/form-templates/$formTemplateId_/$languageCode'
-    | '/form-templates/$formTemplateId_/edit'
-    | '/forms/$formId_/$languageCode'
-    | '/forms/$formId_/edit'
-    | '/forms/new_/reuse'
-    | '/forms/new_/scratch'
-    | '/forms/new_/template'
-    | '/monitoring-observers/edit/$monitoringObserverId'
-    | '/monitoring-observers/push-messages/$id'
-    | '/observer-guides/edit/$guideId'
-    | '/observer-guides/view/$guideId'
-    | '/observers_/$observerId/edit'
-    | '/responses/citizen-reports/$citizenReportId'
-    | '/responses/form-submissions/$submissionId'
-    | '/responses/incident-reports/$incidentReportId'
-    | '/responses/quick-reports/$quickReportId'
-    | '/election-rounds/$electionRoundId/'
-    | '/ngos/edit/$ngoId/'
-    | '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
-    | '/election-rounds/$electionRoundId/locations/import'
-    | '/election-rounds/$electionRoundId/polling-stations/import'
-    | '/form-templates/$formTemplateId_/edit-translation/$languageCode'
-    | '/forms/$formId_/edit-translation/$languageCode'
-    | '/monitoring-observers/push-messages/$id_/view'
-    | '/monitoring-observers/view/$monitoringObserverId/$tab'
-    | '/ngos/view/$ngoId/$tab'
-    | '/responses/citizen-reports/$formId/aggregated'
-    | '/responses/form-submissions/$formId/aggregated'
-    | '/responses/incident-reports/$formId/aggregated'
-    | '/ngos/admin/$ngoId/$adminId/edit'
-    | '/ngos/admin/$ngoId/$adminId/view'
+    | '/(app)'
+    | '/(auth)/forgot-password'
+    | '/(auth)/login'
+    | '/(app)/'
+    | '/(app)/citizen-guides/new'
+    | '/(app)/citizen-notifications/new'
+    | '/(app)/election-event/$tab'
+    | '/(app)/form-templates/$formTemplateId'
+    | '/(app)/form-templates/new'
+    | '/(app)/forms/$formId'
+    | '/(app)/forms/new'
+    | '/(app)/monitoring-observers/$tab'
+    | '/(app)/monitoring-observers/create-new-message'
+    | '/(app)/monitoring-observers/import'
+    | '/(app)/observer-guides/new'
+    | '/(app)/observers/$observerId'
+    | '/(auth)/accept-invite/success'
+    | '/(auth)/reset-password/success'
+    | '/(app)/election-event/'
+    | '/(app)/election-rounds/'
+    | '/(app)/form-templates/'
+    | '/(app)/monitoring-observers/'
+    | '/(app)/ngos/'
+    | '/(app)/observers/'
+    | '/(app)/responses/'
+    | '/(auth)/accept-invite/'
+    | '/(auth)/reset-password/'
+    | '/(app)/citizen-guides/edit/$guideId'
+    | '/(app)/citizen-guides/view/$guideId'
+    | '/(app)/citizen-notifications/view/$notificationId'
+    | '/(app)/election-rounds/$electionRoundId/$tab'
+    | '/(app)/election-rounds/$electionRoundId/edit'
+    | '/(app)/form-templates/$formTemplateId_/$languageCode'
+    | '/(app)/form-templates/$formTemplateId_/edit'
+    | '/(app)/forms/$formId_/$languageCode'
+    | '/(app)/forms/$formId_/edit'
+    | '/(app)/forms/new_/reuse'
+    | '/(app)/forms/new_/scratch'
+    | '/(app)/forms/new_/template'
+    | '/(app)/monitoring-observers/edit/$monitoringObserverId'
+    | '/(app)/monitoring-observers/push-messages/$id'
+    | '/(app)/observer-guides/edit/$guideId'
+    | '/(app)/observer-guides/view/$guideId'
+    | '/(app)/observers/$observerId/edit'
+    | '/(app)/responses/citizen-reports/$citizenReportId'
+    | '/(app)/responses/form-submissions/$submissionId'
+    | '/(app)/responses/incident-reports/$incidentReportId'
+    | '/(app)/responses/quick-reports/$quickReportId'
+    | '/(app)/election-rounds/$electionRoundId/'
+    | '/(app)/ngos/edit/$ngoId/'
+    | '/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+    | '/(app)/election-rounds/$electionRoundId/locations/import'
+    | '/(app)/election-rounds/$electionRoundId/polling-stations/import'
+    | '/(app)/form-templates/$formTemplateId_/edit-translation/$languageCode'
+    | '/(app)/forms/$formId_/edit-translation/$languageCode'
+    | '/(app)/monitoring-observers/push-messages/$id_/view'
+    | '/(app)/monitoring-observers/view/$monitoringObserverId/$tab'
+    | '/(app)/ngos/view/$ngoId/$tab'
+    | '/(app)/responses/citizen-reports/$formId/aggregated'
+    | '/(app)/responses/form-submissions/$formId/aggregated'
+    | '/(app)/responses/incident-reports/$formId/aggregated'
+    | '/(app)/ngos/admin/$ngoId/$adminId/edit'
+    | '/(app)/ngos/admin/$ngoId/$adminId/view'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AcceptInviteSuccessRoute: typeof AcceptInviteSuccessRoute
-  CitizenGuidesNewRoute: typeof CitizenGuidesNewRoute
-  CitizenNotificationsNewRoute: typeof CitizenNotificationsNewRoute
-  ElectionEventTabRoute: typeof ElectionEventTabRoute
-  FormTemplatesFormTemplateIdRoute: typeof FormTemplatesFormTemplateIdRoute
-  FormTemplatesNewRoute: typeof FormTemplatesNewRoute
-  FormsFormIdRoute: typeof FormsFormIdRoute
-  FormsNewRoute: typeof FormsNewRoute
-  MonitoringObserversTabRoute: typeof MonitoringObserversTabRoute
-  MonitoringObserversCreateNewMessageRoute: typeof MonitoringObserversCreateNewMessageRoute
-  MonitoringObserversImportRoute: typeof MonitoringObserversImportRoute
-  ObserverGuidesNewRoute: typeof ObserverGuidesNewRoute
-  ObserversObserverIdRoute: typeof ObserversObserverIdRoute
-  ResetPasswordSuccessRoute: typeof ResetPasswordSuccessRoute
-  AcceptInviteIndexRoute: typeof AcceptInviteIndexRoute
-  ElectionEventIndexRoute: typeof ElectionEventIndexRoute
-  ElectionRoundsIndexRoute: typeof ElectionRoundsIndexRoute
-  ForgotPasswordIndexRoute: typeof ForgotPasswordIndexRoute
-  FormTemplatesIndexRoute: typeof FormTemplatesIndexRoute
-  LoginIndexRoute: typeof LoginIndexRoute
-  MonitoringObserversIndexRoute: typeof MonitoringObserversIndexRoute
-  NgosIndexRoute: typeof NgosIndexRoute
-  ObserversIndexRoute: typeof ObserversIndexRoute
-  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
-  ResponsesIndexRoute: typeof ResponsesIndexRoute
-  CitizenGuidesEditGuideIdRoute: typeof CitizenGuidesEditGuideIdRoute
-  CitizenGuidesViewGuideIdRoute: typeof CitizenGuidesViewGuideIdRoute
-  CitizenNotificationsViewNotificationIdRoute: typeof CitizenNotificationsViewNotificationIdRoute
-  ElectionRoundsElectionRoundIdTabRoute: typeof ElectionRoundsElectionRoundIdTabRoute
-  ElectionRoundsElectionRoundIdEditRoute: typeof ElectionRoundsElectionRoundIdEditRoute
-  FormTemplatesFormTemplateIdLanguageCodeRoute: typeof FormTemplatesFormTemplateIdLanguageCodeRoute
-  FormTemplatesFormTemplateIdEditRoute: typeof FormTemplatesFormTemplateIdEditRoute
-  FormsFormIdLanguageCodeRoute: typeof FormsFormIdLanguageCodeRoute
-  FormsFormIdEditRoute: typeof FormsFormIdEditRoute
-  FormsNewReuseRoute: typeof FormsNewReuseRoute
-  FormsNewScratchRoute: typeof FormsNewScratchRoute
-  FormsNewTemplateRoute: typeof FormsNewTemplateRoute
-  MonitoringObserversEditMonitoringObserverIdRoute: typeof MonitoringObserversEditMonitoringObserverIdRoute
-  MonitoringObserversPushMessagesIdRoute: typeof MonitoringObserversPushMessagesIdRoute
-  ObserverGuidesEditGuideIdRoute: typeof ObserverGuidesEditGuideIdRoute
-  ObserverGuidesViewGuideIdRoute: typeof ObserverGuidesViewGuideIdRoute
-  ObserversObserverIdEditRoute: typeof ObserversObserverIdEditRoute
-  ResponsesCitizenReportsCitizenReportIdRoute: typeof ResponsesCitizenReportsCitizenReportIdRoute
-  ResponsesFormSubmissionsSubmissionIdRoute: typeof ResponsesFormSubmissionsSubmissionIdRoute
-  ResponsesIncidentReportsIncidentReportIdRoute: typeof ResponsesIncidentReportsIncidentReportIdRoute
-  ResponsesQuickReportsQuickReportIdRoute: typeof ResponsesQuickReportsQuickReportIdRoute
-  ElectionRoundsElectionRoundIdIndexRoute: typeof ElectionRoundsElectionRoundIdIndexRoute
-  NgosEditNgoIdRoute: typeof NgosEditNgoIdRoute
-  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute: typeof CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
-  ElectionRoundsElectionRoundIdLocationsImportRoute: typeof ElectionRoundsElectionRoundIdLocationsImportRoute
-  ElectionRoundsElectionRoundIdPollingStationsImportRoute: typeof ElectionRoundsElectionRoundIdPollingStationsImportRoute
-  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
-  FormsFormIdEditTranslationLanguageCodeRoute: typeof FormsFormIdEditTranslationLanguageCodeRoute
-  MonitoringObserversPushMessagesIdViewRoute: typeof MonitoringObserversPushMessagesIdViewRoute
-  MonitoringObserversViewMonitoringObserverIdTabRoute: typeof MonitoringObserversViewMonitoringObserverIdTabRoute
-  NgosViewNgoIdTabRoute: typeof NgosViewNgoIdTabRoute
-  ResponsesCitizenReportsFormIdAggregatedRoute: typeof ResponsesCitizenReportsFormIdAggregatedRoute
-  ResponsesFormSubmissionsFormIdAggregatedRoute: typeof ResponsesFormSubmissionsFormIdAggregatedRoute
-  ResponsesIncidentReportsFormIdAggregatedRoute: typeof ResponsesIncidentReportsFormIdAggregatedRoute
-  NgosAdminNgoIdAdminIdEditRoute: typeof NgosAdminNgoIdAdminIdEditRoute
-  NgosAdminNgoIdAdminIdViewRoute: typeof NgosAdminNgoIdAdminIdViewRoute
+  appRouteRoute: typeof appRouteRouteWithChildren
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authLoginRoute: typeof authLoginRoute
+  authAcceptInviteSuccessRoute: typeof authAcceptInviteSuccessRoute
+  authResetPasswordSuccessRoute: typeof authResetPasswordSuccessRoute
+  authAcceptInviteIndexRoute: typeof authAcceptInviteIndexRoute
+  authResetPasswordIndexRoute: typeof authResetPasswordIndexRoute
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AcceptInviteSuccessRoute: AcceptInviteSuccessRoute,
-  CitizenGuidesNewRoute: CitizenGuidesNewRoute,
-  CitizenNotificationsNewRoute: CitizenNotificationsNewRoute,
-  ElectionEventTabRoute: ElectionEventTabRoute,
-  FormTemplatesFormTemplateIdRoute: FormTemplatesFormTemplateIdRoute,
-  FormTemplatesNewRoute: FormTemplatesNewRoute,
-  FormsFormIdRoute: FormsFormIdRoute,
-  FormsNewRoute: FormsNewRoute,
-  MonitoringObserversTabRoute: MonitoringObserversTabRoute,
-  MonitoringObserversCreateNewMessageRoute:
-    MonitoringObserversCreateNewMessageRoute,
-  MonitoringObserversImportRoute: MonitoringObserversImportRoute,
-  ObserverGuidesNewRoute: ObserverGuidesNewRoute,
-  ObserversObserverIdRoute: ObserversObserverIdRoute,
-  ResetPasswordSuccessRoute: ResetPasswordSuccessRoute,
-  AcceptInviteIndexRoute: AcceptInviteIndexRoute,
-  ElectionEventIndexRoute: ElectionEventIndexRoute,
-  ElectionRoundsIndexRoute: ElectionRoundsIndexRoute,
-  ForgotPasswordIndexRoute: ForgotPasswordIndexRoute,
-  FormTemplatesIndexRoute: FormTemplatesIndexRoute,
-  LoginIndexRoute: LoginIndexRoute,
-  MonitoringObserversIndexRoute: MonitoringObserversIndexRoute,
-  NgosIndexRoute: NgosIndexRoute,
-  ObserversIndexRoute: ObserversIndexRoute,
-  ResetPasswordIndexRoute: ResetPasswordIndexRoute,
-  ResponsesIndexRoute: ResponsesIndexRoute,
-  CitizenGuidesEditGuideIdRoute: CitizenGuidesEditGuideIdRoute,
-  CitizenGuidesViewGuideIdRoute: CitizenGuidesViewGuideIdRoute,
-  CitizenNotificationsViewNotificationIdRoute:
-    CitizenNotificationsViewNotificationIdRoute,
-  ElectionRoundsElectionRoundIdTabRoute: ElectionRoundsElectionRoundIdTabRoute,
-  ElectionRoundsElectionRoundIdEditRoute:
-    ElectionRoundsElectionRoundIdEditRoute,
-  FormTemplatesFormTemplateIdLanguageCodeRoute:
-    FormTemplatesFormTemplateIdLanguageCodeRoute,
-  FormTemplatesFormTemplateIdEditRoute: FormTemplatesFormTemplateIdEditRoute,
-  FormsFormIdLanguageCodeRoute: FormsFormIdLanguageCodeRoute,
-  FormsFormIdEditRoute: FormsFormIdEditRoute,
-  FormsNewReuseRoute: FormsNewReuseRoute,
-  FormsNewScratchRoute: FormsNewScratchRoute,
-  FormsNewTemplateRoute: FormsNewTemplateRoute,
-  MonitoringObserversEditMonitoringObserverIdRoute:
-    MonitoringObserversEditMonitoringObserverIdRoute,
-  MonitoringObserversPushMessagesIdRoute:
-    MonitoringObserversPushMessagesIdRoute,
-  ObserverGuidesEditGuideIdRoute: ObserverGuidesEditGuideIdRoute,
-  ObserverGuidesViewGuideIdRoute: ObserverGuidesViewGuideIdRoute,
-  ObserversObserverIdEditRoute: ObserversObserverIdEditRoute,
-  ResponsesCitizenReportsCitizenReportIdRoute:
-    ResponsesCitizenReportsCitizenReportIdRoute,
-  ResponsesFormSubmissionsSubmissionIdRoute:
-    ResponsesFormSubmissionsSubmissionIdRoute,
-  ResponsesIncidentReportsIncidentReportIdRoute:
-    ResponsesIncidentReportsIncidentReportIdRoute,
-  ResponsesQuickReportsQuickReportIdRoute:
-    ResponsesQuickReportsQuickReportIdRoute,
-  ElectionRoundsElectionRoundIdIndexRoute:
-    ElectionRoundsElectionRoundIdIndexRoute,
-  NgosEditNgoIdRoute: NgosEditNgoIdRoute,
-  CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute:
-    CitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
-  ElectionRoundsElectionRoundIdLocationsImportRoute:
-    ElectionRoundsElectionRoundIdLocationsImportRoute,
-  ElectionRoundsElectionRoundIdPollingStationsImportRoute:
-    ElectionRoundsElectionRoundIdPollingStationsImportRoute,
-  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute:
-    FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
-  FormsFormIdEditTranslationLanguageCodeRoute:
-    FormsFormIdEditTranslationLanguageCodeRoute,
-  MonitoringObserversPushMessagesIdViewRoute:
-    MonitoringObserversPushMessagesIdViewRoute,
-  MonitoringObserversViewMonitoringObserverIdTabRoute:
-    MonitoringObserversViewMonitoringObserverIdTabRoute,
-  NgosViewNgoIdTabRoute: NgosViewNgoIdTabRoute,
-  ResponsesCitizenReportsFormIdAggregatedRoute:
-    ResponsesCitizenReportsFormIdAggregatedRoute,
-  ResponsesFormSubmissionsFormIdAggregatedRoute:
-    ResponsesFormSubmissionsFormIdAggregatedRoute,
-  ResponsesIncidentReportsFormIdAggregatedRoute:
-    ResponsesIncidentReportsFormIdAggregatedRoute,
-  NgosAdminNgoIdAdminIdEditRoute: NgosAdminNgoIdAdminIdEditRoute,
-  NgosAdminNgoIdAdminIdViewRoute: NgosAdminNgoIdAdminIdViewRoute,
-}
-
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/accept-invite/success",
-        "/citizen-guides/new",
-        "/citizen-notifications/new",
-        "/election-event/$tab",
-        "/form-templates/$formTemplateId",
-        "/form-templates/new",
-        "/forms/$formId",
-        "/forms/new",
-        "/monitoring-observers/$tab",
-        "/monitoring-observers/create-new-message",
-        "/monitoring-observers/import",
-        "/observer-guides/new",
-        "/observers/$observerId",
-        "/reset-password/success",
-        "/accept-invite/",
-        "/election-event/",
-        "/election-rounds/",
-        "/forgot-password/",
-        "/form-templates/",
-        "/login/",
-        "/monitoring-observers/",
-        "/ngos/",
-        "/observers/",
-        "/reset-password/",
-        "/responses/",
-        "/citizen-guides/edit/$guideId",
-        "/citizen-guides/view/$guideId",
-        "/citizen-notifications/view/$notificationId",
-        "/election-rounds/$electionRoundId/$tab",
-        "/election-rounds/$electionRoundId/edit",
-        "/form-templates/$formTemplateId_/$languageCode",
-        "/form-templates/$formTemplateId_/edit",
-        "/forms/$formId_/$languageCode",
-        "/forms/$formId_/edit",
-        "/forms/new_/reuse",
-        "/forms/new_/scratch",
-        "/forms/new_/template",
-        "/monitoring-observers/edit/$monitoringObserverId",
-        "/monitoring-observers/push-messages/$id",
-        "/observer-guides/edit/$guideId",
-        "/observer-guides/view/$guideId",
-        "/observers_/$observerId/edit",
-        "/responses/citizen-reports/$citizenReportId",
-        "/responses/form-submissions/$submissionId",
-        "/responses/incident-reports/$incidentReportId",
-        "/responses/quick-reports/$quickReportId",
-        "/election-rounds/$electionRoundId/",
-        "/ngos/edit/$ngoId/",
-        "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId",
-        "/election-rounds/$electionRoundId/locations/import",
-        "/election-rounds/$electionRoundId/polling-stations/import",
-        "/form-templates/$formTemplateId_/edit-translation/$languageCode",
-        "/forms/$formId_/edit-translation/$languageCode",
-        "/monitoring-observers/push-messages/$id_/view",
-        "/monitoring-observers/view/$monitoringObserverId/$tab",
-        "/ngos/view/$ngoId/$tab",
-        "/responses/citizen-reports/$formId/aggregated",
-        "/responses/form-submissions/$formId/aggregated",
-        "/responses/incident-reports/$formId/aggregated",
-        "/ngos/admin/$ngoId/$adminId/edit",
-        "/ngos/admin/$ngoId/$adminId/view"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/accept-invite/success": {
-      "filePath": "accept-invite/success.tsx"
-    },
-    "/citizen-guides/new": {
-      "filePath": "citizen-guides/new.tsx"
-    },
-    "/citizen-notifications/new": {
-      "filePath": "citizen-notifications/new.tsx"
-    },
-    "/election-event/$tab": {
-      "filePath": "election-event/$tab.tsx"
-    },
-    "/form-templates/$formTemplateId": {
-      "filePath": "form-templates/$formTemplateId.tsx"
-    },
-    "/form-templates/new": {
-      "filePath": "form-templates/new.tsx"
-    },
-    "/forms/$formId": {
-      "filePath": "forms/$formId.tsx"
-    },
-    "/forms/new": {
-      "filePath": "forms/new.tsx"
-    },
-    "/monitoring-observers/$tab": {
-      "filePath": "monitoring-observers/$tab.tsx"
-    },
-    "/monitoring-observers/create-new-message": {
-      "filePath": "monitoring-observers/create-new-message.tsx"
-    },
-    "/monitoring-observers/import": {
-      "filePath": "monitoring-observers/import.tsx"
-    },
-    "/observer-guides/new": {
-      "filePath": "observer-guides/new.tsx"
-    },
-    "/observers/$observerId": {
-      "filePath": "observers/$observerId.tsx"
-    },
-    "/reset-password/success": {
-      "filePath": "reset-password/success.tsx"
-    },
-    "/accept-invite/": {
-      "filePath": "accept-invite/index.tsx"
-    },
-    "/election-event/": {
-      "filePath": "election-event/index.tsx"
-    },
-    "/election-rounds/": {
-      "filePath": "election-rounds/index.tsx"
-    },
-    "/forgot-password/": {
-      "filePath": "forgot-password/index.tsx"
-    },
-    "/form-templates/": {
-      "filePath": "form-templates/index.tsx"
-    },
-    "/login/": {
-      "filePath": "login/index.tsx"
-    },
-    "/monitoring-observers/": {
-      "filePath": "monitoring-observers/index.tsx"
-    },
-    "/ngos/": {
-      "filePath": "ngos/index.tsx"
-    },
-    "/observers/": {
-      "filePath": "observers/index.tsx"
-    },
-    "/reset-password/": {
-      "filePath": "reset-password/index.tsx"
-    },
-    "/responses/": {
-      "filePath": "responses/index.tsx"
-    },
-    "/citizen-guides/edit/$guideId": {
-      "filePath": "citizen-guides/edit.$guideId.tsx"
-    },
-    "/citizen-guides/view/$guideId": {
-      "filePath": "citizen-guides/view.$guideId.tsx"
-    },
-    "/citizen-notifications/view/$notificationId": {
-      "filePath": "citizen-notifications/view.$notificationId.tsx"
-    },
-    "/election-rounds/$electionRoundId/$tab": {
-      "filePath": "election-rounds/$electionRoundId/$tab.tsx"
-    },
-    "/election-rounds/$electionRoundId/edit": {
-      "filePath": "election-rounds/$electionRoundId/edit.tsx"
-    },
-    "/form-templates/$formTemplateId_/$languageCode": {
-      "filePath": "form-templates/$formTemplateId_.$languageCode.tsx"
-    },
-    "/form-templates/$formTemplateId_/edit": {
-      "filePath": "form-templates/$formTemplateId_.edit.tsx"
-    },
-    "/forms/$formId_/$languageCode": {
-      "filePath": "forms/$formId_.$languageCode.tsx"
-    },
-    "/forms/$formId_/edit": {
-      "filePath": "forms/$formId_.edit.tsx"
-    },
-    "/forms/new_/reuse": {
-      "filePath": "forms/new_.reuse.tsx"
-    },
-    "/forms/new_/scratch": {
-      "filePath": "forms/new_.scratch.tsx"
-    },
-    "/forms/new_/template": {
-      "filePath": "forms/new_.template.tsx"
-    },
-    "/monitoring-observers/edit/$monitoringObserverId": {
-      "filePath": "monitoring-observers/edit.$monitoringObserverId.tsx"
-    },
-    "/monitoring-observers/push-messages/$id": {
-      "filePath": "monitoring-observers/push-messages.$id.tsx"
-    },
-    "/observer-guides/edit/$guideId": {
-      "filePath": "observer-guides/edit.$guideId.tsx"
-    },
-    "/observer-guides/view/$guideId": {
-      "filePath": "observer-guides/view.$guideId.tsx"
-    },
-    "/observers_/$observerId/edit": {
-      "filePath": "observers_.$observerId.edit.tsx"
-    },
-    "/responses/citizen-reports/$citizenReportId": {
-      "filePath": "responses/citizen-reports/$citizenReportId.tsx"
-    },
-    "/responses/form-submissions/$submissionId": {
-      "filePath": "responses/form-submissions/$submissionId.tsx"
-    },
-    "/responses/incident-reports/$incidentReportId": {
-      "filePath": "responses/incident-reports/$incidentReportId.tsx"
-    },
-    "/responses/quick-reports/$quickReportId": {
-      "filePath": "responses/quick-reports/$quickReportId.tsx"
-    },
-    "/election-rounds/$electionRoundId/": {
-      "filePath": "election-rounds/$electionRoundId/index.tsx"
-    },
-    "/ngos/edit/$ngoId/": {
-      "filePath": "ngos/edit.$ngoId..tsx"
-    },
-    "/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId": {
-      "filePath": "citizen-report-attachments/$electionRoundId.$citizenReportId.$attachmentId.tsx"
-    },
-    "/election-rounds/$electionRoundId/locations/import": {
-      "filePath": "election-rounds/$electionRoundId/locations/import.tsx"
-    },
-    "/election-rounds/$electionRoundId/polling-stations/import": {
-      "filePath": "election-rounds/$electionRoundId/polling-stations/import.tsx"
-    },
-    "/form-templates/$formTemplateId_/edit-translation/$languageCode": {
-      "filePath": "form-templates/$formTemplateId_.edit-translation.$languageCode.tsx"
-    },
-    "/forms/$formId_/edit-translation/$languageCode": {
-      "filePath": "forms/$formId_.edit-translation.$languageCode.tsx"
-    },
-    "/monitoring-observers/push-messages/$id_/view": {
-      "filePath": "monitoring-observers/push-messages.$id_.view.tsx"
-    },
-    "/monitoring-observers/view/$monitoringObserverId/$tab": {
-      "filePath": "monitoring-observers/view/$monitoringObserverId.$tab.tsx"
-    },
-    "/ngos/view/$ngoId/$tab": {
-      "filePath": "ngos/view.$ngoId.$tab.tsx"
-    },
-    "/responses/citizen-reports/$formId/aggregated": {
-      "filePath": "responses/citizen-reports/$formId.aggregated.tsx"
-    },
-    "/responses/form-submissions/$formId/aggregated": {
-      "filePath": "responses/form-submissions/$formId.aggregated.tsx"
-    },
-    "/responses/incident-reports/$formId/aggregated": {
-      "filePath": "responses/incident-reports/$formId.aggregated.tsx"
-    },
-    "/ngos/admin/$ngoId/$adminId/edit": {
-      "filePath": "ngos/admin/$ngoId.$adminId.edit.tsx"
-    },
-    "/ngos/admin/$ngoId/$adminId/view": {
-      "filePath": "ngos/admin/$ngoId.$adminId.view.tsx"
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/(app)': {
+      id: '/(app)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/': {
+      id: '/(app)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof appIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/forgot-password': {
+      id: '/(auth)/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof authForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/reset-password/': {
+      id: '/(auth)/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof authResetPasswordIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/accept-invite/': {
+      id: '/(auth)/accept-invite/'
+      path: '/accept-invite'
+      fullPath: '/accept-invite'
+      preLoaderRoute: typeof authAcceptInviteIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/responses/': {
+      id: '/(app)/responses/'
+      path: '/responses'
+      fullPath: '/responses'
+      preLoaderRoute: typeof appResponsesIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/observers/': {
+      id: '/(app)/observers/'
+      path: '/observers'
+      fullPath: '/observers'
+      preLoaderRoute: typeof appObserversIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/ngos/': {
+      id: '/(app)/ngos/'
+      path: '/ngos'
+      fullPath: '/ngos'
+      preLoaderRoute: typeof appNgosIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/': {
+      id: '/(app)/monitoring-observers/'
+      path: '/monitoring-observers'
+      fullPath: '/monitoring-observers'
+      preLoaderRoute: typeof appMonitoringObserversIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/': {
+      id: '/(app)/form-templates/'
+      path: '/form-templates'
+      fullPath: '/form-templates'
+      preLoaderRoute: typeof appFormTemplatesIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/': {
+      id: '/(app)/election-rounds/'
+      path: '/election-rounds'
+      fullPath: '/election-rounds'
+      preLoaderRoute: typeof appElectionRoundsIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-event/': {
+      id: '/(app)/election-event/'
+      path: '/election-event'
+      fullPath: '/election-event'
+      preLoaderRoute: typeof appElectionEventIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(auth)/reset-password/success': {
+      id: '/(auth)/reset-password/success'
+      path: '/reset-password/success'
+      fullPath: '/reset-password/success'
+      preLoaderRoute: typeof authResetPasswordSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/accept-invite/success': {
+      id: '/(auth)/accept-invite/success'
+      path: '/accept-invite/success'
+      fullPath: '/accept-invite/success'
+      preLoaderRoute: typeof authAcceptInviteSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/observers/$observerId': {
+      id: '/(app)/observers/$observerId'
+      path: '/observers/$observerId'
+      fullPath: '/observers/$observerId'
+      preLoaderRoute: typeof appObserversObserverIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/observer-guides/new': {
+      id: '/(app)/observer-guides/new'
+      path: '/observer-guides/new'
+      fullPath: '/observer-guides/new'
+      preLoaderRoute: typeof appObserverGuidesNewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/import': {
+      id: '/(app)/monitoring-observers/import'
+      path: '/monitoring-observers/import'
+      fullPath: '/monitoring-observers/import'
+      preLoaderRoute: typeof appMonitoringObserversImportRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/create-new-message': {
+      id: '/(app)/monitoring-observers/create-new-message'
+      path: '/monitoring-observers/create-new-message'
+      fullPath: '/monitoring-observers/create-new-message'
+      preLoaderRoute: typeof appMonitoringObserversCreateNewMessageRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/$tab': {
+      id: '/(app)/monitoring-observers/$tab'
+      path: '/monitoring-observers/$tab'
+      fullPath: '/monitoring-observers/$tab'
+      preLoaderRoute: typeof appMonitoringObserversTabRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/new': {
+      id: '/(app)/forms/new'
+      path: '/forms/new'
+      fullPath: '/forms/new'
+      preLoaderRoute: typeof appFormsNewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/$formId': {
+      id: '/(app)/forms/$formId'
+      path: '/forms/$formId'
+      fullPath: '/forms/$formId'
+      preLoaderRoute: typeof appFormsFormIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/new': {
+      id: '/(app)/form-templates/new'
+      path: '/form-templates/new'
+      fullPath: '/form-templates/new'
+      preLoaderRoute: typeof appFormTemplatesNewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/$formTemplateId': {
+      id: '/(app)/form-templates/$formTemplateId'
+      path: '/form-templates/$formTemplateId'
+      fullPath: '/form-templates/$formTemplateId'
+      preLoaderRoute: typeof appFormTemplatesFormTemplateIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-event/$tab': {
+      id: '/(app)/election-event/$tab'
+      path: '/election-event/$tab'
+      fullPath: '/election-event/$tab'
+      preLoaderRoute: typeof appElectionEventTabRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-notifications/new': {
+      id: '/(app)/citizen-notifications/new'
+      path: '/citizen-notifications/new'
+      fullPath: '/citizen-notifications/new'
+      preLoaderRoute: typeof appCitizenNotificationsNewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-guides/new': {
+      id: '/(app)/citizen-guides/new'
+      path: '/citizen-guides/new'
+      fullPath: '/citizen-guides/new'
+      preLoaderRoute: typeof appCitizenGuidesNewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/$electionRoundId/': {
+      id: '/(app)/election-rounds/$electionRoundId/'
+      path: '/election-rounds/$electionRoundId'
+      fullPath: '/election-rounds/$electionRoundId'
+      preLoaderRoute: typeof appElectionRoundsElectionRoundIdIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/quick-reports/$quickReportId': {
+      id: '/(app)/responses/quick-reports/$quickReportId'
+      path: '/responses/quick-reports/$quickReportId'
+      fullPath: '/responses/quick-reports/$quickReportId'
+      preLoaderRoute: typeof appResponsesQuickReportsQuickReportIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/incident-reports/$incidentReportId': {
+      id: '/(app)/responses/incident-reports/$incidentReportId'
+      path: '/responses/incident-reports/$incidentReportId'
+      fullPath: '/responses/incident-reports/$incidentReportId'
+      preLoaderRoute: typeof appResponsesIncidentReportsIncidentReportIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/form-submissions/$submissionId': {
+      id: '/(app)/responses/form-submissions/$submissionId'
+      path: '/responses/form-submissions/$submissionId'
+      fullPath: '/responses/form-submissions/$submissionId'
+      preLoaderRoute: typeof appResponsesFormSubmissionsSubmissionIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/citizen-reports/$citizenReportId': {
+      id: '/(app)/responses/citizen-reports/$citizenReportId'
+      path: '/responses/citizen-reports/$citizenReportId'
+      fullPath: '/responses/citizen-reports/$citizenReportId'
+      preLoaderRoute: typeof appResponsesCitizenReportsCitizenReportIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/observers/$observerId/edit': {
+      id: '/(app)/observers/$observerId/edit'
+      path: '/edit'
+      fullPath: '/observers/$observerId/edit'
+      preLoaderRoute: typeof appObserversObserverIdEditRouteImport
+      parentRoute: typeof appObserversObserverIdRoute
+    }
+    '/(app)/observer-guides/view/$guideId': {
+      id: '/(app)/observer-guides/view/$guideId'
+      path: '/observer-guides/view/$guideId'
+      fullPath: '/observer-guides/view/$guideId'
+      preLoaderRoute: typeof appObserverGuidesViewGuideIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/observer-guides/edit/$guideId': {
+      id: '/(app)/observer-guides/edit/$guideId'
+      path: '/observer-guides/edit/$guideId'
+      fullPath: '/observer-guides/edit/$guideId'
+      preLoaderRoute: typeof appObserverGuidesEditGuideIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/push-messages/$id': {
+      id: '/(app)/monitoring-observers/push-messages/$id'
+      path: '/monitoring-observers/push-messages/$id'
+      fullPath: '/monitoring-observers/push-messages/$id'
+      preLoaderRoute: typeof appMonitoringObserversPushMessagesIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/edit/$monitoringObserverId': {
+      id: '/(app)/monitoring-observers/edit/$monitoringObserverId'
+      path: '/monitoring-observers/edit/$monitoringObserverId'
+      fullPath: '/monitoring-observers/edit/$monitoringObserverId'
+      preLoaderRoute: typeof appMonitoringObserversEditMonitoringObserverIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/new_/template': {
+      id: '/(app)/forms/new_/template'
+      path: '/forms/new/template'
+      fullPath: '/forms/new/template'
+      preLoaderRoute: typeof appFormsNewTemplateRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/new_/scratch': {
+      id: '/(app)/forms/new_/scratch'
+      path: '/forms/new/scratch'
+      fullPath: '/forms/new/scratch'
+      preLoaderRoute: typeof appFormsNewScratchRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/new_/reuse': {
+      id: '/(app)/forms/new_/reuse'
+      path: '/forms/new/reuse'
+      fullPath: '/forms/new/reuse'
+      preLoaderRoute: typeof appFormsNewReuseRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/$formId_/edit': {
+      id: '/(app)/forms/$formId_/edit'
+      path: '/forms/$formId/edit'
+      fullPath: '/forms/$formId/edit'
+      preLoaderRoute: typeof appFormsFormIdEditRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/$formId_/$languageCode': {
+      id: '/(app)/forms/$formId_/$languageCode'
+      path: '/forms/$formId/$languageCode'
+      fullPath: '/forms/$formId/$languageCode'
+      preLoaderRoute: typeof appFormsFormIdLanguageCodeRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/$formTemplateId_/edit': {
+      id: '/(app)/form-templates/$formTemplateId_/edit'
+      path: '/form-templates/$formTemplateId/edit'
+      fullPath: '/form-templates/$formTemplateId/edit'
+      preLoaderRoute: typeof appFormTemplatesFormTemplateIdEditRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/$formTemplateId_/$languageCode': {
+      id: '/(app)/form-templates/$formTemplateId_/$languageCode'
+      path: '/form-templates/$formTemplateId/$languageCode'
+      fullPath: '/form-templates/$formTemplateId/$languageCode'
+      preLoaderRoute: typeof appFormTemplatesFormTemplateIdLanguageCodeRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/$electionRoundId/edit': {
+      id: '/(app)/election-rounds/$electionRoundId/edit'
+      path: '/election-rounds/$electionRoundId/edit'
+      fullPath: '/election-rounds/$electionRoundId/edit'
+      preLoaderRoute: typeof appElectionRoundsElectionRoundIdEditRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/$electionRoundId/$tab': {
+      id: '/(app)/election-rounds/$electionRoundId/$tab'
+      path: '/election-rounds/$electionRoundId/$tab'
+      fullPath: '/election-rounds/$electionRoundId/$tab'
+      preLoaderRoute: typeof appElectionRoundsElectionRoundIdTabRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-notifications/view/$notificationId': {
+      id: '/(app)/citizen-notifications/view/$notificationId'
+      path: '/citizen-notifications/view/$notificationId'
+      fullPath: '/citizen-notifications/view/$notificationId'
+      preLoaderRoute: typeof appCitizenNotificationsViewNotificationIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-guides/view/$guideId': {
+      id: '/(app)/citizen-guides/view/$guideId'
+      path: '/citizen-guides/view/$guideId'
+      fullPath: '/citizen-guides/view/$guideId'
+      preLoaderRoute: typeof appCitizenGuidesViewGuideIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-guides/edit/$guideId': {
+      id: '/(app)/citizen-guides/edit/$guideId'
+      path: '/citizen-guides/edit/$guideId'
+      fullPath: '/citizen-guides/edit/$guideId'
+      preLoaderRoute: typeof appCitizenGuidesEditGuideIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/incident-reports/$formId/aggregated': {
+      id: '/(app)/responses/incident-reports/$formId/aggregated'
+      path: '/responses/incident-reports/$formId/aggregated'
+      fullPath: '/responses/incident-reports/$formId/aggregated'
+      preLoaderRoute: typeof appResponsesIncidentReportsFormIdAggregatedRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/form-submissions/$formId/aggregated': {
+      id: '/(app)/responses/form-submissions/$formId/aggregated'
+      path: '/responses/form-submissions/$formId/aggregated'
+      fullPath: '/responses/form-submissions/$formId/aggregated'
+      preLoaderRoute: typeof appResponsesFormSubmissionsFormIdAggregatedRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/responses/citizen-reports/$formId/aggregated': {
+      id: '/(app)/responses/citizen-reports/$formId/aggregated'
+      path: '/responses/citizen-reports/$formId/aggregated'
+      fullPath: '/responses/citizen-reports/$formId/aggregated'
+      preLoaderRoute: typeof appResponsesCitizenReportsFormIdAggregatedRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/ngos/view/$ngoId/$tab': {
+      id: '/(app)/ngos/view/$ngoId/$tab'
+      path: '/ngos/view/$ngoId/$tab'
+      fullPath: '/ngos/view/$ngoId/$tab'
+      preLoaderRoute: typeof appNgosViewNgoIdTabRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/view/$monitoringObserverId/$tab': {
+      id: '/(app)/monitoring-observers/view/$monitoringObserverId/$tab'
+      path: '/monitoring-observers/view/$monitoringObserverId/$tab'
+      fullPath: '/monitoring-observers/view/$monitoringObserverId/$tab'
+      preLoaderRoute: typeof appMonitoringObserversViewMonitoringObserverIdTabRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/monitoring-observers/push-messages/$id_/view': {
+      id: '/(app)/monitoring-observers/push-messages/$id_/view'
+      path: '/monitoring-observers/push-messages/$id/view'
+      fullPath: '/monitoring-observers/push-messages/$id/view'
+      preLoaderRoute: typeof appMonitoringObserversPushMessagesIdViewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/forms/$formId_/edit-translation/$languageCode': {
+      id: '/(app)/forms/$formId_/edit-translation/$languageCode'
+      path: '/forms/$formId/edit-translation/$languageCode'
+      fullPath: '/forms/$formId/edit-translation/$languageCode'
+      preLoaderRoute: typeof appFormsFormIdEditTranslationLanguageCodeRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/form-templates/$formTemplateId_/edit-translation/$languageCode': {
+      id: '/(app)/form-templates/$formTemplateId_/edit-translation/$languageCode'
+      path: '/form-templates/$formTemplateId/edit-translation/$languageCode'
+      fullPath: '/form-templates/$formTemplateId/edit-translation/$languageCode'
+      preLoaderRoute: typeof appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/$electionRoundId/polling-stations/import': {
+      id: '/(app)/election-rounds/$electionRoundId/polling-stations/import'
+      path: '/election-rounds/$electionRoundId/polling-stations/import'
+      fullPath: '/election-rounds/$electionRoundId/polling-stations/import'
+      preLoaderRoute: typeof appElectionRoundsElectionRoundIdPollingStationsImportRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/election-rounds/$electionRoundId/locations/import': {
+      id: '/(app)/election-rounds/$electionRoundId/locations/import'
+      path: '/election-rounds/$electionRoundId/locations/import'
+      fullPath: '/election-rounds/$electionRoundId/locations/import'
+      preLoaderRoute: typeof appElectionRoundsElectionRoundIdLocationsImportRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId': {
+      id: '/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+      path: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+      fullPath: '/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+      preLoaderRoute: typeof appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/ngos/edit/$ngoId/': {
+      id: '/(app)/ngos/edit/$ngoId/'
+      path: '/ngos/edit/$ngoId'
+      fullPath: '/ngos/edit/$ngoId'
+      preLoaderRoute: typeof appNgosEditNgoIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/ngos/admin/$ngoId/$adminId/view': {
+      id: '/(app)/ngos/admin/$ngoId/$adminId/view'
+      path: '/ngos/admin/$ngoId/$adminId/view'
+      fullPath: '/ngos/admin/$ngoId/$adminId/view'
+      preLoaderRoute: typeof appNgosAdminNgoIdAdminIdViewRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/ngos/admin/$ngoId/$adminId/edit': {
+      id: '/(app)/ngos/admin/$ngoId/$adminId/edit'
+      path: '/ngos/admin/$ngoId/$adminId/edit'
+      fullPath: '/ngos/admin/$ngoId/$adminId/edit'
+      preLoaderRoute: typeof appNgosAdminNgoIdAdminIdEditRouteImport
+      parentRoute: typeof appRouteRoute
     }
   }
 }
-ROUTE_MANIFEST_END */
+
+interface appObserversObserverIdRouteChildren {
+  appObserversObserverIdEditRoute: typeof appObserversObserverIdEditRoute
+}
+
+const appObserversObserverIdRouteChildren: appObserversObserverIdRouteChildren =
+  {
+    appObserversObserverIdEditRoute: appObserversObserverIdEditRoute,
+  }
+
+const appObserversObserverIdRouteWithChildren =
+  appObserversObserverIdRoute._addFileChildren(
+    appObserversObserverIdRouteChildren,
+  )
+
+interface appRouteRouteChildren {
+  appIndexRoute: typeof appIndexRoute
+  appCitizenGuidesNewRoute: typeof appCitizenGuidesNewRoute
+  appCitizenNotificationsNewRoute: typeof appCitizenNotificationsNewRoute
+  appElectionEventTabRoute: typeof appElectionEventTabRoute
+  appFormTemplatesFormTemplateIdRoute: typeof appFormTemplatesFormTemplateIdRoute
+  appFormTemplatesNewRoute: typeof appFormTemplatesNewRoute
+  appFormsFormIdRoute: typeof appFormsFormIdRoute
+  appFormsNewRoute: typeof appFormsNewRoute
+  appMonitoringObserversTabRoute: typeof appMonitoringObserversTabRoute
+  appMonitoringObserversCreateNewMessageRoute: typeof appMonitoringObserversCreateNewMessageRoute
+  appMonitoringObserversImportRoute: typeof appMonitoringObserversImportRoute
+  appObserverGuidesNewRoute: typeof appObserverGuidesNewRoute
+  appObserversObserverIdRoute: typeof appObserversObserverIdRouteWithChildren
+  appElectionEventIndexRoute: typeof appElectionEventIndexRoute
+  appElectionRoundsIndexRoute: typeof appElectionRoundsIndexRoute
+  appFormTemplatesIndexRoute: typeof appFormTemplatesIndexRoute
+  appMonitoringObserversIndexRoute: typeof appMonitoringObserversIndexRoute
+  appNgosIndexRoute: typeof appNgosIndexRoute
+  appObserversIndexRoute: typeof appObserversIndexRoute
+  appResponsesIndexRoute: typeof appResponsesIndexRoute
+  appCitizenGuidesEditGuideIdRoute: typeof appCitizenGuidesEditGuideIdRoute
+  appCitizenGuidesViewGuideIdRoute: typeof appCitizenGuidesViewGuideIdRoute
+  appCitizenNotificationsViewNotificationIdRoute: typeof appCitizenNotificationsViewNotificationIdRoute
+  appElectionRoundsElectionRoundIdTabRoute: typeof appElectionRoundsElectionRoundIdTabRoute
+  appElectionRoundsElectionRoundIdEditRoute: typeof appElectionRoundsElectionRoundIdEditRoute
+  appFormTemplatesFormTemplateIdLanguageCodeRoute: typeof appFormTemplatesFormTemplateIdLanguageCodeRoute
+  appFormTemplatesFormTemplateIdEditRoute: typeof appFormTemplatesFormTemplateIdEditRoute
+  appFormsFormIdLanguageCodeRoute: typeof appFormsFormIdLanguageCodeRoute
+  appFormsFormIdEditRoute: typeof appFormsFormIdEditRoute
+  appFormsNewReuseRoute: typeof appFormsNewReuseRoute
+  appFormsNewScratchRoute: typeof appFormsNewScratchRoute
+  appFormsNewTemplateRoute: typeof appFormsNewTemplateRoute
+  appMonitoringObserversEditMonitoringObserverIdRoute: typeof appMonitoringObserversEditMonitoringObserverIdRoute
+  appMonitoringObserversPushMessagesIdRoute: typeof appMonitoringObserversPushMessagesIdRoute
+  appObserverGuidesEditGuideIdRoute: typeof appObserverGuidesEditGuideIdRoute
+  appObserverGuidesViewGuideIdRoute: typeof appObserverGuidesViewGuideIdRoute
+  appResponsesCitizenReportsCitizenReportIdRoute: typeof appResponsesCitizenReportsCitizenReportIdRoute
+  appResponsesFormSubmissionsSubmissionIdRoute: typeof appResponsesFormSubmissionsSubmissionIdRoute
+  appResponsesIncidentReportsIncidentReportIdRoute: typeof appResponsesIncidentReportsIncidentReportIdRoute
+  appResponsesQuickReportsQuickReportIdRoute: typeof appResponsesQuickReportsQuickReportIdRoute
+  appElectionRoundsElectionRoundIdIndexRoute: typeof appElectionRoundsElectionRoundIdIndexRoute
+  appNgosEditNgoIdRoute: typeof appNgosEditNgoIdRoute
+  appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute: typeof appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute
+  appElectionRoundsElectionRoundIdLocationsImportRoute: typeof appElectionRoundsElectionRoundIdLocationsImportRoute
+  appElectionRoundsElectionRoundIdPollingStationsImportRoute: typeof appElectionRoundsElectionRoundIdPollingStationsImportRoute
+  appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute: typeof appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute
+  appFormsFormIdEditTranslationLanguageCodeRoute: typeof appFormsFormIdEditTranslationLanguageCodeRoute
+  appMonitoringObserversPushMessagesIdViewRoute: typeof appMonitoringObserversPushMessagesIdViewRoute
+  appMonitoringObserversViewMonitoringObserverIdTabRoute: typeof appMonitoringObserversViewMonitoringObserverIdTabRoute
+  appNgosViewNgoIdTabRoute: typeof appNgosViewNgoIdTabRoute
+  appResponsesCitizenReportsFormIdAggregatedRoute: typeof appResponsesCitizenReportsFormIdAggregatedRoute
+  appResponsesFormSubmissionsFormIdAggregatedRoute: typeof appResponsesFormSubmissionsFormIdAggregatedRoute
+  appResponsesIncidentReportsFormIdAggregatedRoute: typeof appResponsesIncidentReportsFormIdAggregatedRoute
+  appNgosAdminNgoIdAdminIdEditRoute: typeof appNgosAdminNgoIdAdminIdEditRoute
+  appNgosAdminNgoIdAdminIdViewRoute: typeof appNgosAdminNgoIdAdminIdViewRoute
+}
+
+const appRouteRouteChildren: appRouteRouteChildren = {
+  appIndexRoute: appIndexRoute,
+  appCitizenGuidesNewRoute: appCitizenGuidesNewRoute,
+  appCitizenNotificationsNewRoute: appCitizenNotificationsNewRoute,
+  appElectionEventTabRoute: appElectionEventTabRoute,
+  appFormTemplatesFormTemplateIdRoute: appFormTemplatesFormTemplateIdRoute,
+  appFormTemplatesNewRoute: appFormTemplatesNewRoute,
+  appFormsFormIdRoute: appFormsFormIdRoute,
+  appFormsNewRoute: appFormsNewRoute,
+  appMonitoringObserversTabRoute: appMonitoringObserversTabRoute,
+  appMonitoringObserversCreateNewMessageRoute:
+    appMonitoringObserversCreateNewMessageRoute,
+  appMonitoringObserversImportRoute: appMonitoringObserversImportRoute,
+  appObserverGuidesNewRoute: appObserverGuidesNewRoute,
+  appObserversObserverIdRoute: appObserversObserverIdRouteWithChildren,
+  appElectionEventIndexRoute: appElectionEventIndexRoute,
+  appElectionRoundsIndexRoute: appElectionRoundsIndexRoute,
+  appFormTemplatesIndexRoute: appFormTemplatesIndexRoute,
+  appMonitoringObserversIndexRoute: appMonitoringObserversIndexRoute,
+  appNgosIndexRoute: appNgosIndexRoute,
+  appObserversIndexRoute: appObserversIndexRoute,
+  appResponsesIndexRoute: appResponsesIndexRoute,
+  appCitizenGuidesEditGuideIdRoute: appCitizenGuidesEditGuideIdRoute,
+  appCitizenGuidesViewGuideIdRoute: appCitizenGuidesViewGuideIdRoute,
+  appCitizenNotificationsViewNotificationIdRoute:
+    appCitizenNotificationsViewNotificationIdRoute,
+  appElectionRoundsElectionRoundIdTabRoute:
+    appElectionRoundsElectionRoundIdTabRoute,
+  appElectionRoundsElectionRoundIdEditRoute:
+    appElectionRoundsElectionRoundIdEditRoute,
+  appFormTemplatesFormTemplateIdLanguageCodeRoute:
+    appFormTemplatesFormTemplateIdLanguageCodeRoute,
+  appFormTemplatesFormTemplateIdEditRoute:
+    appFormTemplatesFormTemplateIdEditRoute,
+  appFormsFormIdLanguageCodeRoute: appFormsFormIdLanguageCodeRoute,
+  appFormsFormIdEditRoute: appFormsFormIdEditRoute,
+  appFormsNewReuseRoute: appFormsNewReuseRoute,
+  appFormsNewScratchRoute: appFormsNewScratchRoute,
+  appFormsNewTemplateRoute: appFormsNewTemplateRoute,
+  appMonitoringObserversEditMonitoringObserverIdRoute:
+    appMonitoringObserversEditMonitoringObserverIdRoute,
+  appMonitoringObserversPushMessagesIdRoute:
+    appMonitoringObserversPushMessagesIdRoute,
+  appObserverGuidesEditGuideIdRoute: appObserverGuidesEditGuideIdRoute,
+  appObserverGuidesViewGuideIdRoute: appObserverGuidesViewGuideIdRoute,
+  appResponsesCitizenReportsCitizenReportIdRoute:
+    appResponsesCitizenReportsCitizenReportIdRoute,
+  appResponsesFormSubmissionsSubmissionIdRoute:
+    appResponsesFormSubmissionsSubmissionIdRoute,
+  appResponsesIncidentReportsIncidentReportIdRoute:
+    appResponsesIncidentReportsIncidentReportIdRoute,
+  appResponsesQuickReportsQuickReportIdRoute:
+    appResponsesQuickReportsQuickReportIdRoute,
+  appElectionRoundsElectionRoundIdIndexRoute:
+    appElectionRoundsElectionRoundIdIndexRoute,
+  appNgosEditNgoIdRoute: appNgosEditNgoIdRoute,
+  appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute:
+    appCitizenReportAttachmentsElectionRoundIdCitizenReportIdAttachmentIdRoute,
+  appElectionRoundsElectionRoundIdLocationsImportRoute:
+    appElectionRoundsElectionRoundIdLocationsImportRoute,
+  appElectionRoundsElectionRoundIdPollingStationsImportRoute:
+    appElectionRoundsElectionRoundIdPollingStationsImportRoute,
+  appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute:
+    appFormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
+  appFormsFormIdEditTranslationLanguageCodeRoute:
+    appFormsFormIdEditTranslationLanguageCodeRoute,
+  appMonitoringObserversPushMessagesIdViewRoute:
+    appMonitoringObserversPushMessagesIdViewRoute,
+  appMonitoringObserversViewMonitoringObserverIdTabRoute:
+    appMonitoringObserversViewMonitoringObserverIdTabRoute,
+  appNgosViewNgoIdTabRoute: appNgosViewNgoIdTabRoute,
+  appResponsesCitizenReportsFormIdAggregatedRoute:
+    appResponsesCitizenReportsFormIdAggregatedRoute,
+  appResponsesFormSubmissionsFormIdAggregatedRoute:
+    appResponsesFormSubmissionsFormIdAggregatedRoute,
+  appResponsesIncidentReportsFormIdAggregatedRoute:
+    appResponsesIncidentReportsFormIdAggregatedRoute,
+  appNgosAdminNgoIdAdminIdEditRoute: appNgosAdminNgoIdAdminIdEditRoute,
+  appNgosAdminNgoIdAdminIdViewRoute: appNgosAdminNgoIdAdminIdViewRoute,
+}
+
+const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
+  appRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  appRouteRoute: appRouteRouteWithChildren,
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authLoginRoute: authLoginRoute,
+  authAcceptInviteSuccessRoute: authAcceptInviteSuccessRoute,
+  authResetPasswordSuccessRoute: authResetPasswordSuccessRoute,
+  authAcceptInviteIndexRoute: authAcceptInviteIndexRoute,
+  authResetPasswordIndexRoute: authResetPasswordIndexRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()

@@ -1,7 +1,7 @@
 import { BreadcrumbsWithAliases } from '@/components/layout/Breadcrumbs/BreadcrumbsWithAliases';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Route, observerDetailsQueryOptions } from '@/routes/observers/$observerId';
+import { Route, observerDetailsQueryOptions } from '@/routes/(app)/observers/$observerId';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { ObserverPersonalDetails } from './ObserverPersonalDetails';
 import { ObserversMonitoredElections } from './ObserversMonitoredElections';

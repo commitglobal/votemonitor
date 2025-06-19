@@ -1,23 +1,24 @@
-import { authApi } from '@/common/auth-api';
 import { FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useBlocker } from '@tanstack/react-router';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
 import { observerGuidesKeys } from '../../hooks/observer-guides-hooks';
 import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
+
 export interface AddGuideFormProps {
   guidePageType: GuidePageType;
   guideType: GuideType;
@@ -123,7 +124,7 @@ export default function AddGuideForm({
           ? `/election-rounds/${electionRoundId}/observer-guide`
           : `/election-rounds/${electionRoundId}/citizen-guides`;
 
-      return authApi.post(url, formData, {
+      return API.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -139,17 +140,12 @@ export default function AddGuideForm({
 
       onSuccess?.(data);
 
-      toast({
-        title: 'Success',
-        description: 'Upload was successful',
-      });
+      toast.success('Upload was successful');
     },
 
     onError: () => {
-      toast({
-        title: 'Error uploading citizen guide',
+      toast.error('Error uploading citizen guide', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
 
       onError?.();

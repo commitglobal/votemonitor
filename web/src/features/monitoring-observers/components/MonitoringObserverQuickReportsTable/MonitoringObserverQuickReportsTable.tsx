@@ -5,7 +5,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { QuickReportFilterRequest } from '@/features/responses/components/QuickReportsTab/QuickReportsTab';
 import { useQuickReports } from '@/features/responses/hooks/quick-reports';
 import { observerQuickReportsColumnDefs } from '@/features/responses/utils/column-defs';
-import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -40,7 +40,7 @@ export function MonitoringObserverQuickReportsTable({
       dataSource: DataSources.Ngo,
       monitoringObserverId: debouncedSearch.monitoringObserverId,
       coalitionMemberId: undefined,
-      searchText: searchText
+      searchText: searchText,
     };
 
     return params;

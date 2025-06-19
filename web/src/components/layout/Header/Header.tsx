@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import { LanguageSelector } from '@/components/LanguageSelector/LanguageSelector';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,12 +11,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AuthContext } from '@/context/auth.context';
+import { useAuth } from '@/context/auth-context';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { ElectionEvent } from '@/features/election-event/models/election-event';
 import { electionRoundKeys } from '@/features/election-rounds/queries';
 import { staticDataKeys } from '@/hooks/query-keys';
 import { sleep } from '@/lib/utils';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { PauseCircleIcon, PlayCircleIcon, StopCircleIcon, UserCircleIcon } from '@heroicons/react/24/solid';
@@ -25,10 +26,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { sortBy } from 'lodash';
-import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { ElectionRoundStatus, type FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
-import { ElectionEvent } from '@/features/election-event/models/election-event';
 
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
@@ -43,7 +43,7 @@ const navigation = [
 const userNavigation: { name: string; to: string }[] = [];
 
 const Header = (): FunctionComponent => {
-  const { userRole, signOut } = useContext(AuthContext);
+  const { isPlatformAdmin, userRole, logout } = useAuth();
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionEvent>();
   const router = useRouter();
@@ -77,7 +77,7 @@ const Header = (): FunctionComponent => {
   const { status, data: electionRounds } = useQuery({
     queryKey: electionRoundKeys.all,
     queryFn: async () => {
-      const response = await authApi.get<{ electionRounds: ElectionEvent[] }>('/election-rounds:monitoring');
+      const response = await API.get<{ electionRounds: ElectionEvent[] }>('/election-rounds:monitoring');
 
       (response.data.electionRounds ?? []).forEach((er) => {
         queryClient.setQueryData(electionRoundKeys.detail(er.id), er);
@@ -86,7 +86,7 @@ const Header = (): FunctionComponent => {
     },
     staleTime: 0,
     refetchOnWindowFocus: false,
-    enabled: userRole === 'NgoAdmin',
+    enabled: !isPlatformAdmin,
   });
 
   useEffect(() => {
@@ -241,7 +241,7 @@ const Header = (): FunctionComponent => {
                           type='button'
                           variant='link'
                           onClick={() => {
-                            signOut();
+                            logout();
                             navigate({ to: '/login' });
                           }}>
                           Sign out
@@ -318,7 +318,7 @@ const Header = (): FunctionComponent => {
                   key='Sign Out'
                   as={Button}
                   onClick={() => {
-                    signOut();
+                    logout();
                     navigate({ to: '/login' });
                   }}
                   variant='link'

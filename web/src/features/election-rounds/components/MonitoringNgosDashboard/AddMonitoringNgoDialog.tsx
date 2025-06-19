@@ -1,15 +1,15 @@
-import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
+import API from '@/services/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { ChangeEvent, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { MonitoringNgoModel } from '../../models/types';
 import { monitoringNgoKeys, useAvailableMonitoringNgos } from './queries';
 
@@ -41,16 +41,13 @@ function AddMonitoringNgoDialog({ open, onOpenChange, electionRoundId }: AddMoni
   const queryClient = useQueryClient();
   const addMonitoringNgoMutation = useMutation({
     mutationFn: async (ngoId: string) => {
-      return await authApi.post(`election-rounds/${electionRoundId}/monitoring-ngos`, { ngoId });
+      return await API.post(`election-rounds/${electionRoundId}/monitoring-ngos`, { ngoId });
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: monitoringNgoKeys.all(electionRoundId) });
       onOpenChange(false);
-      toast({
-        title: 'Success',
-        description: 'Added monitoring NGO',
-      });
+      toast.success('Added monitoring NGO');
     },
     //TODO Add error handling
   });

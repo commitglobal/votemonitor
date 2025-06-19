@@ -11,7 +11,7 @@ import { useFormSubmissionsByFormColumns } from '../../store/column-visibility';
 import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
 import { FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
-const routeApi = getRouteApi('/responses/');
+const routeApi = getRouteApi('/(app)/responses/');
 
 type FormSubmissionsByFormTableProps = {
   searchText: string;
@@ -25,7 +25,7 @@ export function FormSubmissionsAggregatedByFormTable({
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
-  
+
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
       navigate({
@@ -47,7 +47,7 @@ export function FormSubmissionsAggregatedByFormTable({
           submissionsFromDate: search.submissionsFromDate,
           submissionsToDate: search.submissionsToDate,
           dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
-          coalitionMemberId: search.coalitionMemberId
+          coalitionMemberId: search.coalitionMemberId,
         },
       });
     },
@@ -74,7 +74,7 @@ export function FormSubmissionsAggregatedByFormTable({
       fromDateFilter: search.submissionsFromDate?.toISOString(),
       toDateFilter: search.submissionsToDate?.toISOString(),
       formTypeFilter: search.formTypeFilter,
-      coalitionMemberId: search.coalitionMemberId
+      coalitionMemberId: search.coalitionMemberId,
     };
 
     return params;

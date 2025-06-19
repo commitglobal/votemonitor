@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import { useCitizenReportsAggregatedByForm } from '../../hooks/citizen-reports';
 import { citizenReportsAggregatedByFormColumnDefs } from '../../utils/column-defs';
 
-const routeApi = getRouteApi('/responses/');
+const routeApi = getRouteApi('/(app)/responses/');
 
 export function CitizenReportsAggregatedByFormTable(): FunctionComponent {
   const navigate = routeApi.useNavigate();

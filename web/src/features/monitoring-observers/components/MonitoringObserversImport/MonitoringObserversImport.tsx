@@ -5,21 +5,21 @@ import { FileUploader } from '@/components/ui/file-uploader';
 import { Separator } from '@/components/ui/separator';
 import Papa from 'papaparse';
 import { useMemo, useState } from 'react';
-import { ZodIssue, ZodIssueCode, z } from 'zod';
+import { z, ZodIssue, ZodIssueCode } from 'zod';
 
-import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { ImportedObserversDataTable } from './ImportedObserversDataTable';
-import { downloadImportExample, TemplateType } from '@/lib/utils';
 
 export const importObserversSchema = z.object({
   firstName: z
@@ -68,23 +68,18 @@ export function MonitoringObserversImport(): FunctionComponent {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ electionRoundId, observers }: { electionRoundId: string; observers: ImportObserverRow[] }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers });
+      return API.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers });
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
+      toast.success(t('onSuccess'));
 
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       navigate({ to: '/monitoring-observers' });
     },
     onError: () => {
-      toast({
-        title: t('onError'),
+      toast.error(t('onError'), {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

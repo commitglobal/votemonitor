@@ -9,7 +9,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab';
 
 export function MonitoringObserverIncidentReportsFilters(): FunctionComponent {
   const navigate = useNavigate();

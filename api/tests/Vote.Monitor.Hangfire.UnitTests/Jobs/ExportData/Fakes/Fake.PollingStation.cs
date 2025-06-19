@@ -8,7 +8,9 @@ public sealed partial class Fake
 {
     private static readonly JsonDocument _emptyTags = JsonDocument.Parse("{}");
 
-    public static PollingStationModel PollingStation(Guid pollingStationId, JsonDocument? tags = null)
+    public static PollingStationModel PollingStation(Guid pollingStationId,
+        (double latitude, double longitude )? coordinates = null,
+        JsonDocument? tags = null)
     {
         var fakePollingStation = new Faker<PollingStationModel>()
             .RuleFor(x => x.Id, pollingStationId)
@@ -20,6 +22,8 @@ public sealed partial class Fake
             .RuleFor(x => x.Level5, f => f.Lorem.Word())
             .RuleFor(x => x.Number, f => f.Lorem.Word())
             .RuleFor(x => x.Address, f => f.Lorem.Sentence(10))
+            .RuleFor(x => x.Latitude, f => coordinates?.latitude)
+            .RuleFor(x => x.Longitude, f => coordinates?.longitude)
             .RuleFor(x => x.DisplayOrder, f => f.Random.Int().ToString());
 
         return fakePollingStation.Generate();

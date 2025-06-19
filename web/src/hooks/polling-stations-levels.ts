@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataTableParameters, LevelNode } from '@/common/types';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 
@@ -22,7 +22,7 @@ export function usePollingStationsLocationLevels(electionRoundId: string): UsePo
   return useQuery({
     queryKey: pollingStationsKeys.levels(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<PollingStationsLocationLevelsResponse>(
+      const response = await API.get<PollingStationsLocationLevelsResponse>(
         `/election-rounds/${electionRoundId}/polling-stations:fetchLevels`
       );
 

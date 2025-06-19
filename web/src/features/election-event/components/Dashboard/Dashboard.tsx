@@ -12,7 +12,7 @@ import GuidesDashboard from '../Guides/GuidesDashboard';
 import ElectionEventDescription from '../../../../components/ElectionEventDescription/ElectionEventDescription';
 import { GuidePageType } from '../../models/guide';
 import CitizenNotificationsDashboard from '@/features/CitizenNotifications/CitizenNotificationsDashboard/CitizenNotificationsDashboard';
-import { Route } from '@/routes/election-event/$tab';
+import { Route } from '@/routes/(app)/election-event/$tab';
 import PollingStationsDashboard from '@/components/PollingStationsDashboard/PollingStationsDashboard';
 
 export default function ElectionEventDashboard(): ReactElement {

@@ -15,14 +15,16 @@ internal sealed class PollingStationImportModelMapper : ClassMap<PollingStationI
 
         Map(m => m.Address).Name("Address"); // 6
         Map(m => m.DisplayOrder).Name("DisplayOrder"); //7
-        Map(m => m.Tags).Convert(ReadTags); // 8 -> end
+        Map(m => m.Latitude).Name("Latitude"); //8
+        Map(m => m.Longitude).Name("Longitude"); //9
+        Map(m => m.Tags).Convert(ReadTags); // 10 -> end
     }
 
     private static List<TagImportModel> ReadTags(ConvertFromStringArgs row)
     {
         var tags = new List<TagImportModel>();
 
-        for (var i = 8; i < row.Row?.HeaderRecord?.Length; i++)
+        for (var i = 10; i < row.Row?.HeaderRecord?.Length; i++)
         {
             var name = row.Row.HeaderRecord[i];
             var value = row.Row[i];

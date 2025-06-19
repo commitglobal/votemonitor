@@ -31,7 +31,7 @@ import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/
 import { FormSubmissionsFiltersByForm } from '../FormSubmissionsFiltersByForm/FormSubmissionsFiltersByForm';
 import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
 
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { getValueOrDefault, toBoolean } from '@/lib/utils';
 

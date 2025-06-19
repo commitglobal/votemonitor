@@ -10,7 +10,7 @@ import { useDebounce } from '@/components/ui/multiple-selector';
 import { useDialog } from '@/components/ui/use-dialog';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/election-rounds';
+import { Route } from '@/routes/(app)/election-rounds';
 import { ChangeEvent, ReactElement, useEffect, useMemo, useState } from 'react';
 import { ElectionsRoundsQueryParams, useElectionRounds } from '../../queries';
 import CreateElectionRoundDialog from '../CreateElectionRoundDialog/CreateElectionRoundDialog';

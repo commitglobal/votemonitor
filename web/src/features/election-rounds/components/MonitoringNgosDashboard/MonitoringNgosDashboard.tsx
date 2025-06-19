@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -13,14 +12,15 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useDialog } from '@/components/ui/use-dialog';
-import { toast } from '@/components/ui/use-toast';
 import { NgoStatusBadge } from '@/features/ngos/components/NgoStatusBadges';
+import API from '@/services/api';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { MonitoringNgoModel } from '../../models/types';
 import AddMonitoringNgoDialog from './AddMonitoringNgoDialog';
 import { monitoringNgoKeys, useMonitoringNgos } from './queries';
@@ -90,15 +90,12 @@ function MonitoringNgosDashboard({ electionRoundId }: MonitoringNgosDashboardPro
   const confirm = useConfirm();
   const deleteMonitoringNgoMutation = useMutation({
     mutationFn: async (ngoId: string) => {
-      return await authApi.delete(`election-rounds/${electionRoundId}/monitoring-ngos/${ngoId}`);
+      return await API.delete(`election-rounds/${electionRoundId}/monitoring-ngos/${ngoId}`);
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: monitoringNgoKeys.all(electionRoundId) });
-      toast({
-        title: 'Success',
-        description: 'Removed monitoring NGO',
-      });
+      toast.success('Removed monitoring NGO');
     },
     //TODO Add error handling
   });

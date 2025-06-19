@@ -2,7 +2,7 @@ import { useSetPrevSearch } from '@/common/prev-search-store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn } from '@/lib/utils';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CitizenReportsTab } from '../CitizenReportsTab/CitizenReportsTab';
@@ -48,7 +48,7 @@ export default function ResponsesDashboard(): ReactElement {
                 setPrevSearch(newSearch);
                 return newSearch;
               },
-              replace: true
+              replace: true,
             });
           }}>
           <TabsList
@@ -57,7 +57,9 @@ export default function ResponsesDashboard(): ReactElement {
             })}>
             <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
             <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
-            {electionRound?.isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
+            {electionRound?.isMonitoringNgoForCitizenReporting && (
+              <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>
+            )}
             {/* <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger> */}
           </TabsList>
 

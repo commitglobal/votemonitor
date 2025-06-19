@@ -3,7 +3,7 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { getValueOrDefault, toBoolean } from '@/lib/utils';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';

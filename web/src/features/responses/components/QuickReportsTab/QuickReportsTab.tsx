@@ -20,7 +20,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { getValueOrDefault } from '@/lib/utils';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';

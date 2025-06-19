@@ -14,26 +14,26 @@ import { DocumentTextIcon, EllipsisVerticalIcon, LinkIcon, PaperClipIcon } from 
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
-import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
+import { ElectionRoundStatus } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { toast } from '@/components/ui/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import i18n from '@/i18n';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ChevronDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { citizenGuidesKeys, useCitizenGuides } from '../../hooks/citizen-guides-hooks';
+import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import { observerGuidesKeys, useObserverGuides } from '../../hooks/observer-guides-hooks';
 import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
 import AddGuideDialog from './AddGuideDialog';
-import EditGuideDialog from './EditGuideDialog';
-import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
-import { ElectionRoundStatus } from '@/common/types';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import EditGuideAccessDialog, { useEditGuideAccessDialog } from './EditGuideAccessDialog';
+import EditGuideDialog from './EditGuideDialog';
 
 export interface GuidesDashboardProps {
   guidePageType: GuidePageType;
@@ -79,7 +79,7 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
         guidePageType === GuidePageType.Observer
           ? `/election-rounds/${electionRoundId}/observer-guide/${guideId}`
           : `/election-rounds/${electionRoundId}/citizen-guides/${guideId}`;
-      return authApi.delete<void>(url);
+      return API.delete<void>(url);
     },
 
     onSuccess: (_, { electionRoundId, guidePageType }) => {
@@ -89,17 +89,12 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
 
       queryClient.invalidateQueries({ queryKey: citizenGuidesKeys.all(electionRoundId) });
 
-      toast({
-        title: 'Success',
-        description: 'Delete was successful',
-      });
+      toast.success('Delete was successful');
     },
 
     onError: () => {
-      toast({
-        title: 'Error deleting guide',
+      toast.error('Error deleting guide', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
     },
   });

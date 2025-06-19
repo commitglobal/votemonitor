@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { queryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { queryClient } from '@/main';
@@ -17,9 +17,7 @@ export function useCitizenGuides(electionRoundId: string): CitizenGuideResult {
   return useQuery({
     queryKey: citizenGuidesKeys.all(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<{ guides: GuideModel[] }>(
-        `/election-rounds/${electionRoundId}/citizen-guides`
-      );
+      const response = await API.get<{ guides: GuideModel[] }>(`/election-rounds/${electionRoundId}/citizen-guides`);
 
       response.data.guides.forEach((guide) => {
         queryClient.setQueryData(citizenGuidesKeys.details(electionRoundId, guide.id), guide);
@@ -36,7 +34,7 @@ export const citizenGuideDetailsQueryOptions = (electionRoundId: string, guideId
   return queryOptions({
     queryKey: citizenGuidesKeys.details(electionRoundId, guideId),
     queryFn: async () => {
-      const response = await authApi.get<GuideModel>(`/election-rounds/${electionRoundId}/citizen-guides/${guideId}`);
+      const response = await API.get<GuideModel>(`/election-rounds/${electionRoundId}/citizen-guides/${guideId}`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch citizen guide details');

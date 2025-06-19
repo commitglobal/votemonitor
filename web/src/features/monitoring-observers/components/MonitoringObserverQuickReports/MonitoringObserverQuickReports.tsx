@@ -12,9 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
   observerQuickReportsColumns,
-  quickReportsColumnVisibilityOptions
+  quickReportsColumnVisibilityOptions,
 } from '@/features/responses/utils/column-visibility-options';
-import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';

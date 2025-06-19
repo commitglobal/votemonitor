@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 const STALE_TIME = 1000 * 60 * 5; // fifteen minutes
 
@@ -6,7 +6,7 @@ export function useMonitoringObserversTags(electionRoundId: string): UseQueryRes
   return useQuery({
     queryKey: ['tags', electionRoundId],
     queryFn: async () => {
-      const response = await authApi.get<{ tags: string[] }>(
+      const response = await API.get<{ tags: string[] }>(
         `/election-rounds/${electionRoundId}/monitoring-observers:tags`
       );
 

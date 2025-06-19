@@ -1,13 +1,13 @@
-import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 import axios, { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
@@ -26,7 +26,7 @@ export function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO
   return useQuery({
     queryKey: ngosKeys.list(p),
     queryFn: async () => {
-      const response = await authApi.get<PageResponse<NGO>>('/ngos', {
+      const response = await API.get<PageResponse<NGO>>('/ngos', {
         params: { ...p.otherParams },
       });
 
@@ -44,7 +44,7 @@ export const ngoDetailsOptions = (ngoId: string) =>
   queryOptions({
     queryKey: ngosKeys.detail(ngoId),
     queryFn: async () => {
-      const response = await authApi.get<NGO>(`/ngos/${ngoId}`);
+      const response = await API.get<NGO>(`/ngos/${ngoId}`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch ngo details');
@@ -66,7 +66,7 @@ export const useCreateNgo = () => {
       onMutationSuccess: () => void;
       onMutationError: (error?: ProblemDetails) => void;
     }) => {
-      return authApi.post('/ngos', { name: values.name });
+      return API.post('/ngos', { name: values.name });
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
@@ -86,11 +86,7 @@ export const useCreateNgo = () => {
       // Handle non-Axios or unexpected errors
       console.error('Unexpected error:', error);
       onMutationError();
-      toast({
-        title: 'Error creating a new NGO',
-        description: '',
-        variant: 'destructive',
-      });
+      toast.error('Error creating a new NGO');
     },
   });
 
@@ -106,7 +102,7 @@ export const useNgoMutations = () => {
 
   const editNgoMutation = useMutation({
     mutationFn: ({ ngoId, values }: { ngoId: string; values: EditNgoFormData }) => {
-      return authApi.put(`/ngos/${ngoId}`, values);
+      return API.put(`/ngos/${ngoId}`, values);
     },
 
     onSuccess: (_, { ngoId }) => {
@@ -115,85 +111,60 @@ export const useNgoMutations = () => {
       navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: ngoId!, tab: 'details' } });
     },
     onError: () => {
-      toast({
-        title: 'Error editing NGO',
-        description: '',
-        variant: 'destructive',
-      });
+      toast.error('Error editing NGO');
     },
   });
 
   const deactivateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
-      return authApi.post<any>(`/ngos/${ngoId}:deactivate`, {});
+      return API.post<any>(`/ngos/${ngoId}:deactivate`, {});
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was deactivated successfully',
-      });
+      toast.success('NGO was deactivated successfully');
     },
 
     onError: () => {
-      toast({
-        title: 'Error deactivating NGO',
-        description: '',
-        variant: 'destructive',
-      });
+      toast.error('Error deactivating NGO');
     },
   });
 
   const activateNgoMutation = useMutation({
     mutationFn: (ngoId: string) => {
-      return authApi.post<any>(`/ngos/${ngoId}:activate`, {});
+      return API.post<any>(`/ngos/${ngoId}:activate`, {});
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was activated successfully',
-      });
+      toast.success('NGO was activated successfully');
     },
 
     onError: () => {
-      toast({
-        title: 'Error activating NGO',
-        description: '',
-        variant: 'destructive',
-      });
+      toast.error('Error activating NGO');
     },
   });
 
   const deleteNgoMutation = useMutation({
     mutationFn: ({ ngoId }: { ngoId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`/ngos/${ngoId}`);
+      return API.delete<any>(`/ngos/${ngoId}`);
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was deleted successfully',
-      });
+      toast.success('NGO was deleted successfully');
 
       if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
-      toast({
-        title: 'Error deleting NGO',
-        description: '',
-        variant: 'destructive',
-      });
+      toast.error('Error deleting NGO');
     },
   });
 

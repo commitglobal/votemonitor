@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import {
   useMutation,
   type UseMutationOptions,
@@ -25,7 +25,7 @@ export function useStartDataExport(
 ): UseMutationResult<DataExport, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const response = await authApi.post<DataExport>(`/exported-data`, {
+      const response = await API.post<DataExport>(`/exported-data`, {
         electionRoundId,
         exportedDataType,
         formSubmissionsFilters: exportedDataType === ExportedDataType.FormSubmissions ? filterParams : undefined,
@@ -55,7 +55,7 @@ export function useExportedDataDetails(
   return useQuery({
     queryKey: ['exported-data-details', exportedDataId],
     queryFn: async () => {
-      const response = await authApi.get<ExportedDataDetails>(`/exported-data/${exportedDataId}:details`);
+      const response = await API.get<ExportedDataDetails>(`/exported-data/${exportedDataId}:details`);
 
       return response.data;
     },

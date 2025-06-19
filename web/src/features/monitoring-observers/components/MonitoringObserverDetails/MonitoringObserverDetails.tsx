@@ -6,8 +6,8 @@ import { MonitoringObserverFormSubmissions } from '../MonitoringObserverFormSubm
 
 import type { FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { monitoringObserverDetailsQueryOptions } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
-import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { monitoringObserverDetailsQueryOptions } from '@/routes/(app)/monitoring-observers/edit.$monitoringObserverId';
+import { Route } from '@/routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';

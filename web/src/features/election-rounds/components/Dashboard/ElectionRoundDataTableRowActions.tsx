@@ -14,7 +14,7 @@ import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Dialog } from '@/components/ui/dialog';
 import { ArchiveIcon, MoreHorizontal, Pencil, PlayIcon, Trash2, FileEdit, Eye } from 'lucide-react';
 import { ElectionRoundModel } from '../../models/types';
-import { Route } from '@/routes/election-rounds';
+import { Route } from '@/routes/(app)/election-rounds';
 import { ElectionRoundStatus } from '@/common/types';
 import {
   useArchiveElectionRound,
@@ -23,7 +23,7 @@ import {
   useUnarchiveElectionRound,
   useUnstartElectionRound,
 } from '../../hooks';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 interface ElectionRoundDataTableRowActionsProps {
   electionRound: ElectionRoundModel;
@@ -32,7 +32,6 @@ interface ElectionRoundDataTableRowActionsProps {
 export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoundDataTableRowActionsProps) {
   const confirm = useConfirm();
   const navigate = Route.useNavigate();
-  const { toast } = useToast();
 
   const { mutate: deleteElectionRound } = useDeleteElectionRound();
   const { mutate: unstartElectionRound } = useUnstartElectionRound();
@@ -49,15 +48,10 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
     ) {
       deleteElectionRound({
         electionRoundId: electionRound.id,
-        onSuccess: () =>
-          toast({
-            title: 'Election round deleted successfully',
-          }),
+        onSuccess: () => toast.success('Election round deleted successfully'),
         onError: () =>
-          toast({
-            title: 'Error deleting election round',
+          toast.error('Error deleting election round', {
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -73,15 +67,10 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
     ) {
       archiveElectionRound({
         electionRoundId: electionRound.id,
-        onSuccess: () =>
-          toast({
-            title: 'Election round archived successfully',
-          }),
+        onSuccess: () => toast.success('Election round archived successfully'),
         onError: () =>
-          toast({
-            title: 'Error archiving election round',
+          toast.error('Error archiving election round', {
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -97,15 +86,10 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
     ) {
       unstartElectionRound({
         electionRoundId: electionRound.id,
-        onSuccess: () =>
-          toast({
-            title: 'Election round drafted successfully',
-          }),
+        onSuccess: () => toast.success('Election round drafted successfully'),
         onError: () =>
-          toast({
-            title: 'Error drafting election round',
+          toast.error('Error drafting election round', {
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -121,15 +105,10 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
     ) {
       unarchiveElectionRound({
         electionRoundId: electionRound.id,
-        onSuccess: () =>
-          toast({
-            title: 'Election round unarchived successfully',
-          }),
+        onSuccess: () => toast.success('Election round unarchived successfully'),
         onError: () =>
-          toast({
-            title: 'Error unarchiving election round',
+          toast.error('Error unarchiving election round', {
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -145,15 +124,10 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
     ) {
       startElectionRound({
         electionRoundId: electionRound.id,
-        onSuccess: () =>
-          toast({
-            title: 'Election round started successfully',
-          }),
+        onSuccess: () => toast.success('Election round started successfully'),
         onError: () =>
-          toast({
-            title: 'Error starting election round',
+          toast.error('Error starting election round', {
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }

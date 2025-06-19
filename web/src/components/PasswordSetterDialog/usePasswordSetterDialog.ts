@@ -1,6 +1,6 @@
-import { authApi } from '@/common/auth-api';
 import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
 import { ProblemDetails } from '@/common/types';
+import API from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useDialog } from '../ui/use-dialog';
-import { toast } from '../ui/use-toast';
+import { toast } from 'sonner';
 
 const passwordSetterSchema = z
   .object({
@@ -62,7 +62,7 @@ export const usePasswordSetterDialog = () => {
 
   const setPasswordMutation = useMutation({
     mutationFn: (data: PasswordSetterFormData) => {
-      return authApi.post<PasswordSetterFormData>(`auth/set-password`, {
+      return API.post<PasswordSetterFormData>(`auth/set-password`, {
         aspNetUserId: userId,
         newPassword: data.newPassword,
       });
@@ -70,18 +70,13 @@ export const usePasswordSetterDialog = () => {
     onSuccess: () => {
       form.reset({});
       internalOnOpenChange(false);
-      toast({
-        title: 'Success',
-        description: 'Password set',
-      });
+      toast.success('Password set');
     },
 
     onError: (error: AxiosError<ProblemDetails>) => {
       addFormValidationErrorsFromBackend<PasswordSetterFormData>(form, error);
-      toast({
-        title: 'Error setting password',
+      toast.error('Error setting password', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
     },
   });

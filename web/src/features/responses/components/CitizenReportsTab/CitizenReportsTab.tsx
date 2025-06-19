@@ -18,7 +18,7 @@ import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FunctionComponent } from '@/common/types';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { Route } from '@/routes/responses';
+import { Route } from '@/routes/(app)/responses';
 import { CitizenReportsAggregatedByFormTable } from '../CitizenReportsAggregatedByFormTable/CitizenReportsAggregatedByFormTable';
 import { CitizenReportsByEntryTable } from '../CitizenReportsByEntryTable/CitizenReportsByEntryTable';
 import { CitizenReportsFiltersByEntry } from '../CitizenReportsFiltersByEntry/CitizenReportsFiltersByEntry';
