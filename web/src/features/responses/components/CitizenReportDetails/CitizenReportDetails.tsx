@@ -1,4 +1,5 @@
-import { authApi } from '@/common/auth-api';
+import { DateTimeFormat } from '@/common/formats';
+import { usePrevSearch } from '@/common/prev-search-store';
 import {
   CitizenReportFollowUpStatus,
   ElectionRoundStatus,
@@ -6,24 +7,23 @@ import {
   type FunctionComponent,
 } from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
 import { citizenReportDetailsQueryOptions, Route } from '@/routes/(app)/responses/citizen-reports/$citizenReportId';
+import API from '@/services/api';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
 import { citizenReportKeys } from '../../hooks/citizen-reports';
-import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
 import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
-import { usePrevSearch } from '@/common/prev-search-store';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { DateTimeFormat } from '@/common/formats';
-import { format } from 'date-fns';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
+import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
@@ -46,26 +46,21 @@ export default function CitizenReportDetails(): FunctionComponent {
       electionRoundId: string;
       followUpStatus: FormSubmissionFollowUpStatus;
     }) => {
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`, {
+      return API.put<void>(`/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`, {
         followUpStatus,
       });
     },
 
     onSuccess: async (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Follow-up status updated',
-      });
+      toast.success('Follow-up status updated');
 
       await queryClient.invalidateQueries({ queryKey: citizenReportKeys.all(electionRoundId) });
       router.invalidate();
     },
 
     onError: () => {
-      toast({
-        title: 'Error updating follow up status',
+      toast.error('Error updating follow up status', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

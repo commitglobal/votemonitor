@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import IncidentReportDetails from '@/features/responses/components/IncidentReportDetails/IncidentReportDetails';
 import { incidentReportsByEntryKeys } from '@/features/responses/hooks/incident-reports-queries';
 import { IncidentReport } from '@/features/responses/models/incident-report';
@@ -10,7 +10,7 @@ export function incidentReportDetailsQueryOptions(electionRoundId: string, incid
   return queryOptions({
     queryKey: incidentReportsByEntryKeys.detail(electionRoundId, incidentReportId),
     queryFn: async () => {
-      const response = await authApi.get<IncidentReport>(
+      const response = await API.get<IncidentReport>(
         `/election-rounds/${electionRoundId}/incident-reports/${incidentReportId}`
       );
 

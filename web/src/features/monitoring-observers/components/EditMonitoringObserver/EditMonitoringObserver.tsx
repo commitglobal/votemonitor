@@ -1,4 +1,3 @@
-import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,17 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import TagsSelectFormField from '@/components/ui/tag-selector';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import {
   Route,
   monitoringObserverDetailsQueryOptions,
 } from '@/routes/(app)/monitoring-observers/edit.$monitoringObserverId';
+import API from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { targetedObserversKeys } from '../../hooks/push-messages-queries';
@@ -37,8 +37,6 @@ export default function EditObserver() {
   const monitoringObserver = monitoringObserverQuery.data;
 
   const { data: availableTags } = useMonitoringObserversTags(currentElectionRoundId);
-
-  const { toast } = useToast();
 
   const editObserverFormSchema = z.object({
     status: z.string(),
@@ -80,16 +78,13 @@ export default function EditObserver() {
       electionRoundId: string;
       request: UpdateMonitoringObserverRequest;
     }) => {
-      return authApi.post<void>(
+      return API.post<void>(
         `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserver.id}`,
         request
       );
     },
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Observer successfully updated',
-      });
+      toast.success('Observer successfully updated');
       router.invalidate();
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       queryClient.invalidateQueries({ queryKey: targetedObserversKeys.all(electionRoundId) });

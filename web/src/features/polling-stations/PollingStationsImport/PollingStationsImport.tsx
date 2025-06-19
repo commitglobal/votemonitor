@@ -7,9 +7,8 @@ import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { z, ZodIssue } from 'zod';
 
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import { downloadImportExample, TemplateType } from '@/lib/utils';
@@ -20,6 +19,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ImportedPollingStationsDataTable } from './ImportedPollingStationsDataTable';
+import { toast } from 'sonner';
 
 export type ImportPollingStationRow = z.infer<typeof importPollingStationSchema> & { errors?: ZodIssue[] };
 const standardFields = [
@@ -40,7 +40,6 @@ export function PollingStationsImport(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.pollingStations.addPollingStation' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const hasInvalidPollingStations = useMemo(() => {
     return pollingStations.some((pollingStation) => pollingStation.errors && pollingStation.errors?.length > 0);
@@ -54,23 +53,18 @@ export function PollingStationsImport(): FunctionComponent {
       electionRoundId: string;
       pollingStations: ImportPollingStationRow[];
     }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, { pollingStations });
+      return API.post(`/election-rounds/${electionRoundId}/polling-stations`, { pollingStations });
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
+      toast.success(t('onSuccess'));
 
       queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(electionRoundId) });
       navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId } });
     },
     onError: () => {
-      toast({
-        title: t('onError'),
+      toast.error(t('onError'), {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -118,10 +112,8 @@ export function PollingStationsImport(): FunctionComponent {
                   async complete(results) {
                     if (results.errors.length) {
                       // Optionally show an error message to the user.
-                      toast({
-                        title: 'Parsing errors',
+                      toast.error('Parsing errors', {
                         description: 'Please check the file and try again',
-                        variant: 'destructive',
                       });
                     }
 

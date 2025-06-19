@@ -7,7 +7,7 @@ import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AuthContext } from '@/context/auth.context';
+import { AuthContext, useAuth } from '@/context/auth-context';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
@@ -27,12 +27,12 @@ export default function PollingStationsDashboard(): ReactElement {
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
-  const { userRole } = useContext(AuthContext);
+  const { isPlatformAdmin } = useAuth();
   const [rowAction, setRowAction] = useState<DataTableRowAction<PollingStation, PollingStationAction> | null>(null);
 
   const columns: ColumnDef<PollingStation>[] = useMemo(() => {
-    return getPollingStationColDefs(userRole, setRowAction);
-  }, [userRole]);
+    return getPollingStationColDefs(isPlatformAdmin, setRowAction);
+  }, [isPlatformAdmin]);
 
   const search = useSearch({ strict: false }) as {
     level1Filter?: string;
@@ -95,7 +95,7 @@ export default function PollingStationsDashboard(): ReactElement {
 
             <div className='flex items-center gap-4'>
               <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
-              {userRole === 'PlatformAdmin' && (
+              {isPlatformAdmin && (
                 <>
                   <Button
                     variant='secondary'
@@ -107,7 +107,7 @@ export default function PollingStationsDashboard(): ReactElement {
                 </>
               )}
 
-              {userRole === 'PlatformAdmin' && (
+              {isPlatformAdmin && (
                 <Link
                   to={'/election-rounds/$electionRoundId/polling-stations/import'}
                   params={{ electionRoundId: currentElectionRoundId }}>

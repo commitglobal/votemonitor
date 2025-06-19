@@ -1,19 +1,20 @@
-import { authApi } from '@/common/auth-api';
 import { DateOnlyFormat } from '@/common/formats';
+import { ElectionRoundStatus } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/(app)/election-rounds/$electionRoundId/edit';
+import API from '@/services/api';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { electionRoundDetailsQueryOptions, electionRoundKeys } from '../../queries';
 import ElectionRoundForm, { ElectionRoundRequest } from '../ElectionRoundForm/ElectionRoundForm';
-import { ElectionRoundStatus } from '@/common/types';
+
 function ElectionRoundEdit() {
   const router = useRouter();
   const { electionRoundId } = Route.useParams();
@@ -28,7 +29,7 @@ function ElectionRoundEdit() {
       electionRoundId: string;
       electionRound: ElectionRoundRequest;
     }) => {
-      return authApi.put(`/election-rounds/${electionRoundId}`, {
+      return API.put(`/election-rounds/${electionRoundId}`, {
         ...electionRound,
         startDate: format(electionRound.startDate, DateOnlyFormat),
       });
@@ -42,17 +43,12 @@ function ElectionRoundEdit() {
         params: { electionRoundId },
       });
 
-      toast({
-        title: 'Success',
-        description: 'Election round created',
-      });
+      toast.success('Election round created');
     },
 
     onError: () => {
-      toast({
-        title: 'Error creating election round',
+      toast.error('Error creating election round', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
     },
   });

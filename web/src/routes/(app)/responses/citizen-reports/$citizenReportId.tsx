@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import CitizenReportDetails from '@/features/responses/components/CitizenReportDetails/CitizenReportDetails';
 import { citizenReportKeys } from '@/features/responses/hooks/citizen-reports';
 import { CitizenReport } from '@/features/responses/models/citizen-report';
@@ -10,12 +10,13 @@ export function citizenReportDetailsQueryOptions(electionRoundId: string, citize
   return queryOptions({
     queryKey: citizenReportKeys.detail(electionRoundId, citizenReportId),
     queryFn: async () => {
-
-      const response = await authApi.get<CitizenReport>(`/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}`);
+      const response = await API.get<CitizenReport>(
+        `/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}`
+      );
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 

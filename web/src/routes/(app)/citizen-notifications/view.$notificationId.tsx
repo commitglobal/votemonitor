@@ -1,17 +1,16 @@
-import { authApi } from "@/common/auth-api";
-import CitizenNotificationDetails from "@/features/CitizenNotifications/CitizenNotificationDetails/CitizenNotificationDetails";
-import { citizenNotificationsKeys } from "@/features/CitizenNotifications/hooks/citizen-notifications-queries";
-import { CitizenNotificationModel } from "@/features/CitizenNotifications/models/citizen-notification";
-import { redirectIfNotAuth } from "@/lib/utils";
-import { queryOptions } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import API from '@/services/api';
+import CitizenNotificationDetails from '@/features/CitizenNotifications/CitizenNotificationDetails/CitizenNotificationDetails';
+import { citizenNotificationsKeys } from '@/features/CitizenNotifications/hooks/citizen-notifications-queries';
+import { CitizenNotificationModel } from '@/features/CitizenNotifications/models/citizen-notification';
+import { redirectIfNotAuth } from '@/lib/utils';
+import { queryOptions } from '@tanstack/react-query';
+import { createFileRoute } from '@tanstack/react-router';
 
 export const citizenNotificationQueryOptions = (electionRoundId: string, pushMessageId: string) => {
   return queryOptions({
     queryKey: citizenNotificationsKeys.detail(electionRoundId, pushMessageId),
     queryFn: async () => {
-
-      const response = await authApi.get<CitizenNotificationModel>(
+      const response = await API.get<CitizenNotificationModel>(
         `/election-rounds/${electionRoundId}/citizen-notifications/${pushMessageId}`
       );
 
@@ -21,10 +20,9 @@ export const citizenNotificationQueryOptions = (electionRoundId: string, pushMes
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
-}
-
+};
 
 export const Route = createFileRoute('/(app)/citizen-notifications/view/$notificationId')({
   beforeLoad: () => {
@@ -35,5 +33,5 @@ export const Route = createFileRoute('/(app)/citizen-notifications/view/$notific
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(citizenNotificationQueryOptions(electionRoundId, notificationId));
-  }
+  },
 });

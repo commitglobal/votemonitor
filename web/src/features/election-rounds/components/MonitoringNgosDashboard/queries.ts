@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, ElectionRoundStatus, PageResponse } from '@/common/types';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { MonitoringNgoModel } from '../../models/types';
@@ -25,9 +25,7 @@ export function useMonitoringNgos(electionRoundId: string): UseQueryResult<Monit
     queryKey: monitoringNgoKeys.all(electionRoundId),
     placeholderData: { monitoringNgos: [] },
     queryFn: async () => {
-      const response = await authApi.get<MonitoringNgosPageResponse>(
-        `election-rounds/${electionRoundId}/monitoring-ngos`
-      );
+      const response = await API.get<MonitoringNgosPageResponse>(`election-rounds/${electionRoundId}/monitoring-ngos`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch monitoring NGOs for election round');
@@ -48,7 +46,7 @@ export function useAvailableMonitoringNgos(
   return useQuery({
     queryKey: monitoringNgoKeys.availableForMonitoring(electionRoundId, p),
     queryFn: async () => {
-      const response = await authApi.get<PageResponse<MonitoringNgoModel>>(
+      const response = await API.get<PageResponse<MonitoringNgoModel>>(
         `election-rounds/${electionRoundId}/monitoring-ngos:available`,
         {
           params: {

@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type {
   DataSources,
   DataTableParameters,
@@ -72,7 +72,7 @@ export function useFormSubmissionsByEntry(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<FormSubmissionsByEntryResponse>(
+      const response = await API.get<FormSubmissionsByEntryResponse>(
         `/election-rounds/${electionRoundId}/form-submissions:byEntry`,
         {
           params: searchParams,
@@ -109,7 +109,7 @@ export function useFormSubmissionsByObserver(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<FormSubmissionsByObserverResponse>(
+      const response = await API.get<FormSubmissionsByObserverResponse>(
         `/election-rounds/${electionRoundId}/form-submissions:byObserver`,
         {
           params: searchParams,
@@ -130,7 +130,7 @@ export function useFormSubmissionsFilters(electionRoundId: string, dataSource: D
   return useQuery({
     queryKey: formSubmissionsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
-      const response = await authApi.get<FormSubmissionsFilters>(
+      const response = await API.get<FormSubmissionsFilters>(
         `/election-rounds/${electionRoundId}/form-submissions:filters?dataSource=${dataSource}`
       );
 
@@ -161,7 +161,7 @@ export function useFormSubmissionsByForm(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<{ aggregatedForms: FormSubmissionByForm[] }>(
+      const response = await API.get<{ aggregatedForms: FormSubmissionByForm[] }>(
         `/election-rounds/${electionRoundId}/form-submissions:byForm`,
         {
           params: searchParams,

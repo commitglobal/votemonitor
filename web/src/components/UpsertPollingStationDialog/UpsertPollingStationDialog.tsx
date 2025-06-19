@@ -10,10 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
+import { toast } from 'sonner';
 import { useUpsertPollingStation } from '../PollingStationsDashboard/hooks';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
@@ -67,10 +67,7 @@ export default function UpsertPollingStationDialog({
     resolver: zodResolver(importPollingStationSchema),
   });
   const onSuccess = useCallback(() => {
-    toast({
-      title: t('addPollingStation.onSuccess'),
-      variant: 'default',
-    });
+    toast.success(t('addPollingStation.onSuccess'));
 
     queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(currentElectionRoundId) });
     form.reset(DEFAULT_FORM_VALUES);
@@ -78,10 +75,8 @@ export default function UpsertPollingStationDialog({
   }, [queryClient, form, currentElectionRoundId]);
 
   const onError = useCallback(() => {
-    toast({
-      title: t('addPollingStation.onError'),
+    toast.error(t('addPollingStation.onError'), {
       description: 'Please contact tech support',
-      variant: 'destructive',
     });
   }, [queryClient, form, currentElectionRoundId]);
 

@@ -1,5 +1,6 @@
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { ColumnDef } from '@tanstack/react-table';
+import { toast } from 'sonner';
 
 import { ElectionRoundStatus, type Location } from '@/common/types';
 import { LocationsFilters } from '@/components/LocationsFilters/LocationsFilters';
@@ -7,7 +8,7 @@ import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AuthContext } from '@/context/auth.context';
+import { useAuth } from '@/context/auth-context';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
@@ -18,9 +19,8 @@ import { queryClient } from '@/main';
 import { ArrowUpTrayIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useCallback, useContext, useMemo, useState, type ReactElement } from 'react';
+import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { LocationDataTableRowActions } from '../LocationDataTableRowActions/LocationDataTableRowActions';
-import { useToast } from '../ui/use-toast';
 import { locationColDefs } from './column-defs';
 import { useDeleteLocationMutation, useLocations, useUpdateLocationMutation } from './hooks';
 
@@ -28,8 +28,7 @@ export default function LocationsDashboard(): ReactElement {
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
-  const { userRole } = useContext(AuthContext);
-  const { toast } = useToast();
+  const { userRole, isPlatformAdmin } = useAuth();
   const router = useRouter();
 
   const { mutate: deleteLocationMutation } = useDeleteLocationMutation();
@@ -44,16 +43,9 @@ export default function LocationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: locationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Location deleted',
-          });
+          toast.success('Location deleted');
         },
-        onError: () =>
-          toast({
-            title: 'Error occured when deleting location',
-            variant: 'destructive',
-          }),
+        onError: () => toast.error('Error occured when deleting location'),
       }),
     [currentElectionRoundId, deleteLocationMutation]
   );
@@ -68,22 +60,15 @@ export default function LocationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: locationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Location updated',
-          });
+          toast.success('Location updated');
         },
-        onError: () =>
-          toast({
-            title: 'Error occured when updating location',
-            variant: 'destructive',
-          }),
+        onError: () => toast.error('Error occured when updating location'),
       }),
     [currentElectionRoundId, updateLocationMutation]
   );
 
   const columns: ColumnDef<Location>[] = useMemo(() => {
-    if (userRole === 'PlatformAdmin') {
+    if (isPlatformAdmin) {
       return [
         ...locationColDefs,
         {
@@ -163,7 +148,7 @@ export default function LocationsDashboard(): ReactElement {
 
           <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.Locations} />
-            {userRole === 'PlatformAdmin' && (
+            {isPlatformAdmin && (
               <Link
                 to={'/election-rounds/$electionRoundId/locations/import'}
                 params={{ electionRoundId: currentElectionRoundId }}>

@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import CitizenReportsFormAggregatedDetails from '@/features/responses/components/CitizenReportsFormAggregatedDetails/CitizenReportsFormAggregatedDetails';
 import { citizenReportsAggregatedKeys } from '@/features/responses/hooks/citizen-reports';
 import { CitizenReportsFormAggregated } from '@/features/responses/models/citizen-reports-form-aggregated';
@@ -11,7 +11,7 @@ export function citizenReportsAggregatedDetailsQueryOptions(electionRoundId: str
   return queryOptions({
     queryKey: citizenReportsAggregatedKeys.detail(electionRoundId, formId),
     queryFn: async () => {
-      const response = await authApi.get<CitizenReportsFormAggregated>(
+      const response = await API.get<CitizenReportsFormAggregated>(
         `/election-rounds/${electionRoundId}/citizen-reports/forms/${formId}:aggregated-submissions`
       );
 

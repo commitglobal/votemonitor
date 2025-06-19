@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, FormBase, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
 import { queryClient } from '@/main';
@@ -7,20 +7,19 @@ import { FormTemplateFull } from './models';
 const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const formTemlatesKeys = {
-  all: () => ['form-templates' ] as const,
+  all: () => ['form-templates'] as const,
   lists: () => [...formTemlatesKeys.all(), 'list'] as const,
-  list: (params: DataTableParameters) =>
-    [...formTemlatesKeys.lists(), { ...params }] as const,
+  list: (params: DataTableParameters) => [...formTemlatesKeys.lists(), { ...params }] as const,
   details: () => [...formTemlatesKeys.all(), 'detail'] as const,
   detail: (id: string) => [...formTemlatesKeys.details(), id] as const,
-  baseDetails: ( id: string) => [...formTemlatesKeys.details(), 'base', id] as const,
+  baseDetails: (id: string) => [...formTemlatesKeys.details(), 'base', id] as const,
 };
 
 export const formTemplateDetailsQueryOptions = (formTemplateId: string) => {
   return queryOptions({
     queryKey: formTemlatesKeys.detail(formTemplateId),
     queryFn: async () => {
-      const response = await authApi.get<FormTemplateFull>(`/form-templates/${formTemplateId}`);
+      const response = await API.get<FormTemplateFull>(`/form-templates/${formTemplateId}`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch form template');
@@ -33,13 +32,10 @@ export const formTemplateDetailsQueryOptions = (formTemplateId: string) => {
 };
 
 export function useformTemplateDetails(formTemplateId: string): UseQueryResult<FormTemplateFull, Error> {
-  return useQuery(formTemplateDetailsQueryOptions( formTemplateId));
+  return useQuery(formTemplateDetailsQueryOptions(formTemplateId));
 }
 
-export function useFormTemplates(
-  queryParams: DataTableParameters
-): UseQueryResult<PageResponse<FormBase>, Error> {
-
+export function useFormTemplates(queryParams: DataTableParameters): UseQueryResult<PageResponse<FormBase>, Error> {
   return useQuery({
     queryKey: formTemlatesKeys.list(queryParams),
     queryFn: async () => {
@@ -53,7 +49,7 @@ export function useFormTemplates(
 
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<FormBase>>(`/form-templates`, {
+      const response = await API.get<PageResponse<FormBase>>(`/form-templates`, {
         params: searchParams,
       });
 

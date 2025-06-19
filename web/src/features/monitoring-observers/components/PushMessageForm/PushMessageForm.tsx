@@ -6,14 +6,13 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
@@ -28,6 +27,7 @@ import { QuickReportsIncidentCategoryFilter } from '@/features/filtering/compone
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/(app)/monitoring-observers/create-new-message';
+import API from '@/services/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -118,7 +118,7 @@ function PushMessageForm(): FunctionComponent {
       electionRoundId: string;
       request: SendPushNotificationRequest & { title: string; body: string };
     }) => {
-      return authApi.post<PushMessageTargetedObserversSearchParams>(
+      return API.post<PushMessageTargetedObserversSearchParams>(
         `/election-rounds/${electionRoundId}/notifications:send`,
         request
       );
@@ -126,10 +126,7 @@ function PushMessageForm(): FunctionComponent {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pushMessagesKeys.all(currentElectionRoundId) });
-      toast({
-        title: 'Success',
-        description: 'Notification sent',
-      });
+      toast.success('Notification sent');
 
       router.invalidate();
       navigate({ to: '/monitoring-observers/$tab', params: { tab: 'push-messages' } });

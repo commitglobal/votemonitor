@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { useCreateNgo } from '../hooks/ngos-queries';
 import { newNgoSchema, NgoCreationFormData } from '../models/NGO';
-import { useCallback, useEffect } from 'react';
 
 export interface CreateNGODialogProps {
   open: boolean;
@@ -48,20 +48,15 @@ function CreateNGODialog({ open, onOpenChange }: CreateNGODialogProps) {
       onMutationSuccess: () => {
         form.reset({});
         internalOnOpenChange(false);
-        toast({
-          title: 'Success',
-          description: 'New organization created',
-        });
+        toast.success('New organization created');
       },
       onMutationError: (error) => {
         error?.errors?.forEach((error) => {
           form.setError(error.name as keyof NgoCreationFormData, { type: 'custom', message: error.reason });
         });
 
-        toast({
-          title: 'Error adding NGO admin',
+        toast.error('Error adding NGO admin', {
           description: 'Please contact Platform admins',
-          variant: 'destructive',
         });
       },
     });

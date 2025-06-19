@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { FormSubmissionFollowUpStatus, QuestionsAnswered } from '@/common/types';
 import FormSubmissionsAggregatedDetails from '@/features/responses/components/FormSubmissionsAggregatedDetails/FormSubmissionsAggregatedDetails';
 import { formSubmissionsAggregatedKeys } from '@/features/responses/hooks/form-submissions-queries';
@@ -20,7 +20,7 @@ export function formAggregatedDetailsQueryOptions(
     queryFn: async () => {
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<FormSubmissionsAggregated>(
+      const response = await API.get<FormSubmissionsAggregated>(
         `/election-rounds/${electionRoundId}/form-submissions/${formId}:aggregated`,
         {
           params: searchParams,

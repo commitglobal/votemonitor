@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as authResetPasswordIndexRouteImport } from './routes/(auth)/reset-password/index'
-import { Route as authLoginIndexRouteImport } from './routes/(auth)/login/index'
-import { Route as authForgotPasswordIndexRouteImport } from './routes/(auth)/forgot-password/index'
 import { Route as authAcceptInviteIndexRouteImport } from './routes/(auth)/accept-invite/index'
 import { Route as appResponsesIndexRouteImport } from './routes/(app)/responses/index'
 import { Route as appObserversIndexRouteImport } from './routes/(app)/observers/index'
@@ -82,19 +82,19 @@ const appIndexRoute = appIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appRouteRoute,
 } as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
+  id: '/(auth)/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authResetPasswordIndexRoute = authResetPasswordIndexRouteImport.update({
   id: '/(auth)/reset-password/',
   path: '/reset-password/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authLoginIndexRoute = authLoginIndexRouteImport.update({
-  id: '/(auth)/login/',
-  path: '/login/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authForgotPasswordIndexRoute = authForgotPasswordIndexRouteImport.update({
-  id: '/(auth)/forgot-password/',
-  path: '/forgot-password/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authAcceptInviteIndexRoute = authAcceptInviteIndexRouteImport.update({
@@ -429,6 +429,8 @@ const appNgosAdminNgoIdAdminIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof appIndexRoute
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
   '/citizen-guides/new': typeof appCitizenGuidesNewRoute
   '/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
   '/election-event/$tab': typeof appElectionEventTabRoute
@@ -451,8 +453,6 @@ export interface FileRoutesByFullPath {
   '/observers': typeof appObserversIndexRoute
   '/responses': typeof appResponsesIndexRoute
   '/accept-invite': typeof authAcceptInviteIndexRoute
-  '/forgot-password': typeof authForgotPasswordIndexRoute
-  '/login': typeof authLoginIndexRoute
   '/reset-password': typeof authResetPasswordIndexRoute
   '/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
@@ -492,6 +492,8 @@ export interface FileRoutesByFullPath {
   '/ngos/admin/$ngoId/$adminId/view': typeof appNgosAdminNgoIdAdminIdViewRoute
 }
 export interface FileRoutesByTo {
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
   '/': typeof appIndexRoute
   '/citizen-guides/new': typeof appCitizenGuidesNewRoute
   '/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
@@ -515,8 +517,6 @@ export interface FileRoutesByTo {
   '/observers': typeof appObserversIndexRoute
   '/responses': typeof appResponsesIndexRoute
   '/accept-invite': typeof authAcceptInviteIndexRoute
-  '/forgot-password': typeof authForgotPasswordIndexRoute
-  '/login': typeof authLoginIndexRoute
   '/reset-password': typeof authResetPasswordIndexRoute
   '/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
   '/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
@@ -558,6 +558,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appRouteRouteWithChildren
+  '/(auth)/forgot-password': typeof authForgotPasswordRoute
+  '/(auth)/login': typeof authLoginRoute
   '/(app)/': typeof appIndexRoute
   '/(app)/citizen-guides/new': typeof appCitizenGuidesNewRoute
   '/(app)/citizen-notifications/new': typeof appCitizenNotificationsNewRoute
@@ -581,8 +583,6 @@ export interface FileRoutesById {
   '/(app)/observers/': typeof appObserversIndexRoute
   '/(app)/responses/': typeof appResponsesIndexRoute
   '/(auth)/accept-invite/': typeof authAcceptInviteIndexRoute
-  '/(auth)/forgot-password/': typeof authForgotPasswordIndexRoute
-  '/(auth)/login/': typeof authLoginIndexRoute
   '/(auth)/reset-password/': typeof authResetPasswordIndexRoute
   '/(app)/citizen-guides/edit/$guideId': typeof appCitizenGuidesEditGuideIdRoute
   '/(app)/citizen-guides/view/$guideId': typeof appCitizenGuidesViewGuideIdRoute
@@ -625,6 +625,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
+    | '/login'
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
     | '/election-event/$tab'
@@ -647,8 +649,6 @@ export interface FileRouteTypes {
     | '/observers'
     | '/responses'
     | '/accept-invite'
-    | '/forgot-password'
-    | '/login'
     | '/reset-password'
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
@@ -688,6 +688,8 @@ export interface FileRouteTypes {
     | '/ngos/admin/$ngoId/$adminId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/forgot-password'
+    | '/login'
     | '/'
     | '/citizen-guides/new'
     | '/citizen-notifications/new'
@@ -711,8 +713,6 @@ export interface FileRouteTypes {
     | '/observers'
     | '/responses'
     | '/accept-invite'
-    | '/forgot-password'
-    | '/login'
     | '/reset-password'
     | '/citizen-guides/edit/$guideId'
     | '/citizen-guides/view/$guideId'
@@ -753,6 +753,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/(app)'
+    | '/(auth)/forgot-password'
+    | '/(auth)/login'
     | '/(app)/'
     | '/(app)/citizen-guides/new'
     | '/(app)/citizen-notifications/new'
@@ -776,8 +778,6 @@ export interface FileRouteTypes {
     | '/(app)/observers/'
     | '/(app)/responses/'
     | '/(auth)/accept-invite/'
-    | '/(auth)/forgot-password/'
-    | '/(auth)/login/'
     | '/(auth)/reset-password/'
     | '/(app)/citizen-guides/edit/$guideId'
     | '/(app)/citizen-guides/view/$guideId'
@@ -819,11 +819,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   appRouteRoute: typeof appRouteRouteWithChildren
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authLoginRoute: typeof authLoginRoute
   authAcceptInviteSuccessRoute: typeof authAcceptInviteSuccessRoute
   authResetPasswordSuccessRoute: typeof authResetPasswordSuccessRoute
   authAcceptInviteIndexRoute: typeof authAcceptInviteIndexRoute
-  authForgotPasswordIndexRoute: typeof authForgotPasswordIndexRoute
-  authLoginIndexRoute: typeof authLoginIndexRoute
   authResetPasswordIndexRoute: typeof authResetPasswordIndexRoute
 }
 
@@ -843,25 +843,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/forgot-password': {
+      id: '/(auth)/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof authForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(auth)/reset-password/': {
       id: '/(auth)/reset-password/'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof authResetPasswordIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/login/': {
-      id: '/(auth)/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/forgot-password/': {
-      id: '/(auth)/forgot-password/'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof authForgotPasswordIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/accept-invite/': {
@@ -1432,11 +1432,11 @@ const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   appRouteRoute: appRouteRouteWithChildren,
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authLoginRoute: authLoginRoute,
   authAcceptInviteSuccessRoute: authAcceptInviteSuccessRoute,
   authResetPasswordSuccessRoute: authResetPasswordSuccessRoute,
   authAcceptInviteIndexRoute: authAcceptInviteIndexRoute,
-  authForgotPasswordIndexRoute: authForgotPasswordIndexRoute,
-  authLoginIndexRoute: authLoginIndexRoute,
   authResetPasswordIndexRoute: authResetPasswordIndexRoute,
 }
 export const routeTree = rootRouteImport

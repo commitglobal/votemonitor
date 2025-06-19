@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import EditMonitoringObserver from '@/features/monitoring-observers/components/EditMonitoringObserver/EditMonitoringObserver';
 import { monitoringObserversKeys } from '@/features/monitoring-observers/hooks/monitoring-observers-queries';
 import { MonitoringObserver } from '@/features/monitoring-observers/models/monitoring-observer';
@@ -10,7 +10,7 @@ export const monitoringObserverDetailsQueryOptions = (electionRoundId: string, m
   return queryOptions({
     queryKey: monitoringObserversKeys.detail(electionRoundId, monitoringObserverId),
     queryFn: async () => {
-      const response = await authApi.get<MonitoringObserver>(
+      const response = await API.get<MonitoringObserver>(
         `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserverId}`
       );
 

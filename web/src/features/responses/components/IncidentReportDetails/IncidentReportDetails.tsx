@@ -1,23 +1,23 @@
-import { authApi } from '@/common/auth-api';
-import { IncidentReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
+import { DateTimeFormat } from '@/common/formats';
+import { ElectionRoundStatus, IncidentReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
 import { incidentReportDetailsQueryOptions, Route } from '@/routes/(app)/responses/incident-reports/$incidentReportId';
+import API from '@/services/api';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
 import { incidentReportsByEntryKeys, incidentReportsByObserverKeys } from '../../hooks/incident-reports-queries';
 import { SubmissionType } from '../../models/common';
 import { mapIncidentReportFollowUpStatus, mapIncidentReportLocationType } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
-import { format } from 'date-fns';
-import { DateTimeFormat } from '@/common/formats';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 export default function IncidentReportDetails(): FunctionComponent {
   const { incidentReportId } = Route.useParams();
@@ -39,16 +39,13 @@ export default function IncidentReportDetails(): FunctionComponent {
       electionRoundId: string;
       followUpStatus: IncidentReportFollowUpStatus;
     }) => {
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/incident-reports/${incidentReportId}:status`, {
+      return API.put<void>(`/election-rounds/${electionRoundId}/incident-reports/${incidentReportId}:status`, {
         followUpStatus,
       });
     },
 
     onSuccess: async (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Follow-up status updated',
-      });
+      toast.success('Follow-up status updated');
 
       await queryClient.invalidateQueries({ queryKey: incidentReportsByEntryKeys.all(electionRoundId) });
       await queryClient.invalidateQueries({ queryKey: incidentReportsByObserverKeys.all(electionRoundId) });
@@ -57,10 +54,8 @@ export default function IncidentReportDetails(): FunctionComponent {
     },
 
     onError: () => {
-      toast({
-        title: 'Error updating follow up status',
+      toast.error('Error updating follow up status', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

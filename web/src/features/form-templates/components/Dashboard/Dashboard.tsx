@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DateTimeFormat } from '@/common/formats';
 import { FormBase, FormStatus } from '@/common/types';
 import AddFormTranslationsDialog, {
@@ -21,7 +21,6 @@ import { Input } from '@/components/ui/input';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { toast } from '@/components/ui/use-toast';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useLanguages } from '@/hooks/languages';
 import i18n from '@/i18n';
@@ -44,6 +43,7 @@ import { difference } from 'lodash';
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { formTemlatesKeys, useFormTemplates } from '../../queries';
 import { FormTemplateFilters } from './FormTemplateFilters';
+import { toast } from 'sonner';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -346,14 +346,11 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const deleteTranslationMutation = useMutation({
     mutationFn: ({ formTemplateId, languageCode }: { formTemplateId: string; languageCode: string }) => {
-      return authApi.delete<void>(`/form-templates/${formTemplateId}/${languageCode}`);
+      return API.delete<void>(`/form-templates/${formTemplateId}/${languageCode}`);
     },
 
     onSuccess: (_data) => {
-      toast({
-        title: 'Success',
-        description: 'Translation deleted',
-      });
+      toast.success('Translation deleted');
 
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
       router.invalidate();
@@ -383,16 +380,13 @@ export default function FormTemplatesDashboard(): ReactElement {
       newLanguageCodes: string[];
       originalLanguageCodes: string[];
     }) => {
-      return authApi.put<void>(`/form-templates/${formTemplateId}:addTranslations`, {
+      return API.put<void>(`/form-templates/${formTemplateId}:addTranslations`, {
         languageCodes: newLanguageCodes,
       });
     },
 
     onSuccess: async (_, { newLanguageCodes, originalLanguageCodes }) => {
-      toast({
-        title: 'Success',
-        description: 'Translations added',
-      });
+      toast.success('Translations added');
 
       addTranslationsDialog.dismiss();
       const addedLanguages = difference(newLanguageCodes, originalLanguageCodes);
@@ -420,14 +414,11 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const publishFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
-      return authApi.post<void>(`/form-templates/${formTemplateId}:publish`);
+      return API.post<void>(`/form-templates/${formTemplateId}:publish`);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form template published',
-      });
+      toast.success('Form template published');
 
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
       router.invalidate();
@@ -436,79 +427,62 @@ export default function FormTemplatesDashboard(): ReactElement {
     onError: (error) => {
       // @ts-ignore
       if (error.response.status === 400) {
-        toast({
-          title: 'Error publishing form template',
+        toast.error('Error publishing form template', {
           description: 'You are missing translations. Please translate all fields and try again',
-          variant: 'destructive',
         });
 
         return;
       }
-      toast({
-        title: 'Error publishing form template',
+      toast.error('Error publishing form template', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
   const obsoleteFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
-      return authApi.post<void>(`/form-templates/${formTemplateId}:obsolete`);
+      return API.post<void>(`/form-templates/${formTemplateId}:obsolete`);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form template obsoleted',
-      });
+      toast.success('Form template obsoleted');
 
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
       router.invalidate();
     },
 
     onError: () => {
-      toast({
-        title: 'Error obsoleting form',
+      toast.error('Error obsoleting form', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
   const duplicateFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
-      return authApi.post<void>(`/form-templates/${formTemplateId}:duplicate`);
+      return API.post<void>(`/form-templates/${formTemplateId}:duplicate`);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form template duplicated',
-      });
+      toast.success('Form template duplicated');
 
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
       router.invalidate();
     },
 
     onError: () => {
-      toast({
-        title: 'Error cloning form template',
+      toast.error('Error cloning form template', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
   const deleteFormTemplateMutation = useMutation({
     mutationFn: ({ formTemplateId }: { formTemplateId: string }) => {
-      return authApi.delete<void>(`/form-templates/${formTemplateId}`);
+      return API.delete<void>(`/form-templates/${formTemplateId}`);
     },
     onSuccess: async () => {
-      toast({
-        title: 'Success',
-        description: 'Form template deleted',
-      });
+      toast.success('Form template deleted');
       await queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all() });
       router.invalidate();
     },

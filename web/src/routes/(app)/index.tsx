@@ -1,4 +1,4 @@
-import { AuthContext } from '@/context/auth.context';
+import { AuthContext, useAuth } from '@/context/auth-context';
 import NgoAdminDashboard from '@/features/ngo-admin-dashboard/components/Dashboard/Dashboard';
 import PlatformAdminDashboard from '@/features/platform-admin-dashboard/components/Dashboard/Dashboard';
 import { redirectIfNotAuth } from '@/lib/utils';
@@ -8,9 +8,9 @@ import { useContext } from 'react';
 import { DataSources, type FunctionComponent } from '../../common/types';
 import { z } from 'zod';
 const StatisticsDetails = (): FunctionComponent => {
-  const { userRole } = useContext(AuthContext);
+  const { isPlatformAdmin } = useAuth();
 
-  return userRole === 'PlatformAdmin' ? <PlatformAdminDashboard /> : <NgoAdminDashboard />;
+  return isPlatformAdmin ? <PlatformAdminDashboard /> : <NgoAdminDashboard />;
 };
 
 export const ZDataSourceSearchSchema = z.object({

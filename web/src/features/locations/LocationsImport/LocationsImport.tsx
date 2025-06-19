@@ -7,18 +7,18 @@ import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { z, ZodIssue } from 'zod';
 
-import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { locationsKeys } from '@/hooks/locations-levels';
 import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { ImportedLocationsDataTable } from './ImportedLocationsDataTable';
 
 export type ImportLocationRow = z.infer<typeof importLocationSchema> & { errors?: ZodIssue[] };
@@ -28,7 +28,6 @@ export function LocationsImport(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.locations.addLocation' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   function deleteLocation(location: ImportLocationRow) {
     setLocations((prev) => [...prev.filter((obs) => obs.id !== location.id)]);
@@ -51,23 +50,18 @@ export function LocationsImport(): FunctionComponent {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ electionRoundId, locations }: { electionRoundId: string; locations: ImportLocationRow[] }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/locations`, { locations });
+      return API.post(`/election-rounds/${electionRoundId}/locations`, { locations });
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
+      toast.success(t('onSuccess'));
 
       queryClient.invalidateQueries({ queryKey: locationsKeys.all(electionRoundId) });
       navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId } });
     },
     onError: () => {
-      toast({
-        title: t('onError'),
+      toast.error(t('onError'), {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -115,10 +109,8 @@ export function LocationsImport(): FunctionComponent {
                   async complete(results) {
                     if (results.errors.length) {
                       // Optionally show an error message to the user.
-                      toast({
-                        title: 'Parsing errors',
+                      toast.error('Parsing errors', {
                         description: 'Please check the file and try again',
-                        variant: 'destructive',
                       });
                     }
 

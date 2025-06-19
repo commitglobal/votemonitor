@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import QuickReportDetails from '@/features/responses/components/QuickReportDetails/QuickReportDetails';
 import { quickReportKeys } from '@/features/responses/hooks/quick-reports';
 import type { QuickReport } from '@/features/responses/models/quick-report';
@@ -10,12 +10,11 @@ export function quickReportDetailsQueryOptions(electionRoundId: string, quickRep
   return queryOptions({
     queryKey: quickReportKeys.detail(electionRoundId, quickReportId),
     queryFn: async () => {
-
-      const response = await authApi.get<QuickReport>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}`);
+      const response = await API.get<QuickReport>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}`);
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 

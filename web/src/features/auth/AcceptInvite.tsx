@@ -1,17 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import { noAuthApi } from '@/common/no-auth-api';
+import API from '@/services/api';
 import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { toast } from '@/components/ui/use-toast';
 import { Route as AcceptInviteRoute } from '@/routes/(auth)/accept-invite/index';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 
 const formSchema = z
   .object({
@@ -48,23 +47,18 @@ function AcceptInvite() {
 
   const acceptInviteMutation = useMutation({
     mutationFn: async (obj: AcceptInviteRequest) => {
-      return await noAuthApi.post<AcceptInviteRequest>(`/auth/accept-invite`, obj);
+      return await API.post<AcceptInviteRequest>(`/auth/accept-invite`, obj);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Password was set successfully',
-      });
+      toast.success('Password was set successfully');
 
       navigate({ to: '/accept-invite/success' });
     },
 
     onError: () => {
-      toast({
-        title: 'Error accepting invite',
+      toast.error('Error accepting invite', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

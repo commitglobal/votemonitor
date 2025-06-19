@@ -2,16 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useContext } from 'react';
-import { AuthContext } from '@/context/auth.context';
-import { LoginDTO } from '@/common/auth-api';
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Logo from '@/components/layout/Header/Logo';
 import { PasswordInput } from '@/components/ui/password-input';
+import { useAuth } from '@/context/auth-context';
 
 const formSchema = z.object({
   email: z
@@ -23,12 +20,14 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Password is mandatory' }),
 });
 
-function Login() {
-  const { signIn } = useContext(AuthContext);
-  const navigate = useNavigate();
+export interface LoginPageProps {
+  redirect: string;
+}
+
+function LoginPage({ redirect }: LoginPageProps) {
+  const { login } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -36,10 +35,7 @@ function Login() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const signedIn: boolean = await signIn(values as LoginDTO);
-    if (signedIn) {
-      navigate({ to: '/' });
-    }
+    await login(values.email, values.password, redirect);
   };
 
   return (
@@ -103,4 +99,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;

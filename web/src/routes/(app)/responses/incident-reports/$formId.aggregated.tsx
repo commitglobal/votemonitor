@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import IncidentReportsAggregatedDetails from '@/features/responses/components/IncidentReportsAggregatedDetails/IncidentReportsAggregatedDetails';
 import { incidentReportsAggregatedKeys } from '@/features/responses/hooks/incident-reports-queries';
 import { SubmissionType } from '@/features/responses/models/common';
@@ -11,7 +11,7 @@ export function incidentReportsAggregatedDetailsQueryOptions(electionRoundId: st
   return queryOptions({
     queryKey: incidentReportsAggregatedKeys.detail(electionRoundId, formId),
     queryFn: async () => {
-      const response = await authApi.get<FormSubmissionsAggregated>(
+      const response = await API.get<FormSubmissionsAggregated>(
         `/election-rounds/${electionRoundId}/incident-reports/forms/${formId}:aggregated-submissions`
       );
 

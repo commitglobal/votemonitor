@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
@@ -36,7 +36,7 @@ export const useMonitoringObservers = (
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<MonitoringObserver>>(
+      const response = await API.get<PageResponse<MonitoringObserver>>(
         `/election-rounds/${electionRoundId}/monitoring-observers`,
         {
           params: searchParams,
@@ -53,6 +53,6 @@ export const useMonitoringObservers = (
       };
     },
     enabled: !!electionRoundId,
-    staleTime: STALE_TIME
+    staleTime: STALE_TIME,
   });
 };

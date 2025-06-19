@@ -1,8 +1,8 @@
-import { authApi } from '@/common/auth-api';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import API from '@/services/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import { FormFull } from './models';
 import { formsKeys } from './queries';
@@ -33,29 +33,24 @@ export const useCreateFormFromTemplate = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const createFormFromTemplateMutation = useMutation({
     mutationFn: ({ templateId, languageCode }: FormFromTemplateDto) => {
-      return authApi.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromTemplate`, {
+      return API.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromTemplate`, {
         templateId,
         defaultLanguage: languageCode,
         languages: [languageCode],
       });
     },
     onSuccess: (response) => {
-      toast({
-        title: 'Success',
-        description: 'Form created from template',
-      });
+      toast.success('Form created from template');
       queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
       navigate({ to: '/forms/$formId/edit', params: { formId: response.data.id } });
     },
 
     onError: (err) =>
-      toast({
-        title: 'Error creating form from template',
+      toast.error('Error creating form from template', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       }),
 
     onSettled: () => {
@@ -94,7 +89,7 @@ export const useCreateFormFromForm = () => {
   const queryClient = useQueryClient();
   const createFormFromFormMutation = useMutation({
     mutationFn: ({ formId, languageCode }: FormReuseDto) => {
-      return authApi.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromForm`, {
+      return API.post<FormFull>(`/election-rounds/${currentElectionRoundId}/forms:fromForm`, {
         formId,
         defaultLanguage: languageCode,
         languages: [languageCode],
@@ -102,19 +97,14 @@ export const useCreateFormFromForm = () => {
       });
     },
     onSuccess: (response) => {
-      toast({
-        title: 'Success',
-        description: 'Form created from template',
-      });
+      toast.success('Form created from template');
       queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
       navigate({ to: '/forms/$formId/edit', params: { formId: response.data.id } });
     },
 
     onError: (err) =>
-      toast({
-        title: 'Error creating form from template',
+      toast.error('Error creating form from template', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       }),
 
     onSettled: () => {

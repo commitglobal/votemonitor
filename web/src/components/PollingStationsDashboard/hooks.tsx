@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, PageResponse, PollingStation } from '@/common/types';
 import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
@@ -23,7 +23,7 @@ export function usePollingStations(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<PollingStation>>(
+      const response = await API.get<PageResponse<PollingStation>>(
         `/election-rounds/${electionRoundId}/polling-stations:list`,
         {
           params: searchParams,
@@ -44,7 +44,7 @@ export function usePollingStations(
 export const useDeletePollingStationMutation = (onSuccess?: () => void, onError?: () => void) => {
   return useMutation({
     mutationFn: ({ electionRoundId, pollingStationId }: { electionRoundId: string; pollingStationId: string }) => {
-      return authApi.delete<PollingStation>(`/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`);
+      return API.delete<PollingStation>(`/election-rounds/${electionRoundId}/polling-stations/${pollingStationId}`);
     },
 
     onSuccess: () => onSuccess?.(),
@@ -55,7 +55,7 @@ export const useDeletePollingStationMutation = (onSuccess?: () => void, onError?
 export const useUpsertPollingStation = (onSucces?: () => void, onError?: () => void) =>
   useMutation({
     mutationFn: ({ electionRoundId, values }: { electionRoundId: string; values: ImportPollingStationRow }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, {
+      return API.post(`/election-rounds/${electionRoundId}/polling-stations`, {
         pollingStations: [values],
       });
     },

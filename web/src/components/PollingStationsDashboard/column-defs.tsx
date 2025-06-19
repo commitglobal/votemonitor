@@ -9,7 +9,7 @@ import { MoreHorizontal } from 'lucide-react';
 export type PollingStationAction = 'edit' | 'delete' | 'add';
 
 export const getPollingStationColDefs = (
-  userRole: string | undefined,
+  isPlatformAdmin: boolean,
   setRowAction: React.Dispatch<React.SetStateAction<DataTableRowAction<PollingStation, PollingStationAction> | null>>
 ): ColumnDef<PollingStation>[] => {
   const columns: ColumnDef<PollingStation>[] = [
@@ -163,7 +163,7 @@ export const getPollingStationColDefs = (
     },
   ];
 
-  if (userRole === 'PlatformAdmin') {
+  if (isPlatformAdmin) {
     columns.push({
       id: 'actions',
       header: '',

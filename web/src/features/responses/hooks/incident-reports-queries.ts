@@ -1,9 +1,14 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataSources, DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import type { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver, IncidentReportsFilters } from '../models/incident-report';
+import type {
+  IncidentReportByEntry,
+  IncidentReportByForm,
+  IncidentReportByObserver,
+  IncidentReportsFilters,
+} from '../models/incident-report';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -59,7 +64,7 @@ export function useIncidentReportsByEntry(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<IncidentReportsByEntryResponse>(
+      const response = await API.get<IncidentReportsByEntryResponse>(
         `/election-rounds/${electionRoundId}/incident-reports:byEntry`,
         {
           params: searchParams,
@@ -96,7 +101,7 @@ export function useIncidentReportsByObserver(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<IncidentReportsByObserverResponse>(
+      const response = await API.get<IncidentReportsByObserverResponse>(
         `/election-rounds/${electionRoundId}/incident-reports:byObserver`,
         {
           params: searchParams,
@@ -133,7 +138,7 @@ export function useIncidentReportsByForm(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<{ aggregatedForms: IncidentReportByForm[] }>(
+      const response = await API.get<{ aggregatedForms: IncidentReportByForm[] }>(
         `/election-rounds/${electionRoundId}/incident-reports:byForm`,
         {
           params: searchParams,
@@ -159,7 +164,7 @@ export function useIncidentReportsFilters(electionRoundId: string, dataSource: D
   return useQuery({
     queryKey: incidentReportsByEntryKeys.filters(electionRoundId, dataSource),
     queryFn: async () => {
-      const response = await authApi.get<IncidentReportsFilters>(
+      const response = await API.get<IncidentReportsFilters>(
         `/election-rounds/${electionRoundId}/incident-reports:filters?dataSource=${dataSource}`
       );
 

@@ -1,9 +1,4 @@
-'use client';
-
-import type { Row } from '@tanstack/react-table';
-import { Loader, Trash } from 'lucide-react';
-import * as React from 'react';
-
+import { PollingStation } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,13 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { PollingStation } from '@/common/types';
-import { useDeletePollingStationMutation } from '../PollingStationsDashboard/hooks';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import { queryClient } from '@/main';
 import { useRouter } from '@tanstack/react-router';
-import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useToast } from '../ui/use-toast';
+import type { Row } from '@tanstack/react-table';
+import { Loader, Trash } from 'lucide-react';
+import * as React from 'react';
+import { toast } from 'sonner';
+import { useDeletePollingStationMutation } from '../PollingStationsDashboard/hooks';
 
 interface DeletePollingStationDialogProps extends React.ComponentPropsWithoutRef<typeof Dialog> {
   pollingStation: Row<PollingStation>['original'] | undefined;
@@ -37,23 +34,15 @@ export function DeletePollingStationDialog({
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const router = useRouter();
-  const { toast } = useToast();
 
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(currentElectionRoundId) });
     router.invalidate();
     props.onOpenChange?.(false);
 
-    toast({
-      title: 'Success',
-      description: 'Polling station deleted',
-    });
+    toast.success('Polling station deleted');
   };
-  const onError = () =>
-    toast({
-      title: 'Error occured when deleting polling station',
-      variant: 'destructive',
-    });
+  const onError = () => toast.error('Error occured when deleting polling station');
 
   const { mutate: deletePollingStationMutation, isPending: isDeletePending } = useDeletePollingStationMutation(
     onSuccess,

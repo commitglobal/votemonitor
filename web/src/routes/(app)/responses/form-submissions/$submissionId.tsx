@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import FormSubmissionDetails from '@/features/responses/components/FormSubmissionDetails/FormSubmissionDetails';
 import { formSubmissionsByEntryKeys } from '@/features/responses/hooks/form-submissions-queries';
 import type { FormSubmission } from '@/features/responses/models/form-submission';
@@ -10,7 +10,7 @@ export function formSubmissionDetailsQueryOptions(electionRoundId: string, submi
   return queryOptions({
     queryKey: formSubmissionsByEntryKeys.detail(electionRoundId, submissionId),
     queryFn: async () => {
-      const response = await authApi.get<FormSubmission>(
+      const response = await API.get<FormSubmission>(
         `/election-rounds/${electionRoundId}/form-submissions/${submissionId}`
       );
 

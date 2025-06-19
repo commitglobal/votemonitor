@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
@@ -40,7 +40,7 @@ export function usePushMessages(electionRoundId: string, queryParams: DataTableP
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PushMessageResponse>(
+      const response = await API.get<PushMessageResponse>(
         `/election-rounds/${electionRoundId}/notifications:listSent`,
         {
           params: searchParams,
@@ -77,7 +77,7 @@ export const useTargetedMonitoringObservers = (
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<TargetedMonitoringObserver>>(
+      const response = await API.get<PageResponse<TargetedMonitoringObserver>>(
         `election-rounds/${electionRoundId}/notifications:listRecipients`,
         {
           params: searchParams,

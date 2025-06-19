@@ -5,7 +5,7 @@ import Dropzone, { type DropzoneProps, type FileRejection } from 'react-dropzone
 import { Button } from '@/components/ui/button';
 import { useControllableState } from '@/components/ui/use-controllable-state';
 import { cn, formatBytes } from '@/lib/utils';
-import { toast } from './use-toast';
+import { toast } from 'sonner';
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -91,15 +91,12 @@ export function FileUploader(props: FileUploaderProps) {
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
-        toast({
-          title: 'Cannot upload more than 1 file at a time',
-          variant: 'destructive',
-        });
+        toast.error('Cannot upload more than 1 file at a time');
         return;
       }
 
       if ((files?.length ?? 0) + acceptedFiles.length > maxFileCount) {
-        toast({ title: `Cannot upload more than ${maxFileCount} files`, variant: 'destructive' });
+        toast.error(`Cannot upload more than ${maxFileCount} files`);
         return;
       }
 
@@ -115,7 +112,7 @@ export function FileUploader(props: FileUploaderProps) {
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
-          toast({ title: `File ${file.name} was rejected`, variant: 'destructive' });
+          toast.error(`File ${file.name} was rejected`);
         });
       }
     },

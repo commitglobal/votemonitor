@@ -5,6 +5,7 @@ import { z } from 'zod';
 export type FunctionComponent = React.ReactElement | null;
 
 type HeroIconSVGProps = React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & React.RefAttributes<SVGSVGElement>;
+export type UserRole = 'PlatformAdmin' | 'NgoAdmin' | 'NoOne';
 
 type IconProps = HeroIconSVGProps & {
   title?: string;

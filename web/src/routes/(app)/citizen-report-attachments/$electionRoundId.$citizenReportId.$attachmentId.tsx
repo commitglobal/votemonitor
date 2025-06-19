@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { Attachment } from '@/features/responses/models/common';
 import { getFileCategory, redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ export const citizenReportAttachmentQueryOptions = (
   return queryOptions({
     queryKey: ['citizen-reports-attachments', electionRoundId, attachmentId],
     queryFn: async () => {
-      const response = await authApi.get<Attachment>(
+      const response = await API.get<Attachment>(
         `/api/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}/attachments/${attachmentId}`
       );
 
@@ -28,7 +28,9 @@ export const citizenReportAttachmentQueryOptions = (
   });
 };
 
-export const Route = createFileRoute('/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId')({
+export const Route = createFileRoute(
+  '/(app)/citizen-report-attachments/$electionRoundId/$citizenReportId/$attachmentId'
+)({
   component: AttachmentDetails,
   loader: ({ context: { queryClient }, params: { electionRoundId, citizenReportId, attachmentId } }) =>
     queryClient.ensureQueryData(citizenReportAttachmentQueryOptions(electionRoundId, citizenReportId, attachmentId)),
