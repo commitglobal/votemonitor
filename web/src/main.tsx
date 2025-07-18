@@ -15,7 +15,7 @@ import { TanStackRouterDevelopmentTools } from './components/utils/development-t
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 15 * 60 * 1000,
     },
   },
 });
