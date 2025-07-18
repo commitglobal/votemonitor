@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Vote.Monitor.Ingestor.Core.Converters;
 
-public class SMSToFormSubmissionDecoder
+public class SmsToFormSubmissionDecoder
 {
     private const int FORM_CODE_START_INDEX = 0;
     private const int FORM_CODE_LENGTH = 2;
@@ -14,7 +14,7 @@ public class SMSToFormSubmissionDecoder
     private const int QUESTIONS_START_INDEX = 10;
     private const int QUESTION_CODE_LENGTH = 2;
 
-    public SMSFormSubmission Decode(string smsMessage)
+    public SmsFormSubmission Decode(string smsMessage)
     {
         ValidateSmsMessage(smsMessage);
 
@@ -30,11 +30,11 @@ public class SMSToFormSubmissionDecoder
         var questions = ExtractQuestions(smsMessage);
         ValidateQuestions(questions);
 
-        return new SMSFormSubmission() { 
+        return new SmsFormSubmission() { 
             FormCode = formCode, 
             CorrelationId = correlationId, 
             PollingStationCode = pollingStationCode,
-            Questions = questions
+            Answers = questions
         };
 
     }
@@ -77,11 +77,11 @@ public class SMSToFormSubmissionDecoder
             throw new ArgumentException($"Polling station code '{pollingStationCode}' contains invalid characters. Only alphanumeric characters are valid");
     }
 
-    private SMSFormSubmission.Question[] ExtractQuestions(string smsMessage)
+    private SmsFormSubmission.SmsAnswer[] ExtractQuestions(string smsMessage)
     {
         var questionsText = smsMessage.Substring(QUESTIONS_START_INDEX);
 
-        List<SMSFormSubmission.Question> questions = new();
+        List<SmsFormSubmission.SmsAnswer> questions = new();
 
         bool readingCode = true;
 
@@ -107,7 +107,7 @@ public class SMSToFormSubmissionDecoder
                 else
                 {
                     var answer = questionsText.Substring(answerStartIndex, i - answerStartIndex);
-                    questions.Add(new() { Code = currentCode, Answer = answer });
+                    questions.Add(new() { Code = currentCode, Value = answer });
                     answerStartIndex = -1;
                     readingCode = true;
                 }
@@ -117,13 +117,13 @@ public class SMSToFormSubmissionDecoder
         if (!string.IsNullOrEmpty(currentCode))
         {
             var answer = questionsText.Substring(answerStartIndex);
-            questions.Add(new() { Code = currentCode, Answer = answer});
+            questions.Add(new() { Code = currentCode, Value = answer});
         }
 
         return questions.ToArray();
     }
 
-    private void ValidateQuestions(SMSFormSubmission.Question[] questions)
+    private void ValidateQuestions(SmsFormSubmission.SmsAnswer[] questions)
     {
         if (!questions.Any())
             throw new ArgumentException("The message must contain question answers");
@@ -131,23 +131,23 @@ public class SMSToFormSubmissionDecoder
         {
             if(question.Code.Any(c => !c.IsLetter()))
                 throw new ArgumentException($"Question code '{question.Code}' contains invalid characters. Only letters are valid");
-            if (question.Answer.Any(c => !c.IsDigit()))
-                throw new ArgumentException($"The answer '{question.Answer}' for question '{question.Code}' contains invalid characters. Only digits are valid");
+            if (question.Value.Any(c => !c.IsDigit()))
+                throw new ArgumentException($"The answer '{question.Value}' for question '{question.Code}' contains invalid characters. Only digits are valid");
         }
     }
 }
 
-public class SMSFormSubmission
+public class SmsFormSubmission
 {
     public required string FormCode;
     public required string CorrelationId;
     public required string PollingStationCode;
 
-    public required Question[] Questions;
+    public required SmsAnswer[] Answers;
 
-    public class Question
+    public class SmsAnswer
     {
         public required string Code;
-        public required string Answer;
+        public required string Value;
     }
 }

@@ -6,7 +6,7 @@ namespace Vote.Monitor.Ingestor.Core.UnitTests;
 
 public class SMSToFormSubmissionDecoderTests
 {
-    private static SMSToFormSubmissionDecoder _decoder = new();
+    private static SmsToFormSubmissionDecoder _decoder = new();
 
     private const string VALID_FORM_CODE = "A3";
     private const string FORM_CODE_WITH_INVALID_CHARACTERS = "1#";
@@ -42,7 +42,7 @@ public class SMSToFormSubmissionDecoderTests
     [Fact]
     public void DecodingStringWithValidFormCode_ReturnsItInASMSFormSubmission()
     {
-        SMSFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(formCode: VALID_FORM_CODE));
+        SmsFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(formCode: VALID_FORM_CODE));
         smsFormSubmission.FormCode.Should().Be(VALID_FORM_CODE);
     }
 
@@ -57,7 +57,7 @@ public class SMSToFormSubmissionDecoderTests
     [Fact]
     public void DecodingStringWithValidCorrelationId_ReturnsItInASMSFormSubmission()
     {
-        SMSFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(correlationId: VALID_CORRELATION_ID));
+        SmsFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(correlationId: VALID_CORRELATION_ID));
         smsFormSubmission.CorrelationId.Should().Be(VALID_CORRELATION_ID);
     }
 
@@ -73,7 +73,7 @@ public class SMSToFormSubmissionDecoderTests
     [Fact]
     public void DecodingStringWithValidPollingStationCode_ReturnsItInASMSFormSubmission()
     {
-        SMSFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(pollingStationCode: VALID_POLLING_STATION_CODE));
+        SmsFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(pollingStationCode: VALID_POLLING_STATION_CODE));
         smsFormSubmission.PollingStationCode.Should().Be(VALID_POLLING_STATION_CODE);
     }
 
@@ -104,10 +104,10 @@ public class SMSToFormSubmissionDecoderTests
     [Fact]
     public void DecodingStringWithValidQuestionAnswer_ReturnsThemInASMSFormSubmission()
     {
-        SMSFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(questions: [(VALID_QUESTION_CODE, VALID_ANSWER), (VALID_QUESTION_CODE, VALID_ANSWER)]));
-        smsFormSubmission.Questions.Length.Should().Be(2);
-        smsFormSubmission.Questions.Should().AllSatisfy(q => q.Code.Should().Be(VALID_QUESTION_CODE));
-        smsFormSubmission.Questions.Should().AllSatisfy(q => q.Answer.Should().Be(VALID_ANSWER));
+        SmsFormSubmission smsFormSubmission = _decoder.Decode(GetEncodedString(questions: [(VALID_QUESTION_CODE, VALID_ANSWER), (VALID_QUESTION_CODE, VALID_ANSWER)]));
+        smsFormSubmission.Answers.Length.Should().Be(2);
+        smsFormSubmission.Answers.Should().AllSatisfy(q => q.Code.Should().Be(VALID_QUESTION_CODE));
+        smsFormSubmission.Answers.Should().AllSatisfy(q => q.Value.Should().Be(VALID_ANSWER));
     }
 
     private static string GetEncodedString(
