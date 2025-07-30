@@ -1,4 +1,4 @@
-﻿namespace Feature.PollingStations;
+﻿namespace Vote.Monitor.Core.Models;
 public class PollingStationModel
 {
     public Guid Id { get; set; }

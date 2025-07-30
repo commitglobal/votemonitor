@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Feature.PollingStations.FetchAll;
+﻿namespace Vote.Monitor.Core.Models;
 
 public class LocationNode
 {

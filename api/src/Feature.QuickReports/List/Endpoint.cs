@@ -32,6 +32,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
+            AND (@monitoringObserverId IS NULL OR QR."MonitoringObserverId" = @monitoringObserverId)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR AMO."Tags" && @tagsFilter)
             AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
@@ -63,7 +65,20 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 OR PS."Level5" = @level5
             )
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp);
+            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
+            AND (@hasAttachments is NULL
+              OR ((SELECT COUNT(1)
+                   FROM "QuickReportAttachments" QRA
+                   WHERE QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                     AND QR."Id" = QRA."QuickReportId"
+                     AND QRA."IsDeleted" = false
+                     AND QRA."IsCompleted" = true) = 0 AND @hasAttachments = false)
+              OR ((SELECT COUNT(1)
+                   FROM "QuickReportAttachments" QRA
+                   WHERE QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                     AND QR."Id" = QRA."QuickReportId"
+                     AND QRA."IsDeleted" = false
+                     AND QRA."IsCompleted" = true) > 0 AND @hasAttachments = true));
 
         SELECT
             QR."Id",
@@ -100,6 +115,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
+            AND (@monitoringObserverId IS NULL OR QR."MonitoringObserverId" = @monitoringObserverId)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR AMO."Tags" && @tagsFilter)
             AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
@@ -132,6 +149,19 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             )
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
             AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
+            AND (@hasAttachments is NULL
+                OR ((SELECT COUNT(1)
+                     FROM "QuickReportAttachments" QRA
+                     WHERE QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                       AND QR."Id" = QRA."QuickReportId"
+                       AND QRA."IsDeleted" = false
+                       AND QRA."IsCompleted" = true) = 0 AND @hasAttachments = false)
+                OR ((SELECT COUNT(1)
+                     FROM "QuickReportAttachments" QRA
+                     WHERE QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                       AND QR."Id" = QRA."QuickReportId"
+                       AND QRA."IsDeleted" = false
+                       AND QRA."IsCompleted" = true) > 0 AND @hasAttachments = true))
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
             CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC
@@ -160,7 +190,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             incidentCategory = req.IncidentCategory?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            monitoringObserverId = req.MonitoringObserverId,
+            hasAttachments = req.HasAttachments,
+            tagsFilter = req.TagsFilter ?? [],
         };
 
         int totalRowCount;

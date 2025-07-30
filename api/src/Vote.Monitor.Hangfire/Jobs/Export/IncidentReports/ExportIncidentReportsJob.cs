@@ -47,9 +47,13 @@ public class ExportIncidentReportsJob(
             }
 
             var utcNow = timeProvider.UtcNow;
-
+            var filters = exportedData.IncidentReportsFilters ?? new ExportIncidentReportsFilters();
+            
             var incidentReportingForm = await context
                 .Forms
+                .FromSqlInterpolated(
+                    @$"SELECT f.* FROM ""Forms"" f 
+                       INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""")
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && x.MonitoringNgo.NgoId == ngoId
                             && x.Status == FormStatus.Published
@@ -57,11 +61,13 @@ public class ExportIncidentReportsJob(
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var filters = exportedData.IncidentReportsFilters ?? new ExportIncidentReportsFilters();
             var incidentReports = await GetIncidentReports(electionRoundId, ngoId, filters, ct);
 
-            foreach (var attachment in incidentReports.SelectMany(
-                         incidentReportModel => incidentReportModel.Attachments))
+            var attachments = incidentReports
+                .SelectMany(ir => ir.Attachments)
+                .ToList();
+            
+            foreach (var attachment in attachments)
             {
                 var result =
                     await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);

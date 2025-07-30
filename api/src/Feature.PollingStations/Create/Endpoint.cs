@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 

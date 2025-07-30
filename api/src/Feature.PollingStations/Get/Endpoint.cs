@@ -1,5 +1,6 @@
 ﻿using Feature.PollingStations.Specifications;
 using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.PollingStations.Get;
 

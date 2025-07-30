@@ -1,4 +1,6 @@
-﻿namespace Feature.PollingStations.Create;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Feature.PollingStations.Create;
 
 public class Response
 {

@@ -9,6 +9,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
@@ -57,9 +58,10 @@ public class ExportFormSubmissionsJob(
                 .Forms
                 .FromSqlInterpolated(
                     @$"SELECT f.* FROM ""Forms"" f 
-                       INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
+                       INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""")
                 .Where(x => x.Status == FormStatus.Published)
-                .OrderBy(x => x.CreatedOn)
+                .Where(x => x.FormType != FormType.CitizenReporting && x.FormType != FormType.IncidentReporting)
+                .OrderBy(x => x.DisplayOrder)
                 .AsNoTracking()
                 .ToListAsync(ct);
 

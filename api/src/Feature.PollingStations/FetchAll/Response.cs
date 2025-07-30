@@ -1,4 +1,6 @@
-﻿namespace Feature.PollingStations.FetchAll;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Feature.PollingStations.FetchAll;
 
 public class Response
 {
