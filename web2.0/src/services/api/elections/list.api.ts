@@ -1,7 +1,7 @@
 import { buildURLSearchParams } from "@/lib/utils";
 import API from "@/services/api";
 import type { PageResponse } from "@/types/common";
-import type { ElectionModel, ElectionsSearch } from "@/types/elections";
+import type { ElectionModel, ElectionsSearch } from "@/types/election";
 
 export const listElections = (
   search: ElectionsSearch

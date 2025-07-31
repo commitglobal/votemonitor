@@ -1,6 +1,6 @@
 import { listMonitoringObserversTags } from "@/services/api/monitoring-observers/list-tags.api";
 import { listMonitoringObservers } from "@/services/api/monitoring-observers/list.api";
-import type { MonitoringObserversSearch } from "@/types/monitoring-observers";
+import type { MonitoringObserversSearch } from "@/types/monitoring-observer";
 import { queryOptions } from "@tanstack/react-query";
 
 export const monitoringObserversKeys = {

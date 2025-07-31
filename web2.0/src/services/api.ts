@@ -110,6 +110,7 @@ const handleTokenRefresh = async (originalRequest: any) => {
   } catch (error) {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    console.log("redirect");
     router.navigate({ to: "/login" });
     throw error;
   } finally {

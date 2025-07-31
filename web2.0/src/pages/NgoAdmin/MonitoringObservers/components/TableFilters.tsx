@@ -9,7 +9,7 @@ import type { Option } from "@/types/data-table";
 import {
   MonitoringObserverStatus,
   type MonitoringObserverModel,
-} from "@/types/monitoring-observers";
+} from "@/types/monitoring-observer";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";

@@ -1,5 +1,5 @@
-import { listElections } from "@/services/api/monitoring-observers/list-elections.api";
-import type { ElectionsSearch } from "@/types/elections";
+import { listElections } from "@/services/api/elections/list.api";
+import type { ElectionsSearch } from "@/types/election";
 import { queryOptions } from "@tanstack/react-query";
 
 export const electionsKeys = {

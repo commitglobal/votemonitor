@@ -1,5 +1,5 @@
 import Page from "@/pages/NgoAdmin/MonitoringObservers/Page";
-import { monitoringObserversSearchSchema } from "@/types/monitoring-observers";
+import { monitoringObserversSearchSchema } from "@/types/monitoring-observer";
 import { createFileRoute } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 

@@ -3,6 +3,8 @@ import NgoAdminHomePage from "@/pages/NgoAdmin/Home/Page";
 import PlatformAdminHomepage from "@/pages/PlatformAdmin/Home/Page";
 import { useAuth } from "@/contexts/auth.context";
 import Layout from "@/components/Layout";
+import { electionsSearchSchema } from "@/types/election";
+import { zodValidator } from "@tanstack/zod-adapter";
 
 export const Route = createFileRoute("/(app)/")({
   beforeLoad: ({ context }) => {
@@ -11,6 +13,7 @@ export const Route = createFileRoute("/(app)/")({
     }
   },
   component: RouteComponent,
+  validateSearch: zodValidator(electionsSearchSchema),
 });
 
 function RouteComponent() {

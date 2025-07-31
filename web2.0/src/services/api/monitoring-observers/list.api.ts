@@ -4,7 +4,7 @@ import type { PageResponse } from "@/types/common";
 import type {
   MonitoringObserverModel,
   MonitoringObserversSearch,
-} from "@/types/monitoring-observers";
+} from "@/types/monitoring-observer";
 
 export const listMonitoringObservers = (
   electionRoundId: string,

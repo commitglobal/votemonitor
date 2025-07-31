@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { MonitoringObserverModel } from "@/types/monitoring-observers";
+import type { MonitoringObserverModel } from "@/types/monitoring-observer";
 
 interface GetTasksTableColumnsProps {
   setRowAction: React.Dispatch<

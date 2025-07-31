@@ -3,7 +3,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import type { PageResponse } from "@/types/common";
 import type { DataTableRowAction } from "@/types/data-table";
-import type { MonitoringObserverModel } from "@/types/monitoring-observers";
+import type { MonitoringObserverModel } from "@/types/monitoring-observer";
 import React from "react";
 import { getMonitoringObserversTableColumns } from "./TableColumns";
 import TableFilters from "./TableFilters";

@@ -1,57 +1,38 @@
-import {
-  SingleSelectDataTableFacetedFilter,
-  MultiSelectDataTableFacetedFilter,
-} from "@/components/data-table-faceted-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listMonitoringObserversTagsQueryOptions } from "@/query-options/monitoring-observers";
 import type { Option } from "@/types/data-table";
-import {
-  MonitoringObserverStatus,
-  type MonitoringObserverModel,
-} from "@/types/monitoring-observers";
-import { useQuery } from "@tanstack/react-query";
+import { ElectionStatus, type ElectionModel } from "@/types/election";
 import { getRouteApi } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
-import React, { useMemo } from "react";
+import React from "react";
 
 interface DataTableToolbarProps extends React.ComponentProps<"div"> {
-  table: Table<MonitoringObserverModel>;
+  table: Table<ElectionModel>;
 }
 
-const monitoringObserverStatusOptions: Option[] = [
+const electionRoundStatusOptions: Option[] = [
   {
-    value: MonitoringObserverStatus.Active,
-    label: MonitoringObserverStatus.Active,
+    value: ElectionStatus.NotStarted,
+    label: ElectionStatus.NotStarted,
   },
 
   {
-    value: MonitoringObserverStatus.Pending,
-    label: MonitoringObserverStatus.Pending,
+    value: ElectionStatus.Started,
+    label: ElectionStatus.Started,
   },
 
   {
-    value: MonitoringObserverStatus.Suspended,
-    label: MonitoringObserverStatus.Suspended,
+    value: ElectionStatus.Archived,
+    label: ElectionStatus.Archived,
   },
 ];
 
-const route = getRouteApi("/(app)/elections/$electionRoundId/observers/");
+const route = getRouteApi("/(app)/");
 
 function TableFilters({ table }: DataTableToolbarProps) {
-  const { electionRoundId } = route.useParams();
   const search = route.useSearch();
   const navigate = route.useNavigate();
-
-  const { data: tags } = useQuery(
-    listMonitoringObserversTagsQueryOptions(electionRoundId)
-  );
-
-  const tagsOptions = useMemo(
-    () => tags?.map((t) => ({ value: t, label: t })) ?? [],
-    [tags]
-  );
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -74,34 +55,6 @@ function TableFilters({ table }: DataTableToolbarProps) {
           })
         }
         className="h-8 w-40 lg:w-56"
-      />
-
-      <SingleSelectDataTableFacetedFilter
-        title="Observer status"
-        options={monitoringObserverStatusOptions}
-        value={search.status as string}
-        onValueChange={(value) =>
-          navigate({
-            search: (prev) => ({
-              ...prev,
-              status: value as MonitoringObserverStatus,
-            }),
-          })
-        }
-      />
-
-      <MultiSelectDataTableFacetedFilter
-        title="Tags"
-        options={tagsOptions}
-        value={search.tags}
-        onValueChange={(value) =>
-          navigate({
-            search: (prev) => ({
-              ...prev,
-              tags: value,
-            }),
-          })
-        }
       />
 
       {isFiltered && (

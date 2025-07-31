@@ -15,44 +15,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { MonitoringObserverModel } from "@/types/monitoring-observers";
+import type { ElectionModel } from "@/types/election";
 
-interface GetTasksTableColumnsProps {
+interface GetElectionsTableColumnsProps {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<MonitoringObserverModel> | null>
+    React.SetStateAction<DataTableRowAction<ElectionModel> | null>
   >;
 }
 
-export function getMonitoringObserversTableColumns({
+export function getElectionsTableColumns({
   setRowAction,
-}: GetTasksTableColumnsProps): ColumnDef<MonitoringObserverModel>[] {
+}: GetElectionsTableColumnsProps): ColumnDef<ElectionModel>[] {
   return [
     {
-      id: "displayName",
-      accessorKey: "displayName",
+      id: "title",
+      accessorKey: "title",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
+        <DataTableColumnHeader column={column} title="Title" />
       ),
       cell: ({ row }) => (
-        <div className="w-20 truncate">{row.original.displayName}</div>
+        <div className="w-20 truncate">{row.original.title}</div>
       ),
       meta: {
-        label: "Name",
-      },
-      enableSorting: true,
-      enableHiding: true,
-    },
-    {
-      id: "email",
-      accessorKey: "email",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
-      ),
-      cell: ({ row }) => (
-        <div className="w-20 truncate">{row.original.email}</div>
-      ),
-      meta: {
-        label: "Email",
+        label: "Title",
       },
       enableSorting: true,
       enableHiding: true,
