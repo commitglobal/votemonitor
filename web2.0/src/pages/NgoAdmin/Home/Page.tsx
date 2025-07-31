@@ -6,20 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
-import { listMonitoringElections } from "@/query-options/monitoring-elections";
-import { Route } from "@/routes/(app)";
+import { useListMonitoringElections } from "@/query-options/monitoring-elections";
 import { ElectionStatus } from "@/types/election";
-import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import ElectionCard from "./components/ElectionCard";
 import ElectionList from "./components/ElectionsList";
 
 function Page() {
-  const search = Route.useSearch();
-  const debouncedSearch = useDebounce(search, 200);
-  const { data } = useQuery(listMonitoringElections(debouncedSearch));
+  const { data } = useListMonitoringElections();
 
   const [countryFilter, setCountryFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
