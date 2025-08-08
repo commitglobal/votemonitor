@@ -2,18 +2,17 @@ import { usePrevSearch } from '@/common/prev-search-store';
 import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { LanguageBadge } from '@/components/ui/language-badge';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { mapFormType } from '@/lib/utils';
-import { formAggregatedDetailsQueryOptions, Route } from '@/routes/responses/form-submissions/$formId.aggregated';
+import { formAggregatedDetailsQueryOptions, Route } from '@/routes/(app)/responses/form-submissions/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import { SubmissionType } from '../../models/common';
 import type { Responder } from '../../models/form-submissions-aggregated';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
-import { LanguageBadge } from '@/components/ui/language-badge';
 
 export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
   const { formId } = Route.useParams();

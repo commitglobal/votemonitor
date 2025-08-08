@@ -4,13 +4,14 @@ import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import { AlertDialogProvider } from './components/ui/alert-dialog-provider.tsx';
-import AuthContextProvider, { AuthContext } from './context/auth.context';
+
+import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
+import { TanStackRouterDevelopmentTools } from './components/utils/development-tools/TanStackRouterDevelopmentTools.tsx';
+import { AuthContext, AuthContextProvider, useAuth } from './context/auth-context.tsx';
+import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
 import i18n from './i18n';
 import { routeTree } from './routeTree.gen.ts';
 import './styles/tailwind.css';
-import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
-import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
-import { TanStackRouterDevelopmentTools } from './components/utils/development-tools/TanStackRouterDevelopmentTools.tsx';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +21,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   context: {
@@ -41,7 +42,7 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  const authContext = useContext(AuthContext);
+  const authContext = useAuth();
   const currentElectionRoundContext = useContext(CurrentElectionRoundContext);
 
   return (

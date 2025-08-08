@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { staticDataKeys } from './query-keys';
 import { Language } from '@/common/types';
@@ -6,7 +6,7 @@ import { Language } from '@/common/types';
 export const languagesQuery = {
   queryKey: staticDataKeys.languages(),
   queryFn: async () => {
-    const response = await authApi.get<Language[]>('/languages');
+    const response = await API.get<Language[]>('/languages');
 
     if (response.status !== 200) {
       throw new Error('Failed to fetch languages');

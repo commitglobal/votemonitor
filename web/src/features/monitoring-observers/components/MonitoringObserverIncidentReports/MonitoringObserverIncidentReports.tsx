@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
   observerIncidentReportsColumns,
-  observersIncidentReportsColumnVisibilityOptions
+  observersIncidentReportsColumnVisibilityOptions,
 } from '@/features/responses/utils/column-visibility-options';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
@@ -21,7 +21,7 @@ import { useState, type ChangeEvent } from 'react';
 import { MonitoringObserverIncidentReportsFilters } from '../MonitoringObserverIncidentReportsFilters/MonitoringObserverIncidentReports';
 import { MonitoringObserverIncidentReportsTable } from '../MonitoringObserverIncidentReportsTable/MonitoringObserverIncidentReportsTable';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
+const routeApi = getRouteApi('/(app)/monitoring-observers/view/$monitoringObserverId/$tab');
 
 export function MonitoringObserverIncidentReports(): FunctionComponent {
   const search = routeApi.useSearch();
@@ -85,7 +85,10 @@ export function MonitoringObserverIncidentReports(): FunctionComponent {
       </CardHeader>
 
       <CardContent>
-        <MonitoringObserverIncidentReportsTable columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
+        <MonitoringObserverIncidentReportsTable
+          columnsVisibility={columnsVisibility}
+          searchText={debouncedSearchText}
+        />
       </CardContent>
     </Card>
   );

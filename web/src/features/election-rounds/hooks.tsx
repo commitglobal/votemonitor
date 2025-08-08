@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { electionRoundKeys } from './queries';
@@ -6,7 +6,7 @@ import { electionRoundKeys } from './queries';
 export function useArchiveElectionRound() {
   return useMutation({
     mutationFn: ({ electionRoundId }: { electionRoundId: string; onSuccess?: () => void; onError?: () => void }) => {
-      return authApi.post<void>(`/election-rounds/${electionRoundId}:archive`);
+      return API.post<void>(`/election-rounds/${electionRoundId}:archive`);
     },
 
     onSuccess: (_, { onSuccess }) => {
@@ -21,7 +21,7 @@ export function useArchiveElectionRound() {
 export function useUnarchiveElectionRound() {
   return useMutation({
     mutationFn: ({ electionRoundId }: { electionRoundId: string; onSuccess?: () => void; onError?: () => void }) => {
-      return authApi.post<void>(`/election-rounds/${electionRoundId}:unarchive`);
+      return API.post<void>(`/election-rounds/${electionRoundId}:unarchive`);
     },
 
     onSuccess: (_, { onSuccess }) => {
@@ -36,7 +36,7 @@ export function useUnarchiveElectionRound() {
 export function useStartElectionRound() {
   return useMutation({
     mutationFn: ({ electionRoundId }: { electionRoundId: string; onSuccess?: () => void; onError?: () => void }) => {
-      return authApi.post<void>(`/election-rounds/${electionRoundId}:start`);
+      return API.post<void>(`/election-rounds/${electionRoundId}:start`);
     },
 
     onSuccess: (_, { onSuccess }) => {
@@ -51,7 +51,7 @@ export function useStartElectionRound() {
 export function useUnstartElectionRound() {
   return useMutation({
     mutationFn: ({ electionRoundId }: { electionRoundId: string; onSuccess?: () => void; onError?: () => void }) => {
-      return authApi.post<void>(`/election-rounds/${electionRoundId}:unstart`);
+      return API.post<void>(`/election-rounds/${electionRoundId}:unstart`);
     },
 
     onSuccess: (_, { onSuccess }) => {
@@ -66,7 +66,7 @@ export function useUnstartElectionRound() {
 export function useDeleteElectionRound() {
   return useMutation({
     mutationFn: ({ electionRoundId }: { electionRoundId: string; onSuccess?: () => void; onError?: () => void }) => {
-      return authApi.post<void>(`/election-rounds/${electionRoundId}:unstart`);
+      return API.post<void>(`/election-rounds/${electionRoundId}:unstart`);
     },
 
     onSuccess: (_, { onSuccess }) => {

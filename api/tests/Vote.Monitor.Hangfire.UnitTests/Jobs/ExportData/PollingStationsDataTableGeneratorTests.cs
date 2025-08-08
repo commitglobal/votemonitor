@@ -11,6 +11,9 @@ public class PollingStationsDataTableGeneratorTests
     private readonly Guid _pollingStationId2 = Guid.NewGuid();
     private readonly Guid _pollingStationId3 = Guid.NewGuid();
 
+    private readonly (double latitude, double longitude ) _pollingStationId1Coordinates = (69, 420);
+    private readonly (double latitude, double longitude ) _pollingStationId3Coordinates = (12, 23);
+    
     private readonly string _pollingStationId1Tags = """
     {
         "tag1": "tag1_value1",
@@ -47,6 +50,8 @@ public class PollingStationsDataTableGeneratorTests
         "Level5",
         "Number",
         "Address",
+        "Latitude",
+        "Longitude",
         "DisplayOrder",
     ];
 
@@ -114,9 +119,9 @@ public class PollingStationsDataTableGeneratorTests
     public void PollingStationsDataTableGenerator_Should_Generates_Correct_DataTableWhenTags()
     {
         // Arrange
-        var pollingStation1 = Fake.PollingStation(_pollingStationId1, JsonDocument.Parse(_pollingStationId1Tags));
-        var pollingStation2 = Fake.PollingStation(_pollingStationId2, JsonDocument.Parse(_pollingStationId2Tags));
-        var pollingStation3 = Fake.PollingStation(_pollingStationId3, JsonDocument.Parse(_pollingStationId3Tags));
+        var pollingStation1 = Fake.PollingStation(_pollingStationId1, coordinates:_pollingStationId1Coordinates, tags:JsonDocument.Parse(_pollingStationId1Tags));
+        var pollingStation2 = Fake.PollingStation(_pollingStationId2, tags:JsonDocument.Parse(_pollingStationId2Tags));
+        var pollingStation3 = Fake.PollingStation(_pollingStationId3, coordinates:_pollingStationId3Coordinates, tags:JsonDocument.Parse(_pollingStationId3Tags));
 
         List<object[]> expectedData =
         [
@@ -195,6 +200,8 @@ public class PollingStationsDataTableGeneratorTests
             pollingStation.Level5,
             pollingStation.Number,
             pollingStation.Address,
+            pollingStation.Latitude?.ToString() ?? string.Empty,
+            pollingStation.Longitude?.ToString() ?? string.Empty,
             pollingStation.DisplayOrder
         ];
     }

@@ -4,7 +4,7 @@ import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useIncidentReportsByEntry } from '@/features/responses/hooks/incident-reports-queries';
 import { observerIncidentReportsColumnDefs } from '@/features/responses/utils/column-defs';
-import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { Route } from '@/routes/(app)/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';

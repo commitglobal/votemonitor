@@ -2,19 +2,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Logo from '@/components/layout/Header/Logo';
 
-import { Route as ResetPasswordRoute } from '@/routes/reset-password/index';
-import { useMutation } from '@tanstack/react-query';
-import { noAuthApi } from '@/common/no-auth-api';
-import { toast } from '@/components/ui/use-toast';
-import { useNavigate } from '@tanstack/react-router';
 import type { FunctionComponent } from '@/common/types';
 import { PasswordInput } from '@/components/ui/password-input';
+import { Route as ResetPasswordRoute } from '@/routes/(auth)/reset-password/index';
+import API from '@/services/api';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 
 interface ResetPasswordRequest {
   password: string;
@@ -59,14 +59,11 @@ function ResetPassword(): FunctionComponent {
 
   const resetPasswordMutation = useMutation({
     mutationFn: (obj: ResetPasswordRequest) => {
-      return noAuthApi.post<ResetPasswordRequest>(`auth/reset-password`, obj);
+      return API.post<ResetPasswordRequest>(`auth/reset-password`, obj);
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Password was reset successfully',
-      });
+      toast.success('Password was reset successfully');
       navigate({ to: '/reset-password/success' });
     },
   });

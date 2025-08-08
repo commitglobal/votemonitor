@@ -7,7 +7,7 @@ import { mapFormType } from '@/lib/utils';
 import {
   incidentReportsAggregatedDetailsQueryOptions,
   Route,
-} from '@/routes/responses/incident-reports/$formId.aggregated';
+} from '@/routes/(app)/responses/incident-reports/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { SubmissionType } from '../../models/common';

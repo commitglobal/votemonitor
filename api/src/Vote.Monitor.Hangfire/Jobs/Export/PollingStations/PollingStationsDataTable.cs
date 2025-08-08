@@ -19,6 +19,8 @@ public class PollingStationsDataTable
             "Level5",
             "Number",
             "Address",
+            "Latitude",
+            "Longitude",
             "DisplayOrder",
         ]);
     }

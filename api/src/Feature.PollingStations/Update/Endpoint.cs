@@ -31,7 +31,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
         
-        pollingStation.UpdateDetails(req.Level1, req.Level2, req.Level3, req.Level4, req.Level5, req.Number, req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
+        pollingStation.UpdateDetails(req.Level1, req.Level2, req.Level3, req.Level4, req.Level5, req.Number, req.Address, req.DisplayOrder, req.Tags.ToTagsObject(), req.Latitude,req.Longitude);
         await repository.UpdateAsync(pollingStation, ct);
         electionRound.UpdatePollingStationsVersion();
         await electionRoundRepository.UpdateAsync(electionRound, ct);

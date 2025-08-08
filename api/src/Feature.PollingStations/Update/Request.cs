@@ -1,4 +1,5 @@
 ﻿namespace Feature.PollingStations.Update;
+
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
@@ -12,4 +13,7 @@ public class Request
     public int DisplayOrder { get; set; }
     public string Address { get; set; }
     public Dictionary<string, string> Tags { get; set; }
+
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
 }

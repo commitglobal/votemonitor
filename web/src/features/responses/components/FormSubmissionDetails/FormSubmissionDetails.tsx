@@ -1,27 +1,27 @@
-import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FunctionComponent, FormType } from '@/common/types';
+import { usePrevSearch } from '@/common/prev-search-store';
+import { ElectionRoundStatus, FormSubmissionFollowUpStatus, FormType, FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LanguageBadge } from '@/components/ui/language-badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
-import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/form-submissions/$submissionId';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/(app)/responses/form-submissions/$submissionId';
+import API from '@/services/api';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import { SubmissionType } from '../../models/common';
 import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
-import { usePrevSearch } from '@/common/prev-search-store';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useState } from 'react';
-import { LanguageBadge } from '@/components/ui/language-badge';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -43,16 +43,13 @@ export default function FormSubmissionDetails(): FunctionComponent {
       electionRoundId: string;
       followUpStatus: FormSubmissionFollowUpStatus;
     }) => {
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`, {
+      return API.put<void>(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`, {
         followUpStatus,
       });
     },
 
     onSuccess: async (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Follow-up status updated',
-      });
+      toast.success('Follow-up status updated');
 
       await queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all(electionRoundId) });
       await queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all(electionRoundId) });
@@ -60,10 +57,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
     },
 
     onError: () => {
-      toast({
-        title: 'Error updating follow up status',
+      toast.error('Error updating follow up status', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

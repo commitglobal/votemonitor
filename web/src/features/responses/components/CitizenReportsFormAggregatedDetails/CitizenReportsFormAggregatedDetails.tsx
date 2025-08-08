@@ -7,7 +7,7 @@ import { mapFormType } from '@/lib/utils';
 import {
   citizenReportsAggregatedDetailsQueryOptions,
   Route,
-} from '@/routes/responses/citizen-reports/$formId.aggregated';
+} from '@/routes/(app)/responses/citizen-reports/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { SubmissionType } from '../../models/common';
 import { AggregateCard } from '../AggregateCard/AggregateCard';

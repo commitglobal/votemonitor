@@ -1,17 +1,17 @@
-import { authApi } from '@/common/auth-api';
 import { FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import API from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker } from '@tanstack/react-router';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { citizenGuideDetailsQueryOptions, citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
 import { observerGuideDetailsQueryOptions, observerGuidesKeys } from '../../hooks/observer-guides-hooks';
@@ -42,8 +42,6 @@ export default function EditGuideForm({
     guidePageType === GuidePageType.Observer
       ? useSuspenseQuery(observerGuideDetailsQueryOptions(currentElectionRoundId, guideId))
       : useSuspenseQuery(citizenGuideDetailsQueryOptions(currentElectionRoundId, guideId));
-
-  const { toast } = useToast();
 
   const editGuideFormSchema = z
     .object({
@@ -118,7 +116,7 @@ export default function EditGuideForm({
         form.guidePageType === GuidePageType.Observer
           ? `/election-rounds/${electionRoundId}/observer-guide/${guideId}`
           : `/election-rounds/${electionRoundId}/citizen-guides/${guideId}`;
-      return authApi.put<void>(url, form);
+      return API.put<void>(url, form);
     },
 
     onSuccess: (_, { electionRoundId, form }) => {
@@ -130,19 +128,14 @@ export default function EditGuideForm({
 
       onSuccess?.();
 
-      toast({
-        title: 'Success',
-        description: 'Update was successful',
-      });
+      toast.success('Update was successful');
     },
 
     onError: () => {
       onError?.();
 
-      toast({
-        title: 'Error updating guide',
+      toast.error('Error updating guide', {
         description: 'Please contact Platform admins',
-        variant: 'destructive',
       });
     },
   });

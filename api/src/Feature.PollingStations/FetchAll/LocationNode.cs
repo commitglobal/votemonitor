@@ -19,4 +19,10 @@ public class LocationNode
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? DisplayOrder { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Latitude { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Longitude { get; set; }
 }

@@ -1,21 +1,20 @@
-import { authApi } from '@/common/auth-api';
 import { mapToQuestionRequest } from '@/common/form-requests';
 import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useToast } from '@/components/ui/use-toast';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
+import API from '@/services/api';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { FormTemplateFull, NewFormTemplateRequest } from '../../models';
 import { formTemlatesKeys } from '../../queries';
 
 function FormTemplateNew() {
   const navigate = useNavigate();
   const router = useRouter();
-  const { toast } = useToast();
 
   const newFormTemplateMutation = useMutation({
     mutationFn: async ({
@@ -24,18 +23,13 @@ function FormTemplateNew() {
       shouldNavigateAwayAfterSubmit: boolean;
       formTemplate: NewFormTemplateRequest;
     }) => {
-      return await authApi
-        .post<FormTemplateFull>(`/form-templates`, {
-          ...formTemplate,
-        })
-        .then((response) => response.data);
+      return await API.post<FormTemplateFull>(`/form-templates`, {
+        ...formTemplate,
+      }).then((response) => response.data);
     },
 
     onSuccess: ({ id }, { shouldNavigateAwayAfterSubmit }) => {
-      toast({
-        title: 'Success',
-        description: 'Form template created successfully',
-      });
+      toast.success('Form template created successfully');
 
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all(), type: 'all' });
       router.invalidate();
@@ -47,10 +41,8 @@ function FormTemplateNew() {
     },
 
     onError: () => {
-      toast({
-        title: 'Error creating form template',
+      toast.error('Error creating form template', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

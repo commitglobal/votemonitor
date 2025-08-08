@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useCreateNgoAdmin } from '../../hooks/ngo-admin-queries';
@@ -10,6 +9,7 @@ import { NgoAdminFormData, ngoAdminSchema } from '../../models/NgoAdmin';
 import { useCallback, useEffect } from 'react';
 import { useBlocker } from '@tanstack/react-router';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { toast } from 'sonner';
 
 export interface AddNgoAdminDialogProps {
   ngoId: string;
@@ -70,20 +70,15 @@ function AddNgoAdminDialog({ open, onOpenChange, ngoId }: AddNgoAdminDialogProps
       onMutationSuccess: () => {
         form.reset({});
         internalOnOpenChange(false);
-        toast({
-          title: 'Success',
-          description: 'New NGO admin added',
-        });
+        toast.success('New NGO admin added');
       },
       onMutationError: (error) => {
         error?.errors?.forEach((error) => {
           form.setError(error.name as keyof NgoAdminFormData, { type: 'custom', message: error.reason });
         });
 
-        toast({
-          title: 'Error adding NGO admin',
+        toast.error('Error adding NGO admin', {
           description: 'Please contact Platform admins',
-          variant: 'destructive',
         });
       },
     });

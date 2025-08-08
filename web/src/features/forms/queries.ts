@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import { DataTableParameters, PageResponse } from '@/common/types';
 import { buildURLSearchParams } from '@/lib/utils';
 import { queryClient } from '@/main';
@@ -20,7 +20,7 @@ export const formDetailsQueryOptions = (electionRoundId: string, formId: string)
   return queryOptions({
     queryKey: formsKeys.detail(electionRoundId, formId),
     queryFn: async () => {
-      const response = await authApi.get<FormFull>(`/election-rounds/${electionRoundId}/forms/${formId}`);
+      const response = await API.get<FormFull>(`/election-rounds/${electionRoundId}/forms/${formId}`);
 
       if (response.status !== 200) {
         throw new Error('Failed to fetch form');
@@ -49,7 +49,7 @@ export function useForms(
 
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<PageResponse<NgoFormBase>>(`/election-rounds/${electionRoundId}/forms`, {
+      const response = await API.get<PageResponse<NgoFormBase>>(`/election-rounds/${electionRoundId}/forms`, {
         params: searchParams,
       });
 

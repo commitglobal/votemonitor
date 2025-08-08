@@ -1,21 +1,26 @@
-import { authApi } from '@/common/auth-api';
+import API from '@/services/api';
 import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import type { CitizenReportByEntry, CitizenReportsAggregatedByForm, CitizenReportsFilters } from '../models/citizen-report';
+import type {
+  CitizenReportByEntry,
+  CitizenReportsAggregatedByForm,
+  CitizenReportsFilters,
+} from '../models/citizen-report';
 
 const STALE_TIME = 1000 * 60; // one minute
 
 export const citizenReportKeys = {
   all: (electionRoundId: string) => ['citizen-reports', electionRoundId] as const,
   lists: (electionRoundId: string) => [...citizenReportKeys.all(electionRoundId), 'list'] as const,
-  list: (electionRoundId: string, params: DataTableParameters) => [...citizenReportKeys.lists(electionRoundId), { ...params }] as const,
+  list: (electionRoundId: string, params: DataTableParameters) =>
+    [...citizenReportKeys.lists(electionRoundId), { ...params }] as const,
   details: (electionRoundId: string) => [...citizenReportKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) => [...citizenReportKeys.details(electionRoundId), id] as const,
   filters: (electionRoundId: string) => [...citizenReportKeys.all(electionRoundId), 'filters'] as const,
-}
+};
 
 export const citizenReportsAggregatedKeys = {
   all: (electionRoundId: string) => ['citizen-reports-aggregated', electionRoundId] as const,
@@ -31,11 +36,13 @@ type CitizenReportsByEntryResponse = PageResponse<CitizenReportByEntry & RowData
 
 type UseCitizenReportsByEntryResult = UseQueryResult<CitizenReportsByEntryResponse, Error>;
 
-export function useCitizenReports(electionRoundId: string, queryParams: DataTableParameters): UseCitizenReportsByEntryResult {
+export function useCitizenReports(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseCitizenReportsByEntryResult {
   return useQuery({
     queryKey: citizenReportKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-
       const params = {
         ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
@@ -45,7 +52,7 @@ export function useCitizenReports(electionRoundId: string, queryParams: DataTabl
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<CitizenReportsByEntryResponse>(
+      const response = await API.get<CitizenReportsByEntryResponse>(
         `/election-rounds/${electionRoundId}/citizen-reports:byEntry`,
         {
           params: searchParams,
@@ -58,16 +65,18 @@ export function useCitizenReports(electionRoundId: string, queryParams: DataTabl
       };
     },
     staleTime: STALE_TIME,
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
-
 
 type CitizenReportsAggregatedByFormResponse = PageResponse<CitizenReportsAggregatedByForm & RowData>;
 
 type UseCitizenReportsAggregatedByFormResult = UseQueryResult<CitizenReportsAggregatedByFormResponse, Error>;
 
-export function useCitizenReportsAggregatedByForm(electionRoundId: string, queryParams: DataTableParameters): UseCitizenReportsAggregatedByFormResult {
+export function useCitizenReportsAggregatedByForm(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseCitizenReportsAggregatedByFormResult {
   return useQuery({
     queryKey: citizenReportsAggregatedKeys.all(electionRoundId),
     queryFn: async () => {
@@ -80,7 +89,7 @@ export function useCitizenReportsAggregatedByForm(electionRoundId: string, query
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<{ aggregatedForms: CitizenReportsAggregatedByForm[] }>(
+      const response = await API.get<{ aggregatedForms: CitizenReportsAggregatedByForm[] }>(
         `/election-rounds/${electionRoundId}/citizen-reports:byForm`,
         {
           params: searchParams,
@@ -102,12 +111,11 @@ export function useCitizenReportsAggregatedByForm(electionRoundId: string, query
   });
 }
 
-
 export function useCitizenReportsFilters(electionRoundId: string) {
   return useQuery({
     queryKey: citizenReportKeys.filters(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<CitizenReportsFilters>(
+      const response = await API.get<CitizenReportsFilters>(
         `/election-rounds/${electionRoundId}/citizen-reports:filters`
       );
 
