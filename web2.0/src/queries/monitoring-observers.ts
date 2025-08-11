@@ -1,7 +1,7 @@
 import { listMonitoringObserversTags } from "@/services/api/monitoring-observers/list-tags.api";
 import { listMonitoringObservers } from "@/services/api/monitoring-observers/list.api";
 import type { MonitoringObserversSearch } from "@/types/monitoring-observer";
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const monitoringObserversKeys = {
   all: (electionRoundId: string) =>
@@ -32,6 +32,11 @@ export const listMonitoringObserversQueryOptions = (
     refetchOnWindowFocus: false,
   });
 
+export const useListMonitoringObservers = (
+  electionRoundId: string,
+  search: MonitoringObserversSearch
+) => useQuery(listMonitoringObserversQueryOptions(electionRoundId, search));
+
 export const listMonitoringObserversTagsQueryOptions = (
   electionRoundId: string
 ) =>
@@ -41,3 +46,6 @@ export const listMonitoringObserversTagsQueryOptions = (
     enabled: !!electionRoundId,
     staleTime: STALE_TIME,
   });
+
+export const useListMonitoringObserversTags = (electionRoundId: string) =>
+  useQuery(listMonitoringObserversTagsQueryOptions(electionRoundId));

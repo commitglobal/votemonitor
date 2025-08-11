@@ -6,6 +6,6 @@ import { zodValidator } from "@tanstack/zod-adapter";
 export const Route = createFileRoute(
   "/(app)/elections/$electionRoundId/observers/"
 )({
-  validateSearch: zodValidator(monitoringObserversSearchSchema),
   component: Page,
+  validateSearch: zodValidator(monitoringObserversSearchSchema),
 });

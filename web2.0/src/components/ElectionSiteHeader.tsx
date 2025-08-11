@@ -7,6 +7,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { siteConfig } from "@/config/site";
 import { useAuth } from "@/contexts/auth.context";
+import { useCurrentElectionRound } from "@/contexts/election-round.context";
+import { useListMonitoringElections } from "@/queries/monitoring-elections";
+import type { MonitoredElection } from "@/types/monitored-election";
 import { Link } from "@tanstack/react-router";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -17,23 +20,20 @@ import NgoAdminNav from "./NgoAdminNav";
 import PlatformAdminNav from "./PlatformAdminNav";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { Button } from "./ui/button";
-import { useListMonitoringElections } from "@/query-options/monitoring-elections";
-import type { MonitoredElection } from "@/types/monitored-election";
 
-export interface ElectionSiteHeaderProps {
-  electionId: string;
-}
-
-export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
+export function ElectionSiteHeader() {
   const auth = useAuth();
   const { data: elections } = useListMonitoringElections();
   const [currentElectionRound, setCurrentElectionRound] = useState<
     MonitoredElection | undefined
   >();
+  const { electionRoundId } = useCurrentElectionRound();
+
+  console.log(electionRoundId);
 
   useEffect(() => {
-    setCurrentElectionRound(elections?.find((x) => x.id === electionId));
-  }, [elections, electionId]);
+    setCurrentElectionRound(elections?.find((x) => x.id === electionRoundId));
+  }, [elections, electionRoundId]);
 
   return (
     <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -53,12 +53,13 @@ export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
                 <ChevronsUpDown className="ml-6 h-4 w-4 text-muted-foreground" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-xl" align="start">
-                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                <DropdownMenuLabel>Monitored elections</DropdownMenuLabel>
                 {elections?.map((election) => (
                   <DropdownMenuItem key={election.id}>
                     <Link
                       to="/elections/$electionRoundId"
                       params={{ electionRoundId: election.id }}
+                      className="flex items-center gap-2"
                     >
                       {election.title}
                       {currentElectionRound?.id === election.id && (
@@ -94,9 +95,9 @@ export function ElectionSiteHeader({ electionId }: ElectionSiteHeaderProps) {
         </div>
         <div className="container flex items-center gap-2 md:gap-4">
           {auth.userRole === "NgoAdmin" ? (
-            <NgoAdminNav electionRoundId={electionId} />
+            <NgoAdminNav />
           ) : (
-            <PlatformAdminNav electionRoundId={electionId} />
+            <PlatformAdminNav />
           )}
         </div>
       </div>

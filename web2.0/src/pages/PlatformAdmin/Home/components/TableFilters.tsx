@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Option } from "@/types/data-table";
-import { ElectionStatus, type ElectionModel } from "@/types/election";
+import { ElectionRoundStatus, type ElectionModel } from "@/types/election";
 import { getRouteApi } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
@@ -13,18 +13,18 @@ interface DataTableToolbarProps extends React.ComponentProps<"div"> {
 
 const electionRoundStatusOptions: Option[] = [
   {
-    value: ElectionStatus.NotStarted,
-    label: ElectionStatus.NotStarted,
+    value: ElectionRoundStatus.NotStarted,
+    label: ElectionRoundStatus.NotStarted,
   },
 
   {
-    value: ElectionStatus.Started,
-    label: ElectionStatus.Started,
+    value: ElectionRoundStatus.Started,
+    label: ElectionRoundStatus.Started,
   },
 
   {
-    value: ElectionStatus.Archived,
-    label: ElectionStatus.Archived,
+    value: ElectionRoundStatus.Archived,
+    label: ElectionRoundStatus.Archived,
   },
 ];
 
@@ -52,6 +52,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
         onChange={(event) =>
           navigate({
             search: (prev) => ({ ...prev, searchText: event.target.value }),
+            replace: true,
           })
         }
         className="h-8 w-40 lg:w-56"

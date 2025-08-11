@@ -1,5 +1,5 @@
 import { useDebounce } from "@/hooks/use-debounce";
-import { listElectionsQueryOptions } from "@/query-options/elections";
+import { listElectionsQueryOptions } from "@/queries/elections";
 import { Route } from "@/routes/(app)/";
 import { useQuery } from "@tanstack/react-query";
 import Table from "./components/Table";

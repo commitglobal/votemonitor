@@ -1,4 +1,4 @@
-import type { ElectionStatus } from "./election";
+import type { ElectionRoundStatus } from "./election";
 
 export interface MonitoredElection {
   id: string;
@@ -11,7 +11,7 @@ export interface MonitoredElection {
   title: string;
   englishTitle: string;
   startDate: string; // ISO 8601 date string
-  status: ElectionStatus;
+  status: ElectionRoundStatus;
   createdOn: string; // ISO 8601 timestamp
   lastModifiedOn: string; // ISO 8601 timestamp
   isMonitoringNgoForCitizenReporting: boolean;

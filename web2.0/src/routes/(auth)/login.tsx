@@ -6,10 +6,10 @@ const fallback = "/" as const;
 
 export const Route = createFileRoute("/(auth)/login")({
   validateSearch: z.object({
-    redirect: z.string().optional().catch(""),
+    redirect: z.string().optional().default("").catch(""),
   }),
   beforeLoad: ({ context, search }) => {
-    if (context.auth.isAuthenticated) {
+    if (context.auth.isAuthenticated && !context.auth.isLoading) {
       throw redirect({ to: search.redirect || fallback });
     }
   },

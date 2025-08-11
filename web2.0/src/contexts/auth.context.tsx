@@ -12,20 +12,33 @@ export interface AuthContext {
   logout: () => Promise<void>;
   userRole: UserRole | null;
   email: string | null;
+  isLoading: boolean;
 }
 
-const AuthContext = React.createContext<AuthContext | null>(null);
+const AuthContext = React.createContext<AuthContext>({
+  isAuthenticated: false,
+  isLoading: true,
+  email: "",
+  login: (email: string, password: string) => Promise.resolve(),
+  logout: () => Promise.resolve(),
+  userRole: "NgoAdmin",
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [userRole, setUserRole] = React.useState<UserRole | null>(null);
-  const [email, setEmail] = React.useState<UserRole | null>(null);
+  const [email, setEmail] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    init();
+    try {
+      init();
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const init = async () => {
+  const init = () => {
     try {
       const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
       if (token) {
@@ -35,7 +48,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setIsAuthenticated(!!token);
     } catch (err) {
-      console.error(err);
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN_EXPIRY_TIME);
@@ -50,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
-      debugger;
       const {
         data: { token, refreshToken, refreshTokenExpiryTime },
       } = await API.post("auth/login", {
@@ -69,12 +81,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("Error while trying to sign in", err);
       setIsAuthenticated(false);
       throw new Error("Error while trying to sign in");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, userRole, email, login, logout }}
+      value={{ isAuthenticated, userRole, email, login, logout, isLoading }}
     >
       {children}
     </AuthContext.Provider>

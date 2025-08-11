@@ -1,6 +1,7 @@
+import { getById } from "@/services/api/elections/get.api";
 import { listElections } from "@/services/api/elections/list.api";
 import type { ElectionsSearch } from "@/types/election";
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const electionsKeys = {
   all: ["elections"] as const,
@@ -19,3 +20,21 @@ export const listElectionsQueryOptions = (search: ElectionsSearch) =>
     staleTime: STALE_TIME,
     refetchOnWindowFocus: false,
   });
+
+export const electionRoundDetailsQueryOptions = (electionRoundId: string) =>
+  queryOptions({
+    queryKey: electionsKeys.detail(electionRoundId),
+    queryFn: async () => await getById(electionRoundId),
+    staleTime: STALE_TIME,
+    refetchOnWindowFocus: false,
+  });
+
+export const useElectionRoundDetails = (electionRoundId: string) =>
+  useQuery(
+    queryOptions({
+      queryKey: electionsKeys.detail(electionRoundId),
+      queryFn: async () => await getById(electionRoundId),
+      staleTime: STALE_TIME,
+      refetchOnWindowFocus: false,
+    })
+  );

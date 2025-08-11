@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { SortOrder } from "./common";
 
-export enum ElectionStatus {
+export enum ElectionRoundStatus {
   Archived = "Archived",
   Started = "Started",
   NotStarted = "NotStarted",
@@ -20,15 +20,15 @@ export interface ElectionModel {
   startDate: string;
   createdOn: string;
   lastModifiedOn: string;
-  status: ElectionStatus;
+  status: ElectionRoundStatus;
 }
 
 export const electionsSearchSchema = z.object({
   countryId: z.string().optional(),
   searchText: z.string().optional(),
-  electionRoundStatus: z.nativeEnum(ElectionStatus).optional(),
+  electionRoundStatus: z.enum(ElectionRoundStatus).optional(),
   sortColumnName: z.string().optional(),
-  sortOrder: z.nativeEnum(SortOrder).optional(),
+  sortOrder: z.enum(SortOrder).optional(),
   pageNumber: z.number().default(1),
   pageSize: z.number().default(25),
 });

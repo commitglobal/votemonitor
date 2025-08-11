@@ -9,7 +9,6 @@ export const JWT_CLAIMS = {
 export const decodeToken = (token: string) => {
   try {
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
     return {
       //@ts-ignore
       email: decodedToken[JWT_CLAIMS.EMAIL],

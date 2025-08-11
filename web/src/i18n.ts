@@ -35,6 +35,10 @@ i18n
     resources,
     load: 'languageOnly',
     fallbackLng: 'en',
+
+    backend: {
+      loadPath: `/locales/{{lng}}.json`, //path of the languages
+    },
   });
 
 export default i18n;

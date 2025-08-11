@@ -4,7 +4,7 @@ import {
 } from "@/components/data-table-faceted-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listMonitoringObserversTagsQueryOptions } from "@/query-options/monitoring-observers";
+import { listMonitoringObserversTagsQueryOptions } from "@/queries/monitoring-observers";
 import type { Option } from "@/types/data-table";
 import {
   MonitoringObserverStatus,
@@ -37,7 +37,9 @@ const monitoringObserverStatusOptions: Option[] = [
   },
 ];
 
-const route = getRouteApi("/(app)/elections/$electionRoundId/observers/");
+const route = getRouteApi(
+  "/(app)/elections/$electionRoundId/observers/" as const
+);
 
 function TableFilters({ table }: DataTableToolbarProps) {
   const { electionRoundId } = route.useParams();
@@ -71,6 +73,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
         onChange={(event) =>
           navigate({
             search: (prev) => ({ ...prev, searchText: event.target.value }),
+            replace: true,
           })
         }
         className="h-8 w-40 lg:w-56"
@@ -86,6 +89,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
               ...prev,
               status: value as MonitoringObserverStatus,
             }),
+            replace: true,
           })
         }
       />
@@ -100,6 +104,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
               ...prev,
               tags: value,
             }),
+            replace: true,
           })
         }
       />

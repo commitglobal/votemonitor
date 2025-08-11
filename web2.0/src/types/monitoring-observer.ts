@@ -23,9 +23,9 @@ export interface MonitoringObserverModel {
 export const monitoringObserversSearchSchema = z.object({
   tags: z.array(z.string()).optional(),
   searchText: z.string().optional(),
-  status: z.nativeEnum(MonitoringObserverStatus).optional(),
+  status: z.enum(MonitoringObserverStatus).optional(),
   sortColumnName: z.string().optional(),
-  sortOrder: z.nativeEnum(SortOrder).optional(),
+  sortOrder: z.enum(SortOrder).optional(),
   pageNumber: z.number().default(1),
   pageSize: z.number().default(25),
 });

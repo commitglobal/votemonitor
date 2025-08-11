@@ -89,6 +89,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
             pageNumber: newPagination.pageIndex + 1,
             pageSize: newPagination.pageSize,
           }),
+          replace: true,
         });
       } else {
         navigate({
@@ -98,6 +99,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
             pageNumber: updaterOrValue.pageIndex + 1,
             pageSize: updaterOrValue.pageSize,
           }),
+          replace: true,
         });
       }
     },
@@ -115,6 +117,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
             sortColumnName: newSorting[0].id,
             sortOrder: newSorting[0].desc ? SortOrder.Desc : SortOrder.Asc,
           }),
+          replace: true,
         });
       } else {
         navigate({
@@ -124,6 +127,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
             sortColumnName: updaterOrValue[0].id,
             sortOrder: updaterOrValue[0].desc ? SortOrder.Desc : SortOrder.Asc,
           }),
+          replace: true,
         });
       }
     },

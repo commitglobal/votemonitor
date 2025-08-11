@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useListMonitoringElections } from "@/query-options/monitoring-elections";
-import { ElectionStatus } from "@/types/election";
+import { useListMonitoringElections } from "@/queries/monitoring-elections";
+import { ElectionRoundStatus } from "@/types/election";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import ElectionCard from "./components/ElectionCard";
@@ -30,7 +30,7 @@ function Page() {
   }, [data]);
 
   // Get all status values for filter dropdown
-  const statuses = Object.values(ElectionStatus);
+  const statuses = Object.values(ElectionRoundStatus);
 
   // Apply filters and sorting
   const filteredElections = useMemo(() => {
@@ -66,8 +66,8 @@ function Page() {
       data
         ?.filter(
           (election) =>
-            election.status === ElectionStatus.NotStarted ||
-            election.status === ElectionStatus.Started
+            election.status === ElectionRoundStatus.NotStarted ||
+            election.status === ElectionRoundStatus.Started
         )
         .sort(
           (a, b) =>
@@ -80,7 +80,7 @@ function Page() {
     if (hasActiveFilters) return [];
     return (
       data
-        ?.filter((election) => election.status === ElectionStatus.Archived)
+        ?.filter((election) => election.status === ElectionRoundStatus.Archived)
         .sort(
           (a, b) =>
             new Date(b.startDate).getTime() - new Date(a.startDate).getTime()

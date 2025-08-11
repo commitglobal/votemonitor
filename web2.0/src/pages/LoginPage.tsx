@@ -32,12 +32,7 @@ import {
 import { Route } from "@/routes/(auth)/login";
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is mandatory",
-    })
-    .email({ message: "Email format is not correct" }),
+  email: z.email({ message: "Email format is not correct" }),
   password: z.string().min(1, { message: "Password is mandatory" }),
 });
 

@@ -8,12 +8,15 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TanStackQueryDevelopmentTools } from "./components/utils/development-tools/TanStackQueryDevelopmentTools.tsx";
-import { TanStackRouterDevelopmentTools } from "./components/utils/development-tools/TanStackRouterDevelopmentTools.tsx";
+import { TanStackQueryDevelopmentTools } from "./components/development-tools/TanStackQueryDevelopmentTools.tsx";
+import { TanStackRouterDevelopmentTools } from "./components/development-tools/TanStackRouterDevelopmentTools.tsx";
 import "./styles.css";
 
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import { AuthProvider, useAuth } from "./contexts/auth.context.tsx";
+
+// import i18n (needs to be bundled ;))
+import "./i18n";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,8 +44,18 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
 function InnerApp() {
   const auth = useAuth();
+
+  if (auth.isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    ); // or spinner
+  }
+
   return (
     <ThemeProvider
       attribute="class"
@@ -68,8 +81,12 @@ function InnerApp() {
     </ThemeProvider>
   );
 }
-function App() {
-  return (
+
+// Render the app
+const rootElement = document.getElementById("app");
+if (rootElement && !rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
@@ -78,13 +95,6 @@ function App() {
       </QueryClientProvider>
     </StrictMode>
   );
-}
-
-// Render the app
-const rootElement = document.getElementById("app");
-if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(<App />);
 }
 
 // If you want to start measuring performance in your app, pass a function

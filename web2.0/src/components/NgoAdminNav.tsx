@@ -1,15 +1,15 @@
+import { useCurrentElectionRound } from "@/contexts/election-round.context";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 
-export interface NgoAdminNavProps {
-  electionRoundId: string;
-}
-export default function NgoAdminNav({ electionRoundId }: NgoAdminNavProps) {
+export default function NgoAdminNav() {
+  const { electionRoundId } = useCurrentElectionRound();
+
   return (
     <div className="mr-4 hidden md:flex">
       <nav className="flex items-center gap-4 text-sm xl:gap-6">
         <Link
-          to="/elections/$electionRoundId/dashboard"
+          to="/elections/$electionRoundId"
           params={{ electionRoundId }}
           className={cn("transition-colors hover:text-foreground/80")}
         >
@@ -65,7 +65,7 @@ export default function NgoAdminNav({ electionRoundId }: NgoAdminNavProps) {
         </Link>
 
         <Link
-          to="/elections/$electionRoundId/quick-reports"
+          to="/elections/$electionRoundId/incidents"
           params={{ electionRoundId }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
@@ -74,7 +74,7 @@ export default function NgoAdminNav({ electionRoundId }: NgoAdminNavProps) {
             className: "text-foreground",
           }}
         >
-          Quick Reports
+          Incidents
         </Link>
       </nav>
     </div>

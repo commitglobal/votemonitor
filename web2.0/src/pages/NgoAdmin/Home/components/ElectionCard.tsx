@@ -1,17 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ElectionStatus } from "@/types/election";
+import { ElectionRoundStatus } from "@/types/election";
 import type { MonitoredElection } from "@/types/monitored-election";
 import { useRouter } from "@tanstack/react-router";
 import { CalendarDays, Globe, Shield, Users } from "lucide-react";
 
-function getStatusColor(status: ElectionStatus) {
+function getStatusColor(status: ElectionRoundStatus) {
   switch (status) {
-    case ElectionStatus.NotStarted:
+    case ElectionRoundStatus.NotStarted:
       return "bg-blue-100 text-blue-800 hover:bg-blue-100";
-    case ElectionStatus.Started:
+    case ElectionRoundStatus.Started:
       return "bg-green-100 text-green-800 hover:bg-green-100";
-    case ElectionStatus.Archived:
+    case ElectionRoundStatus.Archived:
       return "bg-gray-100 text-gray-800 hover:bg-gray-100";
 
     default:

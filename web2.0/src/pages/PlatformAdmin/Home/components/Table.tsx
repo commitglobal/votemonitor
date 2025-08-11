@@ -40,16 +40,6 @@ function Table({ data }: TableProps) {
       </DataTableToolbar>
     </DataTable>
   );
-
-  {
-    /* <DeleteTasksDialog
-  open={rowAction?.variant === "delete"}
-  onOpenChange={() => setRowAction(null)}
-  tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
-  showTrigger={false}
-  onSuccess={() => rowAction?.row.toggleSelected(false)}
-/> */
-  }
 }
 
 export default Table;
