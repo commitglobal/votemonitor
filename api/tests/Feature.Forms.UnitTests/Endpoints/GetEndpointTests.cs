@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
 
@@ -12,11 +13,12 @@ public class GetEndpointTests
     private readonly IAuthorizationService _authorizationService = Substitute.For<IAuthorizationService>();
     private readonly IReadRepository<Form> _repository = Substitute.For<IReadRepository<Form>>();
     private readonly IReadRepository<Coalition> _coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
+    private readonly IReadRepository<PollingStationInformationForm> _psiFormRepository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
     private readonly Get.Endpoint _endpoint;
 
     public GetEndpointTests()
     {
-        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository, _coalitionRepository);
+        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository, _coalitionRepository, _psiFormRepository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -41,6 +43,28 @@ public class GetEndpointTests
             .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
+    }
+    
+    [Fact]
+    public async Task Should_ReturnPSIForm_WhenFormExists()
+    {
+        // Arrange
+        var psiForm = new PollingStationInformationFormFaker().Generate();
+
+        _psiFormRepository
+            .FirstOrDefaultAsync(Arg.Any<GetPsiFormById>())
+            .Returns(psiForm);
+
+        // Act
+        var request = new Get.Request { Id = psiForm.Id };
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
+
+        // Assert
+        result
+            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()
+            .Which
+            .Result.Should().BeOfType<Ok<FormFullModel>>()
+            .Which.Value.Should().BeEquivalentTo(psiForm, options => options.ExcludingMissingMembers());
     }
 
     [Fact]
