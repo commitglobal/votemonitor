@@ -125,6 +125,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   WITH polling_station_submissions AS (SELECT psi."Id" AS                                     "SubmissionId",
                                                               'PSI'    AS                                     "FormType",
                                                               'PSI'    AS                                     "FormCode",
+                                                              psif."Id"                                       "FormId",
                                                               psi."PollingStationId",
                                                               psi."MonitoringObserverId",
                                                               psi."NumberOfQuestionsAnswered",
@@ -166,6 +167,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        form_submissions AS (SELECT fs."Id"                                              AS "SubmissionId",
                                                    f."FormType",
                                                    f."Code"                                             AS "FormCode",
+                                                   f."Id"                                               AS "FormId",
                                                    fs."PollingStationId",
                                                    fs."MonitoringObserverId",
                                                    fs."NumberOfQuestionsAnswered",
@@ -212,6 +214,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                 OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0)))
                   SELECT s."SubmissionId",
                          s."TimeSubmitted",
+                         s."FormId",
                          s."FormCode",
                          s."FormType",
                          s."DefaultLanguage",

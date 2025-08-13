@@ -1,7 +1,7 @@
 ﻿using Module.Answers.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
-namespace Feature.Form.Submissions.GetById;
+namespace Feature.Form.Submissions.GetByIdV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}");
+        Get("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:v2");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
         Summary(s => { s.Summary = "Gets submission by id"; });
@@ -36,15 +36,6 @@ public class Endpoint(
                       psi."PollingStationId",
                       psi."MonitoringObserverId",
                       psi."Answers",
-                      (SELECT "Questions"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Questions",
-                      (SELECT "DefaultLanguage"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "DefaultLanguage",
-                      (SELECT "Languages"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Languages",
                       (SELECT "Id"
                       FROM "PollingStationInformationForms"
                       WHERE "ElectionRoundId" = @electionRoundId) AS "FormId",
@@ -67,9 +58,6 @@ public class Endpoint(
                           fs."PollingStationId",
                           fs."MonitoringObserverId",
                           fs."Answers",
-                          f."Questions",
-                          f."DefaultLanguage",
-                          f."Languages",
                           f."Id" AS "FormId",
                           fs."FollowUpStatus",
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
@@ -120,9 +108,6 @@ public class Endpoint(
                          s."Attachments",
                          s."Notes",
                          s."Answers",
-                         s."Questions",
-                         s."DefaultLanguage",
-                         s."Languages",
                          s."FollowUpStatus",
                          s."ArrivalTime",
                          s."DepartureTime",
