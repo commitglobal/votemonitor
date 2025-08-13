@@ -11,6 +11,7 @@ public record FormSubmissionEntry
     public Guid SubmissionId { get; init; }
     public DateTime TimeSubmitted { get; init; }
 
+    public Guid FormId { get; init; }
     public string FormCode { get; init; } = null!;
     public TranslatedString FormName { get; init; } = null!;
 

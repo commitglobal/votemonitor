@@ -9,6 +9,7 @@ public record FormSubmissionView
 {
     public Guid SubmissionId { get; init; }
     public DateTime TimeSubmitted { get; init; }
+    public Guid FormId { get; init; }
     public string FormCode { get; init; }
     public string DefaultLanguage { get; init; }
     public string[] Languages { get; init; } = [];
