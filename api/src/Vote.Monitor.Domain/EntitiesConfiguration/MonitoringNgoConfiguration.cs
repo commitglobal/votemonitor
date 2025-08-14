@@ -15,6 +15,9 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
 
         builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.NgoId);
+        builder.Property(x => x.AllowMultipleFormSubmission)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         builder
             .HasMany(e => e.MonitoringObservers)

@@ -13,12 +13,14 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
     public Guid FormsVersion { get; private set; }
+
+    public bool AllowMultipleFormSubmission { get; private set; }
     public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
     public MonitoringNgoStatus Status { get; private set; }
     public virtual List<CoalitionMembership> Memberships { get; internal set; } = [];
 
-    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo)
+    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo, bool allowMultipleFormSubmission = false)
     {
         Id = Guid.NewGuid();
         ElectionRound = electionRound;
@@ -27,6 +29,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         NgoId = ngo.Id;
         Status = MonitoringNgoStatus.Active;
         FormsVersion = Guid.NewGuid();
+        AllowMultipleFormSubmission = allowMultipleFormSubmission;
     }
 
     public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)
@@ -68,15 +71,25 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     {
         Status = MonitoringNgoStatus.Suspended;
     }
+
     public void UpdateFormVersion()
     {
         FormsVersion = Guid.NewGuid();
     }
-    
+
+    public void EnableMultipleFormSubmission()
+    {
+        AllowMultipleFormSubmission = true;
+    }
+
+    public void DisableMultipleFormSubmission()
+    {
+        AllowMultipleFormSubmission = true;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringNgo()
     {
-
     }
 #pragma warning restore CS8618
 }
