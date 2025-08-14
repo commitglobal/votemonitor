@@ -545,7 +545,7 @@
     },
     "general_text": "Управление на моите изборни секции",
     "ps_card": {
-      "header": "Изборна секция #{{value}}",
+      "header": "Изборна секция: {{value}}",
       "l1": "[Location L1]",
       "l2": "[Location L2]",
       "l3": "[Location L3]",

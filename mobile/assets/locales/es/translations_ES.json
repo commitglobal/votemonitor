@@ -552,7 +552,7 @@
     },
     "general_text": "Gestionar mis estaciones de votación",
     "ps_card": {
-      "header": "Estación de votación #{{value}}",
+      "header": "Estación de votación: {{value}}",
       "l1": "[Ubicación L1]",
       "l2": "[Ubicación L2]",
       "l3": "[Ubicación L3]",

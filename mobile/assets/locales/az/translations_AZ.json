@@ -545,7 +545,7 @@
     },
     "general_text": "Mənim seçki məntəqələrimin idarə edilməsi",
     "ps_card": {
-      "header": "Seçki məntəqəsi #{{value}}",
+      "header": "Seçki məntəqəsi: {{value}}",
       "l1": "[Məkan L1]",
       "l2": "[Məkan  L2]",
       "l3": "[Məkan L3]",

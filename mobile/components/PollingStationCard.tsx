@@ -22,8 +22,19 @@ const PollingStationCard = (props: PollingStationCardProps) => {
         {/* header */}
         {/* the '-' margin is used in order to keep the alignment while having a big enough press area for the icon */}
         <XStack justifyContent="space-between" alignItems="center" marginBottom={-16}>
-          <Typography preset="body1" fontWeight="700">
-            {t("ps_card.header", { value: visit.number })}
+          <Typography preset="body1" fontWeight="700" flexShrink={1}>
+            {t("ps_card.header", {
+              value: [
+                visit.level1,
+                visit.level2,
+                visit.level3,
+                visit.level4,
+                visit.level5,
+                visit.number,
+              ]
+                .filter(Boolean)
+                .join(" / "),
+            })}
           </Typography>
 
           <YStack

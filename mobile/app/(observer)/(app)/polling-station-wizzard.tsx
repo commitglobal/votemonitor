@@ -42,6 +42,7 @@ const PollingStationWizzard = () => {
 
   const onNextPress = (nextStep: PollingStationStep) => {
     setSteps([...steps, nextStep]);
+    console.log(steps);
   };
 
   const onPreviousPress = (): PollingStationStep | undefined => {
@@ -52,8 +53,6 @@ const PollingStationWizzard = () => {
   };
 
   const activeStep = useMemo(() => [...steps].pop(), [steps]);
-
-  const locations = useMemo(() => steps.map((step) => step.name).join(", "), [steps]);
 
   return (
     <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
@@ -66,7 +65,7 @@ const PollingStationWizzard = () => {
         activeStep={activeStep}
         onPreviousPress={onPreviousPress}
         onNextPress={onNextPress}
-        locations={locations}
+        steps={steps}
       />
     </Screen>
   );
@@ -76,20 +75,21 @@ interface PollingStationWizzardContentProps {
   onPreviousPress: () => PollingStationStep | undefined;
   onNextPress: (nextStep: PollingStationStep) => void;
   activeStep?: PollingStationStep;
-  locations: string;
+  steps: PollingStationStep[];
 }
 
 const PollingStationWizzardContent = ({
   onPreviousPress,
   onNextPress,
   activeStep,
-  locations,
+  steps,
 }: PollingStationWizzardContentProps) => {
   const { t } = useTranslation(["add_polling_station", "common"]);
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sliceNumber, setSliceNumber] = useState(30);
   const { activeElectionRound, setSelectedPollingStationId } = useUserData();
+  const locations = useMemo(() => steps.map((step) => step.name).join(", "), [steps]);
 
   const queryClient = useQueryClient();
 
@@ -180,6 +180,11 @@ const PollingStationWizzardContent = ({
             address: pollingStation.name,
             number: pollingStation?.number || "",
             isNotSynced: true,
+            level1: steps[0].name,
+            level2: steps[1]?.name,
+            level3: steps[2]?.name,
+            level4: steps[3]?.name,
+            level5: steps[4]?.name,
           },
         ],
       );

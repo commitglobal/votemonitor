@@ -552,7 +552,7 @@
     },
     "general_text": "Zarządzanie moimi komisjami wyborczymi",
     "ps_card": {
-      "header": "Komisja wyborcza #{{value}}",
+      "header": "Komisja wyborcza: {{value}}",
       "l1": "[Lokalizacja L1]",
       "l2": "[Lokalizacja L2]",
       "l3": "[Lokalizacja L3]",

@@ -146,7 +146,16 @@ const SelectPollingStation = () => {
                               : "$gray9"
                           }
                         >
-                          {entry.number} - {entry.address}
+                          {[
+                            entry.level1,
+                            entry.level2,
+                            entry.level3,
+                            entry.level4,
+                            entry.level5,
+                            entry.number,
+                          ]
+                            .filter(Boolean)
+                            .join(" / ")}
                         </Select.ItemText>
                       </Select.Item>
                     );
