@@ -27,7 +27,16 @@ export default function Onboarding() {
 
   const onOnboardingComplete = () => {
     setSecureStoreItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE, "true");
-    router.replace("select-app-mode");
+    router.replace("/");
+  };
+
+  const onBackButtonPress = () => {
+    if (currentPage === 0) {
+      setLanguageSelectionApplied(false);
+    } else {
+      // @ts-ignore
+      pagerViewRef?.current?.setPage(currentPage - 1);
+    }
   };
 
   const onNextButtonPress = () => {
@@ -62,14 +71,19 @@ export default function Onboarding() {
         justifyContent="center"
         width="100%"
       >
-        {/* <Pagination
-                  scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-                  positionAnimatedValue={positionAnimatedValue}
-                  data={data}
-                  currentPage={currentPage + 1}
-                /> */}
         <YStack
-          width="100%"
+          width="50%"
+          alignItems="flex-start"
+          padding="$xxs"
+          pressStyle={{ opacity: 0.5 }}
+          onPress={onBackButtonPress}
+        >
+          <Typography color="white" preset="body2" textAlign="center">
+            {t("back", { ns: "common" })}
+          </Typography>
+        </YStack>
+        <YStack
+          width="50%"
           alignItems="flex-end"
           padding="$xxs"
           pressStyle={{ opacity: 0.5 }}

@@ -18,7 +18,8 @@
     "no_data": "No se encontraron datos.",
     "select": "Seleccionar",
     "done": "Completado",
-    "ok": "Aceptar"
+    "ok": "Aceptar",
+    "back": "Atrás"
   },
   "languages": {
     "ro": "Rumano",
