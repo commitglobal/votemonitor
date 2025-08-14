@@ -55,6 +55,7 @@ public class Endpoint(
                 CoalitionName = null,
                 IsCoalitionLeader = null,
                 IsMonitoringNgoForCitizenReporting = null,
+                AllowMultipleFormSubmission = null,
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -107,7 +108,8 @@ public class Endpoint(
                     .Where(c =>
                         c.Memberships.Any(m => m.MonitoringNgoId == x.Id) && c.ElectionRoundId == x.ElectionRoundId)
                     .Select(c => c.Id)
-                    .FirstOrDefault()
+                    .FirstOrDefault(),
+                AllowMultipleFormSubmission = x.AllowMultipleFormSubmission
             })
             .FirstOrDefaultAsync(ct);
 

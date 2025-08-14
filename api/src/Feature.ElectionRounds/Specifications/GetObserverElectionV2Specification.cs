@@ -32,7 +32,8 @@ public sealed class GetObserverElectionV2Specification : Specification<ElectionR
             CoalitionId = null,
             CoalitionName = null,
             IsCoalitionLeader = false,
-            IsMonitoringNgoForCitizenReporting = false
+            IsMonitoringNgoForCitizenReporting = false,
+            AllowMultipleFormSubmission = x.MonitoringNgos.First(ngo => ngo.MonitoringObservers.Any(o => o.ObserverId == observerId)).AllowMultipleFormSubmission
         });
     }
 }

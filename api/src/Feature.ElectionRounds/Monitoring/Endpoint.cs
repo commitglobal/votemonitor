@@ -57,7 +57,8 @@ public class Endpoint(VoteMonitorContext context)
                     .Where(c =>
                         c.Memberships.Any(m => m.MonitoringNgoId == x.Id) && c.ElectionRoundId == x.ElectionRoundId)
                     .Select(c => c.Id)
-                    .FirstOrDefault()
+                    .FirstOrDefault(),
+                AllowMultipleFormSubmission = x.AllowMultipleFormSubmission
             }).ToListAsync(ct);
 
         return TypedResults.Ok(new Result { ElectionRounds = electionRounds });
