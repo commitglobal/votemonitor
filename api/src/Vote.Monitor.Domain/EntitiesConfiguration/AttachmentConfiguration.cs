@@ -16,6 +16,7 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
         builder.HasIndex(x => x.MonitoringObserverId);
         builder.HasIndex(x => x.PollingStationId);
         builder.HasIndex(x => x.FormId);
+        builder.Property(x => x.SubmissionId).IsRequired();
         builder.Property(x => x.QuestionId).IsRequired();
 
         builder.Property(x => x.FileName)

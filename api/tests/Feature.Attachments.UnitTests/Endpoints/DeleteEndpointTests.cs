@@ -42,7 +42,8 @@ public class DeleteEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.GetByIdAsync(attachmentId)
+        _repository
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
             .Returns(fakeAttachment);
 
         // Act
@@ -102,7 +103,7 @@ public class DeleteEndpointTests
             .Returns(fakeMonitoringObserverId);
 
         _repository
-            .GetByIdAsync(Arg.Any<Guid>())
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
             .ReturnsNull();
 
         // Act

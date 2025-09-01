@@ -13,7 +13,6 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
         builder.HasIndex(x => x.MonitoringObserverId);
-        builder.HasIndex(x => x.SubmissionId);
         builder.Property(x => x.SubmissionId).IsRequired();
         builder.Property(x => x.QuestionId).IsRequired();
 
