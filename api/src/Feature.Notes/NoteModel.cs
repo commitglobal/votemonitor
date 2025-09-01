@@ -1,5 +1,6 @@
 ﻿namespace Feature.Notes;
 
+[Obsolete("Will be removed in future version")]
 public record NoteModel
 {
     public required Guid Id { get; init; }
@@ -19,6 +20,6 @@ public record NoteModel
             FormId = note.FormId,
             QuestionId = note.QuestionId,
             Text = note.Text,
-            LastUpdatedAt = note.LastUpdatedAt
+            LastUpdatedAt = note.LastUpdatedAt,
         };
 }

@@ -31,16 +31,7 @@ public class Endpoint(
         var notes = await repository.ListAsync(specification, ct);
 
         return TypedResults.Ok(notes
-            .Select(note => new NoteModel
-            {
-                Id = note.Id,
-                ElectionRoundId = note.ElectionRoundId,
-                PollingStationId = note.PollingStationId,
-                FormId = note.FormId,
-                QuestionId = note.QuestionId,
-                Text = note.Text,
-                LastUpdatedAt = note.LastUpdatedAt
-            })
+            .Select(NoteModel.FromEntity)
             .ToList()
         );
     }

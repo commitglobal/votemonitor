@@ -6,17 +6,32 @@ namespace Vote.Monitor.Domain.Entities.NoteAggregate;
 public class Note : IAggregateRoot
 {
     public Guid Id { get; private set; }
+
+    [Obsolete("Will be removed in future version")]
     public Guid ElectionRoundId { get; private set; }
+
+    [Obsolete("Will be removed in future version")]
     public Guid PollingStationId { get; private set; }
+
     public Guid MonitoringObserverId { get; private set; }
+
+    [Obsolete("Will be removed in future version")]
     public Guid FormId { get; private set; }
+
+    public Guid SubmissionId { get; private set; }
     public Guid QuestionId { get; private set; }
     public string Text { get; private set; }
     public DateTime LastUpdatedAt { get; private set; }
 
+    [Obsolete("Will be removed in future version")]
     public ElectionRound ElectionRound { get; private set; }
+
+    [Obsolete("Will be removed in future version")]
     public Form Form { get; private set; }
+
+    [Obsolete("Will be removed in future version")]
     public PollingStation PollingStation { get; private set; }
+
     public MonitoringObserver MonitoringObserver { get; private set; }
 
     public Note(Guid id,
@@ -37,6 +52,26 @@ public class Note : IAggregateRoot
         Text = text;
         LastUpdatedAt = lastUpdatedAt;
     }
+
+    private Note(Guid id,
+        Guid monitoringObserverId,
+        Guid questionId,
+        string text,
+        DateTime lastUpdatedAt)
+    {
+        Id = id;
+        MonitoringObserverId = monitoringObserverId;
+        QuestionId = questionId;
+        Text = text;
+        LastUpdatedAt = lastUpdatedAt;
+    }
+
+    public static Note Create(Guid id,
+        Guid monitoringObserverId,
+        Guid submissionId,
+        Guid questionId,
+        string text,
+        DateTime lastUpdatedAt) => new(id, monitoringObserverId, questionId, text, lastUpdatedAt);
 
     public void UpdateText(string text, DateTime lastUpdatedAt)
     {

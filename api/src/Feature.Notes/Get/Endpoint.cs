@@ -34,15 +34,6 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(new NoteModel
-        {
-            Id = note.Id,
-            ElectionRoundId = note.ElectionRoundId,
-            PollingStationId = note.PollingStationId,
-            FormId = note.FormId,
-            QuestionId = note.QuestionId,
-            Text = note.Text,
-            LastUpdatedAt = note.LastUpdatedAt
-        });
+        return TypedResults.Ok(NoteModel.FromEntity(note));
     }
 }
