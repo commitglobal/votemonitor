@@ -111,7 +111,7 @@ public class Endpoint(
         }
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted,
-            req.LastUpdatedAt ?? timeProvider.UtcNow);
+            timeProvider.UtcNow, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
