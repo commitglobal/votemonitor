@@ -73,7 +73,7 @@ public class Endpoint(
                           FROM "Notes" n
                           WHERE 
                               n."ElectionRoundId" = @electionRoundId
-                              (
+                              AND (
                                   (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
                                   OR N."SubmissionId" = FS."Id"
                               )

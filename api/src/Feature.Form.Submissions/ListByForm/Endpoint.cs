@@ -85,7 +85,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             						"Notes" N
             					WHERE
             						N."ElectionRoundId" = @ELECTIONROUNDID
-            						(
+            						AND (
                                         (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
                                         OR N."SubmissionId" = FS."Id"
                                     )
