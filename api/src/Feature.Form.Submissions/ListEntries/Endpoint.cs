@@ -111,14 +111,20 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           AND (@hasNotes is NULL
                             OR ((SELECT COUNT(1)
                                  FROM "Notes" N
-                                 WHERE N."FormId" = fs."FormId"
-                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = N."PollingStationId") = 0 AND @hasNotes = false)
+                                 WHERE 
+                                     (
+                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                          OR N."SubmissionId" = FS."Id"
+                                     )
+                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId") = 0 AND @hasNotes = false)
                             OR ((SELECT COUNT(1)
                                  FROM "Notes" N
-                                 WHERE N."FormId" = fs."FormId"
-                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
+                                 WHERE 
+                                     (
+                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                          OR N."SubmissionId" = FS."Id"
+                                      )
+                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId") > 0 AND @hasNotes = true))
                           AND (@fromDate is NULL OR FS."LastUpdatedAt" >= @fromDate::timestamp)
                           AND (@toDate is NULL OR FS."LastUpdatedAt" <= @toDate::timestamp)) c;
                   
@@ -181,9 +187,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                       AND A."IsCompleted" = true)                       AS "MediaFilesCount",
                                                    (SELECT COUNT(1)
                                                     FROM "Notes" N
-                                                    WHERE N."FormId" = fs."FormId"
-                                                      AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                                      AND fs."PollingStationId" = N."PollingStationId") AS "NotesCount",
+                                                    WHERE 
+                                                        (
+                                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                                          OR N."SubmissionId" = FS."Id"
+                                                        )
+                                                      AND N."MonitoringObserverId" = fs."MonitoringObserverId") AS "NotesCount",
                                                    fs."LastUpdatedAt"        AS "TimeSubmitted",
                                                    fs."FollowUpStatus",
                                                    f."DefaultLanguage",

@@ -11,22 +11,12 @@ public class Attachment : IAggregateRoot
     public Guid ElectionRoundId { get; private set; }
 
     [Obsolete("Will be removed in future version")]
-    public ElectionRound ElectionRound { get; private set; }
-
-    [Obsolete("Will be removed in future version")]
     public Guid PollingStationId { get; private set; }
-
-    [Obsolete("Will be removed in future version")]
-    public PollingStation PollingStation { get; private set; }
-
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
 
     [Obsolete("Will be removed in future version")]
     public Guid FormId { get; private set; }
-
-    [Obsolete("Will be removed in future version")]
-    public Form Form { get; private set; }
     public Guid SubmissionId { get; private set; }
     public Guid QuestionId { get; private set; }
     public string FileName { get; private set; }

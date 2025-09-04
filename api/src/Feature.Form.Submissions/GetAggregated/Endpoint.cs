@@ -158,9 +158,11 @@ public class Endpoint(
                              				FROM
                              					"Notes" N
                              				WHERE
-                             					N."FormId" = FS."FormId"
+                             					(
+                             					    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                             					    OR N."SubmissionId" = FS."Id"
+                             					)
                              					AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             					AND FS."PollingStationId" = N."PollingStationId"
                              			) AS "NotesCount",
                              			COALESCE(
                              				(
@@ -214,9 +216,11 @@ public class Endpoint(
                              						"Notes" N
                              					WHERE
                              						N."ElectionRoundId" = @ELECTIONROUNDID
-                             						AND N."FormId" = FS."FormId"
+                                                    (
+                                                        (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                                        OR N."SubmissionId" = FS."Id"
+                                                    )
                              						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             						AND FS."PollingStationId" = N."PollingStationId"
                              				),
                              				'[]'::JSONB
                              			) AS "Notes",

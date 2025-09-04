@@ -85,9 +85,11 @@ public class Endpoint(
                           FROM "Notes" n
                           WHERE 
                               n."ElectionRoundId" = @electionRoundId
-                              AND n."FormId" = fs."FormId"
-                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
+                              (
+                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                  OR N."SubmissionId" = FS."Id"
+                              )
+                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
                               
                           "LastUpdatedAt" AS "TimeSubmitted",
                           NULL AS "ArrivalTime",

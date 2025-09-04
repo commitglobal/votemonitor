@@ -58,7 +58,7 @@ public class ExportFormSubmissionsJob(
                 .FromSqlInterpolated(
                     @$"SELECT f.* FROM ""Forms"" f 
                        INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
-                .Where(x => x.Status == FormStatus.Published)
+                .Where(x => x.Status != FormStatus.Drafted)
                 .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
                 .ToListAsync(ct);

@@ -92,7 +92,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                         INNER JOIN "Forms" F ON F."Id" = FS."FormId"
                     WHERE
                         FS."ElectionRoundId" = ANY (@electionRoundIds)
-                        AND F."Status" = 'Published'
+                        AND F."Status" <> 'Drafted'
                         AND FS."NumberOfQuestionsAnswered" > 0
                     UNION
                     SELECT
@@ -117,7 +117,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     WHERE
                         FS."ElectionRoundId" = ANY (@electionRoundIds)
                         AND FS."NumberOfQuestionsAnswered" > 0
-                        AND F."Status" = 'Published'
+                        AND F."Status" <> 'Drafted'
                 ) + (
                     SELECT
                         COUNT(1)
@@ -140,7 +140,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     WHERE
                         FS."ElectionRoundId" = ANY (@electionRoundIds)
                         AND FS."NumberOfQuestionsAnswered" > 0
-                        AND F."Status" = 'Published'
+                        AND F."Status" <> 'Drafted'
                 ) + (
                     SELECT
                         SUM("NumberOfQuestionsAnswered")
@@ -159,7 +159,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             WHERE
                 FS."ElectionRoundId" = ANY (@electionRoundIds)
                 AND "NumberOfQuestionsAnswered" > 0
-                AND F."Status" = 'Published';
+                AND F."Status" <> 'Drafted';
             ------------------------------
             
             -- minutes monitoring

@@ -92,9 +92,11 @@ public class Endpoint(
                             FROM
                                 "Notes" N
                             WHERE
-                                N."FormId" = FS."FormId"
+                                (
+                                    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                    OR N."SubmissionId" = FS."Id"
+                                )
                               AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = N."PollingStationId"
                         ) AS "NotesCount",
                         (
                             CASE

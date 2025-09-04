@@ -85,9 +85,11 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             						"Notes" N
             					WHERE
             						N."ElectionRoundId" = @ELECTIONROUNDID
-            						AND N."FormId" = FS."FormId"
+            						(
+                                        (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                        OR N."SubmissionId" = FS."Id"
+                                    )
             						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-            						AND FS."PollingStationId" = N."PollingStationId"
             				),
             				'[]'::JSONB
             			) AS "Notes",
@@ -283,7 +285,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             	"GetAvailableForms" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) AF
             	LEFT JOIN FILTERED_SUBMISSIONS FS ON FS."FormId" = AF."FormId"
             WHERE
-            	AF."FormStatus" = 'Published'
+            	AF."FormStatus" <> 'Drafted'
             	AND AF."FormType" NOT IN ('CitizenReporting')
             GROUP BY
             	AF."FormId",

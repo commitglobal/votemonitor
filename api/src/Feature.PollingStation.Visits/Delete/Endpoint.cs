@@ -84,8 +84,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
                         WHERE
                             N."ElectionRoundId" = @electionRoundId
-                            AND MO."ObserverId" = @observerId
                             AND N."PollingStationId" = @pollingStationId
+                          
+                            AND MO."ObserverId" = @observerId
                     )
                 """;
 

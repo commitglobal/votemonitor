@@ -24,9 +24,7 @@ public sealed class AttachmentFaker : PrivateFaker<Attachment>
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
         RuleFor(fake => fake.FileName, fileName ?? string.Empty);
         RuleFor(fake => fake.FilePath, filePath ?? string.Empty);
-        RuleFor(fake => fake.ElectionRound, electionRound ?? fakeElectionRound);
         RuleFor(fake => fake.ElectionRoundId, electionRound?.Id ?? fakeElectionRound.Id);
-        RuleFor(fake => fake.PollingStation, pollingStation ?? fakePollingStation);
         RuleFor(fake => fake.PollingStationId, pollingStation?.Id ?? fakePollingStation.Id);
         RuleFor(fake => fake.MonitoringObserver, monitoringObserver ?? fakeMonitoringObserver);
         RuleFor(fake => fake.MonitoringObserverId, monitoringObserver?.Id ?? fakeMonitoringObserver.Id);
