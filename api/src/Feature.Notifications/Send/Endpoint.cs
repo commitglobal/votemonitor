@@ -80,9 +80,11 @@ public class Endpoint(
                             FROM
                                 "Attachments" A
                             WHERE
-                                A."FormId" = FS."FormId"
+                                (
+                                    (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                    OR A."SubmissionId" = FS."Id"
+                                )
                               AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = A."PollingStationId"
                               AND A."IsDeleted" = FALSE
                               AND A."IsCompleted" = TRUE
                         ) AS "MediaFilesCount",

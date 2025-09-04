@@ -96,16 +96,22 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           AND (@hasAttachments is NULL
                             OR ((SELECT COUNT(1)
                                  FROM "Attachments" A
-                                 WHERE A."FormId" = fs."FormId"
+                                 WHERE 
+                                 (
+                                      (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                      OR A."SubmissionId" = FS."Id"
+                                  )
                                    AND A."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = A."PollingStationId"
                                    AND A."IsDeleted" = false
                                    AND A."IsCompleted" = true) = 0 AND @hasAttachments = false)
                             OR ((SELECT COUNT(1)
                                  FROM "Attachments" A
-                                 WHERE A."FormId" = fs."FormId"
+                                 WHERE 
+                                    (
+                                      (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                      OR A."SubmissionId" = FS."Id"
+                                     )
                                    AND A."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = A."PollingStationId"
                                    AND A."IsDeleted" = false
                                    AND A."IsCompleted" = true) > 0 AND @hasAttachments = true))
                           AND (@hasNotes is NULL

@@ -66,10 +66,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                         FROM
                             "Attachments" A
                             INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
+                            LEFT JOIN "FormSubmissions" FS ON A."SubmissionId" = FS."Id"
                         WHERE
-                            A."ElectionRoundId" = @electionRoundId
+                            MO."ElectionRoundId" = @electionRoundId
                             AND MO."ObserverId" = @observerId
-                            AND A."PollingStationId" = @pollingStationId
+                            AND (A."PollingStationId" = @pollingStationId or FS."PollingStationId" = @pollingStationId)
                     )
                 """;
 
@@ -82,11 +83,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                         FROM
                             "Notes" N
                             INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
+                            LEFT JOIN "FormSubmissions" FS ON N."SubmissionId" = FS."Id"
                         WHERE
-                            N."ElectionRoundId" = @electionRoundId
-                            AND N."PollingStationId" = @pollingStationId
-                          
+                            MO."ElectionRoundId" = @electionRoundId
                             AND MO."ObserverId" = @observerId
+                            AND (N."PollingStationId" = @pollingStationId or FS."PollingStationId" = @pollingStationId)
                     )
                 """;
 

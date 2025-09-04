@@ -59,12 +59,13 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             					FROM
             						"Attachments" A
             					WHERE
-            						A."ElectionRoundId" = @ELECTIONROUNDID
-            						AND A."FormId" = FS."FormId"
+            						(
+                                        (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                        OR A."SubmissionId" = FS."Id"
+                                    )
             						AND A."MonitoringObserverId" = FS."MonitoringObserverId"
             						AND A."IsDeleted" = FALSE
             						AND A."IsCompleted" = TRUE
-            						AND FS."PollingStationId" = A."PollingStationId"
             				),
             				'[]'::JSONB
             			) AS "Attachments",
@@ -84,8 +85,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             					FROM
             						"Notes" N
             					WHERE
-            						N."ElectionRoundId" = @ELECTIONROUNDID
-            						AND (
+            						(
                                         (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
                                         OR N."SubmissionId" = FS."Id"
                                     )
