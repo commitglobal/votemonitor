@@ -34,7 +34,7 @@ public class Endpoint(
         var notes = await repository.ListAsync(specification, ct);
 
         return TypedResults.Ok(notes
-            .Select(NoteModelV2.FromEntity)
+            .Select(note => NoteModelV2.FromEntity(req.ElectionRoundId, note))
             .ToList()
         );
     }

@@ -32,7 +32,7 @@ public class Endpoint(
         }
 
         var note = await repository.FirstOrDefaultAsync(
-            new GetNoteByIdSpecification(req.ElectionRoundId, req.Submissionid,req.ObserverId, req.Id), ct);
+            new GetNoteByIdSpecification(req.ElectionRoundId, req.SubmissionId,req.ObserverId, req.Id), ct);
         return note == null ? await AddNoteAsync(req, ct) : await UpdateNoteAsync(note, req, ct);
     }
 
@@ -42,7 +42,7 @@ public class Endpoint(
         note.UpdateText(req.Text, req.LastUpdatedAt);
         await repository.UpdateAsync(note, ct);
 
-        return TypedResults.Ok(NoteModelV2.FromEntity(note));
+        return TypedResults.Ok(NoteModelV2.FromEntity(req.ElectionRoundId, note));
     }
 
     private async Task<Results<Ok<NoteModelV2>, NotFound>> AddNoteAsync(Request req, CancellationToken ct)
@@ -54,13 +54,13 @@ public class Endpoint(
 
         var note = NoteAggregate.Create(req.Id,
             monitoringObserverId,
-            req.Submissionid,
+            req.SubmissionId,
             req.QuestionId,
             req.Text,
             req.LastUpdatedAt);
 
         await repository.AddAsync(note, ct);
 
-        return TypedResults.Ok(NoteModelV2.FromEntity(note));
+        return TypedResults.Ok(NoteModelV2.FromEntity(req.ElectionRoundId, note));
     }
 }

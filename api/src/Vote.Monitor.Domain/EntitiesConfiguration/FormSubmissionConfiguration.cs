@@ -19,7 +19,7 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
             x.PollingStationId,
             x.MonitoringObserverId,
             x.FormId
-        }).IsUnique();
+        });
 
         builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
         builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();

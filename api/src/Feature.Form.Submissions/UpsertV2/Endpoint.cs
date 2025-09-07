@@ -6,9 +6,8 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
-namespace Feature.Form.Submissions.Upsert;
+namespace Feature.Form.Submissions.UpsertV2;
 
-[Obsolete("Will be removed in future version")]
 public class Endpoint(
     IRepository<FormSubmission> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
@@ -20,12 +19,12 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/form-submissions");
+        Post("/api/election-rounds/{electionRoundId}/form-submissions/{id}");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s =>
         {
-            s.Summary = "Upserts form submission for a given polling station";
+            s.Summary = "Upserts form submission";
             s.Description = "When updating a submission it will update only the properties that are not null";
         });
 
@@ -61,7 +60,8 @@ public class Endpoint(
         }
 
         var specification =
-            new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
+            new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId,
+                req.Id);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -111,8 +111,8 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted,
-            req.CreatedAt ?? timeProvider.UtcNow, req.LastUpdatedAt ?? timeProvider.UtcNow);
+        var submission = form.CreateFormSubmissionV2(req.Id, pollingStation, monitoringObserver, answers, req.IsCompleted,
+            req.CreatedAt, req.LastUpdatedAt);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

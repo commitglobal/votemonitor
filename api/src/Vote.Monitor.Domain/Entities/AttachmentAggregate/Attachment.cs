@@ -64,8 +64,8 @@ public class Attachment : IAggregateRoot
     }
 
     private Attachment(Guid id,
-        Guid monitoringObserverId,
         Guid submissionId,
+        Guid monitoringObserverId,
         Guid questionId,
         string fileName,
         string filePath,

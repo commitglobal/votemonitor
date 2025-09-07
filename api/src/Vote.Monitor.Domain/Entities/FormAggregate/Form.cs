@@ -138,6 +138,7 @@ public class Form : BaseForm
         new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
             Questions);
 
+    [Obsolete("Will be removed in future version")]
     public FormSubmission CreateFormSubmission(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         List<BaseAnswer>? answers,
