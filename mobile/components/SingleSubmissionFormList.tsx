@@ -111,7 +111,7 @@ const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionForm
     setFormLanguagePreference({ formId: formItem.id, language });
 
     router.push(
-      `/single-submission-form-details/${formItem?.id}?language=${language}&submissionId=${formItem.submissionId}`,
+      `/form-submission-details/${formItem.submissionId}?language=${language}&formId=${formItem?.id}`,
     ); // TODO @birloiflorian we can pass formTitle
     setSelectedForm(null);
   };
