@@ -6,15 +6,14 @@ import { Note } from "../../common/models/note";
 
 export const useAddNoteMutation = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
+  submissionId: string | undefined,
   scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
   // this is the GET notes key - we need it in order to invalidate that query after adding the new note
   const getNotesQK = useMemo(
-    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, submissionId),
     [electionRoundId],
   );
 

@@ -21,7 +21,7 @@ const ChooseOnboardingLanguage = ({
   const systemLocale = Localization.getLocales()[0];
   const { changeLanguage } = useContext(LanguageContext);
 
-  const { control, handleSubmit, watch } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       selectedLanguage:
         systemLocale?.languageCode && i18n.languages.includes(systemLocale.languageCode)

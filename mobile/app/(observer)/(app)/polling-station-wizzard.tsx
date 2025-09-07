@@ -42,7 +42,6 @@ const PollingStationWizzard = () => {
 
   const onNextPress = (nextStep: PollingStationStep) => {
     setSteps([...steps, nextStep]);
-    console.log(steps);
   };
 
   const onPreviousPress = (): PollingStationStep | undefined => {

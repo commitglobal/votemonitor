@@ -235,30 +235,21 @@ export const getElectionRoundAllForms = (
 };
 
 /** ========================================================================
-    ================= GET NotesForPollingStation ====================
+    ================= GET NotesForSubmission ====================
     ========================================================================
-    @description Get all the possible notes for a given polling station
+    @description Get all the possible notes for a given submission
     @param {string} electionRoundId 
-    @param {string} pollingStationId
-    @param {string} formId 
+    @param {string} submissionId
     @returns {Note[]} 
 */
 
-export const getNotesForPollingStation = (
+export const getNotesForSubmission = (
   electionRoundId: string,
-  pollingStationId: string,
-  formId: string,
+  submissionId: string,
 ): Promise<Note[]> => {
-  return API.get(`election-rounds/${electionRoundId}/notes`, {
-    params: {
-      electionRoundId: [electionRoundId],
-      pollingStationId: [pollingStationId],
-      formId: [formId],
-    },
-    paramsSerializer: {
-      indexes: null,
-    },
-  }).then((res) => res.data);
+  return API.get(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}/notes`).then(
+    (res) => res.data,
+  );
 };
 
 /** ========================================================================
@@ -276,7 +267,10 @@ export type FormSubmission = {
   pollingStationId: string;
   answers: ApiFormAnswer[];
   isCompleted: boolean;
+  createdAt: string;
   lastUpdatedAt: string;
+  numberOfNotes?: number;
+  numberOfAttachments?: number;
 };
 
 export type FormSubmissionsApiResponse = {
@@ -307,41 +301,56 @@ export const getFormSubmissions = (
     @returns {FormSubmission} updated data 
 
 */
-export type FormSubmissionAPIPayload = Omit<FormSubmission, "id" | "isCompleted"> & {
+export type FormSubmissionAPIPayload = Omit<FormSubmission, "isCompleted"> & {
   electionRoundId: string;
 };
 
 export const upsertFormSubmission = ({
   electionRoundId,
+  id,
   ...payload
 }: FormSubmissionAPIPayload): Promise<FormSubmission> => {
-  return API.post(`election-rounds/${electionRoundId}/form-submissions`, payload).then(
+  return API.post(`election-rounds/${electionRoundId}/form-submissions/${id}`, payload).then(
     (res) => res.data,
   );
 };
 
+export type DeleteFormSubmissionAPIPayload = {
+  electionRoundId: string;
+  id: string;
+};
+
+export const deleteFormSubmission = ({
+  electionRoundId,
+  id,
+}: DeleteFormSubmissionAPIPayload): Promise<FormSubmission> => {
+  return API.delete(`election-rounds/${electionRoundId}/form-submissions/${id}`).then(
+    (res) => res.data,
+  );
+};
 /**
  * ========================================================================
  * ================= POST markFormSubmissionAsDone ====================
  * ========================================================================
  * @param {string} electionRoundId
- * @param {string} formSubmissionId
+ * @param {string} formId
+ * @param {string} submissionId
  * @returns {FormSubmission}
  */
 
 export type MarkFormSubmissionCompletionStatusAPIPayload = {
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   isCompleted: boolean;
 };
 
 export const markFormSubmissionCompletionStatus = ({
   electionRoundId,
+  submissionId,
   ...payload
 }: MarkFormSubmissionCompletionStatusAPIPayload) => {
   return API.put(
-    `/election-rounds/${electionRoundId}/form-submissions:setCompletion`,
+    `/election-rounds/${electionRoundId}/form-submissions/${submissionId}:setCompletion`,
     payload,
   ).then((res) => res.data);
 };
@@ -357,18 +366,22 @@ export const markFormSubmissionCompletionStatus = ({
 export type UpsertNotePayload = {
   id: string;
   electionRoundId: string;
-  pollingStationId: string;
-  text: string;
-  formId: string;
   questionId: string;
+  submissionId: string;
+  text: string;
   lastUpdatedAt: string;
 };
 
 export const upsertNote = ({
   electionRoundId,
+  submissionId,
+  id,
   ...notePayload
 }: UpsertNotePayload): Promise<Note> => {
-  return API.post(`election-rounds/${electionRoundId}/notes`, notePayload).then((res) => res.data);
+  return API.post(
+    `election-rounds/${electionRoundId}/form-submissions/${submissionId}/notes/${id}`,
+    notePayload,
+  ).then((res) => res.data);
 };
 
 /** ========================================================================
@@ -394,8 +407,10 @@ export const changePassword = (data: ChangePasswordPayload) => {
     @param {string} id 
 */
 
-export const deleteNote = ({ electionRoundId, id }: Note) => {
-  return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
+export const deleteNote = ({ electionRoundId, submissionId, id }: Note) => {
+  return API.delete(
+    `election-rounds/${electionRoundId}/form-submissions/${submissionId}/notes/${id}`,
+  ).then((res) => res.data);
 };
 
 /** ========================================================================

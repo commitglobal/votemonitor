@@ -419,7 +419,10 @@
       "answered_questions": "Answered questions",
       "resume": "Resume form",
       "start_form": "Start form",
-      "progress": "progress"
+      "progress": "progress",
+      "submissions_list": "Form submissions",
+      "add_submission": "Add submission",
+      "number_of_submissions": "# of submissions: {{value}}"
     },
     "questions": {
       "title": "Questions",
@@ -435,7 +438,8 @@
     "error": "Error while loading the form data!",
     "menu": {
       "clear": "Clear form (delete all answers)",
-      "change_language": "Change language"
+      "change_language": "Change language",
+      "delete": "Delete submission"
     },
     "clear_answers_modal": {
       "title": "Clear form {{value}}",
@@ -445,6 +449,17 @@
       },
       "actions": {
         "clear": "Clear form",
+        "cancel": "Cancel"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Delete submission",
+      "description": {
+        "p1": "This action will delete this form submission (including notes and media files).",
+        "p2": "To avoid unintended information loss, please ensure you check the form before performing this action"
+      },
+      "actions": {
+        "clear": "Delete submission",
         "cancel": "Cancel"
       }
     }
@@ -558,7 +573,7 @@
       "ps_number": "Polling station number"
     },
     "warning_dialog": {
-      "title": "Remove Polling station #{{value}}",
+      "title": "Remove Polling station {{value}}",
       "description": "This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.",
       "actions": {
         "cancel": "Cancel",
@@ -567,7 +582,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "Removing polling station #{{value}} not allowed",
+      "title": "Removing polling station {{value}} not allowed",
       "description": "The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action."
     },
     "delete_success": "Polling station deleted successfully!",
@@ -853,5 +868,27 @@
     "sync_data": "Synchronizing offline data...",
     "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
     "files": "We are uploading your files, it may take a while..."
+  },
+  "delete_submission": {
+    "title": "Review submission before deleting",
+    "description": "This action cannot be undone. Once deleted, no data from this submission can be recovered.",
+    "header": "Delete Submission #{{submissionNumber}}",
+    "attachments": "Attachments: {{value}}",
+    "notes": "Notes: {{value}}",
+    "delete": "Delete submission",
+    "warning_dialog": {
+      "title": "Are you sure you want to delete this submission?",
+      "description": "This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "form_submission_card": {
+    "header": "Submission #{{value}}",
+    "last_updated_at": "Last updated at:",
+    "form_status": "Form status:",
+    "answered_questions": "Answered questions:",
+    "attachments": "Attachments:",
+    "notes": "Notes:"
   }
 }

@@ -1,8 +1,8 @@
-import React from "react";
 import { Redirect, Stack } from "expo-router";
-import { useAuth } from "../../../hooks/useAuth";
-import UserContextProvider from "../../../contexts/user/UserContext.provider";
+import React from "react";
 import NotificationContextProvider from "../../../contexts/notification/NotificationContextProvider";
+import UserContextProvider from "../../../contexts/user/UserContext.provider";
+import { useAuth } from "../../../hooks/useAuth";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();

@@ -562,7 +562,7 @@
       "ps_number": "Numer komisji wyborczej"
     },
     "warning_dialog": {
-      "title": "Usuń komisję wyborczą #{{value}}",
+      "title": "Usuń komisję wyborczą {{value}}",
       "description": "Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces \"Dodaj nową komisję wyborczą\".",
       "actions": {
         "cancel": "Anuluj",
@@ -571,7 +571,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "Usunięcie komisji wyborczej #{{value}} nie jest dozwolone",
+      "title": "Usunięcie komisji wyborczej {{value}} nie jest dozwolone",
       "description": "Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera dane (informacje o komisji wyborczej i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, najpierw usuń ręcznie wszystkie informacje o komisji i odpowiedzi w formularzach, a następnie ponó próbę usunięcia komisji."
     },
     "delete_success": "Komisja wyborcza została pomyślnie usunięta!",

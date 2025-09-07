@@ -1,24 +1,25 @@
+import { DrawerActions } from "@react-navigation/native";
+import { router, useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { useNavigation, router } from "expo-router";
-import { Screen } from "../../../../../../components/Screen";
-import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
-import { Typography } from "../../../../../../components/Typography";
+import { useTranslation } from "react-i18next";
 import { YStack } from "tamagui";
+import SingleSubmissionFormList from "../../../../../../components/SingleSubmissionFormList";
+import MultiSubmissionFormList from "../../../../../../components/MultiSubmissionFormList";
+import Header from "../../../../../../components/Header";
+import { Icon } from "../../../../../../components/Icon";
+import NoElectionRounds from "../../../../../../components/NoElectionRounds";
+import NoVisitsExist from "../../../../../../components/NoVisitsExist";
+import OptionsSheet from "../../../../../../components/OptionsSheet";
+import { PollingStationGeneral } from "../../../../../../components/PollingStationGeneral";
+import { Screen } from "../../../../../../components/Screen";
+import SelectPollingStation from "../../../../../../components/SelectPollingStation";
+import ObservationSkeleton from "../../../../../../components/SkeletonLoaders/ObservationSkeleton";
+import { Typography } from "../../../../../../components/Typography";
+import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../../../../../../services/queries.service";
-import SelectPollingStation from "../../../../../../components/SelectPollingStation";
-import Header from "../../../../../../components/Header";
-import { Icon } from "../../../../../../components/Icon";
-import { DrawerActions } from "@react-navigation/native";
-import NoVisitsExist from "../../../../../../components/NoVisitsExist";
-import { PollingStationGeneral } from "../../../../../../components/PollingStationGeneral";
-import FormList from "../../../../../../components/FormList";
-import OptionsSheet from "../../../../../../components/OptionsSheet";
-import { useTranslation } from "react-i18next";
-import NoElectionRounds from "../../../../../../components/NoElectionRounds";
-import ObservationSkeleton from "../../../../../../components/SkeletonLoaders/ObservationSkeleton";
 
 const Index = () => {
   const { t } = useTranslation("observation");
@@ -77,18 +78,36 @@ const Index = () => {
 
       <YStack paddingHorizontal="$md" flex={1}>
         {(isLoading || isLoadingPsiData || isLoadingPsiFormQuestions) && <ObservationSkeleton />}
-        {activeElectionRound && selectedPollingStation?.pollingStationId && psiFormQuestions && (
-          <FormList
-            ListHeaderComponent={
-              <YStack>
-                <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
-                <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                  {t("forms.heading")}
-                </Typography>
-              </YStack>
-            }
-          />
-        )}
+        {activeElectionRound &&
+          selectedPollingStation?.pollingStationId &&
+          psiFormQuestions &&
+          !activeElectionRound.allowMultipleFormSubmission && (
+            <SingleSubmissionFormList
+              ListHeaderComponent={
+                <YStack>
+                  <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
+                  <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
+                    {t("forms.heading")}
+                  </Typography>
+                </YStack>
+              }
+            />
+          )}
+        {activeElectionRound &&
+          selectedPollingStation?.pollingStationId &&
+          psiFormQuestions &&
+          activeElectionRound.allowMultipleFormSubmission && (
+            <MultiSubmissionFormList
+              ListHeaderComponent={
+                <YStack>
+                  <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
+                  <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
+                    {t("forms.heading")}
+                  </Typography>
+                </YStack>
+              }
+            />
+          )}
       </YStack>
     </Screen>
   );

@@ -13,8 +13,7 @@ export type AddAttachmentStartAPIPayload = {
   id: string;
   filePath: string;
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   questionId: string;
   fileName: string;
   contentType: string;
@@ -56,21 +55,18 @@ export type AttachmentData = {
 // Multipart Upload - Add Attachment - Question
 export const addAttachmentMultipartStart = ({
   electionRoundId,
-  pollingStationId,
   id,
-  formId,
+  submissionId,
   questionId,
   fileName,
   contentType,
   numberOfUploadParts,
 }: AddAttachmentStartAPIPayload): Promise<AddAttachmentMultipartStartAPIResponse> => {
   return API.post(
-    `election-rounds/${electionRoundId}/attachments:init`,
+    `election-rounds/${electionRoundId}/form-submissions/${submissionId}/attachments:init`,
     {
-      pollingStationId,
       electionRoundId,
       id,
-      formId,
       questionId,
       fileName,
       contentType,
@@ -112,10 +108,11 @@ export const uploadS3Chunk = async (url: string, chunk: any): Promise<{ ETag: st
     .put(url, chunk, {
       timeout: 100000,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/octet-stream",
       },
     })
     .then((res) => {
+      console.log(res);
       return { ETag: res.headers.etag };
     });
 };

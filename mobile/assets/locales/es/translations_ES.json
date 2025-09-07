@@ -562,7 +562,7 @@
       "ps_number": "Número de estación de votación"
     },
     "warning_dialog": {
-      "title": "Eliminar estación de votación #{{value}}",
+      "title": "Eliminar estación de votación {{value}}",
       "description": "Esta acción eliminará la estación de votación de tu lista de estaciones de votación visitadas. Puedes agregarla nuevamente a través del proceso de Añadir Nueva Estación de Votación.",
       "actions": {
         "cancel": "Cancelar",
@@ -571,7 +571,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "No se permite eliminar la estación de votación #{{value}}",
+      "title": "No se permite eliminar la estación de votación {{value}}",
       "description": "No se puede eliminar la estación de votación de tu lista porque contiene datos (Información de la estación de votación y/o respuestas de formularios) que el sistema no puede eliminar en tu nombre. Si deseas eliminar esta estación de votación, por favor, borra la información de la estación de votación y las respuestas de los formularios manualmente, y luego vuelve a intentar esta acción."
     },
     "delete_success": "¡Estación de votación eliminada con éxito!",

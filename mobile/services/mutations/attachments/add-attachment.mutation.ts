@@ -30,11 +30,7 @@ export const useUploadAttachmentMutation = () => {
     },
     onSettled: (_data, _err, variables) => {
       return queryClient.invalidateQueries({
-        queryKey: AttachmentsKeys.attachments(
-          variables.electionRoundId,
-          variables.pollingStationId,
-          variables.formId,
-        ),
+        queryKey: AttachmentsKeys.attachments(variables.electionRoundId, variables.submissionId),
       });
     },
     retry: 3,

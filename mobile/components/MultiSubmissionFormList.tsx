@@ -1,43 +1,42 @@
+import { useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
+import { router } from "expo-router";
 import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
-import { FormStatus, mapFormToFormListItem } from "../services/form.parser";
-import { useUserData } from "../contexts/user/UserContext.provider";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
+import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
 import {
   getFormLanguagePreference,
   setFormLanguagePreference,
 } from "../common/language.preferences";
-import { router } from "expo-router";
-import { Typography } from "./Typography";
-import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
-import { ListView } from "./ListView";
-import FormCard from "./FormCard";
-import { Dialog } from "./Dialog";
-import RadioFormInput from "./FormInputs/RadioFormInput";
-import Button from "./Button";
-import { useFormSubmissions } from "../services/queries/form-submissions.query";
-import { useElectionRoundAllForms } from "../services/queries/forms.query";
-import FormListErrorScreen from "./FormListError";
-import { useQueryClient } from "@tanstack/react-query";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useUserData } from "../contexts/user/UserContext.provider";
+import { mapFormToMultiSubmissionFormListItem as mapFormToMultiSubmissionFormListItem } from "../services/form.parser";
 import {
   electionRoundsKeys,
   pollingStationsKeys,
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../services/queries.service";
+import { useFormSubmissions } from "../services/queries/form-submissions.query";
+import { useElectionRoundAllForms } from "../services/queries/forms.query";
+import Button from "./Button";
+import { Dialog } from "./Dialog";
+import MultiSubmissionFormCard from "./MultiSubmissionFormCard";
 import FormListEmptyComponent from "./FormListEmptyComponent";
-import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import FormListErrorScreen from "./FormListError";
+import { ListView } from "./ListView";
+import { Typography } from "./Typography";
+import SelectFormLanguageDialogContent from "./SelectFormLanguageDialogContent";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
-export type FormListItem = {
+export type MultiSubmissionFormListItem = {
   id: string;
   name: string;
   options: string;
-  numberOfQuestions: number;
-  numberOfCompletedQuestions: number;
   languages: string[];
-  status: FormStatus;
+  numberOfSubmissions: number;
 };
 
 type ListHeaderComponentType =
@@ -46,11 +45,11 @@ type ListHeaderComponentType =
   | null
   | undefined;
 
-interface IFormListProps {
+interface IMultiSubmissionFormListProps {
   ListHeaderComponent: ListHeaderComponentType;
 }
 
-const FormList = ({ ListHeaderComponent }: IFormListProps) => {
+const MultiSubmissionFormList = ({ ListHeaderComponent }: IMultiSubmissionFormListProps) => {
   const { t } = useTranslation(["observation", "common"]);
   const { isOnline } = useNetInfoContext();
   const { width } = useWindowDimensions();
@@ -59,7 +58,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   const queryClient = useQueryClient();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
+  const [selectedForm, setSelectedForm] = useState<MultiSubmissionFormListItem | null>(null);
 
   const {
     data: allForms,
@@ -96,8 +95,8 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     });
   };
 
-  const formList: FormListItem[] = useMemo(() => {
-    return mapFormToFormListItem(allForms?.forms, formSubmissions);
+  const formList: MultiSubmissionFormListItem[] = useMemo(() => {
+    return mapFormToMultiSubmissionFormListItem(allForms?.forms, formSubmissions);
   }, [allForms, formSubmissions]);
 
   const {
@@ -106,14 +105,22 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     formState: { errors },
   } = useForm({});
 
-  const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
+  const onConfirmFormLanguage = (formItem: MultiSubmissionFormListItem, language: string) => {
     setFormLanguagePreference({ formId: formItem.id, language });
 
-    router.push(`/form-details/${formItem?.id}?language=${language}`); // TODO @birloiflorian we can pass formTitle
-    setSelectedForm(null);
+    if (formItem.numberOfSubmissions === 0) {
+      const newSubmissionId = Crypto.randomUUID();
+      setSelectedForm(null);
+      router.push(
+        `/form-submission-details/${newSubmissionId}?formId=${formItem.id}&language=${language}`,
+      );
+    } else {
+      router.push(`/multi-submission-form-details/${formItem.id}?language=${language}`);
+      setSelectedForm(null);
+    }
   };
 
-  const openForm = async (formItem: FormListItem) => {
+  const openForm = async (formItem: MultiSubmissionFormListItem) => {
     if (!formItem?.languages?.length) {
       // TODO: Display error toast
       console.log("No language exists");
@@ -158,7 +165,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
 
   return (
     <YStack flex={1}>
-      <ListView<FormListItem>
+      <ListView<MultiSubmissionFormListItem>
         data={formList}
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={{ paddingVertical: 16 }}
@@ -167,7 +174,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
         bounces={isOnline}
         renderItem={({ item, index }) => {
           return (
-            <FormCard
+            <MultiSubmissionFormCard
               key={index}
               form={item}
               onPress={openForm.bind(null, item)}
@@ -195,7 +202,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
                 <Typography preset="heading">{t("forms.select_language_modal.header")}</Typography>
               }
               content={
-                <DialogContent
+                <SelectFormLanguageDialogContent
                   languages={selectedForm.languages}
                   error={errors[selectedForm.name]}
                   value={value}
@@ -223,51 +230,4 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   );
 };
 
-const DialogContent = ({
-  languages,
-  error,
-  value,
-  onChange,
-}: {
-  languages: string[];
-  error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
-  value: string;
-  onChange: (...event: any[]) => void;
-}) => {
-  const { t } = useTranslation(["observation", "languages"]);
-
-  const languageMapping: { [key: string]: string } = {
-    RO: t("ro", { ns: "languages" }),
-    EN: t("en", { ns: "languages" }),
-    PL: t("pl", { ns: "languages" }),
-    BG: t("bg", { ns: "languages" }),
-    KA: t("ka", { ns: "languages" }),
-    HY: t("hy", { ns: "languages" }),
-    RU: t("ru", { ns: "languages" }),
-    AZ: t("az", { ns: "languages" }),
-    ES: t("es", { ns: "languages" }),
-  };
-
-  const transformedLanguages = languages.map((language) => ({
-    id: language,
-    value: language,
-    // TODO: decide if we add the name to the label as well
-    label: languageMapping[language] || language,
-  }));
-
-  return (
-    <YStack>
-      <Typography preset="body1" marginBottom="$lg">
-        {t("forms.select_language_modal.helper")}
-      </Typography>
-      <RadioFormInput options={transformedLanguages} value={value} onValueChange={onChange} />
-      {error && (
-        <Typography marginTop="$sm" style={{ color: "red" }}>
-          {`${error.message}`}
-        </Typography>
-      )}
-    </YStack>
-  );
-};
-
-export default FormList;
+export default MultiSubmissionFormList;

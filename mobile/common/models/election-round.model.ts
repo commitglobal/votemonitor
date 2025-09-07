@@ -8,4 +8,5 @@ export type ElectionRoundVM = {
   status: "Archived" | "NotStarted" | "Started";
   createdOn: string;
   lastModifiedOn: string | null;
+  allowMultipleFormSubmission: boolean;
 };

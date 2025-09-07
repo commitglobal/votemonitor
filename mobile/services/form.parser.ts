@@ -1,7 +1,10 @@
+import * as Crypto from "expo-crypto";
 import i18n from "../common/config/i18n";
-import { FormListItem } from "../components/FormList";
-import { arrayToKeyObject } from "../helpers/misc";
-import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
+import { FormListItem } from "../components/SingleSubmissionFormList";
+import { MultiSubmissionFormListItem } from "../components/MultiSubmissionFormList";
+import { FormSubmissionDetails } from "../components/FormSubmissionListItem";
+import { arrayToKeyObject, groupArrayByKey } from "../helpers/misc";
+import { FormAPIModel, FormSubmission, FormSubmissionsApiResponse } from "./definitions.api";
 import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
@@ -215,24 +218,24 @@ export const setFormDefaultValues = (questionId: string, answer?: ApiFormAnswer)
   }
 };
 
-export enum FormStatus {
+export enum SubmissionStatus {
   NOT_STARTED = "not started",
   IN_PROGRESS = "in progress",
   COMPLETED = "completed",
   MARKED_AS_COMPLETED = "markedAsCompleted",
 }
 
-export const mapFormStateStatus = (
+export const mapSubmissionStateStatus = (
   numberOfAnswers: number,
   numberOfQuestions: number,
   isCompleted: boolean,
-): FormStatus => {
-  if (isCompleted) return FormStatus.MARKED_AS_COMPLETED;
+): SubmissionStatus => {
+  if (isCompleted) return SubmissionStatus.MARKED_AS_COMPLETED;
 
-  if (numberOfAnswers === 0) return FormStatus.NOT_STARTED;
-  if (numberOfAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
-  if (numberOfAnswers === numberOfQuestions) return FormStatus.COMPLETED;
-  return FormStatus.NOT_STARTED;
+  if (numberOfAnswers === 0) return SubmissionStatus.NOT_STARTED;
+  if (numberOfAnswers < numberOfQuestions) return SubmissionStatus.IN_PROGRESS;
+  if (numberOfAnswers === numberOfQuestions) return SubmissionStatus.COMPLETED;
+  return SubmissionStatus.NOT_STARTED;
 };
 
 export const mapFormToFormListItem = (
@@ -250,11 +253,12 @@ export const mapFormToFormListItem = (
 
     return {
       id: form.id,
+      submissionId: submissions[form.id]?.id ?? Crypto.randomUUID(),
       name: `${form.code} - ${form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]]}`,
       numberOfCompletedQuestions: numberOfAnswers,
       numberOfQuestions: questions.length,
-      options: `Available in ${Object.keys(form.name).join(", ")}`,
-      status: mapFormStateStatus(
+      options: `Available in ${Object.keys(form.name).join(", ")}`, // TODO: localize!
+      status: mapSubmissionStateStatus(
         numberOfAnswers,
         questions.length,
         submissions[form.id]?.isCompleted || false,
@@ -262,4 +266,56 @@ export const mapFormToFormListItem = (
       languages: form.languages,
     };
   });
+};
+export const mapFormToMultiSubmissionFormListItem = (
+  forms: FormAPIModel[] = [],
+  formSubmissions: FormSubmissionsApiResponse | undefined,
+): MultiSubmissionFormListItem[] => {
+  const currentLanguage = i18n.language.toLocaleUpperCase();
+
+  const submissions = groupArrayByKey(formSubmissions?.submissions || [], "formId");
+  return forms.map((form) => {
+    const numberOfSubmissions = submissions[form.id]?.length || 0;
+
+    return {
+      id: form.id,
+      name: `${form.code} - ${form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]]}`,
+      options: `Available in ${Object.keys(form.name).join(", ")}`,
+      numberOfSubmissions,
+      languages: form.languages,
+    };
+  });
+};
+
+export const mapFormToFormSubmissionListItem = (
+  form: FormAPIModel,
+  formSubmissions: FormSubmission[] | undefined,
+): FormSubmissionDetails[] => {
+  return (
+    formSubmissions
+      ?.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) // ascending
+      ?.map((submission, idx) => ({
+        ...submission,
+        submissionNumber: idx + 1,
+      }))
+      ?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // descending
+      ?.map((submission) => {
+        const answers = arrayToKeyObject(submission.answers || [], "questionId");
+        const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));
+
+        const numberOfAnswers = submission.answers.length || 0;
+        return {
+          ...submission,
+          numberOfAttachments: submission.numberOfAttachments ?? 0,
+          numberOfNotes: submission.numberOfNotes ?? 0,
+          numberOfCompletedQuestions: numberOfAnswers,
+          numberOfQuestions: questions.length,
+          formStatus: mapSubmissionStateStatus(
+            numberOfAnswers,
+            questions.length,
+            submission?.isCompleted || false,
+          ),
+        };
+      }) ?? []
+  );
 };

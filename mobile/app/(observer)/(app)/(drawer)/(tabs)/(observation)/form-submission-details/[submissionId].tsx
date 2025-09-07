@@ -11,7 +11,7 @@ import OptionsSheet from "../../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../../common/language.preferences";
 import { useFormById } from "../../../../../../../services/queries/forms.query";
-import { useFormSubmissionByFormId } from "../../../../../../../services/queries/form-submissions.query";
+import { useFormSubmissionById } from "../../../../../../../services/queries/form-submissions.query";
 import FormQuestionListItem, {
   FormQuestionListItemProps,
   QuestionStatus,
@@ -19,13 +19,14 @@ import FormQuestionListItem, {
 import FormOverview from "../../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import {
+  useDeleteFormSubmissionMutation,
   useFormSubmissionMutation,
   useMarkFormSubmissionCompletionStatusMutation,
 } from "../../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
 import WarningDialog from "../../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../../services/queries/attachments.query";
-import { useNotesForFormId } from "../../../../../../../services/queries/notes.query";
+import { useNotesForSubmission } from "../../../../../../../services/queries/notes.query";
 import { RefreshControl } from "react-native";
 import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 
@@ -34,28 +35,36 @@ const ESTIMATED_ITEM_SIZE = 100;
 type SearchParamsType = {
   formId: string;
   language: string;
+  submissionId: string;
 };
 
-const FormDetails = () => {
+const FormSubmissionDetails = () => {
   const { t } = useTranslation(["form_overview", "common"]);
-  const { formId, language } = useLocalSearchParams<SearchParamsType>();
+  const { formId, submissionId, language } = useLocalSearchParams<SearchParamsType>();
   const { isOnline } = useNetInfoContext();
 
-  if (!formId || !language) {
-    return <Typography>Incorrect page params</Typography>;
+  if (!formId || !language || !submissionId) {
+    return <Typography>FormSubmissionDetails Incorrect page params</Typography>;
   }
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
+  const [deletingSubmission, setDeletingSubmission] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { width } = useWindowDimensions();
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
     pollingStationId: selectedPollingStation?.pollingStationId,
-    scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
+    scopeId: `Submit_Answers_${activeElectionRound?.id}_${submissionId}`,
+  });
+
+  const { mutate: deleteSubmission } = useDeleteFormSubmissionMutation({
+    electionRoundId: activeElectionRound?.id,
+    pollingStationId: selectedPollingStation?.pollingStationId,
+    scopeId: `Delete_${activeElectionRound?.id}_${submissionId}`,
   });
 
   const { mutate: setFormSubmissionCompletionStatus } =
@@ -63,7 +72,7 @@ const FormDetails = () => {
       electionRoundId: activeElectionRound?.id,
       pollingStationId: selectedPollingStation?.pollingStationId,
       // BR: Both updateSubmission and setFormSubmissionCompletionStatus use the same scopeId because you can't markCompletionStatus without an existing submissionId
-      scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
+      scopeId: `Submit_Answers_${activeElectionRound?.id}_${submissionId}`,
     });
 
   const {
@@ -78,10 +87,10 @@ const FormDetails = () => {
     isLoading: isLoadingAnswers,
     error: answersError,
     refetch: refetchAnswers,
-  } = useFormSubmissionByFormId(
+  } = useFormSubmissionById(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
-    formId,
+    submissionId,
   );
 
   const answers = useMemo(() => currentFormSubmission?.answers, [currentFormSubmission]);
@@ -92,14 +101,12 @@ const FormDetails = () => {
 
   const { data: attachments, refetch: refetchAttachments } = useAttachments(
     activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-    formId,
+    submissionId,
   );
 
-  const { data: notes, refetch: refetchNotes } = useNotesForFormId(
+  const { data: notes, refetch: refetchNotes } = useNotesForSubmission(
     activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-    formId,
+    submissionId,
   );
 
   const handleRefetch = () => {
@@ -165,6 +172,7 @@ const FormDetails = () => {
             : undefined;
 
         return {
+          code: q.code,
           question: q.text[language],
           status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
           answer,
@@ -194,7 +202,9 @@ const FormDetails = () => {
   }, [answers, numberOfQuestions, isCompleted]);
 
   const onQuestionItemClick = (questionId: string) => {
-    router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
+    router.push(
+      `/form-questionnaire/${questionId}?formId=${formId}&language=${language}&submissionId=${submissionId}`,
+    );
   };
 
   const onFormOverviewActionClick = () => {
@@ -205,7 +215,9 @@ const FormDetails = () => {
     const lastQ = questions?.find((q) => !answers?.[q.id]);
     // if all questions are answered get the last question
     const lastQId = lastQ?.id || currentForm?.questions[currentForm.questions.length - 1].id;
-    return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
+    return router.push(
+      `/form-questionnaire/${lastQId}?formId=${formId}&language=${language}&submissionId=${submissionId}`,
+    );
   };
 
   const onChangeLanguagePress = () => {
@@ -216,7 +228,9 @@ const FormDetails = () => {
   const onConfirmFormLanguage = (formId: string, language: string) => {
     setFormLanguagePreference({ formId, language });
 
-    router.replace(`/form-details/${formId}?language=${language}`);
+    router.replace(
+      `/form-submission-details/${submissionId}?language=${language}&formId=${formId}`,
+    );
     setIsChangeLanguageModalOpen(false);
   };
 
@@ -224,17 +238,33 @@ const FormDetails = () => {
     setOptionSheetOpen(false);
     setClearingForm(true);
   };
+  const onDeleteSubmissionPress = () => {
+    setOptionSheetOpen(false);
+    setDeletingSubmission(true);
+  };
 
   const onClearAnswersPress = () => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound) {
       updateSubmission({
+        id: submissionId,
         pollingStationId: selectedPollingStation?.pollingStationId,
         electionRoundId: activeElectionRound?.id,
         formId: currentForm?.id as string,
         answers: [],
         lastUpdatedAt: new Date().toISOString(),
+        createdAt: currentFormSubmission?.createdAt ?? new Date().toISOString(),
       });
       setClearingForm(false);
+    }
+  };
+
+  const onDeleteSubmission = () => {
+    if (submissionId && activeElectionRound) {
+      deleteSubmission({
+        id: submissionId,
+        electionRoundId: activeElectionRound?.id,
+      });
+      setDeletingSubmission(false);
     }
   };
 
@@ -281,7 +311,7 @@ const FormDetails = () => {
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={`${formTitle}`}
+        title={formTitle}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -293,7 +323,7 @@ const FormDetails = () => {
       />
       <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" flex={1}>
         <ListView<
-          Pick<FormQuestionListItemProps, "question" | "status"> & {
+          Pick<FormQuestionListItemProps, "question" | "code" | "status"> & {
             id: string;
             numberOfAttachments: number;
             numberOfNotes: number;
@@ -333,6 +363,7 @@ const FormDetails = () => {
       </YStack>
       {isChangeLanguageModalOpen && languages && (
         <ChangeLanguageDialog
+          currentLanguage={language}
           formId={formId as string}
           languages={languages}
           onCancel={setIsChangeLanguageModalOpen.bind(null, false)}
@@ -358,6 +389,25 @@ const FormDetails = () => {
           action={onClearAnswersPress}
         />
       )}
+      {deletingSubmission && (
+        <WarningDialog
+          title={t("delete_submission_modal.title")}
+          description={
+            <YStack gap="$md">
+              <Typography preset="body1" color="$gray6">
+                {t("delete_submission_modal.description.p1")}
+              </Typography>
+              <Typography preset="body1" color="$gray6">
+                {t("delete_submission_modal.description.p2")}
+              </Typography>
+            </YStack>
+          }
+          actionBtnText={t("delete_submission_modal.actions.clear")}
+          cancelBtnText={t("delete_submission_modal.actions.cancel")}
+          onCancel={setDeletingSubmission.bind(null, false)}
+          action={onDeleteSubmission}
+        />
+      )}
       {/* //todo: change this once tamagui fixes sheet issue #2585 */}
       {optionSheetOpen && (
         <OptionsSheet open setOpen={setOptionSheetOpen}>
@@ -371,8 +421,7 @@ const FormDetails = () => {
                 if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
                   setFormSubmissionCompletionStatus({
                     electionRoundId: activeElectionRound?.id,
-                    pollingStationId: selectedPollingStation?.pollingStationId,
-                    formId: currentForm?.id as string,
+                    submissionId,
                     isCompleted: !isCompleted,
                   });
                   setOptionSheetOpen(false);
@@ -390,6 +439,14 @@ const FormDetails = () => {
             <Typography preset="body1" paddingVertical="$xs" onPress={onClearFormPress}>
               {t("menu.clear")}
             </Typography>
+            <Typography
+              preset="body1"
+              color="$red10"
+              paddingVertical="$xs"
+              onPress={onDeleteSubmissionPress}
+            >
+              {t("menu.delete")}
+            </Typography>
           </YStack>
         </OptionsSheet>
       )}
@@ -397,4 +454,4 @@ const FormDetails = () => {
   );
 };
 
-export default FormDetails;
+export default FormSubmissionDetails;

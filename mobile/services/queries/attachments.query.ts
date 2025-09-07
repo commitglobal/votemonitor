@@ -3,19 +3,13 @@ import { AttachmentApiResponse, getAttachments } from "../api/get-attachments.ap
 
 export const AttachmentsKeys = {
   all: ["attachments"] as const,
-  attachments: (
-    electionRoundId: string | undefined,
-    pollingStationId: string | undefined,
-    formId: string | undefined,
-  ) =>
+  attachments: (electionRoundId: string | undefined, submissionId: string | undefined) =>
     [
       ...AttachmentsKeys.all,
       "electionRoundId",
       electionRoundId,
-      "pollingStationId",
-      pollingStationId,
-      "formId",
-      formId,
+      "submissionId",
+      submissionId,
     ] as const,
   addAttachmentMutation: () => [...AttachmentsKeys.all, "add"] as const,
   addAttachmentCompleteMutation: () => [...AttachmentsKeys.all, "complete"] as const,
@@ -47,14 +41,13 @@ const mapAttachmentsToQuestionId = (attachments: AttachmentApiResponse[]) => {
 
 export const useAttachments = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
+  submissionId: string | undefined,
 ) => {
   return useQuery({
-    queryKey: AttachmentsKeys.attachments(electionRoundId, pollingStationId, formId),
+    queryKey: AttachmentsKeys.attachments(electionRoundId, submissionId),
     queryFn:
-      electionRoundId && pollingStationId && formId
-        ? () => getAttachments({ electionRoundId, pollingStationId, formId })
+      electionRoundId && submissionId
+        ? () => getAttachments({ electionRoundId, submissionId })
         : skipToken,
     select: (data) => mapAttachmentsToQuestionId(data),
   });

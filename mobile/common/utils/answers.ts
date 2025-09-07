@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { ApiFormAnswer } from "../../services/interfaces/answer.type";
 
 /**
@@ -20,14 +21,7 @@ export const getAnswerDisplay = (answer: ApiFormAnswer, displaySingleSelectOther
   switch (answer.$answerType) {
     case "dateAnswer":
       const date = new Date(answer.date); // eslint-disable-line no-case-declarations
-      return `${date.toLocaleDateString("en-GB", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric",
-      })} - ${date.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
+      return format(date, "yyyy-MM-dd HH:mm");
     case "textAnswer":
       return answer.text;
     case "singleSelectAnswer":

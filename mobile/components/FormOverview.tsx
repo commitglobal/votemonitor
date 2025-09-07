@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { FormStatus, mapFormStateStatus } from "../services/form.parser";
+import { SubmissionStatus, mapSubmissionStateStatus } from "../services/form.parser";
 import { useTranslation } from "react-i18next";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import { XStack, YStack, useWindowDimensions } from "tamagui";
-import { FormStateToTextMapper } from "./FormCard";
 import CircularProgress from "./CircularProgress";
 import Button from "./Button";
+import { SubmissionStateToTextMapper } from "../common/utils/form-submissions";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -22,7 +22,7 @@ const FormOverview = ({
   onFormActionClick,
 }: FormOverviewProps) => {
   const formStatus = useMemo(
-    () => mapFormStateStatus(completedAnswers, numberOfQuestions, isCompleted),
+    () => mapSubmissionStateStatus(completedAnswers, numberOfQuestions, isCompleted),
     [completedAnswers, numberOfQuestions, isCompleted],
   );
 
@@ -39,7 +39,7 @@ const FormOverview = ({
           <Typography fontWeight="500" color="$gray5">
             {t("overview.status")}:{" "}
             <Typography fontWeight="700">
-              {t(FormStateToTextMapper[formStatus], { ns: "common" })}
+              {t(SubmissionStateToTextMapper[formStatus], { ns: "common" })}
             </Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
@@ -63,7 +63,9 @@ const FormOverview = ({
         disabled={completedAnswers === numberOfQuestions}
         onPress={onFormActionClick}
       >
-        {formStatus === FormStatus.NOT_STARTED ? t("overview.start_form") : t("overview.resume")}
+        {formStatus === SubmissionStatus.NOT_STARTED
+          ? t("overview.start_form")
+          : t("overview.resume")}
       </Button>
     </Card>
   );

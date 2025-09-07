@@ -558,7 +558,7 @@
       "ps_number": "Numărul secției"
     },
     "warning_dialog": {
-      "title": "Șterge secția de votare #{{value}}",
+      "title": "Șterge secția de votare {{value}}",
       "description": "Această acțiune va șterge secția de votare din lista de secții vizitate. O poți adăuga din nou reluând pașii din procesul de 'Adaugă o secție nouă de votare'",
       "actions": {
         "cancel": "Renunță",
@@ -567,7 +567,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "Ștergerea secției de votare #{{value}} nu este permisă",
+      "title": "Ștergerea secției de votare {{value}} nu este permisă",
       "description": "Secția de votare nu poate fi ștearsă din listă deoarece conține date asociate (Informații despre secția de votare și sau Răspunsuri la formulare), care nu pot fi șterse de sistem în numele tău. Dacă dorești totuși să ștergi această secție, te rugăm să ștergi întâi manual răspunsurile de la formularele deja completate, apoi să încerci din nou această acțiune."
     },
     "delete_success": "Secția de votare a fost ștearsă cu succes!",

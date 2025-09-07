@@ -555,7 +555,7 @@
       "ps_number": "Seçki məntəqəsinin nömrəsi"
     },
     "warning_dialog": {
-      "title": "#{{value}} Seçki məntəqəsinin silinməsi",
+      "title": "{{value}} Seçki məntəqəsinin silinməsi",
       "description": "Bu fəaliyyət bu seçki  məntəqəsini sizin ziyarət etdiyiniz məntəqələrin siyahısından siləcək. Onun yenidən əlavə olunması yeni seçki məntəqəsinin əlavə edilməsi funksiyası vasitəsilə mümkündür.",
       "actions": {
         "cancel": "Ləğv etmək",
@@ -564,7 +564,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "#{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
+      "title": "{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
       "description": "Sizin siyahıdan seçki məntəqəsini çıxarmaq mümkün deyil. Çünki o sistemin sizin adınızla silə bilməyəcəyi məlumatları (Seçki məntəqəsinin məlumatı və ya formanın cavabları) əhatə edir. Əgər bu seçki məntəqəsini çıxarmaq istəyirsinizsə, xahiş edirik, əvvəl əliniz ilə seçki məntqəsinin məlumatını və cavabları təmizləyin, sonra yenidən cəhd edin."
     },
     "delete_success": "Seçki məntəqəsi uğurla silindi!",

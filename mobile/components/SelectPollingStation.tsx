@@ -8,6 +8,7 @@ import { useUserData } from "../contexts/user/UserContext.provider";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { BackHandler, Platform } from "react-native";
+import { getPollingStationDisplay } from "../common/utils/polling-stations";
 
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
@@ -146,16 +147,7 @@ const SelectPollingStation = () => {
                               : "$gray9"
                           }
                         >
-                          {[
-                            entry.level1,
-                            entry.level2,
-                            entry.level3,
-                            entry.level4,
-                            entry.level5,
-                            entry.number,
-                          ]
-                            .filter(Boolean)
-                            .join(" / ")}
+                          {getPollingStationDisplay(entry)}
                         </Select.ItemText>
                       </Select.Item>
                     );

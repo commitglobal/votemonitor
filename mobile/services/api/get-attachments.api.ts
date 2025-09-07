@@ -2,8 +2,7 @@ import API from "../api";
 
 type GetAttachmentsApiPayload = {
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
 };
 
 export enum AttachmentMimeType {
@@ -16,8 +15,7 @@ export enum AttachmentMimeType {
 export type AttachmentApiResponse = {
   id: string;
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   questionId: string;
   fileName: string;
   mimeType: AttachmentMimeType;
@@ -28,9 +26,13 @@ export type AttachmentApiResponse = {
 
 export const getAttachments = ({
   electionRoundId,
+  submissionId,
   ...params
 }: GetAttachmentsApiPayload): Promise<AttachmentApiResponse[]> => {
-  return API.get(`election-rounds/${electionRoundId}/attachments`, {
-    params,
-  }).then((res) => res.data);
+  return API.get(
+    `election-rounds/${electionRoundId}/form-submissions/${submissionId}/attachments`,
+    {
+      params,
+    },
+  ).then((res) => res.data);
 };

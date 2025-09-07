@@ -29,7 +29,7 @@ import { setAuthTokens } from "../helpers/authTokensSetter";
  *    - Redirects to login
  */
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "http://10.0.2.2:5043/api/";
 
 const TIMEOUT = 60 * 1000; // 60 seconds
 
