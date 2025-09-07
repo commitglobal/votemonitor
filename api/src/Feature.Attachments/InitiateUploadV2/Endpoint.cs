@@ -50,7 +50,7 @@ public class Endpoint(
             await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
 
         var uploadPath =
-            $"elections/{req.ElectionRoundId}/{req.SubmissionId}";
+            $"elections/{req.ElectionRoundId}/submissions/{req.SubmissionId}";
        
         var attachment = AttachmentAggregate.CreateV2(req.Id,
             req.SubmissionId,

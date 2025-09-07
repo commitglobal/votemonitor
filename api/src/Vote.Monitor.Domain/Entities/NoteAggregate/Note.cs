@@ -45,12 +45,14 @@ public class Note : IAggregateRoot
     }
 
     private Note(Guid id,
+        Guid submissionId,
         Guid monitoringObserverId,
         Guid questionId,
         string text,
         DateTime lastUpdatedAt)
     {
         Id = id;
+        SubmissionId = submissionId;
         MonitoringObserverId = monitoringObserverId;
         QuestionId = questionId;
         Text = text;
@@ -62,7 +64,7 @@ public class Note : IAggregateRoot
         Guid submissionId,
         Guid questionId,
         string text,
-        DateTime lastUpdatedAt) => new(id, monitoringObserverId, questionId, text, lastUpdatedAt);
+        DateTime lastUpdatedAt) => new(id, submissionId, monitoringObserverId, questionId, text, lastUpdatedAt);
 
     public void UpdateText(string text, DateTime lastUpdatedAt)
     {

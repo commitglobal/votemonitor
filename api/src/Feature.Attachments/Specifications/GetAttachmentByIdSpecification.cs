@@ -6,8 +6,7 @@ public sealed class GetAttachmentByIdSpecification : SingleResultSpecification<A
 {
     public GetAttachmentByIdSpecification(Guid electionRoundId, Guid observerId, Guid attachmentId)
     {
-        Query.Where(x => x.ElectionRoundId == electionRoundId
-                         && x.MonitoringObserver.ElectionRoundId == electionRoundId
+        Query.Where(x => x.MonitoringObserver.ElectionRoundId == electionRoundId
                          && x.MonitoringObserver.ObserverId == observerId 
                          && x.Id == attachmentId);
     }

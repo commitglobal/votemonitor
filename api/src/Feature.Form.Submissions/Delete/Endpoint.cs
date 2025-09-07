@@ -8,7 +8,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/form-submissions");
+        Delete("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Deletes a form submission for a polling station"; });
@@ -22,32 +22,27 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
-           return TypedResults.NotFound();
+            return TypedResults.NotFound();
         }
 
         await context.FormSubmissions
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId
+                        && x.Id == req.SubmissionId
                         && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
-                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
-                        && x.PollingStationId == req.PollingStationId)
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId)
             .ExecuteDeleteAsync(ct);
 
         await context.Notes
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId
+            .Where(x => x.SubmissionId == req.SubmissionId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
-                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
-                        && x.PollingStationId == req.PollingStationId)
+                        && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId)
             .ExecuteDeleteAsync(ct);
 
         await context.Attachments
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId
-                        && x.MonitoringObserver.ObserverId == req.ObserverId
+            .Where(x => x.MonitoringObserver.ObserverId == req.ObserverId
                         && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
-                        && x.PollingStationId == req.PollingStationId)
+                        && x.SubmissionId == req.SubmissionId)
             .ExecuteUpdateAsync(x => x.SetProperty(a => a.IsDeleted, true), ct);
 
         return TypedResults.NoContent();

@@ -3,10 +3,9 @@ using Feature.Attachments.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
-namespace Feature.Attachments.List;
+namespace Feature.Attachments.ListV2;
 
-[Obsolete("Will be removed in future version")]
-public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, NotFound, BadRequest<ProblemDetails>>>
+public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModelV2>>, NotFound, BadRequest<ProblemDetails>>>
 {
     private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<AttachmentAggregate> _repository;
@@ -23,17 +22,17 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
 
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/attachments");
+        Get("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}/attachments");
         DontAutoTag();
         Options(x => x.WithTags("attachments", "mobile"));
         Summary(s =>
         {
-            s.Summary = "Gets all attachments an observer has uploaded for a form";
+            s.Summary = "Gets all attachments an observer has uploaded for a submission";
             s.Description = "Gets all attachments with freshly generated presigned urls";
         });
     }
 
-    public override async Task<Results<Ok<List<AttachmentModel>>, NotFound, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<List<AttachmentModelV2>>, NotFound, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult = await _authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
@@ -41,7 +40,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
             return TypedResults.NotFound();
         }
 
-        var specification = new GetObserverAttachmentsSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId, req.FormId);
+        var specification = new GetObserverAttachmentsSpecification(req.ElectionRoundId, req.SubmissionId, req.ObserverId);
         var attachments = await _repository.ListAsync(specification, ct);
 
         var tasks = attachments
@@ -51,16 +50,15 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
                     attachment.FilePath,
                     attachment.UploadedFileName);
 
-                return new AttachmentModel
+                return new AttachmentModelV2
                 {
+                    Id = attachment.Id,
+                    ElectionRoundId = req.ElectionRoundId,
                     FileName = attachment.FileName,
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
                     MimeType = attachment.MimeType,
                     UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
-                    Id = attachment.Id,
-                    ElectionRoundId = attachment.ElectionRoundId,
-                    PollingStationId = attachment.PollingStationId,
-                    FormId = attachment.FormId,
+                    SubmissionId = attachment.SubmissionId,
                     QuestionId = attachment.QuestionId
                 };
             });

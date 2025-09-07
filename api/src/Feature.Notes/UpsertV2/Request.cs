@@ -9,7 +9,7 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
-    public Guid Submissionid { get; set; }
+    public Guid SubmissionId { get; set; }
     public Guid QuestionId { get; set; }
     public Guid Id { get; set; }
     public string Text { get; set; } = string.Empty;

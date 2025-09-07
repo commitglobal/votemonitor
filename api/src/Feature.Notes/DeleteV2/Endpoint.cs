@@ -2,9 +2,7 @@
 using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Feature.Notes.Delete;
-
-[Obsolete("Will be removed in future version")]
+namespace Feature.Notes.DeleteV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -13,7 +11,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/notes/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}/notes/{id}");
         DontAutoTag();
         Options(x => x.WithTags("notes", "mobile"));
         Summary(s => {
@@ -29,7 +27,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
+        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.SubmissionId, req.ObserverId, req.Id), ct);
         if (note == null)
         {
             return TypedResults.NotFound();
