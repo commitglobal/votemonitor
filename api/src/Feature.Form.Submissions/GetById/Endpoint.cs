@@ -81,7 +81,7 @@ public class Endpoint(
                               )
                               AND a."MonitoringObserverId" = fs."MonitoringObserverId"
                               AND a."IsDeleted" = false 
-                              AND a."IsCompleted" = true) AS "Attachments",
+                              AND a."IsCompleted" = true)) AS "Attachments",
                   
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Notes" n
