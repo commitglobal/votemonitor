@@ -1,15 +1,13 @@
+import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
+import { SubmissionStateToTextMapper } from "../common/utils/form-submissions";
 import { FormSubmission } from "../services/definitions.api";
 import { SubmissionStatus } from "../services/form.parser";
 import Badge from "./Badge";
 import Card from "./Card";
-import { Typography } from "./Typography";
-import { useTranslation } from "react-i18next";
-import { Pressable } from "react-native";
 import { Icon } from "./Icon";
-import { format } from "date-fns";
-import { SubmissionStateToTextMapper } from "../common/utils/form-submissions";
-
+import { Typography } from "./Typography";
 export type FormSubmissionDetails = FormSubmission & {
   submissionNumber: number;
   numberOfQuestions: number;

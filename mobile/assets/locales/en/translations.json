@@ -452,6 +452,7 @@
         "cancel": "Cancel"
       }
     },
+
     "delete_submission_modal": {
       "title": "Delete submission",
       "description": {
@@ -573,7 +574,7 @@
       "ps_number": "Polling station number"
     },
     "warning_dialog": {
-      "title": "Remove Polling station {{value}}",
+      "title": "Remove Polling station: {{value}}",
       "description": "This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.",
       "actions": {
         "cancel": "Cancel",

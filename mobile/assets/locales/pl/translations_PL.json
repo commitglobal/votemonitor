@@ -423,7 +423,10 @@
       "answered_questions": "Wypełnione pytania",
       "resume": "Wznów formularz",
       "start_form": "Uruchom formularz",
-      "progress": "postęp"
+      "progress": "postęp",
+      "submissions_list": "Zgłoszenia formularzy",
+      "add_submission": "Dodaj zgłoszenie",
+      "number_of_submissions": "Liczba zgłoszeń: {{value}}"
     },
     "questions": {
       "title": "Pytania",
@@ -439,7 +442,8 @@
     "error": "Błąd podczas ładowania danych formularza!",
     "menu": {
       "clear": "Wyczyść formularz (usuń wszystkie odpowiedzi)",
-      "change_language": "Zmień język"
+      "change_language": "Zmień język",
+      "delete": "Usuń zgłoszenie"
     },
     "clear_answers_modal": {
       "title": "Wyczyść formularz {{value}}",
@@ -449,6 +453,17 @@
       },
       "actions": {
         "clear": "Wyczyść formularz",
+        "cancel": "Anuluj"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Usuń zgłoszenie",
+      "description": {
+        "p1": "Ta operacja usunie to zgłoszenie formularza (włącznie z notatkami i plikami multimedialnymi).",
+        "p2": "Aby uniknąć przypadkowej utraty informacji, upewnij się, że sprawdziłeś formularz przed wykonaniem tej operacji."
+      },
+      "actions": {
+        "clear": "Usuń zgłoszenie",
         "cancel": "Anuluj"
       }
     }
@@ -562,7 +577,7 @@
       "ps_number": "Numer komisji wyborczej"
     },
     "warning_dialog": {
-      "title": "Usuń komisję wyborczą {{value}}",
+      "title": "Usuń komisję wyborczą: {{value}}",
       "description": "Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces \"Dodaj nową komisję wyborczą\".",
       "actions": {
         "cancel": "Anuluj",
@@ -857,5 +872,27 @@
     "sync_data": "Synchronizowanie danych offline...",
     "warning": "NIE ZAMYKAJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.",
     "files": "Przesyłamy Twoje pliki, może to chwilę potrwać..."
+  },
+  "delete_submission": {
+    "title": "Sprawdź zgłoszenie przed usunięciem",
+    "description": "Tej operacji nie można cofnąć. Po usunięciu żadne dane z tego zgłoszenia nie mogą zostać odzyskane.",
+    "header": "Usuń zgłoszenie #{{submissionNumber}}",
+    "attachments": "Załączniki: {{value}}",
+    "notes": "Notatki: {{value}}",
+    "delete": "Usuń zgłoszenie",
+    "warning_dialog": {
+      "title": "Czy na pewno chcesz usunąć to zgłoszenie?",
+      "description": "Tej operacji nie można cofnąć.",
+      "cancel": "Anuluj",
+      "delete": "Usuń"
+    }
+  },
+  "form_submission_card": {
+    "header": "Zgłoszenie #{{value}}",
+    "last_updated_at": "Ostatnia aktualizacja:",
+    "form_status": "Status formularza:",
+    "answered_questions": "Odpowiedziane pytania:",
+    "attachments": "Załączniki:",
+    "notes": "Notatki:"
   }
 }
