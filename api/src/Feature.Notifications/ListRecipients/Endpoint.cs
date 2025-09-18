@@ -74,9 +74,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM
                                 "Attachments" A
                             WHERE
-                                A."FormId" = FS."FormId"
+                                (
+                                    (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                    OR A."SubmissionId" = FS."Id"
+                                )
                               AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = A."PollingStationId"
                               AND A."IsDeleted" = FALSE
                               AND A."IsCompleted" = TRUE
                         ) AS "MediaFilesCount",
@@ -86,9 +88,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM
                                 "Notes" N
                             WHERE
-                                N."FormId" = FS."FormId"
+                                (
+                                    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                    OR N."SubmissionId" = FS."Id"
+                                )
                               AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = N."PollingStationId"
                         ) AS "NotesCount",
                         (
                             CASE
@@ -331,9 +335,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM
                                 "Attachments" A
                             WHERE
-                                A."FormId" = FS."FormId"
+                                (
+                                    (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                    OR A."SubmissionId" = FS."Id"
+                                )
                               AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = A."PollingStationId"
                               AND A."IsDeleted" = FALSE
                               AND A."IsCompleted" = TRUE
                         ) AS "MediaFilesCount",
@@ -343,9 +349,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
                             FROM
                                 "Notes" N
                             WHERE
-                                N."FormId" = FS."FormId"
+                                (
+                                    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                    OR N."SubmissionId" = FS."Id"
+                                )
                               AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                              AND FS."PollingStationId" = N."PollingStationId"
                         ) AS "NotesCount",
                         (
                             CASE

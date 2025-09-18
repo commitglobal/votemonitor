@@ -6,6 +6,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Notes.Upsert;
 
+[Obsolete("Will be removed in future version")]
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<MonitoringObserver> monitoringObserverRepository,

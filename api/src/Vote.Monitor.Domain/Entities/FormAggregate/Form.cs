@@ -138,10 +138,12 @@ public class Form : BaseForm
         new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Icon,
             Questions);
 
+    [Obsolete("Will be removed in future version")]
     public FormSubmission CreateFormSubmission(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         List<BaseAnswer>? answers,
         bool? isCompleted,
+        DateTime createdAt,
         DateTime lastUpdatedAt)
     {
         answers ??= [];
@@ -163,6 +165,40 @@ public class Form : BaseForm
             numberOfQuestionAnswered,
             numberOfFlaggedAnswers,
             isCompleted,
+            createdAt,
+            lastUpdatedAt);
+    }
+    
+    public FormSubmission CreateFormSubmissionV2(Guid submissionId,
+        PollingStation pollingStation,
+        MonitoringObserver monitoringObserver,
+        List<BaseAnswer>? answers,
+        bool? isCompleted,
+        DateTime createdAt,
+        DateTime lastUpdatedAt)
+    {
+        answers ??= [];
+        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        return FormSubmission.CreateV2(
+            submissionId,
+            ElectionRound,
+            pollingStation,
+            monitoringObserver,
+            this,
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers,
+            isCompleted,
+            createdAt,
             lastUpdatedAt);
     }
 
@@ -213,11 +249,11 @@ public class Form : BaseForm
 
         return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
             pollingStationId,
-            locationDescription, 
-            formId: Id, 
+            locationDescription,
+            formId: Id,
             answers,
             numberOfQuestionAnswered,
-            numberOfFlaggedAnswers, 
+            numberOfFlaggedAnswers,
             isCompleted,
             lastUpdatedAt);
     }

@@ -74,9 +74,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                         COUNT(*) AS "NumberOfNotes"
                     FROM
                         "Notes" N
-                            INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
+                    INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
                     WHERE
-                        N."ElectionRoundId" = @electionRoundId
+                        MO."ElectionRoundId" = @electionRoundId
                       AND MO."ObserverId" = @observerId
                 ),
                 "AttachmentsStats" AS (
@@ -88,9 +88,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                                 COUNT(*) AS "NumberOfAttachments"
                             FROM
                                 "Attachments" A
-                                    INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
+                            INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
                             WHERE
-                                A."ElectionRoundId" = @electionRoundId
+                              MO."ElectionRoundId" = @electionRoundId
                               AND MO."ObserverId" = @observerId
                               AND A."IsDeleted" = FALSE
                             UNION ALL

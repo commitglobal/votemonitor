@@ -13,6 +13,10 @@ public record FormSubmissionModel
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
     public bool IsCompleted { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime LastUpdatedAt { get; init; }
+    public int NumberOfNotes { get; init; }
+    public int NumberOfAttachments { get; init; }
 
     public static FormSubmissionModel FromEntity(FormSubmission entity) => new()
     {
@@ -23,6 +27,8 @@ public record FormSubmissionModel
             .Select(AnswerMapper.ToModel)
             .ToList(),
         FollowUpStatus = entity.FollowUpStatus,
-        IsCompleted = entity.IsCompleted
+        IsCompleted = entity.IsCompleted,
+        CreatedAt = entity.CreatedAt,
+        LastUpdatedAt = entity.LastUpdatedAt
     };
 }

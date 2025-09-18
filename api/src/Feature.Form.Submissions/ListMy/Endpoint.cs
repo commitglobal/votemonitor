@@ -1,6 +1,10 @@
-﻿namespace Feature.Form.Submissions.ListMy;
+﻿using Microsoft.EntityFrameworkCore;
+using Module.Answers.Mappers;
+using Vote.Monitor.Domain;
 
-public class Endpoint(IAuthorizationService authorizationService, IReadRepository<FormSubmission> repository)
+namespace Feature.Form.Submissions.ListMy;
+
+public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -26,13 +30,45 @@ public class Endpoint(IAuthorizationService authorizationService, IReadRepositor
             return TypedResults.NotFound();
         }
 
-        var specification =
-            new GetFormSubmissionForObserverSpecification(req.ElectionRoundId, req.ObserverId, req.PollingStationIds);
-        var submissions = await repository.ListAsync(specification, ct);
+
+        var submissions = await context.FormSubmissions.Select(fs => new
+            {
+                fs.Id,
+                fs.PollingStationId,
+                fs.FormId,
+                fs.Answers,
+                fs.FollowUpStatus,
+                fs.IsCompleted,
+                fs.CreatedAt,
+                fs.LastUpdatedAt,
+                NumberOfAttachments =
+                    context.Attachments.Count(a =>
+                        a.SubmissionId == fs.Id && a.MonitoringObserverId == fs.MonitoringObserverId &&
+                        a.IsCompleted && !a.IsDeleted),
+                NumberOfNotes = context.Notes.Count(n =>
+                    n.SubmissionId == fs.Id && n.MonitoringObserverId == fs.MonitoringObserverId),
+            }).AsNoTracking()
+            .ToListAsync(ct);
+        
 
         return TypedResults.Ok(new Response
         {
-            Submissions = submissions
+            Submissions = submissions.Select(entity =>     new FormSubmissionModel(){
+                Id = entity.Id,
+                PollingStationId = entity.PollingStationId,
+                FormId = entity.FormId,
+                Answers = entity.Answers
+                    .Select(AnswerMapper.ToModel)
+                    .ToList(),
+                FollowUpStatus = entity.FollowUpStatus,
+                IsCompleted = entity.IsCompleted,
+                CreatedAt = entity.CreatedAt,
+                LastUpdatedAt = entity.LastUpdatedAt,
+                NumberOfAttachments= entity.NumberOfAttachments,
+                NumberOfNotes= entity.NumberOfNotes,
+                
+                
+            }).ToList()
         });
     }
 }

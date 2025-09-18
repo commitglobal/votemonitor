@@ -1,4 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
+using Feature.Attachments.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
@@ -29,7 +30,9 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var attachment = await repository.GetByIdAsync(req.Id, ct);
+        var specification = new GetAttachmentByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id);
+        var attachment = await repository.FirstOrDefaultAsync(specification, ct);
+        
         if (attachment is null)
         {
             return TypedResults.NotFound();

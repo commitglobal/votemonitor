@@ -63,19 +63,22 @@ public class Endpoint(
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Attachments" a
                           WHERE 
-                              a."ElectionRoundId" = @electionRoundId
-                              AND a."FormId" = fs."FormId"
+                              (
+                                  (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                  OR A."SubmissionId" = FS."Id"
+                              )
                               AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND a."IsDeleted" = false AND a."IsCompleted" = true
-                              AND fs."PollingStationId" = a."PollingStationId"),'[]'::JSONB) AS "Attachments",
+                              AND a."IsDeleted" = false 
+                              AND a."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
                   
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Notes" n
                           WHERE 
-                              n."ElectionRoundId" = @electionRoundId
-                              AND n."FormId" = fs."FormId"
-                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
+                             (
+                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                  OR N."SubmissionId" = FS."Id"
+                              )
+                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
                               
                           "LastUpdatedAt" AS "TimeSubmitted",
                           NULL AS "ArrivalTime",

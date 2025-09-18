@@ -8,6 +8,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.Upsert;
 
+[Obsolete("Will be removed in future version")]
 public class Endpoint(
     IRepository<FormSubmission> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
@@ -111,7 +112,7 @@ public class Endpoint(
         }
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted,
-            req.LastUpdatedAt ?? timeProvider.UtcNow);
+            req.CreatedAt ?? timeProvider.UtcNow, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

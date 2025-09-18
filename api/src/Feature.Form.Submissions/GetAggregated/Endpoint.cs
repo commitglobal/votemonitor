@@ -146,9 +146,11 @@ public class Endpoint(
                              				FROM
                              					"Attachments" A
                              				WHERE
-                             					A."FormId" = FS."FormId"
+                             				    (
+                                                     (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                                     OR A."SubmissionId" = FS."Id"
+                                                 )
                              					AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                             					AND FS."PollingStationId" = A."PollingStationId"
                              					AND A."IsDeleted" = FALSE
                              					AND A."IsCompleted" = TRUE
                              			) AS "MediaFilesCount",
@@ -158,9 +160,11 @@ public class Endpoint(
                              				FROM
                              					"Notes" N
                              				WHERE
-                             					N."FormId" = FS."FormId"
+                             					(
+                             					    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                             					    OR N."SubmissionId" = FS."Id"
+                             					)
                              					AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             					AND FS."PollingStationId" = N."PollingStationId"
                              			) AS "NotesCount",
                              			COALESCE(
                              				(
@@ -186,12 +190,13 @@ public class Endpoint(
                              					FROM
                              						"Attachments" A
                              					WHERE
-                             						A."ElectionRoundId" = @ELECTIONROUNDID
-                             						AND A."FormId" = FS."FormId"
+                             					    (
+                                                         (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                                         OR A."SubmissionId" = FS."Id"
+                                                     )
                              						AND A."MonitoringObserverId" = FS."MonitoringObserverId"
                              						AND A."IsDeleted" = FALSE
                              						AND A."IsCompleted" = TRUE
-                             						AND FS."PollingStationId" = A."PollingStationId"
                              				),
                              				'[]'::JSONB
                              			) AS "Attachments",
@@ -213,10 +218,11 @@ public class Endpoint(
                              					FROM
                              						"Notes" N
                              					WHERE
-                             						N."ElectionRoundId" = @ELECTIONROUNDID
-                             						AND N."FormId" = FS."FormId"
+                             						(
+                                                        (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                                        OR N."SubmissionId" = FS."Id"
+                                                    )
                              						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             						AND FS."PollingStationId" = N."PollingStationId"
                              				),
                              				'[]'::JSONB
                              			) AS "Notes",

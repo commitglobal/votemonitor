@@ -42,7 +42,8 @@ public class GetFiltersTests : BaseApiTestFixture
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
 
         ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _firstSubmissionAt, _secondSubmissionAt, _secondSubmissionAt,
+                _thirdSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.Coalition.FormByCode("A").Id;
@@ -121,7 +122,8 @@ public class GetFiltersTests : BaseApiTestFixture
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
 
         ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _firstSubmissionAt, _secondSubmissionAt, _secondSubmissionAt,
+                _thirdSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var betaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).FormId;
@@ -198,7 +200,8 @@ public class GetFiltersTests : BaseApiTestFixture
         var alfaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
 
         ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _firstSubmissionAt, _secondSubmissionAt, _secondSubmissionAt,
+                _thirdSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
 
@@ -277,7 +280,8 @@ public class GetFiltersTests : BaseApiTestFixture
         var betaNgoAdmin = scenarioData.NgoByName(ScenarioNgos.Beta).Admin;
 
         ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _firstSubmissionAt, _secondSubmissionAt, _secondSubmissionAt,
+                _thirdSubmissionAt, _thirdSubmissionAt);
 
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
@@ -351,7 +355,8 @@ public class GetFiltersTests : BaseApiTestFixture
             .Please();
 
         ApiTimeProvider.UtcNow
-            .Returns(_firstSubmissionAt, _secondSubmissionAt, _thirdSubmissionAt);
+            .Returns(_firstSubmissionAt, _firstSubmissionAt, _secondSubmissionAt, _secondSubmissionAt,
+                _thirdSubmissionAt, _thirdSubmissionAt);
         var electionRoundId = scenarioData.ElectionRoundId;
         var alfaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
         var betaFormId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Beta).FormId;
