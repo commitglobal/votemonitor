@@ -11,9 +11,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { ElectionEvent } from '@/features/election-event/models/election-event';
 import { electionRoundKeys } from '@/features/election-rounds/queries';
 import { staticDataKeys } from '@/hooks/query-keys';
 import { sleep } from '@/lib/utils';
@@ -28,7 +39,7 @@ import { sortBy } from 'lodash';
 import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { ElectionRoundStatus, type FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
-import { ElectionEvent } from '@/features/election-event/models/election-event';
+import { Label } from '@/components/ui/label';
 
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
@@ -312,7 +323,58 @@ const Header = (): FunctionComponent => {
                     {item.name}
                   </Disclosure.Button>
                 ))}
+                {userRole !== 'NgoAdmin' ? (
+                  <></>
+                ) : status === 'pending' ? (
+                  <Skeleton className='w-[360px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
+                ) : (
+                  <div className='px-4 py-2 space-y-2 '>
+                    <Label>Elecction rounds</Label>
+                    <Select
+                      defaultValue={selectedElectionRound?.id ?? ''}
+                      onValueChange={(value) => {
+                        const electionRound = electionRounds?.find((er) => er.id === value);
+                        handleSelectElectionRound(electionRound);
+                      }}>
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Select language' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Active & Upcomming elections</SelectLabel>
+                          {activeElections?.map((electionRound) => (
+                            <SelectItem key={electionRound.id} value={electionRound.id}>
+                              <div className='flex items-center gap-2'>
+                                {electionRound?.status === ElectionRoundStatus.NotStarted ? (
+                                  <PauseCircleIcon className='w-4 h-4 text-slate-700' />
+                                ) : null}
+                                {electionRound?.status === ElectionRoundStatus.Started ? (
+                                  <PlayCircleIcon className='w-4 h-4 text-green-700' />
+                                ) : null}
+                                <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                  {electionRound.title}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                          <SelectSeparator />
+                          <SelectLabel>Archived elections</SelectLabel>
+                          {archivedElections?.map((electionRound) => (
+                            <SelectItem key={electionRound.id} value={electionRound.id}>
+                              <div className='flex items-center gap-2'>
+                                <StopCircleIcon className='w-4 h-4 text-yellow-700' />
 
+                                <div className='truncate max-w-[340px]' title={electionRound.title}>
+                                  {electionRound.title}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <LanguageSelector />
                 <Disclosure.Button
                   key='Sign Out'
