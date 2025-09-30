@@ -1,21 +1,11 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { getFileCategory } from '@/lib/utils';
-import {
-  PaperClipIcon,
-  ArrowDownTrayIcon,
-  DocumentIcon,
-  PhotoIcon,
-  FilmIcon,
-  MusicalNoteIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+import { cn, getFileCategory } from '@/lib/utils';
+import { ArrowDownTrayIcon, DocumentIcon, FilmIcon, MusicalNoteIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'react';
 import ReactPlayer from 'react-player';
 import { Attachment } from '../../models/common';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import axios from 'axios';
 
 export interface MediaFilesCellProps {
   attachment: Attachment;
