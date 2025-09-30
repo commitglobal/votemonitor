@@ -26,7 +26,7 @@ export function ResponseExtraDataTable({ columns, data }: ResponseExtraDataTable
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} style={{ width: header.getSize() }}>
+                  <TableHead key={header.id} style={{ width: `${header.getSize()}px` }}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );

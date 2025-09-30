@@ -518,20 +518,26 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
 
 export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} className='w-[70px]' />,
     accessorFn: (row) => row.type,
     id: 'type',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.type}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.original.type}</div>,
+    size: 80, // fixed width in px
+    minSize: 60, // minimum allowed width
+    maxSize: 120, // optional max width
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' className='w-[70px]' column={column} />,
     accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+    size: 80, // fixed width in px
+    minSize: 60, // minimum allowed width
+    maxSize: 120, // optional max width
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Preview' column={column} />,
