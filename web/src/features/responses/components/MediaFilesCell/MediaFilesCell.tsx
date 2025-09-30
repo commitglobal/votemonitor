@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { cn, getFileCategory } from '@/lib/utils';
 import { ArrowDownTrayIcon, DocumentIcon, FilmIcon, MusicalNoteIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
 import { useMemo } from 'react';
 import ReactPlayer from 'react-player';
 import { Attachment } from '../../models/common';
@@ -17,30 +18,27 @@ export default function MediaFilesCell({ attachment, className }: MediaFilesCell
     return getFileCategory(attachment.mimeType);
   }, [attachment.mimeType]);
 
-  // const handleDownload = async (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   try {
-  //     // throw new Error("uncomment this line to mock failure of API");
-  //     const response = await axios.get(attachment.presignedUrl, {
-  //       responseType: 'blob',
-  //       headers: {
-  //         'Access-Control-Allow-Origin': '*',
-  //       },
-  //     });
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const response = await axios.get(attachment.presignedUrl, {
+        responseType: 'blob',
+        headers: {},
+      });
 
-  //     // Create download link
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.download = attachment.fileName;
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     console.error('Download failed:', error);
-  //   }
-  // };
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = attachment.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
 
   const renderPreview = (isInDialog = false) => {
     const baseClasses = 'object-cover rounded-md transition-opacity duration-200';
@@ -116,7 +114,7 @@ export default function MediaFilesCell({ attachment, className }: MediaFilesCell
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className='w-full'>
         <div className={cn('group relative', className)}>
           <AspectRatio ratio={16 / 9}>{renderPreview(false)}</AspectRatio>
 
@@ -147,14 +145,12 @@ export default function MediaFilesCell({ attachment, className }: MediaFilesCell
               </div>
 
               <Button
-                // onClick={handleDownload}
+                onClick={handleDownload}
                 variant='outline'
                 size='sm'
                 className='flex items-center gap-2 shrink-0 ml-4'>
                 <ArrowDownTrayIcon className='w-4 h-4' />
-                <a href={attachment.presignedUrl} target='_blank' rel='noopener noreferrer'>
-                  Download
-                </a>
+                Download
               </Button>
             </div>
           </div>
