@@ -1,11 +1,3 @@
-import TableTagList from '@/components/table-tag-list/TableTagList';
-import { Badge } from '@/components/ui/badge';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import { cn } from '@/lib/utils';
-import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { Link } from '@tanstack/react-router';
-import { format } from 'date-fns';
-
 import { DateTimeFormat } from '@/common/formats';
 import {
   CitizenReportFollowUpStatus,
@@ -13,9 +5,18 @@ import {
   IncidentReportFollowUpStatus,
   QuickReportFollowUpStatus,
 } from '@/common/types';
+import TableTagList from '@/components/table-tag-list/TableTagList';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { cn } from '@/lib/utils';
+import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import MediaFilesCell from '../components/MediaFilesCell/MediaFilesCell';
 import { CitizenReportsAggregatedByForm, type CitizenReportByEntry } from '../models/citizen-report';
 import { SubmissionType } from '../models/common';
 import {
@@ -27,7 +28,6 @@ import { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver }
 import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import { mapIncidentCategory, mapIncidentReportLocationType, mapQuickReportLocationType } from './helpers';
-import MediaFilesCell from '../components/MediaFilesCell/MediaFilesCell';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -518,35 +518,49 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
 
 export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} className='w-[70px]' />,
-    accessorFn: (row) => row.type,
-    id: 'type',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div className='w-[80px]'>{row.original.type}</div>,
-    size: 80, // fixed width in px
-    minSize: 60, // minimum allowed width
-    maxSize: 120, // optional max width
+    accessorKey: 'type',
+    header: () => <div className='w-[90px]'>Type</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('type')}</div>,
+    size: 80,
+    enableResizing: false,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Time submitted' className='w-[70px]' column={column} />,
-    accessorFn: (row) => row.timeSubmitted,
-    id: 'timeSubmitted',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div className='w-[80px]'>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
-    size: 80, // fixed width in px
-    minSize: 60, // minimum allowed width
-    maxSize: 120, // optional max width
+    accessorKey: 'timeSubmitted',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Time submitted
+          {isSorted === 'asc' ? (
+            <ArrowUp className='w-4 h-4' />
+          ) : isSorted === 'desc' ? (
+            <ArrowDown className='w-4 h-4' />
+          ) : (
+            <ArrowUpDown className='w-4 h-4' />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const formatted = format(row.original.timeSubmitted, DateTimeFormat);
+
+      return <div className=''>{formatted}</div>;
+    },
+    size: 80,
+    enableResizing: false,
   },
+
   {
-    header: ({ column }) => <DataTableColumnHeader title='Preview' column={column} />,
     id: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
     cell: ({ row }) => (
-      <div>{row.original.type === 'Note' ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>
+      <div className='w-full'>
+        {row.original.type === 'Note' ? row.original.text : <MediaFilesCell attachment={row.original} />}
+      </div>
     ),
+    size: 300,
   },
 ];
 
