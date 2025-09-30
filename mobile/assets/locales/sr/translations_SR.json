@@ -18,7 +18,8 @@
     "no_data": "Nema podataka.",
     "select": "Izaberi",
     "done": "Završeno",
-    "ok": "Dobro"
+    "ok": "Dobro",
+    "back": "Nazad"
   },
   "languages": {
     "ro": "rumunski",
@@ -415,7 +416,10 @@
       "answered_questions": "Odgovorena pitanja",
       "resume": "Nastavi sa obrascem",
       "start_form": "Započni obrazac",
-      "progress": "napredak"
+      "progress": "napredak",
+      "submissions_list": "Поднета образца",
+      "add_submission": "Додај образац",
+      "number_of_submissions": "Број поднетих образаца: {{value}}"
     },
     "questions": {
       "title": "Pitanja",
@@ -431,7 +435,8 @@
     "error": "Greška pri učitavanju podataka!",
     "menu": {
       "clear": "COčisti izveštaj (izbriši sve odgovore)",
-      "change_language": "Promeni jezik"
+      "change_language": "Promeni jezik",
+      "delete": "Obriši obrazac"
     },
     "clear_answers_modal": {
       "title": "Očisti izveštaj {{value}}",
@@ -441,6 +446,17 @@
       },
       "actions": {
         "clear": "Očisti izveštaj",
+        "cancel": "Otkaži"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Obriši obrazac",
+      "description": {
+        "p1": "Ova akcija će obrisati ovaj obrazac (uključujući beleške i medijske fajlove).",
+        "p2": "Da biste izbegli slučajni gubitak podataka, uverite se da ste proverili obrazac pre nego što izvršite ovu akciju."
+      },
+      "actions": {
+        "clear": "Obriši obrazac",
         "cancel": "Otkaži"
       }
     }
@@ -544,7 +560,7 @@
     },
     "general_text": "Upravljanje mojim biračkim mestima",
     "ps_card": {
-      "header": "Biračko mesto #{{value}}",
+      "header": "Biračko mesto: {{value}}",
       "l1": "[Location L1]",
       "l2": "[Location L2]",
       "l3": "[Location L3]",
@@ -554,7 +570,7 @@
       "ps_number": "Broj biračkog mesta"
     },
     "warning_dialog": {
-      "title": "Izbriši biračko mesto #{{value}}",
+      "title": "Izbriši biračko mesto: {{value}}",
       "description": "Ova radnja će ukloniti biračko mesto sa vaše liste posećenih biračkih mesta. Možete ga ponovo dodati kroz proces Dodaj novo biračko mesto.",
       "actions": {
         "cancel": "Otkaži",
@@ -563,7 +579,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "Uklanjanje biračkog mesta #{{value}} nije dozvoljeno",
+      "title": "Uklanjanje biračkog mesta {{value}} nije dozvoljeno",
       "description": "Biračko mesto ne može biti uklonjeno sa vaše liste jer sadrži podatke (informacije o biračkom mestu i/ili odgovore na obrascu) koje sistem ne može izbrisati u vaše ime. Ako želite da uklonite ovo biračko mesto, obrišite informacije o biračkom mestu i ručno formirajte odgovore, a zatim ponovite ovu radnju."
     },
     "delete_success": "Biračko mesto uspešno obrisano!",
@@ -849,5 +865,27 @@
     "sync_data": "Sinhronizovanje oflajn podataka...",
     "warning": "Molimo NEMOJTE ZATVORITI aplikaciju ili internet vezu ili će podaci biti izgubljeni.",
     "files": "Učitavamo vaše datoteke, može potrajati..."
+  },
+  "delete_submission": {
+    "title": "Pregledajte obrazac pre brisanja",
+    "description": "Ova akcija se ne može opozvati. Nakon brisanja, podaci iz ovog obrasca se ne mogu vratiti.",
+    "header": "Obriši obrazac #{{submissionNumber}}",
+    "attachments": "Prilozi: {{value}}",
+    "notes": "Beleške: {{value}}",
+    "delete": "Obriši obrazac",
+    "warning_dialog": {
+      "title": "Da li ste sigurni da želite da obrišete ovaj obrazac?",
+      "description": "Ova akcija se ne može opozvati.",
+      "cancel": "Otkaži",
+      "delete": "Obriši"
+    }
+  },
+  "form_submission_card": {
+    "header": "Obrazac #{{value}}",
+    "last_updated_at": "Poslednje ažuriranje:",
+    "form_status": "Status obrasca:",
+    "answered_questions": "Odgovorena pitanja:",
+    "attachments": "Prilozi:",
+    "notes": "Beleške:"
   }
 }

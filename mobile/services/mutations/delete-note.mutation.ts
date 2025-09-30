@@ -5,14 +5,13 @@ import { Note } from "../../common/models/note";
 
 export const useDeleteNote = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
+  submissionId: string | undefined,
   scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
   const getNotesQK = useMemo(
-    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, submissionId),
     [electionRoundId],
   );
 

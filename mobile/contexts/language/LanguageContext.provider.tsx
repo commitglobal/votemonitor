@@ -1,8 +1,7 @@
 import { createContext, useContext } from "react";
 import i18n from "../../common/config/i18n";
 
-// todo: with all available languages
-export type Language = "en" | "ro";
+export type Language = "az" | "bg" | "en" | "es" | "hy" | "ka" | "pl" | "ro" | "ru" | "sr";
 
 type LanguageContextType = {
   changeLanguage: (language: Language) => void;

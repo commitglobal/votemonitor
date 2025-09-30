@@ -18,7 +18,8 @@
     "no_data": "Məlumat tapılmadı",
     "select": "İzləmək",
     "done": "Yerinə yetirildi",
-    "ok": "Bəli"
+    "ok": "Bəli",
+    "back": "Geri"
   },
   "languages": {
     "ro": "Rumın dili",
@@ -415,7 +416,10 @@
       "answered_questions": "Cavablandırılmış suallar",
       "resume": "Formanı davam etdirmək",
       "start_form": "Formaya başlamaq",
-      "progress": "İnkişaf"
+      "progress": "İnkişaf",
+      "submissions_list": "Form müraciətləri",
+      "add_submission": "Müraciət əlavə et",
+      "number_of_submissions": "Müraciətlərin sayı: {{value}}"
     },
     "questions": {
       "title": "Suallar",
@@ -431,7 +435,8 @@
     "error": "Forma məlumatları yüklənərkən xəta baş verdi!",
     "menu": {
       "clear": "Formanın təmizlənməsi (bütün cavabların silinməsi)",
-      "change_language": "Dili dəyişmək"
+      "change_language": "Dili dəyişmək",
+      "delete": "Müraciəti sil"
     },
     "clear_answers_modal": {
       "title": "Formanın təmizlənməsi {{value}}",
@@ -442,6 +447,17 @@
       "actions": {
         "clear": "Formanın təmizlənməsi",
         "cancel": "Ləğv etmək"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Müraciəti sil",
+      "description": {
+        "p1": "Bu əməliyyat bu forma müraciətini (qeydlər və media faylları daxil olmaqla) siləcək.",
+        "p2": "Qeyri-iradi məlumat itkisini qarşısını almaq üçün, bu əməliyyatı həyata keçirmədən əvvəl formanı yoxladığınızdan əmin olun."
+      },
+      "actions": {
+        "clear": "Müraciəti sil",
+        "cancel": "Ləğv et"
       }
     }
   },
@@ -544,7 +560,7 @@
     },
     "general_text": "Mənim seçki məntəqələrimin idarə edilməsi",
     "ps_card": {
-      "header": "Seçki məntəqəsi #{{value}}",
+      "header": "Seçki məntəqəsi: {{value}}",
       "l1": "[Məkan L1]",
       "l2": "[Məkan  L2]",
       "l3": "[Məkan L3]",
@@ -554,7 +570,7 @@
       "ps_number": "Seçki məntəqəsinin nömrəsi"
     },
     "warning_dialog": {
-      "title": "#{{value}} Seçki məntəqəsinin silinməsi",
+      "title": "{{value}} Seçki məntəqəsinin silinməsi",
       "description": "Bu fəaliyyət bu seçki  məntəqəsini sizin ziyarət etdiyiniz məntəqələrin siyahısından siləcək. Onun yenidən əlavə olunması yeni seçki məntəqəsinin əlavə edilməsi funksiyası vasitəsilə mümkündür.",
       "actions": {
         "cancel": "Ləğv etmək",
@@ -563,7 +579,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "#{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
+      "title": "{{value}} Seçki məntəqəsinin çıxarılması mümkün deyil",
       "description": "Sizin siyahıdan seçki məntəqəsini çıxarmaq mümkün deyil. Çünki o sistemin sizin adınızla silə bilməyəcəyi məlumatları (Seçki məntəqəsinin məlumatı və ya formanın cavabları) əhatə edir. Əgər bu seçki məntəqəsini çıxarmaq istəyirsinizsə, xahiş edirik, əvvəl əliniz ilə seçki məntqəsinin məlumatını və cavabları təmizləyin, sonra yenidən cəhd edin."
     },
     "delete_success": "Seçki məntəqəsi uğurla silindi!",
@@ -849,5 +865,27 @@
     "sync_data": "Oflayn məlumatların sinxronizasiyası...",
     "warning": "Xahiş edirik, aplikasiyanı və interneti bağlamayın. Yoxsa məlumatlar itəcək.",
     "files": "Sizin fayllar yüklənir, buna zaman lazım ola bilər"
+  },
+  "delete_submission": {
+    "title": "Silinmədən əvvəl müraciəti yoxlayın",
+    "description": "Bu əməliyyatı geri qaytarmaq mümkün deyil. Silindikdən sonra bu müraciətdən heç bir məlumat bərpa edilə bilməz.",
+    "header": "Müraciəti sil #{{submissionNumber}}",
+    "attachments": "Əlavələr: {{value}}",
+    "notes": "Qeydlər: {{value}}",
+    "delete": "Müraciəti sil",
+    "warning_dialog": {
+      "title": "Bu müraciəti silmək istədiyinizə əminsiniz?",
+      "description": "Bu əməliyyatı geri qaytarmaq mümkün deyil.",
+      "cancel": "Ləğv et",
+      "delete": "Sil"
+    }
+  },
+  "form_submission_card": {
+    "header": "Müraciət #{{value}}",
+    "last_updated_at": "Son yenilənmə vaxtı:",
+    "form_status": "Formanın vəziyyəti:",
+    "answered_questions": "Cavablandırılmış suallar:",
+    "attachments": "Əlavələr:",
+    "notes": "Qeydlər:"
   }
 }

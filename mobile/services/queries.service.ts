@@ -64,6 +64,7 @@ export const pollingStationsKeys = {
     "form-submissions",
     "hasFormSubmissions",
   ],
+  deleteFormSubmission: () => [...pollingStationsKeys.all, "deleteFormSubmission"] as const,
   upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   markFormSubmissionCompletionStatus: () =>
     [...pollingStationsKeys.all, "markFormSubmissionCompletionStatus"] as const,
@@ -106,19 +107,13 @@ export const pollingStationsKeys = {
 
 export const notesKeys = {
   all: ["notes"] as const,
-  notes: (
-    electionRoundId: string | undefined,
-    pollingStationId: string | undefined,
-    formId: string | undefined,
-  ) =>
+  notes: (electionRoundId: string | undefined, submissionId: string | undefined) =>
     [
       ...pollingStationsKeys.all,
       "electionRoundId",
       electionRoundId,
-      "pollingStationId",
-      pollingStationId,
-      "formId",
-      formId,
+      "submissionId",
+      submissionId,
       "notes",
     ] as const,
   addNote: () => [...notesKeys.all, "add"] as const,

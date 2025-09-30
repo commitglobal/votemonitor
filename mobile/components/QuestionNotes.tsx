@@ -11,14 +11,12 @@ import { Keyboard } from "react-native";
 const QuestionNotes = ({
   notes,
   electionRoundId,
-  pollingStationId,
-  formId,
+  submissionId,
   questionId,
 }: {
   notes: Note[];
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   questionId: string;
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
@@ -65,8 +63,7 @@ const QuestionNotes = ({
           setSelectedNote={setSelectedNote}
           questionId={questionId}
           electionRoundId={electionRoundId}
-          pollingStationId={pollingStationId}
-          formId={formId as string}
+          submissionId={submissionId}
         />
       )}
     </>

@@ -647,6 +647,15 @@ const OptionSheetContent = ({
       >
         {t("menu.clear")}
       </Typography>
+      <Typography
+        preset="body1"
+        color="$gray7"
+        lineHeight={24}
+        paddingVertical="$xs"
+        onPress={onClear}
+      >
+        {t("menu.delete")}
+      </Typography>
     </View>
   );
 };

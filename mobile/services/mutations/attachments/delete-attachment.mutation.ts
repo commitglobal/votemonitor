@@ -6,15 +6,14 @@ import { AttachmentsKeys } from "../../queries/attachments.query";
 
 export const useDeleteAttachment = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
+  submissionId: string | undefined,
   scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
   const getAttachmentsQK = useMemo(
-    () => AttachmentsKeys.attachments(electionRoundId, pollingStationId, formId),
-    [electionRoundId, pollingStationId, formId],
+    () => AttachmentsKeys.attachments(electionRoundId, submissionId),
+    [electionRoundId, submissionId],
   );
 
   return useMutation({
@@ -23,7 +22,7 @@ export const useDeleteAttachment = (
       id: scopeId,
     },
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return deleteAttachment(payload);
+      return deleteAttachment({ electionRoundId: electionRoundId as string, ...payload });
     },
     onMutate: async (payload: AttachmentApiResponse) => {
       // Cancel any outgoing refetches

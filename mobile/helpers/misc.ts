@@ -28,3 +28,23 @@ export const arrayToKeyObject = <
   key: TKeyName,
 ): Record<T[TKeyName], T> =>
   Object.fromEntries(array.map((a) => [a[key], a])) as Record<T[TKeyName], T>;
+
+export const groupArrayByKey = <
+  T extends Record<StringKeys<T>, string | number | symbol>,
+  TKeyName extends keyof T,
+>(
+  array: T[],
+  key: TKeyName,
+): Record<T[TKeyName], T[]> => {
+  return array.reduce(
+    (acc, item) => {
+      const k = item[key];
+      if (!acc[k]) {
+        acc[k] = [];
+      }
+      acc[k].push(item);
+      return acc;
+    },
+    {} as Record<T[TKeyName], T[]>,
+  );
+};

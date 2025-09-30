@@ -18,7 +18,8 @@
     "no_data": "No se encontraron datos.",
     "select": "Seleccionar",
     "done": "Completado",
-    "ok": "Aceptar"
+    "ok": "Aceptar",
+    "back": "Atrás"
   },
   "languages": {
     "ro": "Rumano",
@@ -422,7 +423,10 @@
       "answered_questions": "Preguntas respondidas",
       "resume": "Reanudar formulario",
       "start_form": "Iniciar formulario",
-      "progress": "progreso"
+      "progress": "progreso",
+      "submissions_list": "Envíos de formularios",
+      "add_submission": "Agregar envío",
+      "number_of_submissions": "N.º de envíos: {{value}}"
     },
     "questions": {
       "title": "Preguntas",
@@ -438,7 +442,8 @@
     "error": "¡Error al cargar los datos del formulario!",
     "menu": {
       "clear": "Borrar formulario (eliminar todas las respuestas)",
-      "change_language": "Cambiar idioma"
+      "change_language": "Cambiar idioma",
+      "delete": "Eliminar envío"
     },
     "clear_answers_modal": {
       "title": "Borrar formulario {{value}}",
@@ -448,6 +453,17 @@
       },
       "actions": {
         "clear": "Borrar formulario",
+        "cancel": "Cancelar"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Eliminar envío",
+      "description": {
+        "p1": "Esta acción eliminará este envío de formulario (incluyendo notas y archivos multimedia).",
+        "p2": "Para evitar la pérdida involuntaria de información, asegúrese de revisar el formulario antes de realizar esta acción."
+      },
+      "actions": {
+        "clear": "Eliminar envío",
         "cancel": "Cancelar"
       }
     }
@@ -551,7 +567,7 @@
     },
     "general_text": "Gestionar mis estaciones de votación",
     "ps_card": {
-      "header": "Estación de votación #{{value}}",
+      "header": "Estación de votación: {{value}}",
       "l1": "[Ubicación L1]",
       "l2": "[Ubicación L2]",
       "l3": "[Ubicación L3]",
@@ -561,7 +577,7 @@
       "ps_number": "Número de estación de votación"
     },
     "warning_dialog": {
-      "title": "Eliminar estación de votación #{{value}}",
+      "title": "Eliminar estación de votación: {{value}}",
       "description": "Esta acción eliminará la estación de votación de tu lista de estaciones de votación visitadas. Puedes agregarla nuevamente a través del proceso de Añadir Nueva Estación de Votación.",
       "actions": {
         "cancel": "Cancelar",
@@ -570,7 +586,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "No se permite eliminar la estación de votación #{{value}}",
+      "title": "No se permite eliminar la estación de votación {{value}}",
       "description": "No se puede eliminar la estación de votación de tu lista porque contiene datos (Información de la estación de votación y/o respuestas de formularios) que el sistema no puede eliminar en tu nombre. Si deseas eliminar esta estación de votación, por favor, borra la información de la estación de votación y las respuestas de los formularios manualmente, y luego vuelve a intentar esta acción."
     },
     "delete_success": "¡Estación de votación eliminada con éxito!",
@@ -856,5 +872,27 @@
     "sync_data": "Sincronizando los datos almacenados sin conexión...",
     "warning": "Por favor, NO CIERRES la aplicación ni desconectes el internet o se perderán los datos.",
     "files": "Estamos subiendo tus archivos, esto puede tardar un poco..."
+  },
+  "delete_submission": {
+    "title": "Revisa el envío antes de eliminarlo",
+    "description": "Esta acción no se puede deshacer. Una vez eliminado, no se podrá recuperar ningún dato de este envío.",
+    "header": "Eliminar envío #{{submissionNumber}}",
+    "attachments": "Archivos adjuntos: {{value}}",
+    "notes": "Notas: {{value}}",
+    "delete": "Eliminar envío",
+    "warning_dialog": {
+      "title": "¿Estás seguro de que deseas eliminar este envío?",
+      "description": "Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "delete": "Eliminar"
+    }
+  },
+  "form_submission_card": {
+    "header": "Envío #{{value}}",
+    "last_updated_at": "Última actualización:",
+    "form_status": "Estado del formulario:",
+    "answered_questions": "Preguntas respondidas:",
+    "attachments": "Archivos adjuntos:",
+    "notes": "Notas:"
   }
 }

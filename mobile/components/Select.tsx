@@ -65,7 +65,9 @@ const Select = ({
           placeholder={placeholder || t("select")}
           fontSize={16}
           maxFontSizeMultiplier={1.2}
-        ></TamaguiSelect.Value>
+        >
+          {options.find((opt) => opt.value === props.value)?.label || placeholder}
+        </TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
       <Adapt platform="touch">

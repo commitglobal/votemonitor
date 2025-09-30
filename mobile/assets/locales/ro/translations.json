@@ -18,7 +18,8 @@
     "no_data": "Nu s-au găsit date.",
     "select": "Selectează",
     "done": "Finalizare",
-    "ok": "OK"
+    "ok": "OK",
+    "back": "Înapoi"
   },
   "languages": {
     "ro": "Română",
@@ -418,7 +419,10 @@
       "answered_questions": "Întrebări cu răspuns",
       "resume": "Reia formularul",
       "start_form": "Începe formularul",
-      "progress": "progres"
+      "progress": "progres",
+      "submissions_list": "Formulare trimise",
+      "add_submission": "Adaugă formular",
+      "number_of_submissions": "Număr de formulare: {{value}}"
     },
     "questions": {
       "title": "Întrebări",
@@ -434,7 +438,8 @@
     "error": "Eroare la încărcarea datelor formularului!",
     "menu": {
       "clear": "Golește formularul (șterge toate răspunsurile)",
-      "change_language": "Schimbă limba formularului"
+      "change_language": "Schimbă limba formularului",
+      "delete": "Șterge formularul"
     },
     "clear_answers_modal": {
       "title": "Golește formularul {{value}}",
@@ -445,6 +450,17 @@
       "actions": {
         "clear": "Golește formularul",
         "cancel": "Renunță"
+      }
+    },
+    "delete_submission_modal": {
+      "title": "Șterge formularul",
+      "description": {
+        "p1": "Această acțiune va șterge această trimitere a formularului (inclusiv notițele și fișierele media).",
+        "p2": "Pentru a evita pierderea neintenționată a informațiilor, asigurați-vă că verificați formularul înainte de a efectua această acțiune."
+      },
+      "actions": {
+        "clear": "Șterge formularul",
+        "cancel": "Anulează"
       }
     }
   },
@@ -547,7 +563,7 @@
     },
     "general_text": "Vezi secțiile de votare vizitate",
     "ps_card": {
-      "header": "Secția de votare #{{value}}",
+      "header": "Secția de votare: {{value}}",
       "l1": "[Location L1]",
       "l2": "[Location L2]",
       "l3": "[Location L3]",
@@ -557,7 +573,7 @@
       "ps_number": "Numărul secției"
     },
     "warning_dialog": {
-      "title": "Șterge secția de votare #{{value}}",
+      "title": "Șterge secția de votare: {{value}}",
       "description": "Această acțiune va șterge secția de votare din lista de secții vizitate. O poți adăuga din nou reluând pașii din procesul de 'Adaugă o secție nouă de votare'",
       "actions": {
         "cancel": "Renunță",
@@ -566,7 +582,7 @@
       }
     },
     "removal_unallowed_dialog": {
-      "title": "Ștergerea secției de votare #{{value}} nu este permisă",
+      "title": "Ștergerea secției de votare {{value}} nu este permisă",
       "description": "Secția de votare nu poate fi ștearsă din listă deoarece conține date asociate (Informații despre secția de votare și sau Răspunsuri la formulare), care nu pot fi șterse de sistem în numele tău. Dacă dorești totuși să ștergi această secție, te rugăm să ștergi întâi manual răspunsurile de la formularele deja completate, apoi să încerci din nou această acțiune."
     },
     "delete_success": "Secția de votare a fost ștearsă cu succes!",
@@ -852,5 +868,27 @@
     "sync_data": "Se sincronizează datele offline...",
     "warning": "Te rugăm să NU ÎNCHIZI aplicația sau conexiunea la internet sau datele se vor pierde.",
     "files": "Încărcăm fișierele tale, poate dura ceva timp..."
+  },
+  "delete_submission": {
+    "title": "Verificați formularul înainte de ștergere",
+    "description": "Această acțiune nu poate fi anulată. Odată șters, niciun date din acest formular nu poate fi recuperat.",
+    "header": "Ștergeți formularul #{{submissionNumber}}",
+    "attachments": "Atașamente: {{value}}",
+    "notes": "Note: {{value}}",
+    "delete": "Șterge formularul",
+    "warning_dialog": {
+      "title": "Sigur doriți să ștergeți acest formular?",
+      "description": "Această acțiune nu poate fi anulată.",
+      "cancel": "Anulează",
+      "delete": "Șterge"
+    }
+  },
+  "form_submission_card": {
+    "header": "Formular #{{value}}",
+    "last_updated_at": "Ultima actualizare:",
+    "form_status": "Starea formularului:",
+    "answered_questions": "Întrebări răspunse:",
+    "attachments": "Atașamente:",
+    "notes": "Note:"
   }
 }

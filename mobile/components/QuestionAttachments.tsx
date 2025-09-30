@@ -14,22 +14,19 @@ import AttachmentsSkeleton from "./SkeletonLoaders/AttachmentsSkeleton";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   questionId: string;
 }
 
 const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   electionRoundId,
-  pollingStationId,
-  formId,
+  submissionId,
   questionId,
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
   const { data: attachments, isLoading: isLoadingAttachments } = useAttachments(
     electionRoundId,
-    pollingStationId,
-    formId,
+    submissionId,
   );
   const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] =
     useState<AttachmentApiResponse | null>();
@@ -37,9 +34,8 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
     electionRoundId,
-    pollingStationId,
-    formId,
-    `Attachment_${questionId}_${pollingStationId}_${formId}_${questionId}`,
+    submissionId,
+    `Attachment_${electionRoundId}_${submissionId}_${questionId}`,
   );
 
   if (isLoadingAttachments) {

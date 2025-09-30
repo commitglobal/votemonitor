@@ -11,15 +11,13 @@ import { useTranslation } from "react-i18next";
 
 const AddNoteSheetContent = ({
   setAddingNote,
-  pollingStationId,
-  formId,
+  submissionId,
   questionId,
   electionRoundId = "",
   setIsOptionsSheetOpen,
 }: {
   setAddingNote: Dispatch<SetStateAction<boolean>>;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
   questionId: string;
   electionRoundId: string | undefined;
   setIsOptionsSheetOpen: Dispatch<SetStateAction<boolean>>;
@@ -39,22 +37,19 @@ const AddNoteSheetContent = ({
 
   const { mutate: addNote } = useAddNoteMutation(
     electionRoundId,
-    pollingStationId,
-    formId,
-    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+    submissionId,
+    `Note_${electionRoundId}_${submissionId}_${questionId}`,
   );
 
   const onSubmitNote = (note: { noteText: string }) => {
     const notePayload = {
       id: Crypto.randomUUID(),
-      pollingStationId,
       text: note.noteText,
-      formId,
       questionId,
       lastUpdatedAt: new Date().toISOString(),
     };
 
-    addNote({ electionRoundId, ...notePayload });
+    addNote({ electionRoundId, submissionId, ...notePayload });
     Keyboard.dismiss();
     setIsOptionsSheetOpen(false);
     setAddingNote(false);

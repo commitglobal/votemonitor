@@ -9,6 +9,7 @@ import Button from "./Button";
 interface ChangeLanguageDialogProps {
   formId: string;
   defaultLanguage?: string;
+  currentLanguage: string;
   languages: string[];
   onSelectLanguage: (formId: string, language: string) => void;
   onCancel: () => void;
@@ -16,6 +17,7 @@ interface ChangeLanguageDialogProps {
 
 const ChangeLanguageDialog = ({
   formId,
+  currentLanguage,
   languages,
   onSelectLanguage,
   onCancel,
@@ -56,6 +58,7 @@ const ChangeLanguageDialog = ({
       key={formId}
       name={formId}
       control={control}
+      defaultValue={currentLanguage}
       rules={{
         required: {
           value: true,

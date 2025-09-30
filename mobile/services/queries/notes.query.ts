@@ -1,20 +1,19 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { notesKeys } from "../queries.service";
-import { getNotesForPollingStation } from "../definitions.api";
+import { getNotesForSubmission } from "../definitions.api";
 import { Note } from "../../common/models/note";
 import { useCallback } from "react";
 
 export const useNotes = <TResult = Note[]>(
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string,
+  submissionId: string | undefined,
   select?: (data: Note[]) => TResult,
 ) => {
   return useQuery({
-    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
+    queryKey: notesKeys.notes(electionRoundId, submissionId),
     queryFn:
-      electionRoundId && pollingStationId && formId
-        ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)
+      electionRoundId && submissionId
+        ? () => getNotesForSubmission(electionRoundId, submissionId)
         : skipToken,
     select,
   });
@@ -22,34 +21,30 @@ export const useNotes = <TResult = Note[]>(
 
 export const useNotesForQuestionId = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string,
+  submissionId: string,
   questionId: string,
 ) => {
   return useNotes(
     electionRoundId,
-    pollingStationId,
-    formId,
+    submissionId,
     useCallback(
       (data: Note[]) => {
         return data
           .filter((note) => note.questionId === questionId)
           .sort((a, b) => +new Date(b.lastUpdatedAt) - +new Date(a.lastUpdatedAt)); // added unary '+' operator to avoid ts error that the right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type
       },
-      [electionRoundId, pollingStationId, formId, questionId],
+      [electionRoundId, submissionId, questionId],
     ),
   );
 };
 
-export const useNotesForFormId = (
+export const useNotesForSubmission = (
   electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string,
+  submissionId: string | undefined,
 ) => {
   return useNotes(
     electionRoundId,
-    pollingStationId,
-    formId,
+    submissionId,
     useCallback(
       (data: Note[]) => {
         return data?.reduce((acc: Record<string, Note[]>, curr: Note) => {
@@ -60,7 +55,7 @@ export const useNotesForFormId = (
           return acc;
         }, {});
       },
-      [electionRoundId, pollingStationId, formId],
+      [electionRoundId, submissionId],
     ),
   );
 };

@@ -6,6 +6,7 @@ import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import { Icon } from "./Icon";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
+import { getPollingStationDisplay } from "../common/utils/polling-stations";
 
 interface PollingStationCardProps extends CardProps {
   visit: PollingStationVisitVM;
@@ -22,8 +23,10 @@ const PollingStationCard = (props: PollingStationCardProps) => {
         {/* header */}
         {/* the '-' margin is used in order to keep the alignment while having a big enough press area for the icon */}
         <XStack justifyContent="space-between" alignItems="center" marginBottom={-16}>
-          <Typography preset="body1" fontWeight="700">
-            {t("ps_card.header", { value: visit.number })}
+          <Typography preset="body1" fontWeight="700" flexShrink={1}>
+            {t("ps_card.header", {
+              value: getPollingStationDisplay(visit),
+            })}
           </Typography>
 
           <YStack

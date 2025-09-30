@@ -17,13 +17,11 @@ interface EditNoteSheetProps extends SheetProps {
   setSelectedNote: React.Dispatch<React.SetStateAction<Note | null>>;
   questionId: string;
   electionRoundId: string;
-  pollingStationId: string;
-  formId: string;
+  submissionId: string;
 }
 
 const EditNoteSheet = (props: EditNoteSheetProps) => {
-  const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
-    props;
+  const { selectedNote, setSelectedNote, questionId, electionRoundId, submissionId } = props;
   const [deletingNote, setDeletingNote] = useState(false);
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
 
@@ -64,17 +62,15 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
 
   const { mutate: updateNote } = useUpdateNote(
     electionRoundId,
-    pollingStationId,
-    formId,
-    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+    submissionId,
+    `Note_${electionRoundId}_${submissionId}_${questionId}`,
   );
 
   const onSubmit = (formData: any) => {
     const updateNotePayload = {
       questionId,
       electionRoundId,
-      pollingStationId,
-      formId,
+      submissionId,
       id: selectedNote ? selectedNote?.id : "",
       text: formData.noteEditedText,
       lastUpdatedAt: new Date().toISOString(),
@@ -88,9 +84,8 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
 
   const { mutate: deleteNote } = useDeleteNote(
     electionRoundId,
-    pollingStationId,
-    formId,
-    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+    submissionId,
+    `Note_${electionRoundId}_${submissionId}_${questionId}`,
   );
 
   const onDelete = () => {

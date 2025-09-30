@@ -1,14 +1,14 @@
+import * as Localization from "expo-localization";
 import React, { useContext, useMemo } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScrollView, useTheme, XStack, YStack } from "tamagui";
-import { Icon } from "./Icon";
-import { Typography } from "./Typography";
-import Select from "./Select";
-import Button from "./Button";
-import { useTranslation } from "react-i18next";
-import { Controller, useForm } from "react-hook-form";
-import * as Localization from "expo-localization";
 import { Language, LanguageContext } from "../contexts/language/LanguageContext.provider";
+import Button from "./Button";
+import { Icon } from "./Icon";
+import Select from "./Select";
+import { Typography } from "./Typography";
 
 const ChooseOnboardingLanguage = ({
   setLanguageSelectionApplied,
@@ -48,7 +48,7 @@ const ChooseOnboardingLanguage = ({
 
   const mappedLanguages = useMemo(
     () => mapLanguagesToSelectOptions(i18n.languages),
-    [i18n.languages],
+    [i18n.language, t],
   );
 
   return (
@@ -72,7 +72,14 @@ const ChooseOnboardingLanguage = ({
           <Controller
             control={control}
             render={({ field: { onChange, value } }) => (
-              <Select options={mappedLanguages} value={value} onValueChange={onChange} />
+              <Select
+                options={mappedLanguages}
+                value={value}
+                onValueChange={(newLanguage) => {
+                  onChange(newLanguage); // update form state
+                  changeLanguage(newLanguage as Language); // update app language immediately
+                }}
+              />
             )}
             name="selectedLanguage"
           />

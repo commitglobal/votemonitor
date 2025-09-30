@@ -18,6 +18,7 @@ export interface FormQuestionListItemProps {
   index: number;
   numberOfQuestions: number;
   status: QuestionStatus;
+  code: string;
   question: string;
   numberOfNotes: number;
   numberOfAttachments: number;
@@ -34,6 +35,7 @@ const FormQuestionListItem = ({
   numberOfAttachments,
   attachmentTypes,
   status,
+  code,
   question,
   answer,
   lastNoteText,
@@ -53,7 +55,9 @@ const FormQuestionListItem = ({
           <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
           <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
         </XStack>
-        <Typography preset="body2">{question}</Typography>
+        <Typography preset="body2">
+          {code} - {question}
+        </Typography>
       </YStack>
 
       {answer && (

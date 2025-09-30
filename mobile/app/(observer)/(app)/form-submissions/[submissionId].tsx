@@ -58,18 +58,18 @@ import { useNotesForQuestionId } from "../../../../services/queries/notes.query"
 export type SearchParamType = {
   questionId: string;
   formId: string;
-  submissionId: string;
   language: string;
+  submissionId: string;
 };
 
-const FormQuestionnaire = () => {
+const FormSubmissions = () => {
   const cancelRef = useRef<boolean>(false);
   const queryClient = useQueryClient();
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
-  const { submissionId, questionId, formId, language } = useLocalSearchParams<SearchParamType>();
+  const { questionId, formId, language, submissionId } = useLocalSearchParams<SearchParamType>();
 
-  if (!submissionId || !questionId || !formId || !language) {
-    return <Typography>FormQuestionnaire Incorrect page params</Typography>;
+  if (!questionId || !formId || !language || !submissionId) {
+    return <Typography>FormSubmissions Incorrect page params</Typography>;
   }
   const { isOnline } = useNetInfoContext();
 
@@ -181,12 +181,12 @@ const FormQuestionnaire = () => {
           });
 
         updateSubmission({
+          id: submissionId,
           pollingStationId: selectedPollingStation?.pollingStationId,
           electionRoundId: activeElectionRound?.id,
           formId: currentForm?.id as string,
           answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
           lastUpdatedAt: new Date().toISOString(),
-          id: submissionId,
           createdAt: currentFormSubmission?.createdAt ?? new Date().toISOString(),
         });
       }
@@ -317,12 +317,12 @@ const FormQuestionnaire = () => {
         });
 
       updateSubmission({
+        id: submissionId,
         pollingStationId: selectedPollingStation?.pollingStationId,
         electionRoundId: activeElectionRound?.id,
         formId: currentForm?.id as string,
         answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
         lastUpdatedAt: new Date().toISOString(),
-        id: submissionId,
         createdAt: currentFormSubmission?.createdAt ?? new Date().toISOString(),
       });
     }
@@ -782,4 +782,4 @@ const $containerStyle: ViewStyle = {
   flex: 1,
 };
 
-export default FormQuestionnaire;
+export default FormSubmissions;

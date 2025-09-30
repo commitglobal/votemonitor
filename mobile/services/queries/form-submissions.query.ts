@@ -28,7 +28,7 @@ export const useFormSubmissions = <TResult = FormSubmissionsApiResponse>(
   });
 };
 
-export const useFormSubmissionByFormId = (
+export const useFormSubmissionsByFormId = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string,
@@ -38,13 +38,34 @@ export const useFormSubmissionByFormId = (
     pollingStationId,
     useCallback(
       (data: FormSubmissionsApiResponse) => {
-        const formSubmission = data.submissions?.find((sub) => sub.formId === formId);
-        return {
-          answers: arrayToKeyObject(formSubmission?.answers || [], "questionId"),
-          isCompleted: formSubmission?.isCompleted || false,
-        };
+        const formSubmissions = data.submissions?.filter((sub) => sub.formId === formId);
+
+        return formSubmissions;
       },
       [electionRoundId, pollingStationId, formId],
+    ),
+  );
+};
+
+export const useFormSubmissionById = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+  submissionId: string,
+) => {
+  return useFormSubmissions(
+    electionRoundId,
+    pollingStationId,
+    useCallback(
+      (data: FormSubmissionsApiResponse) => {
+        const formSubmission = data.submissions?.find((sub) => sub.id === submissionId);
+        return {
+          id: formSubmission?.id,
+          answers: arrayToKeyObject(formSubmission?.answers || [], "questionId"),
+          isCompleted: formSubmission?.isCompleted || false,
+          createdAt: formSubmission?.createdAt,
+        };
+      },
+      [electionRoundId, pollingStationId, submissionId],
     ),
   );
 };

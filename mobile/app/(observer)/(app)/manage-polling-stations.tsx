@@ -19,6 +19,7 @@ import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../../components/NoVisitsMPS";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
+import { getPollingStationDisplay } from "../../../common/utils/polling-stations";
 
 const ESTIMATED_ITEM_SIZE = 225;
 
@@ -138,8 +139,8 @@ const ManagePollingStation = () => {
         <WarningDialog
           title={
             removalAllowed
-              ? t("warning_dialog.title", { value: selectedPS.number })
-              : t("removal_unallowed_dialog.title", { value: selectedPS.number })
+              ? t("warning_dialog.title", { value: getPollingStationDisplay(selectedPS) })
+              : t("removal_unallowed_dialog.title", { value: getPollingStationDisplay(selectedPS) })
           }
           description={
             removalAllowed

@@ -4,17 +4,12 @@ import { notesKeys } from "../queries.service";
 import { Note } from "../../common/models/note";
 import { UpsertNotePayload, upsertNote } from "../definitions.api";
 
-export const useUpdateNote = (
-  electionRoundId: string,
-  pollingStationId: string,
-  formId: string,
-  scopeId: string,
-) => {
+export const useUpdateNote = (electionRoundId: string, submissionId: string, scopeId: string) => {
   const queryClient = useQueryClient();
 
   // this is the GET notes key - we need it in order to invalidate that query after updating the note
   const getNotesQK = useMemo(
-    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, submissionId),
     [electionRoundId],
   );
 
