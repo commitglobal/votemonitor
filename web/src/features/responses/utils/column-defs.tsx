@@ -6,10 +6,13 @@ import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24
 import { Link } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
-import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
-
 import { DateTimeFormat } from '@/common/formats';
-import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
+import {
+  CitizenReportFollowUpStatus,
+  FormSubmissionFollowUpStatus,
+  IncidentReportFollowUpStatus,
+  QuickReportFollowUpStatus,
+} from '@/common/types';
 import { Button } from '@/components/ui/button';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -24,18 +27,19 @@ import { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver }
 import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import { mapIncidentCategory, mapIncidentReportLocationType, mapQuickReportLocationType } from './helpers';
+import MediaFilesCell from '../components/MediaFilesCell/MediaFilesCell';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-    accessorFn: (row)=> row.submissionId,
+    accessorFn: (row) => row.submissionId,
     id: 'submissionId',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn: (row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -43,21 +47,21 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn: (row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
-    accessorFn: (row)=> row.formType,
+    accessorFn: (row) => row.formType,
     id: 'formType',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -65,7 +69,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
-    accessorFn: (row)=> row.level1,
+    accessorFn: (row) => row.level1,
     id: 'level1',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -73,7 +77,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
-    accessorFn: (row)=> row.level2,
+    accessorFn: (row) => row.level2,
     id: 'level2',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -81,7 +85,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
-    accessorFn: (row)=> row.level3,
+    accessorFn: (row) => row.level3,
     id: 'level3',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -89,7 +93,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
-    accessorFn: (row)=> row.level4,
+    accessorFn: (row) => row.level4,
     id: 'level4',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -97,7 +101,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
-    accessorFn: (row)=> row.level5,
+    accessorFn: (row) => row.level5,
     id: 'level5',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -105,14 +109,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
-    accessorFn: (row)=> row.number,
+    accessorFn: (row) => row.number,
     id: 'number',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
-    accessorFn: (row)=> row.observerName,
+    accessorFn: (row) => row.observerName,
     id: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -120,7 +124,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
-    accessorFn: (row)=> row.ngoName,
+    accessorFn: (row) => row.ngoName,
     id: 'ngoName',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -128,7 +132,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-    accessorFn: (row)=> row.tags,
+    accessorFn: (row) => row.tags,
     id: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -140,35 +144,35 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
-    accessorFn: (row)=> row.numberOfQuestionsAnswered,
+    accessorFn: (row) => row.numberOfQuestionsAnswered,
     id: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn: (row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn: (row)=> row.notesCount,
+    accessorFn: (row) => row.notesCount,
     id: 'notesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn: (row)=> row.mediaFilesCount,
+    accessorFn: (row) => row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn: (row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -182,8 +186,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === FormSubmissionFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FormSubmissionFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -326,8 +330,8 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
         {row.original.followUpStatus === FormSubmissionFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FormSubmissionFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -351,7 +355,7 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
 export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
-    accessorFn: (row)=> row.observerName,
+    accessorFn: (row) => row.observerName,
     id: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -359,14 +363,14 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer contact' column={column} />,
-    accessorFn: (row)=> row.phoneNumber,
+    accessorFn: (row) => row.phoneNumber,
     id: 'phoneNumber',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
-    accessorFn: (row)=> row.ngoName,
+    accessorFn: (row) => row.ngoName,
     id: 'ngoName',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -374,7 +378,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-    accessorFn: (row)=> row.tags,
+    accessorFn: (row) => row.tags,
     id: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -386,28 +390,28 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Locations' column={column} />,
-    accessorFn: (row)=> row.numberOfLocations,
+    accessorFn: (row) => row.numberOfLocations,
     id: 'numberOfLocations',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Forms' column={column} />,
-    accessorFn: (row)=> row.numberOfFormsSubmitted,
+    accessorFn: (row) => row.numberOfFormsSubmitted,
     id: 'numberOfFormsSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn: (row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn: (row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -447,21 +451,21 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
 export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn: (row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
-    accessorFn: (row)=> row.formType,
+    accessorFn: (row) => row.formType,
     id: 'formType',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -469,28 +473,28 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
-    accessorFn: (row)=> row.numberOfSubmissions,
+    accessorFn: (row) => row.numberOfSubmissions,
     id: 'numberOfSubmissions',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn: (row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn: (row)=> row.numberOfNotes,
+    accessorFn: (row) => row.numberOfNotes,
     id: 'numberOfNotes',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn: (row)=> row.numberOfMediaFiles,
+    accessorFn: (row) => row.numberOfMediaFiles,
     id: 'numberOfMediaFiles',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -515,7 +519,7 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
 export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
-    accessorFn: (row)=> row.type,
+    accessorFn: (row) => row.type,
     id: 'type',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -523,7 +527,7 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn: (row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -543,7 +547,7 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
 export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='SubmissionID' column={column} className='w-[100px]' />,
-    accessorFn: (row)=> row.submissionId,
+    accessorFn: (row) => row.submissionId,
     id: 'submissionId',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -577,7 +581,7 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
-    accessorFn: (row)=> row.type,
+    accessorFn: (row) => row.type,
     id: 'type',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -585,7 +589,7 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn: (row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -630,7 +634,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
-    accessorFn: (row)=> row.ngoName,
+    accessorFn: (row) => row.ngoName,
     id: 'ngoName',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -750,8 +754,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -885,8 +889,8 @@ export const observerQuickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -910,7 +914,7 @@ export const observerQuickReportsColumnDefs: ColumnDef<QuickReport>[] = [
 export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn:(row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -918,85 +922,87 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn:(row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
+    cell: ({ row }) => (
+      <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
-    accessorFn:(row)=> row.numberOfQuestionsAnswered,
+    accessorFn: (row) => row.numberOfQuestionsAnswered,
     id: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn:(row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Level 1' column={column} />,
-    accessorFn:(row)=> row.level1,
+    accessorFn: (row) => row.level1,
     id: 'level1',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Level 2' column={column} />,
-    accessorFn:(row)=> row.level2,
+    accessorFn: (row) => row.level2,
     id: 'level2',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Level 3' column={column} />,
-    accessorFn:(row)=> row.level3,
+    accessorFn: (row) => row.level3,
     id: 'level3',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Level 4' column={column} />,
-    accessorFn:(row)=> row.level4,
+    accessorFn: (row) => row.level4,
     id: 'level4',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Level 5' column={column} />,
-    accessorFn:(row)=> row.level5,
+    accessorFn: (row) => row.level5,
     id: 'level5',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn:(row)=> row.notesCount,
+    accessorFn: (row) => row.notesCount,
     id: 'notesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn:(row)=> row.mediaFilesCount,
+    accessorFn: (row) => row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn:(row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -1010,8 +1016,8 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
         {row.original.followUpStatus === CitizenReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === CitizenReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -1035,14 +1041,14 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
 export const citizenReportsAggregatedByFormColumnDefs: ColumnDef<CitizenReportsAggregatedByForm & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn:(row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1051,28 +1057,28 @@ export const citizenReportsAggregatedByFormColumnDefs: ColumnDef<CitizenReportsA
 
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
-    accessorFn:(row)=> row.numberOfSubmissions,
+    accessorFn: (row) => row.numberOfSubmissions,
     id: 'numberOfSubmissions',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn:(row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn:(row)=> row.numberOfNotes,
+    accessorFn: (row) => row.numberOfNotes,
     id: 'numberOfNotes',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn:(row)=> row.numberOfMediaFiles,
+    accessorFn: (row) => row.numberOfMediaFiles,
     id: 'numberOfMediaFiles',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1097,14 +1103,14 @@ export const citizenReportsAggregatedByFormColumnDefs: ColumnDef<CitizenReportsA
 export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-    accessorFn:(row)=> row.incidentReportId,
+    accessorFn: (row) => row.incidentReportId,
     id: 'incidentReportId',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn:(row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1113,22 +1119,24 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
 
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn:(row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
+    cell: ({ row }) => (
+      <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel1,
+    accessorFn: (row) => row.pollingStationLevel1,
     id: 'pollingStationLevel1',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1136,7 +1144,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel2,
+    accessorFn: (row) => row.pollingStationLevel2,
     id: 'pollingStationLevel2',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1144,7 +1152,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel3,
+    accessorFn: (row) => row.pollingStationLevel3,
     id: 'pollingStationLevel3',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1152,7 +1160,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel4,
+    accessorFn: (row) => row.pollingStationLevel4,
     id: 'pollingStationLevel4',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1160,7 +1168,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel5,
+    accessorFn: (row) => row.pollingStationLevel5,
     id: 'pollingStationLevel5',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1168,7 +1176,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Number' column={column} />,
-    accessorFn:(row)=> row.pollingStationNumber,
+    accessorFn: (row) => row.pollingStationNumber,
     id: 'pollingStationNumber',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1176,7 +1184,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location description' column={column} />,
-    accessorFn:(row)=> row.locationDescription,
+    accessorFn: (row) => row.locationDescription,
     id: 'locationDescription',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1185,7 +1193,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
 
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
-    accessorFn:(row)=> row.observerName,
+    accessorFn: (row) => row.observerName,
     id: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1193,7 +1201,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
-    accessorFn: (row)=> row.ngoName,
+    accessorFn: (row) => row.ngoName,
     id: 'ngoName',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -1201,7 +1209,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-    accessorFn:(row)=> row.tags,
+    accessorFn: (row) => row.tags,
     id: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1213,35 +1221,35 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
-    accessorFn:(row)=> row.numberOfQuestionsAnswered,
+    accessorFn: (row) => row.numberOfQuestionsAnswered,
     id: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn:(row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn:(row)=> row.notesCount,
+    accessorFn: (row) => row.notesCount,
     id: 'notesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn:(row)=> row.mediaFilesCount,
+    accessorFn: (row) => row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn:(row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -1255,8 +1263,8 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
         {row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -1280,7 +1288,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
 export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-    accessorFn:(row)=> row.timeSubmitted,
+    accessorFn: (row) => row.timeSubmitted,
     id: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1288,22 +1296,24 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
-    accessorFn:(row)=> row.formCode,
+    accessorFn: (row) => row.formCode,
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
-    accessorFn:(row)=> row.formName,
+    accessorFn: (row) => row.formName,
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
+    cell: ({ row }) => (
+      <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location type' column={column} />,
-    accessorFn:(row)=> row.locationType,
+    accessorFn: (row) => row.locationType,
     id: 'locationType',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1311,7 +1321,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location description' column={column} />,
-    accessorFn:(row)=> row.locationDescription,
+    accessorFn: (row) => row.locationDescription,
     id: 'locationDescription',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1319,7 +1329,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel1,
+    accessorFn: (row) => row.pollingStationLevel1,
     id: 'pollingStationLevel1',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1327,7 +1337,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel2,
+    accessorFn: (row) => row.pollingStationLevel2,
     id: 'pollingStationLevel2',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1335,7 +1345,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel3,
+    accessorFn: (row) => row.pollingStationLevel3,
     id: 'pollingStationLevel3',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1343,7 +1353,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel4,
+    accessorFn: (row) => row.pollingStationLevel4,
     id: 'pollingStationLevel4',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1351,7 +1361,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel5,
+    accessorFn: (row) => row.pollingStationLevel5,
     id: 'pollingStationLevel5',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1359,7 +1369,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Number' column={column} />,
-    accessorFn:(row)=> row.pollingStationLevel5,
+    accessorFn: (row) => row.pollingStationLevel5,
     id: 'pollingStationNumber',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1367,35 +1377,35 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
-    accessorFn:(row)=> row.numberOfQuestionsAnswered,
+    accessorFn: (row) => row.numberOfQuestionsAnswered,
     id: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn:(row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
-    accessorFn:(row)=> row.notesCount,
+    accessorFn: (row) => row.notesCount,
     id: 'notesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorFn:(row)=> row.mediaFilesCount,
+    accessorFn: (row) => row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn:(row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -1409,8 +1419,8 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
         {row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -1434,7 +1444,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
 export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObserver & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
-    accessorFn:(row)=> row.observerName,
+    accessorFn: (row) => row.observerName,
     id: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1442,14 +1452,14 @@ export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer contact' column={column} />,
-    accessorFn:(row)=> row.phoneNumber,
+    accessorFn: (row) => row.phoneNumber,
     id: 'phoneNumber',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='NGO' column={column} />,
-    accessorFn: (row)=> row.ngoName,
+    accessorFn: (row) => row.ngoName,
     id: 'ngoName',
     enableSorting: false,
     enableGlobalFilter: true,
@@ -1457,7 +1467,7 @@ export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
-    accessorFn:(row)=> row.tags,
+    accessorFn: (row) => row.tags,
     id: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -1469,21 +1479,21 @@ export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObse
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Number of submissions' column={column} />,
-    accessorFn:(row)=> row.numberOfIncidentsSubmitted,
+    accessorFn: (row) => row.numberOfIncidentsSubmitted,
     id: 'numberOfIncidentsSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
-    accessorFn:(row)=> row.numberOfFlaggedAnswers,
+    accessorFn: (row) => row.numberOfFlaggedAnswers,
     id: 'numberOfFlaggedAnswers',
     enableSorting: true,
     enableGlobalFilter: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
-    accessorFn:(row)=> row.followUpStatus,
+    accessorFn: (row) => row.followUpStatus,
     id: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
