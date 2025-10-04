@@ -164,10 +164,10 @@ function Page() {
     updateStatus(
       { electionRoundId, quickReportId, followUpStatus },
       {
-        onSuccess: (_, { electionRoundId }) => {
+        onSuccess: async (_, { electionRoundId }) => {
           toast.success("Follow-up status updated");
           invalidate();
-          void queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: quickReportKeys.all(electionRoundId),
           });
         },
