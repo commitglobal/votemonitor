@@ -13,13 +13,14 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public Guid ObserverId { get; private set; }
     public Observer Observer { get; private set; }
+    public string? PhoneNumber { get; private set; }
 
     public MonitoringObserverStatus Status { get; private set; }
 
     public string[] Tags { get; private set; }
 
     private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags,
-        MonitoringObserverStatus status)
+        MonitoringObserverStatus status, string? phoneNumber = null)
     {
         Id = Guid.NewGuid();
         ElectionRoundId = electionRoundId;
@@ -27,6 +28,7 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
         ObserverId = observerId;
         Tags = tags;
         Status = status;
+        PhoneNumber = phoneNumber;
     }
 
     public void Activate()

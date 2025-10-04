@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum.Dapper" />
+    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" />
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="FastEndpoints.Security" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Module.Answers\Module.Answers.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Ingestor.Core\Vote.Monitor.Ingestor.Core.csproj" />
+  </ItemGroup>
+</Project>

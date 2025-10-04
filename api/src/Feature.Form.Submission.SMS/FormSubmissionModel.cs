@@ -1,0 +1,27 @@
+﻿using Module.Answers.Mappers;
+using Module.Answers.Models;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+
+namespace Feature.Form.Submission.SMS;
+
+public record FormSubmissionModel
+{
+    public required Guid Id { get; init; }
+    public required Guid FormId { get; init; }
+    public required Guid PollingStationId { get; init; }
+    public SubmissionFollowUpStatus FollowUpStatus { get; init; }
+    public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
+    public bool IsCompleted { get; init; }
+
+    public static FormSubmissionModel FromEntity(FormSubmission entity) => new()
+    {
+        Id = entity.Id,
+        PollingStationId = entity.PollingStationId,
+        FormId = entity.FormId,
+        Answers = entity.Answers
+            .Select(AnswerMapper.ToModel)
+            .ToList(),
+        FollowUpStatus = entity.FollowUpStatus,
+        IsCompleted = entity.IsCompleted
+    };
+}
