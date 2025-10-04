@@ -21,12 +21,16 @@ import {
   ItemDescription,
   ItemGroup,
   ItemMedia,
-  ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
 
 import { Attachment } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Select,
   SelectContent,
@@ -35,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { downloadFile } from "@/lib/utils";
 import { queryClient } from "@/main";
 import { useUpdateQuickReportFollowUpStatusMutation } from "@/mutations/quick-reports";
 import { useElectionRoundDetails } from "@/queries/elections";
@@ -48,13 +53,7 @@ import {
 } from "@/types/quick-reports";
 import { Link, useRouter } from "@tanstack/react-router";
 import { DownloadIcon } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 
 const buildSearchFilters = (quickReport: QuickReportModel, level: number) => {
   const filters: Record<string, string> = {};
@@ -310,7 +309,16 @@ function Page() {
                       <ItemDescription>{attachment.mimeType}</ItemDescription>
                     </ItemContent>
                     <ItemActions>
-                      <Button variant="outline" size="icon">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          downloadFile(
+                            attachment.presignedUrl,
+                            attachment.fileName
+                          )
+                        }
+                      >
                         <DownloadIcon className="size-4" />
                       </Button>
                     </ItemActions>

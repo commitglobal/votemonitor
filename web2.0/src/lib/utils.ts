@@ -1,6 +1,8 @@
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import axios from "axios";
+import { toast } from "sonner";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -42,3 +44,24 @@ export function buildURLSearchParams(data: any) {
 
   return params;
 }
+
+export const downloadFile = async (presignedUrl: string, fileName: string) => {
+  try {
+    const response = await axios.get(presignedUrl, {
+      responseType: "blob",
+      headers: {},
+    });
+
+    // Create download link
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    toast.error("Download failed");
+  }
+};
