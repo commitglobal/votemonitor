@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { Option } from "@/types/data-table";
-import { ElectionRoundStatus, type ElectionModel } from "@/types/election";
+import { type ElectionModel } from "@/types/election";
 import { getRouteApi } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
@@ -11,22 +10,22 @@ interface DataTableToolbarProps extends React.ComponentProps<"div"> {
   table: Table<ElectionModel>;
 }
 
-const electionRoundStatusOptions: Option[] = [
-  {
-    value: ElectionRoundStatus.NotStarted,
-    label: ElectionRoundStatus.NotStarted,
-  },
+// const electionRoundStatusOptions: Option[] = [
+//   {
+//     value: ElectionRoundStatus.NotStarted,
+//     label: ElectionRoundStatus.NotStarted,
+//   },
 
-  {
-    value: ElectionRoundStatus.Started,
-    label: ElectionRoundStatus.Started,
-  },
+//   {
+//     value: ElectionRoundStatus.Started,
+//     label: ElectionRoundStatus.Started,
+//   },
 
-  {
-    value: ElectionRoundStatus.Archived,
-    label: ElectionRoundStatus.Archived,
-  },
-];
+//   {
+//     value: ElectionRoundStatus.Archived,
+//     label: ElectionRoundStatus.Archived,
+//   },
+// ];
 
 const route = getRouteApi("/(app)/");
 

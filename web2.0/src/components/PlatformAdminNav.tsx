@@ -13,14 +13,14 @@ export default function PlatformAdminNav() {
       <nav className="flex items-center gap-4 text-sm xl:gap-6">
         <Link
           to="/elections/$electionRoundId"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn("transition-colors hover:text-foreground/80")}
         >
           Dashboard
         </Link>
         <Link
           to="/elections/$electionRoundId/observers"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}

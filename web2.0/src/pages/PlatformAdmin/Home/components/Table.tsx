@@ -7,12 +7,16 @@ import type { ElectionModel } from "@/types/election";
 import React from "react";
 import { getElectionsTableColumns } from "./TableColumns";
 import TableFilters from "./TableFilters";
+import { Route } from "@/routes/(app)";
 export interface TableProps {
   data?: PageResponse<ElectionModel>;
 }
 function Table({ data }: TableProps) {
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<ElectionModel> | null>(null);
+
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
 
   const columns = React.useMemo(
     () =>
@@ -31,6 +35,8 @@ function Table({ data }: TableProps) {
       columnPinning: { right: ["actions"] },
     },
     getRowId: (originalRow) => originalRow.id,
+    search,
+    navigate,
   });
 
   return (

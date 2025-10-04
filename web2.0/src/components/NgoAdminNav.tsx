@@ -10,14 +10,14 @@ export default function NgoAdminNav() {
       <nav className="flex items-center gap-4 text-sm xl:gap-6">
         <Link
           to="/elections/$electionRoundId"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn("transition-colors hover:text-foreground/80")}
         >
           Dashboard
         </Link>
         <Link
           to="/elections/$electionRoundId/forms"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
@@ -29,7 +29,7 @@ export default function NgoAdminNav() {
         </Link>
         <Link
           to="/elections/$electionRoundId/observers"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
@@ -41,7 +41,7 @@ export default function NgoAdminNav() {
         </Link>
         <Link
           to="/elections/$electionRoundId/guides"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
@@ -53,7 +53,7 @@ export default function NgoAdminNav() {
         </Link>
         <Link
           to="/elections/$electionRoundId/submissions"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
@@ -66,7 +66,7 @@ export default function NgoAdminNav() {
 
         <Link
           to="/elections/$electionRoundId/incidents"
-          params={{ electionRoundId }}
+          params={{ electionRoundId: electionRoundId! }}
           className={cn(
             "transition-colors hover:text-foreground/80 text-foreground/80"
           )}
