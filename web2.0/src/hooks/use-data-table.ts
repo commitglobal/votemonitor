@@ -1,15 +1,6 @@
 "use client";
 
-import { SortOrder } from "@/types/common";
-import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
-  type ColumnSort,
-  type PaginationState,
-  type SortingState,
-  type TableOptions,
-  type TableState,
-  type Updater,
-  type VisibilityState,
   getCoreRowModel,
   getFacetedMinMaxValues,
   getFacetedRowModel,
@@ -18,8 +9,17 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type ColumnSort,
+  type TableOptions,
+  type TableState,
+  type VisibilityState,
 } from "@tanstack/react-table";
 import * as React from "react";
+import {
+  useTableUrlState,
+  type NavigateFn,
+  type SearchRecord,
+} from "./use-table-url-state";
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: Extract<keyof TData, string>;
@@ -41,6 +41,36 @@ interface UseDataTableProps<TData>
   };
   history?: "push" | "replace";
   startTransition?: React.TransitionStartFunction;
+  search: SearchRecord;
+  navigate: NavigateFn;
+  pagination?: {
+    pageKey?: string;
+    pageSizeKey?: string;
+    defaultPage?: number;
+    defaultPageSize?: number;
+  };
+  globalFilter?: {
+    enabled?: boolean;
+    key?: string;
+    trim?: boolean;
+  };
+  columnFilters?: Array<
+    | {
+        columnId: string;
+        searchKey: string;
+        type?: "string";
+        // Optional transformers for custom types
+        serialize?: (value: unknown) => unknown;
+        deserialize?: (value: unknown) => unknown;
+      }
+    | {
+        columnId: string;
+        searchKey: string;
+        type: "array";
+        serialize?: (value: unknown) => unknown;
+        deserialize?: (value: unknown) => unknown;
+      }
+  >;
 }
 
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
@@ -50,89 +80,33 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     initialState,
     history = "replace",
     startTransition,
+    navigate,
+    search,
+    columnFilters: defaultColumnFilters,
+    pagination: defaultPagination,
+    globalFilter: defaultGlobalFilter,
     ...tableProps
   } = props;
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
 
-  const navigate = useNavigate();
-  const search = useSearch({ strict: false });
-
-  const pagination: PaginationState = React.useMemo(() => {
-    return {
-      pageIndex: (search.pageNumber ?? 1) - 1, // zero-based index -> one-based index
-      pageSize: search.pageSize ?? 25,
-    };
-  }, [search.pageNumber, search.pageSize]);
-
-  const sorting: SortingState = React.useMemo(() => {
-    if (search.sortColumnName && search.sortOrder) {
-      return [
-        {
-          id: search.sortColumnName,
-          desc: SortOrder.Desc === search.sortOrder,
-        },
-      ];
-    }
-    return initialState?.sorting ?? [];
-  }, [search.sortColumnName, search.sortOrder, initialState?.sorting]);
-
-  const onPaginationChange = React.useCallback(
-    (updaterOrValue: Updater<PaginationState>) => {
-      if (typeof updaterOrValue === "function") {
-        const newPagination = updaterOrValue(pagination);
-        navigate({
-          // @ts-ignore
-          search: (prev) => ({
-            ...prev,
-            pageNumber: newPagination.pageIndex + 1,
-            pageSize: newPagination.pageSize,
-          }),
-          replace: true,
-        });
-      } else {
-        navigate({
-          // @ts-ignore
-          search: (prev) => ({
-            ...prev,
-            pageNumber: updaterOrValue.pageIndex + 1,
-            pageSize: updaterOrValue.pageSize,
-          }),
-          replace: true,
-        });
-      }
-    },
-    [pagination, navigate]
-  );
-
-  const onSortingChange = React.useCallback(
-    (updaterOrValue: Updater<SortingState>) => {
-      if (typeof updaterOrValue === "function") {
-        const newSorting = updaterOrValue(sorting);
-        navigate({
-          //@ts-ignore
-          search: (prev) => ({
-            ...prev,
-            sortColumnName: newSorting[0].id,
-            sortOrder: newSorting[0].desc ? SortOrder.Desc : SortOrder.Asc,
-          }),
-          replace: true,
-        });
-      } else {
-        navigate({
-          //@ts-ignore
-          search: (prev) => ({
-            ...prev,
-            sortColumnName: updaterOrValue[0].id,
-            sortOrder: updaterOrValue[0].desc ? SortOrder.Desc : SortOrder.Asc,
-          }),
-          replace: true,
-        });
-      }
-    },
-    [sorting, navigate]
-  );
+  const {
+    globalFilter,
+    onGlobalFilterChange,
+    columnFilters,
+    onColumnFiltersChange,
+    sorting,
+    onSortingChange,
+    pagination,
+    onPaginationChange,
+  } = useTableUrlState({
+    search,
+    navigate,
+    pagination: defaultPagination,
+    globalFilter: defaultGlobalFilter,
+    columnFilters: defaultColumnFilters,
+  });
 
   const table = useReactTable({
     ...tableProps,
@@ -143,12 +117,14 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       pagination,
       sorting,
       columnVisibility,
+      globalFilter,
+      columnFilters,
     },
     defaultColumn: {
       ...tableProps.defaultColumn,
       enableColumnFilter: false,
     },
-    enableRowSelection: true,
+    enableRowSelection: props.enableRowSelection,
     onPaginationChange,
     onSortingChange,
     onColumnVisibilityChange: setColumnVisibility,
@@ -159,6 +135,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    onGlobalFilterChange,
+    onColumnFiltersChange,
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,

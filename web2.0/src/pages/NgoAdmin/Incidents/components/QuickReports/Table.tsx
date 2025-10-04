@@ -1,11 +1,9 @@
 import { DataTableToolbar } from "@/components/data-table-toolbar";
+import { DataTableSkeleton } from "@/components/data-table-skeleton";
 import { DataTable } from "@/components/ui/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useQuickReports } from "@/queries/quick-reports";
 import { Route } from "@/routes/(app)/elections/$electionRoundId/incidents";
-import type { DataTableRowAction } from "@/types/data-table";
-import type { QuickReportModel } from "@/types/quick-reports";
 import React from "react";
 import TableFilters from "./Filters";
 import { getQuickReportsTableColumns } from "./TableColumns";
@@ -13,19 +11,15 @@ import { getQuickReportsTableColumns } from "./TableColumns";
 export default function Table() {
   const { electionRoundId } = Route.useParams();
   const search = Route.useSearch();
-  const debouncedSearch = useDebounce(search, 200);
-  const { data } = useQuickReports(electionRoundId, debouncedSearch);
-
-  const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<QuickReportModel> | null>(null);
+  const navigate = Route.useNavigate();
+  const { data, isPending } = useQuickReports(electionRoundId, search);
 
   const columns = React.useMemo(
     () =>
       getQuickReportsTableColumns({
         electionRoundId,
-        setRowAction,
       }),
-    [electionRoundId, setRowAction]
+    [electionRoundId]
   );
 
   const { table } = useDataTable({
@@ -34,14 +28,49 @@ export default function Table() {
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     initialState: {
       sorting: [{ id: "timestamp", desc: true }],
-      columnPinning: { right: ["action"] },
+      columnPinning: { right: ["actions"] },
     },
+    columnFilters: [
+      {
+        columnId: "locationType",
+        searchKey: "locationType",
+        type: "string",
+      },
+      {
+        columnId: "incidentCategory",
+        searchKey: "incidentCategory",
+        type: "string",
+      },
+      {
+        columnId: "followUpStatus",
+        searchKey: "followUpStatus",
+        type: "string",
+      },
+      {
+        columnId: "coalitionMemberId",
+        searchKey: "coalitionMemberId",
+        type: "string",
+      },
+    ],
     getRowId: (originalRow) => originalRow.id,
+    search,
+    navigate,
   });
+
+  if (isPending) {
+    return (
+      <DataTableSkeleton
+        columnCount={columns.length}
+        filterCount={1}
+        withViewOptions={true}
+        withPagination={true}
+      />
+    );
+  }
   return (
     <DataTable table={table}>
       <DataTableToolbar table={table}>
-        <TableFilters table={table} />
+        <TableFilters />
       </DataTableToolbar>
     </DataTable>
   );

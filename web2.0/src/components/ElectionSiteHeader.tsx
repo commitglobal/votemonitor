@@ -29,8 +29,6 @@ export function ElectionSiteHeader() {
   >();
   const { electionRoundId } = useCurrentElectionRound();
 
-  console.log(electionRoundId);
-
   useEffect(() => {
     setCurrentElectionRound(elections?.find((x) => x.id === electionRoundId));
   }, [elections, electionRoundId]);

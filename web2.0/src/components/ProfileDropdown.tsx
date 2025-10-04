@@ -11,6 +11,7 @@ import {
 import { useAuth } from "@/contexts/auth.context";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { queryClient } from "@/main";
 
 export function ProfileDropdown() {
   const auth = useAuth();
@@ -45,6 +46,7 @@ export function ProfileDropdown() {
             await auth.logout();
             await router.invalidate();
             await router.navigate({ to: "/login" });
+            await queryClient.clear();
           }}
         >
           Log out

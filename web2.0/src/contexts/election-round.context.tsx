@@ -1,13 +1,13 @@
 import * as React from "react";
 
 export interface CurrentElectionRoundContextType {
-  electionRoundId: string;
+  electionRoundId: string | undefined;
   setElectionRoundId: (electionRoundId: string) => void;
 }
 
 const CurrentElectionRoundContext =
   React.createContext<CurrentElectionRoundContextType>({
-    electionRoundId: "not-set",
+    electionRoundId: undefined!,
     setElectionRoundId: (_: string) => {},
   });
 
@@ -16,8 +16,9 @@ export function CurrentElectionRoundProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [electionRoundId, setElectionRoundId] =
-    React.useState<string>("not-set");
+  const [electionRoundId, setElectionRoundId] = React.useState<
+    string | undefined
+  >();
 
   return (
     <CurrentElectionRoundContext.Provider

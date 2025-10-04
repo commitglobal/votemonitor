@@ -1,6 +1,6 @@
 import {
-  SingleSelectDataTableFacetedFilter,
   MultiSelectDataTableFacetedFilter,
+  SingleSelectDataTableFacetedFilter,
 } from "@/components/data-table-faceted-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

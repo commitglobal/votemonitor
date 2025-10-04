@@ -1,7 +1,10 @@
 import { getById } from "@/services/api/quick-reports/get.api";
 import { listQuickReports } from "@/services/api/quick-reports/list.api";
-import type { DataSource } from "@/types/common";
-import type { QuickReportsSearch } from "@/types/quick-reports";
+import type { DataSource, PageResponse } from "@/types/common";
+import type {
+  QuickReportModel,
+  QuickReportsSearch,
+} from "@/types/quick-reports";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const quickReportKeys = {
@@ -24,21 +27,25 @@ export const quickReportKeys = {
 
 const STALE_TIME = 1000 * 60 * 15; // 15 minutes
 
-export const quickReportsQueryOptions = (
+export const quickReportsQueryOptions = <
+  TResult = PageResponse<QuickReportModel>
+>(
   electionRoundId: string,
-  search: QuickReportsSearch
+  search: QuickReportsSearch,
+  select?: (data: PageResponse<QuickReportModel>) => TResult
 ) =>
   queryOptions({
     queryKey: quickReportKeys.list(electionRoundId, search),
     queryFn: async () => await listQuickReports(electionRoundId, search),
     staleTime: STALE_TIME,
-    refetchOnWindowFocus: false,
+    select,
   });
 
-export const useQuickReports = (
+export const useQuickReports = <TResult = PageResponse<QuickReportModel>>(
   electionRoundId: string,
-  search: QuickReportsSearch
-) => useQuery(quickReportsQueryOptions(electionRoundId, search));
+  search: QuickReportsSearch,
+  select?: (data: PageResponse<QuickReportModel>) => TResult
+) => useQuery(quickReportsQueryOptions(electionRoundId, search, select));
 
 export function quickReportDetailsQueryOptions(
   electionRoundId: string,
@@ -48,6 +55,5 @@ export function quickReportDetailsQueryOptions(
     queryKey: quickReportKeys.detail(electionRoundId, quickReportId),
     queryFn: async () => await getById(electionRoundId, quickReportId),
     staleTime: STALE_TIME,
-    refetchOnWindowFocus: false,
   });
 }

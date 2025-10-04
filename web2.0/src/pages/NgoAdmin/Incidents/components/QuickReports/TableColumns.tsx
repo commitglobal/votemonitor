@@ -1,14 +1,17 @@
 "use client";
 
-import type { DataTableRowAction } from "@/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ChevronRightIcon } from "lucide-react";
-import * as React from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { DateTimeFormat } from "@/constants/formats";
 import {
   mapQuickReportIncidentCategory,
@@ -23,14 +26,10 @@ import { Link } from "@tanstack/react-router";
 
 interface GetTasksTableColumnsProps {
   electionRoundId: string;
-  setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<QuickReportModel> | null>
-  >;
 }
 
 export function getQuickReportsTableColumns({
   electionRoundId,
-  setRowAction,
 }: GetTasksTableColumnsProps): ColumnDef<QuickReportModel>[] {
   return [
     {
@@ -80,7 +79,7 @@ export function getQuickReportsTableColumns({
         <DataTableColumnHeader title="Location type" column={column} />
       ),
       accessorFn: (row) => row.quickReportLocationType,
-      id: "quickReportLocationType",
+      id: "locationType",
       enableSorting: true,
       enableGlobalFilter: true,
       cell: ({ row }) => (
@@ -121,7 +120,23 @@ export function getQuickReportsTableColumns({
       id: "title",
       enableSorting: true,
       enableGlobalFilter: true,
-      cell: ({ row }) => <div>{row.original.title.slice(0, 100) + "..."}</div>,
+      cell: ({ row }) => {
+        const title = row.original.title || "";
+        const truncated =
+          title.length > 100 ? title.slice(0, 100) + "..." : title;
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="cursor-pointer hover:underline" title={title}>
+                {truncated}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-md whitespace-pre-wrap break-words">
+              {title}
+            </TooltipContent>
+          </Tooltip>
+        );
+      },
 
       meta: {
         label: "Issue title",
@@ -137,7 +152,21 @@ export function getQuickReportsTableColumns({
       enableGlobalFilter: true,
       size: 200,
       cell: ({ row }) => (
-        <div>{row.original.description.slice(0, 100) + "..."}</div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div
+              className="cursor-pointer hover:underline"
+              title={row.original.description}
+            >
+              {row.original.description.length > 100
+                ? row.original.description.slice(0, 100) + "..."
+                : row.original.description}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-md whitespace-pre-wrap break-words">
+            {row.original.description}
+          </TooltipContent>
+        </Tooltip>
       ),
 
       meta: {

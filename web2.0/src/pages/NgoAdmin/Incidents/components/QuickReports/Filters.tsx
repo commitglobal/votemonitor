@@ -8,6 +8,7 @@ import {
   mapQuickReportLocationType,
 } from "@/lib/i18n";
 import { Route } from "@/routes/(app)/elections/$electionRoundId/incidents";
+import { DataSource } from "@/types/common";
 import type { Option } from "@/types/data-table";
 import {
   QuickReportFollowUpStatus,
@@ -16,15 +17,9 @@ import {
   QuickReportIncidentCategoryList,
   QuickReportLocationType,
   QuickReportLocationTypeList,
-  type QuickReportModel,
 } from "@/types/quick-reports";
-import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 import React from "react";
-
-interface DataTableToolbarProps extends React.ComponentProps<"div"> {
-  table: Table<QuickReportModel>;
-}
 
 const locationOptions: Option[] = QuickReportLocationTypeList.map((lt) => ({
   label: mapQuickReportLocationType(lt),
@@ -43,11 +38,16 @@ const quickReportFollowUpStatusOptions: Option[] =
     value: fs,
   }));
 
-function TableFilters({ table }: DataTableToolbarProps) {
+function TableFilters() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered = Object.entries(search).some(
+    ([key, value]) =>
+      !["pageNumber", "pageSize"].includes(key) &&
+      Boolean(value) &&
+      !(key === "dataSource" && value === DataSource.Ngo)
+  );
 
   const onReset = React.useCallback(() => {
     navigate({
@@ -77,7 +77,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
       <SingleSelectDataTableFacetedFilter
         title="Location type"
         options={locationOptions}
-        value={search.quickReportLocationType as string}
+        value={search.locationType as string}
         onValueChange={(value) =>
           navigate({
             search: (prev) => ({
@@ -107,7 +107,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
       <SingleSelectDataTableFacetedFilter
         title="Followup status"
         options={quickReportFollowUpStatusOptions}
-        value={search.quickReportFollowUpStatus as string}
+        value={search.followUpStatus as string}
         onValueChange={(value) =>
           navigate({
             search: (prev) => ({

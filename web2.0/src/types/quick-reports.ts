@@ -78,7 +78,7 @@ export const QuickReportIncidentCategoryList: QuickReportIncidentCategory[] = [
 ];
 
 export const quickReportsSearchSchema = z.object({
-  searchText: z.string().optional().default("").catch(""),
+  searchText: z.string().optional().default(""),
   sortColumnName: z.string().optional(),
   sortOrder: z.enum(SortOrder).optional(),
   pageNumber: z.number().default(1),
@@ -90,11 +90,12 @@ export const quickReportsSearchSchema = z.object({
   level4Filter: z.string().optional(),
   level5Filter: z.string().optional(),
   pollingStationNumberFilter: z.string().optional(),
-  quickReportFollowUpStatus: z.enum(QuickReportFollowUpStatus).optional(),
-  quickReportLocationType: z.enum(QuickReportLocationType).optional(),
+  followUpStatus: z.enum(QuickReportFollowUpStatus).optional(),
+  locationType: z.enum(QuickReportLocationType).optional(),
   incidentCategory: z.enum(QuickReportIncidentCategory).optional(),
   coalitionMemberId: z.string().optional(),
   pollingStationId: z.string().optional(),
+  observerId: z.string().optional(),
 });
 
 export type QuickReportsSearch = z.infer<typeof quickReportsSearchSchema>;

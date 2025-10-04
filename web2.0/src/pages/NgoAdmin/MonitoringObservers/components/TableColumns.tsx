@@ -34,7 +34,7 @@ export function getMonitoringObserversTableColumns({
         <DataTableColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => (
-        <div className="w-20 truncate">{row.original.displayName}</div>
+        <div className="truncate">{row.original.displayName}</div>
       ),
       meta: {
         label: "Name",
@@ -48,9 +48,7 @@ export function getMonitoringObserversTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />
       ),
-      cell: ({ row }) => (
-        <div className="w-20 truncate">{row.original.email}</div>
-      ),
+      cell: ({ row }) => <div className="truncate">{row.original.email}</div>,
       meta: {
         label: "Email",
       },

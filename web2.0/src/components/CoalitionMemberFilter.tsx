@@ -8,7 +8,6 @@ import { DataSource } from "@/types/common";
 export default function CoalitionMemberFilter() {
   const { electionRoundId } = useCurrentElectionRound();
   const { data } = useCoalitionDetails(electionRoundId);
-  console.log(data);
   const search = useSearch({ strict: false });
   const navigate = useNavigate();
 

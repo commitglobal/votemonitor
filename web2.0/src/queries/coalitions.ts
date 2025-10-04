@@ -8,10 +8,11 @@ export const coalitionKeys = {
     ["coalitions", "my", electionRoundId] as const,
 };
 
-export const useCoalitionDetails = (electionRoundId: string) => {
+export const useCoalitionDetails = (electionRoundId: string | undefined) => {
   return useQuery({
-    queryKey: coalitionKeys.my(electionRoundId),
-    queryFn: async () => await getCoalitionDetails(electionRoundId),
+    queryKey: coalitionKeys.my(electionRoundId!),
+    queryFn: async () => await getCoalitionDetails(electionRoundId!),
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId,
   });
 };
