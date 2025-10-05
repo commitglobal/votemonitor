@@ -134,6 +134,7 @@ export function useTableUrlState(
         [pageSizeKey]:
           nextPageSize === defaultPageSize ? undefined : nextPageSize,
       }),
+      replace: true,
     });
   };
 
@@ -158,6 +159,7 @@ export function useTableUrlState(
               [pageKey]: undefined,
               [globalFilterKey]: value ? value : undefined,
             }),
+            replace: true,
           });
         }
       : undefined;
@@ -191,6 +193,7 @@ export function useTableUrlState(
         [pageKey]: undefined,
         ...patch,
       }),
+      replace: true,
     });
   };
 
@@ -235,6 +238,7 @@ export function useTableUrlState(
         [pageKey]: undefined,
         sorting: next,
       }),
+      replace: true,
     });
   };
 

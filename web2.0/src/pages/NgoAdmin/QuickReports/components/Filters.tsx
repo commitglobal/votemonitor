@@ -2,6 +2,7 @@ import CoalitionMemberFilter from "@/components/CoalitionMemberFilter";
 import { SingleSelectDataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import {
   mapQuickReportFollowUpStatus,
   mapQuickReportIncidentCategory,
@@ -55,20 +56,34 @@ function TableFilters() {
         pageNumber: 1,
         pageSize: 25,
       },
+      replace: true,
     });
   }, [navigate]);
+
+  const [searchInput, setSearchInput] = React.useState(search.searchText ?? "");
+
+  React.useEffect(() => {
+    setSearchInput(search.searchText ?? "");
+  }, [search.searchText]);
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    navigate({
+      search: (prev) => ({ ...prev, searchText: value }),
+      replace: true,
+    });
+  }, 500);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
+    debouncedSearch(event.target.value);
+  };
 
   return (
     <div className="flex flex-1 flex-wrap items-center gap-2">
       <Input
         placeholder="Search"
-        value={search.searchText ?? ""}
-        onChange={(event) =>
-          navigate({
-            search: (prev) => ({ ...prev, searchText: event.target.value }),
-            replace: true,
-          })
-        }
+        value={searchInput}
+        onChange={handleInputChange}
         className="h-8 w-40 lg:w-56"
       />
 

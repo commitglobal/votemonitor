@@ -1,7 +1,7 @@
 import { queryClient } from "@/main";
 import Page from "@/pages/NgoAdmin/QuickReports/Page";
 import { quickReportsQueryOptions } from "@/queries/quick-reports";
-import { DataSource, SortOrder } from "@/types/common";
+import { DataSource } from "@/types/common";
 import { quickReportsSearchSchema } from "@/types/quick-reports";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 
@@ -22,8 +22,8 @@ export const Route = createFileRoute(
         level4Filter: "",
         level5Filter: "",
         pollingStationNumberFilter: "",
-        followUpStatus: undefined,
-        locationType: undefined,
+        quickReportFollowUpStatus: undefined,
+        quickReportLocationType: undefined,
         incidentCategory: undefined,
         coalitionMemberId: "",
         pollingStationId: "",
