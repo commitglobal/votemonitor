@@ -3,7 +3,7 @@ import { DataTableSkeleton } from "@/components/data-table-skeleton";
 import { DataTable } from "@/components/ui/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useQuickReports } from "@/queries/quick-reports";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/incidents";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports";
 import React from "react";
 import TableFilters from "./Filters";
 import { getQuickReportsTableColumns } from "./TableColumns";
@@ -23,6 +23,7 @@ export default function Table() {
   );
 
   const { table } = useDataTable({
+    tableName: "quick-reports",
     data: data?.items || [],
     columns,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,

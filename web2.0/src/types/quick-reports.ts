@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SortOrder, type AttachmentModel } from "./common";
+import { DataSource, SortOrder, type AttachmentModel } from "./common";
 
 export enum QuickReportFollowUpStatus {
   NotApplicable = "NotApplicable",
@@ -78,6 +78,7 @@ export const QuickReportIncidentCategoryList: QuickReportIncidentCategory[] = [
 ];
 
 export const quickReportsSearchSchema = z.object({
+  dataSource: z.enum(DataSource).default(DataSource.Ngo).catch(DataSource.Ngo),
   searchText: z.string().optional().default(""),
   sortColumnName: z.string().optional(),
   sortOrder: z.enum(SortOrder).optional(),
@@ -90,8 +91,8 @@ export const quickReportsSearchSchema = z.object({
   level4Filter: z.string().optional(),
   level5Filter: z.string().optional(),
   pollingStationNumberFilter: z.string().optional(),
-  followUpStatus: z.enum(QuickReportFollowUpStatus).optional(),
-  locationType: z.enum(QuickReportLocationType).optional(),
+  quickReportFollowUpStatus: z.enum(QuickReportFollowUpStatus).optional(),
+  quickReportLocationType: z.enum(QuickReportLocationType).optional(),
   incidentCategory: z.enum(QuickReportIncidentCategory).optional(),
   coalitionMemberId: z.string().optional(),
   pollingStationId: z.string().optional(),

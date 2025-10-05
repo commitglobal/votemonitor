@@ -45,7 +45,7 @@ import { queryClient } from "@/main";
 import { useUpdateQuickReportFollowUpStatusMutation } from "@/mutations/quick-reports";
 import { useElectionRoundDetails } from "@/queries/elections";
 import { quickReportKeys } from "@/queries/quick-reports";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/incidents/quick-report.$quickReportId";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports/$quickReportId";
 import { ElectionRoundStatus } from "@/types/election";
 import {
   QuickReportFollowUpStatus,
@@ -102,7 +102,7 @@ function PollingStationDetails({
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
                       <Link
-                        to="/elections/$electionRoundId/incidents"
+                        to="/elections/$electionRoundId/quick-reports"
                         search={buildSearchFilters(quickReport, level)}
                         params={{ electionRoundId }}
                         className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
@@ -120,7 +120,7 @@ function PollingStationDetails({
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
                       <Link
-                        to="/elections/$electionRoundId/incidents"
+                        to="/elections/$electionRoundId/quick-reports"
                         search={{
                           ...buildSearchFilters(quickReport, 5),
                           pollingStationNumberFilter: quickReport.number,
@@ -154,6 +154,7 @@ function PollingStationDetails({
 
 function Page() {
   const { electionRoundId, quickReportId } = Route.useParams();
+  const search = Route.useSearch();
   const { invalidate } = useRouter();
   const quickReport = Route.useLoaderData();
   const { data: electionRound } = useElectionRoundDetails(electionRoundId);
@@ -192,8 +193,9 @@ function Page() {
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <Link
-                to="/elections/$electionRoundId/incidents"
+                to="/elections/$electionRoundId/quick-reports"
                 params={{ electionRoundId }}
+                search={search.from}
                 className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
               >
                 Quick reports

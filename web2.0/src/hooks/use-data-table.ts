@@ -20,6 +20,7 @@ import {
   type NavigateFn,
   type SearchRecord,
 } from "./use-table-url-state";
+import { useLocalStorage } from "./use-local-storage";
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: Extract<keyof TData, string>;
@@ -71,6 +72,7 @@ interface UseDataTableProps<TData>
         deserialize?: (value: unknown) => unknown;
       }
   >;
+  tableName: string;
 }
 
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
@@ -85,11 +87,15 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     columnFilters: defaultColumnFilters,
     pagination: defaultPagination,
     globalFilter: defaultGlobalFilter,
+    tableName,
     ...tableProps
   } = props;
 
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
+    useLocalStorage<VisibilityState>(
+      `column-visibility-${tableName}`,
+      initialState?.columnVisibility ?? {}
+    );
 
   const {
     globalFilter,

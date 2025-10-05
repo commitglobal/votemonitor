@@ -6,7 +6,8 @@ import { ChevronRightIcon } from "lucide-react";
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
-import { Badge } from "@/components/ui/badge";
+import QuickReportFollowUpStatusBadge from "@/components/quick-report-follow-up-status-badge";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -17,11 +18,8 @@ import {
   mapQuickReportIncidentCategory,
   mapQuickReportLocationType,
 } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
-import {
-  QuickReportFollowUpStatus,
-  type QuickReportModel,
-} from "@/types/quick-reports";
+import { router } from "@/main";
+import { type QuickReportModel } from "@/types/quick-reports";
 import { Link } from "@tanstack/react-router";
 
 interface GetTasksTableColumnsProps {
@@ -286,27 +284,7 @@ export function getQuickReportsTableColumns({
       enableSorting: true,
       enableGlobalFilter: true,
       cell: ({ row }) => (
-        <Badge
-          className={cn({
-            "text-slate-700 bg-slate-200":
-              row.original.followUpStatus ===
-              QuickReportFollowUpStatus.NotApplicable,
-            "text-red-600 bg-red-200":
-              row.original.followUpStatus ===
-              QuickReportFollowUpStatus.NeedsFollowUp,
-            "text-green-600 bg-green-200":
-              row.original.followUpStatus ===
-              QuickReportFollowUpStatus.Resolved,
-          })}
-        >
-          {row.original.followUpStatus ===
-          QuickReportFollowUpStatus.NotApplicable
-            ? "Not Applicable"
-            : row.original.followUpStatus ===
-              QuickReportFollowUpStatus.NeedsFollowUp
-            ? "Needs follow-up"
-            : "Resolved"}
-        </Badge>
+        <QuickReportFollowUpStatusBadge status={row.original.followUpStatus} />
       ),
       meta: {
         label: "Follow-up status",
@@ -317,15 +295,16 @@ export function getQuickReportsTableColumns({
       id: "actions",
       enableSorting: false,
       cell: ({ row }) => (
-        <div className="text-right">
+        <Button asChild variant="link">
           <Link
             className="inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100"
-            to="/elections/$electionRoundId/incidents/quick-report/$quickReportId"
+            to="/elections/$electionRoundId/quick-reports/$quickReportId"
             params={{ electionRoundId, quickReportId: row.original.id }}
+            search={{ from: router.state.location.search }}
           >
-            <ChevronRightIcon className="w-4 text-purple-600" />
+            <ChevronRightIcon className="w-4 h-4" />
           </Link>
-        </div>
+        </Button>
       ),
     },
   ];

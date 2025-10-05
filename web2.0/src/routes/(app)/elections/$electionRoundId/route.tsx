@@ -3,30 +3,11 @@ import {
   CurrentElectionRoundProvider,
   useCurrentElectionRound,
 } from "@/contexts/election-round.context";
-import { DataSource } from "@/types/common";
-import {
-  createFileRoute,
-  Outlet,
-  stripSearchParams,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
-import z from "zod";
-
-export const dataSourceSearchSchema = z.object({
-  dataSource: z.enum(DataSource).default(DataSource.Ngo).catch(DataSource.Ngo),
-});
 
 export const Route = createFileRoute("/(app)/elections/$electionRoundId")({
   component: RouteComponentWrapper,
-  validateSearch: dataSourceSearchSchema,
-
-  search: {
-    middlewares: [
-      stripSearchParams({
-        dataSource: DataSource.Ngo,
-      }),
-    ],
-  },
 });
 
 function RouteComponentWrapper() {

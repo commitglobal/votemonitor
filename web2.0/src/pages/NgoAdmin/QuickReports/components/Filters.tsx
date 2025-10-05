@@ -7,7 +7,7 @@ import {
   mapQuickReportIncidentCategory,
   mapQuickReportLocationType,
 } from "@/lib/i18n";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/incidents";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports";
 import { DataSource } from "@/types/common";
 import type { Option } from "@/types/data-table";
 import {
@@ -77,7 +77,7 @@ function TableFilters() {
       <SingleSelectDataTableFacetedFilter
         title="Location type"
         options={locationOptions}
-        value={search.locationType as string}
+        value={search.quickReportLocationType as string}
         onValueChange={(value) =>
           navigate({
             search: (prev) => ({
@@ -107,12 +107,12 @@ function TableFilters() {
       <SingleSelectDataTableFacetedFilter
         title="Followup status"
         options={quickReportFollowUpStatusOptions}
-        value={search.followUpStatus as string}
+        value={search.quickReportFollowUpStatus as string}
         onValueChange={(value) =>
           navigate({
             search: (prev) => ({
               ...prev,
-              followUpStatus: value as QuickReportFollowUpStatus,
+              quickReportFollowUpStatus: value as QuickReportFollowUpStatus,
             }),
             replace: true,
           })
