@@ -5,11 +5,17 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  mapQuickReportFollowUpStatus,
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   mapQuickReportIncidentCategory,
   mapQuickReportLocationType,
 } from "@/lib/i18n";
@@ -24,6 +30,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 
+import QuickReportFollowUpStatusBadge from "@/components/quick-report-follow-up-status-badge";
 import { Attachment } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import {
@@ -185,151 +192,181 @@ function Page() {
     electionRound?.status === ElectionRoundStatus.Archived;
 
   return (
-    <Card>
-      <CardContent className="pt-0">
-        <ItemGroup className="flex flex-row gap-2 justify-between">
-          <Item>
-            <ItemContent>
-              <ItemTitle>Observer</ItemTitle>
-              <ItemDescription>
-                <Link
-                  to="/elections/$electionRoundId/observers/$observerId"
-                  params={{
-                    electionRoundId,
-                    observerId: quickReport.monitoringObserverId,
-                  }}
-                >
-                  {quickReport.observerName}
-                </Link>
-              </ItemDescription>
-            </ItemContent>
-          </Item>
-          <Item>
-            <ItemContent>
-              <ItemTitle>Follow up status</ItemTitle>
-              <div>
-                <Select
-                  onValueChange={handleFollowUpStatusChange}
-                  defaultValue={quickReport.followUpStatus}
-                  value={quickReport.followUpStatus}
-                  disabled={isReadOnly}
-                >
-                  <SelectTrigger className="w-full sm:w-[220px]">
-                    <SelectValue placeholder="Follow-up status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {Object.values(QuickReportFollowUpStatus).map(
-                        (status) => (
-                          <SelectItem key={status} value={status}>
-                            {mapQuickReportFollowUpStatus(status)}
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            </ItemContent>
-          </Item>
-        </ItemGroup>
-
-        <ItemGroup>
-          {!quickReport.isOwnObserver ? (
+    <>
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link
+                to="/elections/$electionRoundId/incidents"
+                params={{ electionRoundId }}
+                className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
+              >
+                Quick reports
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{quickReportId}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <Card>
+        <CardContent>
+          <ItemGroup className="flex flex-row gap-2 justify-between">
             <Item>
               <ItemContent>
-                <ItemTitle>NGO</ItemTitle>
-                <ItemDescription>{quickReport.ngoName}</ItemDescription>
+                <ItemTitle>Observer</ItemTitle>
+                <ItemDescription>
+                  <Link
+                    to="/elections/$electionRoundId/observers/$observerId"
+                    params={{
+                      electionRoundId,
+                      observerId: quickReport.monitoringObserverId,
+                    }}
+                  >
+                    {quickReport.observerName}
+                  </Link>
+                </ItemDescription>
               </ItemContent>
             </Item>
-          ) : null}
-          <Item>
-            <ItemContent>
-              <ItemTitle>Incident category</ItemTitle>
-              <ItemDescription>
-                {mapQuickReportIncidentCategory(quickReport.incidentCategory)}
-              </ItemDescription>
-            </ItemContent>
-          </Item>
-          <Item>
-            <ItemContent>
-              <ItemTitle>Location type</ItemTitle>
-              <ItemDescription>
-                {mapQuickReportLocationType(
-                  quickReport.quickReportLocationType
-                )}
-              </ItemDescription>
-            </ItemContent>
-          </Item>
 
-          <PollingStationDetails quickReport={quickReport} />
+            <Item>
+              <ItemContent>
+                <ItemTitle>Follow up status</ItemTitle>
+                <ItemDescription>
+                  {isReadOnly ? (
+                    <QuickReportFollowUpStatusBadge
+                      status={quickReport.followUpStatus}
+                    />
+                  ) : (
+                    <Select
+                      onValueChange={handleFollowUpStatusChange}
+                      defaultValue={quickReport.followUpStatus}
+                      value={quickReport.followUpStatus}
+                      disabled={isReadOnly}
+                    >
+                      <SelectTrigger className="w-full sm:w-[220px]">
+                        <SelectValue placeholder="Follow-up status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {Object.values(QuickReportFollowUpStatus).map(
+                            (status) => (
+                              <SelectItem key={status} value={status}>
+                                <QuickReportFollowUpStatusBadge
+                                  status={status}
+                                />
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          </ItemGroup>
 
-          <Item>
-            <ItemContent>
-              <ItemTitle>Title</ItemTitle>
-              <ItemDescription>{quickReport.title}</ItemDescription>
-            </ItemContent>
-          </Item>
-          <Item>
-            <ItemContent>
-              <ItemTitle>Description</ItemTitle>
-              <ItemDescription>{quickReport.description}</ItemDescription>
-            </ItemContent>
-          </Item>
-        </ItemGroup>
-        <ItemGroup>
-          <Item>
-            <ItemContent>
-              <ItemTitle>Attachments</ItemTitle>
-            </ItemContent>
-          </Item>
-          <Collapsible>
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" className="w-fit mb-2">
-                {quickReport.attachments.length > 0
-                  ? `Show Attachments (${quickReport.attachments.length})`
-                  : "No Attachments"}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="flex flex-col gap-2 mt-2">
-                {quickReport.attachments.map((attachment, index) => (
-                  <Item variant="outline" key={index}>
-                    <ItemMedia>
-                      <Attachment
-                        src={attachment.presignedUrl}
-                        mimeType={attachment.mimeType}
-                        fileName={attachment.fileName}
-                        width="530px"
-                        height="300px"
-                      />
-                    </ItemMedia>
-                    <ItemContent className="gap-1">
-                      <ItemTitle>{attachment.fileName}</ItemTitle>
-                      <ItemDescription>{attachment.mimeType}</ItemDescription>
-                    </ItemContent>
-                    <ItemActions>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          downloadFile(
-                            attachment.presignedUrl,
-                            attachment.fileName
-                          )
-                        }
-                      >
-                        <DownloadIcon className="size-4" />
-                      </Button>
-                    </ItemActions>
-                  </Item>
-                ))}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </ItemGroup>
-      </CardContent>
-    </Card>
+          <ItemGroup>
+            {!quickReport.isOwnObserver ? (
+              <Item>
+                <ItemContent>
+                  <ItemTitle>NGO</ItemTitle>
+                  <ItemDescription>{quickReport.ngoName}</ItemDescription>
+                </ItemContent>
+              </Item>
+            ) : null}
+            <Item>
+              <ItemContent>
+                <ItemTitle>Incident category</ItemTitle>
+                <ItemDescription>
+                  {mapQuickReportIncidentCategory(quickReport.incidentCategory)}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+            <Item>
+              <ItemContent>
+                <ItemTitle>Location type</ItemTitle>
+                <ItemDescription>
+                  {mapQuickReportLocationType(
+                    quickReport.quickReportLocationType
+                  )}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+
+            <PollingStationDetails quickReport={quickReport} />
+
+            <Item>
+              <ItemContent>
+                <ItemTitle>Title</ItemTitle>
+                <ItemDescription>{quickReport.title}</ItemDescription>
+              </ItemContent>
+            </Item>
+            <Item>
+              <ItemContent>
+                <ItemTitle>Description</ItemTitle>
+                <ItemDescription>{quickReport.description}</ItemDescription>
+              </ItemContent>
+            </Item>
+          </ItemGroup>
+          <ItemGroup>
+            <Item>
+              <ItemContent>
+                <ItemTitle>Attachments</ItemTitle>
+              </ItemContent>
+            </Item>
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="w-fit mb-2">
+                  {quickReport.attachments.length > 0
+                    ? `Show Attachments (${quickReport.attachments.length})`
+                    : "No Attachments"}
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="flex flex-col gap-2 mt-2">
+                  {quickReport.attachments.map((attachment, index) => (
+                    <Item variant="outline" key={index}>
+                      <ItemMedia>
+                        <Attachment
+                          src={attachment.presignedUrl}
+                          mimeType={attachment.mimeType}
+                          fileName={attachment.fileName}
+                          width="530px"
+                          height="300px"
+                        />
+                      </ItemMedia>
+                      <ItemContent className="gap-1">
+                        <ItemTitle>{attachment.fileName}</ItemTitle>
+                        <ItemDescription>{attachment.mimeType}</ItemDescription>
+                      </ItemContent>
+                      <ItemActions>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() =>
+                            downloadFile(
+                              attachment.presignedUrl,
+                              attachment.fileName
+                            )
+                          }
+                        >
+                          <DownloadIcon className="size-4" />
+                        </Button>
+                      </ItemActions>
+                    </Item>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </ItemGroup>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 
