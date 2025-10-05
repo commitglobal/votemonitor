@@ -96,7 +96,7 @@ function InnerApp() {
           </div>
         </div>
         <TailwindIndicator />
-        <Toaster />
+        <Toaster duration={5000} richColors />
         <TanStackRouterDevelopmentTools
           router={router}
           position="bottom-left"
