@@ -16,8 +16,12 @@ import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import { AuthProvider, useAuth } from "./contexts/auth.context.tsx";
 
 // import i18n (needs to be bundled ;))
-import "./i18n";
+import countries from "i18n-iso-countries";
+import { useTranslation } from "react-i18next";
+import enCountries from "i18n-iso-countries/langs/en.json";
+import roCountries from "i18n-iso-countries/langs/ro.json";
 
+import "./i18n";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -72,7 +76,14 @@ declare module "@tanstack/react-router" {
 
 function InnerApp() {
   const auth = useAuth();
+  const { i18n } = useTranslation();
 
+  const lang = (i18n.language || "en").split("-")[0];
+  const localeMap: Record<string, unknown> = {
+    en: enCountries,
+    ro: roCountries,
+  };
+  countries.registerLocale((localeMap[lang] ?? enCountries) as any);
   if (auth.isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">

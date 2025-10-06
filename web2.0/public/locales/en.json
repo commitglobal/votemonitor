@@ -1,4 +1,18 @@
 {
+  "electionRound": {
+    "status": {
+      "notStarted": "Not started",
+      "started": "Started",
+      "archived": "Archived"
+    }
+  },
+  "formSubmissions": {
+    "followUpStatus": {
+      "NotApplicable": "Not Applicable",
+      "NeedsFollowUp": "Needs Follow-up",
+      "Resolved": "Resolved"
+    }
+  },
   "quickReports": {
     "followUpStatus": {
       "NotApplicable": "Not Applicable",

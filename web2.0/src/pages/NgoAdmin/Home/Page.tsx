@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { SingleSelectDataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -6,219 +7,189 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useListMonitoringElections } from "@/queries/monitoring-elections";
+import { Route } from "@/routes/(app)";
+import { SortOrder } from "@/types/common";
 import { ElectionRoundStatus } from "@/types/election";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
-import { useMemo, useState } from "react";
-import ElectionCard from "./components/ElectionCard";
-import ElectionList from "./components/ElectionsList";
+import countries from "i18n-iso-countries";
+import { ArrowDownAZ, ArrowUpAZ, SlidersHorizontal } from "lucide-react";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
+import { ElectionRoundCard } from "./components/ElectionCard";
 
 function Page() {
+  const {
+    searchText = "",
+    electionRoundStatus: initElectionRoundStatus,
+    sortOrder: initSort = SortOrder.Asc,
+    countryId: initCountry,
+  } = Route.useSearch();
+
+  const navigate = Route.useNavigate();
   const { data } = useListMonitoringElections();
+  const [sort, setSort] = useState(initSort);
+  const [electionRoundStatus, setElectionRoundStatus] = useState(
+    initElectionRoundStatus
+  );
+  const [country, setCountry] = useState(initCountry);
+  const [searchTerm, setSearchTerm] = useState(searchText);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  const [countryFilter, setCountryFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
-
-  const [filtersCollapsed, setFiltersCollapsed] = useState(false);
+  const { i18n } = useTranslation();
 
   // Get unique countries for filter dropdown
-  const countries = useMemo(() => {
-    const uniqueCountries = Array.from(
-      new Set(data?.map((election) => election.countryName))
-    ).sort();
-    return uniqueCountries;
+  const countriesOptions = useMemo(() => {
+    var countriesMap = new Map<string, string>();
+    data?.forEach((election) =>
+      countriesMap.set(election.countryId, election.countryIso2)
+    );
+
+    return Array.from(countriesMap.entries()).map(([value, iso2]) => ({
+      value,
+      label:
+        countries.getName(iso2, i18n.language.split("-")[0], {
+          select: "official",
+        }) ?? iso2,
+    }));
   }, [data]);
 
-  // Get all status values for filter dropdown
-  const statuses = Object.values(ElectionRoundStatus);
-
-  // Apply filters and sorting
-  const filteredElections = useMemo(() => {
-    let filtered = data;
-
-    if (countryFilter) {
-      filtered = filtered?.filter(
-        (election) => election.countryName === countryFilter
-      );
-    }
-
-    if (statusFilter) {
-      filtered = filtered?.filter(
-        (election) => election.status === statusFilter
-      );
-    }
-    // Sort by start date descending (most recent first)
-    return (
-      filtered?.sort(
-        (a, b) =>
-          new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-      ) ?? []
-    );
-  }, [data, countryFilter, statusFilter]);
-
-  // Check if any filters are active
-  const hasActiveFilters = countryFilter || statusFilter;
-
-  // Filter elections into active and archived (only when no filters are active)
-  const activeElections = useMemo(() => {
-    if (hasActiveFilters) return [];
-    return (
+  const filteredElections = useMemo(
+    () =>
       data
-        ?.filter(
-          (election) =>
-            election.status === ElectionRoundStatus.NotStarted ||
-            election.status === ElectionRoundStatus.Started
+        ?.sort((a, b) =>
+          sort === SortOrder.Asc
+            ? a.startDate.localeCompare(b.startDate)
+            : b.startDate.localeCompare(a.startDate)
         )
-        .sort(
-          (a, b) =>
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-        ) ?? []
-    );
-  }, [data, hasActiveFilters]);
+        .filter((election) =>
+          electionRoundStatus === "Started"
+            ? election.status === ElectionRoundStatus.Started
+            : electionRoundStatus === "NotStarted"
+            ? election.status === ElectionRoundStatus.NotStarted
+            : true
+        )
+        .filter(
+          (election) =>
+            election.title
+              .toLowerCase()
+              .includes(debouncedSearchTerm.toLowerCase()) ||
+            election.englishTitle
+              .toLowerCase()
+              .includes(debouncedSearchTerm.toLowerCase())
+        )
+        .filter((election) =>
+          country === "" ? true : election.countryId === country
+        ),
+    [data, sort, electionRoundStatus, debouncedSearchTerm, country]
+  );
 
-  const archivedElections = useMemo(() => {
-    if (hasActiveFilters) return [];
-    return (
-      data
-        ?.filter((election) => election.status === ElectionRoundStatus.Archived)
-        .sort(
-          (a, b) =>
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-        ) ?? []
-    );
-  }, [data, hasActiveFilters]);
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
-  const clearFilters = () => {
-    setCountryFilter("");
-    setStatusFilter("");
+  useEffect(() => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filter: debouncedSearchTerm || undefined,
+      }),
+    });
+  }, [debouncedSearchTerm, navigate]);
+  const handleSortChange = (sort: SortOrder) => {
+    setSort(sort as SortOrder);
+    navigate({ search: (prev) => ({ ...prev, sort }) });
+  };
+
+  const handleElectionRoundStatusChange = (value: string | undefined) => {
+    setElectionRoundStatus(value as ElectionRoundStatus);
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        electionRoundStatus: value as ElectionRoundStatus | undefined,
+      }),
+    });
+  };
+
+  const handleCountryChange = (value: string | undefined) => {
+    setCountry(value as string);
+    navigate({ search: (prev) => ({ ...prev, countryId: value }) });
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
+    <>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">
           Monitored Elections
         </h1>
+        <p className="text-muted-foreground">
+          Here&apos;s a list of your monitored elections!
+        </p>
       </div>
-
-      {/* Filters */}
-      <div className="mb-8 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium">Filters</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setFiltersCollapsed(!filtersCollapsed)}
-            className="flex items-center gap-2"
-          >
-            {filtersCollapsed ? (
-              <>
-                Show Filters
-                <ChevronDown className="h-4 w-4" />
-              </>
-            ) : (
-              <>
-                Hide Filters
-                <ChevronUp className="h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-
-        {!filtersCollapsed && (
-          <div className="space-y-4 p-4 border rounded-lg">
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <label htmlFor="country-filter" className="text-sm font-  ">
-                  Country:
-                </label>
-                <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="w-48" id="country-filter">
-                    <SelectValue placeholder="All countries" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <label htmlFor="status-filter" className="text-sm font-medium">
-                  Status:
-                </label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-40" id="status-filter">
-                    <SelectValue placeholder="All statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statuses.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-6 items-center">
-              {hasActiveFilters && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearFilters}
-                  className="flex items-center gap-2 bg-transparent"
-                >
-                  <X className="h-4 w-4" />
-                  Clear All Filters
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-
-        {hasActiveFilters && (
-          <div className="text-sm text-muted-foreground">
-            Showing {filteredElections.length} election
-            {filteredElections.length !== 1 ? "s" : ""}
-            {countryFilter && ` in ${countryFilter}`}
-            {statusFilter && ` with status ${statusFilter}`}
-          </div>
-        )}
-      </div>
-
-      {/* Election Lists */}
-      {hasActiveFilters ? (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Filtered Elections
-          </h2>
-          {filteredElections.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No elections match the selected filters.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredElections?.map((election) => (
-                <ElectionCard key={election.id} election={election} />
-              ))}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-12">
-          <ElectionList elections={activeElections} title="Active Elections" />
-          <ElectionList
-            elections={archivedElections}
-            title="Archived Elections"
+      <div className="my-4 flex items-end justify-between sm:my-0 sm:items-center">
+        <div className="flex flex-col gap-4 sm:my-4 sm:flex-row">
+          <Input
+            placeholder="Filter elections..."
+            className="h-9 w-40 lg:w-[250px]"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <SingleSelectDataTableFacetedFilter
+            title={"Election Round Status"}
+            options={[
+              {
+                value: ElectionRoundStatus.Started,
+                label: ElectionRoundStatus.Started,
+              },
+              {
+                value: ElectionRoundStatus.Archived,
+                label: ElectionRoundStatus.Archived,
+              },
+            ]}
+            value={electionRoundStatus ?? ""}
+            onValueChange={handleElectionRoundStatusChange}
+          />
+          <SingleSelectDataTableFacetedFilter
+            title={"Country"}
+            options={countriesOptions}
+            value={country ?? ""}
+            onValueChange={handleCountryChange}
           />
         </div>
-      )}
-    </div>
+
+        <Select value={sort} onValueChange={handleSortChange}>
+          <SelectTrigger className="w-16">
+            <SelectValue>
+              <SlidersHorizontal size={18} />
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent align="end">
+            <SelectItem value={SortOrder.Asc}>
+              <div className="flex items-center gap-4">
+                <ArrowUpAZ size={16} />
+                <span>Ascending</span>
+              </div>
+            </SelectItem>
+            <SelectItem value={SortOrder.Desc}>
+              <div className="flex items-center gap-4">
+                <ArrowDownAZ size={16} />
+                <span>Descending</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <Separator className="shadow-sm" />
+      <div className="faded-bottom no-scrollbar grid gap-4 overflow-auto pt-4 pb-16 md:grid-cols-2 lg:grid-cols-3">
+        {filteredElections?.map((electionRound) => (
+          <ElectionRoundCard
+            key={electionRound.id}
+            electionRound={electionRound}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 

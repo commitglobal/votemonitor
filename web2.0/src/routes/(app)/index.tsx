@@ -3,7 +3,11 @@ import { useAuth } from "@/contexts/auth.context";
 import NgoAdminHomePage from "@/pages/NgoAdmin/Home/Page";
 import PlatformAdminHomepage from "@/pages/PlatformAdmin/Home/Page";
 import { electionsSearchSchema } from "@/types/election";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  stripSearchParams,
+} from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(app)/")({
   beforeLoad: ({ context }) => {
@@ -12,8 +16,21 @@ export const Route = createFileRoute("/(app)/")({
       throw redirect({ to: "/login" });
     }
   },
-  component: RouteComponent,
   validateSearch: electionsSearchSchema,
+  search: {
+    middlewares: [
+      stripSearchParams({
+        countryId: undefined,
+        searchText: undefined,
+        electionRoundStatus: undefined,
+        sortColumnName: undefined,
+        sortOrder: undefined,
+        pageNumber: 1,
+        pageSize: 25,
+      }),
+    ],
+  },
+  component: RouteComponent,
 });
 
 function RouteComponent() {

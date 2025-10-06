@@ -7,3 +7,9 @@ export enum FormType {
   IncidentReporting = "IncidentReporting",
   Other = "Other",
 }
+
+export enum FormStatus {
+  Drafted = "Drafted",
+  Published = "Published",
+  Obsolete = "Obsolete",
+}
