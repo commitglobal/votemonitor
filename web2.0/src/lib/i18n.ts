@@ -4,6 +4,7 @@ import {
   QuickReportLocationType,
 } from "@/types/quick-reports";
 import i18n from "@/i18n";
+import { FormSubmissionFollowUpStatus } from "@/types/forms-submission";
 
 export function mapQuickReportLocationType(
   locationType: QuickReportLocationType
@@ -177,4 +178,17 @@ export function mapQuickReportIncidentCategory(
     return i18n.t("quickReports.incidentCategory.Other");
 
   return incidentCategory;
+}
+
+export function mapFormSubmissionFollowUpStatus(
+  followUpStatus: FormSubmissionFollowUpStatus
+): string {
+  if (followUpStatus === FormSubmissionFollowUpStatus.NotApplicable)
+    return i18n.t("formSubmissions.followUpStatus.NotApplicable");
+  if (followUpStatus === FormSubmissionFollowUpStatus.NeedsFollowUp)
+    return i18n.t("formSubmissions.followUpStatus.NeedsFollowUp");
+  if (followUpStatus === FormSubmissionFollowUpStatus.Resolved)
+    return i18n.t("formSubmissions.followUpStatus.Resolved");
+
+  return followUpStatus;
 }

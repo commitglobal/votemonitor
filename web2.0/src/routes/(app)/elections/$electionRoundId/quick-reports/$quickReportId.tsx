@@ -1,5 +1,5 @@
 import QuickReportsDetails from "@/pages/NgoAdmin/QuickReportsDetails";
-import { quickReportDetailsQueryOptions } from "@/queries/quick-reports";
+import { getQuickReportDetailsQueryOptions } from "@/queries/quick-reports";
 import { DataSource, SortOrder } from "@/types/common";
 import { quickReportsSearchSchema } from "@/types/quick-reports";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
@@ -39,7 +39,7 @@ export const Route = createFileRoute(
   },
   loader: (opts) =>
     opts.context.queryClient.ensureQueryData(
-      quickReportDetailsQueryOptions(
+      getQuickReportDetailsQueryOptions(
         opts.params.electionRoundId,
         opts.params.quickReportId
       )

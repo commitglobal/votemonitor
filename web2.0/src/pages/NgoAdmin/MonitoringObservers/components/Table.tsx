@@ -1,13 +1,13 @@
 import { DataTableToolbar } from "@/components/data-table-toolbar";
 import { DataTable } from "@/components/ui/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/observers";
 import type { PageResponse } from "@/types/common";
 import type { DataTableRowAction } from "@/types/data-table";
 import type { MonitoringObserverModel } from "@/types/monitoring-observer";
 import React from "react";
 import { getMonitoringObserversTableColumns } from "./TableColumns";
 import TableFilters from "./TableFilters";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/observers";
 export interface TableProps {
   data?: PageResponse<MonitoringObserverModel>;
 }
@@ -26,6 +26,7 @@ function Table({ data }: TableProps) {
   );
 
   const { table } = useDataTable({
+    tableName: "monitoring-observers",
     data: data?.items || [],
     columns,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,

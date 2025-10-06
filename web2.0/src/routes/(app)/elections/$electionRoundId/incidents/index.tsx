@@ -1,6 +1,6 @@
 import { queryClient } from "@/main";
 import Page from "@/pages/NgoAdmin/Incidents/Page";
-import { quickReportsQueryOptions } from "@/queries/quick-reports";
+import { listQuickReportsQueryOptions } from "@/queries/quick-reports";
 import { quickReportsSearchSchema } from "@/types/quick-reports";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -12,6 +12,8 @@ export const Route = createFileRoute(
     ...search,
   }),
   loader: ({ deps, params: { electionRoundId } }) =>
-    queryClient.prefetchQuery(quickReportsQueryOptions(electionRoundId, deps)),
+    queryClient.prefetchQuery(
+      listQuickReportsQueryOptions(electionRoundId, deps)
+    ),
   component: () => <Page />,
 });

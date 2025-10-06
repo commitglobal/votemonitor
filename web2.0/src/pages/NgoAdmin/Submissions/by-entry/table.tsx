@@ -1,34 +1,31 @@
-import { DataTableToolbar } from "@/components/data-table-toolbar";
 import { DataTableSkeleton } from "@/components/data-table-skeleton";
-import { DataTable } from "@/components/ui/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
-import { useListQuickReports } from "@/queries/quick-reports";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports";
+import { useListFormSubmissions } from "@/queries/form-submissions";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/submissions";
 import React from "react";
-import TableFilters from "./Filters";
-import { getQuickReportsTableColumns } from "./TableColumns";
+import { getFormSubmissionsColumns } from "./columns";
+import { DataTable } from "@/components/ui/data-table";
+import { DataTableToolbar } from "@/components/data-table-toolbar";
+import { TableFilters } from "./filters";
 
-export default function Table() {
+export function Table() {
   const { electionRoundId } = Route.useParams();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const { data, isPending } = useListQuickReports(electionRoundId, search);
+  const { data, isPending } = useListFormSubmissions(electionRoundId, search);
 
   const columns = React.useMemo(
-    () =>
-      getQuickReportsTableColumns({
-        electionRoundId,
-      }),
+    () => getFormSubmissionsColumns(electionRoundId),
     [electionRoundId]
   );
 
   const { table } = useDataTable({
-    tableName: "quick-reports",
+    tableName: "submissions-by-entry",
     data: data?.items || [],
     columns,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     initialState: {
-      sorting: [{ id: "timestamp", desc: true }],
+      sorting: [{ id: "timeSubmitted", desc: true }],
       columnPinning: { right: ["actions"] },
     },
     columnFilters: [
@@ -53,7 +50,7 @@ export default function Table() {
         type: "string",
       },
     ],
-    getRowId: (originalRow) => originalRow.id,
+    getRowId: (originalRow) => originalRow.submissionId,
     search,
     navigate,
   });

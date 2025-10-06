@@ -97,6 +97,8 @@ export const quickReportsSearchSchema = z.object({
   coalitionMemberId: z.string().optional(),
   pollingStationId: z.string().optional(),
   observerId: z.string().optional(),
+  // TODO: add filter by has attachments
+  // TODO: add filter by dates
 });
 
 export type QuickReportsSearch = z.infer<typeof quickReportsSearchSchema>;

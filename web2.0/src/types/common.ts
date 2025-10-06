@@ -1,3 +1,5 @@
+import z from "zod";
+
 export enum SortOrder {
   Asc = "Asc",
   Desc = "Desc",
@@ -16,12 +18,10 @@ export enum DataSource {
 }
 
 export interface NoteModel {
-  type: "Note";
   text: string;
 }
 
 export interface AttachmentModel {
-  type: "Attachment";
   fileName: string;
   filePath: string;
   mimeType: string;
@@ -29,3 +29,6 @@ export interface AttachmentModel {
   uploadedFileName: string;
   urlValidityInSeconds: string;
 }
+
+export const ZTranslatedString = z.record(z.string(), z.string());
+export type TranslatedString = z.infer<typeof ZTranslatedString>;

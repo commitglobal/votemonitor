@@ -27,7 +27,7 @@ export const quickReportKeys = {
 
 const STALE_TIME = 1000 * 60 * 15; // 15 minutes
 
-export const quickReportsQueryOptions = <
+export const listQuickReportsQueryOptions = <
   TResult = PageResponse<QuickReportModel>
 >(
   electionRoundId: string,
@@ -41,13 +41,13 @@ export const quickReportsQueryOptions = <
     select,
   });
 
-export const useQuickReports = <TResult = PageResponse<QuickReportModel>>(
+export const useListQuickReports = <TResult = PageResponse<QuickReportModel>>(
   electionRoundId: string,
   search: QuickReportsSearch,
   select?: (data: PageResponse<QuickReportModel>) => TResult
-) => useQuery(quickReportsQueryOptions(electionRoundId, search, select));
+) => useQuery(listQuickReportsQueryOptions(electionRoundId, search, select));
 
-export function quickReportDetailsQueryOptions(
+export function getQuickReportDetailsQueryOptions(
   electionRoundId: string,
   quickReportId: string
 ) {
