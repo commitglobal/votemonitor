@@ -209,7 +209,7 @@ export const getFormSubmissionsColumns = (
     },
     {
       header: "",
-      id: "action",
+      id: "actions",
       enableSorting: false,
       cell: ({ row }) => (
         <div className="text-right">

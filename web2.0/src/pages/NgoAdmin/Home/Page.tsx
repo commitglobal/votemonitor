@@ -1,4 +1,5 @@
 import { SingleSelectDataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,13 +9,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useListMonitoringElections } from "@/queries/monitoring-elections";
 import { Route } from "@/routes/(app)";
 import { SortOrder } from "@/types/common";
 import { ElectionRoundStatus } from "@/types/election";
 import countries from "i18n-iso-countries";
-import { ArrowDownAZ, ArrowUpAZ, SlidersHorizontal } from "lucide-react";
+import { ArrowDownAZ, ArrowUpAZ, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { ElectionRoundCard } from "./components/ElectionCard";
@@ -28,7 +30,7 @@ function Page() {
   } = Route.useSearch();
 
   const navigate = Route.useNavigate();
-  const { data } = useListMonitoringElections();
+  const { data, isPending } = useListMonitoringElections();
   const [sort, setSort] = useState(initSort);
   const [electionRoundStatus, setElectionRoundStatus] = useState(
     initElectionRoundStatus
@@ -38,6 +40,8 @@ function Page() {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const { i18n } = useTranslation();
+
+  const totalCount = Array.isArray(data) ? data.length : 0;
 
   // Get unique countries for filter dropdown
   const countriesOptions = useMemo(() => {
@@ -53,7 +57,7 @@ function Page() {
           select: "official",
         }) ?? iso2,
     }));
-  }, [data]);
+  }, [data, i18n.language]);
 
   const filteredElections = useMemo(
     () =>
@@ -80,7 +84,7 @@ function Page() {
               .includes(debouncedSearchTerm.toLowerCase())
         )
         .filter((election) =>
-          country === "" ? true : election.countryId === country
+          !country ? true : election.countryId === country
         ),
     [data, sort, electionRoundStatus, debouncedSearchTerm, country]
   );
@@ -115,6 +119,20 @@ function Page() {
   const handleCountryChange = (value: string | undefined) => {
     setCountry(value as string);
     navigate({ search: (prev) => ({ ...prev, countryId: value }) });
+  };
+
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setElectionRoundStatus(undefined as unknown as ElectionRoundStatus);
+    setCountry("");
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filter: undefined,
+        electionRoundStatus: undefined,
+        countryId: undefined,
+      }),
+    });
   };
 
   return (
@@ -156,6 +174,18 @@ function Page() {
             value={country ?? ""}
             onValueChange={handleCountryChange}
           />
+          {(country || electionRoundStatus || searchTerm) && (
+            <Button
+              aria-label="Reset filters"
+              variant="outline"
+              size="sm"
+              className="border-dashed"
+              onClick={handleResetFilters}
+            >
+              <X />
+              Reset
+            </Button>
+          )}
         </div>
 
         <Select value={sort} onValueChange={handleSortChange}>
@@ -181,14 +211,49 @@ function Page() {
         </Select>
       </div>
       <Separator className="shadow-sm" />
-      <div className="faded-bottom no-scrollbar grid gap-4 overflow-auto pt-4 pb-16 md:grid-cols-2 lg:grid-cols-3">
-        {filteredElections?.map((electionRound) => (
-          <ElectionRoundCard
-            key={electionRound.id}
-            electionRound={electionRound}
-          />
-        ))}
-      </div>
+
+      {/* Pending state */}
+      {isPending && totalCount === 0 ? (
+        <div className="grid gap-4 pt-4 pb-16 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-10 w-16 rounded-md" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-6 w-28" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : totalCount === 0 ? (
+        <div className="pt-8 pb-16 text-center text-muted-foreground">
+          <p className="text-sm">No monitored elections available.</p>
+        </div>
+      ) : filteredElections && filteredElections.length === 0 ? (
+        // Empty state: filters yield no results
+        <div className="pt-8 pb-16 text-center">
+          <p className="mb-3 text-sm text-muted-foreground">
+            No elections match your current filters.
+          </p>
+          <Button variant="secondary" onClick={handleResetFilters}>
+            Reset filters
+          </Button>
+        </div>
+      ) : (
+        <div className="faded-bottom no-scrollbar grid gap-4 overflow-auto pt-4 pb-16 md:grid-cols-2 lg:grid-cols-3">
+          {filteredElections?.map((electionRound) => (
+            <ElectionRoundCard
+              key={electionRound.id}
+              electionRound={electionRound}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }
