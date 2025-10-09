@@ -236,7 +236,8 @@ export function useTableUrlState(
       search: (prev) => ({
         ...(prev as SearchRecord),
         [pageKey]: undefined,
-        sorting: next,
+        sortColumnName: next[0]?.id,
+        sortOrder: next[0]?.desc ? "Desc" : "Asc",
       }),
       replace: true,
     });
