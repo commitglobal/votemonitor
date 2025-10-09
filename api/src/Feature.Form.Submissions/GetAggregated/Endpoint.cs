@@ -432,7 +432,17 @@ public class Endpoint(
             .ToList();
 
         var attachments = submissions
-            .SelectMany(x => x.Attachments.Select(attachment => attachment with { SubmissionId = x.SubmissionId }));
+            .SelectMany(submission => submission.Attachments.Select(attachment => new AggregatedSubmissionsAttachmentModel()
+            {
+                SubmissionId = submission.SubmissionId,
+                QuestionId = attachment.QuestionId,
+                TimeSubmitted = attachment.TimeSubmitted,
+                MimeType = attachment.MimeType,
+                MonitoringObserverId = submission.MonitoringObserverId,
+                FilePath = attachment.FilePath,
+                UploadedFileName = attachment.UploadedFileName,
+                FileName = attachment.FileName,
+            } ));
 
         attachments = await Task.WhenAll(
             attachments.Select(async attachment =>

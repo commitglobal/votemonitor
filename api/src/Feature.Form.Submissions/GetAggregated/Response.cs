@@ -8,7 +8,7 @@ public class Response
 {
     public SubmissionsFilterModel SubmissionsFilter { get; set; }
     public FormSubmissionsAggregate SubmissionsAggregate { get; set; }
-    public List<AttachmentModel> Attachments { get; set; }
+    public List<AggregatedSubmissionsAttachmentModel> Attachments { get; set; }
     public List<NoteModel> Notes { get; set; }
 }
 
