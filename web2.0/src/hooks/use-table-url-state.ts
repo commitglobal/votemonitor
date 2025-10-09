@@ -5,6 +5,7 @@ import type {
   PaginationState,
   SortingState,
 } from "@tanstack/react-table";
+import { SortOrder } from "@/types/common";
 
 export type SearchRecord = Record<string, unknown>;
 
@@ -217,10 +218,14 @@ export function useTableUrlState(
   // Build initial column sort
   const initialColumnSorting: SortingState = useMemo(() => {
     const collected: SortingState = [];
-    const raw = (search as SearchRecord)["sorting"];
+    const sortOrder = (search as SearchRecord)["sortOrder"];
+    const rawColumnName = (search as SearchRecord)["sortColumnName"];
 
-    if (Array.isArray(raw) && raw.length > 0) {
-      collected.push(...raw);
+    if (sortOrder && rawColumnName) {
+      collected.push({
+        id: rawColumnName as string,
+        desc: sortOrder === SortOrder.Desc,
+      });
     }
 
     return collected;
@@ -237,7 +242,7 @@ export function useTableUrlState(
         ...(prev as SearchRecord),
         [pageKey]: undefined,
         sortColumnName: next[0]?.id,
-        sortOrder: next[0]?.desc ? "Desc" : "Asc",
+        sortOrder: next[0]?.desc ? SortOrder.Desc : SortOrder.Asc,
       }),
       replace: true,
     });
