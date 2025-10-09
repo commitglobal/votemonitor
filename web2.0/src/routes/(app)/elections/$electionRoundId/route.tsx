@@ -25,6 +25,7 @@ function RouteComponent() {
   useEffect(() => {
     setElectionRoundId(electionRoundId);
   }, [electionRoundId, setElectionRoundId]);
+
   return (
     <>
       <ElectionSiteHeader />

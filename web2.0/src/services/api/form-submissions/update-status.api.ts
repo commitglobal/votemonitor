@@ -1,13 +1,13 @@
 import API from "@/services/api";
-import type { QuickReportFollowUpStatus } from "@/types/quick-reports";
+import type { FormSubmissionFollowUpStatus } from "@/types/forms-submission";
 
-export const updateQuickReportFollowUpStatus = async (
+export const updateFormSubmissionFollowUpStatus = async (
   electionRoundId: string,
-  quickReportId: string,
-  followUpStatus: QuickReportFollowUpStatus
+  formSubmissionId: string,
+  followUpStatus: FormSubmissionFollowUpStatus
 ) => {
   return API.put<void>(
-    `/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`,
+    `/election-rounds/${electionRoundId}/form-submissions/${formSubmissionId}:status`,
     {
       followUpStatus,
     }

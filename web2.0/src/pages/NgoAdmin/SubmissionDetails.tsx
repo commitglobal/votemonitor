@@ -9,10 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  mapQuickReportIncidentCategory,
-  mapQuickReportLocationType,
-} from "@/lib/i18n";
 
 import {
   Item,
@@ -24,7 +20,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 
-import QuickReportFollowUpStatusBadge from "@/components/quick-report-follow-up-status-badge";
+import FormSubmissionFollowUpStatusBadge from "@/components/form-submission-follow-up-status-badge";
 import { Attachment } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,31 +38,34 @@ import {
 } from "@/components/ui/select";
 import { downloadFile } from "@/lib/utils";
 import { queryClient } from "@/main";
-import { useUpdateQuickReportFollowUpStatusMutation } from "@/mutations/quick-reports";
+import { useUpdateFormSubmissionFollowUpStatusMutation } from "@/mutations/form-submissions";
 import { useElectionRoundDetails } from "@/queries/elections";
 import {
-  quickReportKeys,
-  useSuspenseGetQuickReportDetails,
-} from "@/queries/quick-reports";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports/$quickReportId";
+  formSubmissionKyes,
+  useSuspenseGetFormSubmissionDetails,
+} from "@/queries/form-submissions";
+import { Route } from "@/routes/(app)/elections/$electionRoundId/submissions/$submissionId";
 import { ElectionRoundStatus } from "@/types/election";
 import {
-  QuickReportFollowUpStatus,
-  QuickReportLocationType,
-  type QuickReportModel,
-} from "@/types/quick-reports";
+  FormSubmissionFollowUpStatus,
+  type FormSubmissionDetailedModel,
+} from "@/types/forms-submission";
+
 import { Link, useRouter } from "@tanstack/react-router";
-import { DownloadIcon, PlusIcon } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import { toast } from "sonner";
 
-const buildSearchFilters = (quickReport: QuickReportModel, level: number) => {
+const buildSearchFilters = (
+  submission: FormSubmissionDetailedModel,
+  level: number
+) => {
   const filters: Record<string, string> = {};
   const levels = [
-    { key: "level1Filter", value: quickReport.level1 },
-    { key: "level2Filter", value: quickReport.level2 },
-    { key: "level3Filter", value: quickReport.level3 },
-    { key: "level4Filter", value: quickReport.level4 },
-    { key: "level5Filter", value: quickReport.level5 },
+    { key: "level1Filter", value: submission.level1 },
+    { key: "level2Filter", value: submission.level2 },
+    { key: "level3Filter", value: submission.level3 },
+    { key: "level4Filter", value: submission.level4 },
+    { key: "level5Filter", value: submission.level5 },
   ];
 
   levels.slice(0, level).forEach(({ key, value }) => {
@@ -77,22 +76,21 @@ const buildSearchFilters = (quickReport: QuickReportModel, level: number) => {
 };
 
 function PollingStationDetails({
-  quickReport,
+  submission,
 }: {
-  quickReport: QuickReportModel;
+  submission: FormSubmissionDetailedModel;
 }) {
   const { electionRoundId } = Route.useParams();
 
   const levels = [
-    { value: quickReport.level1, level: 1 },
-    { value: quickReport.level2, level: 2 },
-    { value: quickReport.level3, level: 3 },
-    { value: quickReport.level4, level: 4 },
-    { value: quickReport.level5, level: 5 },
+    { value: submission.level1, level: 1 },
+    { value: submission.level2, level: 2 },
+    { value: submission.level3, level: 3 },
+    { value: submission.level4, level: 4 },
+    { value: submission.level5, level: 5 },
   ].filter((item) => item.value);
 
-  return quickReport.quickReportLocationType ===
-    QuickReportLocationType.VisitedPollingStation ? (
+  return (
     <Item>
       <ItemContent>
         <ItemTitle>Polling station</ItemTitle>
@@ -105,8 +103,8 @@ function PollingStationDetails({
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
                       <Link
-                        to="/elections/$electionRoundId/quick-reports"
-                        search={buildSearchFilters(quickReport, level)}
+                        to="/elections/$electionRoundId/submissions/by-form"
+                        search={buildSearchFilters(submission, level)}
                         params={{ electionRoundId }}
                         className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
                       >
@@ -117,21 +115,21 @@ function PollingStationDetails({
                 </div>
               ))}
 
-              {quickReport.number && (
+              {submission.number && (
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
                       <Link
-                        to="/elections/$electionRoundId/quick-reports"
+                        to="/elections/$electionRoundId/submissions/by-form"
                         search={{
-                          ...buildSearchFilters(quickReport, 5),
-                          pollingStationNumberFilter: quickReport.number,
+                          ...buildSearchFilters(submission, 5),
+                          pollingStationNumberFilter: submission.number,
                         }}
                         params={{ electionRoundId }}
                         className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
                       >
-                        {quickReport.number}
+                        {submission.number}
                       </Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
@@ -142,41 +140,32 @@ function PollingStationDetails({
         </div>
       </ItemContent>
     </Item>
-  ) : quickReport.quickReportLocationType ===
-    QuickReportLocationType.OtherPollingStation ? (
-    <Item>
-      <ItemContent>
-        <ItemTitle>Polling station details</ItemTitle>
-        <ItemDescription>{quickReport.pollingStationDetails}</ItemDescription>
-      </ItemContent>
-    </Item>
-  ) : (
-    <></>
   );
 }
 
 function Page() {
-  const { electionRoundId, quickReportId } = Route.useParams();
+  const { electionRoundId, submissionId } = Route.useParams();
   const search = Route.useSearch();
   const { invalidate } = useRouter();
-  const { data: quickReport } = useSuspenseGetQuickReportDetails(
+  const { data: submission } = useSuspenseGetFormSubmissionDetails(
     electionRoundId,
-    quickReportId
+    submissionId
   );
   const { data: electionRound } = useElectionRoundDetails(electionRoundId);
-  const { mutate: updateStatus } = useUpdateQuickReportFollowUpStatusMutation();
+  const { mutate: updateStatus } =
+    useUpdateFormSubmissionFollowUpStatusMutation();
 
   const handleFollowUpStatusChange = (
-    followUpStatus: QuickReportFollowUpStatus
+    followUpStatus: FormSubmissionFollowUpStatus
   ) => {
     updateStatus(
-      { electionRoundId, quickReportId, followUpStatus },
+      { electionRoundId, formSubmissionId: submissionId, followUpStatus },
       {
         onSuccess: async (_, { electionRoundId }) => {
           toast.success("Follow-up status updated");
           invalidate();
           await queryClient.invalidateQueries({
-            queryKey: quickReportKeys.all(electionRoundId),
+            queryKey: formSubmissionKyes.all(electionRoundId),
           });
         },
         onError: () => {
@@ -189,7 +178,7 @@ function Page() {
   };
 
   const isReadOnly =
-    !quickReport.isOwnObserver ||
+    !submission.isOwnObserver ||
     electionRound?.status === ElectionRoundStatus.Archived;
 
   return (
@@ -199,18 +188,18 @@ function Page() {
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <Link
-                to="/elections/$electionRoundId/quick-reports"
+                to="/elections/$electionRoundId/submissions/by-form"
                 params={{ electionRoundId }}
                 search={search.from}
                 className="underline text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance"
               >
-                Quick reports
+                Submissions
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{quickReportId}</BreadcrumbPage>
+            <BreadcrumbPage>{submissionId}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -225,10 +214,10 @@ function Page() {
                     to="/elections/$electionRoundId/observers/$observerId"
                     params={{
                       electionRoundId,
-                      observerId: quickReport.monitoringObserverId,
+                      observerId: submission.monitoringObserverId,
                     }}
                   >
-                    {quickReport.observerName}
+                    {submission.observerName}
                   </Link>
                 </ItemDescription>
               </ItemContent>
@@ -239,14 +228,14 @@ function Page() {
                 <ItemTitle>Follow up status</ItemTitle>
                 <ItemDescription>
                   {isReadOnly ? (
-                    <QuickReportFollowUpStatusBadge
-                      status={quickReport.followUpStatus}
+                    <FormSubmissionFollowUpStatusBadge
+                      followUpStatus={submission.followUpStatus}
                     />
                   ) : (
                     <Select
                       onValueChange={handleFollowUpStatusChange}
-                      defaultValue={quickReport.followUpStatus}
-                      value={quickReport.followUpStatus}
+                      defaultValue={submission.followUpStatus}
+                      value={submission.followUpStatus}
                       disabled={isReadOnly}
                     >
                       <SelectTrigger className="w-full sm:w-[220px]">
@@ -254,11 +243,11 @@ function Page() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {Object.values(QuickReportFollowUpStatus).map(
+                          {Object.values(FormSubmissionFollowUpStatus).map(
                             (status) => (
                               <SelectItem key={status} value={status}>
-                                <QuickReportFollowUpStatusBadge
-                                  status={status}
+                                <FormSubmissionFollowUpStatusBadge
+                                  followUpStatus={status}
                                 />
                               </SelectItem>
                             )
@@ -273,19 +262,19 @@ function Page() {
           </ItemGroup>
 
           <ItemGroup>
-            {!quickReport.isOwnObserver ? (
+            {!submission.isOwnObserver ? (
               <Item>
                 <ItemContent>
                   <ItemTitle>NGO</ItemTitle>
-                  <ItemDescription>{quickReport.ngoName}</ItemDescription>
+                  <ItemDescription>{submission.ngoName}</ItemDescription>
                 </ItemContent>
               </Item>
             ) : null}
-            <Item>
+            {/* <Item>
               <ItemContent>
                 <ItemTitle>Incident category</ItemTitle>
                 <ItemDescription>
-                  {mapQuickReportIncidentCategory(quickReport.incidentCategory)}
+                  {mapQuickReportIncidentCategory(submission.incidentCategory)}
                 </ItemDescription>
               </ItemContent>
             </Item>
@@ -294,88 +283,78 @@ function Page() {
                 <ItemTitle>Location type</ItemTitle>
                 <ItemDescription>
                   {mapQuickReportLocationType(
-                    quickReport.quickReportLocationType
+                    submission.quickReportLocationType
                   )}
                 </ItemDescription>
               </ItemContent>
-            </Item>
+            </Item> */}
 
-            <PollingStationDetails quickReport={quickReport} />
+            <PollingStationDetails submission={submission} />
 
-            <Item>
+            {/* <Item>
               <ItemContent>
                 <ItemTitle>Title</ItemTitle>
-                <ItemDescription>{quickReport.title}</ItemDescription>
+                <ItemDescription>{submission.title}</ItemDescription>
               </ItemContent>
             </Item>
             <Item>
               <ItemContent>
                 <ItemTitle>Description</ItemTitle>
-                <ItemDescription>{quickReport.description}</ItemDescription>
+                <ItemDescription>{submission.description}</ItemDescription>
+              </ItemContent>
+            </Item> */}
+          </ItemGroup>
+          <ItemGroup>
+            <Item>
+              <ItemContent>
+                <ItemTitle>Attachments</ItemTitle>
               </ItemContent>
             </Item>
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="w-fit mb-2">
+                  {submission.attachments.length > 0
+                    ? `Show Attachments (${submission.attachments.length})`
+                    : "No Attachments"}
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="flex flex-col gap-2 mt-2">
+                  {submission.attachments.map((attachment, index) => (
+                    <Item variant="outline" key={index}>
+                      <ItemMedia>
+                        <Attachment
+                          src={attachment.presignedUrl}
+                          mimeType={attachment.mimeType}
+                          fileName={attachment.fileName}
+                          width="530px"
+                          height="300px"
+                        />
+                      </ItemMedia>
+                      <ItemContent className="gap-1">
+                        <ItemTitle>{attachment.fileName}</ItemTitle>
+                        <ItemDescription>{attachment.mimeType}</ItemDescription>
+                      </ItemContent>
+                      <ItemActions>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() =>
+                            downloadFile(
+                              attachment.presignedUrl,
+                              attachment.fileName
+                            )
+                          }
+                        >
+                          <DownloadIcon className="size-4" />
+                        </Button>
+                      </ItemActions>
+                    </Item>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </ItemGroup>
-          {quickReport.attachments.length > 0 && (
-            <ItemGroup>
-              <Collapsible>
-                <CollapsibleTrigger asChild>
-                  <Item>
-                    <ItemContent>
-                      <ItemTitle>
-                        Attachments ({quickReport.attachments.length})
-                      </ItemTitle>
-                    </ItemContent>
-                    <ItemActions>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <PlusIcon />
-                      </Button>
-                    </ItemActions>
-                  </Item>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="flex flex-col gap-2 mt-2">
-                    {quickReport.attachments.map((attachment, index) => (
-                      <Item variant="outline" key={index}>
-                        <ItemMedia>
-                          <Attachment
-                            src={attachment.presignedUrl}
-                            mimeType={attachment.mimeType}
-                            fileName={attachment.fileName}
-                            width="530px"
-                            height="300px"
-                          />
-                        </ItemMedia>
-                        <ItemContent className="gap-1">
-                          <ItemTitle>{attachment.fileName}</ItemTitle>
-                          <ItemDescription>
-                            {attachment.mimeType}
-                          </ItemDescription>
-                        </ItemContent>
-                        <ItemActions>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() =>
-                              downloadFile(
-                                attachment.presignedUrl,
-                                attachment.fileName
-                              )
-                            }
-                          >
-                            <DownloadIcon className="size-4" />
-                          </Button>
-                        </ItemActions>
-                      </Item>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </ItemGroup>
-          )}
         </CardContent>
       </Card>
     </>

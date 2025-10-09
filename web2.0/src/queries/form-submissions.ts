@@ -1,11 +1,16 @@
-import { getEntryById } from "@/services/api/form-submissions/get-entry.api";
+import { getSubmissionById } from "@/services/api/form-submissions/get-entry.api";
 import { listFormSubmissionsByEntry } from "@/services/api/form-submissions/list-entries.api";
 import type { DataSource, PageResponse } from "@/types/common";
 import type {
+  FormSubmissionDetailedModel,
   FormSubmissionModel,
   FormSubmissionsSearch,
 } from "@/types/forms-submission";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 export const formSubmissionKyes = {
   all: (electionRoundId: string) =>
@@ -51,13 +56,33 @@ export const useListFormSubmissions = <
   select?: (data: PageResponse<FormSubmissionModel>) => TResult
 ) => useQuery(listFormSubmissionsQueryOptions(electionRoundId, search, select));
 
-export function getFormSubmissionDetailsQueryOptions(
+export function getFormSubmissionDetailsQueryOptions<
+  TResult = FormSubmissionDetailedModel
+>(
   electionRoundId: string,
-  formSubmissionId: string
+  formSubmissionId: string,
+  select?: (data: FormSubmissionDetailedModel) => TResult
 ) {
   return queryOptions({
     queryKey: formSubmissionKyes.detail(electionRoundId, formSubmissionId),
-    queryFn: async () => await getEntryById(electionRoundId, formSubmissionId),
+    queryFn: async () =>
+      await getSubmissionById(electionRoundId, formSubmissionId),
     staleTime: STALE_TIME,
+    select,
   });
 }
+
+export const useSuspenseGetFormSubmissionDetails = <
+  TResult = FormSubmissionDetailedModel
+>(
+  electionRoundId: string,
+  formSubmissionId: string,
+  select?: (data: FormSubmissionDetailedModel) => TResult
+) =>
+  useSuspenseQuery(
+    getFormSubmissionDetailsQueryOptions(
+      electionRoundId,
+      formSubmissionId,
+      select
+    )
+  );

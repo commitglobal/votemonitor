@@ -17,10 +17,6 @@ export enum DataSource {
   Coalition = "coalition",
 }
 
-export interface NoteModel {
-  text: string;
-}
-
 export interface AttachmentModel {
   fileName: string;
   filePath: string;

@@ -1,11 +1,12 @@
 import { queryClient } from "@/main";
+import SubmissionDetailsPage from "@/pages/NgoAdmin/SubmissionDetails";
 import { getFormSubmissionDetailsQueryOptions } from "@/queries/form-submissions";
 import { formSubmissionsSearchSchema } from "@/types/forms-submission";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import z from "zod";
 
 export const Route = createFileRoute(
-  "/(app)/elections/$electionRoundId/submissions/$submissionId"
+  "/(app)/elections/$electionRoundId/submissions/$submissionId/"
 )({
   validateSearch: z.object({
     from: formSubmissionsSearchSchema.optional(),
@@ -40,10 +41,5 @@ export const Route = createFileRoute(
     queryClient.ensureQueryData(
       getFormSubmissionDetailsQueryOptions(electionRoundId, submissionId)
     ),
-  component: RouteComponent,
+  component: SubmissionDetailsPage,
 });
-
-function RouteComponent() {
-  const data = Route.useParams();
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
-}

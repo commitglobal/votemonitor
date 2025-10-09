@@ -1,11 +1,19 @@
 import z from "zod";
-import type { TranslatedString } from "./common";
+import type { AttachmentModel, TranslatedString } from "./common";
 import { FormType } from "./form";
 
 export enum FormSubmissionFollowUpStatus {
   NotApplicable = "NotApplicable",
   NeedsFollowUp = "NeedsFollowUp",
   Resolved = "Resolved",
+}
+
+export interface NoteModel {
+  questionId: string;
+  submissionId: string;
+  text: string;
+  timeSubmitted: string;
+  monitoringObserverId: string;
 }
 
 export interface FormSubmissionModel {
@@ -76,7 +84,10 @@ export interface FormSubmissionDetailedModel {
   tags: string[];
   timeSubmitted: string;
   followUpStatus: FormSubmissionFollowUpStatus;
+  attachments: AttachmentModel[];
+  notes: NoteModel[];
 }
+
 export enum QuestionsAnswered {
   None = "None",
   Some = "Some",
