@@ -8,7 +8,9 @@
     "build": "vite build && tsc",
     "serve": "vite preview",
     "test": "vitest run",
-    "knip": "knip"
+    "knip": "knip",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@date-fns/utc": "^2.1.1",
@@ -73,6 +75,7 @@
     "@tanstack/react-query-devtools": "^5.84.0",
     "@tanstack/router-devtools": "^1.130.10",
     "@tanstack/router-plugin": "^1.130.10",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/bun": "^1.2.19",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.9",
@@ -86,6 +89,8 @@
     "happy-dom": "^18.0.1",
     "knip": "^5.64.2",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
