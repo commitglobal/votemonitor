@@ -84,7 +84,7 @@ export function useTableUrlState(
   const pageKey = paginationCfg?.pageKey ?? ("page" as string);
   const pageSizeKey = paginationCfg?.pageSizeKey ?? ("pageSize" as string);
   const defaultPage = paginationCfg?.defaultPage ?? 1;
-  const defaultPageSize = paginationCfg?.defaultPageSize ?? 10;
+  const defaultPageSize = paginationCfg?.defaultPageSize ?? 25;
 
   const globalFilterKey = globalFilterCfg?.key ?? ("filter" as string);
   const globalFilterEnabled = globalFilterCfg?.enabled ?? true;
