@@ -13,6 +13,7 @@ public static class FormSubmissionsInstaller
         SqlMapper.AddTypeHandler(typeof(BaseQuestionModel[]), new JsonToObjectConverter<BaseQuestionModel[]>());
         SqlMapper.AddTypeHandler(typeof(BaseAnswerModel[]), new JsonToObjectConverter<BaseAnswerModel[]>());
         SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
+        SqlMapper.AddTypeHandler(typeof(AggregatedSubmissionsAttachmentModel[]), new JsonToObjectConverter<AggregatedSubmissionsAttachmentModel[]>());
         SqlMapper.AddTypeHandler(typeof(AttachmentModel[]), new JsonToObjectConverter<AttachmentModel[]>());
         SqlMapper.AddTypeHandler(typeof(ObservationBreakModel[]), new JsonToObjectConverter<ObservationBreakModel[]>());
 

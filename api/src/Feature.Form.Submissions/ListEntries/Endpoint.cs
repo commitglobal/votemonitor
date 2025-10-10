@@ -147,7 +147,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                               psi."LastUpdatedAt" AS "TimeSubmitted",
                                                               psi."FollowUpStatus",
                                                               psif."DefaultLanguage",
-                                                              psif."Name",
+                                                              psif."Name" as "FormName",
                                                               psi."IsCompleted"
                                                        FROM "PollingStationInformation" psi
                                                                 INNER JOIN "PollingStationInformationForms" psif
@@ -202,7 +202,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                    fs."LastUpdatedAt"        AS "TimeSubmitted",
                                                    fs."FollowUpStatus",
                                                    f."DefaultLanguage",
-                                                   f."Name",
+                                                   f."Name" as "FormName",
                                                    fs."IsCompleted"
                                             FROM "FormSubmissions" fs
                                                      INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -233,7 +233,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                          s."FormCode",
                          s."FormType",
                          s."DefaultLanguage",
-                         s."Name"         as "FormName",
+                         s."FormName",
                          ps."Id"          AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",

@@ -33,21 +33,14 @@ public class Endpoint(
                   (SELECT psi."Id" AS "SubmissionId",
                       'PSI' AS "FormType",
                       'PSI' AS "FormCode",
+                      psif."Name" as "FormName",
                       psi."PollingStationId",
                       psi."MonitoringObserverId",
                       psi."Answers",
-                      (SELECT "Questions"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Questions",
-                      (SELECT "DefaultLanguage"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "DefaultLanguage",
-                      (SELECT "Languages"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Languages",
-                      (SELECT "Id"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "FormId",
+                      psif."Questions" AS "Questions",
+                      psif."DefaultLanguage" AS "DefaultLanguage",
+                      psif."Languages" AS "Languages",
+                      psif."Id" AS "FormId",
                       psi."FollowUpStatus" as "FollowUpStatus",
                       '[]'::jsonb AS "Attachments",
                       '[]'::jsonb AS "Notes",
@@ -58,12 +51,14 @@ public class Endpoint(
                       psi."IsCompleted"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
+                      INNER JOIN "PollingStationInformationForms" psif on psif."ElectionRoundId" = psi."ElectionRoundId"
                       WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
                   UNION ALL
                   SELECT 
                           fs."Id" AS "SubmissionId",
                           f."FormType" AS "FormType",
                           f."Code" AS "FormCode",
+                          f."Name" AS "FormName",
                           fs."PollingStationId",
                           fs."MonitoringObserverId",
                           fs."Answers",
@@ -105,6 +100,7 @@ public class Endpoint(
                          s."FormId",
                          s."TimeSubmitted",
                          s."FormCode",
+                         s."FormName",
                          s."FormType",
                          ps."Id" AS "PollingStationId",
                          ps."Level1",

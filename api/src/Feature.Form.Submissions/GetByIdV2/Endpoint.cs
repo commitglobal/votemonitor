@@ -6,7 +6,7 @@ namespace Feature.Form.Submissions.GetByIdV2;
 public class Endpoint(
     IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
-    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<FormSubmissionView>, NotFound>>
+    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<FormSubmissionViewV2>, NotFound>>
 {
     public override void Configure()
     {
@@ -18,7 +18,7 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<FormSubmissionView>, NotFound>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<FormSubmissionViewV2>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var authorizationResult =
@@ -30,70 +30,63 @@ public class Endpoint(
 
         var sql = """
                   WITH submissions AS
-                  (SELECT psi."Id" AS "SubmissionId",
-                      'PSI' AS "FormType",
-                      'PSI' AS "FormCode",
-                      psi."PollingStationId",
-                      psi."MonitoringObserverId",
-                      psi."Answers",
-                      (SELECT "Id"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "FormId",
-                      psi."FollowUpStatus" as "FollowUpStatus",
-                      '[]'::jsonb AS "Attachments",
-                      '[]'::jsonb AS "Notes",
-                      "LastUpdatedAt" AS "TimeSubmitted",
-                      psi."ArrivalTime",
-                      psi."DepartureTime",
-                      psi."Breaks",
-                      psi."IsCompleted"
-                      FROM "PollingStationInformation" psi
-                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
-                      WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
-                  UNION ALL
-                  SELECT 
-                          fs."Id" AS "SubmissionId",
-                          f."FormType" AS "FormType",
-                          f."Code" AS "FormCode",
-                          fs."PollingStationId",
-                          fs."MonitoringObserverId",
-                          fs."Answers",
-                          f."Id" AS "FormId",
-                          fs."FollowUpStatus",
-                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
-                          FROM "Attachments" a
-                          WHERE 
-                              (
-                                  (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
-                                  OR A."SubmissionId" = FS."Id"
-                              )
-                              AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND a."IsDeleted" = false 
-                              AND a."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
+                           (SELECT psi."Id" AS "SubmissionId",
+                                   psi."PollingStationId",
+                                   psi."MonitoringObserverId",
+                                   psi."Answers",
+                                   psif."Id" AS "FormId",
+                                   psi."FollowUpStatus" as "FollowUpStatus",
+                                   '[]'::jsonb AS "Attachments",
+                                   '[]'::jsonb AS "Notes",
+                                   "LastUpdatedAt" AS "TimeSubmitted",
+                                   psi."ArrivalTime",
+                                   psi."DepartureTime",
+                                   psi."Breaks",
+                                   psi."IsCompleted"
+                            FROM "PollingStationInformation" psi
+                                     INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
+                                     INNER JOIN "PollingStationInformationForms" psif on psi."ElectionRoundId" = psif."ElectionRoundId"
+                            WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
+                            UNION ALL
+                            SELECT
+                                fs."Id" AS "SubmissionId",
+                                fs."PollingStationId",
+                                fs."MonitoringObserverId",
+                                fs."Answers",
+                                f."Id" AS "FormId",
+                                fs."FollowUpStatus",
+                                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
+                                          FROM "Attachments" a
+                                          WHERE
+                                              (
+                                                  (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                                      OR A."SubmissionId" = FS."Id"
+                                                  )
+                                            AND a."MonitoringObserverId" = fs."MonitoringObserverId"
+                                            AND a."IsDeleted" = false
+                                            AND a."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
                   
-                          COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
-                          FROM "Notes" n
-                          WHERE 
-                             (
-                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
-                                  OR N."SubmissionId" = FS."Id"
-                              )
-                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
-                              
-                          "LastUpdatedAt" AS "TimeSubmitted",
-                          NULL AS "ArrivalTime",
-                          NULL AS "DepartureTime",
-                          '[]'::jsonb AS "Breaks",
-                          fs."IsCompleted"
-                  FROM "FormSubmissions" fs
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = FS."MonitoringObserverId"
-                  INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                  WHERE fs."Id" = @submissionId and fs."ElectionRoundId" = @electionRoundId)
+                                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
+                                          FROM "Notes" n
+                                          WHERE
+                                              (
+                                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                                      OR N."SubmissionId" = FS."Id"
+                                                  )
+                                            AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
+                  
+                                "LastUpdatedAt" AS "TimeSubmitted",
+                                NULL AS "ArrivalTime",
+                                NULL AS "DepartureTime",
+                                '[]'::jsonb AS "Breaks",
+                                fs."IsCompleted"
+                            FROM "FormSubmissions" fs
+                                     INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = FS."MonitoringObserverId"
+                                     INNER JOIN "Forms" f ON f."Id" = fs."FormId"
+                            WHERE fs."Id" = @submissionId and fs."ElectionRoundId" = @electionRoundId)
                   SELECT s."SubmissionId",
                          s."FormId",
                          s."TimeSubmitted",
-                         s."FormCode",
-                         s."FormType",
                          ps."Id" AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",
@@ -117,8 +110,8 @@ public class Endpoint(
                          s."Breaks",
                          s."IsCompleted"
                   FROM submissions s
-                  INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = s."MonitoringObserverId"
+                           INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
+                           INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = s."MonitoringObserverId"
                   """;
 
         var queryArgs = new
@@ -126,11 +119,11 @@ public class Endpoint(
             electionRoundId = req.ElectionRoundId, ngoId = req.NgoId, submissionId = req.SubmissionId
         };
 
-        FormSubmissionView submission = null;
+        FormSubmissionViewV2 submission = null;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            submission = await dbConnection.QueryFirstOrDefaultAsync<FormSubmissionView>(sql, queryArgs);
+            submission = await dbConnection.QueryFirstOrDefaultAsync<FormSubmissionViewV2>(sql, queryArgs);
         }
 
         if (submission is null)
