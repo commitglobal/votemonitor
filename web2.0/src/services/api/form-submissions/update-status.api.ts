@@ -1,5 +1,5 @@
-import API from "@/services/api";
-import type { FormSubmissionFollowUpStatus } from "@/types/forms-submission";
+import API from '@/services/api'
+import type { FormSubmissionFollowUpStatus } from '@/types/forms-submission'
 
 export const updateFormSubmissionFollowUpStatus = async (
   electionRoundId: string,
@@ -11,5 +11,5 @@ export const updateFormSubmissionFollowUpStatus = async (
     {
       followUpStatus,
     }
-  );
-};
+  )
+}

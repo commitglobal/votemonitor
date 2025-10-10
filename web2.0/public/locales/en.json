@@ -49,5 +49,15 @@
       "ViolationsRelatedToVoterLists": "Violations related to the voter lists",
       "Other": "Other"
     }
+  },
+  "form": {
+    "type": {
+      "opening": "Opening",
+      "voting": "Voting",
+      "closingAndCounting": "Closing And Counting",
+      "psi": "PSI",
+      "citizenReporting": "Citizen reporting",
+      "incidentReporting": "Incident reporting"
+  }
   }
 }

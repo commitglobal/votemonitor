@@ -216,24 +216,52 @@ function Page() {
       </Breadcrumb>
       <Card>
         <CardContent>
-          <ItemGroup className='flex flex-row justify-between gap-2'>
+          <Item>
+            <ItemContent>
+              <ItemTitle>Observer</ItemTitle>
+              <ItemDescription>
+                <Link
+                  to='/elections/$electionRoundId/observers/$observerId'
+                  params={{
+                    electionRoundId,
+                    observerId: quickReport.monitoringObserverId,
+                  }}
+                >
+                  {quickReport.observerName}
+                </Link>
+              </ItemDescription>
+            </ItemContent>
+          </Item>
+
+          <ItemGroup>
+            {!quickReport.isOwnObserver ? (
+              <Item>
+                <ItemContent>
+                  <ItemTitle>NGO</ItemTitle>
+                  <ItemDescription>{quickReport.ngoName}</ItemDescription>
+                </ItemContent>
+              </Item>
+            ) : null}
             <Item>
               <ItemContent>
-                <ItemTitle>Observer</ItemTitle>
+                <ItemTitle>Incident category</ItemTitle>
                 <ItemDescription>
-                  <Link
-                    to='/elections/$electionRoundId/observers/$observerId'
-                    params={{
-                      electionRoundId,
-                      observerId: quickReport.monitoringObserverId,
-                    }}
-                  >
-                    {quickReport.observerName}
-                  </Link>
+                  {mapQuickReportIncidentCategory(quickReport.incidentCategory)}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+            <Item>
+              <ItemContent>
+                <ItemTitle>Location type</ItemTitle>
+                <ItemDescription>
+                  {mapQuickReportLocationType(
+                    quickReport.quickReportLocationType
+                  )}
                 </ItemDescription>
               </ItemContent>
             </Item>
 
+            <PollingStationDetails quickReport={quickReport} />
             <Item>
               <ItemContent>
                 <ItemTitle>Follow up status</ItemTitle>
@@ -270,38 +298,6 @@ function Page() {
                 </ItemDescription>
               </ItemContent>
             </Item>
-          </ItemGroup>
-
-          <ItemGroup>
-            {!quickReport.isOwnObserver ? (
-              <Item>
-                <ItemContent>
-                  <ItemTitle>NGO</ItemTitle>
-                  <ItemDescription>{quickReport.ngoName}</ItemDescription>
-                </ItemContent>
-              </Item>
-            ) : null}
-            <Item>
-              <ItemContent>
-                <ItemTitle>Incident category</ItemTitle>
-                <ItemDescription>
-                  {mapQuickReportIncidentCategory(quickReport.incidentCategory)}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-            <Item>
-              <ItemContent>
-                <ItemTitle>Location type</ItemTitle>
-                <ItemDescription>
-                  {mapQuickReportLocationType(
-                    quickReport.quickReportLocationType
-                  )}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-
-            <PollingStationDetails quickReport={quickReport} />
-
             <Item>
               <ItemContent>
                 <ItemTitle>Submitted at</ItemTitle>

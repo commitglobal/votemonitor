@@ -1,5 +1,6 @@
 'use client'
 
+import { format } from 'date-fns'
 import { Link, useRouter } from '@tanstack/react-router'
 import { queryClient } from '@/main'
 import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions'
@@ -8,16 +9,32 @@ import {
   formSubmissionKyes,
   useSuspenseGetFormSubmissionDetails,
 } from '@/queries/form-submissions'
+import { useSuspenseGetFormDetails } from '@/queries/forms'
 import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions/$submissionId'
 import { ElectionRoundStatus } from '@/types/election'
 import {
   FormSubmissionFollowUpStatus,
+  RatingAnswer,
   type FormSubmissionDetailedModel,
 } from '@/types/forms-submission'
-import { DownloadIcon, EditIcon } from 'lucide-react'
+import { DownloadIcon, Languages, PlusIcon } from 'lucide-react'
 import { toast } from 'sonner'
-import { getTranslatedStringOrDefault } from '@/lib/translated-string'
-import { downloadFile } from '@/lib/utils'
+import {
+  isDateAnswer,
+  isMultiSelectAnswer,
+  isNumberAnswer,
+  isSingleSelectAnswer,
+  isTextAnswer,
+} from '@/lib/answer-guards'
+import { mapFormType } from '@/lib/i18n'
+import {
+  isMultiSelectQuestion,
+  isRatingQuestion,
+  isSingleSelectQuestion,
+} from '@/lib/question-guards'
+import { getTranslation } from '@/lib/translated-string'
+import { arrayToKeyObject, downloadFile, groupArrayByKey } from '@/lib/utils'
+import { DateTimeFormat } from '@/constants/formats'
 import { Attachment } from '@/components/ui/attachment'
 import {
   Breadcrumb,
@@ -28,21 +45,33 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
+import { CopyButton } from '@/components/ui/copy-button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemGroup,
+  ItemHeader,
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RatingGroup } from '@/components/ui/rating-group'
 import {
   Select,
   SelectContent,
@@ -79,7 +108,6 @@ function PollingStationDetails({
   submission: FormSubmissionDetailedModel
 }) {
   const { electionRoundId } = Route.useParams()
-  const { formLanguage } = Route.useSearch()
 
   const levels = [
     { value: submission.level1, level: 1 },
@@ -145,11 +173,34 @@ function PollingStationDetails({
 function Page() {
   const { electionRoundId, submissionId } = Route.useParams()
   const { formLanguage, from } = Route.useSearch()
+  const navigate = Route.useNavigate()
+
   const { invalidate } = useRouter()
   const { data: submission } = useSuspenseGetFormSubmissionDetails(
     electionRoundId,
     submissionId
   )
+
+  const { data: form } = useSuspenseGetFormDetails(
+    electionRoundId,
+    submission.formId
+  )
+
+  const formDisplayLanguage = formLanguage ?? form.defaultLanguage
+
+  const answersMap = arrayToKeyObject(submission.answers || [], 'questionId')
+  const attachmentsMap = groupArrayByKey(
+    submission.attachments || [],
+    'questionId'
+  )
+  const notesMap = groupArrayByKey(submission.notes || [], 'questionId')
+
+  const mappedQuestions = form.questions.map((question) => ({
+    ...question,
+    notes: notesMap[question.id] || [],
+    attachments: attachmentsMap[question.id] || [],
+  }))
+
   const { data: electionRound } = useElectionRoundDetails(electionRoundId)
   const { mutate: updateStatus } =
     useUpdateFormSubmissionFollowUpStatusMutation()
@@ -187,7 +238,7 @@ function Page() {
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <Link
-                to='/elections/$electionRoundId/submissions/by-form'
+                to='/elections/$electionRoundId/submissions'
                 params={{ electionRoundId }}
                 search={from}
                 className='text-muted-foreground line-clamp-2 text-sm leading-normal font-normal text-balance underline'
@@ -203,14 +254,6 @@ function Page() {
         </BreadcrumbList>
       </Breadcrumb>
       <Card>
-        <CardHeader>
-          <CardAction>
-            <Button variant='outline'>
-              <EditIcon className='size-4' />
-              Edit Submission
-            </Button>
-          </CardAction>
-        </CardHeader>
         <CardContent>
           <ItemGroup className='flex flex-row justify-between gap-2'>
             <Item>
@@ -232,38 +275,42 @@ function Page() {
 
             <Item>
               <ItemContent>
-                <ItemTitle>Follow up status</ItemTitle>
-                <ItemDescription>
-                  {isReadOnly ? (
-                    <FormSubmissionFollowUpStatusBadge
-                      followUpStatus={submission.followUpStatus}
-                    />
-                  ) : (
-                    <Select
-                      onValueChange={handleFollowUpStatusChange}
-                      defaultValue={submission.followUpStatus}
-                      value={submission.followUpStatus}
-                      disabled={isReadOnly}
-                    >
-                      <SelectTrigger className='w-full sm:w-[220px]'>
-                        <SelectValue placeholder='Follow-up status' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {Object.values(FormSubmissionFollowUpStatus).map(
-                            (status) => (
-                              <SelectItem key={status} value={status}>
-                                <FormSubmissionFollowUpStatusBadge
-                                  followUpStatus={status}
-                                />
-                              </SelectItem>
-                            )
+                <ItemActions>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant='outline'
+                        className='gap-2 bg-transparent'
+                      >
+                        <Languages className='h-5 w-5' />
+                        <span>{formDisplayLanguage}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='end' className='w-48'>
+                      {form.languages.map((language) => (
+                        <DropdownMenuItem
+                          key={language}
+                          onClick={() =>
+                            navigate({
+                              to: '.',
+                              search: (prev) => ({
+                                ...prev,
+                                formLanguage: language,
+                              }),
+                            })
+                          }
+                          className='flex cursor-pointer items-center gap-2'
+                        >
+                          {/* <span className='text-lg'>{language.flag}</span> */}
+                          <span className='flex-1'>{language}</span>
+                          {formDisplayLanguage === language && (
+                            <span className='text-primary'>✓</span>
                           )}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                </ItemDescription>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </ItemActions>
               </ItemContent>
             </Item>
           </ItemGroup>
@@ -277,99 +324,260 @@ function Page() {
                 </ItemContent>
               </Item>
             ) : null}
-            {/* <Item>
+
+            <Item>
               <ItemContent>
-                <ItemTitle>Incident category</ItemTitle>
-                <ItemDescription>
-                  {mapQuickReportIncidentCategory(submission.incidentCategory)}
-                </ItemDescription>
+                <ItemTitle>Form type</ItemTitle>
+                <ItemDescription>{mapFormType(form.formType)}</ItemDescription>
               </ItemContent>
             </Item>
             <Item>
               <ItemContent>
-                <ItemTitle>Location type</ItemTitle>
-                <ItemDescription>
-                  {mapQuickReportLocationType(
-                    submission.quickReportLocationType
-                  )}
-                </ItemDescription>
+                <ItemTitle>Form code</ItemTitle>
+                <ItemDescription>{form.code}</ItemDescription>
               </ItemContent>
-            </Item> */}
+            </Item>
             <Item>
               <ItemContent>
                 <ItemTitle>Form name</ItemTitle>
                 <ItemDescription>
-                  {getTranslatedStringOrDefault(
-                    submission.formName,
-                    submission.defaultLanguage,
-                    formLanguage
-                  )}
+                  {getTranslation(form.name, formDisplayLanguage)}
                 </ItemDescription>
               </ItemContent>
             </Item>
-
-            <PollingStationDetails submission={submission} />
-
-            {/* 
-            
-            <Item>
-              <ItemContent>
-                <ItemTitle>Description</ItemTitle>
-                <ItemDescription>{submission.description}</ItemDescription>
-              </ItemContent>
-            </Item> */}
           </ItemGroup>
-          <ItemGroup>
-            <Item>
-              <ItemContent>
-                <ItemTitle>Attachments</ItemTitle>
-              </ItemContent>
-            </Item>
-            <Collapsible>
-              <CollapsibleTrigger asChild>
-                <Button variant='outline' className='mb-2 w-fit'>
-                  {submission.attachments.length > 0
-                    ? `Show Attachments (${submission.attachments.length})`
-                    : 'No Attachments'}
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className='mt-2 flex flex-col gap-2'>
-                  {submission.attachments.map((attachment, index) => (
-                    <Item variant='outline' key={index}>
-                      <ItemMedia>
-                        <Attachment
-                          src={attachment.presignedUrl}
-                          mimeType={attachment.mimeType}
-                          fileName={attachment.fileName}
-                          width='530px'
-                          height='300px'
+
+          <PollingStationDetails submission={submission} />
+          <Item>
+            <ItemContent>
+              <ItemTitle>Follow up status</ItemTitle>
+              <ItemDescription>
+                {isReadOnly ? (
+                  <FormSubmissionFollowUpStatusBadge
+                    followUpStatus={submission.followUpStatus}
+                  />
+                ) : (
+                  <Select
+                    onValueChange={handleFollowUpStatusChange}
+                    defaultValue={submission.followUpStatus}
+                    value={submission.followUpStatus}
+                    disabled={isReadOnly}
+                  >
+                    <SelectTrigger className='w-full sm:w-[220px]'>
+                      <SelectValue placeholder='Follow-up status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {Object.values(FormSubmissionFollowUpStatus).map(
+                          (status) => (
+                            <SelectItem key={status} value={status}>
+                              <FormSubmissionFollowUpStatusBadge
+                                followUpStatus={status}
+                              />
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              </ItemDescription>
+            </ItemContent>
+          </Item>
+          {mappedQuestions.map((question) => {
+            const answer = answersMap[question.id]
+            return (
+              <div key={question.id}>
+                <ItemGroup>
+                  <Item>
+                    <ItemHeader>
+                      {question.code} -
+                      {getTranslation(question.text, formDisplayLanguage)}
+                    </ItemHeader>
+                    <ItemContent>
+                      <ItemDescription className='italic'>
+                        {getTranslation(
+                          question.helptext ?? {},
+                          formDisplayLanguage
+                        )}
+                      </ItemDescription>
+                      {isDateAnswer(answer) && (
+                        <p>
+                          {answer.date
+                            ? format(answer.date, DateTimeFormat)
+                            : '-'}
+                        </p>
+                      )}
+
+                      {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
+
+                      {isTextAnswer(answer) && (
+                        <div className='rounded-lg border p-3'>
+                          {answer.text}
+                        </div>
+                      )}
+
+                      {isSingleSelectAnswer(answer) &&
+                        isSingleSelectQuestion(question) && (
+                          <RadioGroup
+                            value={answer.selection?.optionId}
+                            disabled={true}
+                          >
+                            {question.options.map((option) => (
+                              <div
+                                className='flex items-center space-x-2'
+                                key={option.id}
+                              >
+                                <RadioGroupItem
+                                  value={option.id}
+                                  id={option.id}
+                                  className='disabled:cursor-default disabled:opacity-100'
+                                />
+                                <Label
+                                  htmlFor={option.id}
+                                  className='peer-disabled:cursor-default peer-disabled:opacity-100'
+                                >
+                                  {getTranslation(
+                                    option.text,
+                                    formDisplayLanguage
+                                  )}
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        )}
+
+                      {isMultiSelectAnswer(answer) &&
+                        isMultiSelectQuestion(question) && (
+                          <div className='flex flex-col gap-3'>
+                            {question.options.map((option) => (
+                              <div
+                                className='flex items-center gap-3'
+                                key={option.id}
+                              >
+                                <Checkbox
+                                  id={option.id}
+                                  disabled
+                                  className='disabled:cursor-default disabled:opacity-100'
+                                  checked={answer.selection?.some(
+                                    (selection) =>
+                                      selection.optionId === option.id
+                                  )}
+                                />
+                                <Label
+                                  htmlFor={option.id}
+                                  className='peer-disabled:cursor-default peer-disabled:opacity-100'
+                                >
+                                  {getTranslation(
+                                    option.text,
+                                    formDisplayLanguage
+                                  )}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                      {isRatingQuestion(question) && (
+                        <RatingGroup
+                          scale={question.scale}
+                          value={(answer as RatingAnswer)?.value?.toString()}
+                          disabled={true}
+                          lowerLabel={getTranslation(
+                            question.lowerLabel ?? {},
+                            formDisplayLanguage
+                          )}
+                          upperLabel={getTranslation(
+                            question.upperLabel ?? {},
+                            formDisplayLanguage
+                          )}
                         />
-                      </ItemMedia>
-                      <ItemContent className='gap-1'>
-                        <ItemTitle>{attachment.fileName}</ItemTitle>
-                        <ItemDescription>{attachment.mimeType}</ItemDescription>
-                      </ItemContent>
-                      <ItemActions>
-                        <Button
-                          variant='outline'
-                          size='icon'
-                          onClick={() =>
-                            downloadFile(
-                              attachment.presignedUrl,
-                              attachment.fileName
-                            )
+                      )}
+                    </ItemContent>
+                  </Item>
+                </ItemGroup>
+
+                <ItemGroup>
+                  {(question.notes.length > 0 ||
+                    question.attachments.length > 0) && (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant='link' size='sm'>
+                          {
+                            <>
+                              {question.notes.length > 0 &&
+                                `${question.notes.length} notes`}
+                              {question.notes.length > 0 &&
+                                question.attachments.length > 0 &&
+                                ' & '}
+                              {question.attachments.length > 0 &&
+                                `${question.attachments.length} media files`}
+                            </>
                           }
-                        >
-                          <DownloadIcon className='size-4' />
+                          <PlusIcon />
                         </Button>
-                      </ItemActions>
-                    </Item>
-                  ))}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </ItemGroup>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <ItemGroup className='gap-2'>
+                          {question.attachments.map((attachment, index) => (
+                            <Item variant='outline' key={index}>
+                              <ItemMedia>
+                                <Attachment
+                                  src={attachment.presignedUrl}
+                                  mimeType={attachment.mimeType}
+                                  fileName={attachment.fileName}
+                                  width='530px'
+                                  height='300px'
+                                />
+                              </ItemMedia>
+                              <ItemContent>
+                                <ItemTitle>
+                                  {format(
+                                    attachment.timeSubmitted,
+                                    DateTimeFormat
+                                  )}
+                                </ItemTitle>
+                                <ItemDescription>
+                                  {attachment.mimeType}
+                                </ItemDescription>
+                              </ItemContent>
+                              <ItemActions>
+                                <Button
+                                  variant='outline'
+                                  size='icon'
+                                  onClick={() =>
+                                    downloadFile(
+                                      attachment.presignedUrl,
+                                      attachment.fileName
+                                    )
+                                  }
+                                >
+                                  <DownloadIcon className='size-4' />
+                                </Button>
+                              </ItemActions>
+                            </Item>
+                          ))}
+                          {question.notes.map((note, index) => (
+                            <Item variant='outline' key={index}>
+                              <ItemContent>
+                                <ItemTitle>{note.text}</ItemTitle>
+                                <ItemDescription>
+                                  {format(note.timeSubmitted, DateTimeFormat)}
+                                </ItemDescription>
+                              </ItemContent>
+                              <ItemActions>
+                                <CopyButton value={note.text} />
+                              </ItemActions>
+                            </Item>
+                          ))}
+                        </ItemGroup>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+                </ItemGroup>
+              </div>
+            )
+          })}
         </CardContent>
       </Card>
     </>

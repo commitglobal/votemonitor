@@ -42,7 +42,7 @@ export function ResponseExtraDataSection({
           setExpanded((prev) => !prev);
         }}
         variant='link'>
-        {notes.length} notes & {attachments.length} media files{' '}
+        {notes.length} notes & {attachments.length} media files
         {expanded ? <ChevronUpIcon className='w-4 ml-2' /> : <ChevronDownIcon className='w-4 ml-2' />}
       </Button>
       {expanded && <ResponseExtraDataTable columns={columns} data={extraData} />}

@@ -10,3 +10,12 @@ export function getTranslatedStringOrDefault(
   }
   return translatedString[defaultLanguage]
 }
+export function getTranslation(
+  translatedString: TranslatedString,
+  language: string
+) {
+  if (translatedString[language]) {
+    return translatedString[language]
+  }
+  return translatedString[Object.keys(translatedString)[0]]
+}

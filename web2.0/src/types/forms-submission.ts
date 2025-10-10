@@ -1,97 +1,154 @@
-import z from "zod";
-import type { AttachmentModel, TranslatedString } from "./common";
-import { FormType } from "./form";
+import z from 'zod'
+import type { TranslatedString } from './common'
+import { FormType } from './form'
 
 export enum FormSubmissionFollowUpStatus {
-  NotApplicable = "NotApplicable",
-  NeedsFollowUp = "NeedsFollowUp",
-  Resolved = "Resolved",
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}
+
+export interface AttachmentModel {
+  questionId: string
+  fileName: string
+  filePath: string
+  mimeType: string
+  presignedUrl: string
+  uploadedFileName: string
+  urlValidityInSeconds: string
+  timeSubmitted: string
 }
 
 export interface NoteModel {
-  questionId: string;
-  submissionId: string;
-  text: string;
-  timeSubmitted: string;
-  monitoringObserverId: string;
+  questionId: string
+  submissionId: string
+  text: string
+  timeSubmitted: string
+  monitoringObserverId: string
 }
 
 export interface FormSubmissionModel {
-  submissionId: string;
-  email: string;
-  observerName: string;
-  ngoName: string;
-  phoneNumber: string;
-  formCode: string;
-  formType: FormType;
-  formName: TranslatedString;
-  defaultLanguage: string;
-  languages: string[];
-  monitoringObserverId: string;
-  numberOfFlaggedAnswers: number;
-  numberOfQuestionsAnswered: number;
-  pollingStationId: string;
-  level1: string;
-  level2: string;
-  level3: string;
-  level4: string;
-  level5: string;
-  mediaFilesCount: number;
-  notesCount: number;
-  number: string;
-  isOwnObserver: boolean;
-  tags: string[];
-  timeSubmitted: string;
-  followUpStatus: FormSubmissionFollowUpStatus;
+  submissionId: string
+  email: string
+  observerName: string
+  ngoName: string
+  phoneNumber: string
+  formCode: string
+  formType: FormType
+  formName: TranslatedString
+  defaultLanguage: string
+  languages: string[]
+  monitoringObserverId: string
+  numberOfFlaggedAnswers: number
+  numberOfQuestionsAnswered: number
+  pollingStationId: string
+  level1: string
+  level2: string
+  level3: string
+  level4: string
+  level5: string
+  mediaFilesCount: number
+  notesCount: number
+  number: string
+  isOwnObserver: boolean
+  tags: string[]
+  timeSubmitted: string
+  followUpStatus: FormSubmissionFollowUpStatus
 }
 
 export interface FormSubmissionByFormModel {
-  formId: string;
-  formCode: string;
-  formType: FormType;
-  formName: TranslatedString;
-  defaultLanguage: string;
-  numberOfSubmissions: number;
-  numberOfFlaggedAnswers: number;
-  numberOfNotes: number;
-  numberOfMediaFiles: number;
+  formId: string
+  formCode: string
+  formType: FormType
+  formName: TranslatedString
+  defaultLanguage: string
+  numberOfSubmissions: number
+  numberOfFlaggedAnswers: number
+  numberOfNotes: number
+  numberOfMediaFiles: number
+}
+
+export enum AnswerType {
+  TextAnswerType = 'textAnswer',
+  NumberAnswerType = 'numberAnswer',
+  DateAnswerType = 'dateAnswer',
+  SingleSelectAnswerType = 'singleSelectAnswer',
+  MultiSelectAnswerType = 'multiSelectAnswer',
+  RatingAnswerType = 'ratingAnswer',
+}
+
+export interface BaseAnswer {
+  $answerType: string
+  questionId: string
+}
+
+export interface TextAnswer extends BaseAnswer {
+  $answerType: AnswerType.TextAnswerType
+  text?: string
+}
+
+export interface NumberAnswer extends BaseAnswer {
+  $answerType: AnswerType.NumberAnswerType
+  value?: number
+}
+
+export interface DateAnswer extends BaseAnswer {
+  $answerType: AnswerType.DateAnswerType
+  date?: string // ISO datetime string with offset
+}
+
+export interface RatingAnswer extends BaseAnswer {
+  $answerType: AnswerType.RatingAnswerType
+  value?: number
+}
+
+export interface SelectedOption {
+  optionId?: string
+  text?: string | null
+}
+
+export interface SingleSelectAnswer extends BaseAnswer {
+  $answerType: AnswerType.SingleSelectAnswerType
+  selection?: SelectedOption
+}
+
+export interface MultiSelectAnswer extends BaseAnswer {
+  $answerType: AnswerType.MultiSelectAnswerType
+  selection?: SelectedOption[]
 }
 
 export interface FormSubmissionDetailedModel {
-  submissionId: string;
-  email: string;
-  observerName: string;
-  ngoName: string;
-  phoneNumber: string;
-  formCode: string;
-  formType: FormType;
-  formName: TranslatedString;
-  defaultLanguage: string;
-  languages: string[];
-  monitoringObserverId: string;
-  numberOfFlaggedAnswers: number;
-  numberOfQuestionsAnswered: number;
-  pollingStationId: string;
-  level1: string;
-  level2: string;
-  level3: string;
-  level4: string;
-  level5: string;
-  mediaFilesCount: number;
-  notesCount: number;
-  number: string;
-  isOwnObserver: boolean;
-  tags: string[];
-  timeSubmitted: string;
-  followUpStatus: FormSubmissionFollowUpStatus;
-  attachments: AttachmentModel[];
-  notes: NoteModel[];
+  submissionId: string
+  email: string
+  observerName: string
+  ngoName: string
+  phoneNumber: string
+  formId: string
+  monitoringObserverId: string
+  numberOfFlaggedAnswers: number
+  numberOfQuestionsAnswered: number
+  pollingStationId: string
+  level1: string
+  level2: string
+  level3: string
+  level4: string
+  level5: string
+  mediaFilesCount: number
+  notesCount: number
+  number: string
+  isOwnObserver: boolean
+  tags: string[]
+  timeSubmitted: string
+  followUpStatus: FormSubmissionFollowUpStatus
+  attachments: AttachmentModel[]
+  notes: NoteModel[]
+  answers: BaseAnswer[]
 }
 
 export enum QuestionsAnswered {
-  None = "None",
-  Some = "Some",
-  All = "All",
+  None = 'None',
+  Some = 'Some',
+  All = 'All',
 }
 export const formSubmissionsSearchSchema = z.object({
   searchText: z.string().optional(),
@@ -115,6 +172,6 @@ export const formSubmissionsSearchSchema = z.object({
   submissionsFromDate: z.coerce.date().optional(),
   submissionsToDate: z.coerce.date().optional(),
   coalitionMemberId: z.string().optional(),
-});
+})
 
-export type FormSubmissionsSearch = z.infer<typeof formSubmissionsSearchSchema>;
+export type FormSubmissionsSearch = z.infer<typeof formSubmissionsSearchSchema>
