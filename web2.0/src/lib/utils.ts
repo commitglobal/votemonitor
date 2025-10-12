@@ -80,10 +80,11 @@ export const groupArrayByKey = <
   T extends Record<StringKeys<T>, string | number | symbol>,
   TKeyName extends keyof T,
 >(
-  array: T[],
+  array: T[] | undefined,
   key: TKeyName
 ): Record<T[TKeyName], T[]> => {
-  return array.reduce(
+  const safeArray = array ?? []
+  return safeArray?.reduce(
     (acc, item) => {
       const k = item[key]
       if (!acc[k]) {

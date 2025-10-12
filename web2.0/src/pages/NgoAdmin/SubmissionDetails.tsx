@@ -13,7 +13,9 @@ import { useSuspenseGetFormDetails } from '@/queries/forms'
 import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions/$submissionId'
 import { ElectionRoundStatus } from '@/types/election'
 import {
+  AttachmentModel,
   FormSubmissionFollowUpStatus,
+  NoteModel,
   RatingAnswer,
   type FormSubmissionDetailedModel,
 } from '@/types/forms-submission'
@@ -170,7 +172,7 @@ function PollingStationDetails({
   )
 }
 
-function Page() {
+export function Page() {
   const { electionRoundId, submissionId } = Route.useParams()
   const { formLanguage, from } = Route.useSearch()
   const navigate = Route.useNavigate()
@@ -199,6 +201,15 @@ function Page() {
     ...question,
     notes: notesMap[question.id] || [],
     attachments: attachmentsMap[question.id] || [],
+    answerAndAttachments: [
+      ...(notesMap[question.id] || []),
+      ...(attachmentsMap[question.id] || []),
+    ].sort(
+      (a, b) =>
+        new Date(b.timeSubmitted).getTime() -
+        new Date(a.timeSubmitted).getTime()
+    ),
+    answer: answersMap[question.id],
   }))
 
   const { data: electionRound } = useElectionRoundDetails(electionRoundId)
@@ -502,7 +513,11 @@ function Page() {
                     question.attachments.length > 0) && (
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <Button variant='link' size='sm'>
+                        <Button
+                          variant='link'
+                          size='sm'
+                          className='cursor-pointer'
+                        >
                           {
                             <>
                               {question.notes.length > 0 &&
@@ -519,57 +534,11 @@ function Page() {
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <ItemGroup className='gap-2'>
-                          {question.attachments.map((attachment, index) => (
-                            <Item variant='outline' key={index}>
-                              <ItemMedia>
-                                <Attachment
-                                  src={attachment.presignedUrl}
-                                  mimeType={attachment.mimeType}
-                                  fileName={attachment.fileName}
-                                  width='530px'
-                                  height='300px'
-                                />
-                              </ItemMedia>
-                              <ItemContent>
-                                <ItemTitle>
-                                  {format(
-                                    attachment.timeSubmitted,
-                                    DateTimeFormat
-                                  )}
-                                </ItemTitle>
-                                <ItemDescription>
-                                  {attachment.mimeType}
-                                </ItemDescription>
-                              </ItemContent>
-                              <ItemActions>
-                                <Button
-                                  variant='outline'
-                                  size='icon'
-                                  onClick={() =>
-                                    downloadFile(
-                                      attachment.presignedUrl,
-                                      attachment.fileName
-                                    )
-                                  }
-                                >
-                                  <DownloadIcon className='size-4' />
-                                </Button>
-                              </ItemActions>
-                            </Item>
-                          ))}
-                          {question.notes.map((note, index) => (
-                            <Item variant='outline' key={index}>
-                              <ItemContent>
-                                <ItemTitle>{note.text}</ItemTitle>
-                                <ItemDescription>
-                                  {format(note.timeSubmitted, DateTimeFormat)}
-                                </ItemDescription>
-                              </ItemContent>
-                              <ItemActions>
-                                <CopyButton value={note.text} />
-                              </ItemActions>
-                            </Item>
-                          ))}
+                          {question.answerAndAttachments.map((data, index) =>
+                            isAttachment(data)
+                              ? AnswerAttachment(index, data)
+                              : AnswerNote(index, data)
+                          )}
                         </ItemGroup>
                       </CollapsibleContent>
                     </Collapsible>
@@ -584,4 +553,57 @@ function Page() {
   )
 }
 
-export default Page
+function isAttachment(
+  item: AttachmentModel | NoteModel
+): item is AttachmentModel {
+  return 'presignedUrl' in item // `fileName` only exists on AttachmentModel
+}
+
+function AnswerNote(index: number, note: NoteModel) {
+  return (
+    <Item variant='outline' key={index}>
+      <ItemContent>
+        <ItemTitle>{note.text}</ItemTitle>
+        <ItemDescription>
+          {format(note.timeSubmitted, DateTimeFormat)}
+        </ItemDescription>
+      </ItemContent>
+      <ItemActions>
+        <CopyButton value={note.text} />
+      </ItemActions>
+    </Item>
+  )
+}
+
+function AnswerAttachment(index: number, attachment: AttachmentModel) {
+  return (
+    <Item variant='outline' key={index}>
+      <ItemMedia>
+        <Attachment
+          src={attachment.presignedUrl}
+          mimeType={attachment.mimeType}
+          fileName={attachment.fileName}
+          width='530px'
+          height='300px'
+        />
+      </ItemMedia>
+      <ItemContent>
+        <ItemTitle>
+          {format(attachment.timeSubmitted, DateTimeFormat)}
+        </ItemTitle>
+        <ItemDescription>{attachment.mimeType}</ItemDescription>
+      </ItemContent>
+      <ItemActions>
+        <Button
+          variant='outline'
+          size='icon'
+          onClick={() =>
+            downloadFile(attachment.presignedUrl, attachment.fileName)
+          }
+        >
+          <DownloadIcon className='size-4' />
+        </Button>
+      </ItemActions>
+    </Item>
+  )
+}

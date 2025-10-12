@@ -1,7 +1,7 @@
 import z from 'zod'
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { queryClient } from '@/main'
-import SubmissionDetailsPage from '@/pages/NgoAdmin/SubmissionDetails'
+import { Page as SubmissionDetailsPage } from '@/pages/NgoAdmin/SubmissionDetails'
 import { getFormSubmissionDetailsQueryOptions } from '@/queries/form-submissions'
 import { formSubmissionsSearchSchema } from '@/types/forms-submission'
 
