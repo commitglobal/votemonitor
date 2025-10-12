@@ -204,7 +204,7 @@ export const getFormSubmissionsColumns = (
         tags.length ? (
           <HoverCard>
             <HoverCardTrigger>{tags.length} tags</HoverCardTrigger>
-            <HoverCardContent>
+            <HoverCardContent className='w-80'>
               <div className='flex flex-wrap gap-2'>
                 {tags.map((tag) => (
                   <Badge key={tag} variant='outline'>
