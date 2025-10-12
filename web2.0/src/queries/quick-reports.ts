@@ -5,7 +5,11 @@ import type {
   QuickReportModel,
   QuickReportsSearch,
 } from "@/types/quick-reports";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 export const quickReportKeys = {
   all: (electionRoundId: string) => ["quick-reports", electionRoundId] as const,
@@ -47,13 +51,24 @@ export const useListQuickReports = <TResult = PageResponse<QuickReportModel>>(
   select?: (data: PageResponse<QuickReportModel>) => TResult
 ) => useQuery(listQuickReportsQueryOptions(electionRoundId, search, select));
 
-export function getQuickReportDetailsQueryOptions(
+export function getQuickReportDetailsQueryOptions<TResult = QuickReportModel>(
   electionRoundId: string,
-  quickReportId: string
+  quickReportId: string,
+  select?: (data: QuickReportModel) => TResult
 ) {
   return queryOptions({
     queryKey: quickReportKeys.detail(electionRoundId, quickReportId),
     queryFn: async () => await getById(electionRoundId, quickReportId),
     staleTime: STALE_TIME,
+    select,
   });
 }
+
+export const useSuspenseGetQuickReportDetails = <TResult = QuickReportModel>(
+  electionRoundId: string,
+  quickReportId: string,
+  select?: (data: QuickReportModel) => TResult
+) =>
+  useSuspenseQuery(
+    getQuickReportDetailsQueryOptions(electionRoundId, quickReportId, select)
+  );

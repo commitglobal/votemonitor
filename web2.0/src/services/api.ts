@@ -1,7 +1,7 @@
-import { STORAGE_KEYS } from "@/constants/storage-keys";
-import { setAuthTokens } from "@/lib/utils";
-import { router } from "@/main";
-import axios, { type AxiosRequestHeaders } from "axios";
+import axios, { type AxiosRequestHeaders } from 'axios'
+import { router } from '@/main'
+import { setAuthTokens } from '@/lib/utils'
+import { STORAGE_KEYS } from '@/constants/storage-keys'
 
 /*
  * Token Refresh Mechanism:
@@ -27,141 +27,143 @@ import axios, { type AxiosRequestHeaders } from "axios";
  *    - Redirects to login
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
-const TIMEOUT = 60 * 1000; // 60 seconds
+const TIMEOUT = 60 * 1000 // 60 seconds
 
 class TokenRefreshManager {
-  private isRefreshing = false;
-  private refreshSubscribers: ((token: string) => void)[] = [];
+  private isRefreshing = false
+  private refreshSubscribers: ((token: string) => void)[] = []
 
   onRefreshed(token: string) {
-    this.refreshSubscribers.forEach((callback) => callback(token));
-    this.refreshSubscribers = [];
+    this.refreshSubscribers.forEach((callback) => callback(token))
+    this.refreshSubscribers = []
   }
 
   addRefreshSubscriber(callback: (token: string) => void) {
-    this.refreshSubscribers.push(callback);
+    this.refreshSubscribers.push(callback)
   }
 
   setRefreshing(value: boolean) {
-    this.isRefreshing = value;
+    this.isRefreshing = value
   }
 
   isCurrentlyRefreshing() {
-    return this.isRefreshing;
+    return this.isRefreshing
   }
 
   clearSubscribers() {
-    this.refreshSubscribers = [];
+    this.refreshSubscribers = []
   }
 }
 
-const tokenManager = new TokenRefreshManager();
+const tokenManager = new TokenRefreshManager()
 
 const API = axios.create({
   baseURL: API_BASE_URL,
   timeout: TIMEOUT,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-});
+})
 
 API.interceptors.request.use(async (request) => {
   try {
-    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
 
     if (!request.headers) {
-      request.headers = {} as AxiosRequestHeaders;
+      request.headers = {} as AxiosRequestHeaders
     }
 
     if (token) {
-      request.headers.Authorization = `Bearer ${token}`;
+      request.headers.Authorization = `Bearer ${token}`
     }
   } catch (err) {
-    console.error(err);
+    console.error(err)
     // Sentry.captureException(err);
   }
 
-  return request;
-});
+  return request
+})
 
 const handleTokenRefresh = async (originalRequest: any) => {
   try {
     const [token, refreshToken] = [
       localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN),
       localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
-    ];
+    ]
 
     if (!token || !refreshToken) {
-      throw new Error("No tokens available");
+      console.log('No tokens available')
+      throw new Error('No tokens available')
     }
 
     const { data } = await axios.post(`${API_BASE_URL}auth/refresh`, {
       token,
       refreshToken,
-    });
+    })
 
-    setAuthTokens(data.token, data.refreshToken, data.refreshTokenExpiryTime);
-    tokenManager.onRefreshed(data.token);
+    setAuthTokens(data.token, data.refreshToken, data.refreshTokenExpiryTime)
+    tokenManager.onRefreshed(data.token)
 
-    originalRequest.headers.Authorization = `Bearer ${data.token}`;
-    return API(originalRequest);
+    originalRequest.headers.Authorization = `Bearer ${data.token}`
+    return API(originalRequest)
   } catch (error) {
-    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-    console.log("redirect");
-    router.navigate({ to: "/login" });
-    throw error;
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
+    console.log(error)
+    console.log('redirect')
+    router.navigate({ to: '/login' })
+    throw error
   } finally {
-    tokenManager.setRefreshing(false);
+    tokenManager.setRefreshing(false)
   }
-};
+}
 
 API.interceptors.response.use(
   (response) => response,
   async (error: any) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config
     const isTokenExpiredError =
-      error.response?.headers["token-expired"] === "true" ||
-      error.response?.status === 401;
+      error.response?.headers['token-expired'] === 'true' ||
+      error.response?.status === 401
 
     if (
       error.response &&
       isTokenExpiredError &&
-      !originalRequest?.url?.includes("auth") &&
+      !originalRequest?.url?.includes('auth') &&
       !originalRequest._retry
     ) {
       if (tokenManager.isCurrentlyRefreshing()) {
         return new Promise((resolve) => {
           tokenManager.addRefreshSubscriber(async (token: string) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(API(originalRequest));
-          });
-        });
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            resolve(API(originalRequest))
+          })
+        })
       }
 
-      console.log("❌ [API FAILED] URL", originalRequest.url);
-      console.log("❌ [API FAILED] Status", error.response?.status);
-      console.log("❌ [API FAILED] isTokenExpiredError", isTokenExpiredError);
+      console.log('❌ [API FAILED] URL', originalRequest.url)
+      console.log('❌ [API FAILED] Status', error.response?.status)
+      console.log('❌ [API FAILED] isTokenExpiredError', isTokenExpiredError)
 
-      originalRequest._retry = true;
-      tokenManager.setRefreshing(true);
-      return handleTokenRefresh(originalRequest);
+      originalRequest._retry = true
+      tokenManager.setRefreshing(true)
+      return handleTokenRefresh(originalRequest)
     }
 
     if (error.request) {
-      console.log("❌ [API FAILED] Request", error.request);
+      console.log('❌ [API FAILED] Request', error.request)
       // Sentry.captureException(new Error("Network request failed"), {
       //   extra: { request: error.request },
       // });
     } else {
-      console.log("❌ [API FAILED] Error", error);
+      console.log('❌ [API FAILED] Error', error)
       // Sentry.captureException(error);
     }
 
-    throw error;
+    throw error
   }
-);
+)
 
-export default API;
+export default API

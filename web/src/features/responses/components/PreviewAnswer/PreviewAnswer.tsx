@@ -127,7 +127,7 @@ export default function PreviewAnswer({
 
           {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
 
-          {isTextAnswer(answer) && <div className='p-3 border rounded-lg'>{answer.text}</div>}
+          {isTextAnswer(answer) && <p>{answer.text}</p>}
         </>
       ) : (
         <></>

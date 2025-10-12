@@ -1,9 +1,9 @@
-import { buildURLSearchParams } from "@/lib/utils";
-import API from "@/services/api";
+import API from '@/services/api'
 import type {
   FormSubmissionDetailedModel,
   FormSubmissionsSearch,
-} from "@/types/forms-submission";
+} from '@/types/forms-submission'
+import { buildURLSearchParams } from '@/lib/utils'
 
 export const getEntriesAggregatedByForm = async (
   electionRoundId: string,
@@ -15,5 +15,5 @@ export const getEntriesAggregatedByForm = async (
     {
       params: buildURLSearchParams(search),
     }
-  ).then((res) => res.data);
-};
+  ).then((res) => res.data)
+}
