@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "101",
+      "buildNumber": "105",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -26,7 +26,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 101,
+      "versionCode": 105,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -79,7 +79,7 @@
         "expo-build-properties",
         {
           "android": {
-            "kotlinVersion": "1.6.10",
+            "kotlinVersion": "1.7.20",
             "packagingOptions": {
               "pickFirst": ["**/libc++_shared.so"]
             }
