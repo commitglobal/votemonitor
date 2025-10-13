@@ -1,54 +1,54 @@
-import { z } from "zod";
-import { DataSource, SortOrder, type AttachmentModel } from "./common";
+import { z } from 'zod'
+import { DataSource, SortOrder } from './common'
 
 export enum QuickReportFollowUpStatus {
-  NotApplicable = "NotApplicable",
-  NeedsFollowUp = "NeedsFollowUp",
-  Resolved = "Resolved",
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
 }
 
 export const QuickReportFollowUpStatusList: QuickReportFollowUpStatus[] = [
   QuickReportFollowUpStatus.NotApplicable,
   QuickReportFollowUpStatus.NeedsFollowUp,
   QuickReportFollowUpStatus.Resolved,
-];
+]
 
 export enum QuickReportLocationType {
-  NotRelatedToAPollingStation = "NotRelatedToAPollingStation",
-  OtherPollingStation = "OtherPollingStation",
-  VisitedPollingStation = "VisitedPollingStation",
+  NotRelatedToAPollingStation = 'NotRelatedToAPollingStation',
+  OtherPollingStation = 'OtherPollingStation',
+  VisitedPollingStation = 'VisitedPollingStation',
 }
 
 export const QuickReportLocationTypeList: QuickReportLocationType[] = [
   QuickReportLocationType.NotRelatedToAPollingStation,
   QuickReportLocationType.VisitedPollingStation,
   QuickReportLocationType.OtherPollingStation,
-];
+]
 
 export enum QuickReportIncidentCategory {
-  PhysicalViolenceIntimidationPressure = "PhysicalViolenceIntimidationPressure",
-  CampaigningAtPollingStation = "CampaigningAtPollingStation",
-  RestrictionOfObserversRights = "RestrictionOfObserversRights",
-  UnauthorizedPersonsAtPollingStation = "UnauthorizedPersonsAtPollingStation",
-  ViolationDuringVoterVerificationProcess = "ViolationDuringVoterVerificationProcess",
-  VotingWithImproperDocumentation = "VotingWithImproperDocumentation",
-  IllegalRestrictionOfVotersRightToVote = "IllegalRestrictionOfVotersRightToVote",
-  DamagingOrSeizingElectionMaterials = "DamagingOrSeizingElectionMaterials",
-  ImproperFilingOrHandlingOfElectionDocumentation = "ImproperFilingOrHandlingOfElectionDocumentation",
-  BallotStuffing = "BallotStuffing",
-  ViolationsRelatedToControlPaper = "ViolationsRelatedToControlPaper",
-  NotCheckingVoterIdentificationSafeguardMeasures = "NotCheckingVoterIdentificationSafeguardMeasures",
-  VotingWithoutVoterIdentificationSafeguardMeasures = "VotingWithoutVoterIdentificationSafeguardMeasures",
-  BreachOfSecrecyOfVote = "BreachOfSecrecyOfVote",
-  ViolationsRelatedToMobileBallotBox = "ViolationsRelatedToMobileBallotBox",
-  NumberOfBallotsExceedsNumberOfVoters = "NumberOfBallotsExceedsNumberOfVoters",
-  ImproperInvalidationOrValidationOfBallots = "ImproperInvalidationOrValidationOfBallots",
-  FalsificationOrImproperCorrectionOfFinalProtocol = "FalsificationOrImproperCorrectionOfFinalProtocol",
-  RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy = "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy",
-  ImproperFillingInOfFinalProtocol = "ImproperFillingInOfFinalProtocol",
-  ViolationOfSealingProceduresOfElectionMaterials = "ViolationOfSealingProceduresOfElectionMaterials",
-  ViolationsRelatedToVoterLists = "ViolationsRelatedToVoterLists",
-  Other = "Other",
+  PhysicalViolenceIntimidationPressure = 'PhysicalViolenceIntimidationPressure',
+  CampaigningAtPollingStation = 'CampaigningAtPollingStation',
+  RestrictionOfObserversRights = 'RestrictionOfObserversRights',
+  UnauthorizedPersonsAtPollingStation = 'UnauthorizedPersonsAtPollingStation',
+  ViolationDuringVoterVerificationProcess = 'ViolationDuringVoterVerificationProcess',
+  VotingWithImproperDocumentation = 'VotingWithImproperDocumentation',
+  IllegalRestrictionOfVotersRightToVote = 'IllegalRestrictionOfVotersRightToVote',
+  DamagingOrSeizingElectionMaterials = 'DamagingOrSeizingElectionMaterials',
+  ImproperFilingOrHandlingOfElectionDocumentation = 'ImproperFilingOrHandlingOfElectionDocumentation',
+  BallotStuffing = 'BallotStuffing',
+  ViolationsRelatedToControlPaper = 'ViolationsRelatedToControlPaper',
+  NotCheckingVoterIdentificationSafeguardMeasures = 'NotCheckingVoterIdentificationSafeguardMeasures',
+  VotingWithoutVoterIdentificationSafeguardMeasures = 'VotingWithoutVoterIdentificationSafeguardMeasures',
+  BreachOfSecrecyOfVote = 'BreachOfSecrecyOfVote',
+  ViolationsRelatedToMobileBallotBox = 'ViolationsRelatedToMobileBallotBox',
+  NumberOfBallotsExceedsNumberOfVoters = 'NumberOfBallotsExceedsNumberOfVoters',
+  ImproperInvalidationOrValidationOfBallots = 'ImproperInvalidationOrValidationOfBallots',
+  FalsificationOrImproperCorrectionOfFinalProtocol = 'FalsificationOrImproperCorrectionOfFinalProtocol',
+  RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy = 'RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy',
+  ImproperFillingInOfFinalProtocol = 'ImproperFillingInOfFinalProtocol',
+  ViolationOfSealingProceduresOfElectionMaterials = 'ViolationOfSealingProceduresOfElectionMaterials',
+  ViolationsRelatedToVoterLists = 'ViolationsRelatedToVoterLists',
+  Other = 'Other',
 }
 
 export const QuickReportIncidentCategoryList: QuickReportIncidentCategory[] = [
@@ -75,11 +75,11 @@ export const QuickReportIncidentCategoryList: QuickReportIncidentCategory[] = [
   QuickReportIncidentCategory.ViolationOfSealingProceduresOfElectionMaterials,
   QuickReportIncidentCategory.ViolationsRelatedToVoterLists,
   QuickReportIncidentCategory.Other,
-];
+]
 
 export const quickReportsSearchSchema = z.object({
   dataSource: z.enum(DataSource).default(DataSource.Ngo).catch(DataSource.Ngo),
-  searchText: z.string().optional().default(""),
+  searchText: z.string().optional().default(''),
   sortColumnName: z.string().optional(),
   sortOrder: z.enum(SortOrder).optional(),
   pageNumber: z.number().default(1),
@@ -99,33 +99,43 @@ export const quickReportsSearchSchema = z.object({
   observerId: z.string().optional(),
   // TODO: add filter by has attachments
   // TODO: add filter by dates
-});
+})
 
-export type QuickReportsSearch = z.infer<typeof quickReportsSearchSchema>;
+export type QuickReportsSearch = z.infer<typeof quickReportsSearchSchema>
+
+export interface AttachmentModel {
+  fileName: string
+  filePath: string
+  mimeType: string
+  presignedUrl: string
+  uploadedFileName: string
+  urlValidityInSeconds: string
+  timeSubmitted: string
+}
 
 export interface QuickReportModel {
-  id: string;
-  address: string;
-  description: string;
-  phoneNumber: string;
-  email: string;
-  ngoName: string;
-  observerName: string;
-  isOwnObserver: boolean;
-  level1: string;
-  level2: string;
-  level3: string;
-  level4: string;
-  level5: string;
-  number: string;
-  numberOfAttachments: number;
-  pollingStationId: string;
-  pollingStationDetails: string;
-  quickReportLocationType: QuickReportLocationType;
-  timestamp: string;
-  title: string;
-  monitoringObserverId: string;
-  attachments: AttachmentModel[];
-  followUpStatus: QuickReportFollowUpStatus;
-  incidentCategory: QuickReportIncidentCategory;
+  id: string
+  address: string
+  description: string
+  phoneNumber: string
+  email: string
+  ngoName: string
+  observerName: string
+  isOwnObserver: boolean
+  level1: string
+  level2: string
+  level3: string
+  level4: string
+  level5: string
+  number: string
+  numberOfAttachments: number
+  pollingStationId: string
+  pollingStationDetails: string
+  quickReportLocationType: QuickReportLocationType
+  timestamp: string
+  title: string
+  monitoringObserverId: string
+  attachments: AttachmentModel[]
+  followUpStatus: QuickReportFollowUpStatus
+  incidentCategory: QuickReportIncidentCategory
 }

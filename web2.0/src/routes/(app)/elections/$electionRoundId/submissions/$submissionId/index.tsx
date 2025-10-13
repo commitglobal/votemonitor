@@ -3,6 +3,7 @@ import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { queryClient } from '@/main'
 import { Page as SubmissionDetailsPage } from '@/pages/NgoAdmin/SubmissionDetails'
 import { getFormSubmissionDetailsQueryOptions } from '@/queries/form-submissions'
+import { DataSource } from '@/types/common'
 import { formSubmissionsSearchSchema } from '@/types/forms-submission'
 
 export const Route = createFileRoute(
@@ -34,6 +35,11 @@ export const Route = createFileRoute(
           submissionsFromDate: undefined,
           submissionsToDate: undefined,
           coalitionMemberId: '',
+          dataSource: DataSource.Ngo,
+          sortColumnName: undefined,
+          sortOrder: undefined,
+          pageNumber: 1,
+          pageSize: 25,
         },
       }),
     ],

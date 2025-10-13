@@ -1,4 +1,8 @@
 {
+  "common": {
+    "yes": "Yes",
+    "no": "No"
+  },
   "electionRound": {
     "status": {
       "notStarted": "Not started",
@@ -11,6 +15,11 @@
       "NotApplicable": "Not Applicable",
       "NeedsFollowUp": "Needs Follow-up",
       "Resolved": "Resolved"
+    },
+    "questionsAnswered": {
+      "none": "None",
+      "some": "Some",
+      "all": "All"
     }
   },
   "quickReports": {
@@ -57,7 +66,8 @@
       "closingAndCounting": "Closing And Counting",
       "psi": "PSI",
       "citizenReporting": "Citizen reporting",
-      "incidentReporting": "Incident reporting"
-  }
+      "incidentReporting": "Incident reporting",
+      "other": "Other"
+    }
   }
 }

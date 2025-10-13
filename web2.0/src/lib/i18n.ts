@@ -1,7 +1,10 @@
 import i18n from '@/i18n'
 import { ElectionRoundStatus } from '@/types/election'
 import { FormStatus, FormType } from '@/types/form'
-import { FormSubmissionFollowUpStatus } from '@/types/forms-submission'
+import {
+  FormSubmissionFollowUpStatus,
+  QuestionsAnswered,
+} from '@/types/forms-submission'
 import { MonitoringObserverStatus } from '@/types/monitoring-observer'
 import {
   QuickReportFollowUpStatus,
@@ -258,5 +261,18 @@ export function mapMonitoringObserverStatus(
 
     default:
       return observerStatus
+  }
+}
+
+export function mapQuestionsAnswered(
+  questionsAnswered: QuestionsAnswered
+): string {
+  switch (questionsAnswered) {
+    case QuestionsAnswered.None:
+      return i18n.t('formSubmissions.questionsAnswered.none')
+    case QuestionsAnswered.Some:
+      return i18n.t('formSubmissions.questionsAnswered.some')
+    case QuestionsAnswered.All:
+      return i18n.t('formSubmissions.questionsAnswered.all')
   }
 }

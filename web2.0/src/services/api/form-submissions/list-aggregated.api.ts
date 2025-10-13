@@ -1,17 +1,16 @@
 import API from '@/services/api'
-import type { PageResponse } from '@/types/common'
-import type { ElectionsSearch } from '@/types/election'
-import type { FormSubmissionByFormModel } from '@/types/forms-submission'
+import { FormSubmissionsSearch } from '@/types/forms-submission'
+import { AggregatedFormSubmissionsTableRow } from '@/types/submissions-aggregate'
 import { buildURLSearchParams } from '@/lib/utils'
 
 export const listFormSubmissionsAggregated = async (
   electionRoundId: string,
-  search: ElectionsSearch
-): Promise<PageResponse<FormSubmissionByFormModel>> => {
-  return API.get(
+  search: FormSubmissionsSearch
+): Promise<AggregatedFormSubmissionsTableRow[]> => {
+  return API.get<{ aggregatedForms: AggregatedFormSubmissionsTableRow[] }>(
     `/election-rounds/${electionRoundId}/form-submissions:byForm`,
     {
       params: buildURLSearchParams(search),
     }
-  ).then((res) => res.data)
+  ).then((res) => res.data.aggregatedForms)
 }
