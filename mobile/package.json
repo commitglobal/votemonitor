@@ -18,11 +18,12 @@
     "build-ios-local-development-build": "eas build --platform ios --profile development --local",
     "run-ios-simulator": "eas build:run -p ios",
     "eas-update-production": "dotenv -e .env.production -- node scripts/publish-update.js",
-    "eas-update": "dotenv -e .env -- node scripts/publish-update.js"
+    "eas-update": "dotenv -e .env -- node scripts/publish-update.js",
+    "build-and-bump": "dotenv -e .env -- node scripts/build.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
-    "@morrowdigital/watermelondb-expo-plugin": "^2.3.1",
+    "@lovesworking/watermelondb-expo-plugin-sdk-52-plus": "^1.0.2",
     "@nozbe/watermelondb": "^0.27.1",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/datetimepicker": "7.6.3",
