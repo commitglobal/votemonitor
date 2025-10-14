@@ -536,8 +536,8 @@ export function Page() {
                         <ItemGroup className='gap-2'>
                           {question.answerAndAttachments.map((data, index) =>
                             isAttachment(data)
-                              ? AnswerAttachment(index, data)
-                              : AnswerNote(index, data)
+                              ? AnswerAttachmentItem(index, data)
+                              : AnswerNoteItem(index, data)
                           )}
                         </ItemGroup>
                       </CollapsibleContent>
@@ -559,7 +559,7 @@ function isAttachment(
   return 'presignedUrl' in item // `fileName` only exists on AttachmentModel
 }
 
-function AnswerNote(index: number, note: NoteModel) {
+function AnswerNoteItem(index: number, note: NoteModel) {
   return (
     <Item variant='outline' key={index}>
       <ItemContent>
@@ -575,7 +575,7 @@ function AnswerNote(index: number, note: NoteModel) {
   )
 }
 
-function AnswerAttachment(index: number, attachment: AttachmentModel) {
+function AnswerAttachmentItem(index: number, attachment: AttachmentModel) {
   return (
     <Item variant='outline' key={index}>
       <ItemMedia>
