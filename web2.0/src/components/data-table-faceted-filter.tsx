@@ -1,10 +1,11 @@
-"use client";
+'use client'
 
-import type { Option } from "@/types/data-table";
-import { Check, PlusCircle, XCircle } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import * as React from 'react'
+import type { Option } from '@/types/data-table'
+import { Check, PlusCircle, XCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -13,27 +14,27 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command";
+} from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import * as React from "react";
+} from '@/components/ui/popover'
+import { Separator } from '@/components/ui/separator'
 
 export interface SingleSelectDataTableFacetedFilterProps {
-  title: string;
-  options: Option[];
-  value: string;
-  onValueChange: (value: string | undefined) => void;
+  title: string
+  options: Option[]
+  value: string
+  onValueChange: (value: string | undefined) => void
+  disabled?: boolean
 }
 export interface MultiSelectDataTableFacetedFilterProps {
-  title: string;
-  options: Option[];
-  value: string[] | undefined;
-  onValueChange: (value: string[] | undefined) => void;
+  title: string
+  options: Option[]
+  value: string[] | undefined
+  onValueChange: (value: string[] | undefined) => void
+  disabled?: boolean
 }
 
 export function SingleSelectDataTableFacetedFilter({
@@ -41,16 +42,18 @@ export function SingleSelectDataTableFacetedFilter({
   options,
   onValueChange,
   value,
+  disabled,
 }: SingleSelectDataTableFacetedFilterProps) {
   return (
     <DataTableFacetedFilter
       title={title}
       options={options}
       onValueChange={(value) => onValueChange(value?.[0])}
-      value={[value]}
+      value={[value].filter(Boolean)}
       multiple={false}
+      disabled={disabled}
     />
-  );
+  )
 }
 export function MultiSelectDataTableFacetedFilter({
   title,
@@ -66,15 +69,16 @@ export function MultiSelectDataTableFacetedFilter({
       value={value}
       multiple={true}
     />
-  );
+  )
 }
 
 interface DataTableFacetedFilterProps {
-  title: string;
-  options: Option[];
-  multiple?: boolean;
-  value: string[] | undefined;
-  onValueChange: (value: string[] | undefined) => void;
+  title: string
+  options: Option[]
+  multiple?: boolean
+  value: string[] | undefined
+  onValueChange: (value: string[] | undefined) => void
+  disabled?: boolean
 }
 
 function DataTableFacetedFilter({
@@ -83,49 +87,55 @@ function DataTableFacetedFilter({
   title,
   options,
   multiple,
+  disabled,
 }: DataTableFacetedFilterProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
 
-  const selectedValues = new Set(Array.isArray(value) ? value : []);
+  const selectedValues = new Set(Array.isArray(value) ? value : [])
 
   const onItemSelect = React.useCallback(
     (option: Option, isSelected: boolean) => {
       if (multiple) {
-        const newSelectedValues = new Set(selectedValues);
+        const newSelectedValues = new Set(selectedValues)
         if (isSelected) {
-          newSelectedValues.delete(option.value);
+          newSelectedValues.delete(option.value)
         } else {
-          newSelectedValues.add(option.value);
+          newSelectedValues.add(option.value)
         }
-        const filterValues = Array.from(newSelectedValues);
-        onValueChange(filterValues.length ? filterValues : undefined);
+        const filterValues = Array.from(newSelectedValues)
+        onValueChange(filterValues.length ? filterValues : undefined)
       } else {
-        onValueChange(isSelected ? undefined : [option.value]);
-        setOpen(false);
+        onValueChange(isSelected ? undefined : [option.value])
+        setOpen(false)
       }
     },
     [onValueChange, multiple, selectedValues]
-  );
+  )
 
   const onReset = React.useCallback(
     (event?: React.MouseEvent) => {
-      event?.stopPropagation();
-      onValueChange(undefined);
+      event?.stopPropagation()
+      onValueChange(undefined)
     },
     [onValueChange]
-  );
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
+        <Button
+          variant='outline'
+          size='sm'
+          className='border-dashed'
+          disabled={disabled}
+        >
           {selectedValues?.size > 0 ? (
             <div
-              role="button"
+              role='button'
               aria-label={`Clear ${title} filter`}
               tabIndex={0}
               onClick={onReset}
-              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className='focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:outline-none'
             >
               <XCircle />
             </div>
@@ -136,20 +146,20 @@ function DataTableFacetedFilter({
           {selectedValues?.size > 0 && (
             <>
               <Separator
-                orientation="vertical"
-                className="mx-0.5 data-[orientation=vertical]:h-4"
+                orientation='vertical'
+                className='mx-0.5 data-[orientation=vertical]:h-4'
               />
               <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
+                variant='secondary'
+                className='rounded-sm px-1 font-normal lg:hidden'
               >
                 {selectedValues.size}
               </Badge>
-              <div className="hidden items-center gap-1 lg:flex">
+              <div className='hidden items-center gap-1 lg:flex'>
                 {selectedValues.size > 2 ? (
                   <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
+                    variant='secondary'
+                    className='rounded-sm px-1 font-normal'
                   >
                     {selectedValues.size} selected
                   </Badge>
@@ -158,9 +168,9 @@ function DataTableFacetedFilter({
                     .filter((option) => selectedValues.has(option.value))
                     .map((option) => (
                       <Badge
-                        variant="secondary"
+                        variant='secondary'
                         key={option.value}
-                        className="rounded-sm px-1 font-normal"
+                        className='rounded-sm px-1 font-normal'
                       >
                         {option.label}
                       </Badge>
@@ -171,14 +181,14 @@ function DataTableFacetedFilter({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[12.5rem] p-0" align="start">
+      <PopoverContent className='w-[12.5rem] p-0' align='start'>
         <Command>
           <CommandInput placeholder={title} />
-          <CommandList className="max-h-full">
+          <CommandList className='max-h-full'>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup className="max-h-[18.75rem] overflow-y-auto overflow-x-hidden">
+            <CommandGroup className='max-h-[18.75rem] overflow-x-hidden overflow-y-auto'>
               {options.map((option) => {
-                const isSelected = selectedValues.has(option.value);
+                const isSelected = selectedValues.has(option.value)
 
                 return (
                   <CommandItem
@@ -187,17 +197,17 @@ function DataTableFacetedFilter({
                   >
                     <div
                       className={cn(
-                        "flex size-4 items-center justify-center rounded-sm border border-primary",
+                        'border-primary flex size-4 items-center justify-center rounded-sm border',
                         isSelected
-                          ? "bg-primary"
-                          : "opacity-50 [&_svg]:invisible"
+                          ? 'bg-primary'
+                          : 'opacity-50 [&_svg]:invisible'
                       )}
                     >
                       <Check />
                     </div>
-                    <span className="truncate">{option.label}</span>
+                    <span className='truncate'>{option.label}</span>
                   </CommandItem>
-                );
+                )
               })}
             </CommandGroup>
             {selectedValues.size > 0 && (
@@ -206,7 +216,7 @@ function DataTableFacetedFilter({
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => onReset()}
-                    className="justify-center text-center"
+                    className='justify-center text-center'
                   >
                     Clear filters
                   </CommandItem>
@@ -217,5 +227,5 @@ function DataTableFacetedFilter({
         </Command>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

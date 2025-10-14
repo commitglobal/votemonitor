@@ -1,27 +1,24 @@
-import { TailwindIndicator } from "@/components/TailwindIndicator.tsx";
-import { ThemeProvider } from "@/components/ThemeProvider.tsx";
-import { Toaster } from "@/components/ui/sonner";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
-// Import the generated route tree
-import { routeTree } from "./routeTree.gen";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TanStackQueryDevelopmentTools } from "./components/development-tools/TanStackQueryDevelopmentTools.tsx";
-import { TanStackRouterDevelopmentTools } from "./components/development-tools/TanStackRouterDevelopmentTools.tsx";
-import "./styles.css";
-
-import { TooltipProvider } from "./components/ui/tooltip.tsx";
-import { AuthProvider, useAuth } from "./contexts/auth.context.tsx";
-
+import { StrictMode } from 'react'
+import ReactDOM from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { AuthProvider, useAuth } from '@/contexts/auth.context'
+import '@/styles.css'
 // import i18n (needs to be bundled ;))
-import countries from "i18n-iso-countries";
-import { useTranslation } from "react-i18next";
-import enCountries from "i18n-iso-countries/langs/en.json";
-import roCountries from "i18n-iso-countries/langs/ro.json";
+import countries from 'i18n-iso-countries'
+import enCountries from 'i18n-iso-countries/langs/en.json'
+import roCountries from 'i18n-iso-countries/langs/ro.json'
+import { useTranslation } from 'react-i18next'
+import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { TailwindIndicator } from '@/components/TailwindIndicator.tsx'
+import { ThemeProvider } from '@/components/ThemeProvider.tsx'
+import { TanStackQueryDevelopmentTools } from '@/components/development-tools/TanStackQueryDevelopmentTools'
+import { TanStackRouterDevelopmentTools } from '@/components/development-tools/TanStackRouterDevelopmentTools'
+import './i18n'
+// Import the generated route tree
+import { routeTree } from './routeTree.gen'
 
-import "./i18n";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -40,7 +37,7 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       // Always refetch after network reconnection - prevents stale data after
       // connectivity issues (overrides staleTime check)
-      refetchOnReconnect: "always",
+      refetchOnReconnect: 'always',
     },
     mutations: {
       // Single retry for mutations - prevents duplicate operations while handling
@@ -49,11 +46,11 @@ export const queryClient = new QueryClient({
       retryDelay: 1000,
       // Global error handler for mutations
       onError: (error) => {
-        console.error("Mutation error:", error);
+        console.error('Mutation error:', error)
       },
     },
   },
-});
+})
 // Create a new router instance
 export const router = createRouter({
   routeTree,
@@ -61,48 +58,48 @@ export const router = createRouter({
     queryClient,
     auth: undefined!, // This will be set after we wrap the app in an AuthProvider
   },
-  defaultPreload: "intent",
+  defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
-});
+})
 
 // Register the router instance for type safety
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router;
+    router: typeof router
   }
 }
 
 function InnerApp() {
-  const auth = useAuth();
-  const { i18n } = useTranslation();
+  const auth = useAuth()
+  const { i18n } = useTranslation()
 
-  const lang = (i18n.language || "en").split("-")[0];
+  const lang = (i18n.language || 'en').split('-')[0]
   const localeMap: Record<string, unknown> = {
     en: enCountries,
     ro: roCountries,
-  };
-  countries.registerLocale((localeMap[lang] ?? enCountries) as any);
+  }
+  countries.registerLocale((localeMap[lang] ?? enCountries) as any)
   if (auth.isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className='flex h-screen items-center justify-center'>
         Loading...
       </div>
-    ); // or spinner
+    ) // or spinner
   }
 
   return (
     <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
+      attribute='class'
+      defaultTheme='system'
       enableSystem
       disableTransitionOnChange
       enableColorScheme
     >
       <TooltipProvider>
-        <div vaul-drawer-wrapper="">
-          <div className="relative flex min-h-screen flex-col bg-background">
+        <div vaul-drawer-wrapper=''>
+          <div className='bg-background relative flex min-h-screen flex-col'>
             <RouterProvider router={router} context={{ auth, queryClient }} />
           </div>
         </div>
@@ -110,18 +107,18 @@ function InnerApp() {
         <Toaster duration={5000} richColors />
         <TanStackRouterDevelopmentTools
           router={router}
-          position="bottom-left"
+          position='bottom-left'
         />
-        <TanStackQueryDevelopmentTools client={queryClient} position="right" />
+        <TanStackQueryDevelopmentTools client={queryClient} position='right' />
       </TooltipProvider>
     </ThemeProvider>
-  );
+  )
 }
 
 // Render the app
-const rootElement = document.getElementById("app");
+const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
+  const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
@@ -130,7 +127,7 @@ if (rootElement && !rootElement.innerHTML) {
         </AuthProvider>
       </QueryClientProvider>
     </StrictMode>
-  );
+  )
 }
 
 // If you want to start measuring performance in your app, pass a function

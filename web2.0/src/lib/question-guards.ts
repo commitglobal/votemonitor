@@ -1,52 +1,52 @@
 import {
-  BaseQuestion,
-  DateQuestion,
-  MultiSelectQuestion,
-  NumberQuestion,
+  BaseQuestionModel,
+  DateQuestionModel,
+  MultiSelectQuestionModel,
+  NumberQuestionModel,
   QuestionType,
-  RatingQuestion,
-  SingleSelectQuestion,
-  TextQuestion,
+  RatingQuestionModel,
+  SingleSelectQuestionModel,
+  TextQuestionModel,
 } from '@/types/form'
 
 export function isDateQuestion(
-  question?: BaseQuestion
-): question is DateQuestion {
+  question?: BaseQuestionModel
+): question is DateQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.DateQuestionType
 }
 
 export function isMultiSelectQuestion(
-  question?: BaseQuestion
-): question is MultiSelectQuestion {
+  question?: BaseQuestionModel
+): question is MultiSelectQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.MultiSelectQuestionType
 }
 
 export function isNumberQuestion(
-  question?: BaseQuestion
-): question is NumberQuestion {
+  question?: BaseQuestionModel
+): question is NumberQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.NumberQuestionType
 }
 
 export function isRatingQuestion(
-  question?: BaseQuestion
-): question is RatingQuestion {
+  question?: BaseQuestionModel
+): question is RatingQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.RatingQuestionType
 }
 
 export function isSingleSelectQuestion(
-  question?: BaseQuestion
-): question is SingleSelectQuestion {
+  question?: BaseQuestionModel
+): question is SingleSelectQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.SingleSelectQuestionType
 }
 
 export function isTextQuestion(
-  question?: BaseQuestion
-): question is TextQuestion {
+  question?: BaseQuestionModel
+): question is TextQuestionModel {
   if (!question) return false
   return question.$questionType === QuestionType.TextQuestionType
 }

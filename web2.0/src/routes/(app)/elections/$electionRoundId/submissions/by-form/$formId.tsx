@@ -1,18 +1,20 @@
+import z from 'zod'
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { queryClient } from '@/main'
-import { SubmissionsByEntry } from '@/pages/NgoAdmin/Submissions/by-entry'
-import {
-  formSubmissionsFiltersQueryOptions,
-  listFormSubmissionsQueryOptions,
-} from '@/queries/form-submissions'
+import { AggregatedSubmissionsPage } from '@/pages/NgoAdmin/Submissions/AggregatedSubmissionsPage'
+import { formSubmissionsFiltersQueryOptions } from '@/queries/form-submissions'
+import { getSubmissionsAggregatedDetailsQueryOptions } from '@/queries/form-submissions-aggregated'
 import { pollingStationsLocationLevelsQueryOptions } from '@/queries/polling-stations'
 import { DataSource } from '@/types/common'
 import { formSubmissionsSearchSchema } from '@/types/forms-submission'
 
 export const Route = createFileRoute(
-  '/(app)/elections/$electionRoundId/submissions/'
+  '/(app)/elections/$electionRoundId/submissions/by-form/$formId'
 )({
-  validateSearch: formSubmissionsSearchSchema,
+  validateSearch: z.object({
+    ...formSubmissionsSearchSchema.shape,
+    formLanguage: z.string().optional(),
+  }),
   search: {
     middlewares: [
       stripSearchParams({
@@ -45,16 +47,16 @@ export const Route = createFileRoute(
   loaderDeps: ({ search }) => ({
     ...search,
   }),
-  loader: async ({ deps, params: { electionRoundId } }) => {
-    queryClient.ensureQueryData(
+  loader: async ({ deps, params: { electionRoundId, formId } }) => {
+    queryClient.prefetchQuery(
       pollingStationsLocationLevelsQueryOptions(electionRoundId)
     )
-    queryClient.ensureQueryData(
+    queryClient.prefetchQuery(
       formSubmissionsFiltersQueryOptions(electionRoundId, deps.dataSource)
     )
-    await queryClient.prefetchQuery(
-      listFormSubmissionsQueryOptions(electionRoundId, deps)
+    await queryClient.ensureQueryData(
+      getSubmissionsAggregatedDetailsQueryOptions(electionRoundId, formId, deps)
     )
   },
-  component: SubmissionsByEntry,
+  component: AggregatedSubmissionsPage,
 })

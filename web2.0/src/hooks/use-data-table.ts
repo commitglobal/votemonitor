@@ -1,5 +1,6 @@
-"use client";
+'use client'
 
+import * as React from 'react'
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -10,66 +11,65 @@ import {
   type TableOptions,
   type TableState,
   type VisibilityState,
-} from "@tanstack/react-table";
-import * as React from "react";
+} from '@tanstack/react-table'
+import { useLocalStorage } from './use-local-storage'
 import {
   useTableUrlState,
   type NavigateFn,
   type SearchRecord,
-} from "./use-table-url-state";
-import { useLocalStorage } from "./use-local-storage";
+} from './use-table-url-state'
 
-export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
-  id: Extract<keyof TData, string>;
+export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, 'id'> {
+  id: Extract<keyof TData, string>
 }
 
 interface UseDataTableProps<TData>
   extends Omit<
       TableOptions<TData>,
-      | "state"
-      | "pageCount"
-      | "getCoreRowModel"
-      | "manualFiltering"
-      | "manualPagination"
-      | "manualSorting"
+      | 'state'
+      | 'pageCount'
+      | 'getCoreRowModel'
+      | 'manualFiltering'
+      | 'manualPagination'
+      | 'manualSorting'
     >,
-    Required<Pick<TableOptions<TData>, "pageCount">> {
-  initialState?: Omit<Partial<TableState>, "sorting"> & {
-    sorting?: ExtendedColumnSort<TData>[];
-  };
-  history?: "push" | "replace";
-  startTransition?: React.TransitionStartFunction;
-  search: SearchRecord;
-  navigate: NavigateFn;
+    Required<Pick<TableOptions<TData>, 'pageCount'>> {
+  initialState?: Omit<Partial<TableState>, 'sorting'> & {
+    sorting?: ExtendedColumnSort<TData>[]
+  }
+  history?: 'push' | 'replace'
+  startTransition?: React.TransitionStartFunction
+  search: SearchRecord
+  navigate: NavigateFn
   pagination?: {
-    pageKey?: string;
-    pageSizeKey?: string;
-    defaultPage?: number;
-    defaultPageSize?: number;
-  };
+    pageKey?: string
+    pageSizeKey?: string
+    defaultPage?: number
+    defaultPageSize?: number
+  }
   globalFilter?: {
-    enabled?: boolean;
-    key?: string;
-    trim?: boolean;
-  };
+    enabled?: boolean
+    key?: string
+    trim?: boolean
+  }
   columnFilters?: Array<
     | {
-        columnId: string;
-        searchKey: string;
-        type?: "string";
+        columnId: string
+        searchKey: string
+        type?: 'string'
         // Optional transformers for custom types
-        serialize?: (value: unknown) => unknown;
-        deserialize?: (value: unknown) => unknown;
+        serialize?: (value: unknown) => unknown
+        deserialize?: (value: unknown) => unknown
       }
     | {
-        columnId: string;
-        searchKey: string;
-        type: "array";
-        serialize?: (value: unknown) => unknown;
-        deserialize?: (value: unknown) => unknown;
+        columnId: string
+        searchKey: string
+        type: 'array'
+        serialize?: (value: unknown) => unknown
+        deserialize?: (value: unknown) => unknown
       }
-  >;
-  tableName: string;
+  >
+  tableName: string
 }
 
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
@@ -77,7 +77,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     columns,
     pageCount = -1,
     initialState,
-    history = "replace",
+    history = 'replace',
     startTransition,
     navigate,
     search,
@@ -86,13 +86,13 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     globalFilter: defaultGlobalFilter,
     tableName,
     ...tableProps
-  } = props;
+  } = props
 
   const [columnVisibility, setColumnVisibility] =
     useLocalStorage<VisibilityState>(
       `column-visibility-${tableName}`,
       initialState?.columnVisibility ?? {}
-    );
+    )
 
   const {
     globalFilter,
@@ -109,7 +109,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     pagination: defaultPagination,
     globalFilter: defaultGlobalFilter,
     columnFilters: defaultColumnFilters,
-  });
+  })
 
   const table = useReactTable({
     ...tableProps,
@@ -140,7 +140,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-  });
+  })
 
-  return { table };
+  return { table }
 }
