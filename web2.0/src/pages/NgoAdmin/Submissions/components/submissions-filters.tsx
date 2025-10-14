@@ -2,13 +2,13 @@ import React, { useMemo } from 'react'
 import i18n from '@/i18n'
 import { useFormSubmissionsFilters } from '@/queries/form-submissions'
 import { useListMonitoringObserversTags } from '@/queries/monitoring-observers'
-import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions'
 import { DataSource } from '@/types/common'
 import type { Option } from '@/types/data-table'
 import { FormType, FormTypeList } from '@/types/form'
 import {
   FormSubmissionFollowUpStatus,
   FormSubmissionFollowUpStatusList,
+  FormSubmissionsSearch,
   QuestionsAnswered,
   QuestionsAnsweredList,
 } from '@/types/forms-submission'
@@ -19,6 +19,7 @@ import {
   mapQuestionsAnswered,
 } from '@/lib/i18n'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
+import { NavigateFn } from '@/hooks/use-table-url-state'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import CoalitionMemberFilter from '@/components/CoalitionMemberFilter'
@@ -55,10 +56,15 @@ const binaryOptions: Option[] = [
   },
 ]
 
-export function TableFilters() {
-  const { electionRoundId } = Route.useParams()
-  const search = Route.useSearch()
-  const navigate = Route.useNavigate()
+export function SubmissionsFilters({
+  navigate,
+  search,
+  electionRoundId,
+}: {
+  navigate: NavigateFn
+  search: FormSubmissionsSearch
+  electionRoundId: string
+}) {
   const { data: formFilters } = useFormSubmissionsFilters(
     electionRoundId,
     search.dataSource

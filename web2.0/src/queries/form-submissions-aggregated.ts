@@ -33,7 +33,7 @@ export const formSubmissionsAggregatedKeys = {
 
 const STALE_TIME = 1000 * 60 * 15 // 15 minutes
 
-export const listFormSubmissionsQueryOptions = <
+export const listFormSubmissionsAggregatedQueryOptions = <
   TResult = AggregatedFormSubmissionsTableRow[],
 >(
   electionRoundId: string,
@@ -48,15 +48,18 @@ export const listFormSubmissionsQueryOptions = <
     select,
   })
 
-export const useListFormSubmissions = <
+export const useListFormSubmissionsAggregated = <
   TResult = AggregatedFormSubmissionsTableRow[],
 >(
   electionRoundId: string,
   search: FormSubmissionsSearch,
   select?: (data: AggregatedFormSubmissionsTableRow[]) => TResult
-) => useQuery(listFormSubmissionsQueryOptions(electionRoundId, search, select))
+) =>
+  useQuery(
+    listFormSubmissionsAggregatedQueryOptions(electionRoundId, search, select)
+  )
 
-export function formSubmissionsAggregatedDetailsQueryOptions<
+export function getSubmissionsAggregatedDetailsQueryOptions<
   TResult = AggregatedFormSubmissionsModel,
 >(
   electionRoundId: string,
@@ -77,7 +80,7 @@ export function formSubmissionsAggregatedDetailsQueryOptions<
   })
 }
 
-export const useSuspenseFormSubmissionsAggregatedDetails = <
+export const useSuspenseGetSubmissionsAggregatedDetails = <
   TResult = AggregatedFormSubmissionsModel,
 >(
   electionRoundId: string,
@@ -86,7 +89,7 @@ export const useSuspenseFormSubmissionsAggregatedDetails = <
   select?: (data: AggregatedFormSubmissionsModel) => TResult
 ) =>
   useSuspenseQuery(
-    formSubmissionsAggregatedDetailsQueryOptions(
+    getSubmissionsAggregatedDetailsQueryOptions(
       electionRoundId,
       formId,
       params,

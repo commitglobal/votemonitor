@@ -27,12 +27,14 @@ export interface SingleSelectDataTableFacetedFilterProps {
   options: Option[]
   value: string
   onValueChange: (value: string | undefined) => void
+  disabled?: boolean
 }
 export interface MultiSelectDataTableFacetedFilterProps {
   title: string
   options: Option[]
   value: string[] | undefined
   onValueChange: (value: string[] | undefined) => void
+  disabled?: boolean
 }
 
 export function SingleSelectDataTableFacetedFilter({
@@ -40,6 +42,7 @@ export function SingleSelectDataTableFacetedFilter({
   options,
   onValueChange,
   value,
+  disabled,
 }: SingleSelectDataTableFacetedFilterProps) {
   return (
     <DataTableFacetedFilter
@@ -48,6 +51,7 @@ export function SingleSelectDataTableFacetedFilter({
       onValueChange={(value) => onValueChange(value?.[0])}
       value={[value].filter(Boolean)}
       multiple={false}
+      disabled={disabled}
     />
   )
 }
@@ -74,6 +78,7 @@ interface DataTableFacetedFilterProps {
   multiple?: boolean
   value: string[] | undefined
   onValueChange: (value: string[] | undefined) => void
+  disabled?: boolean
 }
 
 function DataTableFacetedFilter({
@@ -82,6 +87,7 @@ function DataTableFacetedFilter({
   title,
   options,
   multiple,
+  disabled,
 }: DataTableFacetedFilterProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -117,7 +123,12 @@ function DataTableFacetedFilter({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline' size='sm' className='border-dashed'>
+        <Button
+          variant='outline'
+          size='sm'
+          className='border-dashed'
+          disabled={disabled}
+        >
           {selectedValues?.size > 0 ? (
             <div
               role='button'
