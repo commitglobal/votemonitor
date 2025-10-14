@@ -66,6 +66,13 @@ const API = axios.create({
     'Content-Type': 'application/json',
   },
 })
+const publicAPI = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: TIMEOUT,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
 API.interceptors.request.use(async (request) => {
   try {
@@ -98,7 +105,7 @@ const handleTokenRefresh = async (originalRequest: any) => {
       throw new Error('No tokens available')
     }
 
-    const { data } = await axios.post(`${API_BASE_URL}auth/refresh`, {
+    const { data } = await publicAPI.post(`auth/refresh`, {
       token,
       refreshToken,
     })
