@@ -1,7 +1,10 @@
 import { createFileRoute, Outlet, useMatchRoute } from '@tanstack/react-router'
 import { SubmissionsRoutePage } from '@/pages/NgoAdmin/Submissions/SubmissionsRoutePage'
+import { createFileRoute, Outlet, useMatchRoute } from '@tanstack/react-router'
+import { SubmissionsRoutePage } from '@/pages/NgoAdmin/Submissions/SubmissionsRoutePage'
 
 export const Route = createFileRoute(
+  '/(app)/elections/$electionRoundId/submissions'
   '/(app)/elections/$electionRoundId/submissions'
 )({
   component: RouteComponent,

@@ -5,6 +5,7 @@ import { listFormSubmissionsByEntry } from '@/services/api/form-submissions/list
 import type { DataSource, PageResponse } from '@/types/common'
 import type {
   FormSubmissionDetailedModel,
+  FormSubmissionDetailedModel,
   FormSubmissionModel,
   FormSubmissionsSearch,
 } from '@/types/forms-submission'
@@ -59,9 +60,13 @@ export function getFormSubmissionDetailsQueryOptions<
   electionRoundId: string,
   formSubmissionId: string,
   select?: (data: FormSubmissionDetailedModel) => TResult
+  formSubmissionId: string,
+  select?: (data: FormSubmissionDetailedModel) => TResult
 ) {
   return queryOptions({
     queryKey: formSubmissionKyes.detail(electionRoundId, formSubmissionId),
+    queryFn: async () =>
+      await getSubmissionById(electionRoundId, formSubmissionId),
     queryFn: async () =>
       await getSubmissionById(electionRoundId, formSubmissionId),
     staleTime: STALE_TIME,

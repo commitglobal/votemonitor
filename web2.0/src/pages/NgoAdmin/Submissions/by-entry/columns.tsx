@@ -21,11 +21,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Entry ID' column={column} />
+        <DataTableColumnHeader title='Entry ID' column={column} />
       ),
       accessorFn: (row) => row.submissionId,
       id: 'submissionId',
+      id: 'submissionId',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Entry ID',
+      },
       meta: {
         label: 'Entry ID',
       },
@@ -33,8 +38,10 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Time submitted' column={column} />
+        <DataTableColumnHeader title='Time submitted' column={column} />
       ),
       accessorFn: (row) => row.timeSubmitted,
+      id: 'timeSubmitted',
       id: 'timeSubmitted',
       enableSorting: true,
       enableGlobalFilter: true,
@@ -44,15 +51,23 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'Time submitted',
       },
+      meta: {
+        label: 'Time submitted',
+      },
     },
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Form code' column={column} />
+        <DataTableColumnHeader title='Form code' column={column} />
       ),
       accessorFn: (row) => row.formCode,
       id: 'formCode',
+      id: 'formCode',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Form code',
+      },
       meta: {
         label: 'Form code',
       },
@@ -60,11 +75,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Form type' column={column} />
+        <DataTableColumnHeader title='Form type' column={column} />
       ),
       accessorFn: (row) => row.formType,
       id: 'formType',
+      id: 'formType',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Form type',
+      },
       meta: {
         label: 'Form type',
       },
@@ -72,12 +92,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Form name' column={column} />
+        <DataTableColumnHeader title='Form name' column={column} />
       ),
       accessorFn: (row) => row.formName,
+      id: 'formName',
       id: 'formName',
       enableSorting: true,
       enableGlobalFilter: true,
       cell: ({ row }) => (
+        <div className='break-words'>
+          {row.original.formName[row.original.defaultLanguage] ?? '-'}
         <div className='break-words'>
           {row.original.formName[row.original.defaultLanguage] ?? '-'}
         </div>
@@ -85,15 +109,24 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'Form name',
       },
+      meta: {
+        label: 'Form name',
+      },
     },
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Location - L1' column={column} />
+        <DataTableColumnHeader title='Location - L1' column={column} />
       ),
       accessorFn: (row) => row.level1,
       id: 'level1',
+      id: 'level1',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => <div>{row.original.level1 ?? '-'}</div>,
+      meta: {
+        label: 'Location - L1',
+      },
       cell: ({ row }) => <div>{row.original.level1 ?? '-'}</div>,
       meta: {
         label: 'Location - L1',
@@ -102,11 +135,17 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Location - L2' column={column} />
+        <DataTableColumnHeader title='Location - L2' column={column} />
       ),
       accessorFn: (row) => row.level2,
       id: 'level2',
+      id: 'level2',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => <div>{row.original.level2 ?? '-'}</div>,
+      meta: {
+        label: 'Location - L2',
+      },
       cell: ({ row }) => <div>{row.original.level2 ?? '-'}</div>,
       meta: {
         label: 'Location - L2',
@@ -115,11 +154,17 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Location - L3' column={column} />
+        <DataTableColumnHeader title='Location - L3' column={column} />
       ),
       accessorFn: (row) => row.level3,
       id: 'level3',
+      id: 'level3',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => <div>{row.original.level3 ?? '-'}</div>,
+      meta: {
+        label: 'Location - L3',
+      },
       cell: ({ row }) => <div>{row.original.level3 ?? '-'}</div>,
       meta: {
         label: 'Location - L3',
@@ -128,11 +173,17 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Location - L4' column={column} />
+        <DataTableColumnHeader title='Location - L4' column={column} />
       ),
       accessorFn: (row) => row.level4,
       id: 'level4',
+      id: 'level4',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => <div>{row.original.level4 ?? '-'}</div>,
+      meta: {
+        label: 'Location - L4',
+      },
       cell: ({ row }) => <div>{row.original.level4 ?? '-'}</div>,
       meta: {
         label: 'Location - L4',
@@ -141,11 +192,17 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Location - L5' column={column} />
+        <DataTableColumnHeader title='Location - L5' column={column} />
       ),
       accessorFn: (row) => row.level5,
       id: 'level5',
+      id: 'level5',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => <div>{row.original.level5 ?? '-'}</div>,
+      meta: {
+        label: 'Location - L5',
+      },
       cell: ({ row }) => <div>{row.original.level5 ?? '-'}</div>,
       meta: {
         label: 'Location - L5',
@@ -154,11 +211,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Station number' column={column} />
+        <DataTableColumnHeader title='Station number' column={column} />
       ),
       accessorFn: (row) => row.number,
       id: 'number',
+      id: 'number',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Station number',
+      },
       meta: {
         label: 'Station number',
       },
@@ -166,8 +228,10 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Observer' column={column} />
+        <DataTableColumnHeader title='Observer' column={column} />
       ),
       accessorFn: (row) => row.observerName,
+      id: 'observerName',
       id: 'observerName',
       enableSorting: true,
       enableGlobalFilter: true,
@@ -175,12 +239,17 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'Observer',
       },
+      meta: {
+        label: 'Observer',
+      },
     },
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='NGO' column={column} />
+        <DataTableColumnHeader title='NGO' column={column} />
       ),
       accessorFn: (row) => row.ngoName,
+      id: 'ngoName',
       id: 'ngoName',
       enableSorting: false,
       enableGlobalFilter: true,
@@ -188,12 +257,17 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'NGO',
       },
+      meta: {
+        label: 'NGO',
+      },
     },
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Observer tags' column={column} />
+        <DataTableColumnHeader title='Observer tags' column={column} />
       ),
       accessorFn: (row) => row.tags,
+      id: 'tags',
       id: 'tags',
       enableSorting: true,
       enableGlobalFilter: true,
@@ -221,15 +295,40 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'Observer tags',
       },
+      }) =>
+        tags.length ? (
+          <HoverCard>
+            <HoverCardTrigger>{tags.length} tags</HoverCardTrigger>
+            <HoverCardContent className='w-80'>
+              <div className='flex flex-wrap gap-2'>
+                {tags.map((tag) => (
+                  <Badge key={tag} variant='outline'>
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        ) : (
+          '-'
+        ),
+      meta: {
+        label: 'Observer tags',
+      },
     },
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Questions answered' column={column} />
+        <DataTableColumnHeader title='Questions answered' column={column} />
       ),
       accessorFn: (row) => row.numberOfQuestionsAnswered,
       id: 'numberOfQuestionsAnswered',
+      id: 'numberOfQuestionsAnswered',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Questions answered',
+      },
       meta: {
         label: 'Questions answered',
       },
@@ -237,11 +336,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Flagged answers' column={column} />
+        <DataTableColumnHeader title='Flagged answers' column={column} />
       ),
       accessorFn: (row) => row.numberOfFlaggedAnswers,
       id: 'numberOfFlaggedAnswers',
+      id: 'numberOfFlaggedAnswers',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Flagged answers',
+      },
       meta: {
         label: 'Flagged answers',
       },
@@ -249,11 +353,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Question notes' column={column} />
+        <DataTableColumnHeader title='Question notes' column={column} />
       ),
       accessorFn: (row) => row.notesCount,
       id: 'notesCount',
+      id: 'notesCount',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Question notes',
+      },
       meta: {
         label: 'Question notes',
       },
@@ -261,11 +370,16 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Media files' column={column} />
+        <DataTableColumnHeader title='Media files' column={column} />
       ),
       accessorFn: (row) => row.mediaFilesCount,
       id: 'mediaFilesCount',
+      id: 'mediaFilesCount',
       enableSorting: true,
       enableGlobalFilter: true,
+      meta: {
+        label: 'Media files',
+      },
       meta: {
         label: 'Media files',
       },
@@ -273,8 +387,10 @@ export const getFormSubmissionsColumns = (
     {
       header: ({ column }) => (
         <DataTableColumnHeader title='Follow-up status' column={column} />
+        <DataTableColumnHeader title='Follow-up status' column={column} />
       ),
       accessorFn: (row) => row.followUpStatus,
+      id: 'followUpStatus',
       id: 'followUpStatus',
       enableSorting: false,
       enableGlobalFilter: true,
@@ -286,14 +402,21 @@ export const getFormSubmissionsColumns = (
       meta: {
         label: 'Follow-up status',
       },
+      meta: {
+        label: 'Follow-up status',
+      },
     },
     {
+      header: '',
+      id: 'actions',
       header: '',
       id: 'actions',
       enableSorting: false,
       cell: ({ row }) => (
         <div className='text-right'>
+        <div className='text-right'>
           <Link
+            className='inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-purple-100'
             className='inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-purple-100'
             params={{
               electionRoundId,
@@ -303,9 +426,12 @@ export const getFormSubmissionsColumns = (
             search={{ from: router.state.location.search }}
           >
             <ChevronRightIcon className='h-4 w-4' />
+            <ChevronRightIcon className='h-4 w-4' />
           </Link>
         </div>
       ),
     },
+  ]
+}
   ]
 }

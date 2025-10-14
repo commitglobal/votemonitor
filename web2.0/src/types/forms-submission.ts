@@ -1,5 +1,5 @@
 import z from 'zod'
-import { DataSource, SortOrder, type TranslatedString } from './common'
+import type { TranslatedString } from './common'
 import { FormType } from './form'
 
 export enum FormSubmissionFollowUpStatus {
@@ -61,6 +61,18 @@ export interface FormSubmissionModel {
   tags: string[]
   timeSubmitted: string
   followUpStatus: FormSubmissionFollowUpStatus
+}
+
+export interface FormSubmissionByFormModel {
+  formId: string
+  formCode: string
+  formType: FormType
+  formName: TranslatedString
+  defaultLanguage: string
+  numberOfSubmissions: number
+  numberOfFlaggedAnswers: number
+  numberOfNotes: number
+  numberOfMediaFiles: number
 }
 
 export enum AnswerType {
