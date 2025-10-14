@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import CoalitionMemberFilter from '@/components/CoalitionMemberFilter'
 import { PollingStationFilteruseFilters } from '@/components/PollingStationFilter'
+import { DateRangeFilter } from '@/components/data-table-date-filter'
 import {
   MultiSelectDataTableFacetedFilter,
   SingleSelectDataTableFacetedFilter,
@@ -224,6 +225,23 @@ export function SubmissionsFilters({
       />
       <PollingStationFilteruseFilters search={search} navigate={navigate} />
 
+      <DateRangeFilter
+        value={{
+          from: search.submissionsFromDate,
+          to: search.submissionsToDate,
+        }}
+        onValueChange={(value) =>
+          navigate({
+            search: (prev) => ({
+              ...prev,
+              submissionsFromDate: value?.from,
+              submissionsToDate: value?.to,
+            }),
+            replace: true,
+          })
+        }
+        label='Submissions dates'
+      />
       {isFiltered && (
         <Button
           aria-label='Reset filters'
