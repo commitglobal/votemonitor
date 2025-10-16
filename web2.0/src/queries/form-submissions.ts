@@ -1,40 +1,37 @@
-import { getSubmissionById } from "@/services/api/form-submissions/get-entry.api";
-import { listFormSubmissionsByEntry } from "@/services/api/form-submissions/list-entries.api";
-import type { DataSource, PageResponse } from "@/types/common";
+import { queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { getSubmissionById } from '@/services/api/form-submissions/get-entry.api'
+import { getFormSubmissionsFilters } from '@/services/api/form-submissions/get-submissions-filters.api'
+import { listFormSubmissionsByEntry } from '@/services/api/form-submissions/list-entries.api'
+import type { DataSource, PageResponse } from '@/types/common'
 import type {
   FormSubmissionDetailedModel,
   FormSubmissionModel,
   FormSubmissionsSearch,
-} from "@/types/forms-submission";
-import {
-  queryOptions,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+} from '@/types/forms-submission'
 
 export const formSubmissionKyes = {
   all: (electionRoundId: string) =>
-    ["form-submissions", electionRoundId] as const,
+    ['form-submissions', electionRoundId] as const,
   lists: (electionRoundId: string) =>
-    [...formSubmissionKyes.all(electionRoundId), "list"] as const,
+    [...formSubmissionKyes.all(electionRoundId), 'list'] as const,
   list: (electionRoundId: string, params: FormSubmissionsSearch) =>
     [...formSubmissionKyes.lists(electionRoundId), { ...params }] as const,
   details: (electionRoundId: string) =>
-    [...formSubmissionKyes.all(electionRoundId), "detail"] as const,
+    [...formSubmissionKyes.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, formSubmissionId: string) =>
     [...formSubmissionKyes.details(electionRoundId), formSubmissionId] as const,
   filters: (electionRoundId: string, dataSource: DataSource) =>
     [
       ...formSubmissionKyes.details(electionRoundId),
       dataSource,
-      "filters",
+      'filters',
     ] as const,
-};
+}
 
-const STALE_TIME = 1000 * 60 * 15; // 15 minutes
+const STALE_TIME = 1000 * 60 * 15 // 15 minutes
 
 export const listFormSubmissionsQueryOptions = <
-  TResult = PageResponse<FormSubmissionModel>
+  TResult = PageResponse<FormSubmissionModel>,
 >(
   electionRoundId: string,
   search: FormSubmissionsSearch,
@@ -46,18 +43,18 @@ export const listFormSubmissionsQueryOptions = <
       await listFormSubmissionsByEntry(electionRoundId, search),
     staleTime: STALE_TIME,
     select,
-  });
+  })
 
 export const useListFormSubmissions = <
-  TResult = PageResponse<FormSubmissionModel>
+  TResult = PageResponse<FormSubmissionModel>,
 >(
   electionRoundId: string,
   search: FormSubmissionsSearch,
   select?: (data: PageResponse<FormSubmissionModel>) => TResult
-) => useQuery(listFormSubmissionsQueryOptions(electionRoundId, search, select));
+) => useQuery(listFormSubmissionsQueryOptions(electionRoundId, search, select))
 
 export function getFormSubmissionDetailsQueryOptions<
-  TResult = FormSubmissionDetailedModel
+  TResult = FormSubmissionDetailedModel,
 >(
   electionRoundId: string,
   formSubmissionId: string,
@@ -69,11 +66,11 @@ export function getFormSubmissionDetailsQueryOptions<
       await getSubmissionById(electionRoundId, formSubmissionId),
     staleTime: STALE_TIME,
     select,
-  });
+  })
 }
 
 export const useSuspenseGetFormSubmissionDetails = <
-  TResult = FormSubmissionDetailedModel
+  TResult = FormSubmissionDetailedModel,
 >(
   electionRoundId: string,
   formSubmissionId: string,
@@ -85,4 +82,18 @@ export const useSuspenseGetFormSubmissionDetails = <
       formSubmissionId,
       select
     )
-  );
+  )
+export const formSubmissionsFiltersQueryOptions = (
+  electionRoundId: string,
+  dataSource: DataSource
+) =>
+  queryOptions({
+    queryKey: formSubmissionKyes.filters(electionRoundId, dataSource),
+    queryFn: () => getFormSubmissionsFilters(electionRoundId, dataSource),
+    staleTime: STALE_TIME,
+  })
+
+export const useFormSubmissionsFilters = (
+  electionRoundId: string,
+  dataSource: DataSource
+) => useQuery(formSubmissionsFiltersQueryOptions(electionRoundId, dataSource))

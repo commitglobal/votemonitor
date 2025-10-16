@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { Link } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
+import { router } from '@/main'
 import type { FormSubmissionModel } from '@/types/forms-submission'
 import { ChevronRightIcon } from 'lucide-react'
 import { DateTimeFormat } from '@/constants/formats'
@@ -299,6 +300,7 @@ export const getFormSubmissionsColumns = (
               submissionId: row.original.submissionId,
             }}
             to='/elections/$electionRoundId/submissions/$submissionId'
+            search={{ from: router.state.location.search }}
           >
             <ChevronRightIcon className='h-4 w-4' />
           </Link>

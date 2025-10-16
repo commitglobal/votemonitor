@@ -1,6 +1,6 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { queryClient } from '@/main'
-import { SubmissionsByEntry } from '@/pages/NgoAdmin/Submissions/by-entry'
+import { SubmissionsByForm } from '@/pages/NgoAdmin/Submissions/by-form'
 import {
   formSubmissionsFiltersQueryOptions,
   listFormSubmissionsQueryOptions,
@@ -10,7 +10,7 @@ import { DataSource } from '@/types/common'
 import { formSubmissionsSearchSchema } from '@/types/forms-submission'
 
 export const Route = createFileRoute(
-  '/(app)/elections/$electionRoundId/submissions/'
+  '/(app)/elections/$electionRoundId/submissions/by-form/'
 )({
   validateSearch: formSubmissionsSearchSchema,
   search: {
@@ -56,5 +56,5 @@ export const Route = createFileRoute(
       listFormSubmissionsQueryOptions(electionRoundId, deps)
     )
   },
-  component: SubmissionsByEntry,
+  component: SubmissionsByForm,
 })

@@ -1,5 +1,5 @@
 import z from 'zod'
-import type { TranslatedString } from './common'
+import { DataSource, SortOrder, type TranslatedString } from './common'
 import { FormType } from './form'
 
 export enum FormSubmissionFollowUpStatus {
@@ -7,6 +7,13 @@ export enum FormSubmissionFollowUpStatus {
   NeedsFollowUp = 'NeedsFollowUp',
   Resolved = 'Resolved',
 }
+
+export const FormSubmissionFollowUpStatusList: FormSubmissionFollowUpStatus[] =
+  [
+    FormSubmissionFollowUpStatus.NotApplicable,
+    FormSubmissionFollowUpStatus.NeedsFollowUp,
+    FormSubmissionFollowUpStatus.Resolved,
+  ]
 
 export interface AttachmentModel {
   questionId: string
@@ -150,6 +157,13 @@ export enum QuestionsAnswered {
   Some = 'Some',
   All = 'All',
 }
+
+export const QuestionsAnsweredList: QuestionsAnswered[] = [
+  QuestionsAnswered.None,
+  QuestionsAnswered.Some,
+  QuestionsAnswered.All,
+]
+
 export const formSubmissionsSearchSchema = z.object({
   searchText: z.string().optional(),
   formTypeFilter: z.enum(FormType).optional(),
@@ -172,6 +186,11 @@ export const formSubmissionsSearchSchema = z.object({
   submissionsFromDate: z.coerce.date().optional(),
   submissionsToDate: z.coerce.date().optional(),
   coalitionMemberId: z.string().optional(),
+  dataSource: z.enum(DataSource).optional().default(DataSource.Ngo),
+  sortColumnName: z.string().optional(),
+  sortOrder: z.enum(SortOrder).optional(),
+  pageNumber: z.number().optional(),
+  pageSize: z.number().optional(),
 })
 
 export type FormSubmissionsSearch = z.infer<typeof formSubmissionsSearchSchema>

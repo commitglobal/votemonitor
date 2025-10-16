@@ -71,7 +71,6 @@ function RatingGroup({
 } & React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
   const scaleNumber = ratingScaleToNumber(scale)
 
-  console.log(props)
   return (
     <RadioGroupPrimitive.Root
       data-slot='radio-group'

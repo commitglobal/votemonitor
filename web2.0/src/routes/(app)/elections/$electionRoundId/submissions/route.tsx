@@ -9,12 +9,23 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const matchRoute = useMatchRoute()
-  const match = matchRoute({
+  const matchSubmissionDetails = matchRoute({
     to: '/elections/$electionRoundId/submissions/$submissionId',
     fuzzy: false,
   })
+  const matchAggregatedByForm = matchRoute({
+    to: '/elections/$electionRoundId/submissions/by-form/$formId',
+    fuzzy: false,
+  })
 
-  const isDetailRoute = match && match.submissionId !== 'by-form'
+  const isDetailRoute =
+    matchSubmissionDetails && matchSubmissionDetails.submissionId !== 'by-form'
 
-  return isDetailRoute ? <Outlet /> : <SubmissionsRoutePage />
+  return isDetailRoute ? (
+    <Outlet />
+  ) : matchAggregatedByForm ? (
+    <Outlet />
+  ) : (
+    <SubmissionsRoutePage />
+  )
 }

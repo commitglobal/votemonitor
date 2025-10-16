@@ -11,6 +11,14 @@ export enum FormType {
   Other = 'Other',
 }
 
+export const FormTypeList: FormType[] = [
+  FormType.PSI,
+  FormType.Opening,
+  FormType.Voting,
+  FormType.ClosingAndCounting,
+  FormType.Other,
+]
+
 export enum FormStatus {
   Drafted = 'Drafted',
   Published = 'Published',
@@ -37,13 +45,21 @@ export enum DisplayLogicCondition {
   Includes = 'Includes',
 }
 
+export enum QuestionType {
+  TextQuestionType = 'textQuestion',
+  NumberQuestionType = 'numberQuestion',
+  DateQuestionType = 'dateQuestion',
+  SingleSelectQuestionType = 'singleSelectQuestion',
+  MultiSelectQuestionType = 'multiSelectQuestion',
+  RatingQuestionType = 'ratingQuestion',
+}
 export interface DisplayLogic {
   parentQuestionId: string
   condition: DisplayLogicCondition
   value: string
 }
 
-export interface BaseQuestion {
+export interface BaseQuestionModel {
   id: string
   $questionType: QuestionType
   code: string
@@ -52,15 +68,15 @@ export interface BaseQuestion {
   displayLogic?: DisplayLogic
 }
 
-export interface DateQuestion extends BaseQuestion {
+export interface DateQuestionModel extends BaseQuestionModel {
   $questionType: QuestionType.DateQuestionType
 }
 
-export interface TextQuestion extends BaseQuestion {
+export interface TextQuestionModel extends BaseQuestionModel {
   $questionType: QuestionType.TextQuestionType
   inputPlaceholder?: TranslatedString
 }
-export interface NumberQuestion extends BaseQuestion {
+export interface NumberQuestionModel extends BaseQuestionModel {
   $questionType: QuestionType.NumberQuestionType
   inputPlaceholder?: TranslatedString
 }
@@ -76,15 +92,7 @@ export enum RatingScaleType {
   OneTo10 = 'OneTo10',
 }
 
-export enum QuestionType {
-  TextQuestionType = 'textQuestion',
-  NumberQuestionType = 'numberQuestion',
-  DateQuestionType = 'dateQuestion',
-  SingleSelectQuestionType = 'singleSelectQuestion',
-  MultiSelectQuestionType = 'multiSelectQuestion',
-  RatingQuestionType = 'ratingQuestion',
-}
-export interface RatingQuestion extends BaseQuestion {
+export interface RatingQuestionModel extends BaseQuestionModel {
   upperLabel?: TranslatedString
   lowerLabel?: TranslatedString
   $questionType: QuestionType.RatingQuestionType
@@ -98,11 +106,11 @@ export interface SelectOption {
   isFreeText: boolean
 }
 
-export interface SingleSelectQuestion extends BaseQuestion {
+export interface SingleSelectQuestionModel extends BaseQuestionModel {
   $questionType: QuestionType.SingleSelectQuestionType
   options: SelectOption[]
 }
-export interface MultiSelectQuestion extends BaseQuestion {
+export interface MultiSelectQuestionModel extends BaseQuestionModel {
   $questionType: QuestionType.MultiSelectQuestionType
   options: SelectOption[]
 }
@@ -122,7 +130,7 @@ export interface FormModel {
   languagesTranslationStatus: LanguagesTranslationStatus
   isFormOwner: boolean
   formAccess: FormAccessModel[]
-  questions: BaseQuestion[]
+  questions: BaseQuestionModel[]
 }
 
 export const formSearchSchema = z.object({
