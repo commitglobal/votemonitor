@@ -6,12 +6,20 @@ import {
   AggregatedAttachmentModel,
   AggregatedNoteModel,
 } from '@/types/submissions-aggregate'
-import { DownloadIcon, PlusIcon } from 'lucide-react'
+import { DownloadIcon, Languages, PlusIcon } from 'lucide-react'
+import {
+  isDateQuestionAggregate,
+  isMultiSelectQuestionAggregate,
+  isNumberQuestionAggregate,
+  isRatingQuestionAggregate,
+  isSingleSelectQuestionAggregate,
+} from '@/lib/aggregate-guards'
 import { mapFormType } from '@/lib/i18n'
 import { getTranslation } from '@/lib/translated-string'
 import { downloadFile } from '@/lib/utils'
 import { DateTimeFormat } from '@/constants/formats'
 import Attachment from '@/components/ui/attachment'
+import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,13 +29,25 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import { CopyButton } from '@/components/ui/copy-button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Item,
   ItemActions,
@@ -38,6 +58,8 @@ import {
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item'
+import { MultiSelectAggregateChart } from '@/components/multi-select-aggregate-chart'
+import { SingleSelectAggregateChart } from '@/components/single-select-aggregate-chart'
 
 function AnswerNoteItem(index: number, note: AggregatedNoteModel) {
   return (
@@ -102,7 +124,8 @@ function isAttachment(
 export function AggregatedSubmissionsPage() {
   const { electionRoundId, formId } = Route.useParams()
   const { formLanguage, ...search } = Route.useSearch()
-  const { data: data } = useSuspenseGetSubmissionsAggregatedDetails(
+  const navigate = Route.useNavigate()
+  const { data } = useSuspenseGetSubmissionsAggregatedDetails(
     electionRoundId,
     formId,
     search
@@ -134,65 +157,53 @@ export function AggregatedSubmissionsPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <Card>
-        <CardContent>
-          <ItemGroup className='flex flex-row justify-between gap-2'>
-            {/* <Item>
-              <ItemContent>
-                <ItemTitle>Observer</ItemTitle>
-                <ItemDescription>
-                  <Link
-                    to='/elections/$electionRoundId/observers/$observerId'
-                    params={{
-                      electionRoundId,
-                      observerId: submission.monitoringObserverId,
-                    }}
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <span> {data.submissionsAggregate.formCode} </span>
+            <span>
+              {getTranslation(
+                data.submissionsAggregate.name,
+                formDisplayLanguage
+              )}
+            </span>
+
+            <Badge>{mapFormType(data.submissionsAggregate.formType)}</Badge>
+          </CardTitle>
+          <CardAction>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='outline' className='gap-2 bg-transparent'>
+                  <Languages className='h-5 w-5' />
+                  <span>{formDisplayLanguage}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='w-48'>
+                {data.submissionsAggregate.languages.map((language) => (
+                  <DropdownMenuItem
+                    key={language}
+                    onClick={() =>
+                      navigate({
+                        to: '.',
+                        search: (prev) => ({
+                          ...prev,
+                          formLanguage: language,
+                        }),
+                      })
+                    }
+                    className='flex cursor-pointer items-center gap-2'
                   >
-                    {submission.observerName}
-                  </Link>
-                </ItemDescription>
-              </ItemContent>
-            </Item> */}
-          </ItemGroup>
-
-          <ItemGroup>
-            {/*  {!submission.isOwnObserver ? (
-              <Item>
-                <ItemContent>
-                  <ItemTitle>NGO</ItemTitle>
-                  <ItemDescription>{submission.ngoName}</ItemDescription>
-                </ItemContent>
-              </Item>
-            ) : null} */}
-
-            <Item>
-              <ItemContent>
-                <ItemTitle>Form type</ItemTitle>
-                <ItemDescription>
-                  {mapFormType(data.submissionsAggregate.formType)}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-            <Item>
-              <ItemContent>
-                <ItemTitle>Form code</ItemTitle>
-                <ItemDescription>
-                  {data.submissionsAggregate.formCode}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-            <Item>
-              <ItemContent>
-                <ItemTitle>Form name</ItemTitle>
-                <ItemDescription>
-                  {getTranslation(
-                    data.submissionsAggregate.name,
-                    formDisplayLanguage
-                  )}
-                </ItemDescription>
-              </ItemContent>
-            </Item>
-          </ItemGroup>
-
+                    {/* <span className='text-lg'>{language.flag}</span> */}
+                    <span className='flex-1'>{language}</span>
+                    {formDisplayLanguage === language && (
+                      <span className='text-primary'>✓</span>
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
           {Object.entries(data.submissionsAggregate.aggregates).map(
             ([questionId, aggregate]) => {
               const notes = data.notes.filter(
@@ -225,44 +236,58 @@ export function AggregatedSubmissionsPage() {
                             formDisplayLanguage
                           )}
                         </ItemDescription>
+                        {isDateQuestionAggregate(aggregate) && <>TBD</>}
+                        {isNumberQuestionAggregate(aggregate) && <>TBD</>}
+                        {isRatingQuestionAggregate(aggregate) && <>TBD</>}
+                        {isSingleSelectQuestionAggregate(aggregate) && (
+                          <SingleSelectAggregateChart
+                            language={formDisplayLanguage}
+                            aggregate={aggregate}
+                          />
+                        )}
+                        {isMultiSelectQuestionAggregate(aggregate) && (
+                          <MultiSelectAggregateChart
+                            language={formDisplayLanguage}
+                            aggregate={aggregate}
+                          />
+                        )}
+                        {isDateQuestionAggregate(aggregate) && <>TBD</>}
                       </ItemContent>
                     </Item>
                   </ItemGroup>
                   {/** TODO: add graphs here */}
-                  <ItemGroup>
-                    {(notes.length > 0 || attachments.length > 0) && (
-                      <Collapsible>
-                        <CollapsibleTrigger asChild>
-                          <Button
-                            variant='link'
-                            size='sm'
-                            className='cursor-pointer'
-                          >
-                            {
-                              <>
-                                {notes.length > 0 && `${notes.length} notes`}
-                                {notes.length > 0 &&
-                                  attachments.length > 0 &&
-                                  ' & '}
-                                {attachments.length > 0 &&
-                                  `${attachments.length} media files`}
-                              </>
-                            }
-                            <PlusIcon />
-                          </Button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <ItemGroup className='gap-2'>
-                            {answerAndAttachments.map((data, index) =>
-                              isAttachment(data)
-                                ? AnswerAttachmentItem(index, data)
-                                : AnswerNoteItem(index, data)
-                            )}
-                          </ItemGroup>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    )}
-                  </ItemGroup>
+                  {(notes.length > 0 || attachments.length > 0) && (
+                    <Collapsible className='ml-2'>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant='link'
+                          size='sm'
+                          className='cursor-pointer'
+                        >
+                          {
+                            <>
+                              {notes.length > 0 && `${notes.length} notes`}
+                              {notes.length > 0 &&
+                                attachments.length > 0 &&
+                                ' & '}
+                              {attachments.length > 0 &&
+                                `${attachments.length} media files`}
+                            </>
+                          }
+                          <PlusIcon />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <ItemGroup className='gap-2'>
+                          {answerAndAttachments.map((data, index) =>
+                            isAttachment(data)
+                              ? AnswerAttachmentItem(index, data)
+                              : AnswerNoteItem(index, data)
+                          )}
+                        </ItemGroup>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
                 </div>
               )
             }

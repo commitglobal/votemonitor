@@ -7,6 +7,7 @@ import {
   RatingQuestionModel,
   SingleSelectQuestionModel,
   TextQuestionModel,
+  MultiSelectQuestionModel,
 } from './form'
 
 export enum QuestionTypeAggregate {
@@ -61,7 +62,7 @@ export interface SingleSelectQuestionAggregateModel
 export interface MultiSelectQuestionAggregateModel
   extends BaseQuestionAggregateModel {
   answersHistogram: Record<string, number>
-  question: SingleSelectQuestionModel
+  question: MultiSelectQuestionModel
 }
 
 export interface ResponderModel {
