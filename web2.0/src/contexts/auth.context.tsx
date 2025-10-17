@@ -6,26 +6,13 @@ import { STORAGE_KEYS } from '@/constants/storage-keys'
 
 export type UserRole = 'PlatformAdmin' | 'NgoAdmin'
 
-export interface ForgotPasswordApiResponse {
-  success: boolean
-  errors?: {
-    name: string
-    reason: string
-  }[]
-}
-
 export interface AuthContext {
   isAuthenticated: boolean
   userRole: UserRole | null
   email: string | null
-  forgotPasswordApiResponse?: ForgotPasswordApiResponse | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
-  forgotPassword: (email: string) => Promise<void>
-  setForgotPasswordApiResponse: React.Dispatch<
-    React.SetStateAction<ForgotPasswordApiResponse | null>
-  >
 }
 
 const AuthContext = React.createContext<AuthContext>({
@@ -33,8 +20,6 @@ const AuthContext = React.createContext<AuthContext>({
   isLoading: true,
   email: '',
   login: (email: string, password: string) => Promise.resolve(),
-  forgotPassword: (email: string) => Promise.resolve(),
-  setForgotPasswordApiResponse: () => {},
   logout: () => Promise.resolve(),
   userRole: 'NgoAdmin',
 })
@@ -44,8 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userRole, setUserRole] = React.useState<UserRole | null>(null)
   const [email, setEmail] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
-  const [forgotPasswordApiResponse, setForgotPasswordApiResponse] =
-    React.useState<ForgotPasswordApiResponse | null>(null)
 
   React.useEffect(() => {
     try {
@@ -103,36 +86,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const forgotPassword = async (email: string) => {
-    setIsLoading(true)
-    let response
-    try {
-      response = await publicAPI.post('auth/forgot-password', {
-        email,
-      })
-      setForgotPasswordApiResponse({ success: true })
-    } catch (err: unknown) {
-      console.log('Error while trying to send forgot password email', err)
-      setForgotPasswordApiResponse({
-        success: false,
-        errors: response?.data.errors,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         userRole,
         email,
-        forgotPasswordApiResponse,
-        setForgotPasswordApiResponse,
         isLoading,
         login,
-        forgotPassword,
         logout,
       }}
     >
