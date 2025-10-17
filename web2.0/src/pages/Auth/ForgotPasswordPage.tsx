@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouterState } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { useResetPasswordMutation } from '@/mutations/auth-mutations'
 import { Send } from 'lucide-react'
 import { toast } from 'sonner'
@@ -65,16 +65,32 @@ function ForgotPasswordPage() {
         <div className='flex flex-col gap-6'>
           <Card>
             <CardHeader>
-              <CardTitle className='text-2xl'>Forgot your password?</CardTitle>
+              <CardTitle className='text-2xl'>
+                {displaySuccessMessage
+                  ? 'Email sent sucessfully'
+                  : 'Forgot your password?'}
+              </CardTitle>
               <CardDescription>
-                Enter your email below and we will send you a link to reset it.
+                {displaySuccessMessage ? (
+                  <div className='flex flex-col items-start'>
+                    <span>
+                      If there is an account associated with this email, you
+                      should have received an email with a password reset link.
+                    </span>
+                    <Button
+                      className='mt-2 h-auto p-0 text-sm underline underline-offset-4'
+                      variant='link'
+                      asChild
+                    >
+                      <Link to='/login'>Go back to the login page.</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  'Enter your email below and we will send you a link to reset it.'
+                )}
               </CardDescription>
             </CardHeader>
-            {displaySuccessMessage ? (
-              <CardContent className='grid gap-4'>
-                <>email sent TDB</>
-              </CardContent>
-            ) : (
+            {!displaySuccessMessage && (
               <Form {...form}>
                 <form
                   id='forgot-password-form'
