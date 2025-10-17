@@ -1,5 +1,5 @@
 import * as React from 'react'
-import API from '@/services/api'
+import publicAPI from '@/services/api'
 import { decodeToken } from '@/lib/jwt'
 import { setAuthTokens } from '@/lib/utils'
 import { STORAGE_KEYS } from '@/constants/storage-keys'
@@ -8,11 +8,11 @@ export type UserRole = 'PlatformAdmin' | 'NgoAdmin'
 
 export interface AuthContext {
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
   userRole: UserRole | null
   email: string | null
   isLoading: boolean
+  login: (email: string, password: string) => Promise<void>
+  logout: () => Promise<void>
 }
 
 const AuthContext = React.createContext<AuthContext>({
@@ -88,7 +88,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, userRole, email, login, logout, isLoading }}
+      value={{
+        isAuthenticated,
+        userRole,
+        email,
+        isLoading,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
