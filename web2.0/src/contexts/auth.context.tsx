@@ -1,5 +1,5 @@
 import * as React from 'react'
-import API from '@/services/api'
+import publicAPI from '@/services/api'
 import { decodeToken } from '@/lib/jwt'
 import { setAuthTokens } from '@/lib/utils'
 import { STORAGE_KEYS } from '@/constants/storage-keys'
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const {
         data: { token, refreshToken, refreshTokenExpiryTime },
-      } = await API.post('auth/login', {
+      } = await publicAPI.post('auth/login', {
         email,
         password,
       })
@@ -107,7 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
     let response
     try {
-      response = await API.post('auth/forgot-password', {
+      response = await publicAPI.post('auth/forgot-password', {
         email,
       })
       setForgotPasswordApiResponse({ success: true })
