@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "106",
+      "buildNumber": "107",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -26,7 +26,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 106,
+      "versionCode": 107,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
