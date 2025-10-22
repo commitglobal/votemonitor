@@ -5,7 +5,7 @@ import { ScrollViewProps } from "react-native";
 import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerActions } from "@react-navigation/native";
-import { useNavigation } from "expo-router";
+import { useNavigationContainerRef } from "expo-router";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";
 import { Typography } from "../../../../components/Typography";
@@ -21,7 +21,7 @@ type DrawerContentProps = ScrollViewProps & {
 
 export const DrawerContent = (props: DrawerContentProps) => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation = useNavigationContainerRef();
   const theme = useTheme();
 
   const appVersion = Constants.expoConfig?.version;
@@ -31,7 +31,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
 
   const handleSelectElectionRound = (electionRoundId: string) => {
     setSelectedElectionRound(electionRoundId);
-    navigation.dispatch(DrawerActions.closeDrawer());
+    navigation.dispatch({ type: "TOGGLE_DRAWER" });
   };
 
   return (

@@ -19,7 +19,7 @@ import * as Notifications from "expo-notifications";
 import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const routingIntegration = Sentry.reactNavigationIntegration();
 
 // replace console.* for disable log on production
 if (process.env.NODE_ENV === "production") {
@@ -47,14 +47,7 @@ Sentry.init({
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
   tracesSampleRate: process.env.EXPO_PUBLIC_ENVIRONMENT === "production" ? 0.2 : 0,
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
-      routingInstrumentation,
-      enableNativeFramesTracking: !isRunningInExpoGo(),
-      // ...
-    }),
-  ],
+  integrations: [Sentry.reactNativeTracingIntegration()],
 });
 
 SplashScreen.preventAutoHideAsync();
@@ -74,7 +67,7 @@ function RootLayout() {
 
   React.useEffect(() => {
     if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref);
+      routingIntegration.registerNavigationContainer(ref);
     }
   }, [ref]);
 
