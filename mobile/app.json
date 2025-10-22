@@ -78,6 +78,16 @@
       [
         "expo-build-properties",
         {
+          "ios": {
+            "extraPods": [
+              {
+                "name": "simdjson",
+                "configurations": ["Debug", "Release"],
+                "path": "../node_modules/@nozbe/simdjson",
+                "modular_headers": true
+              }
+            ]
+          },
           "android": {
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
