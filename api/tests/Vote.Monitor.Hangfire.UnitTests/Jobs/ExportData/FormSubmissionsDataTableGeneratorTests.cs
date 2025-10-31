@@ -112,6 +112,7 @@ public class FormSubmissionsDataTableGeneratorTests
     private static readonly string[] _submissionColumns =
     [
         "SubmissionId",
+        "SubmissionNumber",
         "TimeSubmitted",
         "FollowUpStatus",
         "Level1",

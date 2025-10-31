@@ -128,6 +128,7 @@ public class ExportFormSubmissionsJob(
             	SUBMISSIONS AS (
             		SELECT
             			PSI."Id" AS "SubmissionId",
+            			1 as "SubmissionNumber",
             			PSI."PollingStationInformationFormId" AS "FormId",
             			'PSI' AS "FormType",
             			PSI."PollingStationId",
@@ -193,6 +194,14 @@ public class ExportFormSubmissionsJob(
             		UNION ALL
             		SELECT
             			FS."Id" AS "SubmissionId",
+            			ROW_NUMBER() OVER (
+                        PARTITION BY
+            	            FS."PollingStationId",
+            	            F."Id",
+                            FS."MonitoringObserverId"
+            	            ORDER BY
+            		            FS."CreatedAt"
+                        ) AS "SubmissionNumber",
             			F."Id" AS "FormId",
             			F."FormType",
             			FS."PollingStationId",
@@ -298,6 +307,7 @@ public class ExportFormSubmissionsJob(
             	)
             SELECT
             	S."SubmissionId",
+            	S."SubmissionNumber",
             	S."FormId",
             	S."FormType",
             	S."TimeSubmitted",
