@@ -20,6 +20,7 @@ public class FormSubmissionsDataTable
 
         _header.AddRange([
             "SubmissionId",
+            "SubmissionNumber",
             "TimeSubmitted",
             "FollowUpStatus",
             "Level1",
