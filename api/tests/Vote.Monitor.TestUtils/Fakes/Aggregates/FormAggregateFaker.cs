@@ -13,12 +13,13 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
         List<string>? languages = null,
         List<BaseQuestion>? questions = null,
         FormStatus? status = null,
-        FormType? formType = null)
+        FormType? formType = null,
+        string? code = null)
     {
         languages ??= [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1];
         electionRound ??= new ElectionRoundAggregateFaker().Generate();
         monitoringNgo ??= new MonitoringNgoAggregateFaker(electionRound: electionRound).Generate();
-
+        code ??= "C1";
         var translatedStringFaker = new TranslatedStringFaker(languages);
 
         var numberQuestionText = translatedStringFaker.Generate();
@@ -59,7 +60,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
             formType ??= faker.PickRandom(FormType.List.ToArray());
 
             var form = Form.Create(electionRound, monitoringNgo, formType,
-                "C1", translatedStringFaker.Generate(), translatedStringFaker.Generate(),
+                code, translatedStringFaker.Generate(), translatedStringFaker.Generate(),
                 languages.First(), languages, null, questions);
 
             if (status == FormStatus.Obsolete)

@@ -17,7 +17,8 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         string number,
         string address,
         int displayOrder,
-        JsonDocument tags) : this(Guid.NewGuid(), electionRound, level1, level2, level3, level4, level5, number, address, displayOrder, tags)
+        JsonDocument tags,
+        string? secondaryId = null) : this(Guid.NewGuid(), electionRound, level1, level2, level3, level4, level5, number, address, displayOrder, tags, secondaryId)
     {
     }
 
@@ -32,10 +33,11 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         int displayOrder,
         JsonDocument tags,
         DateTime createdOn,
-        Guid userId)
+        Guid userId,
+        string? secondaryId = null)
     {
         var pollingStation = new PollingStation(electionRound, level1, level2, level3, level4, level5, number, address, displayOrder,
-            tags);
+            tags, secondaryId);
 
         pollingStation.CreatedOn = createdOn;
         pollingStation.CreatedBy = userId;
@@ -44,6 +46,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     }
 
     public Guid Id { get; private set; }
+    public string? SecondaryId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
     public Guid ElectionRoundId { get; private set; }
 
@@ -58,7 +61,8 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         string number,
         string address,
         int displayOrder,
-        JsonDocument tags)
+        JsonDocument tags,
+        string? secondaryId = null)
     {
         Id = id;
         ElectionRoundId = electionRound.Id;
@@ -72,6 +76,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;
+        SecondaryId = secondaryId;
     }
 
     public string Level1 { get; private set; }
