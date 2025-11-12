@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 
-namespace Feature.Form.Submissions.SetCompletion;
+namespace Feature.Form.Submissions.SetCompletionV2;
 
-[Obsolete("Will be removed in future version")]
 public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Put("/api/election-rounds/{electionRoundId}/form-submissions:setCompletion");
+        Put("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:setCompletion");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Updates completion status status for a submission"; });
@@ -30,9 +29,8 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             .Where(x => x.MonitoringObserver.ObserverId == req.ObserverId
                         && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId
-                        && x.Form.ElectionRoundId == req.ElectionRoundId
-                        && x.PollingStationId == req.PollingStationId)
+                        && x.Id == req.SubmissionId
+                        && x.Form.ElectionRoundId == req.ElectionRoundId)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsCompleted, req.IsCompleted), cancellationToken: ct);
 
         return TypedResults.NoContent();
