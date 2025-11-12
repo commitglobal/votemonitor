@@ -31,7 +31,15 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         }
 
 
-        var submissions = await context.FormSubmissions.Select(fs => new
+        var submissions = await context.FormSubmissions
+            .Where(x =>
+                x.ElectionRoundId == req.ElectionRoundId
+                && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId
+                && x.MonitoringObserver.ObserverId == req.ObserverId)
+            .Where(x => req.PollingStationIds != null && req.PollingStationIds.Any() &&
+                        req.PollingStationIds.Contains(x.PollingStationId))
+            .AsNoTracking()
+            .Select(fs => new
             {
                 fs.Id,
                 fs.PollingStationId,
@@ -47,13 +55,14 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                         a.IsCompleted && !a.IsDeleted),
                 NumberOfNotes = context.Notes.Count(n =>
                     n.SubmissionId == fs.Id && n.MonitoringObserverId == fs.MonitoringObserverId),
-            }).AsNoTracking()
+            })
             .ToListAsync(ct);
-        
+
 
         return TypedResults.Ok(new Response
         {
-            Submissions = submissions.Select(entity =>     new FormSubmissionModel(){
+            Submissions = submissions.Select(entity => new FormSubmissionModel()
+            {
                 Id = entity.Id,
                 PollingStationId = entity.PollingStationId,
                 FormId = entity.FormId,
@@ -64,10 +73,8 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                 IsCompleted = entity.IsCompleted,
                 CreatedAt = entity.CreatedAt,
                 LastUpdatedAt = entity.LastUpdatedAt,
-                NumberOfAttachments= entity.NumberOfAttachments,
-                NumberOfNotes= entity.NumberOfNotes,
-                
-                
+                NumberOfAttachments = entity.NumberOfAttachments,
+                NumberOfNotes = entity.NumberOfNotes,
             }).ToList()
         });
     }
