@@ -67,8 +67,8 @@ const PersistGateLoadingScreen = ({ totalMutations }: { totalMutations: number }
               totalMutations ? ((totalMutations - runningMutations) / totalMutations) * 100 : 0
             }
             size={98}
-            progressCircleColors={["#fff", "#A16207", "#10B981"]}
-            backgroundCircleColors={["#fff", "#fff", "#fff"]}
+            progressColors={["#fff", "#A16207", "#10B981"]}
+            backgroundColors={["#fff", "#fff", "#fff"]}
           />
         </YStack>
         <Icon icon="splashLogo" marginTop={0} />
