@@ -68,6 +68,7 @@ const Login = () => {
   return (
     <Screen
       preset="fixed"
+      backgroundColor="white"
       contentContainerStyle={{
         flexGrow: 1,
         flex: 1,
