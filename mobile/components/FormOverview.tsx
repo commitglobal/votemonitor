@@ -34,8 +34,8 @@ const FormOverview = ({
       <Typography preset="body1" fontWeight="700">
         {t("overview.heading")}
       </Typography>
-      <XStack alignItems="center" justifyContent="space-between">
-        <YStack gap="$sm" maxWidth="60%">
+      <XStack alignItems="center">
+        <YStack gap="$sm" flex={1}>
           <Typography fontWeight="500" color="$gray5">
             {t("overview.status")}:{" "}
             <Typography fontWeight="700">
@@ -50,16 +50,17 @@ const FormOverview = ({
           </Typography>
         </YStack>
         {/* TODO: This doesn't look good */}
-        <YStack maxWidth="40%">
+        <YStack>
           <CircularProgress
             progress={(completedAnswers / numberOfQuestions) * 100}
             size={width > 400 ? 98 : 90}
           />
         </YStack>
       </XStack>
+
       <Button
         preset="outlined"
-        marginTop="$md"
+        marginTop="$lg"
         disabled={completedAnswers === numberOfQuestions}
         onPress={onFormActionClick}
       >

@@ -2,224 +2,143 @@ import React, { useEffect } from "react";
 import { Svg, Circle } from "react-native-svg";
 import Animated, {
   useSharedValue,
-  withTiming,
   useAnimatedProps,
-  useDerivedValue,
+  withTiming,
   interpolateColor,
   useAnimatedStyle,
-  SharedValue,
-  createAnimatedPropAdapter,
-  processColor,
 } from "react-native-reanimated";
-import { View } from "tamagui";
-import { useTranslation } from "react-i18next";
+import { View, Text } from "tamagui";
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 export interface CircularProgressProps {
   progress: number;
   size?: number;
-  progressCircleColors?: string[];
-  backgroundCircleColors?: string[];
+  strokeWidth?: number;
+  progressColors?: [string, string, string];
+  backgroundColors?: [string, string, string];
+  textColors?: [string, string, string];
+  duration?: number;
+  showPercentage?: boolean;
+  label?: string;
 }
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-const CircularProgress = (props: CircularProgressProps): JSX.Element => {
-  const { progress: inputProgress } = props;
-
-  const progress = (inputProgress * 360) / 100;
-  const animatedProgress = useSharedValue(progress);
-
-  const SIZE = props.size || 150;
-  const STROKEWIDTH = 8;
-  const RADIUS = (SIZE - STROKEWIDTH) / 2;
-  const MAX_PROGRESS = 360;
-  const duration = 750;
-
-  useEffect(() => {
-    animatedProgress.value = withTiming(progress, { duration });
-  }, [progress]);
-
-  return (
-    <View alignItems="center" justifyContent="center">
-      <AnimatedText
-        animatedProgress={animatedProgress}
-        maxProgress={MAX_PROGRESS}
-        inputProgress={inputProgress}
-      />
-
-      <Svg width={SIZE} height={SIZE}>
-        <BackgroundCircle
-          animatedProgress={animatedProgress}
-          maxProgress={MAX_PROGRESS}
-          size={SIZE}
-          radius={RADIUS}
-          strokeWidth={STROKEWIDTH}
-          progressColors={props.backgroundCircleColors}
-        ></BackgroundCircle>
-        <ProgressCircle
-          animatedProgress={animatedProgress}
-          size={SIZE}
-          radius={RADIUS}
-          maxProgress={MAX_PROGRESS}
-          strokeWidth={STROKEWIDTH}
-          progressColors={props.progressCircleColors}
-        />
-      </Svg>
-    </View>
-  );
-};
-
-const ProgressCircle = ({
-  animatedProgress,
-  size,
-  radius,
-  maxProgress,
-  strokeWidth,
-  progressColors,
-}: {
-  animatedProgress: SharedValue<number>;
-  size: number;
-  radius: number;
-  maxProgress: number;
-  strokeWidth: number;
-  progressColors?: string[];
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  progress,
+  size = 150,
+  strokeWidth = 8,
+  progressColors = ["#E4E4E7", "#FFD209", "#10B981"],
+  backgroundColors = ["#E4E4E7", "rgba(255, 210, 9, 0.25)", "rgba(16, 185, 129, 0.25)"],
+  textColors = ["#71717A", "#A16207", "#10B981"],
+  duration = 750,
+  showPercentage = true,
+  label = "Progress",
 }) => {
-  const CIRCLE_LENGTH = radius * 2 * Math.PI;
+  // Calculate dimensions
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const center = size / 2;
 
-  const colors = !progressColors ? ["#E4E4E7", "#FFD209", "#FFD209", "#10B981"] : progressColors;
+  // Clamp progress between 0 and 100
+  const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
-  const strokeColor = useDerivedValue(() => {
-    return interpolateColor(animatedProgress.value, [0, 1, maxProgress - 1, maxProgress], colors);
+  // Shared value for animation - always starts at 0 on mount for consistent behavior
+  const animatedProgress = useSharedValue(0);
+
+  // Update progress when prop changes
+  useEffect(() => {
+    animatedProgress.value = withTiming(clampedProgress, {
+      duration,
+    });
+  }, [clampedProgress, duration, animatedProgress]);
+
+  // Animated props for progress circle
+  const progressCircleProps = useAnimatedProps(() => {
+    "worklet";
+    const strokeDashoffset = circumference - (circumference * animatedProgress.value) / 100;
+    const color = interpolateColor(animatedProgress.value, [0, 50, 100], progressColors);
+
+    return {
+      strokeDashoffset,
+      stroke: color,
+    };
   });
 
-  const animatedProps = useAnimatedProps(
-    () => {
-      return {
-        strokeDashoffset: (CIRCLE_LENGTH * (maxProgress - animatedProgress.value)) / maxProgress,
-        stroke: strokeColor.value,
-      };
-    },
-    [],
-    createAnimatedPropAdapter(
-      (props) => {
-        if (Object.keys(props).includes("fill")) {
-          props.fill = { type: 0, payload: processColor(props.fill) };
-        }
-        if (Object.keys(props).includes("stroke")) {
-          props.stroke = { type: 0, payload: processColor(props.stroke) };
-        }
-      },
-      ["fill", "stroke"],
-    ),
-  );
+  // Animated props for background circle
+  const backgroundCircleProps = useAnimatedProps(() => {
+    "worklet";
+    const color = interpolateColor(animatedProgress.value, [0, 50, 100], backgroundColors);
 
-  return (
-    <AnimatedCircle
-      cx={size / 2}
-      cy={size / 2}
-      r={radius}
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      fill="none"
-      strokeDasharray={`${CIRCLE_LENGTH} ${CIRCLE_LENGTH}`}
-      animatedProps={animatedProps}
-    />
-  );
-};
-
-const BackgroundCircle = ({
-  animatedProgress,
-  maxProgress,
-  size,
-  radius,
-  strokeWidth,
-  progressColors,
-}: {
-  animatedProgress: SharedValue<number>;
-  maxProgress: number;
-  size: number;
-  radius: number;
-  strokeWidth: number;
-  progressColors?: string[];
-}) => {
-  const colors = !progressColors
-    ? ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"]
-    : progressColors;
-
-  const animatedProps = useAnimatedProps(
-    () => {
-      return {
-        stroke: interpolateColor(
-          animatedProgress.value,
-          [0, 1, maxProgress - 1, maxProgress],
-          colors,
-        ),
-      };
-    },
-    [],
-    createAnimatedPropAdapter(
-      (props) => {
-        if (Object.keys(props).includes("fill")) {
-          props.fill = { type: 0, payload: processColor(props.fill) };
-        }
-        if (Object.keys(props).includes("stroke")) {
-          props.stroke = { type: 0, payload: processColor(props.stroke) };
-        }
-      },
-      ["fill", "stroke"],
-    ),
-  );
-
-  return (
-    <AnimatedCircle
-      fill="none"
-      cx={size / 2}
-      cy={size / 2}
-      r={radius}
-      strokeWidth={strokeWidth}
-      animatedProps={animatedProps}
-    />
-  );
-};
-
-/**
- * Animated text which displays X % completed
- * Animation consist in color changing based on animatedProgress value.
- */
-const AnimatedText = ({
-  animatedProgress,
-  maxProgress,
-  inputProgress,
-}: {
-  animatedProgress: SharedValue<number>;
-  maxProgress: number;
-  inputProgress: number;
-}) => {
-  const { t } = useTranslation("form_overview");
-  const animatedStyle = useAnimatedStyle(() => {
     return {
-      color: interpolateColor(
-        animatedProgress.value,
-        [0, 1, maxProgress - 1, maxProgress],
-        ["#71717A", "#A16207", "#A16207", "#10B981"],
-      ),
+      stroke: color,
+    };
+  });
+
+  // Animated text style
+  const textStyle = useAnimatedStyle(() => {
+    return {
+      color: interpolateColor(animatedProgress.value, [0, 50, 100], textColors),
     };
   });
 
   return (
-    <View flexDirection="column" alignItems="center" position="absolute">
-      <Animated.Text
-        maxFontSizeMultiplier={1.2}
-        style={[animatedStyle, { fontSize: 14, fontWeight: "700" }]}
-      >
-        {Math.round(inputProgress)} %
-      </Animated.Text>
-      <Animated.Text
-        maxFontSizeMultiplier={1.2}
-        style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}
-      >
-        {t("overview.progress")}
-      </Animated.Text>
+    <View alignItems="center" justifyContent="center">
+      {showPercentage && (
+        <View flexDirection="column" alignItems="center" position="absolute" zIndex={10}>
+          <AnimatedText
+            style={[
+              textStyle,
+              {
+                fontSize: 16,
+                fontWeight: "700",
+              },
+            ]}
+          >
+            {Math.round(clampedProgress)}%
+          </AnimatedText>
+          {label && (
+            <AnimatedText
+              style={[
+                textStyle,
+                {
+                  fontSize: 12,
+                  fontWeight: "600",
+                  marginTop: 4,
+                },
+              ]}
+            >
+              {label}
+            </AnimatedText>
+          )}
+        </View>
+      )}
+
+      <Svg width={size} height={size}>
+        {/* Background Circle */}
+        <AnimatedCircle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          animatedProps={backgroundCircleProps}
+        />
+
+        {/* Progress Circle */}
+        <AnimatedCircle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          strokeDasharray={`${circumference} ${circumference}`}
+          strokeLinecap="round"
+          rotation="-90"
+          origin={`${center}, ${center}`}
+          animatedProps={progressCircleProps}
+        />
+      </Svg>
     </View>
   );
 };
