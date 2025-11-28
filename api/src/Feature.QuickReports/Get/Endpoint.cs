@@ -85,6 +85,7 @@ public class Endpoint(
                                    WHERE
                                        qra."ElectionRoundId" = @electionRoundId
                                      AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
+                                     and qra."QuickReportId" = @quickReportId
                                      AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
                          
                   FROM "QuickReports" QR
@@ -154,6 +155,7 @@ public class Endpoint(
                                    WHERE
                                        qra."ElectionRoundId" = @electionRoundId
                                      AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
+                                     AND qra."QuickReportId"  = @quickReportId
                                      AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
                          
                   FROM "QuickReports" QR
