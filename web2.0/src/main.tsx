@@ -97,20 +97,15 @@ function InnerApp() {
       disableTransitionOnChange
       enableColorScheme
     >
-      <TooltipProvider>
-        <div vaul-drawer-wrapper=''>
-          <div className='bg-background relative flex min-h-screen flex-col'>
-            <RouterProvider router={router} context={{ auth, queryClient }} />
-          </div>
+      <div vaul-drawer-wrapper=''>
+        <div className='bg-background relative flex min-h-screen flex-col'>
+          <RouterProvider router={router} context={{ auth, queryClient }} />
         </div>
-        <TailwindIndicator />
-        <Toaster duration={5000} richColors />
-        <TanStackRouterDevelopmentTools
-          router={router}
-          position='bottom-left'
-        />
-        <TanStackQueryDevelopmentTools client={queryClient} position='right' />
-      </TooltipProvider>
+      </div>
+      <TailwindIndicator />
+      <Toaster duration={5000} richColors />
+      <TanStackRouterDevelopmentTools router={router} position='bottom-left' />
+      <TanStackQueryDevelopmentTools client={queryClient} position='right' />
     </ThemeProvider>
   )
 }
