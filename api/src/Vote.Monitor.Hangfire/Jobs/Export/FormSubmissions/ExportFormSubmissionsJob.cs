@@ -227,7 +227,7 @@ public class ExportFormSubmissionsJob(
             					FROM
             						"Attachments" A
             					WHERE
-            						A."ElectionRoundId" = @ELECTIONROUNDID
+            						A."MonitoringObserverId" = FS."MonitoringObserverId"
             						AND (
             							(A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility 
             							OR A."SubmissionId" = FS."Id"
@@ -244,10 +244,11 @@ public class ExportFormSubmissionsJob(
             					FROM
             						"Notes" N
             					WHERE
-            						N."ElectionRoundId" = @ELECTIONROUNDID
-            						AND N."FormId" = FS."FormId"
-            						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-            						AND FS."PollingStationId" = N."PollingStationId"
+            						N."MonitoringObserverId" = FS."MonitoringObserverId"
+            						AND (
+            							(N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility 
+            							OR N."SubmissionId" = FS."Id"
+            						)
             				),
             				'[]'::JSONB
             			) AS "Notes",
