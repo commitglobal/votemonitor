@@ -186,9 +186,11 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                    fs."NumberOfFlaggedAnswers",
                                                    (SELECT COUNT(1)
                                                     FROM "Attachments" A
-                                                    WHERE A."FormId" = fs."FormId"
-                                                      AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                                                      AND fs."PollingStationId" = A."PollingStationId"
+                                                    WHERE a."MonitoringObserverId" = FS."MonitoringObserverId"
+                                                    AND (
+                                                          (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                                          OR A."SubmissionId" = FS."Id"
+                                                      )
                                                       AND A."IsDeleted" = false
                                                       AND A."IsCompleted" = true)                       AS "MediaFilesCount",
                                                    (SELECT COUNT(1)
