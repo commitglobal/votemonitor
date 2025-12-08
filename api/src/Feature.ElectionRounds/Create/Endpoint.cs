@@ -1,5 +1,4 @@
-﻿using Feature.ElectionRounds.Specifications;
-using Vote.Monitor.Core.Constants;
+﻿using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
@@ -63,7 +62,8 @@ public class Endpoint(
             CoalitionId = null,
             CoalitionName = null,
             IsCoalitionLeader = false,
-            IsMonitoringNgoForCitizenReporting = false
+            IsMonitoringNgoForCitizenReporting = false,
+            AllowMultipleFormSubmission =null
         });
     }
 }

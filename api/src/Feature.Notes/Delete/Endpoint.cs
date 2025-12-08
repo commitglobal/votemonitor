@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.Notes.Delete;
 
+[Obsolete("Will be removed in future version")]
+
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<NoteAggregate> repository)

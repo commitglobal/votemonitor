@@ -19,10 +19,12 @@ public class FormSubmission : IAggregateRoot
     public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public bool IsCompleted { get; private set; }
+    public DateTime CreatedAt { get; private set; }
     public DateTime LastUpdatedAt { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private FormSubmission(
+        Guid submissionId,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -31,9 +33,10 @@ public class FormSubmission : IAggregateRoot
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
+        DateTime createdAt,
         DateTime lastUpdatedAt)
     {
-        Id = Guid.NewGuid();
+        Id = submissionId;
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
         PollingStation = pollingStation;
@@ -46,6 +49,7 @@ public class FormSubmission : IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
+        CreatedAt = createdAt;
         LastUpdatedAt = lastUpdatedAt;
 
         if (isCompleted.HasValue)
@@ -53,7 +57,7 @@ public class FormSubmission : IAggregateRoot
             IsCompleted = isCompleted.Value;
         }
     }
-
+    
     internal static FormSubmission Create(ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -62,8 +66,10 @@ public class FormSubmission : IAggregateRoot
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
+        DateTime createdAt,
         DateTime lastUpdatedAt) =>
-        new(electionRound,
+        new(Guid.NewGuid(),
+            electionRound,
             pollingStation,
             monitoringObserver,
             form,
@@ -71,6 +77,32 @@ public class FormSubmission : IAggregateRoot
             numberOfQuestionAnswered,
             numberOfFlaggedAnswers,
             isCompleted,
+            createdAt,
+            lastUpdatedAt);
+    
+    internal static FormSubmission CreateV2(
+        Guid submissionId,
+        ElectionRound electionRound,
+        PollingStation pollingStation,
+        MonitoringObserver monitoringObserver,
+        Form form,
+        List<BaseAnswer> answers,
+        int numberOfQuestionAnswered,
+        int numberOfFlaggedAnswers,
+        bool? isCompleted,
+        DateTime createdAt,
+        DateTime lastUpdatedAt) =>
+        new(
+            submissionId,
+            electionRound,
+            pollingStation,
+            monitoringObserver,
+            form,
+            answers,
+            numberOfQuestionAnswered,
+            numberOfFlaggedAnswers,
+            isCompleted,
+            createdAt,
             lastUpdatedAt);
 
     internal void Update(IEnumerable<BaseAnswer>? answers,

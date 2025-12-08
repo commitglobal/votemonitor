@@ -5,6 +5,7 @@ using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Feature.Attachments.List;
 
+[Obsolete("Will be removed in future version")]
 public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, NotFound, BadRequest<ProblemDetails>>>
 {
     private readonly IAuthorizationService _authorizationService;

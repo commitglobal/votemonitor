@@ -21,7 +21,7 @@ public class Endpoint(
     public override async Task<Results<Ok<NgoAdminModel>, ProblemDetails>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var user = await userManager.FindByEmailAsync(req.Email);
+        var user = await userManager.FindByEmailAsync(req.Email.Trim());
         if (user is not null)
         {
             AddError(r => r.Email, "A user with same login already exists");

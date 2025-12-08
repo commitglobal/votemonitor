@@ -96,35 +96,48 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                           AND (@hasAttachments is NULL
                             OR ((SELECT COUNT(1)
                                  FROM "Attachments" A
-                                 WHERE A."FormId" = fs."FormId"
+                                 WHERE 
+                                 (
+                                      (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                      OR A."SubmissionId" = FS."Id"
+                                  )
                                    AND A."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = A."PollingStationId"
                                    AND A."IsDeleted" = false
                                    AND A."IsCompleted" = true) = 0 AND @hasAttachments = false)
                             OR ((SELECT COUNT(1)
                                  FROM "Attachments" A
-                                 WHERE A."FormId" = fs."FormId"
+                                 WHERE 
+                                    (
+                                      (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                      OR A."SubmissionId" = FS."Id"
+                                     )
                                    AND A."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = A."PollingStationId"
                                    AND A."IsDeleted" = false
                                    AND A."IsCompleted" = true) > 0 AND @hasAttachments = true))
                           AND (@hasNotes is NULL
                             OR ((SELECT COUNT(1)
                                  FROM "Notes" N
-                                 WHERE N."FormId" = fs."FormId"
-                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = N."PollingStationId") = 0 AND @hasNotes = false)
+                                 WHERE 
+                                     (
+                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                          OR N."SubmissionId" = FS."Id"
+                                     )
+                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId") = 0 AND @hasNotes = false)
                             OR ((SELECT COUNT(1)
                                  FROM "Notes" N
-                                 WHERE N."FormId" = fs."FormId"
-                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
+                                 WHERE 
+                                     (
+                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                          OR N."SubmissionId" = FS."Id"
+                                      )
+                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId") > 0 AND @hasNotes = true))
                           AND (@fromDate is NULL OR FS."LastUpdatedAt" >= @fromDate::timestamp)
                           AND (@toDate is NULL OR FS."LastUpdatedAt" <= @toDate::timestamp)) c;
                   
                   WITH polling_station_submissions AS (SELECT psi."Id" AS                                     "SubmissionId",
                                                               'PSI'    AS                                     "FormType",
                                                               'PSI'    AS                                     "FormCode",
+                                                              psif."Id"                                       "FormId",
                                                               psi."PollingStationId",
                                                               psi."MonitoringObserverId",
                                                               psi."NumberOfQuestionsAnswered",
@@ -134,7 +147,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                               psi."LastUpdatedAt" AS "TimeSubmitted",
                                                               psi."FollowUpStatus",
                                                               psif."DefaultLanguage",
-                                                              psif."Name",
+                                                              psif."Name" as "FormName",
                                                               psi."IsCompleted"
                                                        FROM "PollingStationInformation" psi
                                                                 INNER JOIN "PollingStationInformationForms" psif
@@ -166,26 +179,32 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                        form_submissions AS (SELECT fs."Id"                                              AS "SubmissionId",
                                                    f."FormType",
                                                    f."Code"                                             AS "FormCode",
+                                                   f."Id"                                               AS "FormId",
                                                    fs."PollingStationId",
                                                    fs."MonitoringObserverId",
                                                    fs."NumberOfQuestionsAnswered",
                                                    fs."NumberOfFlaggedAnswers",
                                                    (SELECT COUNT(1)
                                                     FROM "Attachments" A
-                                                    WHERE A."FormId" = fs."FormId"
-                                                      AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                                                      AND fs."PollingStationId" = A."PollingStationId"
+                                                    WHERE a."MonitoringObserverId" = FS."MonitoringObserverId"
+                                                    AND (
+                                                          (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                                          OR A."SubmissionId" = FS."Id"
+                                                      )
                                                       AND A."IsDeleted" = false
                                                       AND A."IsCompleted" = true)                       AS "MediaFilesCount",
                                                    (SELECT COUNT(1)
                                                     FROM "Notes" N
-                                                    WHERE N."FormId" = fs."FormId"
-                                                      AND N."MonitoringObserverId" = fs."MonitoringObserverId"
-                                                      AND fs."PollingStationId" = N."PollingStationId") AS "NotesCount",
+                                                    WHERE 
+                                                        (
+                                                          (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                                          OR N."SubmissionId" = FS."Id"
+                                                        )
+                                                      AND N."MonitoringObserverId" = fs."MonitoringObserverId") AS "NotesCount",
                                                    fs."LastUpdatedAt"        AS "TimeSubmitted",
                                                    fs."FollowUpStatus",
                                                    f."DefaultLanguage",
-                                                   f."Name",
+                                                   f."Name" as "FormName",
                                                    fs."IsCompleted"
                                             FROM "FormSubmissions" fs
                                                      INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -212,10 +231,11 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                                 OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0)))
                   SELECT s."SubmissionId",
                          s."TimeSubmitted",
+                         s."FormId",
                          s."FormCode",
                          s."FormType",
                          s."DefaultLanguage",
-                         s."Name"         as "FormName",
+                         s."FormName",
                          ps."Id"          AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",

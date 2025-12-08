@@ -12,9 +12,9 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
 
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
-        builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.MonitoringObserverId);
-        builder.HasIndex(x => x.FormId);
+        builder.Property(x => x.FormId);
+        builder.Property(x => x.SubmissionId).IsRequired();
         builder.Property(x => x.QuestionId).IsRequired();
 
         builder.Property(x => x.Text)
@@ -22,17 +22,10 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
             .IsRequired();
         
         builder.Property(x => x.LastUpdatedAt).IsRequired();
-
-        builder.HasOne(x => x.ElectionRound)
-            .WithMany()
-            .HasForeignKey(x => x.ElectionRoundId);
-
+        
         builder.HasOne(x => x.MonitoringObserver)
             .WithMany()
             .HasForeignKey(x => x.MonitoringObserverId);
 
-        builder.HasOne(x => x.Form)
-            .WithMany()
-            .HasForeignKey(x => x.FormId);
     }
 }

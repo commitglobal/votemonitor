@@ -3,6 +3,7 @@ using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.SetCompletion;
 
+[Obsolete("Will be removed in future version")]
 public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {

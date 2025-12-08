@@ -52,7 +52,7 @@ public class ExportIncidentReportsJob(
                 .Forms
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && x.MonitoringNgo.NgoId == ngoId
-                            && x.Status == FormStatus.Published
+                            && x.Status != FormStatus.Drafted
                             && x.FormType == FormType.IncidentReporting)
                 .AsNoTracking()
                 .ToListAsync(ct);

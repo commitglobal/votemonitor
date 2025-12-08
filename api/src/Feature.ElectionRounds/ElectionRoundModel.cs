@@ -30,6 +30,7 @@ public record ElectionRoundModel
 
     public required bool? IsMonitoringNgoForCitizenReporting { get; init; }
     public required bool? IsCoalitionLeader { get; init; }
+    public required bool? AllowMultipleFormSubmission { get; init; }
 
     public required Guid? CoalitionId { get; init; }
     public required string? CoalitionName { get; init; }

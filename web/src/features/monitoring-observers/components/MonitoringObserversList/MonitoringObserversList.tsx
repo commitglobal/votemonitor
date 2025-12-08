@@ -264,7 +264,7 @@ function MonitoringObserversList() {
             Monitoring observers list
           </CardTitle>
           <div className='flex md:flex-row-reverse gap-4 table-actions'>
-            <Link to={'/monitoring-observers/import'}>
+            <Link to={'/monitoring-observers/import'} disabled={electionRound?.status === ElectionRoundStatus.Archived}>
               <Button
                 className='bg-purple-900 hover:bg-purple-600'
                 disabled={electionRound?.status === ElectionRoundStatus.Archived}>

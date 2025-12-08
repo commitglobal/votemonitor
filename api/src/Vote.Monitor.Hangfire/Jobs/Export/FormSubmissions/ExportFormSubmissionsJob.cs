@@ -58,7 +58,7 @@ public class ExportFormSubmissionsJob(
                 .FromSqlInterpolated(
                     @$"SELECT f.* FROM ""Forms"" f 
                        INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
-                .Where(x => x.Status == FormStatus.Published)
+                .Where(x => x.Status != FormStatus.Drafted)
                 .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
                 .ToListAsync(ct);
@@ -128,6 +128,7 @@ public class ExportFormSubmissionsJob(
             	SUBMISSIONS AS (
             		SELECT
             			PSI."Id" AS "SubmissionId",
+            			1 as "SubmissionNumber",
             			PSI."PollingStationInformationFormId" AS "FormId",
             			'PSI' AS "FormType",
             			PSI."PollingStationId",
@@ -193,6 +194,14 @@ public class ExportFormSubmissionsJob(
             		UNION ALL
             		SELECT
             			FS."Id" AS "SubmissionId",
+            			ROW_NUMBER() OVER (
+                        PARTITION BY
+            	            FS."PollingStationId",
+            	            F."Id",
+                            FS."MonitoringObserverId"
+            	            ORDER BY
+            		            FS."CreatedAt"
+                        ) AS "SubmissionNumber",
             			F."Id" AS "FormId",
             			F."FormType",
             			FS."PollingStationId",
@@ -218,10 +227,11 @@ public class ExportFormSubmissionsJob(
             					FROM
             						"Attachments" A
             					WHERE
-            						A."ElectionRoundId" = @ELECTIONROUNDID
-            						AND A."FormId" = FS."FormId"
-            						AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-            						AND FS."PollingStationId" = A."PollingStationId"
+            						A."MonitoringObserverId" = FS."MonitoringObserverId"
+            						AND (
+            							(A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility 
+            							OR A."SubmissionId" = FS."Id"
+            						)
             				),
             				'[]'::JSONB
             			) AS "Attachments",
@@ -234,10 +244,11 @@ public class ExportFormSubmissionsJob(
             					FROM
             						"Notes" N
             					WHERE
-            						N."ElectionRoundId" = @ELECTIONROUNDID
-            						AND N."FormId" = FS."FormId"
-            						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-            						AND FS."PollingStationId" = N."PollingStationId"
+            						N."MonitoringObserverId" = FS."MonitoringObserverId"
+            						AND (
+            							(N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility 
+            							OR N."SubmissionId" = FS."Id"
+            						)
             				),
             				'[]'::JSONB
             			) AS "Notes",
@@ -298,6 +309,7 @@ public class ExportFormSubmissionsJob(
             	)
             SELECT
             	S."SubmissionId",
+            	S."SubmissionNumber",
             	S."FormId",
             	S."FormType",
             	S."TimeSubmitted",

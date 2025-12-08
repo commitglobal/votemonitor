@@ -28,9 +28,8 @@ public class DeleteEndpointTests
         var request = new Delete.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            PollingStationId = Guid.NewGuid(),
+            SubmissionId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            FormId = Guid.NewGuid()
         };
 
         var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);

@@ -43,6 +43,7 @@ public class FormSubmissionsDataTableGenerator
         var row = new List<object>
         {
            submission.SubmissionId.ToString(),
+           submission.SubmissionNumber,
            submission.TimeSubmitted.ToString("s"),
            submission.FollowUpStatus.Value,
            submission.Level1,

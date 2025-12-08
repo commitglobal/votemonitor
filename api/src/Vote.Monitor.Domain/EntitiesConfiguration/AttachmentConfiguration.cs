@@ -12,10 +12,8 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
 
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
-        builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.MonitoringObserverId);
-        builder.HasIndex(x => x.PollingStationId);
-        builder.HasIndex(x => x.FormId);
+        builder.Property(x => x.SubmissionId).IsRequired();
         builder.Property(x => x.QuestionId).IsRequired();
 
         builder.Property(x => x.FileName)
@@ -38,15 +36,9 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
         
         builder.Property(x => x.LastUpdatedAt).IsRequired();
 
-
-        builder.HasOne(x => x.ElectionRound)
-            .WithMany()
-            .HasForeignKey(x => x.ElectionRoundId);
-
-        builder.HasOne(x => x.PollingStation)
-            .WithMany()
-            .HasForeignKey(x => x.PollingStationId);
-
+        builder.Property(x => x.FormId);
+        builder.Property(x => x.ElectionRoundId);
+        builder.Property(x => x.PollingStationId);
         builder.HasOne(x => x.MonitoringObserver)
             .WithMany()
             .HasForeignKey(x => x.MonitoringObserverId);

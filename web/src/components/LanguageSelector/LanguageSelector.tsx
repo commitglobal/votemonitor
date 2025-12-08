@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '../ui/label';
 
 export const LanguageSelector: FC = () => {
-  const {  i18n } = useTranslation(); // not passing any namespace will use the defaultNS (by default set to 'translation')
+  const { i18n } = useTranslation(); // not passing any namespace will use the defaultNS (by default set to 'translation')
   const router = useRouter();
 
   const changeLanguage = (lng: string) => {
@@ -16,7 +16,7 @@ export const LanguageSelector: FC = () => {
   const options = [
     {
       label: 'English',
-      value: 'en',
+      value: 'en-US',
     },
     {
       label: 'Română',
@@ -27,7 +27,7 @@ export const LanguageSelector: FC = () => {
     <div className='px-4 py-2 space-y-2 '>
       <Label>Language</Label>
       <Select
-        defaultValue={localStorage.getItem('i18nextLng') || 'en'}
+        defaultValue={localStorage.getItem('i18nextLng') || 'en-US'}
         onValueChange={(value) => changeLanguage(value)}>
         <SelectTrigger className='w-full'>
           <SelectValue placeholder='Select language' />

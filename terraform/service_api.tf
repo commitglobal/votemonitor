@@ -8,7 +8,7 @@ module "ecs_api" {
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
   min_capacity = 1
-  max_capacity = 3
+  max_capacity = 4
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag
@@ -222,7 +222,7 @@ resource "aws_s3_bucket_cors_configuration" "s3_private" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["PUT"]
+    allowed_methods = ["GET", "PUT"]
     allowed_origins = ["*"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000

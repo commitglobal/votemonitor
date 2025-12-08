@@ -48,7 +48,8 @@ public class GetEndpointTests
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.GetByIdAsync(fakePollingStationAttachment.Id)
+        _repository
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
             .Returns(fakePollingStationAttachment);
 
         // Act
@@ -112,7 +113,7 @@ public class GetEndpointTests
             .Returns(fakeMonitoringObserverId);
 
         _repository
-            .GetByIdAsync(Arg.Any<Guid>())
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
             .ReturnsNull();
 
         // Act

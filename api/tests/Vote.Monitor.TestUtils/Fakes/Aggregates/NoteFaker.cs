@@ -20,9 +20,7 @@ public sealed class NoteFaker : PrivateFaker<Note>
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
         RuleFor(fake => fake.Text, text ?? string.Empty);
-        RuleFor(fake => fake.ElectionRound, electionRound ?? fakeElectionRound);
         RuleFor(fake => fake.ElectionRoundId, electionRound?.Id ?? fakeElectionRound.Id);
-        RuleFor(fake => fake.PollingStation, pollingStation ?? fakePollingStation);
         RuleFor(fake => fake.PollingStationId, pollingStation?.Id ?? fakePollingStation.Id);
         RuleFor(fake => fake.MonitoringObserver, monitoringObserver ?? fakeMonitoringObserver);
         RuleFor(fake => fake.MonitoringObserverId, monitoringObserver?.Id ?? fakeMonitoringObserver.Id);

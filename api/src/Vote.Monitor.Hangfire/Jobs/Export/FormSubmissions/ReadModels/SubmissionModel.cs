@@ -9,6 +9,7 @@ namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 public class SubmissionModel
 {
     public Guid SubmissionId { get; init; }
+    public int SubmissionNumber { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; set; }

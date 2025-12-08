@@ -51,7 +51,7 @@ public class ExportCitizenReportsJob(
                 .Forms
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && x.MonitoringNgo.NgoId == ngoId
-                            && x.Status == FormStatus.Published
+                            && x.Status != FormStatus.Drafted
                             && x.FormType == FormType.CitizenReporting
                             && x.ElectionRound.CitizenReportingEnabled
                             && x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == ngoId)

@@ -20,4 +20,9 @@ public class Request
     /// Temporary made nullable until we release a mobile version that will always send this property.
     /// </summary>
     public DateTime? LastUpdatedAt { get; set; }
+    
+    /// <summary>
+    /// Temporary made nullable until we release a mobile version that will always send this property.
+    /// </summary>
+    public DateTime? CreatedAt { get; set; }
 }

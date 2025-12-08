@@ -32,30 +32,18 @@ public class DeleteRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_PollingStationId_Empty()
+    public void Validation_ShouldFail_When_SubmissionId_Empty()
     {
         // Arrange
-        var request = new Delete.Request { PollingStationId = Guid.Empty };
+        var request = new Delete.Request { SubmissionId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PollingStationId);
+        result.ShouldHaveValidationErrorFor(x => x.SubmissionId);
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_FormId_Empty()
-    {
-        // Arrange
-        var request = new Delete.Request { FormId = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.FormId);
-    }
 
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
@@ -65,8 +53,7 @@ public class DeleteRequestValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            PollingStationId = Guid.NewGuid(),
-            FormId = Guid.NewGuid()
+            SubmissionId = Guid.NewGuid(),
         };
 
         // Act

@@ -18,7 +18,7 @@ public class Endpoint(
     public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var user = await userManager.FindByEmailAsync(req.Email);
+        var user = await userManager.FindByEmailAsync(req.Email.Trim());
 
         if (user is not null)
         {

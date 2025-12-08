@@ -6,7 +6,6 @@ public class Validator : Validator<Request>
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.ObserverId).NotEmpty();
-        RuleFor(x => x.PollingStationId).NotEmpty();
-        RuleFor(x => x.FormId).NotEmpty();
+        RuleFor(x => x.SubmissionId).NotEmpty();
     }
 }

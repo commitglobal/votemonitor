@@ -1,5 +1,7 @@
 ﻿namespace Feature.Attachments;
 
+[Obsolete("Will be removed in future version")]
+
 public record AttachmentModel
 {
     public required Guid Id { get; init; }

@@ -11,7 +11,6 @@ public sealed class GetNotesSpecification : Specification<NoteAggregate>
                         && x.PollingStationId == pollingStationId
                         && x.MonitoringObserver.ObserverId == observerId
                         && x.MonitoringObserver.ElectionRoundId == electionRoundId
-                        && x.Form.ElectionRoundId == electionRoundId
                         && x.FormId == formId);
     }
 }

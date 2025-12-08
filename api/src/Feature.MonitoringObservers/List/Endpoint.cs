@@ -88,8 +88,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                                 MAX(N."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "Notes" N
+                            INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
                             WHERE
-                                N."ElectionRoundId" = @electionRoundId
+                                MO."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 N."MonitoringObserverId"
                             UNION ALL
@@ -98,8 +99,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                                 MAX(A."LastUpdatedAt") AS "LatestActivityAt"
                             FROM
                                 "Attachments" A
+                            INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
                             WHERE
-                                A."ElectionRoundId" = @electionRoundId
+                                MO."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 A."MonitoringObserverId"
                             UNION ALL

@@ -19,7 +19,7 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
             x.PollingStationId,
             x.MonitoringObserverId,
             x.FormId
-        }).IsUnique();
+        });
 
         builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
         builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();
@@ -27,6 +27,7 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
             .IsRequired()
             .HasDefaultValue(SubmissionFollowUpStatus.NotApplicable);
         builder.Property(x => x.LastUpdatedAt).IsRequired();
+        builder.Property(x => x.CreatedAt).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

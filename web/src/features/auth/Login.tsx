@@ -11,6 +11,7 @@ import { LoginDTO } from '@/common/auth-api';
 import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/layout/Header/Logo';
+import { PasswordInput } from '@/components/ui/password-input';
 
 const formSchema = z.object({
   email: z
@@ -27,7 +28,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -67,21 +68,25 @@ function LoginPage() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name='password'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type='password' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        autoCorrect='off'
+                        autoCapitalize='off'
+                        autoComplete='off'
+                        spellCheck='false'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
             <CardFooter>
               <Button type='submit' className='w-full'>

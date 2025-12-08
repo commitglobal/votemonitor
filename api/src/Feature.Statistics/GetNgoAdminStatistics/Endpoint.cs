@@ -429,22 +429,47 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
             
             ------------------------------------------------------------------------------
             -------------------------- read hourly histogram------------------------------
+            
+            WITH submission_histogram AS (
+                SELECT
+                    DATE_TRUNC(
+                            'hour',
+                            TIMEZONE('utc', FS."LastUpdatedAt")
+                    )::timestamptz AS bucket,
+                    1 AS forms_submitted,
+                    FS."NumberOfQuestionsAnswered" AS number_of_questions_answered,
+                    FS."NumberOfFlaggedAnswers" AS number_of_flagged_answers
+                FROM "FormSubmissions" FS
+                         INNER JOIN "GetAvailableMonitoringObservers"(
+                            @ELECTIONROUNDID,
+                            @NGOID,
+                            @DATASOURCE) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+            
+                UNION ALL
+            
+                SELECT
+                    DATE_TRUNC(
+                            'hour',
+                            TIMEZONE('utc', qr."LastUpdatedAt")
+                    )::timestamptz AS bucket,
+                    1 AS forms_submitted,
+                    qr."NumberOfQuestionsAnswered" AS number_of_questions_answered,
+                    qr."NumberOfFlaggedAnswers" AS number_of_flagged_answers
+                FROM "PollingStationInformation" qr
+                         INNER JOIN "GetAvailableMonitoringObservers"(
+                            @ELECTIONROUNDID,
+                            @NGOID,
+                            @DATASOURCE) MO ON MO."MonitoringObserverId" = qr."MonitoringObserverId"
+            )
+            
             SELECT
-                DATE_TRUNC(
-                        'hour',
-                        TIMEZONE (
-                                'utc',
-                                FS."LastUpdatedAt"
-                        )
-                )::TIMESTAMPTZ AS "Bucket",
-                COUNT(1) AS "FormsSubmitted",
-                SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers"
-            FROM
-                "FormSubmissions" FS
-                    INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
-            GROUP BY
-                1;
+                bucket AS "Bucket",
+                COUNT(*) AS "FormsSubmitted",
+                SUM(number_of_questions_answered) AS "NumberOfQuestionsAnswered",
+                SUM(number_of_flagged_answers) AS "NumberOfFlaggedAnswers"
+            FROM submission_histogram
+            GROUP BY bucket
+            ORDER BY bucket;
             
             SELECT
                 DATE_TRUNC(

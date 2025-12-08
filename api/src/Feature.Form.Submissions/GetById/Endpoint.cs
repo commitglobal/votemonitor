@@ -33,18 +33,14 @@ public class Endpoint(
                   (SELECT psi."Id" AS "SubmissionId",
                       'PSI' AS "FormType",
                       'PSI' AS "FormCode",
+                      psif."Name" as "FormName",
                       psi."PollingStationId",
                       psi."MonitoringObserverId",
                       psi."Answers",
-                      (SELECT "Questions"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Questions",
-                      (SELECT "DefaultLanguage"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "DefaultLanguage",
-                      (SELECT "Languages"
-                      FROM "PollingStationInformationForms"
-                      WHERE "ElectionRoundId" = @electionRoundId) AS "Languages",
+                      psif."Questions" AS "Questions",
+                      psif."DefaultLanguage" AS "DefaultLanguage",
+                      psif."Languages" AS "Languages",
+                      psif."Id" AS "FormId",
                       psi."FollowUpStatus" as "FollowUpStatus",
                       '[]'::jsonb AS "Attachments",
                       '[]'::jsonb AS "Notes",
@@ -55,35 +51,41 @@ public class Endpoint(
                       psi."IsCompleted"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
+                      INNER JOIN "PollingStationInformationForms" psif on psif."ElectionRoundId" = psi."ElectionRoundId"
                       WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
                   UNION ALL
                   SELECT 
                           fs."Id" AS "SubmissionId",
                           f."FormType" AS "FormType",
                           f."Code" AS "FormCode",
+                          f."Name" AS "FormName",
                           fs."PollingStationId",
                           fs."MonitoringObserverId",
                           fs."Answers",
                           f."Questions",
                           f."DefaultLanguage",
                           f."Languages",
+                          f."Id" AS "FormId",
                           fs."FollowUpStatus",
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Attachments" a
                           WHERE 
-                              a."ElectionRoundId" = @electionRoundId
-                              AND a."FormId" = fs."FormId"
+                              (
+                                  (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
+                                  OR A."SubmissionId" = FS."Id"
+                              )
                               AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND a."IsDeleted" = false AND a."IsCompleted" = true
-                              AND fs."PollingStationId" = a."PollingStationId"),'[]'::JSONB) AS "Attachments",
+                              AND a."IsDeleted" = false 
+                              AND a."IsCompleted" = true)) AS "Attachments",
                   
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
                           FROM "Notes" n
                           WHERE 
-                              n."ElectionRoundId" = @electionRoundId
-                              AND n."FormId" = fs."FormId"
-                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"
-                              AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
+                              (
+                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
+                                  OR N."SubmissionId" = FS."Id"
+                              )
+                              AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
                               
                           "LastUpdatedAt" AS "TimeSubmitted",
                           NULL AS "ArrivalTime",
@@ -95,8 +97,10 @@ public class Endpoint(
                   INNER JOIN "Forms" f ON f."Id" = fs."FormId"
                   WHERE fs."Id" = @submissionId and fs."ElectionRoundId" = @electionRoundId)
                   SELECT s."SubmissionId",
+                         s."FormId",
                          s."TimeSubmitted",
                          s."FormCode",
+                         s."FormName",
                          s."FormType",
                          ps."Id" AS "PollingStationId",
                          ps."Level1",

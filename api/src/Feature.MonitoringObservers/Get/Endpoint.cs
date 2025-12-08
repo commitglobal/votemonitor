@@ -67,8 +67,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 FROM
                     "Notes" N
                 WHERE
-                    N."ElectionRoundId" = @electionRoundId
-                  AND N."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
+                    N."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
         
                 UNION ALL
         
@@ -76,8 +75,9 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                     MAX(A."LastUpdatedAt") AS "LatestActivityAt"
                 FROM
                     "Attachments" A
+                INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
                 WHERE
-                    A."ElectionRoundId" = @electionRoundId
+                    MO."ElectionRoundId" = @electionRoundId
                   AND A."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
         
                 UNION ALL
