@@ -1,17 +1,17 @@
-import { getById } from "@/services/api/elections/get.api";
-import { listElections } from "@/services/api/elections/list.api";
-import type { ElectionsSearch } from "@/types/election";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getById } from '@/services/api/elections/get.api'
+import { listElections } from '@/services/api/elections/list.api'
+import type { ElectionsSearch } from '@/types/election'
 
 export const electionsKeys = {
-  all: ["elections"] as const,
+  all: ['elections'] as const,
   list: (search: ElectionsSearch) =>
     [...electionsKeys.all, { ...search }] as const,
-  details: () => [...electionsKeys.all, "detail"] as const,
+  details: () => [...electionsKeys.all, 'detail'] as const,
   detail: (id: string) => [...electionsKeys.details(), id] as const,
-};
+}
 
-const STALE_TIME = 1000 * 60 * 15; // 15 minutes
+const STALE_TIME = 1000 * 60 * 15 // 15 minutes
 
 export const listElectionsQueryOptions = (search: ElectionsSearch) =>
   queryOptions({
@@ -19,7 +19,7 @@ export const listElectionsQueryOptions = (search: ElectionsSearch) =>
     queryFn: async () => await listElections(search),
     staleTime: STALE_TIME,
     refetchOnWindowFocus: false,
-  });
+  })
 
 export const electionRoundDetailsQueryOptions = (electionRoundId: string) =>
   queryOptions({
@@ -27,14 +27,7 @@ export const electionRoundDetailsQueryOptions = (electionRoundId: string) =>
     queryFn: async () => await getById(electionRoundId),
     staleTime: STALE_TIME,
     refetchOnWindowFocus: false,
-  });
+  })
 
-export const useElectionRoundDetails = (electionRoundId: string) =>
-  useQuery(
-    queryOptions({
-      queryKey: electionsKeys.detail(electionRoundId),
-      queryFn: async () => await getById(electionRoundId),
-      staleTime: STALE_TIME,
-      refetchOnWindowFocus: false,
-    })
-  );
+export const useSuspenseElectionRoundDetails = (electionRoundId: string) =>
+  useSuspenseQuery(electionRoundDetailsQueryOptions(electionRoundId))

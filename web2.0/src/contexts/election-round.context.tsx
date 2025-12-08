@@ -1,40 +1,41 @@
-import * as React from "react";
+import * as React from 'react'
+import { ElectionModel } from '@/types/election'
 
 export interface CurrentElectionRoundContextType {
-  electionRoundId: string | undefined;
-  setElectionRoundId: (electionRoundId: string) => void;
+  electionRound: ElectionModel | undefined
+  setElectionRound: (electionRound: ElectionModel | undefined) => void
 }
 
 const CurrentElectionRoundContext =
   React.createContext<CurrentElectionRoundContextType>({
-    electionRoundId: undefined!,
-    setElectionRoundId: (_: string) => {},
-  });
+    electionRound: undefined,
+    setElectionRound: (_: ElectionModel | undefined) => {},
+  })
 
 export function CurrentElectionRoundProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const [electionRoundId, setElectionRoundId] = React.useState<
-    string | undefined
-  >();
+  const [electionRound, setElectionRound] = React.useState<
+    ElectionModel | undefined
+  >()
 
   return (
     <CurrentElectionRoundContext.Provider
-      value={{ electionRoundId, setElectionRoundId }}
+      value={{ electionRound, setElectionRound }}
     >
       {children}
     </CurrentElectionRoundContext.Provider>
-  );
+  )
 }
 
 export function useCurrentElectionRound() {
-  const context = React.useContext(CurrentElectionRoundContext);
+  const context = React.useContext(CurrentElectionRoundContext)
   if (!context) {
     throw new Error(
-      "useCurrentElectionRound must be used within a CurrentElectionRoundProvider"
-    );
+      'useCurrentElectionRound must be used within a CurrentElectionRoundProvider'
+    )
   }
-  return context;
+  return context
 }

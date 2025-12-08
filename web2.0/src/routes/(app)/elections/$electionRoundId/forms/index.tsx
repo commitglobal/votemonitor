@@ -1,11 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import { queryClient } from '@/main'
+import Page from '@/pages/NgoAdmin/Forms/Page'
+import { listFormsQueryOptions } from '@/queries/forms'
+import { formSearchSchema } from '@/types/form'
 
-export const Route = createFileRoute('/(app)/elections/$electionRoundId/forms/')(
-  {
-    component: RouteComponent,
+export const Route = createFileRoute(
+  '/(app)/elections/$electionRoundId/forms/'
+)({
+  validateSearch: formSearchSchema,
+  search: {
+    middlewares: [
+      stripSearchParams({
+        searchText: undefined,
+        typeFilter: undefined,
+        formStatusFilter: undefined,
+      }),
+    ],
   },
-)
-
-function RouteComponent() {
-  return <div>Hello "/(app)/elections/$electionRoundId/forms"!</div>
-}
+  loaderDeps: ({ search }) => ({
+    ...search,
+  }),
+  loader: ({ deps, params: { electionRoundId } }) =>
+    queryClient.prefetchQuery(listFormsQueryOptions(electionRoundId, deps)),
+  component: Page,
+})

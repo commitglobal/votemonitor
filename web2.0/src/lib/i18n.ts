@@ -276,3 +276,6 @@ export function mapQuestionsAnswered(
       return i18n.t('formSubmissions.questionsAnswered.all')
   }
 }
+export function mapLanguageNameByCode(languageCode: string): string {
+  return i18n.t(`languages.${languageCode}`)
+}

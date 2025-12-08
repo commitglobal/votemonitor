@@ -1,15 +1,15 @@
-import { useCurrentElectionRound } from "@/contexts/election-round.context";
-import { useCoalitionDetails } from "@/queries/coalitions";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { SingleSelectDataTableFacetedFilter } from "./data-table-faceted-filter";
-import { DataSource } from "@/types/common";
+import { useMemo } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
+import { useCoalitionDetails } from '@/queries/coalitions'
+import { DataSource } from '@/types/common'
+import { SingleSelectDataTableFacetedFilter } from './data-table-faceted-filter'
 
 export default function CoalitionMemberFilter() {
-  const { electionRoundId } = useCurrentElectionRound();
-  const { data } = useCoalitionDetails(electionRoundId);
-  const search = useSearch({ strict: false });
-  const navigate = useNavigate();
+  const { electionRound } = useCurrentElectionRound()
+  const { data } = useCoalitionDetails(electionRound?.id)
+  const search = useSearch({ strict: false })
+  const navigate = useNavigate()
 
   const options = useMemo(() => {
     return (
@@ -17,17 +17,17 @@ export default function CoalitionMemberFilter() {
         value: ngo.id,
         label: ngo.name,
       })) ?? []
-    );
-  }, [data]);
+    )
+  }, [data])
 
   return search.dataSource === DataSource.Coalition ? (
     <SingleSelectDataTableFacetedFilter
-      title="Coalition member"
+      title='Coalition member'
       options={options}
       value={search.coalitionMemberId as string}
       onValueChange={(value) =>
         navigate({
-          to: ".",
+          to: '.',
           search: (prev) => ({
             ...prev,
             coalitionMemberId: value,
@@ -36,5 +36,5 @@ export default function CoalitionMemberFilter() {
         })
       }
     />
-  ) : null;
+  ) : null
 }

@@ -25,6 +25,12 @@ export enum FormStatus {
   Obsolete = 'Obsolete',
 }
 
+export const FormStatusList: FormStatus[] = [
+  FormStatus.Drafted,
+  FormStatus.Published,
+  FormStatus.Obsolete,
+]
+
 export enum LanguagesTranslationStatus {
   Translated = 'Translated',
   MissingTranslations = 'MissingTranslations',
@@ -135,8 +141,10 @@ export interface FormModel {
 
 export const formSearchSchema = z.object({
   searchText: z.string().optional(),
-  formTypeFilter: z.enum(FormType).optional(),
-  formStatus: z.enum(FormStatus).optional(),
+  typeFilter: z.enum(FormType).optional(),
+  formStatusFilter: z.enum(FormStatus).optional(),
+  pageNumber: z.number().default(1),
+  pageSize: z.number().default(25),
 })
 
 export type FormSearch = z.infer<typeof formSearchSchema>

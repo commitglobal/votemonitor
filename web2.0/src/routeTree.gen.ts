@@ -38,6 +38,7 @@ import { Route as appElectionsElectionRoundIdFormsFormIdRouteImport } from './ro
 import { Route as appElectionsElectionRoundIdSubmissionsByFormIndexRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/by-form/index'
 import { Route as appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/$submissionId/index'
 import { Route as appElectionsElectionRoundIdSubmissionsByFormFormIdRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/by-form/$formId'
+import { Route as appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport } from './routes/(app)/elections/$electionRoundId/forms/$formId.edit.$languageCode'
 
 const TypographyRoute = TypographyRouteImport.update({
   id: '/typography',
@@ -202,6 +203,12 @@ const appElectionsElectionRoundIdSubmissionsByFormFormIdRoute =
     path: '/by-form/$formId',
     getParentRoute: () => appElectionsElectionRoundIdSubmissionsRouteRoute,
   } as any)
+const appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute =
+  appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport.update({
+    id: '/edit/$languageCode',
+    path: '/edit/$languageCode',
+    getParentRoute: () => appElectionsElectionRoundIdFormsFormIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof appIndexRoute
@@ -216,7 +223,7 @@ export interface FileRoutesByFullPath {
   '/elections': typeof appElectionsIndexRoute
   '/elections/$electionRoundId/submissions': typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   '/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
-  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
+  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
   '/elections/$electionRoundId/submissions/$submissionId': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/elections/$electionRoundId/submissions/by-form': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
+  '/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
 }
 export interface FileRoutesByTo {
   '/typography': typeof TypographyRoute
@@ -244,7 +252,7 @@ export interface FileRoutesByTo {
   '/': typeof appIndexRoute
   '/elections': typeof appElectionsIndexRoute
   '/elections/$electionRoundId': typeof appElectionsElectionRoundIdIndexRoute
-  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
+  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -260,6 +268,7 @@ export interface FileRoutesByTo {
   '/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
   '/elections/$electionRoundId/submissions/$submissionId': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/elections/$electionRoundId/submissions/by-form': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
+  '/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -276,7 +285,7 @@ export interface FileRoutesById {
   '/(app)/elections/': typeof appElectionsIndexRoute
   '/(app)/elections/$electionRoundId/submissions': typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   '/(app)/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
-  '/(app)/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRoute
+  '/(app)/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
   '/(app)/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/(app)/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/(app)/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -292,6 +301,7 @@ export interface FileRoutesById {
   '/(app)/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
   '/(app)/elections/$electionRoundId/submissions/$submissionId/': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/(app)/elections/$electionRoundId/submissions/by-form/': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
+  '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -324,6 +334,7 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId/submissions/by-form/$formId'
     | '/elections/$electionRoundId/submissions/$submissionId'
     | '/elections/$electionRoundId/submissions/by-form'
+    | '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/typography'
@@ -352,6 +363,7 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId/submissions/by-form/$formId'
     | '/elections/$electionRoundId/submissions/$submissionId'
     | '/elections/$electionRoundId/submissions/by-form'
+    | '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
   id:
     | '__root__'
     | '/(app)'
@@ -383,6 +395,7 @@ export interface FileRouteTypes {
     | '/(app)/elections/$electionRoundId/submissions/by-form/$formId'
     | '/(app)/elections/$electionRoundId/submissions/$submissionId/'
     | '/(app)/elections/$electionRoundId/submissions/by-form/'
+    | '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -600,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRouteImport
       parentRoute: typeof appElectionsElectionRoundIdSubmissionsRouteRoute
     }
+    '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode': {
+      id: '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode'
+      path: '/edit/$languageCode'
+      fullPath: '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
+      preLoaderRoute: typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport
+      parentRoute: typeof appElectionsElectionRoundIdFormsFormIdRoute
+    }
   }
 }
 
@@ -627,10 +647,25 @@ const appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren =
     appElectionsElectionRoundIdSubmissionsRouteRouteChildren,
   )
 
+interface appElectionsElectionRoundIdFormsFormIdRouteChildren {
+  appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute: typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
+}
+
+const appElectionsElectionRoundIdFormsFormIdRouteChildren: appElectionsElectionRoundIdFormsFormIdRouteChildren =
+  {
+    appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute:
+      appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute,
+  }
+
+const appElectionsElectionRoundIdFormsFormIdRouteWithChildren =
+  appElectionsElectionRoundIdFormsFormIdRoute._addFileChildren(
+    appElectionsElectionRoundIdFormsFormIdRouteChildren,
+  )
+
 interface appElectionsElectionRoundIdRouteRouteChildren {
   appElectionsElectionRoundIdSubmissionsRouteRoute: typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   appElectionsElectionRoundIdIndexRoute: typeof appElectionsElectionRoundIdIndexRoute
-  appElectionsElectionRoundIdFormsFormIdRoute: typeof appElectionsElectionRoundIdFormsFormIdRoute
+  appElectionsElectionRoundIdFormsFormIdRoute: typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
   appElectionsElectionRoundIdGuidesGuideIdRoute: typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   appElectionsElectionRoundIdIncidentsIncidentIdRoute: typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   appElectionsElectionRoundIdObserversObserverIdRoute: typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -651,7 +686,7 @@ const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundId
     appElectionsElectionRoundIdIndexRoute:
       appElectionsElectionRoundIdIndexRoute,
     appElectionsElectionRoundIdFormsFormIdRoute:
-      appElectionsElectionRoundIdFormsFormIdRoute,
+      appElectionsElectionRoundIdFormsFormIdRouteWithChildren,
     appElectionsElectionRoundIdGuidesGuideIdRoute:
       appElectionsElectionRoundIdGuidesGuideIdRoute,
     appElectionsElectionRoundIdIncidentsIncidentIdRoute:

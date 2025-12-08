@@ -12,8 +12,8 @@ export function PollingStationFilteruseFilters({
   search: SearchRecord
   navigate: NavigateFn
 }) {
-  const { electionRoundId } = useCurrentElectionRound()
-  const { data: levels } = usePollingStationsLocationLevels(electionRoundId)
+  const { electionRound } = useCurrentElectionRound()
+  const { data: levels } = usePollingStationsLocationLevels(electionRound?.id)
 
   const selectedLevel1Node = useMemo(
     () => levels?.[1]?.find((node) => node.name === search.level1Filter),

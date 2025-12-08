@@ -3,12 +3,12 @@ import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { cn } from '@/lib/utils'
 
 export function AdminNavLink(props: LinkProps & { title: string }) {
-  const { electionRoundId } = useCurrentElectionRound()
+  const { electionRound } = useCurrentElectionRound()
   const { title } = props
 
   return (
     <Link
-      params={{ electionRoundId: electionRoundId! }}
+      params={{ electionRoundId: electionRound?.id! }}
       className={cn('hover:text-foreground/80 transition-colors')}
       activeProps={{
         className: cn(

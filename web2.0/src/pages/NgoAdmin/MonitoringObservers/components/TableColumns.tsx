@@ -1,93 +1,91 @@
-"use client";
+'use client'
 
-import type { DataTableRowAction } from "@/types/data-table";
-import type { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
-import * as React from "react";
-
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { Button } from "@/components/ui/button";
+import * as React from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import type { DataTableRowAction } from '@/types/data-table'
+import type { MonitoringObserverModel } from '@/types/monitoring-observer'
+import { Ellipsis } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
+import { DataTableColumnHeader } from '@/components/data-table-column-header'
 
-import type { MonitoringObserverModel } from "@/types/monitoring-observer";
-
-interface GetTasksTableColumnsProps {
+interface GetMonitoringObserversTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<MonitoringObserverModel> | null>
-  >;
+  >
 }
 
 export function getMonitoringObserversTableColumns({
   setRowAction,
-}: GetTasksTableColumnsProps): ColumnDef<MonitoringObserverModel>[] {
+}: GetMonitoringObserversTableColumnsProps): ColumnDef<MonitoringObserverModel>[] {
   return [
     {
-      id: "displayName",
-      accessorKey: "displayName",
+      id: 'displayName',
+      accessorKey: 'displayName',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
+        <DataTableColumnHeader column={column} title='Name' />
       ),
       cell: ({ row }) => (
-        <div className="truncate">{row.original.displayName}</div>
+        <div className='truncate'>{row.original.displayName}</div>
       ),
       meta: {
-        label: "Name",
+        label: 'Name',
       },
       enableSorting: true,
       enableHiding: true,
     },
     {
-      id: "email",
-      accessorKey: "email",
+      id: 'email',
+      accessorKey: 'email',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <DataTableColumnHeader column={column} title='Email' />
       ),
-      cell: ({ row }) => <div className="truncate">{row.original.email}</div>,
+      cell: ({ row }) => <div className='truncate'>{row.original.email}</div>,
       meta: {
-        label: "Email",
+        label: 'Email',
       },
       enableSorting: true,
       enableHiding: true,
     },
 
     {
-      id: "actions",
+      id: 'actions',
       cell: function Cell({ row }) {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                aria-label="Open menu"
-                variant="ghost"
-                className="flex size-8 p-0 data-[state=open]:bg-muted"
+                aria-label='Open menu'
+                variant='ghost'
+                className='data-[state=open]:bg-muted flex size-8 p-0'
               >
-                <Ellipsis className="size-4" aria-hidden="true" />
+                <Ellipsis className='size-4' aria-hidden='true' />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align='end' className='w-40'>
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "update" })}
+                onSelect={() => setRowAction({ row, variant: 'update' })}
               >
                 Edit
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "delete" })}
+                onSelect={() => setRowAction({ row, variant: 'delete' })}
               >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        );
+        )
       },
       size: 40,
     },
-  ];
+  ]
 }
