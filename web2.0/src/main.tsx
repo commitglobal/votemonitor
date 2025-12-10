@@ -4,17 +4,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { AuthProvider, useAuth } from '@/contexts/auth.context'
 import '@/styles.css'
-// import i18n (needs to be bundled ;))
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import countries from 'i18n-iso-countries'
 import enCountries from 'i18n-iso-countries/langs/en.json'
 import roCountries from 'i18n-iso-countries/langs/ro.json'
 import { useTranslation } from 'react-i18next'
 import { Toaster } from '@/components/ui/sonner'
-import { TooltipProvider } from '@/components/ui/tooltip'
+// import i18n (needs to be bundled ;))
 import { TailwindIndicator } from '@/components/TailwindIndicator.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
-import { TanStackQueryDevelopmentTools } from '@/components/development-tools/TanStackQueryDevelopmentTools'
-import { TanStackRouterDevelopmentTools } from '@/components/development-tools/TanStackRouterDevelopmentTools'
 import './i18n'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -104,8 +103,7 @@ function InnerApp() {
       </div>
       <TailwindIndicator />
       <Toaster duration={5000} richColors />
-      <TanStackRouterDevelopmentTools router={router} position='bottom-left' />
-      <TanStackQueryDevelopmentTools client={queryClient} position='right' />
+      <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
     </ThemeProvider>
   )
 }

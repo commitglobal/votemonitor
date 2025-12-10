@@ -22,7 +22,7 @@ function Page() {
         {!isArchived ? (
           <Button asChild>
             <Link
-              to='/elections/$electionRoundId/forms'
+              to='/elections/$electionRoundId/forms/wizard'
               params={{ electionRoundId }}
             >
               <PlusIcon className='mr-2 h-4 w-4' />

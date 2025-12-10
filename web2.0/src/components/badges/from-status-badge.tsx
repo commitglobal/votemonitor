@@ -1,7 +1,7 @@
 import { FormStatus } from '@/types/form'
 import { mapFormStatus } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
-import { Badge } from './ui/badge'
+import { Badge } from '../ui/badge'
 
 export default function FormStatusBadge({
   formStatus,

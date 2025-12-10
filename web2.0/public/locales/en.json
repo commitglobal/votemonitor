@@ -66,13 +66,13 @@
       "obsolete": "Obsolete"
     },
     "type": {
-      "opening": "Opening",
-      "voting": "Voting",
-      "closingAndCounting": "Closing And Counting",
-      "psi": "PSI",
-      "citizenReporting": "Citizen reporting",
-      "incidentReporting": "Incident reporting",
-      "other": "Other"
+      "Opening": "Opening",
+      "Voting": "Voting",
+      "ClosingAndCounting": "Closing And Counting",
+      "PSI": "PSI",
+      "CitizenReporting": "Citizen reporting",
+      "IncidentReporting": "Incident reporting",
+      "Other": "Other"
     }
   },
   "languages": {
@@ -259,5 +259,10 @@
     "ZA": "Zhuang / Saɯ cueŋƅ",
     "ZH": "Chinese / 中文",
     "ZU": "Zulu / isiZulu"
+  },
+  "searchable_combobox": {
+    "clear": "Clear",
+    "selected": "selected",
+    "no_results_found": "No results found"
   }
 }

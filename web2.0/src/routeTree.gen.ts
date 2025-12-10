@@ -34,11 +34,12 @@ import { Route as appElectionsElectionRoundIdPushMessagesPushMessageIdRouteImpor
 import { Route as appElectionsElectionRoundIdObserversObserverIdRouteImport } from './routes/(app)/elections/$electionRoundId/observers/$observerId'
 import { Route as appElectionsElectionRoundIdIncidentsIncidentIdRouteImport } from './routes/(app)/elections/$electionRoundId/incidents/$incidentId'
 import { Route as appElectionsElectionRoundIdGuidesGuideIdRouteImport } from './routes/(app)/elections/$electionRoundId/guides/$guideId'
-import { Route as appElectionsElectionRoundIdFormsFormIdRouteImport } from './routes/(app)/elections/$electionRoundId/forms/$formId'
+import { Route as appElectionsElectionRoundIdFormsWizardRouteImport } from './routes/(app)/elections/$electionRoundId/forms/wizard'
 import { Route as appElectionsElectionRoundIdSubmissionsByFormIndexRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/by-form/index'
 import { Route as appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/$submissionId/index'
+import { Route as appElectionsElectionRoundIdFormsFormIdIndexRouteImport } from './routes/(app)/elections/$electionRoundId/forms/$formId/index'
 import { Route as appElectionsElectionRoundIdSubmissionsByFormFormIdRouteImport } from './routes/(app)/elections/$electionRoundId/submissions/by-form/$formId'
-import { Route as appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport } from './routes/(app)/elections/$electionRoundId/forms/$formId.edit.$languageCode'
+import { Route as appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport } from './routes/(app)/elections/$electionRoundId/forms/$formId/edit.$languageCode'
 
 const TypographyRoute = TypographyRouteImport.update({
   id: '/typography',
@@ -179,10 +180,10 @@ const appElectionsElectionRoundIdGuidesGuideIdRoute =
     path: '/guides/$guideId',
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
-const appElectionsElectionRoundIdFormsFormIdRoute =
-  appElectionsElectionRoundIdFormsFormIdRouteImport.update({
-    id: '/forms/$formId',
-    path: '/forms/$formId',
+const appElectionsElectionRoundIdFormsWizardRoute =
+  appElectionsElectionRoundIdFormsWizardRouteImport.update({
+    id: '/forms/wizard',
+    path: '/forms/wizard',
     getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 const appElectionsElectionRoundIdSubmissionsByFormIndexRoute =
@@ -197,6 +198,12 @@ const appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute =
     path: '/$submissionId/',
     getParentRoute: () => appElectionsElectionRoundIdSubmissionsRouteRoute,
   } as any)
+const appElectionsElectionRoundIdFormsFormIdIndexRoute =
+  appElectionsElectionRoundIdFormsFormIdIndexRouteImport.update({
+    id: '/forms/$formId/',
+    path: '/forms/$formId/',
+    getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
+  } as any)
 const appElectionsElectionRoundIdSubmissionsByFormFormIdRoute =
   appElectionsElectionRoundIdSubmissionsByFormFormIdRouteImport.update({
     id: '/by-form/$formId',
@@ -205,13 +212,12 @@ const appElectionsElectionRoundIdSubmissionsByFormFormIdRoute =
   } as any)
 const appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute =
   appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport.update({
-    id: '/edit/$languageCode',
-    path: '/edit/$languageCode',
-    getParentRoute: () => appElectionsElectionRoundIdFormsFormIdRoute,
+    id: '/forms/$formId/edit/$languageCode',
+    path: '/forms/$formId/edit/$languageCode',
+    getParentRoute: () => appElectionsElectionRoundIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof appIndexRoute
   '/typography': typeof TypographyRoute
   '/settings': typeof appSettingsRoute
   '/accept-invite': typeof authAcceptInviteRoute
@@ -219,11 +225,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/set-password': typeof authSetPasswordRoute
   '/success': typeof authSuccessRoute
+  '/': typeof appIndexRoute
   '/elections/$electionRoundId': typeof appElectionsElectionRoundIdRouteRouteWithChildren
   '/elections': typeof appElectionsIndexRoute
   '/elections/$electionRoundId/submissions': typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   '/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
-  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
+  '/elections/$electionRoundId/forms/wizard': typeof appElectionsElectionRoundIdFormsWizardRoute
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/elections/$electionRoundId/quick-reports': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/elections/$electionRoundId/submissions/': typeof appElectionsElectionRoundIdSubmissionsIndexRoute
   '/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
+  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdIndexRoute
   '/elections/$electionRoundId/submissions/$submissionId': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/elections/$electionRoundId/submissions/by-form': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
   '/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
@@ -252,7 +260,7 @@ export interface FileRoutesByTo {
   '/': typeof appIndexRoute
   '/elections': typeof appElectionsIndexRoute
   '/elections/$electionRoundId': typeof appElectionsElectionRoundIdIndexRoute
-  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
+  '/elections/$electionRoundId/forms/wizard': typeof appElectionsElectionRoundIdFormsWizardRoute
   '/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -266,6 +274,7 @@ export interface FileRoutesByTo {
   '/elections/$electionRoundId/quick-reports': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/elections/$electionRoundId/submissions': typeof appElectionsElectionRoundIdSubmissionsIndexRoute
   '/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
+  '/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdIndexRoute
   '/elections/$electionRoundId/submissions/$submissionId': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/elections/$electionRoundId/submissions/by-form': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
   '/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
@@ -285,7 +294,7 @@ export interface FileRoutesById {
   '/(app)/elections/': typeof appElectionsIndexRoute
   '/(app)/elections/$electionRoundId/submissions': typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   '/(app)/elections/$electionRoundId/': typeof appElectionsElectionRoundIdIndexRoute
-  '/(app)/elections/$electionRoundId/forms/$formId': typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
+  '/(app)/elections/$electionRoundId/forms/wizard': typeof appElectionsElectionRoundIdFormsWizardRoute
   '/(app)/elections/$electionRoundId/guides/$guideId': typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   '/(app)/elections/$electionRoundId/incidents/$incidentId': typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   '/(app)/elections/$electionRoundId/observers/$observerId': typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -299,6 +308,7 @@ export interface FileRoutesById {
   '/(app)/elections/$electionRoundId/quick-reports/': typeof appElectionsElectionRoundIdQuickReportsIndexRoute
   '/(app)/elections/$electionRoundId/submissions/': typeof appElectionsElectionRoundIdSubmissionsIndexRoute
   '/(app)/elections/$electionRoundId/submissions/by-form/$formId': typeof appElectionsElectionRoundIdSubmissionsByFormFormIdRoute
+  '/(app)/elections/$electionRoundId/forms/$formId/': typeof appElectionsElectionRoundIdFormsFormIdIndexRoute
   '/(app)/elections/$electionRoundId/submissions/$submissionId/': typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRoute
   '/(app)/elections/$electionRoundId/submissions/by-form/': typeof appElectionsElectionRoundIdSubmissionsByFormIndexRoute
   '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode': typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
@@ -306,7 +316,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/typography'
     | '/settings'
     | '/accept-invite'
@@ -314,11 +323,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/set-password'
     | '/success'
+    | '/'
     | '/elections/$electionRoundId'
     | '/elections'
     | '/elections/$electionRoundId/submissions'
     | '/elections/$electionRoundId/'
-    | '/elections/$electionRoundId/forms/$formId'
+    | '/elections/$electionRoundId/forms/wizard'
     | '/elections/$electionRoundId/guides/$guideId'
     | '/elections/$electionRoundId/incidents/$incidentId'
     | '/elections/$electionRoundId/observers/$observerId'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId/quick-reports'
     | '/elections/$electionRoundId/submissions/'
     | '/elections/$electionRoundId/submissions/by-form/$formId'
+    | '/elections/$electionRoundId/forms/$formId'
     | '/elections/$electionRoundId/submissions/$submissionId'
     | '/elections/$electionRoundId/submissions/by-form'
     | '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
@@ -347,7 +358,7 @@ export interface FileRouteTypes {
     | '/'
     | '/elections'
     | '/elections/$electionRoundId'
-    | '/elections/$electionRoundId/forms/$formId'
+    | '/elections/$electionRoundId/forms/wizard'
     | '/elections/$electionRoundId/guides/$guideId'
     | '/elections/$electionRoundId/incidents/$incidentId'
     | '/elections/$electionRoundId/observers/$observerId'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/elections/$electionRoundId/quick-reports'
     | '/elections/$electionRoundId/submissions'
     | '/elections/$electionRoundId/submissions/by-form/$formId'
+    | '/elections/$electionRoundId/forms/$formId'
     | '/elections/$electionRoundId/submissions/$submissionId'
     | '/elections/$electionRoundId/submissions/by-form'
     | '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
@@ -379,7 +391,7 @@ export interface FileRouteTypes {
     | '/(app)/elections/'
     | '/(app)/elections/$electionRoundId/submissions'
     | '/(app)/elections/$electionRoundId/'
-    | '/(app)/elections/$electionRoundId/forms/$formId'
+    | '/(app)/elections/$electionRoundId/forms/wizard'
     | '/(app)/elections/$electionRoundId/guides/$guideId'
     | '/(app)/elections/$electionRoundId/incidents/$incidentId'
     | '/(app)/elections/$electionRoundId/observers/$observerId'
@@ -393,6 +405,7 @@ export interface FileRouteTypes {
     | '/(app)/elections/$electionRoundId/quick-reports/'
     | '/(app)/elections/$electionRoundId/submissions/'
     | '/(app)/elections/$electionRoundId/submissions/by-form/$formId'
+    | '/(app)/elections/$electionRoundId/forms/$formId/'
     | '/(app)/elections/$electionRoundId/submissions/$submissionId/'
     | '/(app)/elections/$electionRoundId/submissions/by-form/'
     | '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode'
@@ -419,8 +432,8 @@ declare module '@tanstack/react-router' {
     }
     '/(app)': {
       id: '/(app)'
-      path: '/'
-      fullPath: '/'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof appRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -585,11 +598,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appElectionsElectionRoundIdGuidesGuideIdRouteImport
       parentRoute: typeof appElectionsElectionRoundIdRouteRoute
     }
-    '/(app)/elections/$electionRoundId/forms/$formId': {
-      id: '/(app)/elections/$electionRoundId/forms/$formId'
-      path: '/forms/$formId'
-      fullPath: '/elections/$electionRoundId/forms/$formId'
-      preLoaderRoute: typeof appElectionsElectionRoundIdFormsFormIdRouteImport
+    '/(app)/elections/$electionRoundId/forms/wizard': {
+      id: '/(app)/elections/$electionRoundId/forms/wizard'
+      path: '/forms/wizard'
+      fullPath: '/elections/$electionRoundId/forms/wizard'
+      preLoaderRoute: typeof appElectionsElectionRoundIdFormsWizardRouteImport
       parentRoute: typeof appElectionsElectionRoundIdRouteRoute
     }
     '/(app)/elections/$electionRoundId/submissions/by-form/': {
@@ -606,6 +619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appElectionsElectionRoundIdSubmissionsSubmissionIdIndexRouteImport
       parentRoute: typeof appElectionsElectionRoundIdSubmissionsRouteRoute
     }
+    '/(app)/elections/$electionRoundId/forms/$formId/': {
+      id: '/(app)/elections/$electionRoundId/forms/$formId/'
+      path: '/forms/$formId'
+      fullPath: '/elections/$electionRoundId/forms/$formId'
+      preLoaderRoute: typeof appElectionsElectionRoundIdFormsFormIdIndexRouteImport
+      parentRoute: typeof appElectionsElectionRoundIdRouteRoute
+    }
     '/(app)/elections/$electionRoundId/submissions/by-form/$formId': {
       id: '/(app)/elections/$electionRoundId/submissions/by-form/$formId'
       path: '/by-form/$formId'
@@ -615,10 +635,10 @@ declare module '@tanstack/react-router' {
     }
     '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode': {
       id: '/(app)/elections/$electionRoundId/forms/$formId/edit/$languageCode'
-      path: '/edit/$languageCode'
+      path: '/forms/$formId/edit/$languageCode'
       fullPath: '/elections/$electionRoundId/forms/$formId/edit/$languageCode'
       preLoaderRoute: typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRouteImport
-      parentRoute: typeof appElectionsElectionRoundIdFormsFormIdRoute
+      parentRoute: typeof appElectionsElectionRoundIdRouteRoute
     }
   }
 }
@@ -647,25 +667,10 @@ const appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren =
     appElectionsElectionRoundIdSubmissionsRouteRouteChildren,
   )
 
-interface appElectionsElectionRoundIdFormsFormIdRouteChildren {
-  appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute: typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
-}
-
-const appElectionsElectionRoundIdFormsFormIdRouteChildren: appElectionsElectionRoundIdFormsFormIdRouteChildren =
-  {
-    appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute:
-      appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute,
-  }
-
-const appElectionsElectionRoundIdFormsFormIdRouteWithChildren =
-  appElectionsElectionRoundIdFormsFormIdRoute._addFileChildren(
-    appElectionsElectionRoundIdFormsFormIdRouteChildren,
-  )
-
 interface appElectionsElectionRoundIdRouteRouteChildren {
   appElectionsElectionRoundIdSubmissionsRouteRoute: typeof appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren
   appElectionsElectionRoundIdIndexRoute: typeof appElectionsElectionRoundIdIndexRoute
-  appElectionsElectionRoundIdFormsFormIdRoute: typeof appElectionsElectionRoundIdFormsFormIdRouteWithChildren
+  appElectionsElectionRoundIdFormsWizardRoute: typeof appElectionsElectionRoundIdFormsWizardRoute
   appElectionsElectionRoundIdGuidesGuideIdRoute: typeof appElectionsElectionRoundIdGuidesGuideIdRoute
   appElectionsElectionRoundIdIncidentsIncidentIdRoute: typeof appElectionsElectionRoundIdIncidentsIncidentIdRoute
   appElectionsElectionRoundIdObserversObserverIdRoute: typeof appElectionsElectionRoundIdObserversObserverIdRoute
@@ -677,6 +682,8 @@ interface appElectionsElectionRoundIdRouteRouteChildren {
   appElectionsElectionRoundIdObserversIndexRoute: typeof appElectionsElectionRoundIdObserversIndexRoute
   appElectionsElectionRoundIdPushMessagesIndexRoute: typeof appElectionsElectionRoundIdPushMessagesIndexRoute
   appElectionsElectionRoundIdQuickReportsIndexRoute: typeof appElectionsElectionRoundIdQuickReportsIndexRoute
+  appElectionsElectionRoundIdFormsFormIdIndexRoute: typeof appElectionsElectionRoundIdFormsFormIdIndexRoute
+  appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute: typeof appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute
 }
 
 const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundIdRouteRouteChildren =
@@ -685,8 +692,8 @@ const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundId
       appElectionsElectionRoundIdSubmissionsRouteRouteWithChildren,
     appElectionsElectionRoundIdIndexRoute:
       appElectionsElectionRoundIdIndexRoute,
-    appElectionsElectionRoundIdFormsFormIdRoute:
-      appElectionsElectionRoundIdFormsFormIdRouteWithChildren,
+    appElectionsElectionRoundIdFormsWizardRoute:
+      appElectionsElectionRoundIdFormsWizardRoute,
     appElectionsElectionRoundIdGuidesGuideIdRoute:
       appElectionsElectionRoundIdGuidesGuideIdRoute,
     appElectionsElectionRoundIdIncidentsIncidentIdRoute:
@@ -709,6 +716,10 @@ const appElectionsElectionRoundIdRouteRouteChildren: appElectionsElectionRoundId
       appElectionsElectionRoundIdPushMessagesIndexRoute,
     appElectionsElectionRoundIdQuickReportsIndexRoute:
       appElectionsElectionRoundIdQuickReportsIndexRoute,
+    appElectionsElectionRoundIdFormsFormIdIndexRoute:
+      appElectionsElectionRoundIdFormsFormIdIndexRoute,
+    appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute:
+      appElectionsElectionRoundIdFormsFormIdEditLanguageCodeRoute,
   }
 
 const appElectionsElectionRoundIdRouteRouteWithChildren =

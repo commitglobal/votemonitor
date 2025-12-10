@@ -198,25 +198,7 @@ export function mapFormSubmissionFollowUpStatus(
 }
 
 export function mapFormType(formType: FormType): string {
-  switch (formType) {
-    case FormType.Opening:
-      return i18n.t('form.type.opening')
-    case FormType.Voting:
-      return i18n.t('form.type.voting')
-    case FormType.ClosingAndCounting:
-      return i18n.t('form.type.closingAndCounting')
-    case FormType.CitizenReporting:
-      return i18n.t('form.type.citizenReporting')
-    case FormType.IncidentReporting:
-      return i18n.t('form.type.incidentReporting')
-    case FormType.PSI:
-      return i18n.t('form.type.psi')
-    case FormType.Other:
-      return i18n.t('form.type.other')
-
-    default:
-      return formType
-  }
+  return i18n.t(`form.type.${formType}`)
 }
 
 export function mapFormStatus(formStatus: FormStatus): string {

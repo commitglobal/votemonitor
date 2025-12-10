@@ -11,8 +11,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import { DataTableColumnHeader } from '@/components/data-table-column-header'
-import FormSubmissionFollowUpStatusBadge from '@/components/form-submission-follow-up-status-badge'
+import FormSubmissionFollowUpStatusBadge from '@/components/badges/form-submission-follow-up-status-badge'
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 
 export const getFormSubmissionsColumns = (
   electionRoundId: string

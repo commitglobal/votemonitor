@@ -13,7 +13,7 @@ import { mapFormStatus, mapFormType } from '@/lib/i18n'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { SingleSelectDataTableFacetedFilter } from '@/components/data-table-faceted-filter'
+import { SingleSelectDataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 
 const formStatusOptions: Option[] = FormStatusList.map((fs) => ({
   label: mapFormStatus(fs),

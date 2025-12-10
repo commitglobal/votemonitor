@@ -16,6 +16,8 @@ export const FormTypeList: FormType[] = [
   FormType.Opening,
   FormType.Voting,
   FormType.ClosingAndCounting,
+  FormType.CitizenReporting,
+  FormType.IncidentReporting,
   FormType.Other,
 ]
 

@@ -1,11 +1,11 @@
-import { NavigationProgress } from "@/components/navigation-progress";
-import type { AuthContext } from "@/contexts/auth.context";
-import type { QueryClient } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import type { QueryClient } from '@tanstack/react-query'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import type { AuthContext } from '@/contexts/auth.context'
+import { NavigationProgress } from '@/components/NavigationProgress'
 
 interface RouterContext {
-  auth: AuthContext;
-  queryClient: QueryClient;
+  auth: AuthContext
+  queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -16,4 +16,4 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       <Outlet />
     </>
   ),
-});
+})

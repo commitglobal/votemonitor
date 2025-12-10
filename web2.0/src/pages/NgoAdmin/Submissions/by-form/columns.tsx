@@ -3,7 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { router } from '@/main'
 import { AggregatedFormSubmissionsTableRow } from '@/types/submissions-aggregate'
 import { ChevronRightIcon } from 'lucide-react'
-import { DataTableColumnHeader } from '@/components/data-table-column-header'
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 
 export const getAggregatedFormSubmissionsColumns = (
   electionRoundId: string

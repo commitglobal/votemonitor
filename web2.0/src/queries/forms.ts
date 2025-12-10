@@ -1,4 +1,4 @@
-import { queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { queryOptions, useQuery } from '@tanstack/react-query'
 import { getFormById } from '@/services/api/forms/get-by-id'
 import { listForms } from '@/services/api/forms/list.api'
 import type { PageResponse } from '@/types/common'
@@ -12,7 +12,7 @@ export const formsKeys = {
     [...formsKeys.lists(electionRoundId), { ...params }] as const,
   details: (electionRoundId: string) =>
     [...formsKeys.all(electionRoundId), 'detail'] as const,
-  detail: (electionRoundId: string, id: string) =>
+  detail: (electionRoundId: string, id?: string) =>
     [...formsKeys.details(electionRoundId), id] as const,
 }
 
@@ -38,20 +38,20 @@ export const useListForms = <TResult = PageResponse<FormModel>>(
 
 export function getFormDetailsQueryOptions<TResult = FormModel>(
   electionRoundId: string,
-  formId: string,
+  formId?: string,
   select?: (data: FormModel) => TResult
 ) {
   return queryOptions({
-    queryKey: formsKeys.detail(electionRoundId, formId),
-    queryFn: async () => await getFormById(electionRoundId, formId),
+    queryKey: formsKeys.detail(electionRoundId, formId as string),
+    queryFn: async () => await getFormById(electionRoundId, formId as string),
     staleTime: STALE_TIME,
     select,
+    enabled: !!formId,
   })
 }
 
-export const useSuspenseGetFormDetails = <TResult = FormModel>(
+export const useGetFormDetails = <TResult = FormModel>(
   electionRoundId: string,
-  formId: string,
+  formId?: string,
   select?: (data: FormModel) => TResult
-) =>
-  useSuspenseQuery(getFormDetailsQueryOptions(electionRoundId, formId, select))
+) => useQuery(getFormDetailsQueryOptions(electionRoundId, formId, select))

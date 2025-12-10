@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { usePollingStationsLocationLevels } from '@/queries/polling-stations'
 import { NavigateFn, SearchRecord } from '@/hooks/use-table-url-state'
-import { SingleSelectDataTableFacetedFilter } from './data-table-faceted-filter'
+import { SingleSelectDataTableFacetedFilter } from './data-table/data-table-faceted-filter'
 import { DebouncedInput } from './ui/debounced-input'
 
 export function PollingStationFilteruseFilters({

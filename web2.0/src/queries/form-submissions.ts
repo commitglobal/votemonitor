@@ -1,4 +1,4 @@
-import { queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { queryOptions, useQuery } from '@tanstack/react-query'
 import { getSubmissionById } from '@/services/api/form-submissions/get-entry.api'
 import { getFormSubmissionsFilters } from '@/services/api/form-submissions/get-submissions-filters.api'
 import { listFormSubmissionsByEntry } from '@/services/api/form-submissions/list-entries.api'
@@ -69,14 +69,14 @@ export function getFormSubmissionDetailsQueryOptions<
   })
 }
 
-export const useSuspenseGetFormSubmissionDetails = <
+export const useGetFormSubmissionDetails = <
   TResult = FormSubmissionDetailedModel,
 >(
   electionRoundId: string,
   formSubmissionId: string,
   select?: (data: FormSubmissionDetailedModel) => TResult
 ) =>
-  useSuspenseQuery(
+  useQuery(
     getFormSubmissionDetailsQueryOptions(
       electionRoundId,
       formSubmissionId,

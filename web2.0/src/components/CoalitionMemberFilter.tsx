@@ -3,7 +3,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { useCoalitionDetails } from '@/queries/coalitions'
 import { DataSource } from '@/types/common'
-import { SingleSelectDataTableFacetedFilter } from './data-table-faceted-filter'
+import { SingleSelectDataTableFacetedFilter } from './data-table/data-table-faceted-filter'
 
 export default function CoalitionMemberFilter() {
   const { electionRound } = useCurrentElectionRound()

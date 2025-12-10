@@ -24,11 +24,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import CoalitionMemberFilter from '@/components/CoalitionMemberFilter'
 import { PollingStationFilteruseFilters } from '@/components/PollingStationFilter'
-import { DateRangeFilter } from '@/components/data-table-date-filter'
+import { DateRangeFilter } from '@/components/data-table/data-table-date-filter'
 import {
   MultiSelectDataTableFacetedFilter,
   SingleSelectDataTableFacetedFilter,
-} from '@/components/data-table-faceted-filter'
+} from '@/components/data-table/data-table-faceted-filter'
 
 const formSubmissionFollowUpStatusOptions: Option[] =
   FormSubmissionFollowUpStatusList.map((fs) => ({

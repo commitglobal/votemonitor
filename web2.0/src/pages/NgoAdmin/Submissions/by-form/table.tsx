@@ -3,8 +3,8 @@ import { useListFormSubmissionsAggregated } from '@/queries/form-submissions-agg
 import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions/by-form'
 import { useDataTable } from '@/hooks/use-data-table'
 import { DataTable } from '@/components/ui/data-table'
-import { DataTableSkeleton } from '@/components/data-table-skeleton'
-import { DataTableToolbar } from '@/components/data-table-toolbar'
+import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton'
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar'
 import { SubmissionsFilters } from '../components/submissions-filters'
 import { getAggregatedFormSubmissionsColumns } from './columns'
 

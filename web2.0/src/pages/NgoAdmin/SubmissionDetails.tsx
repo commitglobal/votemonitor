@@ -82,7 +82,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import FormSubmissionFollowUpStatusBadge from '@/components/form-submission-follow-up-status-badge'
+import FormSubmissionFollowUpStatusBadge from '@/components/badges/form-submission-follow-up-status-badge'
 
 const buildSearchFilters = (
   submission: FormSubmissionDetailedModel,

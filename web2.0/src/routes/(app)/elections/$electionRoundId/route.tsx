@@ -29,8 +29,6 @@ function RouteComponent() {
     setElectionRound(electionRound)
   }, [electionRound, setElectionRound])
 
-  console.log(electionRound)
-
   if (isLoading) {
     return <div>Loading...</div>
   }

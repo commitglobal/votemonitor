@@ -71,7 +71,6 @@ export function MultiSelectDataTableFacetedFilter({
     />
   )
 }
-
 interface DataTableFacetedFilterProps {
   title: string
   options: Option[]

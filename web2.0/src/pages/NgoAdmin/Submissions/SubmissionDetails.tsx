@@ -2,14 +2,14 @@
 
 import { format } from 'date-fns'
 import { Link, useRouter } from '@tanstack/react-router'
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { queryClient } from '@/main'
 import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions'
-import { useElectionRoundDetails } from '@/queries/elections'
 import {
   formSubmissionKyes,
-  useSuspenseGetFormSubmissionDetails,
+  useGetFormSubmissionDetails,
 } from '@/queries/form-submissions'
-import { useSuspenseGetFormDetails } from '@/queries/forms'
+import { useGetFormDetails } from '@/queries/forms'
 import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions/$submissionId'
 import { ElectionRoundStatus } from '@/types/election'
 import {
@@ -82,7 +82,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import FormSubmissionFollowUpStatusBadge from '@/components/form-submission-follow-up-status-badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import FormSubmissionFollowUpStatusBadge from '@/components/badges/form-submission-follow-up-status-badge'
 
 const buildSearchFilters = (
   submission: FormSubmissionDetailedModel,
@@ -178,41 +179,15 @@ export function Page() {
   const navigate = Route.useNavigate()
 
   const { invalidate } = useRouter()
-  const { data: submission } = useSuspenseGetFormSubmissionDetails(
+  const { data: submission, isLoading: isLoadingSubmissionDetails } =
+    useGetFormSubmissionDetails(electionRoundId, submissionId)
+
+  const { data: form, isLoading: isLoadingFormDetails } = useGetFormDetails(
     electionRoundId,
-    submissionId
+    submission?.formId
   )
 
-  const { data: form } = useSuspenseGetFormDetails(
-    electionRoundId,
-    submission.formId
-  )
-
-  const formDisplayLanguage = formLanguage ?? form.defaultLanguage
-
-  const answersMap = arrayToKeyObject(submission.answers || [], 'questionId')
-  const attachmentsMap = groupArrayByKey(
-    submission.attachments || [],
-    'questionId'
-  )
-  const notesMap = groupArrayByKey(submission.notes || [], 'questionId')
-
-  const mappedQuestions = form.questions.map((question) => ({
-    ...question,
-    notes: notesMap[question.id] || [],
-    attachments: attachmentsMap[question.id] || [],
-    answerAndAttachments: [
-      ...(notesMap[question.id] || []),
-      ...(attachmentsMap[question.id] || []),
-    ].sort(
-      (a, b) =>
-        new Date(b.timeSubmitted).getTime() -
-        new Date(a.timeSubmitted).getTime()
-    ),
-    answer: answersMap[question.id],
-  }))
-
-  const { data: electionRound } = useElectionRoundDetails(electionRoundId)
+  const { electionRound } = useCurrentElectionRound()
   const { mutate: updateStatus } =
     useUpdateFormSubmissionFollowUpStatusMutation()
 
@@ -237,6 +212,60 @@ export function Page() {
       }
     )
   }
+
+  if (isLoadingSubmissionDetails || isLoadingFormDetails) {
+    return (
+      <>
+        <Skeleton className='mb-4 h-6 w-40' />
+        <Card>
+          <CardContent className='space-y-4 pt-6'>
+            <Skeleton className='h-5 w-24' />
+            <Skeleton className='h-5 w-64' />
+            <Skeleton className='h-10 w-32' />
+            <div className='space-y-2'>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className='h-4 w-full' />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </>
+    )
+  }
+
+  if (!submission || !form) {
+    return (
+      <Card>
+        <CardContent className='text-muted-foreground py-8 text-center'>
+          Unable to load submission details.
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const formDisplayLanguage = formLanguage ?? form.defaultLanguage
+
+  const answersMap = arrayToKeyObject(submission.answers || [], 'questionId')
+  const attachmentsMap = groupArrayByKey(
+    submission.attachments || [],
+    'questionId'
+  )
+  const notesMap = groupArrayByKey(submission.notes || [], 'questionId')
+
+  const mappedQuestions = form.questions.map((question) => ({
+    ...question,
+    notes: notesMap[question.id] || [],
+    attachments: attachmentsMap[question.id] || [],
+    answerAndAttachments: [
+      ...(notesMap[question.id] || []),
+      ...(attachmentsMap[question.id] || []),
+    ].sort(
+      (a, b) =>
+        new Date(b.timeSubmitted).getTime() -
+        new Date(a.timeSubmitted).getTime()
+    ),
+    answer: answersMap[question.id],
+  }))
 
   const isReadOnly =
     !submission.isOwnObserver ||

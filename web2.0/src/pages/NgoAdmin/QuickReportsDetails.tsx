@@ -57,7 +57,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import QuickReportFollowUpStatusBadge from '@/components/quick-report-follow-up-status-badge'
+import QuickReportFollowUpStatusBadge from '@/components/badges/quick-report-follow-up-status-badge'
 
 const buildSearchFilters = (quickReport: QuickReportModel, level: number) => {
   const filters: Record<string, string> = {}

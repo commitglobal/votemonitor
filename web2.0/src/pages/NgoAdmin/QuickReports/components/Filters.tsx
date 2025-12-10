@@ -1,16 +1,7 @@
-import CoalitionMemberFilter from "@/components/CoalitionMemberFilter";
-import { SingleSelectDataTableFacetedFilter } from "@/components/data-table-faceted-filter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import {
-  mapQuickReportFollowUpStatus,
-  mapQuickReportIncidentCategory,
-  mapQuickReportLocationType,
-} from "@/lib/i18n";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/quick-reports";
-import { DataSource } from "@/types/common";
-import type { Option } from "@/types/data-table";
+import React from 'react'
+import { Route } from '@/routes/(app)/elections/$electionRoundId/quick-reports'
+import { DataSource } from '@/types/common'
+import type { Option } from '@/types/data-table'
 import {
   QuickReportFollowUpStatus,
   QuickReportFollowUpStatusList,
@@ -18,37 +9,46 @@ import {
   QuickReportIncidentCategoryList,
   QuickReportLocationType,
   QuickReportLocationTypeList,
-} from "@/types/quick-reports";
-import { X } from "lucide-react";
-import React from "react";
+} from '@/types/quick-reports'
+import { X } from 'lucide-react'
+import {
+  mapQuickReportFollowUpStatus,
+  mapQuickReportIncidentCategory,
+  mapQuickReportLocationType,
+} from '@/lib/i18n'
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import CoalitionMemberFilter from '@/components/CoalitionMemberFilter'
+import { SingleSelectDataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 
 const locationOptions: Option[] = QuickReportLocationTypeList.map((lt) => ({
   label: mapQuickReportLocationType(lt),
   value: lt,
-}));
+}))
 
 const quickReportIncidentCategoryOptions: Option[] =
   QuickReportIncidentCategoryList.map((qic) => ({
     label: mapQuickReportIncidentCategory(qic),
     value: qic,
-  }));
+  }))
 
 const quickReportFollowUpStatusOptions: Option[] =
   QuickReportFollowUpStatusList.map((fs) => ({
     label: mapQuickReportFollowUpStatus(fs),
     value: fs,
-  }));
+  }))
 
 function TableFilters() {
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
+  const search = Route.useSearch()
+  const navigate = Route.useNavigate()
 
   const isFiltered = Object.entries(search).some(
     ([key, value]) =>
-      !["pageNumber", "pageSize"].includes(key) &&
+      !['pageNumber', 'pageSize'].includes(key) &&
       Boolean(value) &&
-      !(key === "dataSource" && value === DataSource.Ngo)
-  );
+      !(key === 'dataSource' && value === DataSource.Ngo)
+  )
 
   const onReset = React.useCallback(() => {
     navigate({
@@ -57,40 +57,40 @@ function TableFilters() {
         pageSize: 25,
       },
       replace: true,
-    });
-  }, [navigate]);
+    })
+  }, [navigate])
 
-  const [searchInput, setSearchInput] = React.useState(search.searchText ?? "");
+  const [searchInput, setSearchInput] = React.useState(search.searchText ?? '')
 
   React.useEffect(() => {
-    setSearchInput(search.searchText ?? "");
-  }, [search.searchText]);
+    setSearchInput(search.searchText ?? '')
+  }, [search.searchText])
 
   const debouncedSearch = useDebouncedCallback((value: string) => {
     navigate({
       search: (prev) => ({ ...prev, searchText: value }),
       replace: true,
-    });
-  }, 500);
+    })
+  }, 500)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.target.value);
-    debouncedSearch(event.target.value);
-  };
+    setSearchInput(event.target.value)
+    debouncedSearch(event.target.value)
+  }
 
   return (
-    <div className="flex flex-1 flex-wrap items-center gap-2">
+    <div className='flex flex-1 flex-wrap items-center gap-2'>
       <Input
-        placeholder="Search"
+        placeholder='Search'
         value={searchInput}
         onChange={handleInputChange}
-        className="h-8 w-40 lg:w-56"
+        className='h-8 w-40 lg:w-56'
       />
 
       <CoalitionMemberFilter />
 
       <SingleSelectDataTableFacetedFilter
-        title="Location type"
+        title='Location type'
         options={locationOptions}
         value={search.quickReportLocationType as string}
         onValueChange={(value) =>
@@ -105,7 +105,7 @@ function TableFilters() {
       />
 
       <SingleSelectDataTableFacetedFilter
-        title="Incident category type"
+        title='Incident category type'
         options={quickReportIncidentCategoryOptions}
         value={search.incidentCategory as string}
         onValueChange={(value) =>
@@ -120,7 +120,7 @@ function TableFilters() {
       />
 
       <SingleSelectDataTableFacetedFilter
-        title="Followup status"
+        title='Followup status'
         options={quickReportFollowUpStatusOptions}
         value={search.quickReportFollowUpStatus as string}
         onValueChange={(value) =>
@@ -136,10 +136,10 @@ function TableFilters() {
 
       {isFiltered && (
         <Button
-          aria-label="Reset filters"
-          variant="outline"
-          size="sm"
-          className="border-dashed"
+          aria-label='Reset filters'
+          variant='outline'
+          size='sm'
+          className='border-dashed'
           onClick={onReset}
         >
           <X />
@@ -147,7 +147,7 @@ function TableFilters() {
         </Button>
       )}
     </div>
-  );
+  )
 }
 
-export default TableFilters;
+export default TableFilters

@@ -17,8 +17,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { DataTableColumnHeader } from '@/components/data-table-column-header'
-import QuickReportFollowUpStatusBadge from '@/components/quick-report-follow-up-status-badge'
+import QuickReportFollowUpStatusBadge from '@/components/badges/quick-report-follow-up-status-badge'
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 
 interface GetQuickReportsTableColumnsProps {
   electionRoundId: string
