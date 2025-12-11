@@ -68,6 +68,7 @@ export function SearchableCombobox({
                 <CommandItem
                   key={option.value}
                   value={option.value}
+                  keywords={[option.label, option.value]}
                   onSelect={(currentValue) => {
                     onValueChange(currentValue === value ? '' : currentValue)
                     setOpen(false)

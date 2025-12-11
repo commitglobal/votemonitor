@@ -1,15 +1,12 @@
 'use client'
 
+import { useEffect } from 'react'
 import { format } from 'date-fns'
 import { Link, useRouter } from '@tanstack/react-router'
-import { queryClient } from '@/main'
-import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions'
-import { useElectionRoundDetails } from '@/queries/elections'
-import {
-  formSubmissionKyes,
-  useSuspenseGetFormSubmissionDetails,
-} from '@/queries/form-submissions'
-import { useSuspenseGetFormDetails } from '@/queries/forms'
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
+import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions-mutations'
+import { useGetFormSubmissionDetails } from '@/queries/form-submissions'
+import { useGetFormDetails } from '@/queries/forms'
 import { Route } from '@/routes/(app)/elections/$electionRoundId/submissions/$submissionId'
 import { ElectionRoundStatus } from '@/types/election'
 import {
@@ -82,6 +79,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
 import FormSubmissionFollowUpStatusBadge from '@/components/badges/form-submission-follow-up-status-badge'
 
 const buildSearchFilters = (
@@ -178,26 +176,73 @@ export function Page() {
   const navigate = Route.useNavigate()
 
   const { invalidate } = useRouter()
-  const { data: submission } = useSuspenseGetFormSubmissionDetails(
+  const { data: submission, isLoading: isLoadingSubmissionDetails } =
+    useGetFormSubmissionDetails(electionRoundId, submissionId)
+  const { data: form, isLoading: isLoadingFormDetails } = useGetFormDetails(
     electionRoundId,
-    submissionId
+    submission?.formId
   )
 
-  const { data: form } = useSuspenseGetFormDetails(
+  // Redirect if submission or form not found
+  useEffect(() => {
+    if (
+      !isLoadingSubmissionDetails &&
+      !isLoadingFormDetails &&
+      (!submission || !form)
+    ) {
+      toast.error('Submission not found')
+      navigate({
+        to: '/elections/$electionRoundId/submissions/by-form',
+        params: { electionRoundId },
+        search: from,
+      })
+    }
+  }, [
+    submission,
+    form,
+    isLoadingSubmissionDetails,
+    isLoadingFormDetails,
+    navigate,
     electionRoundId,
-    submission.formId
-  )
+    from,
+  ])
 
-  const formDisplayLanguage = formLanguage ?? form.defaultLanguage
+  // Show loading state
+  if (isLoadingSubmissionDetails || isLoadingFormDetails) {
+    return (
+      <>
+        <Skeleton className='mb-4 h-6 w-40' />
+        <Card>
+          <CardContent className='space-y-4 pt-6'>
+            <Skeleton className='h-5 w-24' />
+            <Skeleton className='h-5 w-64' />
+            <Skeleton className='h-10 w-32' />
+            <div className='space-y-2'>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className='h-4 w-full' />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </>
+    )
+  }
 
-  const answersMap = arrayToKeyObject(submission.answers || [], 'questionId')
+  // Return null while redirecting
+  if (!submission || !form) {
+    return null
+  }
+
+  const formDisplayLanguage = formLanguage ?? form?.defaultLanguage
+
+  const answersMap = arrayToKeyObject(submission?.answers || [], 'questionId')
   const attachmentsMap = groupArrayByKey(
-    submission.attachments || [],
+    submission?.attachments || [],
     'questionId'
   )
-  const notesMap = groupArrayByKey(submission.notes || [], 'questionId')
+  const notesMap = groupArrayByKey(submission?.notes || [], 'questionId')
 
-  const mappedQuestions = form.questions.map((question) => ({
+  const mappedQuestions = form?.questions.map((question) => ({
     ...question,
     notes: notesMap[question.id] || [],
     attachments: attachmentsMap[question.id] || [],
@@ -212,7 +257,7 @@ export function Page() {
     answer: answersMap[question.id],
   }))
 
-  const { data: electionRound } = useElectionRoundDetails(electionRoundId)
+  const { electionRound } = useCurrentElectionRound()
   const { mutate: updateStatus } =
     useUpdateFormSubmissionFollowUpStatusMutation()
 
@@ -222,12 +267,9 @@ export function Page() {
     updateStatus(
       { electionRoundId, formSubmissionId: submissionId, followUpStatus },
       {
-        onSuccess: async (_, { electionRoundId }) => {
+        onSuccess: async () => {
           toast.success('Follow-up status updated')
           invalidate()
-          await queryClient.invalidateQueries({
-            queryKey: formSubmissionKyes.all(electionRoundId),
-          })
         },
         onError: () => {
           toast.error('Error updating follow up status', {
@@ -239,7 +281,7 @@ export function Page() {
   }
 
   const isReadOnly =
-    !submission.isOwnObserver ||
+    !submission?.isOwnObserver ||
     electionRound?.status === ElectionRoundStatus.Archived
 
   return (

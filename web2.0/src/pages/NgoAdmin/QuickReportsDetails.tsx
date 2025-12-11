@@ -2,13 +2,9 @@
 
 import { format } from 'date-fns'
 import { Link, useRouter } from '@tanstack/react-router'
-import { queryClient } from '@/main'
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { useUpdateQuickReportFollowUpStatusMutation } from '@/mutations/quick-reports'
-import { useElectionRoundDetails } from '@/queries/elections'
-import {
-  quickReportKeys,
-  useSuspenseGetQuickReportDetails,
-} from '@/queries/quick-reports'
+import { useSuspenseGetQuickReportDetails } from '@/queries/quick-reports'
 import { Route } from '@/routes/(app)/elections/$electionRoundId/quick-reports/$quickReportId'
 import { ElectionRoundStatus } from '@/types/election'
 import {
@@ -163,7 +159,7 @@ function Page() {
     electionRoundId,
     quickReportId
   )
-  const { data: electionRound } = useElectionRoundDetails(electionRoundId)
+  const { electionRound } = useCurrentElectionRound()
   const { mutate: updateStatus } = useUpdateQuickReportFollowUpStatusMutation()
 
   const handleFollowUpStatusChange = (
@@ -172,12 +168,9 @@ function Page() {
     updateStatus(
       { electionRoundId, quickReportId, followUpStatus },
       {
-        onSuccess: async (_, { electionRoundId }) => {
+        onSuccess: async (_) => {
           toast.success('Follow-up status updated')
           invalidate()
-          await queryClient.invalidateQueries({
-            queryKey: quickReportKeys.all(electionRoundId),
-          })
         },
         onError: () => {
           toast.error('Error updating follow up status', {

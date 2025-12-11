@@ -1,4 +1,4 @@
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { useForms } from './FormsProvider'
 
 export function FormsDialogs() {

@@ -1,9 +1,5 @@
-import { useEffect } from 'react'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import {
-  CurrentElectionRoundProvider,
-  useCurrentElectionRound,
-} from '@/contexts/election-round.context'
+import { CurrentElectionRoundProvider } from '@/contexts/election-round.context'
 import { useSuspenseElectionRoundDetails } from '@/queries/elections'
 import { ElectionSiteHeader } from '@/components/ElectionSiteHeader'
 
@@ -12,22 +8,9 @@ export const Route = createFileRoute('/(app)/elections/$electionRoundId')({
 })
 
 function RouteComponentWrapper() {
-  return (
-    <CurrentElectionRoundProvider>
-      <RouteComponent />
-    </CurrentElectionRoundProvider>
-  )
-}
-
-function RouteComponent() {
   const { electionRoundId } = Route.useParams()
   const { data: electionRound, isLoading } =
     useSuspenseElectionRoundDetails(electionRoundId)
-  const { setElectionRound } = useCurrentElectionRound()
-
-  useEffect(() => {
-    setElectionRound(electionRound)
-  }, [electionRound, setElectionRound])
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -36,6 +19,15 @@ function RouteComponent() {
   if (!electionRound) {
     throw redirect({ to: '/elections' })
   }
+
+  return (
+    <CurrentElectionRoundProvider>
+      <RouteComponent />
+    </CurrentElectionRoundProvider>
+  )
+}
+
+function RouteComponent() {
   return (
     <>
       <ElectionSiteHeader />

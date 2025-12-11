@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import { Link, useRouter } from '@tanstack/react-router'
 import { useCurrentElectionRound } from '@/contexts/election-round.context'
 import { queryClient } from '@/main'
-import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions'
+import { useUpdateFormSubmissionFollowUpStatusMutation } from '@/mutations/form-submissions-mutations'
 import {
   formSubmissionKyes,
   useGetFormSubmissionDetails,

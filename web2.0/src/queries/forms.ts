@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getFormById } from '@/services/api/forms/get-by-id'
+import { getFormById } from '@/services/api/forms/get-by-id.api'
 import { listForms } from '@/services/api/forms/list.api'
 import type { PageResponse } from '@/types/common'
 import { FormModel, FormSearch } from '@/types/form'

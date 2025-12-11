@@ -1,10 +1,12 @@
-'use client'
-
 import z from 'zod'
+import { useNavigate } from '@tanstack/react-router'
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
+import { useCreateFormMutation } from '@/mutations/form-mutations'
 import { FormType } from '@/types/form'
 import { Language, LanguageList } from '@/types/language'
 import { formOptions, revalidateLogic } from '@tanstack/react-form'
 import { ArrowLeft } from 'lucide-react'
+import { newTranslatedString } from '@/lib/translated-string'
 import { useAppForm } from '@/hooks/form'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,7 +19,6 @@ import {
 import { FieldGroup } from '@/components/ui/field'
 
 interface NewFormStepProps {
-  onComplete: (data: unknown) => void
   onBack: () => void
 }
 
@@ -28,7 +29,7 @@ export const newFormSchema = z.object({
     .max(256, 'Form code must be less than 256 characters'),
   name: z.string().min(2, 'Form name is required'),
   description: z.string().optional(),
-  language: z.enum(LanguageList, { message: 'Language is required' }),
+  defaultLanguage: z.enum(LanguageList, { message: 'Language is required' }),
   formType: z.enum(
     [
       FormType.Opening,
@@ -46,7 +47,7 @@ export const defaultValues: z.infer<typeof newFormSchema> = {
   code: '',
   name: '',
   description: '',
-  language: Language.EN,
+  defaultLanguage: Language.EN,
   formType: FormType.Opening,
 }
 
@@ -54,13 +55,41 @@ export const newFormOpts = formOptions({
   defaultValues,
 })
 
-export function NewFormStep({ onComplete, onBack }: NewFormStepProps) {
+export function NewFormStep({ onBack }: NewFormStepProps) {
+  const { electionRound } = useCurrentElectionRound()
+  const createFormMutation = useCreateFormMutation(electionRound.id)
+  const navigate = useNavigate()
+
   const form = useAppForm({
     ...newFormOpts,
-    onSubmit: ({ value, meta }) => {
-      console.log(value)
-      console.log(newFormSchema.parse(value))
-      console.log(meta)
+    onSubmit: async ({ formApi, value }) => {
+      await createFormMutation.mutateAsync(
+        {
+          code: value.code,
+          name: newTranslatedString(
+            [value.defaultLanguage],
+            value.defaultLanguage,
+            value.name
+          ),
+          defaultLanguage: value.defaultLanguage,
+          languages: [value.defaultLanguage],
+          formType: value.formType,
+          description: newTranslatedString(
+            [value.defaultLanguage],
+            value.defaultLanguage,
+            value.description ?? ''
+          ),
+        },
+        {
+          onSuccess: (form) => {
+            formApi.reset()
+            navigate({
+              to: '/elections/$electionRoundId/forms/$formId',
+              params: { electionRoundId: electionRound.id, formId: form.id },
+            })
+          },
+        }
+      )
     },
     validators: {
       onDynamic: newFormSchema,
@@ -109,11 +138,11 @@ export function NewFormStep({ onComplete, onBack }: NewFormStepProps) {
 
               <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                 <div className='md:col-span-1'>
-                  <form.AppField name='language'>
+                  <form.AppField name='defaultLanguage'>
                     {(field) => {
                       return (
                         <field.LanguageSelect
-                          label='Language'
+                          label='Base language'
                           id='language'
                           description='The base language of the form'
                           required
