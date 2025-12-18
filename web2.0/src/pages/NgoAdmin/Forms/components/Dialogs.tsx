@@ -3,7 +3,6 @@ import { useForms } from './FormsProvider'
 
 export function FormsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useForms()
-  // const { electionRound } = useCurrentElectionRound()
 
   return (
     <>

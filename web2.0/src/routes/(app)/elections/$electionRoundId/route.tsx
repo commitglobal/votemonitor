@@ -1,10 +1,21 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { CurrentElectionRoundProvider } from '@/contexts/election-round.context'
-import { useSuspenseElectionRoundDetails } from '@/queries/elections'
+import {
+  CurrentElectionRoundProvider,
+  useCurrentElectionRound,
+} from '@/contexts/election-round.context'
+import { queryClient } from '@/main'
+import {
+  electionRoundDetailsQueryOptions,
+  useSuspenseElectionRoundDetails,
+} from '@/queries/elections'
 import { ElectionSiteHeader } from '@/components/ElectionSiteHeader'
 
 export const Route = createFileRoute('/(app)/elections/$electionRoundId')({
   component: RouteComponentWrapper,
+  loader: ({ params: { electionRoundId } }) =>
+    queryClient.ensureQueryData(
+      electionRoundDetailsQueryOptions(electionRoundId)
+    ),
 })
 
 function RouteComponentWrapper() {
@@ -28,6 +39,9 @@ function RouteComponentWrapper() {
 }
 
 function RouteComponent() {
+  const electionRound = Route.useLoaderData()
+  const { setElectionRound } = useCurrentElectionRound()
+  setElectionRound(electionRound)
   return (
     <>
       <ElectionSiteHeader />

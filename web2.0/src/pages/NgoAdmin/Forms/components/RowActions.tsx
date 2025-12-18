@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router'
+import { Route } from '@/routes/(app)/elections/$electionRoundId/forms'
 import { FormModel } from '@/types/form'
 import { Ellipsis, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -17,6 +19,7 @@ type DataTableRowActionsProps = {
 
 export function FormRowActions({ form }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useForms()
+  const { electionRoundId } = Route.useParams()
 
   return (
     <DropdownMenu modal={false}>
@@ -30,13 +33,13 @@ export function FormRowActions({ form }: DataTableRowActionsProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem
-          onClick={() => {
-            setCurrentRow(form)
-            setOpen('update')
-          }}
-        >
-          Edit
+        <DropdownMenuItem asChild>
+          <Link
+            to='/elections/$electionRoundId/forms/$formId'
+            params={{ electionRoundId, formId: form.id }}
+          >
+            View
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>Make a copy</DropdownMenuItem>
         <DropdownMenuItem disabled>Favorite</DropdownMenuItem>

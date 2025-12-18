@@ -1,5 +1,6 @@
 import z from 'zod'
 import { TranslatedString } from './common'
+import { Language } from './language'
 
 export enum FormType {
   PSI = 'PSI',
@@ -33,10 +34,12 @@ export const FormStatusList: FormStatus[] = [
   FormStatus.Obsolete,
 ]
 
-export enum LanguagesTranslationStatus {
+export enum TranslationStatus {
   Translated = 'Translated',
   MissingTranslations = 'MissingTranslations',
 }
+
+export type LanguagesTranslationStatus = Record<Language, TranslationStatus>
 
 export interface FormAccessModel {
   ngoId: string
@@ -126,12 +129,12 @@ export interface FormModel {
   id: string
   formType: FormType
   code: string
-  defaultLanguage: string
+  defaultLanguage: Language
   icon?: string
   name: TranslatedString
   description?: TranslatedString
   status: FormStatus
-  languages: string[]
+  languages: Language[]
   lastModifiedOn: string
   lastModifiedBy: string
   numberOfQuestions: number
