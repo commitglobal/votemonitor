@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from '@tanstack/react-query'
+import { queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { getFormById } from '@/services/api/forms/get-by-id.api'
 import { listForms } from '@/services/api/forms/list.api'
 import type { PageResponse } from '@/types/common'
@@ -36,6 +36,13 @@ export const useListForms = <TResult = PageResponse<FormModel>>(
   select?: (data: PageResponse<FormModel>) => TResult
 ) => useQuery(listFormsQueryOptions(electionRoundId, search, select))
 
+export const useSuspenseListForms = <TResult = PageResponse<FormModel>>(
+  electionRoundId: string,
+  search: FormSearch,
+  select?: (data: PageResponse<FormModel>) => TResult
+) =>
+  useSuspenseQuery(listFormsQueryOptions(electionRoundId, search, select))
+
 export function getFormDetailsQueryOptions<TResult = FormModel>(
   electionRoundId: string,
   formId?: string,
@@ -55,3 +62,12 @@ export const useGetFormDetails = <TResult = FormModel>(
   formId?: string,
   select?: (data: FormModel) => TResult
 ) => useQuery(getFormDetailsQueryOptions(electionRoundId, formId, select))
+
+export const useSuspenseGetFormDetails = <TResult = FormModel>(
+  electionRoundId: string,
+  formId?: string,
+  select?: (data: FormModel) => TResult
+) =>
+  useSuspenseQuery(
+    getFormDetailsQueryOptions(electionRoundId, formId, select)
+  )

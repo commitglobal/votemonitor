@@ -1,6 +1,5 @@
 import { format } from 'date-fns'
 import type { ColumnDef } from '@tanstack/react-table'
-import { FormModel } from '@/types/form'
 import { mapFormType, mapLanguageNameByCode } from '@/lib/i18n'
 import { DateTimeFormat } from '@/constants/formats'
 import {
@@ -11,8 +10,9 @@ import {
 import FormStatusBadge from '@/components/badges/from-status-badge'
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import { FormRowActions } from './RowActions'
+import type { FormRowWithSubrows } from './Table'
 
-export function getFormsTableColumns(): ColumnDef<FormModel>[] {
+export function getFormsTableColumns(): ColumnDef<FormRowWithSubrows>[] {
   return [
     {
       header: ({ column }) => (
@@ -22,6 +22,11 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       id: 'code',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide code for subrows
+        return form.isSubrow ? <div>-</div> : <div>{form.code}</div>
+      },
       meta: {
         label: 'Form code',
       },
@@ -31,9 +36,17 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
         <DataTableColumnHeader title='Form name' column={column} />
       ),
       id: 'name',
-      cell: ({ row }) => (
-        <div>{row.original.name[row.original.defaultLanguage] ?? '-'}</div>
-      ),
+      cell: ({ row }) => {
+        const form = row.original
+        const isSubrow = form.isSubrow
+        const language = isSubrow ? form.subrowLanguage : form.defaultLanguage
+        
+        return (
+          <div>
+            {form.name[language!] ?? '-'}
+          </div>
+        )
+      },
 
       enableSorting: true,
       enableGlobalFilter: true,
@@ -50,7 +63,11 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       id: 'formType',
       enableSorting: true,
       enableGlobalFilter: true,
-      cell: ({ row }) => <div>{mapFormType(row.original.formType)}</div>,
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide form type for subrows
+        return form.isSubrow ? <div>-</div> : <div>{mapFormType(form.formType)}</div>
+      },
 
       meta: {
         label: 'Form type',
@@ -60,13 +77,22 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       header: ({ column }) => (
         <DataTableColumnHeader title='Language' column={column} />
       ),
-      accessorFn: (row) => row.defaultLanguage,
+      accessorFn: (row) => {
+        const form = row as FormRowWithSubrows
+        return form.isSubrow ? form.subrowLanguage : form.defaultLanguage
+      },
       id: 'defaultLanguage',
       enableSorting: false,
       enableGlobalFilter: true,
-      cell: ({ row }) => (
-        <div>{mapLanguageNameByCode(row.original.defaultLanguage)}</div>
-      ),
+      cell: ({ row }) => {
+        const form = row.original
+        const isSubrow = form.isSubrow
+        const language = isSubrow ? form.subrowLanguage : form.defaultLanguage
+        
+        return (
+          <div>{language ? mapLanguageNameByCode(language) : '-'}</div>
+        )
+      },
 
       meta: {
         label: 'Language',
@@ -81,7 +107,11 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       id: 'numberOfQuestions',
       enableSorting: true,
       enableGlobalFilter: true,
-      cell: ({ row }) => <div>{row.original.numberOfQuestions}</div>,
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide number of questions for subrows
+        return form.isSubrow ? <div>-</div> : <div>{form.numberOfQuestions}</div>
+      },
 
       meta: {
         label: '# of questions',
@@ -96,7 +126,11 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       id: 'status',
       enableSorting: true,
       enableGlobalFilter: true,
-      cell: ({ row }) => <FormStatusBadge formStatus={row.original.status} />,
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide status for subrows
+        return form.isSubrow ? <div>-</div> : <FormStatusBadge formStatus={form.status} />
+      },
 
       meta: {
         label: 'Issue title',
@@ -111,21 +145,28 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       enableSorting: true,
       enableGlobalFilter: true,
       size: 200,
-      cell: ({ row }) => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className='cursor-pointer hover:underline'
-              title={row.original.lastModifiedBy}
-            >
-              {format(row.original.lastModifiedOn, DateTimeFormat)}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent className='max-w-md break-words whitespace-pre-wrap'>
-            {row.original.lastModifiedBy}
-          </TooltipContent>
-        </Tooltip>
-      ),
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide last updated for subrows
+        if (form.isSubrow) {
+          return <div>-</div>
+        }
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className='cursor-pointer hover:underline'
+                title={form.lastModifiedBy}
+              >
+                {format(form.lastModifiedOn, DateTimeFormat)}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className='max-w-md break-words whitespace-pre-wrap'>
+              {form.lastModifiedBy}
+            </TooltipContent>
+          </Tooltip>
+        )
+      },
 
       meta: {
         label: 'Last updated on',
@@ -136,7 +177,11 @@ export function getFormsTableColumns(): ColumnDef<FormModel>[] {
       header: '',
       id: 'actions',
       enableSorting: false,
-      cell: ({ row }) => <FormRowActions form={row.original} />,
+      cell: ({ row }) => {
+        const form = row.original
+        // Hide actions for subrows
+        return form.isSubrow ? <div></div> : <FormRowActions form={form} />
+      },
     },
   ]
 }

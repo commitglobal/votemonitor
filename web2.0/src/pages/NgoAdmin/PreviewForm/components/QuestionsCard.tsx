@@ -1,5 +1,4 @@
 import { useFormAnswers } from '@/contexts/form-answers.context'
-import type { FormModel } from '@/types/form'
 import { Flag, Pencil } from 'lucide-react'
 import {
   isDateAnswer,
@@ -34,13 +33,15 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
 import { P } from '@/components/ui/typography'
+import { useSuspenseGetFormDetails } from '@/queries/forms'
+import { Route } from '@/routes/(app)/elections/$electionRoundId/forms/$formId'
 
-interface QuestionsCardProps {
-  form: FormModel
-  formDisplayLanguage: string
-}
+function QuestionsCard() {
+  const { electionRoundId, formId } = Route.useParams()
+  const { formLanguage } = Route.useSearch()
+  const { data: form } = useSuspenseGetFormDetails(electionRoundId, formId)
 
-function QuestionsCard({ form, formDisplayLanguage }: QuestionsCardProps) {
+  const formDisplayLanguage = formLanguage ?? form.defaultLanguage
   const {
     getAnswer,
     setTextAnswer,

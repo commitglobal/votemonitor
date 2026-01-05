@@ -9,6 +9,7 @@ import {
   useSuspenseElectionRoundDetails,
 } from '@/queries/elections'
 import { ElectionSiteHeader } from '@/components/ElectionSiteHeader'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/(app)/elections/$electionRoundId')({
   component: RouteComponentWrapper,
@@ -41,7 +42,10 @@ function RouteComponentWrapper() {
 function RouteComponent() {
   const electionRound = Route.useLoaderData()
   const { setElectionRound } = useCurrentElectionRound()
-  setElectionRound(electionRound)
+  useEffect(() => {
+    setElectionRound(electionRound)
+  }, [electionRound, setElectionRound])
+
   return (
     <>
       <ElectionSiteHeader />

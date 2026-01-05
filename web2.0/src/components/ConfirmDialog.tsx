@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 
 type ConfirmDialogProps = {
   open: boolean
@@ -58,6 +59,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
             onClick={handleConfirm}
             disabled={disabled || isLoading}
           >
+            {isLoading && <Spinner className="mr-2" />}
             {confirmText ?? 'Continue'}
           </Button>
         </AlertDialogFooter>

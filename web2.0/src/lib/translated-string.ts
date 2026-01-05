@@ -1,10 +1,15 @@
 import { TranslatedString } from '@/types/common'
+import { Language } from '@/types/language'
 
 export function getTranslatedStringOrDefault(
-  translatedString: TranslatedString,
-  defaultLanguage: string,
-  language?: string
+  translatedString: TranslatedString | undefined,
+  defaultLanguage: Language,
+  language?: Language
 ) {
+  if (!translatedString) {
+    return ''
+  }
+  
   if (language) {
     return translatedString[language] ?? translatedString[defaultLanguage]
   }
@@ -12,7 +17,7 @@ export function getTranslatedStringOrDefault(
 }
 export function getTranslation(
   translatedString: TranslatedString,
-  language: string
+  language: Language
 ) {
   if (translatedString[language]) {
     return translatedString[language]
@@ -28,8 +33,8 @@ export function getTranslation(
  * @returns new instance of @see {@link TranslatedString}
  */
 export const newTranslatedString = (
-  availableLanguages: string[],
-  languageCode: string,
+  availableLanguages: Language[],
+  languageCode: Language,
   value: string = ''
 ): TranslatedString => {
   const translatedString: TranslatedString = {}

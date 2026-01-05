@@ -264,5 +264,15 @@
     "clear": "Clear",
     "selected": "selected",
     "no_results_found": "No results found"
+  },
+  "questionEditor": {
+    "questionType": {
+      "textQuestion": "Text",
+      "numberQuestion": "Number",
+      "dateQuestion": "Date",
+      "ratingQuestion": "Rating",
+      "singleSelectQuestion": "Single Select",
+      "multiSelectQuestion": "Multi Select"
+    }
   }
 }

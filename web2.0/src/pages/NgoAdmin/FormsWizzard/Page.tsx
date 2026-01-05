@@ -168,7 +168,7 @@ function Page() {
             </Button>
 
             {selectedOption === 'new' && (
-              <NewFormStep onComplete={handleComplete} onBack={handleBack} />
+              <NewFormStep onBack={handleBack} />
             )}
             {selectedOption === 'previous' && (
               <PreviousFormStep

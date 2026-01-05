@@ -25,13 +25,13 @@ export const FormTypeList: FormType[] = [
 export enum FormStatus {
   Drafted = 'Drafted',
   Published = 'Published',
-  Obsolete = 'Obsolete',
+  Archived = 'Archived',
 }
 
 export const FormStatusList: FormStatus[] = [
   FormStatus.Drafted,
   FormStatus.Published,
-  FormStatus.Obsolete,
+  FormStatus.Archived,
 ]
 
 export enum TranslationStatus {

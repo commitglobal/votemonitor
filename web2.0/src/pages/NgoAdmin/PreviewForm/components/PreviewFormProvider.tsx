@@ -1,49 +1,32 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
-import { Language } from '@/types/language'
+import useDialogState from '@/hooks/use-dialog-state'
+import React from 'react'
 
-type DialogType = 'archive' | 'delete' | 'addLanguages' | null
+type PreviewFormDialogType = 'publish' | 'obsolete' | 'delete' | 'duplicate' | 'addTranslations' | 'deleteTranslation'
 
-interface PreviewFormContextType {
-  open: DialogType
-  setOpen: (type: DialogType) => void
-  selectedLanguages: Language[]
-  setSelectedLanguages: (languages: Language[]) => void
-  toggleLanguage: (lang: Language) => void
+type PreviewFormContextType = {
+  open: PreviewFormDialogType | null
+  setOpen: (str: PreviewFormDialogType | null) => void
 }
 
-const PreviewFormContext = createContext<PreviewFormContextType | undefined>(
-  undefined
-)
+const PreviewFormContext = React.createContext<PreviewFormContextType | null>(null)
 
-export function PreviewFormProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState<DialogType>(null)
-  const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([])
-
-  const toggleLanguage = (lang: Language) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
-    )
-  }
+export function PreviewFormProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useDialogState<PreviewFormDialogType>(null)
 
   return (
-    <PreviewFormContext.Provider
-      value={{
-        open,
-        setOpen,
-        selectedLanguages,
-        setSelectedLanguages,
-        toggleLanguage,
-      }}
-    >
+    <PreviewFormContext.Provider value={{ open, setOpen }}>
       {children}
     </PreviewFormContext.Provider>
   )
 }
 
-export function usePreviewForm() {
-  const context = useContext(PreviewFormContext)
-  if (context === undefined) {
-    throw new Error('usePreviewForm must be used within a PreviewFormProvider')
+// eslint-disable-next-line react-refresh/only-export-components
+export const usePreviewForm = () => {
+  const formsContext = React.useContext(PreviewFormContext)
+
+  if (!formsContext) {
+    throw new Error('useForms has to be used within <PreviewFormContext>')
   }
-  return context
+
+  return formsContext
 }

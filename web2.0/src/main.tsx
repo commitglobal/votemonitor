@@ -1,16 +1,17 @@
-import { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider, useAuth } from '@/contexts/auth.context'
 import '@/styles.css'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { FormDevtoolsPlugin } from '@tanstack/react-form-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import countries from 'i18n-iso-countries'
 import enCountries from 'i18n-iso-countries/langs/en.json'
 import roCountries from 'i18n-iso-countries/langs/ro.json'
+import { StrictMode } from 'react'
+import ReactDOM from 'react-dom/client'
 import { useTranslation } from 'react-i18next'
-import { Toaster } from '@/components/ui/sonner'
 // import i18n (needs to be bundled ;))
 import { TailwindIndicator } from '@/components/TailwindIndicator.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
@@ -103,7 +104,11 @@ function InnerApp() {
       </div>
       <TailwindIndicator />
       <Toaster duration={5000} richColors />
-      <TanStackDevtools plugins={[FormDevtoolsPlugin()]} />
+      <TanStackDevtools plugins={[FormDevtoolsPlugin(),       {
+          name: 'TanStack Query',
+          render: <ReactQueryDevtoolsPanel />,
+          defaultOpen: true
+        },]} />
     </ThemeProvider>
   )
 }

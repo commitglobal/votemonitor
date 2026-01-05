@@ -1,6 +1,5 @@
 import z from 'zod'
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
-import { queryClient } from '@/main'
 import PreviewFormPage from '@/pages/NgoAdmin/PreviewForm/Page'
 import { getFormDetailsQueryOptions } from '@/queries/forms'
 import { formSearchSchema } from '@/types/form'
@@ -29,8 +28,8 @@ export const Route = createFileRoute(
   loaderDeps: ({ search }) => ({
     ...search,
   }),
-  loader: ({ params: { electionRoundId, formId } }) =>
-    queryClient.prefetchQuery(
+  loader: ({ context, params: { electionRoundId, formId } }) =>
+    context.queryClient.ensureQueryData(
       getFormDetailsQueryOptions(electionRoundId, formId)
     ),
   component: PreviewFormPage,

@@ -35,8 +35,8 @@ export const newFormSchema = z.object({
       FormType.Opening,
       FormType.Voting,
       FormType.ClosingAndCounting,
-      FormType.CitizenReporting,
-      FormType.IncidentReporting,
+      // FormType.CitizenReporting,
+      // FormType.IncidentReporting,
       FormType.Other,
     ],
     { message: 'Form type is required' }
@@ -84,8 +84,8 @@ export function NewFormStep({ onBack }: NewFormStepProps) {
           onSuccess: (form) => {
             formApi.reset()
             navigate({
-              to: '/elections/$electionRoundId/forms/$formId',
-              params: { electionRoundId: electionRound.id, formId: form.id },
+              to: '/elections/$electionRoundId/forms/$formId/edit/$languageCode',
+              params: { electionRoundId: electionRound.id, formId: form.id, languageCode: form.defaultLanguage },
             })
           },
         }

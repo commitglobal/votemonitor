@@ -207,7 +207,7 @@ export function mapFormStatus(formStatus: FormStatus): string {
       return i18n.t('form.status.drafted')
     case FormStatus.Published:
       return i18n.t('form.status.published')
-    case FormStatus.Obsolete:
+    case FormStatus.Archived:
       return i18n.t('form.status.obsolete')
 
     default:
