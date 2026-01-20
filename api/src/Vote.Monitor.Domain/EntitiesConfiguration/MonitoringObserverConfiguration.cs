@@ -10,6 +10,7 @@ internal class MonitoringObserverConfiguration : IEntityTypeConfiguration<Monito
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).IsRequired();
         builder.Property(e => e.Status).IsRequired();
+        builder.Property(e => e.PhoneNumber);
         builder.Property(e => e.Tags).IsRequired();
         builder.HasIndex(x => new { x.ElectionRoundId, x.Id }).IsUnique();
 
