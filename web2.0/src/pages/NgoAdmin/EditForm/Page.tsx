@@ -47,23 +47,24 @@ function Page() {
       description: formData.description?.[languageCode as Language] ?? "",
       languages: formData.languages,
       icon: formData.icon,
-      questions: formData.questions.map((question) => ({
-        questionId: question.id,
-        text: question.text[languageCode as Language],
-        hasDisplayLogic: !!question.displayLogic,
-        code: question.code,
-        $questionType: question.$questionType,
-        lowerLabel: question.lowerLabel?.[languageCode as Language],
-        upperLabel: question.upperLabel?.[languageCode as Language],
-        scale: question.scale,
-        inputPlaceholder: question.inputPlaceholder?.[languageCode as Language],
-        options: question.options.map((option) => ({
-          optionId: option.id,
-          text: option.text[languageCode as Language],
-          isFlagged: option.isFlagged,
-          isFreeText: option.isFreeText,
-        })),
-      })) as z.infer<typeof questionSchema>[]
+      questions: [] as z.infer<typeof questionSchema>[],
+      // questions: formData.questions.map((question) => ({
+      //   questionId: question.id,
+      //   text: question.text[languageCode as Language],
+      //   hasDisplayLogic: !!question.displayLogic,
+      //   code: question.code,
+      //   $questionType: question.$questionType,
+      //   lowerLabel: question.lowerLabel?.[languageCode as Language],
+      //   upperLabel: question.upperLabel?.[languageCode as Language],
+      //   scale: question.scale,
+      //   inputPlaceholder: question.inputPlaceholder?.[languageCode as Language],
+      //   options: question.options.map((option) => ({
+      //     optionId: option.id,
+      //     text: option.text[languageCode as Language],
+      //     isFlagged: option.isFlagged,
+      //     isFreeText: option.isFreeText,
+      //   })),
+      // })) as z.infer<typeof questionSchema>[]
     },
     onSubmit: ({ value, meta }) => {
       console.log(value);
