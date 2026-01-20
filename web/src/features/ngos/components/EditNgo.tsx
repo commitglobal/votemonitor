@@ -54,20 +54,29 @@ export const EditNgo: FC<EditNgoAdminProps> = ({ existingData, ngoId }) => {
     });
   };
 
-  useBlocker({
-    shouldBlockFn: async () => {
-      if (!form.formState.isDirty || form.formState.isSubmitting) {
-        return false;
-      }
+  const isDirty = form.formState.isDirty;
 
-      return !(await confirm({
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => isDirty,
+    withResolver: true,
+  });
+
+  useEffect(() => {
+    if (status === 'blocked') {
+      confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
         cancelButton: 'Stay',
-      }));
-    },
-  });
+      }).then((confirmed) => {
+        if (confirmed) {
+          proceed();
+        } else {
+          reset();
+        }
+      });
+    }
+  }, [status, confirm, proceed, reset]);
 
   return (
     <Layout

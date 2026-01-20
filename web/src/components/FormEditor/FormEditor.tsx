@@ -374,12 +374,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
   const isDirty = form.formState.isDirty;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => {
-      // Use the ref to get the latest isDirty value
-      const currentIsDirty = isDirty;
-      console.log('form.formState.isDirty', currentIsDirty);
-      return currentIsDirty;
-    },
+    shouldBlockFn: () => isDirty,
     withResolver: true,
   });
 

@@ -92,7 +92,7 @@ export const NGODetails: FC<NGODetailsProps> = ({ data }) => {
       }
       breadcrumbs={<></>}>
       <Tabs defaultValue='details' value={tab} onValueChange={handleTabChange}>
-        <TabsList className='grid grid-cols-3 bg-gray-200 w-[400px] mb-4'>
+        <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
           <TabsTrigger value='details'>Organization details</TabsTrigger>
           <TabsTrigger value='admins'>Admin users</TabsTrigger>
           <TabsTrigger value='elections'>Monitored elections</TabsTrigger>
