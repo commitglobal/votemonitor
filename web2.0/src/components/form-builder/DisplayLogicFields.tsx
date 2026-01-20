@@ -1,19 +1,41 @@
 import { withFieldGroup } from "@/hooks/form";
+import { isNullOrEmpty } from "@/lib/strings";
+import { DisplayLogicCondition } from "@/types/form";
 import * as z from "zod";
 
-export const passwordsSchema = z
+export const displayLogicSchema = z
   .object({
-    password: z.string().min(6, "Password should be at least 6 characters."),
-    confirmPassword: z.string(),
+    hasDisplayLogic: z.boolean().catch(false),
+    parentQuestionId: z.string().optional(),
+    condition: z.enum(DisplayLogicCondition).optional().catch(DisplayLogicCondition.Equals),
+    value: z.string().optional(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"], // Optional: specifies where the error should appear
+  .refine((data) => {
+    if (!data.hasDisplayLogic) return true;
+    return !isNullOrEmpty(data.parentQuestionId);
+  }, {
+    message: "Parent question ID is required",
+    path: ["parentQuestionId"],
+  })
+  .refine((data) => {
+    if (!data.hasDisplayLogic) return true;
+    return !isNullOrEmpty(data.condition);
+  }, {
+    message: "Condition is required",
+    path: ["condition"],
+  }).refine((data) => {
+    if (!data.hasDisplayLogic) return true;
+    return !isNullOrEmpty(data.value);
+  }, {
+    message: "Value is required",
+    path: ["value"],
   });
 
-const defaultValues: z.infer<typeof passwordsSchema> = {
-  password: "",
-  confirmPassword: "",
+const defaultValues: z.infer<typeof displayLogicSchema> = {
+  hasDisplayLogic: false,
+  parentQuestionId: "",
+  condition: DisplayLogicCondition.Equals,
+  value: "",
 };
 
 export const DisplayLogicFields = withFieldGroup({
@@ -21,24 +43,23 @@ export const DisplayLogicFields = withFieldGroup({
   render: function Render({ group }) {
     return (
       <>
-        <group.AppField name="password">
+        <group.AppField name="hasDisplayLogic">
           {(field) => {
             return (
-              <field.TextInput
-                label="Password"
-                id="password"
-                type="password"
-                description="Your password (must be at least 8 characters long)"
+              <field.Toggle
+                label="Has Display Logic"
+                id="hasDisplayLogic"
+                description="Whether the question should be displayed based on the parent question."
               />
             );
           }}
         </group.AppField>
 
-        <group.AppField name="confirmPassword">
+        <group.AppField name="parentQuestionId">
           {(field) => {
             return (
               <field.TextInput
-                label="Confirm Password"
+                label="Parent Question ID"
                 id="confirmPassword"
                 type="password"
                 description="Confirm your password."

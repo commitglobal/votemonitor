@@ -14,6 +14,7 @@ export default function TextInput({
   type = "text",
   required,
   className,
+  disabled,
 }: {
   label: string;
   id: string;
@@ -21,6 +22,7 @@ export default function TextInput({
   type?: string;
   required?: boolean;
   className?: string;
+  disabled?: boolean
 }) {
   const field = useFieldContext<string>();
   return (
@@ -37,6 +39,7 @@ export default function TextInput({
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
+        disabled={disabled}
       />
       {description && <FieldDescription>{description}</FieldDescription>}
       {!field.state.meta.isValid && (

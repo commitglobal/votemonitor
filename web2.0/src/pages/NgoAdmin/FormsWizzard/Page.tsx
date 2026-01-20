@@ -58,7 +58,7 @@ function Page() {
   }
 
   const handleComplete = (data: unknown) => {
-    console.log(data)
+    // console.log(data)
   }
 
   return (

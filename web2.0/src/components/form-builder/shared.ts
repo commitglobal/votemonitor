@@ -1,17 +1,16 @@
-import { FormType, QuestionType, RatingScaleType } from "@/types/form";
+import { DisplayLogicCondition, FormType, QuestionType, RatingScaleType } from "@/types/form";
 import { Language } from "@/types/language";
 import { formOptions } from "@tanstack/react-form";
 import * as z from "zod";
 
 const baseQuestionSchema = z.object({
     questionId: z.string(),
-    // languageCode: z.string().trim().min(1),
     text: z.string().trim().min(1),
     helptext: z.string().trim().optional(),
   
     hasDisplayLogic: z.boolean().catch(false),
     parentQuestionId: z.string().optional(),
-    // condition: ZDisplayLogicCondition.optional().catch('Equals'),
+    condition: z.enum(DisplayLogicCondition).optional().catch(DisplayLogicCondition.Equals),
     value: z.string().optional(),
   
     code: z.string().trim().min(1),
@@ -42,7 +41,7 @@ const baseQuestionSchema = z.object({
     inputPlaceholder: z.string().trim().optional(),
   });
   
-  const textQuestionSchema = baseQuestionSchema.extend({
+  export const textQuestionSchema = baseQuestionSchema.extend({
     $questionType: z.literal(QuestionType.TextQuestionType),
     inputPlaceholder: z.string().trim().optional(),
   });

@@ -1,19 +1,6 @@
 import { formEditOpts, questionSchema } from "@/components/form-builder/shared";
 import { Button } from "@/components/ui/button";
 import {
-  FieldDescription,
-  FieldGroup,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field";
-import { withForm } from "@/hooks/form";
-import i18n from "@/i18n";
-import { questionsIconMapping } from "@/lib/questions-icons";
-import { QuestionType, RatingScaleType } from "@/types/form";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import z from "zod";
-import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -22,14 +9,31 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
+  FieldDescription,
+  FieldGroup,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { withForm } from "@/hooks/form";
+import i18n from "@/i18n";
+import { questionsIconMapping } from "@/lib/questions-icons";
+import { QuestionType, RatingScaleType } from "@/types/form";
+import { useStore } from "@tanstack/react-form";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import z from "zod";
+import { TextQuestionCard } from "./TextQuestionCard";
+
 
 export const FormQuestions = withForm({
   ...formEditOpts,
   render: ({ form }) => {
+    const questions = useStore(form.store, (state) => state.values.questions)
     return (
       <form.AppField name="questions" mode="array">
         {(field) => {
@@ -41,96 +45,39 @@ export const FormQuestions = withForm({
                 <div className="h-[calc(100vh-24rem)] overflow-y-auto">
                   {field.state.value.map((question, index) => {
                     return (
-                      <div key={question.questionId} className="p-4 rounded">
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <div className="w-full sm:w-[64px]">
-                            <form.AppField
-                              key={index}
-                              name={`questions[${index}].code`}
-                            >
-                              {(subField) => {
-                                return (
-                                  <subField.TextInput
-                                    label="Code"
-                                    id={`questions-${index}-code`}
-                                    type="text"
-                                  />
-                                );
-                              }}
-                            </form.AppField>
-                          </div>
-
-                          <div className="w-full sm:flex-1">
-                            <form.AppField
-                              key={index}
-                              name={`questions[${index}].text`}
-                            >
-                              {(subField) => {
-                                return (
-                                  <subField.TextInput
-                                    label="Text"
-                                    id={`questions-${index}-text`}
-                                    type="text"
-                                  />
-                                );
-                              }}
-                            </form.AppField>
-                          </div>
-                        </div>
-
-                        <form.AppField
-                          key={index}
-                          name={`questions[${index}].helptext`}
-                        >
-                          {(subField) => {
-                            return (
-                              <subField.TextInput
-                                label="Helptext"
-                                id={`questions-${index}-helptext`}
-                                type="text"
-                              />
-                            );
+                      <div key={question.questionId} className="flex flex-col gap-2">
+                        <TextQuestionCard
+                          form={form}
+                          fields={{
+                            questionId: `questions[${index}].questionId`,
+                            $questionType: `questions[${index}].$questionType`,
+                            code: `questions[${index}].code`,
+                            text: `questions[${index}].text`,
+                            helptext: `questions[${index}].helptext`,
+                            inputPlaceholder: `questions[${index}].inputPlaceholder`,
+                            hasDisplayLogic: `questions[${index}].hasDisplayLogic`,
+                            condition: `questions[${index}].condition`,
+                            parentQuestionId: `questions[${index}].parentQuestionId`,
+                            value: `questions[${index}].value`,
                           }}
-                        </form.AppField>
+                          index={index}
+                          numberOfQuestions={field.state.value.length}
+                          onMoveUp={() => field.moveValue(index, index - 1)}
+                          onMoveDown={() => field.moveValue(index, index + 1)}
+                          onRemove={() => field.removeValue(index)}
+                          questions={questions}
+                        />
 
-                        <div className="flex flex-row gap-2">
-                          <Button
-                            className="mt-2"
-                            variant="destructive"
-                            type="button"
-                            onClick={() => field.removeValue(index)}
-                          >
-                            Remove
-                          </Button>
-
-                          <Button
-                            className="mt-2"
-                            variant="outline"
-                            type="button"
-                            onClick={() => field.moveValue(index, index - 1)}
-                            disabled={index === 0}
-                          >
-                            move up
-                          </Button>
-
-                          <Button
-                            className="mt-2"
-                            variant="outline"
-                            type="button"
-                            onClick={() => field.moveValue(index, index + 1)}
-                            disabled={index === field.state.value.length - 1}
-                          >
-                            move down
-                          </Button>
-                        </div>
-                        {index === field.state.value.length - 1 && (
-                          <AddQuestionButton onAddQuestion={(question) => field.insertValue(index + 1, question)} />
-                        )}
+                        <AddQuestionButton
+                          onAddQuestion={(question) => field.insertValue(index + 1, question)}
+                        />
                       </div>
                     );
                   })}
                   {field.state.value.length === 0 && (
-                    <AddQuestionButton onAddQuestion={(question) => field.insertValue(0, question)} />
+                    <AddQuestionButton
+                      onAddQuestion={(question) => field.insertValue(0, question)}
+                    />
                   )}
                 </div>
               </FieldGroup>
@@ -152,7 +99,7 @@ export type QuestionTypeConfig = {
 const questionTypes: QuestionTypeConfig[] = [
   {
     type: QuestionType.TextQuestionType,
-    icon: questionsIconMapping[QuestionType.TextQuestionType],  
+    icon: questionsIconMapping[QuestionType.TextQuestionType],
     label: i18n.t('questionEditor.questionType.textQuestion'),
     create: () => {
       const newTextQuestion: z.infer<typeof questionSchema> = {
@@ -295,7 +242,7 @@ export default function AddQuestionButton({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-4">
+    <div className="mb-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" type="button" className="w-full justify-start">

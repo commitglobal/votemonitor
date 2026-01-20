@@ -26,6 +26,7 @@ interface SearchableComboboxProps {
   value: string
   onValueChange: (value: string) => void
   placeholder?: string
+  disabled?: boolean
 }
 
 export function SearchableCombobox({
@@ -35,6 +36,7 @@ export function SearchableCombobox({
   value,
   onValueChange,
   placeholder,
+  disabled,
 }: SearchableComboboxProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -49,6 +51,7 @@ export function SearchableCombobox({
           role='combobox'
           aria-expanded={open}
           className='w-full justify-between'
+          disabled={disabled} 
         >
           {value
             ? options.find((option) => option.value === value)?.label
