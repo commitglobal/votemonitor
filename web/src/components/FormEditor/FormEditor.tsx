@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { useBlocker } from '@tanstack/react-router';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { FormFull } from '../../features/forms/models';
 
 import {
@@ -205,7 +205,7 @@ interface FormEditorProps {
 const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, onSaveForm }) => {
   const confirm = useConfirm();
   const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
-  const editQuestions = formData?.questions.map((question) => {
+  const editQuestions = useMemo(() => formData?.questions.map((question) => {
     if (isNumberQuestion(question)) {
       const numberQuestion: EditNumberQuestionType = {
         $questionType: QuestionType.NumberQuestionType,
@@ -350,7 +350,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
     }
 
     return undefined;
-  });
+  }), [formData]);
 
   const form = useForm<EditFormType>({
     resolver: zodResolver(ZEditFormType),
@@ -366,21 +366,16 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
       icon: formData?.icon ?? '',
     },
     mode: 'all',
+    reValidateMode: 'onChange',
   });
 
-  useBlocker({
-    shouldBlockFn: async () => {
-      if (!form.formState.isDirty || form.formState.isSubmitting) {
-        return false;
-      }
+  // Subscribe to isDirty by accessing it in component body
+  // This ensures React tracks form state changes
+  const isDirty = form.formState.isDirty;
 
-      return await confirm({
-        title: `Unsaved Changes Detected`,
-        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-        actionButton: 'Leave',
-        cancelButton: 'Stay',
-      });
-    },
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => isDirty,
+    withResolver: true,
   });
 
   const languageCode = useWatch({
@@ -394,6 +389,23 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
       form.reset({}, { keepValues: true });
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
+
+  useEffect(() => {
+    if (status === 'blocked') {
+      confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        cancelButton: 'Stay',
+      }).then((confirmed) => {
+        if (confirmed) {
+          proceed();
+        } else {
+          reset();
+        }
+      });
+    }
+  }, [status, confirm, proceed, reset]);
 
   return (
     <Form {...form}>

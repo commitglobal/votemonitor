@@ -76,9 +76,9 @@ function SelectQuestionTranslationEditor({ questionIndex }: SelectQuestionTransl
                           />
                           <div className='inline-flex items-center space-x-2 ml-2 w-[100px] '>
                             <FlagIcon
-                              className={cn('h-4 w-4 cursor-pointer', {
-                                'text-slate-700 hover:text-red-600': !option.isFlagged,
-                                'text-red-600 hover:text-slate-00': option.isFlagged,
+                              className={cn('h-4 w-4', {
+                                'text-slate-700': !option.isFlagged,
+                                'text-red-600': option.isFlagged,
                               })}
                             />
                           </div>

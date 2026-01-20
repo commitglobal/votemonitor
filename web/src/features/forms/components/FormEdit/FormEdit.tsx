@@ -36,14 +36,13 @@ function FormEdit() {
     }: {
       electionRoundId: string;
       form: UpdateFormRequest;
-      shouldNavigateAwayAfterSubmit: boolean;
     }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
         ...form,
       });
     },
 
-    onSuccess: async (_, { electionRoundId, shouldNavigateAwayAfterSubmit }) => {
+    onSuccess: async (_, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form updated successfully',
@@ -51,17 +50,6 @@ function FormEdit() {
 
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
       router.invalidate();
-
-      if (shouldNavigateAwayAfterSubmit) {
-        if (
-          await confirm({
-            title: 'Changes made to form template in base language',
-            body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
-          })
-        ) {
-          await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
-        }
-      }
     },
 
     onError: () => {
@@ -74,7 +62,7 @@ function FormEdit() {
   });
 
   const saveForm = useCallback(
-    (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
+    async (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
       const updatedForm: UpdateFormRequest = {
         id: formId,
         code: formData.code,
@@ -87,13 +75,23 @@ function FormEdit() {
         questions: formData.questions.map(mapToQuestionRequest),
       };
 
-      updateFormMutation.mutate({
+      await updateFormMutation.mutateAsync({
         electionRoundId: currentElectionRoundId,
         form: updatedForm,
-        shouldNavigateAwayAfterSubmit,
       });
+
+      if (shouldNavigateAwayAfterSubmit) {
+        if (
+          await confirm({
+            title: 'Changes made to form template in base language',
+            body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
+          })
+        ) {
+          await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+        }
+      }
     },
-    [formId, currentElectionRoundId]
+    [updateFormMutation, formId, currentElectionRoundId]
   );
 
   return (

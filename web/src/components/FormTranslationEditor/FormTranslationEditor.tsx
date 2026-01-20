@@ -30,7 +30,7 @@ import { FormTemplateFull } from '@/features/form-templates/models';
 import { FormFull } from '@/features/forms/models';
 import { cn, ensureTranslatedStringCorrectness } from '@/lib/utils';
 import { useBlocker } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EditFormType, ZEditFormType } from '../FormEditor/FormEditor';
 import FormDetailsTranslationEditor from './FormDetailsTranslationEditor';
 
@@ -50,7 +50,7 @@ export default function FormTranslationEditor({
   const confirm = useConfirm();
   const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
 
-  const formQuestions = formData.questions.map((question) => {
+  const formQuestions = useMemo(() => formData.questions.map((question) => {
     if (isNumberQuestion(question)) {
       const numberQuestion: EditNumberQuestionType = {
         $questionType: QuestionType.NumberQuestionType,
@@ -196,7 +196,7 @@ export default function FormTranslationEditor({
     }
 
     return undefined;
-  });
+  }), [formData]);
 
   const form = useForm<EditFormType>({
     resolver: zodResolver(ZEditFormType),
@@ -223,20 +223,29 @@ export default function FormTranslationEditor({
     }
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
-  useBlocker({
-    shouldBlockFn: async () => {
-      if (!form.formState.isDirty || form.formState.isSubmitting) {
-        return false;
-      }
+  const isDirty = form.formState.isDirty;
 
-      return await confirm({
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => isDirty,
+    withResolver: true,
+  });
+
+  useEffect(() => {
+    if (status === 'blocked') {
+      confirm({
         title: `Unsaved Changes Detected`,
         body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
         actionButton: 'Leave',
         cancelButton: 'Stay',
+      }).then((confirmed) => {
+        if (confirmed) {
+          proceed();
+        } else {
+          reset();
+        }
       });
-    },
-  });
+    }
+  }, [status, confirm, proceed, reset]);
 
   return (
     <Form {...form}>
