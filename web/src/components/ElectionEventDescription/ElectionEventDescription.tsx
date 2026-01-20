@@ -15,30 +15,30 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { ArchiveIcon, FileEdit, PlayIcon } from 'lucide-react';
 import { useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useElectionRoundDetails } from '../../features/election-event/hooks/election-event-hooks';
+import { electionRoundDetailsQueryOptions } from '../../features/election-event/hooks/election-event-hooks';
 import CoalitionDescription from '../CoalitionDescription/CoalitionDescription';
 import ElectionRoundStatusBadge from '../ElectionRoundStatusBadge/ElectionRoundStatusBadge';
 import { useConfirm } from '../ui/alert-dialog-provider';
 import { Button } from '../ui/button';
 import { useToast } from '../ui/use-toast';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export default function ElectionEventDescription() {
   const { t } = useTranslation();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
+  const { data: electionEvent } = useSuspenseQuery(electionRoundDetailsQueryOptions(currentElectionRoundId));
 
   const { userRole } = useContext(AuthContext);
 
   const { toast } = useToast();
   const confirm = useConfirm();
 
-  const router = useRouter();
+  const router = useRouter(); 
 
   const { mutate: unstartElectionRound } = useUnstartElectionRound();
   const { mutate: startElectionRound } = useStartElectionRound();
   const { mutate: archiveElectionRound } = useArchiveElectionRound();
   const { mutate: unarchiveElectionRound } = useUnarchiveElectionRound();
-  if (!electionEvent) return <>Loading...</>;
 
   const handleArchiveElectionRound = useCallback(async () => {
     if (
