@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 
@@ -7,6 +7,7 @@ namespace Feature.PollingStations.Create;
 public class Endpoint(
     VoteMonitorContext context,
     IRepository<ElectionRoundAggregate> electionRoundRepository,
+    IRepository<PollingStationAggregate> pollingStationRepository,
     ITimeProvider timeProvider,
     ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>>>
@@ -29,6 +30,34 @@ public class Endpoint(
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
+        var pollingStationIds = req.PollingStations
+            .Where(ps => ps.Id.HasValue)
+            .Select(ps => ps.Id!.Value)
+            .ToList();
+
+        var groupedPollingStationIds = pollingStationIds.GroupBy(id => id, y => y,
+            (id, duplicates) => new { id, numberOfDuplicates = duplicates.Count() });
+
+        foreach (var groupedPollingStationId in groupedPollingStationIds)
+        {
+            if (groupedPollingStationId.numberOfDuplicates > 1)
+            {
+                AddError(new ValidationFailure(groupedPollingStationId.id.ToString(), "This id is duplicated"));
+            }
+        }
+
+        ThrowIfAnyErrors();
+
+        var pollingStationsWithIdsFromAnotherElections = await pollingStationRepository.ListAsync(
+            new GetPollingStationsByIdsInOtherElectionRoundsSpecification(electionRound.Id, pollingStationIds), ct);
+
+        foreach (var ps in pollingStationsWithIdsFromAnotherElections)
+        {
+            AddError(new ValidationFailure(ps.Id.ToString(), "This id is for a different PS in another election"));
+        }
+
+        ThrowIfAnyErrors();
+
         var userId = userProvider.GetUserId()!.Value;
         var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(ps.Id, electionRound,
                 ps.Level1,
@@ -47,7 +76,7 @@ public class Endpoint(
             .ToArray();
 
         await context.BulkInsertOrUpdateAsync(pollingStations, cancellationToken: ct);
-        
+
         electionRound.UpdatePollingStationsVersion();
 
         await electionRoundRepository.UpdateAsync(electionRound, cancellationToken: ct);
@@ -69,6 +98,4 @@ public class Endpoint(
             }).ToArray()
         });
     }
-
-
 }
