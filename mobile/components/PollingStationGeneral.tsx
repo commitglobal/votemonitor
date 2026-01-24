@@ -11,6 +11,7 @@ import Card from "./Card";
 import { useTranslation } from "react-i18next";
 import { Typography } from "./Typography";
 import { PSITime } from "./PSITime";
+import { getFormLanguagePreference, setFormLanguagePreference } from "../common/language.preferences";
 
 interface PollingStationGeneralProps {
   psiData: PollingStationInformationAPIResponse | null | undefined;
@@ -23,6 +24,30 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
 }) => {
   const { t } = useTranslation("observation");
 
+  const onConfirmFormLanguage = (language: string) => {
+    setFormLanguagePreference({ formId: psiFormQuestions.id, language });
+
+    router.push(
+      `/polling-station-questionnaire?language=${language}`,
+    );
+  };
+
+  const openForm = async () => {
+    if (!psiFormQuestions?.languages?.length) {
+      // TODO: Display error toast
+      console.log("No language exists");
+    }
+
+    const preferedLanguage = await getFormLanguagePreference({ formId: psiFormQuestions.id });
+
+    if (preferedLanguage && psiFormQuestions.languages.includes(preferedLanguage)) {
+      onConfirmFormLanguage( preferedLanguage);
+    } else if (psiFormQuestions?.languages?.length === 1) {
+      onConfirmFormLanguage(psiFormQuestions.languages[0]);
+    }
+  };
+
+
   return (
     <YStack gap="$xxs">
       <Typography preset="body2" fontWeight="700" color="$gray7">
@@ -33,10 +58,10 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
 
       {/* only display the PSI card for polling stations that have a configured PSI form */}
       {psiFormQuestions && psiFormQuestions.questions && psiFormQuestions.questions.length > 0 && (
-        <Card gap="$md" onPress={router.push.bind(null, "/polling-station-questionnaire")}>
+        <Card gap="$md" onPress={openForm}>
           {!psi?.answers?.length && !psi?.isCompleted ? (
             <PollingStationInfoDefault
-              onPress={router.push.bind(null, "/polling-station-questionnaire")}
+              onPress={openForm}
             />
           ) : (
             <PollingStationInfo

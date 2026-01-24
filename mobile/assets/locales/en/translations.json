@@ -31,7 +31,8 @@
     "hy": "Armenian",
     "ru": "Russian",
     "az": "Azerbaijani",
-    "es": "Spanish"
+    "es": "Spanish",
+    "de": "German"
   },
   "onboarding": {
     "language": {
@@ -393,7 +394,8 @@
       "placeholder": "Please enter a text.."
     },
     "menu": {
-      "clear": "Clear form (delete all answers)"
+      "clear": "Clear form (delete all answers)",
+      "change_language": "Change language"
     },
     "warning_modal": {
       "title": "Clear Polling station information form",

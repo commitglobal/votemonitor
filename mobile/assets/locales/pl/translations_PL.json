@@ -31,7 +31,8 @@
     "hy": "ormiański",
     "ru": "rosyjski",
     "az": "azerbejdżański",
-    "es": "hiszpański"
+    "es": "hiszpański",
+    "de": "niemiecki"
   },
   "onboarding": {
     "language": {
@@ -397,7 +398,8 @@
       "placeholder": "Proszę wpisać tekst..."
     },
     "menu": {
-      "clear": "Wyczyść formularz (usuń wszystkie odpowiedzi)"
+      "clear": "Wyczyść formularz (usuń wszystkie odpowiedzi)",
+      "change_language": "Zmień język"
     },
     "warning_modal": {
       "title": "Wyczyść formularz informacyjny komisji wyborczej",

@@ -4,7 +4,6 @@ import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DrawerActions } from "@react-navigation/native";
 import { useNavigationContainerRef } from "expo-router";
 import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 import { Icon } from "../../../../components/Icon";

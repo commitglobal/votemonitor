@@ -14,7 +14,7 @@ import {
   FormQuestionAnswerTypeMapping,
 } from "../../../services/interfaces/answer.type";
 import { createRef, useEffect, useMemo, useRef, useState } from "react";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import FormInput from "../../../components/FormInputs/FormInput";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
 import RadioFormInput from "../../../components/FormInputs/RadioFormInput";
@@ -35,7 +35,11 @@ import { BackHandler, Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
-
+import ChangeLanguageDialog from "../../../components/ChangeLanguageDialog";
+import { setFormLanguagePreference } from "../../../common/language.preferences";
+type SearchParamsType = {
+  language: string;
+};
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
   const insets = useSafeAreaInsets();
@@ -44,8 +48,9 @@ const PollingStationQuestionnaire = () => {
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const [showWarningDialog, setShowWarningDialog] = useState(false);
-
+  const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const { language } = useLocalSearchParams<SearchParamsType>();
 
   const {
     data: formStructure,
@@ -72,18 +77,6 @@ const PollingStationQuestionnaire = () => {
     refetchFormData();
   };
 
-  const currentLanguage = useMemo(() => {
-    const activeLanguage = i18n.language.toLocaleUpperCase();
-    if (
-      formStructure &&
-      formStructure?.defaultLanguage &&
-      !formStructure?.languages.find((el) => el === activeLanguage)
-    ) {
-      return formStructure.defaultLanguage;
-    }
-    return activeLanguage;
-  }, [formStructure]);
-
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(formStructure?.questions),
     [formStructure],
@@ -98,6 +91,19 @@ const PollingStationQuestionnaire = () => {
     pollingStationId: selectedPollingStation?.pollingStationId,
     scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}`,
   });
+
+  const currentLanguage = useMemo(() => {
+    const activeLanguage = language ? language.toLocaleUpperCase() : i18n.language.toLocaleUpperCase();
+    
+    if (
+      formStructure &&
+      formStructure?.defaultLanguage &&
+      !formStructure?.languages.find((el) => el === activeLanguage)
+    ) {
+      return formStructure.defaultLanguage;
+    }
+    return activeLanguage;
+  }, [formStructure]);
 
   const onSetCompletion = (completion: boolean) => {
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
@@ -163,10 +169,10 @@ const PollingStationQuestionnaire = () => {
             }));
             return mappedSelections?.length
               ? ({
-                  $answerType: "multiSelectAnswer",
-                  questionId,
-                  selection: mappedSelections,
-                } as ApiFormAnswer)
+                $answerType: "multiSelectAnswer",
+                questionId,
+                selection: mappedSelections,
+              } as ApiFormAnswer)
               : undefined;
           }
           default:
@@ -286,6 +292,15 @@ const PollingStationQuestionnaire = () => {
 
     return () => backHandler.remove();
   }, [isDirty]);
+
+  const onConfirmFormLanguage = (formId: string, language: string) => {
+    setFormLanguagePreference({ formId, language });
+
+    router.replace(
+      `/polling-station-questionnaire?language=${language}`,
+    );
+    setIsChangeLanguageModalOpen(false);
+  };
 
   return (
     <>
@@ -554,6 +569,10 @@ const PollingStationQuestionnaire = () => {
                 setOpenContextualMenu(false);
                 setClearingForm(true);
               }}
+              onChangeLanguagePress={() => {
+                setOpenContextualMenu(false);
+                setIsChangeLanguageModalOpen(true);
+              }}
               onSetCompletion={onSetCompletion}
               isFullyAnswered={Object.values(answers).length === Object.values(questions).length}
               isCompleted={formData?.isCompleted || false}
@@ -587,6 +606,16 @@ const PollingStationQuestionnaire = () => {
             cancelBtnText={t("unsaved_changes_dialog.actions.discard")}
           />
         )}
+
+{isChangeLanguageModalOpen && formStructure?.languages && (
+        <ChangeLanguageDialog
+          currentLanguage={currentLanguage}
+          formId={formStructure?.id as string}
+          languages={formStructure.languages}
+          onCancel={setIsChangeLanguageModalOpen.bind(null, false)}
+          onSelectLanguage={onConfirmFormLanguage}
+        />
+      )}
       </Screen>
 
       <XStack
@@ -607,11 +636,13 @@ const PollingStationQuestionnaire = () => {
 const OptionSheetContent = ({
   onClear,
   onSetCompletion,
+  onChangeLanguagePress,
   isCompleted,
   isFullyAnswered,
 }: {
   onClear: () => void;
   onSetCompletion: (completion: boolean) => void;
+  onChangeLanguagePress: () => void;
   isCompleted: boolean;
   isFullyAnswered: boolean;
 }) => {
@@ -624,6 +655,9 @@ const OptionSheetContent = ({
 
   return (
     <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
+      <Typography preset="body1" paddingVertical="$xs" onPress={onChangeLanguagePress}>
+        {t("menu.change_language")}
+      </Typography>
       <Typography
         preset="body1"
         color={disableMarkAsDone ? "$gray3" : "$gray7"}
@@ -646,15 +680,6 @@ const OptionSheetContent = ({
         onPress={onClear}
       >
         {t("menu.clear")}
-      </Typography>
-      <Typography
-        preset="body1"
-        color="$gray7"
-        lineHeight={24}
-        paddingVertical="$xs"
-        onPress={onClear}
-      >
-        {t("menu.delete")}
       </Typography>
     </View>
   );

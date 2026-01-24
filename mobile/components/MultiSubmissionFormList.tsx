@@ -11,7 +11,7 @@ import {
 } from "../common/language.preferences";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import { useUserData } from "../contexts/user/UserContext.provider";
-import { mapFormToMultiSubmissionFormListItem as mapFormToMultiSubmissionFormListItem } from "../services/form.parser";
+import { mapFormToMultiSubmissionFormListItem } from "../services/form.parser";
 import {
   electionRoundsKeys,
   pollingStationsKeys,

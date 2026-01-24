@@ -31,7 +31,8 @@
     "hy": "Armeană",
     "ru": "Rusă",
     "az": "Azerbeidjană",
-    "es": "Spaniolă"
+    "es": "Spaniolă",
+    "de": "Germană"
   },
   "onboarding": {
     "language": {
@@ -393,7 +394,8 @@
       "placeholder": "Te rugăm să introduci un text..."
     },
     "menu": {
-      "clear": "Golește formularul (șterge toate răspunsurile)"
+      "clear": "Golește formularul (șterge toate răspunsurile)",
+      "change_language": "Schimbă limba formularului"
     },
     "warning_modal": {
       "title": "Golește formularul cu informațiile secției de votare",

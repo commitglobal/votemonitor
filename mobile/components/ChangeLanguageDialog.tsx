@@ -34,6 +34,7 @@ const ChangeLanguageDialog = ({
     RU: t("ru", { ns: "languages" }),
     AZ: t("az", { ns: "languages" }),
     ES: t("es", { ns: "languages" }),
+    DE: t("de", { ns: "languages" }),
   };
 
   const {

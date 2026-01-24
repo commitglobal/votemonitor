@@ -31,7 +31,8 @@
     "hy": "jermenski",
     "ru": "ruski",
     "az": "azerski",
-    "es": "španski"
+    "es": "španski",
+    "de": "nemački"
   },
   "onboarding": {
     "language": {
@@ -390,7 +391,8 @@
       "placeholder": "Unesi tekst..."
     },
     "menu": {
-      "clear": "Očisti obazac (obriši sve odgovore)"
+      "clear": "Očisti obazac (obriši sve odgovore)",
+      "change_language": "Promeni jezik"
     },
     "warning_modal": {
       "title": "Očisti informacije o biračkom mestu",

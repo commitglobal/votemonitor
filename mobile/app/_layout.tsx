@@ -1,22 +1,21 @@
-import React, { useEffect } from "react";
-import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
-import AuthContextProvider from "../contexts/auth/AuthContext.provider";
-import { TamaguiProvider } from "@tamagui/core";
-import { tamaguiConfig } from "../tamagui.config";
-import { useFonts } from "expo-font";
-import "../common/config/i18n";
-import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
-import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
-import { PortalProvider } from "tamagui";
-import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
-import NetInfoBanner from "../components/NetInfoBanner";
-import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
 import * as Sentry from "@sentry/react-native";
-import { isRunningInExpoGo } from "expo";
-import Toast from "react-native-toast-message";
-import { toastConfig } from "../toast.config";
+import { TamaguiProvider } from "@tamagui/core";
+import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
+import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
+import React, { useEffect } from "react";
+import Toast from "react-native-toast-message";
+import { PortalProvider } from "tamagui";
+import "../common/config/i18n";
+import NetInfoBanner from "../components/NetInfoBanner";
 import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider";
+import AuthContextProvider from "../contexts/auth/AuthContext.provider";
+import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
+import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
+import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
+import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
+import { tamaguiConfig } from "../tamagui.config";
+import { toastConfig } from "../toast.config";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingIntegration = Sentry.reactNavigationIntegration();

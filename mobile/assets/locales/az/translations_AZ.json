@@ -31,7 +31,8 @@
     "hy": "Erməni dili",
     "ru": "Rus dili",
     "az": "Azərbaycan dili",
-    "es": "Ispan dili"
+    "es": "Ispan dili",
+    "de": "Alman dili"
   },
   "onboarding": {
     "language": {
@@ -390,7 +391,8 @@
       "placeholder": "Xahiş edirik mətni daxil edin..."
     },
     "menu": {
-      "clear": "Formanı silin (bütün cavabların silinməsi)"
+      "clear": "Formanı silin (bütün cavabların silinməsi)",
+      "change_language": "Dili dəyişmək"
     },
     "warning_modal": {
       "title": "Seçki məntəqəsinin məlumat formasının silinməsi",

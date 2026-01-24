@@ -31,7 +31,8 @@
     "hy": "Armenio",
     "ru": "Ruso",
     "az": "Azerbaiyano",
-    "es": "Español"
+    "es": "Español",
+    "de": "Alemán"
   },
   "onboarding": {
     "language": {
@@ -397,7 +398,8 @@
       "placeholder": "Por favor ingresa un texto.."
     },
     "menu": {
-      "clear": "Borrar formulario (eliminar todas las respuestas)"
+      "clear": "Borrar formulario (eliminar todas las respuestas)",
+      "change_language": "Cambiar idioma"
     },
     "warning_modal": {
       "title": "Borrar formulario de información de la estación de votación",
