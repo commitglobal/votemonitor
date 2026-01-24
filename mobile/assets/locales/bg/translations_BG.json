@@ -380,7 +380,10 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Управление на моите изборни секции"
+      "manage_my_polling_stations": "Управление на моите изборни секции",
+      "copy_polling_station_information": "Копиране на данните за изборната секция в клипборда",
+      "copy_success_toast": "Данните за изборната секция бяха копирани в клипборда",
+      "copy_error_toast": "Неуспешно копиране на данните за изборната секция"
     }
   },
   "polling_station_information_form": {
