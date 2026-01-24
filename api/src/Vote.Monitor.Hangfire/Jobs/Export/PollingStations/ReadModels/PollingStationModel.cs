@@ -13,5 +13,7 @@ public class PollingStationModel
     public string Number { get; set; }
     public string DisplayOrder { get; set; }
     public string Address { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public JsonDocument Tags { get; set; }
 }

@@ -1,0 +1,549 @@
+Key,en,de 
+common.skip,Next,Weiter
+common.search,Search,Suchen
+common.loading,Loading...,Wird geladen…
+common.status.completed,Done,Erledigt
+common.status.in_progress,In progress,In Bearbeitung
+common.status.not_started,Not started,Nicht begonnen
+common.status.marked_as_completed,Marked as done,Als erledigt markiert
+common.forms.mark_as_done,Mark form as done,Formular als erledigt markieren
+common.forms.mark_as_in_progress,Mark form as in progress,Formular als in Bearbeitung markieren
+common.cancel,Cancel,Abbrechen
+common.save,Save,Speichern
+common.no_data,No data found.,Keine Daten gefunden.
+common.select,Select,Auswählen
+common.done,Done,Erledigt
+common.ok,OK,OK
+common.back,Back,Zurück
+languages.ro,Romanian,Rumänisch
+languages.en,English,Englisch
+languages.pl,Polish,Polnisch
+languages.bg,Bulgarian,Bulgarisch
+languages.sr,Serbian,Serbisch
+languages.ka,Georgian,Georgisch
+languages.hy,Armenian,Armenisch
+languages.ru,Russian,Russisch
+languages.az,Azerbaijani,Aserbaidschanisch
+languages.es,Spanish,Spanisch
+onboarding.language.heading,Choose your language,Sprache auswählen
+onboarding.language.description,"This will be the language in which your app will be displayed, and can be changed at any time from the More Section of the application.","Dies ist die Sprache, in der deine App angezeigt wird, und sie kann jederzeit im Bereich „Mehr“ der Anwendung geändert werden."
+onboarding.language.save,Apply selection,Auswahl anwenden
+onboarding.polling_stations.heading,Monitor election processes,Wahlprozesse überwachen
+onboarding.polling_stations.description,"and report campaign irregularities, polling station issues, and flag any problems with voting day procedures","und Unregelmäßigkeiten im Wahlkampf, Probleme in Wahllokalen melden sowie etwaige Verstöße gegen die Abläufe am Wahltag kennzeichnen"
+onboarding.forms.heading,Fill in observation forms,Beobachtungsformulare ausfüllen
+onboarding.forms.description,and submit reports for each monitoring stage to help ensure a transparent and fair electoral process,"und Berichte für jede Beobachtungsphase einreichen, um einen transparenten und fairen Wahlprozess zu gewährleisten"
+onboarding.media.heading,Add notes or media files,Notizen oder Mediendateien hinzufügen
+onboarding.media.description,to further support your observations and provide evidence for any irregularities,um deine Beobachtungen weiter zu unterstützen und Belege für etwaige Unregelmäßigkeiten bereitzustellen
+onboarding.media.save,Go to app,Zur App
+select_app_mode.heading,Select app mode,App-Modus auswählen
+select_app_mode.description,"You can monitor the electoral process as an accredited observer, or just as a citizen interested in supporting fair and democratic elections.","Du kannst den Wahlprozess als akkreditierte*r Beobachter*in überwachen oder als Bürger*in, der/die faire und demokratische Wahlen unterstützen möchte."
+select_app_mode.accredited_observer.title,Vote Monitor for Accredited Observers,Vote Monitor für akkreditierte Beobachter*innen
+select_app_mode.accredited_observer.description,"I am an accredited independent observer, invited by an NGO to observe the electoral process. **","Ich bin eine*r akkreditierte*r unabhängige*r Beobachter*in und wurde von einer NGO eingeladen, den Wahlprozess zu beobachten. **"
+select_app_mode.citizen.title,Vote Monitor for Citizens,Vote Monitor für Bürger*innen
+select_app_mode.citizen.description,I am a citizen and I want to report electoral irregularities I see during the electoral campaign or on election day.,"Ich bin Bürger*in und möchte Unregelmäßigkeiten melden, die ich während des Wahlkampfs oder am Wahltag beobachte."
+select_app_mode.helper,"**As an accredited observer you will be able to switch to Citizen mode at any time, from the app’s menu.",**Als akkreditierte*r Beobachter*in kannst du jederzeit über das App-Menü in den Bürger*innenmodus wechseln.
+select_app_mode.continue,Continue,Fortfahren
+select_election_event.heading,Available election events,Verfügbare Wahlereignisse
+select_election_event.description,Select the event for which you would like to submit a report for:,"Wähle das Ereignis aus, für das du einen Bericht einreichen möchtest:"
+select_election_event.continue,Continue,Fortfahren
+select_election_event.empty_description,"At this moment there are no active electoral events for which you can report incidents as a citizen. Once an event will be available, you will see it in this section.","Derzeit gibt es keine aktiven Wahlereignisse, für die du als Bürger*in Vorfälle melden kannst. Sobald ein Ereignis verfügbar ist, wird es in diesem Bereich angezeigt."
+select_election_event.error_description,Something went wrong while retrieving the available election events. Please retry.,Beim Abrufen der verfügbaren Wahlereignisse ist ein Fehler aufgetreten. Bitte versuche es erneut.
+select_election_event.retry,Retry,Erneut versuchen
+drawer.report_as_citizen,Report as citizen,Als Bürger*in melden
+drawer.report_as_accredited_observer,Report as accredited observer,Als akkreditierte*r Beobachter*in melden
+citizen_report_issue.header_title,Report an issue,Ein Vorkommnis melden
+citizen_report_issue.description,"As a citizen, you can report an election-related issue by completing one of the reporting forms available below.","Als Bürger*in kannst du ein wahlbezogenes Problem melden, indem du eines der unten verfügbaren Meldeformulare ausfüllst."
+citizen_report_issue.disclaimer,"Submitting a report through Vote Monitor Citizen is not the same as filing an official complaint with the authorities responsible for organizing elections. For more information on how reports are used, check the info button in the upper right corner. If you want to submit an official complaint, please refer to the article How to Submit an Official Complaint in the Resources section.","Das Einreichen eines Berichts über Vote Monitor Citizen ist nicht dasselbe wie das Einreichen einer offiziellen Beschwerde bei den für die Organisation von Wahlen zuständigen Behörden. Weitere Informationen zur Verwendung der Berichte findest du über die Info-Schaltfläche in der oberen rechten Ecke. Wenn du eine offizielle Beschwerde einreichen möchtest, lies bitte den Artikel „Wie man eine offizielle Beschwerde einreicht“ im Bereich „Ressourcen“."
+citizen_report_issue.empty_forms,Reporting forms will appear here once Vote Monitor team will publish them in the system.,"Meldeformulare werden hier angezeigt, sobald das Vote-Monitor-Team sie im System veröffentlicht hat."
+citizen_report_issue.error_message,Something went wrong while retrieving the reporting forms. Please retry.,Beim Abrufen der Meldeformulare ist ein Fehler aufgetreten. Bitte versuche es erneut.
+citizen_report_issue.retry,Retry,Erneut versuchen
+citizen_report_issue.info_modal.p1,Submitting a report through Vote Monitor Citizen does not constitute an official complaint to the authorities responsible for organizing elections and does not guarantee that your report will be reviewed or addressed.,"Das Einreichen eines Berichts über Vote Monitor Citizen stellt keine offizielle Beschwerde bei den für die Organisation von Wahlen zuständigen Behörden dar und garantiert nicht, dass dein Bericht geprüft oder bearbeitet wird."
+citizen_report_issue.info_modal.p2,"After data analysis, some reports submitted through the app may be included in election observation reports prepared by organizations partnered with Code for Romania/Commit Global. Aggregated and anonymized data may also be used for statistical purposes.","Nach der Datenanalyse können einige über die App eingereichte Berichte in Wahlbeobachtungsberichten aufgenommen werden, die von mit Code for Romania/Commit Global kooperierenden Organisationen erstellt werden. Aggregierte und anonymisierte Daten können außerdem zu statistischen Zwecken verwendet werden."
+citizen_report_issue.info_modal.p3,"In certain cases, your reports may be shared with authorities responsible for organizing elections to help improve future electoral processes, though this is not guaranteed.","In bestimmten Fällen können deine Berichte an die für die Organisation von Wahlen zuständigen Behörden weitergegeben werden, um zukünftige Wahlprozesse zu verbessern; dies ist jedoch nicht garantiert."
+citizen_report_issue.info_modal.p4,You have full control over your personal data. Reporting forms allow you to choose whether to report anonymously or consent to being contacted by an organization should your report be reviewed.,"Du hast die volle Kontrolle über deine personenbezogenen Daten. In den Meldeformularen kannst du wählen, ob du anonym berichten oder der Kontaktaufnahme durch eine Organisation zustimmen möchtest, falls dein Bericht geprüft wird."
+citizen_report_issue.info_modal.ok,OK,OK
+citizen_form.review.heading,Review your report,Bericht überprüfen
+citizen_form.review.send,Send report,Bericht senden
+citizen_form.review.sending_report,We're sending your report. Please wait...,Dein Bericht wird gesendet. Bitte warten…
+citizen_form.progress_bar_label,Form progress,Formularfortschritt
+citizen_form.success.title,Your report has been successfuly sent!,Dein Bericht wurde erfolgreich gesendet!
+citizen_form.success.description,"Thank you for your civic involvement. You have the option to send a copy of your responses to your email, or you can return to the main page.","Vielen Dank für dein zivilgesellschaftliches Engagement. Du hast die Möglichkeit, dir eine Kopie deiner Antworten per E-Mail senden zu lassen oder zur Hauptseite zurückzukehren."
+citizen_form.success.back_to_main,Back to the main page,Zurück zur Hauptseite
+citizen_form.success.send_copy,Send me a copy,Mir eine Kopie senden
+citizen_form.error,There was a problem while sending your review.,Beim Senden deines Berichts ist ein Problem aufgetreten.
+citizen_form.email_copy.title,Enter your email to receive a form copy,"E-Mail-Adresse eingeben, um eine Kopie des Formulars zu erhalten"
+citizen_form.email_copy.description,"To receive a copy of your form, please enter your email address below. This email address will be used only to send you the copy and will not be stored or used for any other purpose.","Um eine Kopie deines Formulars zu erhalten, gib bitte unten deine E-Mail-Adresse ein. Diese E-Mail-Adresse wird ausschließlich zum Versand der Kopie verwendet und nicht gespeichert oder für andere Zwecke genutzt."
+citizen_form.email_copy.placeholder,Enter your email,E-Mail-Adresse eingeben
+citizen_form.email_copy.required,The email is mandatory,Die E-Mail-Adresse ist erforderlich
+citizen_form.email_copy.invalid,The email format is not valid,Das E-Mail-Format ist ungültig
+citizen_form.email_copy.cancel,Cancel,Abbrechen
+citizen_form.email_copy.send,Send,Senden
+citizen_form.copy_sent.title,Your copy has been sent,Deine Kopie wurde gesendet
+citizen_form.copy_sent.description,"Your copy should arrive instantly, but in rare occasions it may take a few minutes to process. You can return to the main page in the meantime.","Deine Kopie sollte sofort ankommen, in seltenen Fällen kann die Verarbeitung jedoch einige Minuten dauern. Du kannst in der Zwischenzeit zur Hauptseite zurückkehren."
+citizen_form.unsaved_changes_dialog.title,You have unsaved changes,Du hast ungespeicherte Änderungen
+citizen_form.unsaved_changes_dialog.description,Leaving this page will cause all your progress on the form to be lost. Are you sure you wish to go back?,"Wenn du diese Seite verlässt, gehen alle bisherigen Eingaben im Formular verloren. Möchtest du wirklich zurückgehen?"
+citizen_form.unsaved_changes_dialog.actions.discard,Go back,Zurückgehen
+citizen_form.unsaved_changes_dialog.actions.save,Stay here,Hier bleiben
+citizen_form.attachments.heading,Uploaded media,Hochgeladene Medien
+citizen_form.attachments.loading,Adding attachment... ,Anhang wird hinzugefügt…
+citizen_form.attachments.error,Error while sending the attachment!,Fehler beim Senden des Anhangs!
+citizen_form.attachments.add,Add media files,Mediendateien hinzufügen
+citizen_form.attachments.menu.load,Load from gallery,Aus Galerie laden
+citizen_form.attachments.menu.take_picture,Take a photo,Foto aufnehmen
+citizen_form.attachments.menu.record_video,Record a video,Video aufnehmen
+citizen_form.attachments.menu.upload_audio,Upload audio file,Audiodatei hochladen
+citizen_form.attachments.upload.compressing,Compressing attachment: ,Anhang wird komprimiert:
+citizen_form.attachments.upload.preparing,Preparing attachment...,Anhang wird vorbereitet…
+citizen_form.attachments.upload.starting,Starting the upload...,Upload wird gestartet…
+citizen_form.attachments.upload.progress,Uploading attachments: ,Anhänge werden hochgeladen:
+citizen_form.attachments.upload.completed,Upload completed.,Upload abgeschlossen.
+citizen_form.attachments.upload.aborted,Upload aborted.,Upload abgebrochen.
+citizen_form.attachments.upload.offline,You need an internet connection in order to perform this action.,Für diese Aktion ist eine Internetverbindung erforderlich.
+citizen_form.attachments.delete.title,Delete media file,Mediendatei löschen
+citizen_form.attachments.delete.description,"This action cannot be undone. Once deleted, a media file cannot be retrieved.",Diese Aktion kann nicht rückgängig gemacht werden. Nach dem Löschen kann eine Mediendatei nicht wiederhergestellt werden.
+citizen_form.attachments.delete.actions.cancel,Cancel,Abbrechen
+citizen_form.attachments.delete.actions.clear,Delete,Löschen
+login.disclaimer.paragraph1,"Vote Monitor Observer can only be used by independent observers, accredited by an organisation which monitors election processes. An invitation email from your organisation is needed, with instructions to set up an account.","Vote Monitor Observer kann nur von unabhängigen Beobachter*innen genutzt werden, die von einer Organisation akkreditiert sind, welche Wahlprozesse überwacht. Eine Einladungs-E-Mail deiner Organisation mit Anweisungen zur Kontoerstellung ist erforderlich."
+login.disclaimer.paragraph2.slice1,"If you are not an accredited observer, you may still","Wenn du keine*r akkreditierte*r Beobachter*in bist, kannst du dennoch"
+login.disclaimer.paragraph2.link,report irregularities as a citizen,Unregelmäßigkeiten als Bürger*in melden
+login.disclaimer.paragraph2.slice2,"for an ongoing election event, without needing an account.","für ein laufendes Wahlereignis, ohne ein Konto zu benötigen."
+login.heading,Log in,Anmelden
+login.paragraph,Please use the email address with which you registered as an independent observer:,"Bitte verwende die E-Mail-Adresse, mit der du dich als unabhängige*r Beobachter*in registriert hast:"
+login.form.email.label,E-mail *,E-Mail *
+login.form.email.placeholder,E-mail,E-Mail
+login.form.email.required,E-mail is mandatory,E-Mail ist erforderlich
+login.form.email.pattern,E-mail format is not valid,Das E-Mail-Format ist ungültig
+login.form.password.label,Password *,Passwort *
+login.form.password.placeholder,Password,Passwort
+login.form.password.required,Password is mandatory,Passwort ist erforderlich
+login.form.submit.save,Log in,Anmelden
+login.form.submit.loading,Log in...,Anmelden…
+login.form.errors.invalid_credentials,There was an error with your credentials. Please try again.,Bei deinen Zugangsdaten ist ein Fehler aufgetreten. Bitte versuche es erneut.
+login.form.errors.offline,You need an internet connection in order to log in.,Zum Anmelden ist eine Internetverbindung erforderlich.
+login.actions.forgot_password,Forgot your password?,Passwort vergessen?
+login.email_toast,Email address was copied to clipboard,E-Mail-Adresse wurde in die Zwischenablage kopiert
+forgot_password.header.title,Forgot password,Passwort vergessen
+forgot_password.heading,Forgot your password?,Passwort vergessen?
+forgot_password.paragraph,Please enter the email address associated with your account and we’ll send you a link to reset your password.,Bitte gib die mit deinem Konto verknüpfte E-Mail-Adresse ein. Wir senden dir einen Link zum Zurücksetzen deines Passworts.
+forgot_password.form.email.label,E-mail *,E-Mail *
+forgot_password.form.email.placeholder,E-mail,E-Mail
+forgot_password.form.email.required,E-mail is mandatory,E-Mail ist erforderlich
+forgot_password.form.email.pattern,E-mail format is not valid,Das E-Mail-Format ist ungültig
+forgot_password.form.submit.loading,Sending...,Wird gesendet…
+forgot_password.form.submit.save,Send,Senden
+forgot_password.form.errors.invalid_email,The current email is not registered in the system. Please try again.,Die aktuelle E-Mail-Adresse ist im System nicht registriert. Bitte versuche es erneut.
+forgot_password.confirmation.heading,Email sent,E-Mail gesendet
+forgot_password.confirmation.paragraph,Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email.,"Überprüfe dein E-Mail-Postfach und öffne den Link, den wir dir gesendet haben, um fortzufahren. Prüfe auch deinen Spam-Ordner, falls du keine E-Mail erhalten hast."
+forgot_password.confirmation.confirm,Back to login,Zurück zur Anmeldung
+about_app.title,About Vote Monitor,Über Vote Monitor
+about_app.title_observer,About Vote Monitor Observer,Über Vote Monitor Observer
+about_app.general,Vote Monitor is a dedicated digital tool for independent observers and international organizations engaged in election monitoring. Vote Monitor is developed and managed by Code for Romania/Commit Global.,"Vote Monitor ist ein spezielles digitales Tool für unabhängige Beobachter und internationale Organisationen, die sich mit Wahlbeobachtung befassen. Vote Monitor wird von Code for Romania/Commit Global entwickelt und verwaltet."
+about_app.purpose,"The app assists independent observers in monitoring polling stations and documenting the polling process in real-time for a specific election round. All data collected through the mobile app is sent in real-time to accrediting organizations to identify potential red flags that may indicate fraud or other irregularities. Ultimately, our goal is to provide a clear, simple, and realistic snapshot of the polling process proceedings.","Die App unterstützt unabhängige Beobachter dabei, Wahllokale zu beobachten und den Wahlprozess für eine bestimmte Wahlrunde in Echtzeit zu dokumentieren. Alle über die mobile App gesammelten Daten werden in Echtzeit an akkreditierte Organisationen gesendet, um potenzielle Warnsignale zu identifizieren, die auf Betrug oder andere Unregelmäßigkeiten hindeuten könnten. Letztendlich ist es unser Ziel, einen klaren, einfachen und realistischen Überblick über den Ablauf des Wahlprozesses zu bieten."
+about_app.app_provides.paragraph,The app provides observers with:,Die App bietet Beobachtern:
+about_app.app_provides.item1,A way to manage multiple visited polling stations,"Eine Möglichkeit, mehrere besuchte Wahllokale zu verwalten"
+about_app.app_provides.item2,An efficient method to monitor the flow of the polling process through forms set up by accrediting organizations,"Eine effiziente Methode zur Beobachtung des Ablaufs des Wahlprozesses anhand von Formularen, die von akkreditierten Organisationen erstellt wurden."
+about_app.app_provides.item3,A means of quickly reporting other problematic issues outside the standard forms,"Eine Möglichkeit, andere problematische Sachverhalte außerhalb der Standardformulare schnell zu melden"
+about_app.usage,"The Vote Monitor App can be used during any type of election in any country worldwide. Since 2016, it has been used in multiple election rounds in Romania, Poland and Bulgaria.","Die Vote Monitor App kann bei jeder Art von Wahl in jedem Land weltweit eingesetzt werden. Seit 2016 wurde sie bereits in mehreren Wahlgängen in Rumänien, Polen und Bulgarien verwendet."
+about_app.version,Vote Monitor version {{value}},Vote Monitor Version {{value}}
+about_app_citizen.title,About Vote Monitor,Über Vote Monitor
+about_app_citizen.title_observer,About Vote Monitor Citizen,Über Vote Monitor Citizen
+about_app_citizen.p1,"Vote Monitor Citizen enables everyday citizens to actively participate in monitoring elections by reporting any irregularities they encounter during the electoral period, including campaign activities, polling station operations, and voting day procedures.","Vote Monitor Citizen ermöglicht es normalen Bürgern, sich aktiv an der Beobachtung von Wahlen zu beteiligen, indem sie Unregelmäßigkeiten melden, die ihnen während der Wahlperiode auffallen, darunter Wahlkampfaktivitäten, Abläufe in Wahllokalen und Verfahren am Wahltag."
+about_app_citizen.p2,"Vote Monitor Citizen is an extension of the Vote Monitor app, which was initially developed by Code for Romania/Commit Global for independent observers working alongside NGOs in election monitoring efforts.","Vote Monitor Citizen ist eine Erweiterung der Vote Monitor-App, die ursprünglich von Code for Romania/Commit Global für unabhängige Beobachter entwickelt wurde, die gemeinsam mit NGOs bei der Wahlbeobachtung tätig sind."
+about_app_citizen.p3,"Users can submit real-time reports that will be analysed by non-governmental organizations involved in the electoral process. These reports may contribute to detailed observation documents and, in some instances, could be forwarded to relevant institutions to improve future elections.","Die Nutzer können Echtzeitberichte einreichen, die von Nichtregierungsorganisationen, die am Wahlprozess beteiligt sind, analysiert werden. Diese Berichte können zu detaillierten Beobachtungsdokumenten beitragen und in einigen Fällen an relevante Institutionen weitergeleitet werden, um künftige Wahlen zu verbessern."
+about_app_citizen.p4,"While citizen reports play a vital role in promoting transparency, please note that submitting a report through this app does not constitute an official complaint to the institutions responsible for organizing elections.","Bürgerberichte spielen zwar eine wichtige Rolle bei der Förderung der Transparenz; bitte beachten Sie jedoch, dass die Einreichung eines Berichts über diese App keine offizielle Beschwerde bei den für die Organisation von Wahlen zuständigen Institutionen darstellt."
+about_app_citizen.version,Vote Monitor version {{value}},Vote Monitor Version {{value}}
+loading_screen.heading,Loading...,Wird geladen...
+loading_screen.paragraph,"We are preparing all the data, please wait!","Wir bereiten alle Daten vor, bitte warten Sie!"
+tabs.observation,Observation,Beobachtung
+tabs.quick_report,Report,Bericht
+tabs.guides,Guides,Anleitungen
+tabs.inbox,Inbox,Posteingang
+tabs.more,More,Mehr
+tabs.report,Report,Bericht
+Leitfäden und Ressourcen Ihrer Organisation griffbereit.,Resources,Ressourcen
+tabs.updates,Updates,Aktualisierungen
+add_polling_station.title,Add polling station,Wahllokal hinzufügen
+add_polling_station.progress.location,Add polling station from {{value}},Wahllokal von {{value}} hinzufügen
+add_polling_station.actions.next_step,Next step,Nächster Schritt
+add_polling_station.actions.back,Back,Zurück
+add_polling_station.actions.finalize,Finalize,Abschließen
+add_polling_station.error,Error while loading polling stations!,Fehler beim Laden der Wahllokale!
+observation.title,Polling Station Observation,Beobachtung von Wahllokalen
+observation.no_election_round.heading,No election event to observe yet,Noch keine Wahlhandlung zu beobachten
+observation.no_election_round.paragraph,You will be able to use the app once you will be assigned to an election event by your organization,"Sie können die App nutzen, sobald Sie von Ihrer Organisation einer Wahl zugewiesen wurden."
+observation.no_form,The Polling Station Information form is not configured,Das Formular „Informationen zum Wahllokal“ ist nicht konfiguriert.
+observation.refresh_page,"If data is not visible, try refreshing the page to retrieve the most recent information","Wenn die Daten nicht angezeigt werden, aktualisieren Sie die Seite, um die neuesten Informationen abzurufen."
+observation.no_visited_polling_stations.heading,No visited polling stations yet,Noch keine Wahllokale besucht
+observation.no_visited_polling_stations.paragraph,Start configuring your first polling station before completing observation forms.,"Beginnen Sie mit der Konfiguration Ihres ersten Wahllokals, bevor Sie die Beobachtungsformulare ausfüllen."
+observation.no_visited_polling_stations.add,Add your first polling station,Fügen Sie Ihr erstes Wahllokal hinzu
+observation.my_polling_stations.heading,My polling stations,Meine Wahllokale
+observation.my_polling_stations.paragraph,You can switch between polling stations if you want to revisit form answers or polling station information.,"Sie können zwischen Wahllokalen wechseln, wenn Sie Formularantworten oder Wahllokaldaten erneut aufrufen möchten."
+observation.my_polling_stations.add,Add new polling station,Neues Wahllokal hinzufügen
+observation.polling_stations_information.heading,Polling station information,Informationen zum Wahllokal
+observation.polling_stations_information.time_select.not_defined,Not defined,Nicht definiert
+observation.polling_stations_information.time_select.arrival_time,Arrival time,Ankunftszeit
+observation.polling_stations_information.time_select.departure_time,Departure time,Zeitpunkt des Aufbruchs
+observation.polling_stations_information.time_select.save,Done,Erledigt
+observation.polling_stations_information.time_select.error.arrival_first,Please select an arrival time first.,Bitte wählen Sie zuerst eine Ankunftszeit.
+observation.polling_stations_information.time_select.error.later_departure,Please select a departure time that is at a later time than the arrival.,"Bitte wählen Sie einen Zeitpunkt des Aufbruchs, der später als die Ankunftszeit liegt."
+observation.polling_stations_information.time_select.error.earlier_arrival,Please select an arrival time that is at an earlier time than the departure.,"Bitte wählen Sie eine Ankunftszeit, die vor dem Zeitpunkt des Aufbruchs liegt."
+observation.polling_stations_information.time_select.error.server,We couldn't send the information to the server.,Wir konnten die Informationen nicht an den Server senden.
+observation.polling_stations_information.observation_time.observation_time,Observation time,Beobachtungszeit
+observation.polling_stations_information.observation_time.not_defined,Not defined,Nicht definiert
+observation.polling_stations_information.observation_time.no_of_breaks,{{value}} breaks,{{Wert}} Unterbrechungen
+observation.polling_stations_information.observation_time.one_break,{{value}} break,{{Wert}} Unterbrechung
+observation.polling_stations_information.observation_time.arrival_and_departure,Arrival and departure time,Ankunftszeit und Zeitpunkt des Aufbruchs
+observation.polling_stations_information.observation_time.arrival_time,Arrival time,Ankunftszeit
+observation.polling_stations_information.observation_time.departure_time,Departure time,Zeitpunkt des Aufbruchs
+observation.polling_stations_information.observation_time.departure_after_arrival,The departure time must be after the arrival time,Der Zeitpunkt des Aufbruchs muss nach der Ankunftszeit liegen.
+observation.polling_stations_information.observation_time.select_arrival_time,Select arrival time,Ankunftszeit auswählen
+observation.polling_stations_information.observation_time.select_departure_time,Select departure time,Zeitpunkt des Aufbruchs auswählen
+observation.polling_stations_information.observation_time.add_break,Add new break in observation,Neue Pause in Beobachtung hinzufügen
+observation.polling_stations_information.observation_time.break,Break {{value}},Pause {{Wert}}
+observation.polling_stations_information.observation_time.start_time,Start time,Startzeit
+observation.polling_stations_information.observation_time.select_start_time,Select start time,Startzeit auswählen
+observation.polling_stations_information.observation_time.end_time,End time,Endzeitpunkt
+observation.polling_stations_information.observation_time.select_end_time,Select end time, Endzeitpunkt auswählen
+observation.polling_stations_information.observation_time.undefined_date,DD/MM/YYYY,Tag/Monat/Jahr
+observation.polling_stations_information.observation_time.undefined_time,HH:MM,Stunde:Minute
+observation.polling_stations_information.observation_time.save,Save observation time,Beobachtungszeit speichern
+observation.polling_stations_information.observation_time.clear,Clear observation time,Beobachtungszeit löschen
+observation.polling_stations_information.observation_time.confirmation_modals.clear.title,Clear observation time,Beobachtungszeit löschen
+observation.polling_stations_information.observation_time.confirmation_modals.clear.description,"This action will delete your arrival and departure time, including all your breaks entered so far for this polling station. To avoid unintended information loss, please ensure you check the times before performing this action.","Durch diese Aktion werden Ihre Ankunftszeit und die Zeit des Aufbruchs sowie alle bisher für dieses Wahllokal eingegebenen Pausen gelöscht. Um unbeabsichtigten Informationsverlust zu vermeiden, überprüfen Sie bitte die Zeiten, bevor Sie diese Aktion durchführen."
+observation.polling_stations_information.observation_time.confirmation_modals.clear.actions.cancel,Cancel,Abbrechen
+observation.polling_stations_information.observation_time.confirmation_modals.clear.actions.clear,Clear observation time,Beobachtungszeit löschen
+observation.polling_stations_information.observation_time.confirmation_modals.delete.title,Delete break,Pause löschen
+observation.polling_stations_information.observation_time.confirmation_modals.delete.description,"This action will delete your break. To avoid unintended information loss, please ensure you check the times before performing this action.","Durch diese Aktion wird Ihre Pause gelöscht. Um unbeabsichtigten Informationsverlust zu vermeiden, überprüfen Sie bitte die Zeiten, bevor Sie diese Aktion ausführen."
+observation.polling_stations_information.observation_time.confirmation_modals.delete.actions.cancel,Cancel,Abbrechen
+observation.polling_stations_information.observation_time.confirmation_modals.delete.actions.delete,Delete break,Pause löschen
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.title,Save changes to observation time,Änderungen an der Beobachtungszeit speichern
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.description,You have unsaved changes related to the observation time you entered. Do you want to save your changes before leaving the page?,"Sie haben ungespeicherte Änderungen bezüglich der von Ihnen eingegebenen Beobachtungszeit vorgenommen. Möchten Sie Ihre Änderungen speichern, bevor Sie die Seite verlassen?"
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.actions.discard,Discard,Verwerfen
+observation.polling_stations_information.observation_time.confirmation_modals.unsaved_changes.actions.save,Save changes,Änderungen speichern
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.title,Unable to Save Observation Time,Beobachtungszeit kann nicht gespeichert werden
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.p1,The times you entered cannot be saved due to a conflict between the break periods and the arrival/departure times.,Die von Ihnen eingegebenen Zeiten können aufgrund eines Konflikts zwischen den Pausen und den Ankunftszeiten/Zeiten des Aufbruchs nicht gespeichert werden.
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.p2,Please ensure that break periods do not exceed the time interval defined by the arrival and departure observation times. Please review and adjust the times accordingly.,"Bitte stellen Sie sicher, dass die Pausen nicht länger sind als die Zeit zwischen den Ankunftszeiten und den Zeiten des Aufbruchs. Bitte überprüfen Sie die Zeiten und passen Sie sie entsprechend an."
+observation.polling_stations_information.observation_time.confirmation_modals.unable_to_save.ok,OK,OK
+observation.polling_stations_information.polling_station_form.paragraph,Answer a few quick questions about the polling station.,Beantworten Sie ein paar kurze Fragen zum Wahllokal.
+observation.polling_stations_information.polling_station_form.form_details_button_label,Polling station questions,Fragen zum Wahllokal
+observation.polling_stations_information.polling_station_form.number_of_questions,{{value}} questions,{{value}} Fragen
+observation.polling_stations_information.polling_station_form.answer_questions,Answer questions,Fragen beantworten
+observation.forms.heading,Observation forms,Beobachtungsformulare  
+observation.forms.list.empty,Observation forms will appear here once your organization will publish them in the system.,"Die Beobachtungsformulare werden hier angezeigt, sobald Ihre Organisation sie im System veröffentlicht hat."
+observation.forms.list.error.paragraph1,Something went wrong!,Etwas ist schiefgelaufen!
+observation.forms.list.error.paragraph2,We could not fetch the data. Press the retry button to try again!,"Die Daten konnten nicht abgerufen werden. Klicken Sie auf die Schaltfläche „Wiederholen“, um es erneut zu versuchen!"
+observation.forms.list.error.retry,Retry,Wiederholen
+observation.forms.select_language_modal.header,Select form language,Formularsprache auswählen
+observation.forms.select_language_modal.helper,The selected form is available in multiple languages. Please select which one you would like to continue with.,"Das ausgewählte Formular ist in mehreren Sprachen verfügbar. Bitte wählen Sie die Sprache aus, in der Sie fortfahren möchten."
+observation.forms.select_language_modal.error,Please select one of the options,Bitte wählen Sie eine der Optionen aus.
+observation.options_menu.manage_my_polling_stations,Manage my polling stations,Meine Wahllokale verwalten
+polling_station_information_form.title,Polling station information,Informationen zum Wahllokal
+polling_station_information_form.submit,Submit answers,Antworten abschicken
+polling_station_information_form.form.max,Input cannot exceed {{value}} characters,Die Eingabe darf {{value}} Zeichen nicht überschreiten.
+polling_station_information_form.form.placeholder,Please enter a text..,Bitte einen Text eingeben.
+polling_station_information_form.menu.clear,Clear form (delete all answers),Formular löschen (alle Antworten löschen)
+polling_station_information_form.warning_modal.title,Clear Polling station information form,Löschen des Formulars mit Wahllokalangaben
+polling_station_information_form.warning_modal.description,"This action will delete all answers entered so far for this form. To avoid unintended information loss, please ensure you check the form before performing this action.","Durch diese Aktion werden alle bisher in dieses Formular eingegebenen Antworten gelöscht. Um unbeabsichtigten Informationsverlust zu vermeiden, überprüfen Sie bitte das Formular, bevor Sie diese Aktion ausführen."
+polling_station_information_form.warning_modal.actions.cancel,Cancel,abbrechen
+polling_station_information_form.warning_modal.actions.clear,Clear form,Formular löschen
+polling_station_information_form.unsaved_changes_dialog.title,Save changes to form,Änderungen im Formular speichern
+polling_station_information_form.unsaved_changes_dialog.description,You have unsaved changes on this form. Do you want to save your changes before leaving?,Sie haben in diesem Formular ungespeicherte Änderungen vorgenommen. Möchten Sie Ihre Änderungen vor dem Verlassen speichern?
+polling_station_information_form.unsaved_changes_dialog.actions.discard,Discard,Verwerfen
+polling_station_information_form.unsaved_changes_dialog.actions.save,Save changes,Änderungen speichern
+form_overview.overview.heading,Form Overview,Formularübersicht
+form_overview.overview.status,Form status,Formularstatus
+form_overview.overview.answered_questions,Answered questions,Beantwortete Fragen
+form_overview.overview.resume,Resume form,Formular weiter bearbeiten
+form_overview.overview.start_form,Start form,Formular beginnen
+form_overview.overview.progress,progress,Fortschritt
+form_overview.overview.submissions_list,Form submissions,Formularübermittlung
+form_overview.overview.add_submission,Add submission,Eingabe hinzufügen
+form_overview.overview.number_of_submissions,# of submissions: {{value}},Anzahl der Eingaben: {{value}}
+form_overview.questions.title,Questions,Fragen
+form_overview.questions.not_answered,Not Answered,Nicht beantwortet
+form_overview.questions.answered,Answered,Beantwortet 
+form_overview.questions.no_notes,No attached notes,Keine angehängten Notizen
+form_overview.questions.notes,Includes attached notes,Enthält beigefügte Notizen
+form_overview.attachments.notes,{{count}} Note(s),{{count}} Anmerkung(en)
+form_overview.attachments.media,{{count}} Media file(s),{{count}} Mediendatei(en)
+form_overview.error,Error while loading the form data!,Fehler beim Laden der Formulardaten!
+form_overview.menu.clear,Clear form (delete all answers),Formular löschen (alle Antworten löschen)
+form_overview.menu.change_language,Change language,Sprache ändern
+form_overview.menu.delete,Delete submission,Eingabe löschen
+form_overview.clear_answers_modal.title,Clear form {{value}},Formular löschen {{value}}
+form_overview.clear_answers_modal.description.p1,This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to 'Not Answered'.,Durch diese Aktion werden alle bisher für dieses Formular eingegebenen Antworten (einschließlich Notizen und Mediendateien) gelöscht. Der Status aller Fragen wird auf „Nicht beantwortet“ zurückgesetzt.
+form_overview.clear_answers_modal.description.p2,"To avoid unintended information loss, please ensure you check the form before performing this action","Um unbeabsichtigten Informationsverlust zu vermeiden, überprüfen Sie bitte das Formular, bevor Sie diese Aktion ausführen."
+form_overview.clear_answers_modal.actions.clear,Clear form,Formular löschen
+form_overview.clear_answers_modal.actions.cancel,Cancel,Abbrechen
+form_overview.delete_submission_modal.title,Delete submission,Eintrag löschen
+form_overview.delete_submission_modal.description.p1,This action will delete this form submission (including notes and media files).,Durch diese Aktion wird diese Formularübermittlung (einschließlich Notizen und Mediendateien) gelöscht.
+form_overview.delete_submission_modal.description.p2,"To avoid unintended information loss, please ensure you check the form before performing this action","Um unbeabsichtigten Informationsverlust zu vermeiden, überprüfen Sie bitte das Formular, bevor Sie diese Aktion ausführen."
+form_overview.delete_submission_modal.actions.clear,Delete submission,Eintrag löschen
+form_overview.delete_submission_modal.actions.cancel,Cancel,Abbrechen
+polling_station_form_wizard.progress_bar.label,Form progress,Formularfortschritt
+polling_station_form_wizard.progress_bar.clear_answer,Clear answer,Antwort löschen
+polling_station_form_wizard.form.min,The field must be at least {{value}} characters long,Das Feld muss mindestens {{value}} Zeichen lang sein.
+polling_station_form_wizard.form.max,The field must have a maximum of {{value}} characters,Das Feld darf maximal {{value}} Zeichen enthalten.
+polling_station_form_wizard.form.required,This field is required,Dieses Feld ist ein Pflichtfeld.
+polling_station_form_wizard.form.date_placeholder,Please enter a date,Bitte geben Sie ein Datum ein.
+polling_station_form_wizard.form.text_placeholder,Please enter a text,Bitte geben Sie einen Text ein.
+polling_station_form_wizard.save_and_continue,Save and continue,Speichern und fortfahren
+polling_station_form_wizard.attachments.heading,Uploaded media,Hochgeladene Medien
+polling_station_form_wizard.attachments.loading,Adding attachment... ,Anhang hinzufügen...
+polling_station_form_wizard.attachments.error,Error while sending the attachment!,Fehler beim Senden des Anhangs!
+polling_station_form_wizard.attachments.add,Add notes and media,Notizen und Medien hinzufügen
+polling_station_form_wizard.attachments.menu.add_note,Add note,Notiz hinzufügen
+polling_station_form_wizard.attachments.menu.load,Load from gallery,Aus Galerie laden
+polling_station_form_wizard.attachments.menu.take_picture,Take a photo,Bild aufnehmen
+polling_station_form_wizard.attachments.menu.record_video,Record a video,Video aufnehmen
+polling_station_form_wizard.attachments.menu.upload_audio,Upload audio file,Audiodatei hochladen
+polling_station_form_wizard.attachments.upload.compressing,Compressing attachment: ,Anhang komprimieren
+polling_station_form_wizard.attachments.upload.preparing,Preparing attachment...,Anhang wird vorbereitet...
+polling_station_form_wizard.attachments.upload.starting,Starting the upload...,Hochladen wird gestartet...
+polling_station_form_wizard.attachments.upload.progress,Upload progress:,Hochladen-Fortschritt:
+polling_station_form_wizard.attachments.upload.completed,Upload completed.,Hochladen abgeschlossen.
+polling_station_form_wizard.attachments.upload.aborted,Upload aborted.,Hochladen abgebrochen.
+polling_station_form_wizard.attachments.upload.offline,You need an internet connection in order to perform this action.,"Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
+polling_station_form_wizard.attachments.upload.abort_offline,Go online to continue or abort the upload,"Gehen Sie online, um das Hochladen fortzusetzen oder abzubrechen."
+polling_station_form_wizard.attachments.upload.abort_offline_button,Cancel the upload,Hochladen abbrechen
+polling_station_form_wizard.attachments.upload.uploaded,Successfully uploaded {{value}} files.,{{value}} Dateien wurden erfolgreich hochgeladen.
+polling_station_form_wizard.attachments.upload.abort_offline_confirm,Are you sure you want to abort the upload?,Möchten Sie das Hochladen wirklich abbrechen?
+polling_station_form_wizard.attachments.upload.abort_offline_cancel,Cancel,Abbrechen
+polling_station_form_wizard.notes.heading,Notes,Anmerkungen
+polling_station_form_wizard.notes.add.heading,Add a note,Eine Anmerkung hinzufügen
+polling_station_form_wizard.notes.add.form.input.placeholder,Add any relevant notes to this question.,Fügen Sie dieser Frage alle relevanten Anmerkungen hinzu.
+polling_station_form_wizard.notes.add.form.input.max,"Input cannot exceed 10,000 characters",Die Eingabe darf 10.000 Zeichen nicht überschreiten.
+polling_station_form_wizard.notes.add.form.input.required,This field is required,Dieses Feld ist ein Pflichtfeld.
+polling_station_form_wizard.notes.edit.heading,Edit note,Anmerkung bearbeiten
+polling_station_form_wizard.notes.edit.delete,Delete note,Anmerkung löschen
+polling_station_form_wizard.notes.delete.title,Delete note,Anmerkung löschen
+polling_station_form_wizard.notes.delete.description,"This action cannot be undone. Once deleted, a note cannot be retrieved.",Diese Aktion kann nicht rückgängig gemacht werden. Einmal gelöschte Anmerkungen können nicht wiederhergestellt werden.
+polling_station_form_wizard.notes.delete.actions.cancel,Cancel,Abbrechen
+polling_station_form_wizard.notes.delete.actions.delete,Delete,Löschen 
+polling_station_form_wizard.warning_modal.question.title,Clear answer to question {{value}},Löschen der Antwort zu Frage {{value}}
+polling_station_form_wizard.warning_modal.question.description,"Clearing the answer to this question will permanently delete all its information (including notes and media files), as well as all its connected questions. Question statuses will be reverted to Not Answered.",Durch das Löschen der Antwort auf diese Frage werden alle zugehörigen Informationen (einschließlich Notizen und Mediendateien) sowie alle damit verbundenen Fragen dauerhaft gelöscht. Der Status der Fragen wird auf „Nicht beantwortet“ zurückgesetzt.
+polling_station_form_wizard.warning_modal.question.actions.cancel,Cancel,Abbrechen
+polling_station_form_wizard.warning_modal.question.actions.clear,Clear answer,Antwort löschen
+polling_station_form_wizard.warning_modal.attachment.title,Delete media file,Mediendatei löschen
+polling_station_form_wizard.warning_modal.attachment.description,"This action cannot be undone. Once deleted, a media file cannot be retrieved.",Dieser Vorgang kann nicht rückgängig gemacht werden. Einmal gelöschte Mediendateien können nicht wiederhergestellt werden.
+polling_station_form_wizard.warning_modal.attachment.actions.cancel,Cancel,Abbrechen
+polling_station_form_wizard.warning_modal.attachment.actions.clear,Delete,Löschen
+polling_station_form_wizard.warning_modal.unsaved_answer.title,Save changes to question,Änderungen an der Frage speichern
+polling_station_form_wizard.warning_modal.unsaved_answer.description,You have unsaved changes on this question. Do you want to save your changes before leaving?,Sie haben an dieser Frage ungespeicherte Änderungen vorgenommen. Möchten Sie Ihre Änderungen vor dem Verlassen speichern?
+polling_station_form_wizard.warning_modal.unsaved_answer.actions.cancel,Discard,Verwerfen
+polling_station_form_wizard.warning_modal.unsaved_answer.actions.save,Save changes,Änderungen speichern
+polling_station_form_wizard.error,Error while loading question data!,Fehler beim Laden der Fragendaten!
+manage_my_polling_stations.empty.title,No visited polling stations yet,Noch keine Wahllokale besucht
+manage_my_polling_stations.general_text,Manage my polling stations,Meine Wahllokale verwalten
+manage_my_polling_stations.ps_card.header,Polling station: {{value}},Wahllokal: {{value}}
+manage_my_polling_stations.ps_card.l1,[Location L1],[Ort L1]
+manage_my_polling_stations.ps_card.l2,[Location L2],[Ort L2]
+manage_my_polling_stations.ps_card.l3,[Location L3],[Ort L3]
+manage_my_polling_stations.ps_card.l4,[Location L4],[Ort L4]
+manage_my_polling_stations.ps_card.l5,[Location L5],[Ort L5]
+manage_my_polling_stations.ps_card.street,Street,Straße
+manage_my_polling_stations.ps_card.ps_number,Polling station number,Nummer des Wahllokals
+manage_my_polling_stations.warning_dialog.title,Remove Polling station: {{value}},Wahllokal entfernen: {{value}}
+manage_my_polling_stations.warning_dialog.description,This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.,Durch diese Aktion wird das Wahllokal aus Ihrer Liste der besuchten Wahllokale entfernt. Sie können es über den Vorgang „Neues Wahllokal hinzufügen” erneut hinzufügen.
+manage_my_polling_stations.warning_dialog.actions.cancel,Cancel,Abbrechen
+manage_my_polling_stations.warning_dialog.actions.remove,Remove,Entfernen
+manage_my_polling_stations.warning_dialog.actions.loading,Loading...,Laden...
+manage_my_polling_stations.removal_unallowed_dialog.title,Removing polling station {{value}} not allowed,Entfernen des Wahllokals {{value}} nicht zulässig
+manage_my_polling_stations.removal_unallowed_dialog.description,"The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action.","Das Wahllokal kann nicht aus Ihrer Liste entfernt werden, da es Daten enthält (Informationen zum Wahllokal und/oder Formularantworten), die vom System nicht in Ihrem Namen gelöscht werden können. Wenn Sie dieses Wahllokal entfernen möchten, löschen Sie bitte die Informationen zum Wahllokal und die Formularantworten manuell und wiederholen Sie dann diesen Vorgang."
+manage_my_polling_stations.delete_success,Polling station deleted successfully!,Wahllokal erfolgreich gelöscht!
+manage_my_polling_stations.delete_error,We encountered a problem while deleting the polling station visit. Please try again.,Beim Löschen des besuchten Wahllokals ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.
+manage_my_polling_stations.offline_error_toast_msg,You need an internet connection in order to perform this action.,"Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
+quick_report.list.title,Quick Report,Kurzbericht
+quick_report.list.heading,My reported issues,Meine gemeldeten Vorkommnise
+quick_report.list.error,Error while loading the reports!,Fehler beim Laden der Berichte!
+quick_report.list.empty,"Start sending quick reports to the organization if you notice irregularities inside, outside the polling station or whenever needed.","Senden Sie umgehend Kurzberichte an die Organisation, wenn Sie Unregelmäßigkeiten innerhalb oder außerhalb des Wahllokals bemerken oder wann immer dies erforderlich ist."
+quick_report.list.add,Report new issue,Neue Vorkommnisse melden
+quick_report.list.no_files,No attached files,Keine angehängten Dateien
+quick_report.list.attachment_one,{{count}} attachment file,{{count}} angehängte Datei 
+quick_report.list.attachment_other,{{count}} attachment files,{{count}} angehängte Dateien
+quick_report.attachments.heading,Uploaded media,Hochgeladene Medien
+quick_report.attachments.loading,Adding attachment... ,Anhang hinzufügen...
+quick_report.attachments.upload.preparing,Preparing attachment...,Anhang wird vorbereitet...
+quick_report.attachments.upload.starting,Starting the upload...,Hochladen wird gestartet...
+quick_report.attachments.upload.progress,Upload progress:,Fortschritt beim Hochladen:
+quick_report.attachments.upload.completed,Upload completed.,Hochladen abgeschlossen.
+quick_report.attachments.upload.aborted,Upload aborted.,Hochladen abgebrochen.
+quick_report.attachments.error,Error while sending the attachment!,Fehler beim Senden des Anhangs!
+quick_report.options_menu.manage_my_polling_stations,Manage my polling stations,Meine Wahllokale verwalten
+quick_report.info_modal.p1,"From this section, you can quickly report any electoral irregularities you observe at polling stations or nearby areas.","In diesem Abschnitt können Sie schnell alle Unregelmäßigkeiten bei Wahlen melden, die Sie in Wahllokalen oder deren Umgebung beobachten."
+quick_report.info_modal.p2,"This feature allows you to alert the organization instantly, outside the regular observation forms, ensuring urgent issues are addressed promptly.","Mit dieser Funktion können Sie die Organisation außerhalb der regulären Beobachtungsformulare sofort benachrichtigen und so sicherstellen, dass dringende Vorkommnisse umgehend behandelt werden."
+report_new_issue.title,Report new issue,Neue Vorkommnisse melden
+report_new_issue.upload.compressing,Compressing attachment: ,Anhang komprimieren
+report_new_issue.upload.preparing,Preparing attachment...,Anhang wird vorbereitet...
+report_new_issue.upload.starting,Starting the upload...,Hochladen wird gestartet...
+report_new_issue.upload.progress,Uploading attachments: ,Hochladen-Fortschritt:
+report_new_issue.upload.completed,Upload completed.,Hochladen abgeschlossen.
+report_new_issue.upload.aborted,Upload aborted.,Hochladen abgebrochen.
+report_new_issue.upload.offline,You need an internet connection in order to perform this action.,"Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
+report_new_issue.media.heading,Uploaded media,Hochgeladene Medien
+report_new_issue.media.add,Add media,Medien hinzufügen
+report_new_issue.media.error,Error while sending the attachment!,Fehler beim Senden des Anhangs!
+report_new_issue.media.menu.load,Load from gallery,Aus Galerie laden
+report_new_issue.media.menu.take_picture,Take a photo,Bild aufnehmen
+report_new_issue.media.menu.record_video,Record video,Video aufnehmen
+report_new_issue.media.menu.upload_audio,Upload audio file,Audiodatei hochladen
+report_new_issue.form.polling_station_id.label,Polling station *,Wahllokal *
+report_new_issue.form.polling_station_id.placeholder,Select polling station,Wahllokal auswählen
+report_new_issue.form.polling_station_id.extra,"Please write here some identification details for this polling station (such as address, name, number, etc.)","Bitte geben Sie hier einige Identifikationsdaten für dieses Wahllokal an (z. B. Adresse, Name, Nummer usw.)."
+report_new_issue.form.polling_station_id.required,This field is required.,Dieses Feld ist ein Pflichtfeld.
+report_new_issue.form.polling_station_id.options.other,Other polling station,Anderes Wahllokal
+report_new_issue.form.polling_station_id.options.not_related,Not related to a polling station,Nicht mit einem Wahllokal verbunden
+report_new_issue.form.incident_category.label,Incident category *,Vorfallkategorie *
+report_new_issue.form.incident_category.placeholder,Category,Kategorie
+report_new_issue.form.incident_category.required,This field is required.,Dieses Feld ist ein Pflichtfeld.
+report_new_issue.form.incident_category.options.PhysicalViolenceIntimidationPressure,Physical violence/intimidation/pressure,Körperliche Gewalt/Einschüchterung/Druck
+report_new_issue.form.incident_category.options.CampaigningAtPollingStation,Campaigning at the polling station,Wahlkampf im Wahllokal
+report_new_issue.form.incident_category.options.RestrictionOfObserversRights,Restriction of observer's (representative's/media) rights,Einschränkung der Rechte von Beobachtern (Vertretern/Medien)
+report_new_issue.form.incident_category.options.UnauthorizedPersonsAtPollingStation,Unauthorized person(s) at the polling station,Unbefugte Person(en) im Wahllokal
+report_new_issue.form.incident_category.options.ViolationDuringVoterVerificationProcess,Violation during voter verification process,Verstoß während des Wählerüberprüfungsprozesses
+report_new_issue.form.incident_category.options.VotingWithImproperDocumentation,Voting with improper documentation,Wählen mit unzulässigen Dokumenten
+report_new_issue.form.incident_category.options.IllegalRestrictionOfVotersRightToVote,Illegal restriction of voter's right to vote,Illegale Einschränkung des Wahlrechts der Wählenden
+report_new_issue.form.incident_category.options.DamagingOrSeizingElectionMaterials,Damaging of/seizing election materials,Beschädigung/Beschlagnahmung von Wahlmaterialien
+report_new_issue.form.incident_category.options.ImproperFilingOrHandlingOfElectionDocumentation,Improper filing/handling of election documentation,Unsachgemäße Einreichung/Behandlung von Wahlunterlagen
+report_new_issue.form.incident_category.options.BallotStuffing,Ballot stuffing,Stopfen von Stimmzetteln
+report_new_issue.form.incident_category.options.ViolationsRelatedToControlPaper,Violations related to the control paper,Verstöße im Zusammenhang mit dem Kontrollzettel
+report_new_issue.form.incident_category.options.NotCheckingVoterIdentificationSafeguardMeasures,Not checking the voter identification safeguard measures,Nichtüberprüfung der Sicherheitsmaßnahmen zur Wähleridentifizierung
+report_new_issue.form.incident_category.options.VotingWithoutVoterIdentificationSafeguardMeasures,Voting without voter identification safeguard measures,Wählen ohne Maßnahmen zum Schutz der Wähleridentität
+report_new_issue.form.incident_category.options.BreachOfSecrecyOfVote,Breach of secrecy of vote,Verletzung des Wahlgeheimnisses
+report_new_issue.form.incident_category.options.ViolationsRelatedToMobileBallotBox,Violations related to the mobile ballot box,Verstöße im Zusammenhang mit der mobilen Wahlurne
+report_new_issue.form.incident_category.options.NumberOfBallotsExceedsNumberOfVoters,Number of ballots exceed the number of voters,Die Anzahl der Stimmzettel übersteigt die Anzahl der Wählenden
+report_new_issue.form.incident_category.options.ImproperInvalidationOrValidationOfBallots,Improper invalidation/validation of ballots,Unzulässige Ungültigkeitserklärung/Gültigkeitserklärung von Stimmzetteln
+report_new_issue.form.incident_category.options.FalsificationOrImproperCorrectionOfFinalProtocol,Falsification/improper correction of the final protocol,Fälschung/unzulässige Korrektur des Abschlussprotokolls
+report_new_issue.form.incident_category.options.RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy,Refusal to issue a copy of the final protocol/issuing an improper copy,Verweigerung der Ausstellung einer Kopie des endgültigen Protokolls/Ausstellung einer unzulässigen Kopie
+report_new_issue.form.incident_category.options.ImproperFillingInOfFinalProtocol,Improper filling in of the final protocol,Unsachgemäßes Ausfüllen des Abschlussprotokolls
+report_new_issue.form.incident_category.options.ViolationOfSealingProceduresOfElectionMaterials,Violation of the sealing procedures of the election materials,Verstoß gegen die Versiegelungsverfahren für Wahlunterlagen
+report_new_issue.form.incident_category.options.ViolationsRelatedToVoterLists,Violations related to the voter lists,Verstöße im Zusammenhang mit den Wählendenlisten
+report_new_issue.form.incident_category.options.Other,Other,Sonstiges
+report_new_issue.form.polling_station_details.label,Polling station details *,Angaben zum Wahllokal *
+report_new_issue.form.polling_station_details.placeholder,"Please write here some identification details for this polling station (such as address, name, number, etc.)","Bitte geben Sie hier einige Identifikationsdaten für dieses Wahllokal an (z. B. Adresse, Name, Nummer usw.)."
+report_new_issue.form.polling_station_details.required,This field is required.,Dieses Feld ist ein Pflichtfeld.
+report_new_issue.form.polling_station_details.max,Input cannot exceed {{value}} characters,Die Eingabe darf {{value}} Zeichen nicht überschreiten.
+report_new_issue.form.issue_title.label,Title of issue *,Titel des Vorfalls *
+report_new_issue.form.issue_title.placeholder,Write a title for the issue.,Schreiben Sie einen Titel für den Vorfall.
+report_new_issue.form.issue_title.required,Title of the issue is required,Ein Titel des Vorfalls ist erforderlich.
+report_new_issue.form.issue_title.max,Input cannot exceed {{value}} characters,Die Eingabe darf {{value}} Zeichen nicht überschreiten.
+report_new_issue.form.issue_description.label,Description *,Beschreibung *
+report_new_issue.form.issue_description.placeholder,Describe the situation in detail here.,Beschreiben Sie die Situation hier ausführlich.
+report_new_issue.form.issue_description.required,Description of the issue is required,Eine Beschreibung des Vorfalls ist erforderlich.
+report_new_issue.form.issue_description.max,Input cannot exceed {{value}} characters,Die Eingabe darf {{value}} Zeichen nicht überschreiten.
+report_new_issue.form.submit,Submit issue,Vorfall melden
+report_new_issue.form.clear,Clear,Löschen
+report_new_issue.form.loading,Processing...,Wird verarbeitet...
+report_new_issue.form.error,Error while adding the report,Fehler beim Hinzufügen des Berichts
+report_details.title,,
+report_details.uploaded_media,Uploaded media,Hochgeladene Medien
+report_details.no_files,No attached files,Keine angehängten Dateien
+report_details.error,Error while loading the report,Fehler beim Laden des Berichts
+guides.title,Resources,Ressourcen
+guides.empty.heading,No guides to read yet,Noch keine Leitfäden zum Lesen
+guides.empty.paragraph,Guides and resources from your organization at your hands.,Leitfäden und Ressourcen Ihrer Organisation griffbereit.
+guides.list.heading,Guides,Leitfäden  
+guides.list.guide.backup_title,Document,Dokument
+guides.list.guide.created_on,Created on,Erstellt am
+guides.options_sheet.manage_my_polling_stations,Manage my polling stations,Meine Wahllokale verwalten
+guides.info_modal,"In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as an independent observer.","In diesem Abschnitt finden Sie wichtige Informationen und Ressourcen, die Ihnen dabei helfen sollen, Wahlprozesse zu beobachten und als unabhängige*r Beobachter*in aufgetretene Wahlprobleme oder Unregelmäßigkeiten zu melden."
+resources.title,Resources,Ressourcen
+resources.info,"In this section, expect to have key information and resources designed to help you observe electoral processes and report any electoral issues or irregularities you encounter as a citizen.","In diesem Abschnitt finden Sie wichtige Informationen und Ressourcen, die Ihnen dabei helfen sollen, Wahlprozesse zu beobachten und als Bürger*in aufgetretene Wahlprobleme oder Unregelmäßigkeiten zu melden."
+resources.empty.heading,No guides to read yet,Noch keine Leitfäden zum Lesen
+resources.empty.paragraph,Guides and resources about observing electoral processes and reporting issues as a citizen at your hands.,Leitfäden und Ressourcen zur Beobachtung von Wahlprozessen und zur Meldung von Problemen als Bürger in Ihren Händen.
+resources.types.Document,Filetype PDF,Dateityp PDF
+resources.types.Website,External URL,Externe URL
+resources.types.Text,In app guide,In-App-Anleitung
+inbox.title,Inbox,Posteingang
+inbox.empty.heading,No message received yet,Noch keine Nachricht erhalten
+inbox.empty.paragraph,Push messages and alerts from your organization will appear here.,Push-Nachrichten und Warnmeldungen von Ihrer Organisation werden hier angezeigt.
+inbox.banner,Messages from {{ngoName}},Nachrichten von {{ngoName}}
+inbox.today,Today,Heute
+inbox.your_organization,your organization,Ihre Organisation
+inbox.menu.manage_polling_stations,Manage my polling stations,Meine Wahllokale verwalten
+inbox.info_modal.p1,In this Inbox expect to receive live updates and messages from the NGO that accredited you as an observer.,"In diesem Posteingang erhalten Sie Live-Updates und Nachrichten von der NGO, die Sie als Beobachter akkreditiert hat."
+inbox.info_modal.p2,"Check back periodically to see if you have received any new information, relevant to your observation activity.","Schauen Sie regelmäßig nach, ob Sie neue Informationen erhalten haben, die für Ihre Beobachtungsaktivität relevant sind."
+updates.title,Updates,Aktualisierungen
+updates.empty.heading,No updates received yet,Noch keine Updates erhalten
+updates.empty.paragraph,Updates about electoral period will appear here.,Aktuelle Informationen zur Wahlperiode werden hier veröffentlicht.
+updates.info_modal.p1,In this section expect to receive live updates from the Vote Monitor team regarding election period relevant to you as a citizen interested in civic engagement.,"In diesem Abschnitt erhalten Sie Live-Updates vom Vote Monitor-Team zu Wahlperioden, die für Sie als Bürger mit Interesse an bürgerschaftlichem Engagement relevant sind."
+updates.info_modal.p2,Check back periodically to see if you have received any new information.,"Schauen Sie regelmäßig nach, ob Sie neue Informationen erhalten haben."
+more.title,More,Mehr
+more.change-language,Change app language,App-Sprache ändern
+more.change-password,Change password,Passwort ändern
+more.terms,Terms and Conditions,Allgemeine Geschäftsbedingungen
+more.privacy_policy,Privacy Policy,Datenschutzerklärung
+more.about,About Vote Monitor,Über Vote Monitor
+more.app_version,Vote Monitor version {{value}},Vote Monitor version {{value}}
+more.support,Call the NGO Hotline,Rufen Sie die NGO-Hotline an
+more.feedback,Offer app feedback,Feedback zur App geben
+more.logout,Logout,Abmelden
+more.logged_in,Logged in as {{user}},Angemeldet als {{user}}
+more.warning_modal.logout_offline.title,Attention: You have unsynced data,Achtung: Sie haben nicht synchronisierte Daten.
+more.warning_modal.logout_offline.description,"You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.
+
+To avoid losing your data, please reconnect to the internet before logging out.","Sie sind derzeit offline. Wenn Sie sich jetzt abmelden, gehen alle Formulare, Anhänge oder Notizen, die Sie im Offline-Modus ausgefüllt oder hochgeladen haben, verloren. Um Datenverlust zu vermeiden, stellen Sie bitte vor dem Abmelden erneut eine Verbindung zum Internet her."
+more.warning_modal.logout_offline.cancel,Cancel,Abbrechen
+more.warning_modal.logout_offline.action,Logout,Abmelden
+more.warning_modal.logout_online.title,Are you sure you want to logout?,Möchten Sie sich wirklich abmelden?
+more.warning_modal.logout_online.cancel,Cancel,Abbrechen
+more.warning_modal.logout_online.action,Logout,Abmelden
+more.feedback_toast.success,Feedback sent!,Feedback gesendet!
+more.feedback_toast.offline,You need an internet connection in order to perform this action.,"Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
+more.feedback_toast.error,Error while adding feedback!,Fehler beim Hinzufügen von Feedback!
+more.feedback_toast.required,This field is required,Dieses Feld ist ein Pflichtfeld.
+more.feedback_sheet.heading,Send us your feedback,Senden Sie uns Ihr Feedback
+more.feedback_sheet.p1,"Please tell us about any issues you might have encountered with the functioning of the app, or any suggestions you would like to share to improve Vote Monitor for the future. We appreciate every feedback!","Bitte teilen Sie uns alle Probleme mit, die Sie möglicherweise mit der Funktionsweise der App hatten, oder alle Vorschläge, die Sie zur Verbesserung von Vote Monitor für die Zukunft machen möchten. Wir freuen uns über jedes Feedback!"
+more.feedback_sheet.placeholder,Write your feedback here...,Schreiben Sie hier Ihr Feedback...
+more.feedback_sheet.cancel,Cancel,Abbrechen
+more.feedback_sheet.action,Send,Senden  
+more.feedback_sheet.input.max,Input cannot exceed {{value}} characters,Die Eingabe darf {{value}} Zeichen nicht überschreiten.
+more.options_sheet.manage_my_polling_stations,Manage my polling stations,Meine Wahllokale verwalten
+change_password.title,Change password,Passwort ändern
+change_password.form.current_password.label,Current password *,Aktuelles Passwort *
+change_password.form.current_password.placeholder,Insert current password,Aktuelles Passwort eingeben
+change_password.form.current_password.required,Password is mandatory,Ein Passwort ist erforderlich.
+change_password.form.current_password.credentials_error,The current password is incorrect,Das aktuelle Passwort ist falsch.
+change_password.form.new_password.label,New password *,Neues Passwort *
+change_password.form.new_password.placeholder,Insert new password,Neues Passwort eingeben
+change_password.form.new_password.helper,Must be at least 8 characters,Muss mindestens 8 Zeichen lang sein
+change_password.form.new_password.required,The new password is mandatory,Das neue Passwort ist erforderlich.
+change_password.form.confirm_password.label,Confirm new password *,Neues Passwort bestätigen *
+change_password.form.confirm_password.placeholder,Confirm password,Passwort bestätigen
+change_password.form.confirm_password.helper,Both passwords must match.,Beide Passwörter müssen übereinstimmen.
+change_password.form.confirm_password.required,The new password is mandatory,Das neue Passwort ist erforderlich.
+change_password.form.confirm_password.no_match,Passwords do not match,Passwörter stimmen nicht überein
+change_password.form.save,Save new password,Neues Passwort speichern
+change_password.confirmation.heading,Password changed!,Passwort geändert!
+change_password.confirmation.paragraph,Your password has been successfully changed.,Ihr Passwort wurde erfolgreich geändert.
+change_password.confirmation.confirm,Back to app,Zurück zur App
+change_password.error.offline,App is offline and cannot do the request,Die App ist offline und kann die Anfrage nicht ausführen.
+generic_error_screen.paragraph1,"Oops, something went wrong!","Hoppla, etwas ist schiefgelaufen!"
+generic_error_screen.paragraph2,We could not recover after this error. Please check your internet connection and restart the application!,Nach diesem Fehler konnten wir den Vorgang nicht fortsetzen. Bitte überprüfen Sie Ihre Internetverbindung und starten Sie die Anwendung neu!
+generic_error_screen.retry,Retry,Wiederholen
+generic_error_screen.logout,Logout,Abmelden
+network_banner.online,App online. All answers sent to server.,App online. Alle Antworten werden an den Server gesendet.
+network_banner.offline,Offline mode. Saving answers locally.,Offline-Modus. Antworten werden lokal gespeichert.
+network_banner.offline_citizen,Offline mode. You need internet to submit the form.,"Offline-Modus. Sie benötigen eine Internetverbindung, um das Formular zu senden."
+network_banner.more_details,More Details,Weitere Details
+network_banner.offline_warning,"It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports.","Es sieht so aus, als wären Sie derzeit offline. Keine Sorge, Ihre Antworten werden lokal gespeichert und mit unseren Servern synchronisiert, sobald Ihre Verbindung wiederhergestellt ist. Sie können gerne weiter die Beobachtungsformulare ausfüllen und Kurzberichte einreichen."
+network_banner.offline_warning_citizen,"It looks like you're currently offline. In order to submit the form, you need to be online.","Es sieht so aus, als wären Sie derzeit offline. Um das Formular zu senden, müssen Sie online sein."
+sync.sync_data,Synchronizing offline data...,Offline-Daten werden synchronisiert...
+sync.warning,Please DO NOT CLOSE the app or the internet connection or the data will be lost.,"Bitte schließen Sie die App NICHT und unterbrechen Sie die Internetverbindung NICHT, da sonst die Daten verloren gehen."
+sync.files,"We are uploading your files, it may take a while...","Wir laden Ihre Dateien hoch, dies kann einen Moment dauern..."
+delete_submission.title,Review submission before deleting,Überprüfung des Eintrags vor dem Löschen
+delete_submission.description,"This action cannot be undone. Once deleted, no data from this submission can be recovered.",Diese Aktion kann nicht rückgängig gemacht werden. Nach dem Löschen können keine Daten aus dieser Übermittlung wiederhergestellt werden.
+delete_submission.header,Delete Submission #{{submissionNumber}},Beitrag Nr. {{submissionNumber}} löschen
+delete_submission.attachments,Attachments: {{value}},Anhänge: {{value}}
+delete_submission.notes,Notes: {{value}},Anmerkungen: {{value}}
+delete_submission.delete,Delete submission,Eintrag löschen
+delete_submission.warning_dialog.title,Are you sure you want to delete this submission?,Möchten Sie diesen Eintrag wirklich löschen?
+delete_submission.warning_dialog.description,This action cannot be undone.,Diese Aktion kann nicht rückgängig gemacht werden.
+delete_submission.warning_dialog.cancel,Cancel,Abbrechen
+delete_submission.warning_dialog.delete,Delete,Löschen
+form_submission_card.header,Submission #{{value}},Eintrag Nr. {{value}}
+form_submission_card.last_updated_at,Last updated at:,Zuletzt aktualisiert am:
+form_submission_card.form_status,Form status:,Formularstatus:
+form_submission_card.answered_questions,Answered questions:,Beantwortete Fragen:
+form_submission_card.attachments,Attachments:,Anhänge:
+form_submission_card.notes,Notes:,Anmerkungen:

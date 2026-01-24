@@ -7,48 +7,9 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     {
     }
 #pragma warning restore CS8618
-
-    internal PollingStation(ElectionRound electionRound,
-        string level1,
-        string level2,
-        string level3,
-        string level4,
-        string level5,
-        string number,
-        string address,
-        int displayOrder,
-        JsonDocument tags) : this(Guid.NewGuid(), electionRound, level1, level2, level3, level4, level5, number, address, displayOrder, tags)
-    {
-    }
-
-    public static PollingStation Create(ElectionRound electionRound,
-        string level1,
-        string level2,
-        string level3,
-        string level4,
-        string level5,
-        string number,
-        string address,
-        int displayOrder,
-        JsonDocument tags,
-        DateTime createdOn,
-        Guid userId)
-    {
-        var pollingStation = new PollingStation(electionRound, level1, level2, level3, level4, level5, number, address, displayOrder,
-            tags);
-
-        pollingStation.CreatedOn = createdOn;
-        pollingStation.CreatedBy = userId;
-
-        return pollingStation;
-    }
-
-    public Guid Id { get; private set; }
-    public ElectionRound ElectionRound { get; private set; }
-    public Guid ElectionRoundId { get; private set; }
-
-    internal PollingStation(
-        Guid id,
+    
+    public static PollingStation Create(
+        Guid? id,
         ElectionRound electionRound,
         string level1,
         string level2,
@@ -58,9 +19,61 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         string number,
         string address,
         int displayOrder,
-        JsonDocument tags)
+        JsonDocument tags,
+        double? latitude,
+        double? longitude,
+        DateTime createdOn,
+        Guid userId)
     {
-        Id = id;
+        var pollingStation = new PollingStation(id, electionRound, level1, level2, level3, level4, level5, number, address,
+            displayOrder,
+            tags, latitude, longitude);
+
+        pollingStation.CreatedOn = createdOn;
+        pollingStation.CreatedBy = userId;
+
+        return pollingStation;
+    }
+    
+    public static PollingStation Create(
+        ElectionRound electionRound,
+        string level1,
+        string level2,
+        string level3,
+        string level4,
+        string level5,
+        string number,
+        string address,
+        int displayOrder,
+        JsonDocument tags,
+        double? latitude,
+        double? longitude,
+        DateTime createdOn,
+        Guid userId)
+    {
+        return Create(null, electionRound, level1, level2, level3, level4, level5, number, address,displayOrder, tags, latitude, longitude, createdOn, userId);
+    }
+
+    public Guid Id { get; private set; }
+    public ElectionRound ElectionRound { get; private set; }
+    public Guid ElectionRoundId { get; private set; }
+
+    internal PollingStation(
+        Guid? id,
+        ElectionRound electionRound,
+        string level1,
+        string level2,
+        string level3,
+        string level4,
+        string level5,
+        string number,
+        string address,
+        int displayOrder,
+        JsonDocument tags,
+        double? latitude,
+        double? longitude)
+    {
+        Id = id ?? Guid.NewGuid();
         ElectionRoundId = electionRound.Id;
         ElectionRound = electionRound;
         Level1 = level1;
@@ -72,6 +85,8 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 
     public string Level1 { get; private set; }
@@ -83,6 +98,8 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
 
     public string Address { get; private set; }
     public int DisplayOrder { get; private set; }
+    public double? Latitude { get; private set; }
+    public double? Longitude { get; private set; }
 
     public JsonDocument Tags { get; private set; }
 
@@ -94,7 +111,9 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         string number,
         string address,
         int displayOrder,
-        JsonDocument tags)
+        JsonDocument tags,
+        double? latitude,
+        double? longitude)
     {
         Level1 = level1;
         Level2 = level2;
@@ -105,7 +124,10 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;
+        Latitude = latitude;
+        Longitude = longitude;
     }
+
     public void Dispose()
     {
         Tags.Dispose();

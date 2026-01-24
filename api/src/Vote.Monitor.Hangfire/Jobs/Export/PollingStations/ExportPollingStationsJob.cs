@@ -84,6 +84,8 @@ public class ExportPollingStationsJob(
                       PS."Number",
                       PS."Address",
                       ps."DisplayOrder",
+                      ps."Latitude",
+                      ps."Longitude",
                       COALESCE(NULLIF(PS."Tags", 'null'::jsonb), '{}'::jsonb) AS "Tags"
                   FROM
                       "PollingStations" PS

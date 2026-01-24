@@ -37,6 +37,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                      PS."Level5",
                      PS."Address",
                      PS."Number",
+                     PS."Latitude",
+                     PS."Longitude",
                      T."MonitoringObserverId",
                      MAX(T."LatestTimestamp") "VisitedAt"
                  FROM

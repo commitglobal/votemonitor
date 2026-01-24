@@ -23,6 +23,8 @@ public sealed class PollingStationFaker : PrivateFaker<PollingStation>
             number: f.Random.Number(1, 1000).ToString(),
             address: f.Address.FullAddress(),
             displayOrder: f.IndexFaker,
-            tags: JsonSerializer.SerializeToDocument("")));
+            tags: JsonSerializer.SerializeToDocument(""),
+            latitude: f.Address.Latitude(),
+            longitude: f.Address.Longitude()));
     }
 }
