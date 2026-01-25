@@ -31,6 +31,8 @@ export default function EditPollingStationModal({
       address: pollingStation.address,
       displayOrder: pollingStation.displayOrder,
       tags: pollingStation.tags,
+      latitude: pollingStation.latitude,
+      longitude: pollingStation.longitude,
     },
   });
 
@@ -50,89 +52,91 @@ export default function EditPollingStationModal({
       <div className='py-2'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-2'>
-            <FormField
-              control={form.control}
-              name='level1'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Level 1</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className='grid grid-cols-2 gap-4'>
+              <FormField
+                control={form.control}
+                name='level1'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Level 1</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name='level2'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Level 2</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name='level2'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Level 2</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name='level3'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Level 3</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name='level3'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Level 3</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name='level4'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Level 4</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name='level4'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Level 4</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name='level5'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Level 5</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name='level5'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Level 5</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='number'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Number</FormLabel>
+                    <FormControl>
+                      <Input type='text' {...field} {...fieldState} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <FormField
-              control={form.control}
-              name='number'
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Number</FormLabel>
-                  <FormControl>
-                    <Input type='text' {...field} {...fieldState} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
@@ -161,6 +165,53 @@ export default function EditPollingStationModal({
                 </FormItem>
               )}
             />
+
+            <div className='grid grid-cols-2 gap-4'>
+              <FormField
+                control={form.control}
+                name='latitude'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Latitude</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='any'
+                        placeholder='-90 to 90'
+                        {...field}
+                        {...fieldState}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='longitude'
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Longitude</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='any'
+                        placeholder='-180 to 180'
+                        {...field}
+                        {...fieldState}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <Button type='submit' className='mt-2 w-full'>
               Update Details
             </Button>

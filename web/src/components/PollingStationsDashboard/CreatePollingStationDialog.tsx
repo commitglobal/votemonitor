@@ -2,7 +2,7 @@ import { authApi } from '@/common/auth-api';
 import { importPollingStationSchema } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
@@ -71,75 +71,90 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
         <div className='flex flex-col gap-3'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='level1'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.level1')}</FormLabel>
-                    <Input placeholder={t('headers.level1')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className='grid grid-cols-2 gap-4'>
+                <FormField
+                  control={form.control}
+                  name='level1'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Level 1</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='level2'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.level2')}</FormLabel>
-                    <Input placeholder={t('headers.level2')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name='level2'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Level 2</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='level3'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.level3')}</FormLabel>
-                    <Input placeholder={t('headers.level3')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='level4'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.level4')}</FormLabel>
-                    <Input placeholder={t('headers.level4')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='level5'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.level5')}</FormLabel>
-                    <Input placeholder={t('headers.level5')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name='level3'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Level 3</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='number'
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>{t('headers.number')}</FormLabel>
-                    <Input placeholder={t('headers.number')} {...field} {...fieldState} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name='level4'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Level 4</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='level5'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Level 5</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='number'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Number</FormLabel>
+                      <FormControl>
+                        <Input type='text' {...field} {...fieldState} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name='address'
@@ -162,6 +177,48 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
                   </FormItem>
                 )}
               />
+
+              <div className='grid grid-cols-2 gap-4'>
+                <FormField
+                  control={form.control}
+                  name='latitude'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Latitude</FormLabel>
+                      <Input
+                        type='number'
+                        step='any'
+                        placeholder='-90 to 90'
+                        {...field}
+                        {...fieldState}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='longitude'
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Longitude</FormLabel>
+                      <Input
+                        type='number'
+                        step='any'
+                        placeholder='-180 to 180'
+                        {...field}
+                        {...fieldState}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <DialogFooter>
                 <DialogClose asChild>

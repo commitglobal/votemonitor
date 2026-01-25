@@ -275,6 +275,66 @@ export function ImportedPollingStationsDataTable({
       },
 
       {
+        accessorKey: 'latitude',
+        header: ({ column }) => <DataTableColumnHeader title='Latitude' column={column} />,
+        cell: ({ row }) =>
+          row.original.errors?.some((er) => er.path.some((path) => path === 'latitude')) ? (
+            <div className='border-b-2 border-red-500 h-full w-full flex justify-between'>
+              <span>{row.original.latitude ?? '-'}</span>
+
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                      <ExclamationTriangleIcon className='h-5 w-5 cursor-pointer text-red-500' />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className='flex flex-col'>
+                      {row.original.errors
+                        ?.filter((error) => error.path.some((path) => path === 'latitude'))
+                        .map((error, idx) => <div key={error.message}>{error.message}</div>)}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          ) : (
+            <div>{row.original.latitude ?? '-'}</div>
+          ),
+      },
+
+      {
+        accessorKey: 'longitude',
+        header: ({ column }) => <DataTableColumnHeader title='Longitude' column={column} />,
+        cell: ({ row }) =>
+          row.original.errors?.some((er) => er.path.some((path) => path === 'longitude')) ? (
+            <div className='border-b-2 border-red-500 h-full w-full flex justify-between'>
+              <span>{row.original.longitude ?? '-'}</span>
+
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className='underline cursor-pointer decoration-dashed hover:decoration-solid'>
+                      <ExclamationTriangleIcon className='h-5 w-5 cursor-pointer text-red-500' />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className='flex flex-col'>
+                      {row.original.errors
+                        ?.filter((error) => error.path.some((path) => path === 'longitude'))
+                        .map((error, idx) => <div key={error.message}>{error.message}</div>)}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          ) : (
+            <div>{row.original.longitude ?? '-'}</div>
+          ),
+      },
+
+      {
         accessorKey: 'errors',
         header: ({ column }) => <DataTableColumnHeader title='Number of errors' column={column} />,
         cell: ({ row }) =>

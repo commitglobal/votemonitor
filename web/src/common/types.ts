@@ -301,6 +301,8 @@ export interface PollingStation {
   address: string;
   displayOrder: number;
   tags?: Record<string, string>;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Location {
@@ -326,6 +328,8 @@ export const importPollingStationSchema = z
     number: z.string().min(1, 'Number is required'),
     displayOrder: z.coerce.number().catch(0),
     tags: z.record(z.string()).optional().catch({}),
+    latitude: z.coerce.number().min(-90).max(90).optional(),
+    longitude: z.coerce.number().min(-180).max(180).optional(),
   })
   .superRefine((val, ctx) => {
     if (isNilOrWhitespace(val.level2) && isNotNilOrWhitespace(val.level3)) {
