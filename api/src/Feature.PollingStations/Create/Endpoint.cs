@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 
@@ -7,6 +7,7 @@ namespace Feature.PollingStations.Create;
 public class Endpoint(
     VoteMonitorContext context,
     IRepository<ElectionRoundAggregate> electionRoundRepository,
+    IRepository<PollingStationAggregate> pollingStationRepository,
     ITimeProvider timeProvider,
     ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>>>
@@ -29,9 +30,36 @@ public class Endpoint(
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var userId = userProvider.GetUserId()!.Value;
+        var pollingStationIds = req.PollingStations
+            .Where(ps => ps.Id.HasValue)
+            .Select(ps => ps.Id!.Value)
+            .ToList();
 
-        var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(electionRound,
+        var groupedPollingStationIds = pollingStationIds.GroupBy(id => id, y => y,
+            (id, duplicates) => new { id, numberOfDuplicates = duplicates.Count() });
+
+        foreach (var groupedPollingStationId in groupedPollingStationIds)
+        {
+            if (groupedPollingStationId.numberOfDuplicates > 1)
+            {
+                AddError(new ValidationFailure(groupedPollingStationId.id.ToString(), "This id is duplicated"));
+            }
+        }
+
+        ThrowIfAnyErrors();
+
+        var pollingStationsWithIdsFromAnotherElections = await pollingStationRepository.ListAsync(
+            new GetPollingStationsByIdsInOtherElectionRoundsSpecification(electionRound.Id, pollingStationIds), ct);
+
+        foreach (var ps in pollingStationsWithIdsFromAnotherElections)
+        {
+            AddError(new ValidationFailure(ps.Id.ToString(), "This id is for a different PS in another election"));
+        }
+
+        ThrowIfAnyErrors();
+
+        var userId = userProvider.GetUserId()!.Value;
+        var pollingStations = req.PollingStations.Select(ps => PollingStationAggregate.Create(ps.Id, electionRound,
                 ps.Level1,
                 ps.Level2,
                 ps.Level3,
@@ -41,11 +69,13 @@ public class Endpoint(
                 ps.Address,
                 ps.DisplayOrder,
                 ps.Tags.ToTagsObject(),
+                ps.Latitude,
+                ps.Longitude,
                 timeProvider.UtcNow,
                 userId))
             .ToArray();
 
-        await context.BulkInsertAsync(pollingStations, cancellationToken: ct);
+        await context.BulkInsertOrUpdateAsync(pollingStations, cancellationToken: ct);
 
         electionRound.UpdatePollingStationsVersion();
 

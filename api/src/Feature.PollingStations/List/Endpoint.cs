@@ -35,6 +35,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
             Number = x.Number,
             Address = x.Address,
             DisplayOrder = x.DisplayOrder,
+            Latitude = x.Latitude,
+            Longitude = x.Longitude,
             Tags = x.Tags.ToDictionary()
         }).ToList();
 

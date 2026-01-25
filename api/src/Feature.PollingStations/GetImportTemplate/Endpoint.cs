@@ -16,7 +16,7 @@ public class Endpoint : EndpointWithoutRequest
     public override async Task HandleAsync(CancellationToken ct)
     {
         const string template = """
-                                "Level1", "Level2", "Level3", "Level4", "Level5", "Number", "Address", "DisplayOrder"
+                                "Level1", "Level2", "Level3", "Level4", "Level5", "Number", "Address", "DisplayOrder","Latitude", "Longitude", "Tag1", "Tag2", "Tag3"
                                 """;
 
         var stream = GenerateStreamFromString(template);
