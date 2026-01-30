@@ -122,7 +122,7 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader title={i18n.t('electionEvent.pollingStations.headers.coordinates')} column={column} />
     ),
-    accessorKey: 'tags',
+    accessorKey: 'coordinates',
     enableSorting: false,
     enableGlobalFilter: true,
     cell: ({
