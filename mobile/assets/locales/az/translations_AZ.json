@@ -383,7 +383,8 @@
       "manage_my_polling_stations": "Mənim seçki məntəqələrimin idarə edilməsi",
       "copy_polling_station_information": "Seçki məntəqəsi məlumatlarını mübadilə buferinə kopyala",
       "copy_success_toast": "Seçki məntəqəsi məlumatları mübadilə buferinə kopyalandı",
-      "copy_error_toast": "Seçki məntəqəsi məlumatlarını kopyalamaq mümkün olmadı"
+      "copy_error_toast": "Seçki məntəqəsi məlumatlarını kopyalamaq mümkün olmadı",
+      "navigate_to_polling_station": "Seçki məntəqəsinə keçid et"
     }
   },
   "polling_station_information_form": {

@@ -73,6 +73,7 @@
     "react-native-date-picker": "^5.0.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-map-link": "^3.11.0",
     "react-native-pager-view": "6.5.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-render-html": "^6.3.4",
