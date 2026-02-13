@@ -385,6 +385,13 @@
       "copy_success_toast": "Данные избирательного участка скопированы в буфер обмена",
       "copy_error_toast": "Не удалось скопировать данные избирательного участка",
       "navigate_to_polling_station": "Перейти к избирательному участку"
+    },
+    "navigate_to_polling_station": {
+      "title": "Перейти к избирательному участку",
+      "description": "Выберите приложение, чтобы проложить маршрут до избирательного участка.",
+      "actions": {
+        "cancel": "Отмена"
+      }
     }
   },
   "polling_station_information_form": {

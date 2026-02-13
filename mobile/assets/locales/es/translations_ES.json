@@ -387,6 +387,13 @@
       "copy_success_toast": "Los detalles de la estación de votación se copiaron al portapapeles",
       "copy_error_toast": "No se pudieron copiar los detalles de la estación de votación",
       "navigate_to_polling_station": "Navegar a la estación de votación"
+    },
+    "navigate_to_polling_station": {
+      "title": "Navegar a la estación de votación",
+      "description": "Seleccione una aplicación para obtener indicaciones para llegar al centro de votación.",
+      "actions": {
+        "cancel": "Cancelar"
+      }
     }
   },
   "polling_station_information_form": {

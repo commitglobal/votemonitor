@@ -384,6 +384,13 @@
       "copy_success_toast": "საარჩევნო უბნის დეტალები ბუფერში დაკოპირდა",
       "copy_error_toast": "საარჩევნო უბნის დეტალების კოპირება ვერ მოხერხდა",
       "navigate_to_polling_station": "საარჩევნო უბნაზე გადასვლა"
+    },
+    "navigate_to_polling_station": {
+      "title": "საარჩევნო უბნაზე გადასვლა",
+      "description": "აირჩიეთ რუკის აპი საარჩევნო უბნაზე გადასვლისთვის.",
+      "actions": {
+        "cancel": "გაუქმება"
+      }
     }
   },
   "polling_station_information_form": {

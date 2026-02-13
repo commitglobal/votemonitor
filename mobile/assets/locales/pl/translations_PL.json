@@ -387,6 +387,13 @@
       "copy_success_toast": "Dane komisji wyborczej zostały skopiowane do schowka",
       "copy_error_toast": "Nie udało się skopiować danych komisji wyborczej",
       "navigate_to_polling_station": "Przejść do komisji wyborczej"
+    },
+    "navigate_to_polling_station": {
+      "title": "Przejść do lokalu wyborczego",
+      "description": "Wybierz aplikację, aby uzyskać wskazówki dojazdu do lokalu wyborczego.",
+      "actions": {
+        "cancel": "Anuluj"
+      }
     }
   },
   "shit, you in the Polish numbers trap": {

@@ -388,6 +388,13 @@
       "copy_success_toast": "Detaliile secției de votare au fost copiate în clipboard",
       "copy_error_toast": "Nu s-au putut copia detaliile secției de votare",
       "navigate_to_polling_station": "Navighează către secția de votare"
+    },
+    "navigate_to_polling_station": {
+      "title": "Navighează către secția de votare",
+      "description": "Selectați o aplicație pentru a obține indicații către secția de votare.",
+      "actions": {
+        "cancel": "Renunță"
+      }
     }
   },
   "polling_station_information_form": {

@@ -388,6 +388,13 @@
       "copy_success_toast": "Polling station details was copied to clipboard",
       "copy_error_toast": "Failed to copy polling station details",
       "navigate_to_polling_station": "Navigate to polling station"
+    },
+    "navigate_to_polling_station": {
+      "title": "Navigate to polling station",
+      "description": "Select a map app to get directions to the polling station.",
+      "actions": {
+        "cancel": "Cancel"
+      }
     }
   },
   "polling_station_information_form": {

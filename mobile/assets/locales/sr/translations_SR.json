@@ -361,6 +361,13 @@
         "form_details_button_label": "Informacije o biračkom mestu.",
         "number_of_questions": "{{value}} pitanja",
         "answer_questions": "Odgovorite na pitanja"
+      },
+      "navigate_to_polling_station": {
+        "title": "Navegacija na biračko mesto",
+        "description": "Изаберите апликацију да бисте добили упутства до бирачког места.",
+        "actions": {
+          "cancel": "Otkaži"
+        }
       }
     },
     "forms": {

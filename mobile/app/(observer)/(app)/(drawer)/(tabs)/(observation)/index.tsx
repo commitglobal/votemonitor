@@ -3,9 +3,7 @@ import * as Clipboard from "expo-clipboard";
 import { router, useNavigation } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Popup
-} from 'react-native-map-link';
+import { Popup } from "react-native-map-link";
 import Toast from "react-native-toast-message";
 import { YStack } from "tamagui";
 import Header from "../../../../../../components/Header";
@@ -63,14 +61,14 @@ const Index = () => {
       .filter(Boolean)
       .join(" ");
 
-      return {
-        address: fullAddress,
-        latitude: selectedPollingStation.latitude,
-        longitude: selectedPollingStation.longitude,
-        dialogTitle: "dialog title",
-        dialogMessage: "dialog message",
-        cancelText: "cancel",
-      }
+    return {
+      address: fullAddress,
+      latitude: selectedPollingStation.latitude,
+      longitude: selectedPollingStation.longitude,
+      dialogTitle: t("navigate_to_polling_station.title"),
+      dialogMessage: t("navigate_to_polling_station.description"),
+      cancelText: t("navigate_to_polling_station.actions.cancel"),
+    };
   }, [selectedPollingStation, visits]);
 
   const handleCopyPollingStationInfo = async () => {
@@ -171,7 +169,7 @@ const Index = () => {
         </OptionsSheet>
       )}
 
-    <Popup
+      <Popup
         isVisible={openSelectNavigationAppSheet}
         setIsVisible={setOpenSelectNavigationAppSheet}
         onCancelPressed={() => setOpenSelectNavigationAppSheet(false)}
