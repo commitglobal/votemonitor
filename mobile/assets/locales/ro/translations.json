@@ -383,10 +383,7 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Vezi secțiile de votare vizitate",
-      "copy_polling_station_information": "Copiază detaliile secției de votare în clipboard",
-      "copy_success_toast": "Detaliile secției de votare au fost copiate în clipboard",
-      "copy_error_toast": "Nu s-au putut copia detaliile secției de votare"
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "polling_station_information_form": {

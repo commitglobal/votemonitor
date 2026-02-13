@@ -380,10 +380,7 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima",
-      "copy_polling_station_information": "Kopiraj podatke o biračkom mestu u međuspremnik",
-      "copy_success_toast": "Podaci o biračkom mestu su kopirani u međuspremnik",
-      "copy_error_toast": "Neuspešno kopiranje podataka o biračkom mestu"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "polling_station_information_form": {

@@ -383,10 +383,7 @@
             }
         },
         "options_menu": {
-            "manage_my_polling_stations": "Meine Wahllokale verwalten",
-            "copy_polling_station_information": "Details zum Wahllokal in die Zwischenablage kopieren",
-            "copy_success_toast": "Die Details zum Wahllokal wurden in die Zwischenablage kopiert",
-            "copy_error_toast": "Die Details zum Wahllokal konnten nicht kopiert werden"
+            "manage_my_polling_stations": "Meine Wahllokale verwalten"
         }
     },
     "polling_station_information_form": {
