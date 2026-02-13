@@ -171,10 +171,10 @@ const PollingStationQuestionnaire = () => {
             }));
             return mappedSelections?.length
               ? ({
-                  $answerType: "multiSelectAnswer",
-                  questionId,
-                  selection: mappedSelections,
-                } as ApiFormAnswer)
+                $answerType: "multiSelectAnswer",
+                questionId,
+                selection: mappedSelections,
+              } as ApiFormAnswer)
               : undefined;
           }
           default:

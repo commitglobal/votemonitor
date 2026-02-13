@@ -101,7 +101,10 @@ const Index = () => {
 
       {openContextualMenu && (
         <OptionsSheet open setOpen={setOpenContextualMenu}>
-          <YStack paddingHorizontal="$sm" gap="$xxs">
+          <YStack
+            paddingHorizontal="$sm"
+            gap="$xxs"
+          >
             <Typography
               preset="body1"
               color="$gray7"
@@ -110,8 +113,7 @@ const Index = () => {
               onPress={() => {
                 setOpenContextualMenu(false);
                 router.push("/manage-polling-stations");
-              }}
-            >
+              }}>
               {t("options_menu.manage_my_polling_stations")}
             </Typography>
             <Typography
@@ -119,8 +121,7 @@ const Index = () => {
               color="$gray7"
               paddingVertical="$xs"
               lineHeight={24}
-              onPress={handleCopyPollingStationInfo}
-            >
+              onPress={handleCopyPollingStationInfo}>
               {t("options_menu.copy_polling_station_information")}
             </Typography>
           </YStack>
