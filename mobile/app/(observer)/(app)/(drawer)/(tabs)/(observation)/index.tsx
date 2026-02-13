@@ -71,14 +71,6 @@ const Index = () => {
         dialogMessage: "dialog message",
         cancelText: "cancel",
       }
-
-    //   address: fullAddress,
-    //   latitude: selectedPollingStation.latitude,
-    //   longitude: selectedPollingStation.longitude,
-    //   dialogTitle: "dialog title",
-    //   dialogMessage: "dialog message",
-    //   cancelText: "cancel",
-    // });
   }, [selectedPollingStation, visits]);
 
   const handleCopyPollingStationInfo = async () => {
