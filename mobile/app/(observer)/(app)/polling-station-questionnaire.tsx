@@ -93,10 +93,8 @@ const PollingStationQuestionnaire = () => {
   });
 
   const currentLanguage = useMemo(() => {
-    const activeLanguage = language
-      ? language.toLocaleUpperCase()
-      : i18n.language.toLocaleUpperCase();
-
+    const activeLanguage = language ? language.toLocaleUpperCase() : i18n.language.toLocaleUpperCase();
+    
     if (
       formStructure &&
       formStructure?.defaultLanguage &&
@@ -298,7 +296,9 @@ const PollingStationQuestionnaire = () => {
   const onConfirmFormLanguage = (formId: string, language: string) => {
     setFormLanguagePreference({ formId, language });
 
-    router.replace(`/polling-station-questionnaire?language=${language}`);
+    router.replace(
+      `/polling-station-questionnaire?language=${language}`,
+    );
     setIsChangeLanguageModalOpen(false);
   };
 
@@ -607,15 +607,15 @@ const PollingStationQuestionnaire = () => {
           />
         )}
 
-        {isChangeLanguageModalOpen && formStructure?.languages && (
-          <ChangeLanguageDialog
-            currentLanguage={currentLanguage}
-            formId={formStructure?.id as string}
-            languages={formStructure.languages}
-            onCancel={setIsChangeLanguageModalOpen.bind(null, false)}
-            onSelectLanguage={onConfirmFormLanguage}
-          />
-        )}
+{isChangeLanguageModalOpen && formStructure?.languages && (
+        <ChangeLanguageDialog
+          currentLanguage={currentLanguage}
+          formId={formStructure?.id as string}
+          languages={formStructure.languages}
+          onCancel={setIsChangeLanguageModalOpen.bind(null, false)}
+          onSelectLanguage={onConfirmFormLanguage}
+        />
+      )}
       </Screen>
 
       <XStack
@@ -655,11 +655,14 @@ const OptionSheetContent = ({
 
   return (
     <View paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
+      <Typography preset="body1" paddingVertical="$xs" onPress={onChangeLanguagePress}>
+        {t("menu.change_language")}
+      </Typography>
       <Typography
         preset="body1"
-        color={disableMarkAsDone ? "$gray3" : "$gray9"}
-        paddingVertical="$xs"
+        color={disableMarkAsDone ? "$gray3" : "$gray7"}
         lineHeight={24}
+        paddingVertical="$xs"
         onPress={() => {
           onSetCompletion(!isCompleted);
         }}
@@ -669,10 +672,13 @@ const OptionSheetContent = ({
           ? t("forms.mark_as_done", { ns: "common" })
           : t("forms.mark_as_in_progress", { ns: "common" })}
       </Typography>
-      <Typography preset="body1" paddingVertical="$xs" onPress={onChangeLanguagePress}>
-        {t("menu.change_language")}
-      </Typography>
-      <Typography preset="body1" color="$red10" paddingVertical="$xs" onPress={onClear}>
+      <Typography
+        preset="body1"
+        color="$gray7"
+        lineHeight={24}
+        paddingVertical="$xs"
+        onPress={onClear}
+      >
         {t("menu.clear")}
       </Typography>
     </View>
