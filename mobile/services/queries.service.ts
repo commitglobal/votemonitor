@@ -211,8 +211,6 @@ export const usePollingStationByParentID = (
               number: item.pollingStationNumber,
               parentId: item.parentId,
               pollingStationId: item.pollingStationId,
-              latitude: item.latitude,
-              longitude: item.longitude,
             }));
             return mapped;
           }
@@ -236,8 +234,6 @@ export const pollingStationByIdQueryFn = async (pollingStationId: string) => {
     number: data.pollingStationNumber,
     parentId: data.parentId,
     pollingStationId: data.pollingStationId,
-    latitude: data.latitude,
-    longitude: data.longitude,
   };
   return mapped;
 };

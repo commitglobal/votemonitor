@@ -379,12 +379,8 @@
         "error": "Խնդրում ենք ընտրել տարբերակներից մեկը"
       }
     },
-   "options_menu": {
-      "manage_my_polling_stations": "Կառավարել իմ ընտրատեղամասերը",
-      "copy_polling_station_information": "Պատճենել ընտրատեղամասի տվյալները սեղմատախտակին",
-      "copy_success_toast": "Ընտրատեղամասի տվյալները պատճենվել են սեղմատախտակին",
-      "copy_error_toast": "Չհաջողվեց պատճենել ընտրատեղամասի տվյալները",
-      "navigate_to_polling_station": "Ուղղորդվել դեպի ընտրատեղամաս"
+    "options_menu": {
+      "manage_my_polling_stations": "Իմ ընտրատեղամասերի կառավարումը"
     }
   },
   "polling_station_information_form": {

@@ -6,7 +6,7 @@ export enum DB_TABLE_NAMES {
 }
 
 export const schema = appSchema({
-  version: 20,
+  version: 19,
   tables: [
     tableSchema({
       name: DB_TABLE_NAMES.POLLING_STATIONS_NOMENCLATOR,
@@ -17,8 +17,6 @@ export const schema = appSchema({
         { name: "polling_station_id", type: "string", isOptional: true },
         { name: "polling_station_number", type: "string", isOptional: true },
         { name: "parent_id", type: "number", isOptional: true },
-        { name: "latitude", type: "number", isOptional: true },
-        { name: "longitude", type: "number", isOptional: true },
       ],
     }),
     tableSchema({

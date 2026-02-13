@@ -386,8 +386,7 @@
       "manage_my_polling_stations": "Manage my polling stations",
       "copy_polling_station_information": "Copy polling station details to clipboard",
       "copy_success_toast": "Polling station details was copied to clipboard",
-      "copy_error_toast": "Failed to copy polling station details",
-      "navigate_to_polling_station": "Navigate to polling station"
+      "copy_error_toast": "Failed to copy polling station details"
     }
   },
   "polling_station_information_form": {

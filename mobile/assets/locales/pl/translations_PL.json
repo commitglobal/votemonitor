@@ -385,8 +385,7 @@
       "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi",
       "copy_polling_station_information": "Skopiuj dane komisji wyborczej do schowka",
       "copy_success_toast": "Dane komisji wyborczej zostały skopiowane do schowka",
-      "copy_error_toast": "Nie udało się skopiować danych komisji wyborczej",
-      "navigate_to_polling_station": "Przejść do komisji wyborczej"
+      "copy_error_toast": "Nie udało się skopiować danych komisji wyborczej"
     }
   },
   "shit, you in the Polish numbers trap": {
