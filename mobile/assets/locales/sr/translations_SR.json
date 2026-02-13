@@ -365,9 +365,7 @@
       "navigate_to_polling_station": {
         "title": "Navegacija na biračko mesto",
         "description": "Изаберите апликацију да бисте добили упутства до бирачког места.",
-        "actions": {
-          "cancel": "Otkaži"
-        }
+        "cancel": "Otkaži"
       }
     },
     "forms": {

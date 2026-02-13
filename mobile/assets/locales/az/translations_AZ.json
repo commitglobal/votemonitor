@@ -389,9 +389,7 @@
     "navigate_to_polling_station": {
       "title": "Seçki məntəqəsinə keçid et",
       "description": "Seçki məntəqəsinə istiqamətləri almaq üçün tətbiq seçin.",
-      "actions": {
-        "cancel": "Ləğv etmək"
-      }
+      "cancel": "Ləğv etmək"
     }
   },
   "polling_station_information_form": {

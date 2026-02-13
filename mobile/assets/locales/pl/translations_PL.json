@@ -391,9 +391,7 @@
     "navigate_to_polling_station": {
       "title": "Przejść do lokalu wyborczego",
       "description": "Wybierz aplikację, aby uzyskać wskazówki dojazdu do lokalu wyborczego.",
-      "actions": {
-        "cancel": "Anuluj"
-      }
+      "cancel": "Anuluj"
     }
   },
   "shit, you in the Polish numbers trap": {

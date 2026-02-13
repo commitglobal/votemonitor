@@ -388,9 +388,7 @@
     "navigate_to_polling_station": {
       "title": "საარჩევნო უბნაზე გადასვლა",
       "description": "აირჩიეთ რუკის აპი საარჩევნო უბნაზე გადასვლისთვის.",
-      "actions": {
-        "cancel": "გაუქმება"
-      }
+      "cancel": "გაუქმება"
     }
   },
   "polling_station_information_form": {

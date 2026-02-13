@@ -392,9 +392,7 @@
     "navigate_to_polling_station": {
       "title": "Navighează către secția de votare",
       "description": "Selectați o aplicație pentru a obține indicații către secția de votare.",
-      "actions": {
-        "cancel": "Renunță"
-      }
+      "cancel": "Renunță"
     }
   },
   "polling_station_information_form": {

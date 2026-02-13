@@ -391,9 +391,7 @@
     "navigate_to_polling_station": {
       "title": "Navegar a la estación de votación",
       "description": "Seleccione una aplicación para obtener indicaciones para llegar al centro de votación.",
-      "actions": {
-        "cancel": "Cancelar"
-      }
+      "cancel": "Cancelar"
     }
   },
   "polling_station_information_form": {

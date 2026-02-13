@@ -389,9 +389,7 @@
     "navigate_to_polling_station": {
       "title": "Ուղղորդվել դեպի ընտրատեղամաս",
       "description": "Ընտրեք հավելված՝ ընտրատեղամաս տանող ուղղությունները ստանալու համար:",
-      "actions": {
-        "cancel": "Չեղարկել"
-      }
+      "cancel": "Չեղարկել"
     }
   },
   "polling_station_information_form": {
