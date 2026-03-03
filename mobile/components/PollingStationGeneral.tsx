@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
@@ -16,8 +17,6 @@ import PollingStationInfoDefault from "./PollingStationInfoDefault";
 import { PSITime } from "./PSITime";
 import SelectFormLanguageDialogContent from "./SelectFormLanguageDialogContent";
 import { Typography } from "./Typography";
-import { useState } from "react";
-import { deleteSecureStoreItemAsync } from "../helpers/SecureStoreWrapper";
 
 interface PollingStationGeneralProps {
   psiData: PollingStationInformationAPIResponse | null | undefined;
