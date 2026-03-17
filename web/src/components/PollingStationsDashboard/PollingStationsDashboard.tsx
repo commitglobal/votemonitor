@@ -20,9 +20,9 @@ import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router'
 import { useDebounce } from '@uidotdev/usehooks';
 import { Plus } from 'lucide-react';
 import { useCallback, useContext, useMemo, useState, type ReactElement } from 'react';
+import { toast } from 'sonner';
 import { PollingStationDataTableRowActions } from '../PollingStationDataTableRowActions/PollingStationDataTableRowActions';
 import { useDialog } from '../ui/use-dialog';
-import { useToast } from '../ui/use-toast';
 import { pollingStationColDefs } from './column-defs';
 import CreatePollingStationDialog from './CreatePollingStationDialog';
 import { useDeletePollingStationMutation, usePollingStations, useUpdatePollingStationMutation } from './hooks';
@@ -32,7 +32,6 @@ export default function PollingStationsDashboard(): ReactElement {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   const { userRole } = useContext(AuthContext);
-  const { toast } = useToast();
   const router = useRouter();
   const { mutate: deletePollingStationMutation } = useDeletePollingStationMutation();
   const { mutate: updatePollingStationMutation } = useUpdatePollingStationMutation();
@@ -47,15 +46,11 @@ export default function PollingStationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Polling station deleted',
-          });
+          toast('Polling station deleted');
         },
         onError: () =>
-          toast({
-            title: 'Error occured when deleting polling station',
-            variant: 'destructive',
+          toast.error('Error occured when deleting polling station',{
+            description: 'Please contact tech support',
           }),
       }),
     [currentElectionRoundId, deletePollingStationMutation]
@@ -71,15 +66,11 @@ export default function PollingStationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Polling station updated',
-          });
+          toast('Polling station updated');
         },
         onError: () =>
-          toast({
-            title: 'Error occured when updating polling station',
-            variant: 'destructive',
+          toast.error('Error occured when updating polling station',{
+            description: 'Please contact tech support',
           }),
       }),
     [currentElectionRoundId, updatePollingStationMutation]

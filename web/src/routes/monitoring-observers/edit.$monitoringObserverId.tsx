@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import { getMonitoringObserverDetails } from '@/api/monitoring-observers/get-monitoring-observer-details';
 import EditMonitoringObserver from '@/features/monitoring-observers/components/EditMonitoringObserver/EditMonitoringObserver';
 import { monitoringObserversKeys } from '@/features/monitoring-observers/hooks/monitoring-observers-queries';
 import { MonitoringObserver } from '@/features/monitoring-observers/models/monitoring-observer';
@@ -10,15 +10,7 @@ export const monitoringObserverDetailsQueryOptions = (electionRoundId: string, m
   return queryOptions({
     queryKey: monitoringObserversKeys.detail(electionRoundId, monitoringObserverId),
     queryFn: async () => {
-      const response = await authApi.get<MonitoringObserver>(
-        `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserverId}`
-      );
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch monitoring observer details');
-      }
-
-      return response.data;
+      return getMonitoringObserverDetails(electionRoundId, monitoringObserverId);
     },
     enabled: !!electionRoundId,
   });

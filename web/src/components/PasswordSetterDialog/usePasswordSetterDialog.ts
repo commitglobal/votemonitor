@@ -1,15 +1,11 @@
 import { authApi } from '@/common/auth-api';
-import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
-import { ProblemDetails } from '@/common/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { useDialog } from '../ui/use-dialog';
-import { toast } from '../ui/use-toast';
-
 const passwordSetterSchema = z
   .object({
     newPassword: z.string().min(8, 'Password must be at least 8 characters long'),
@@ -70,18 +66,11 @@ export const usePasswordSetterDialog = () => {
     onSuccess: () => {
       form.reset({});
       internalOnOpenChange(false);
-      toast({
-        title: 'Success',
-        description: 'Password set',
-      });
+      toast('Password set');
     },
-
-    onError: (error: AxiosError<ProblemDetails>) => {
-      addFormValidationErrorsFromBackend<PasswordSetterFormData>(form, error);
-      toast({
-        title: 'Error setting password',
-        description: 'Please contact Platform admins',
-        variant: 'destructive',
+    onError: () => {
+      toast.error('Error setting password',{
+        description: 'Please contact tech support',
       });
     },
   });

@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import { getElectionEvent } from '@/api/election-event/get-election-event';
 import { queryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { electionRoundKeys } from '@/features/election-rounds/queries';
@@ -12,11 +12,7 @@ export const electionRoundDetailsQueryOptions = (electionRoundId: string) => {
   return queryOptions({
     queryKey: electionRoundKeys.detail(electionRoundId!),
     queryFn: async () => {
-      const response = await authApi.get<ElectionEvent>(`/election-rounds/${electionRoundId}`);
-
-      return {
-        ...response.data,
-      };
+      return getElectionEvent(electionRoundId);
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,

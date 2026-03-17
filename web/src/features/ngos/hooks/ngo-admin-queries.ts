@@ -2,7 +2,6 @@ import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import {
   queryOptions,
   useMutation,
@@ -13,6 +12,7 @@ import {
 } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import axios, { AxiosError } from 'axios';
+import { toast } from 'sonner';
 import { EditNgoAdminFormData, NgoAdmin, NgoAdminFormData, NgoAdminGetRequestParams } from '../models/NgoAdmin';
 import { ngosKeys } from './ngos-queries';
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
@@ -114,10 +114,8 @@ export const useNgoAdminMutations = (ngoId: string) => {
       navigate({ to: '/ngos/admin/$ngoId/$adminId/view', params: { ngoId, adminId } });
     },
     onError: () => {
-      toast({
-        title: 'Error editing NGO admin',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error editing NGO admin',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -131,19 +129,14 @@ export const useNgoAdminMutations = (ngoId: string) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO admin was deleted successfully',
-      });
+      toast('NGO admin was deleted successfully');
 
       if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
-      toast({
-        title: 'Error deleting NGO admin',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error deleting NGO admin',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -157,17 +150,12 @@ export const useNgoAdminMutations = (ngoId: string) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO admin was deactivated successfully',
-      });
+      toast('NGO admin was deactivated successfully');
     },
 
     onError: () => {
-      toast({
-        title: 'Error deactivating the NGO admin',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error deactivating the NGO admin',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -181,17 +169,12 @@ export const useNgoAdminMutations = (ngoId: string) => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO admin was activated successfully',
-      });
+      toast('NGO admin was activated successfully');
     },
 
     onError: () => {
-      toast({
-        title: 'Error activating the NGO admin',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error activating the NGO admin',{
+        description: 'Please contact tech support',
       });
     },
   });

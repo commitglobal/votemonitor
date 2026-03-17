@@ -1,25 +1,25 @@
 import { FunctionComponent, importPollingStationSchema } from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { z, ZodIssue } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
 import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { ArrowDownTrayIcon, DocumentTextIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon, CheckCircleIcon, DocumentTextIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { LoaderIcon, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { ImportedPollingStationsDataTable } from './ImportedPollingStationsDataTable';
 
 export type ImportPollingStationRow = z.infer<typeof importPollingStationSchema> & { errors?: ZodIssue[] };
@@ -29,7 +29,6 @@ export function PollingStationsImport(): FunctionComponent {
   const { t } = useTranslation('translation', { keyPrefix: 'electionEvent.pollingStations.addPollingStation' });
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   function deletePollingStation(pollingStation: ImportPollingStationRow) {
     setPollingStations((prev) => [...prev.filter((obs) => obs.id !== pollingStation.id)]);
@@ -72,19 +71,13 @@ export function PollingStationsImport(): FunctionComponent {
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
-
+      toast(t('onSuccess'));
       queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(electionRoundId) });
       navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId } });
     },
     onError: () => {
-      toast({
-        title: t('onError'),
+      toast.error(t('onError'),{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -149,10 +142,8 @@ export function PollingStationsImport(): FunctionComponent {
                     transformHeader: (header) => header.charAt(0).toLowerCase() + header.slice(1),
                     async complete(results) {
                       if (results.errors.length) {
-                        toast({
-                          title: 'Parsing errors',
+                        toast.error('Parsing errors', {
                           description: 'Please check the file and try again',
-                          variant: 'destructive',
                         });
                       }
 

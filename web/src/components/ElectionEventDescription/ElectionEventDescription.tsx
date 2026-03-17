@@ -11,17 +11,17 @@ import {
   useUnstartElectionRound,
 } from '@/features/election-rounds/hooks';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { ArchiveIcon, FileEdit, PlayIcon } from 'lucide-react';
 import { useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from "sonner";
 import { electionRoundDetailsQueryOptions } from '../../features/election-event/hooks/election-event-hooks';
 import CoalitionDescription from '../CoalitionDescription/CoalitionDescription';
 import ElectionRoundStatusBadge from '../ElectionRoundStatusBadge/ElectionRoundStatusBadge';
 import { useConfirm } from '../ui/alert-dialog-provider';
 import { Button } from '../ui/button';
-import { useToast } from '../ui/use-toast';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 export default function ElectionEventDescription() {
   const { t } = useTranslation();
@@ -30,7 +30,6 @@ export default function ElectionEventDescription() {
 
   const { userRole } = useContext(AuthContext);
 
-  const { toast } = useToast();
   const confirm = useConfirm();
 
   const router = useRouter(); 
@@ -52,15 +51,11 @@ export default function ElectionEventDescription() {
         onSuccess: () => {
           router.invalidate();
 
-          toast({
-            title: 'Election round archived successfully',
-          });
+          toast('Election round archived successfully');
         },
         onError: () =>
-          toast({
-            title: 'Error archiving election round',
+          toast.error('Error archiving election round',{
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -78,16 +73,12 @@ export default function ElectionEventDescription() {
         onSuccess: () => {
           router.invalidate();
 
-          toast({
-            title: 'Election round drafted successfully',
-          });
+          toast('Election round drafted successfully');
         },
         onError: () => {
           router.invalidate();
-          toast({
-            title: 'Error drafting election round',
+          toast.error('Error drafting election round',{
             description: 'Please contact tech support',
-            variant: 'destructive',
           });
         },
       });
@@ -105,15 +96,11 @@ export default function ElectionEventDescription() {
         electionRoundId: electionEvent!.id,
         onSuccess: () => {
           router.invalidate();
-          toast({
-            title: 'Election round unarchived successfully',
-          });
+          toast('Election round unarchived successfully');
         },
         onError: () =>
-          toast({
-            title: 'Error unarchiving election round',
+          toast.error('Error unarchiving election round',{
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }
@@ -130,15 +117,11 @@ export default function ElectionEventDescription() {
         electionRoundId: electionEvent!.id,
         onSuccess: () => {
           router.invalidate();
-          toast({
-            title: 'Election round started successfully',
-          });
+          toast('Election round started successfully');
         },
         onError: () =>
-          toast({
-            title: 'Error starting election round',
+          toast.error('Error starting election round',{
             description: 'Please contact tech support',
-            variant: 'destructive',
           }),
       });
     }

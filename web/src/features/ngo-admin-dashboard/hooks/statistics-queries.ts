@@ -1,7 +1,7 @@
-import { authApi } from '@/common/auth-api';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { MonitoringNgoStats } from '../models/ngo-admin-statistics-models';
 import { DataSources } from '@/common/types';
+import { getElectionRoundStatistics } from '@/api/election-rounds/get-election-round-statistics';
 
 
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
@@ -19,9 +19,7 @@ export function useElectionRoundStatistics(
   return useQuery({
     queryKey: statisticsCacheKey.all(electionRoundId, dataSource),
     queryFn: async () => {
-      const response = await authApi.get<MonitoringNgoStats>(`/election-rounds/${electionRoundId}/statistics?dataSource=${dataSource}`);
-
-      return response.data;
+      return getElectionRoundStatistics(electionRoundId, dataSource);
     },
     refetchOnMount: false,
     staleTime: STALE_TIME,

@@ -43,6 +43,8 @@
   --hljs-name: rgb(37, 151, 146);
   --hljs-selector-tag: rgb(200, 80, 15);
   --hljs-number: rgb(61, 160, 103);
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
 }
 
 .minimal-tiptap-editor .ProseMirror :focus {
