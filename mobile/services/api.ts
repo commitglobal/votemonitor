@@ -29,7 +29,7 @@ import { setAuthTokens } from "../helpers/authTokensSetter";
  *    - Redirects to login
  */
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+const API_BASE_URL = 'https://api.votemonitor.org/api/';
 
 const TIMEOUT = 60 * 1000; // 60 seconds
 

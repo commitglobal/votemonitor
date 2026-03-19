@@ -20,4 +20,10 @@ export class PollingStationsNom extends Model {
 
   // @ts-ignore
   @field("parent_id") parentId?: number;
+
+  // @ts-ignore
+  @field("latitude") latitude?: number;
+
+  // @ts-ignore
+  @field("longitude") longitude?: number;
 }

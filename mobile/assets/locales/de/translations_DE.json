@@ -308,8 +308,8 @@
             "observation_time": {
                 "observation_time": "Beobachtungszeit",
                 "not_defined": "Nicht definiert",
-                "no_of_breaks": "{{Wert}} Unterbrechungen",
-                "one_break": "{{Wert}} Unterbrechung",
+                "no_of_breaks": "{{value}} Unterbrechungen",
+                "one_break": "{{value}} Unterbrechung",
                 "arrival_and_departure": "Ankunftszeit und Zeitpunkt des Aufbruchs",
                 "arrival_time": "Ankunftszeit",
                 "departure_time": "Zeitpunkt des Aufbruchs",
@@ -317,7 +317,7 @@
                 "select_arrival_time": "Ankunftszeit auswählen",
                 "select_departure_time": "Zeitpunkt des Aufbruchs auswählen",
                 "add_break": "Neue Pause in Beobachtung hinzufügen",
-                "break": "Pause {{Wert}}",
+                "break": "Pause {{value}}",
                 "start_time": "Startzeit",
                 "select_start_time": "Startzeit auswählen",
                 "end_time": "Endzeitpunkt",
@@ -383,7 +383,16 @@
             }
         },
         "options_menu": {
-            "manage_my_polling_stations": "Meine Wahllokale verwalten"
+            "manage_my_polling_stations": "Meine Wahllokale verwalten",
+            "copy_polling_station_information": "Details zum Wahllokal in die Zwischenablage kopieren",
+            "copy_success_toast": "Die Details zum Wahllokal wurden in die Zwischenablage kopiert",
+            "copy_error_toast": "Die Details zum Wahllokal konnten nicht kopiert werden",
+            "navigate_to_polling_station": "Zur Wahllokal-Ansicht wechseln"
+        },
+        "navigate_to_polling_station": {
+          "title": "Zum Wahllokal navigieren",
+          "description": "Wählen Sie eine Karten-App, um eine Wegbeschreibung zum Wahllokal zu erhalten.",
+          "cancel": "Abbrechen"
         }
     },
     "polling_station_information_form": {

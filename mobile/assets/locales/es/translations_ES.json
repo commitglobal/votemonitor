@@ -382,12 +382,16 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Gestionar mis estaciones de votación"
-    }
-  },
-  "shit, you in the Polish numbers trap": {
-    " in Polish: 1 przerwa; 2-4 przerwy; 5-21 przerw; 22-24 przerwy; 25-31 przerw;": {
-      "  🫠": "Hora de llegada y salida"
+      "manage_my_polling_stations": "Gestionar mis estaciones de votación",
+      "copy_polling_station_information": "Copiar los detalles de la estación de votación al portapapeles",
+      "copy_success_toast": "Los detalles de la estación de votación se copiaron al portapapeles",
+      "copy_error_toast": "No se pudieron copiar los detalles de la estación de votación",
+      "navigate_to_polling_station": "Navegar a la estación de votación"
+    },
+    "navigate_to_polling_station": {
+      "title": "Navegar a la estación de votación",
+      "description": "Seleccione una aplicación para obtener indicaciones para llegar al centro de votación.",
+      "cancel": "Cancelar"
     }
   },
   "polling_station_information_form": {

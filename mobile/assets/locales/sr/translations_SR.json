@@ -361,6 +361,11 @@
         "form_details_button_label": "Informacije o biračkom mestu.",
         "number_of_questions": "{{value}} pitanja",
         "answer_questions": "Odgovorite na pitanja"
+      },
+      "navigate_to_polling_station": {
+        "title": "Navegacija na biračko mesto",
+        "description": "Изаберите апликацију да бисте добили упутства до бирачког места.",
+        "cancel": "Otkaži"
       }
     },
     "forms": {
@@ -380,7 +385,11 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima",
+      "copy_polling_station_information": "Kopiraj podatke o biračkom mestu u međuspremnik",
+      "copy_success_toast": "Podaci o biračkom mestu su kopirani u međuspremnik",
+      "copy_error_toast": "Neuspešno kopiranje podataka o biračkom mestu",
+      "navigate_to_polling_station": "Preći na biračko mesto"
     }
   },
   "polling_station_information_form": {
