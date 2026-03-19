@@ -5,21 +5,21 @@ import { FileUploader } from '@/components/ui/file-uploader';
 import { Separator } from '@/components/ui/separator';
 import Papa from 'papaparse';
 import { useMemo, useState } from 'react';
-import { ZodIssue, ZodIssueCode, z } from 'zod';
+import { z, ZodIssue, ZodIssueCode } from 'zod';
 
-import { authApi } from '@/common/auth-api';
+import { createMonitoringObservers } from '@/api/monitoring-observers/create-monitoring-observers';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { downloadImportExample, TemplateType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { LoaderIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { ImportedObserversDataTable } from './ImportedObserversDataTable';
-import { downloadImportExample, TemplateType } from '@/lib/utils';
 
 export const importObserversSchema = z.object({
   firstName: z
@@ -37,6 +37,7 @@ export const importObserversSchema = z.object({
       message: 'Invalid email format.',
     }),
   phoneNumber: z.string().max(256, { message: 'Phone number cannot exceed 256 characters.' }).optional(),
+  tags: z.array(z.string()).default([]),
 });
 
 export type ImportObserverRow = z.infer<typeof importObserversSchema> & { id: string; errors: ZodIssue[] };
@@ -68,23 +69,17 @@ export function MonitoringObserversImport(): FunctionComponent {
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ electionRoundId, observers }: { electionRoundId: string; observers: ImportObserverRow[] }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers });
+      return createMonitoringObservers(electionRoundId, observers);
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
-
+      toast(t('onSuccess'));
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       navigate({ to: '/monitoring-observers' });
     },
     onError: () => {
-      toast({
-        title: t('onError'),
+      toast.error(t('onError'), {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

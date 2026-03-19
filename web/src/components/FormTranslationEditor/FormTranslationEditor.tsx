@@ -33,6 +33,16 @@ import { useBlocker } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { EditFormType, ZEditFormType } from '../FormEditor/FormEditor';
 import FormDetailsTranslationEditor from './FormDetailsTranslationEditor';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 
 export interface FormTranslationEditorProps {
   formData: FormFull | FormTemplateFull;
@@ -224,30 +234,15 @@ export default function FormTranslationEditor({
   }, [form.formState.isSubmitSuccessful, form.reset]);
 
   const isDirty = form.formState.isDirty;
+  const isSubmitSuccessful = form.formState.isSubmitSuccessful;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => isDirty,
+    shouldBlockFn: () => isDirty && !isSubmitSuccessful,
     withResolver: true,
   });
 
-  useEffect(() => {
-    if (status === 'blocked') {
-      confirm({
-        title: `Unsaved Changes Detected`,
-        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-        actionButton: 'Leave',
-        cancelButton: 'Stay',
-      }).then((confirmed) => {
-        if (confirmed) {
-          proceed();
-        } else {
-          reset();
-        }
-      });
-    }
-  }, [status, confirm, proceed, reset]);
-
   return (
+    <>
     <Form {...form}>
       <form
         className='flex flex-col flex-1'
@@ -316,5 +311,26 @@ export default function FormTranslationEditor({
         </footer>
       </form>
     </Form>
+    <AlertDialog open={status === 'blocked'} onOpenChange={(open) => {
+        if (!open) reset?.()
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => reset?.()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => proceed?.()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

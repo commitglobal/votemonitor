@@ -21,7 +21,6 @@ import { Input } from '@/components/ui/input';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
@@ -45,6 +44,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { difference } from 'lodash';
 import { useMemo, useState, type ReactElement } from 'react';
+import { toast } from 'sonner';
 import { NgoFormBase } from '../../models';
 import { formsKeys, useForms } from '../../queries';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
@@ -598,11 +598,7 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Translation deleted',
-      });
-
+      toast('Translation deleted');
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
     },
@@ -637,11 +633,7 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: async (_, { electionRoundId, newLanguages, originalLanguages }) => {
-      toast({
-        title: 'Success',
-        description: 'Translations added',
-      });
-
+      toast('Translations added');
       addTranslationsDialog.dismiss();
 
       const addedLanguages = difference(newLanguages, originalLanguages);
@@ -673,10 +665,7 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form published',
-      });
+      toast( 'Form published');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
@@ -685,18 +674,14 @@ export default function FormsDashboard(): ReactElement {
     onError: (error) => {
       // @ts-ignore
       if (error.response.status === 400) {
-        toast({
-          title: 'Error publishing form',
+        toast.error('Error publishing form',{
           description: 'You are missing translations. Please translate all fields and try again',
-          variant: 'destructive',
         });
 
         return;
       }
-      toast({
-        title: 'Error publishing form',
+      toast.error('Error publishing form',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -707,20 +692,15 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form obsoleted',
-      });
+      toast( 'Form obsoleted');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
     },
 
     onError: () => {
-      toast({
-        title: 'Error obsoleting form',
+      toast.error('Error obsoleting form',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -731,20 +711,15 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form duplicated',
-      });
+      toast('Form duplicated');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
     },
 
     onError: (error) => {
-      toast({
-        title: 'Error cloning form',
+      toast.error('Error cloning form',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
@@ -754,10 +729,7 @@ export default function FormsDashboard(): ReactElement {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}`);
     },
     onSuccess: async (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form deleted',
-      });
+      toast('Form deleted');
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
     },

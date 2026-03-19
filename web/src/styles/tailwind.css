@@ -67,3 +67,7 @@
 .breadcrumbs .crumb:last-child:after {
   display: none;
 }
+
+body {
+  @apply bg-background text-foreground;
+}

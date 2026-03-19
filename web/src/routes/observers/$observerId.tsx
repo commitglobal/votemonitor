@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import { getObserverDetails } from '@/api/observers/get-observer-details';
 import ObserverProfile from '@/features/observers/components/ObserverProfile/ObserverProfile';
 import { observersKeys } from '@/features/observers/hooks/observers-queries';
 import { Observer } from '@/features/observers/models/observer';
@@ -10,13 +10,7 @@ export const observerDetailsQueryOptions = (observerId: string) =>
   queryOptions({
     queryKey: observersKeys.detail(observerId),
     queryFn: async () => {
-      const response = await authApi.get<Observer>(`/observers/${observerId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch observer details');
-      }
-
-      return response.data;
+      return getObserverDetails(observerId);
     },
   });
 

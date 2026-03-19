@@ -1,17 +1,27 @@
-import { authApi } from '@/common/auth-api';
+import { updateCitizenGuide } from '@/api/election-event/update-citizen-guide';
+import { updateObserverGuide } from '@/api/election-event/update-observer-guide';
 import { FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker } from '@tanstack/react-router';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { citizenGuideDetailsQueryOptions, citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
 import { observerGuideDetailsQueryOptions, observerGuidesKeys } from '../../hooks/observer-guides-hooks';
@@ -36,14 +46,12 @@ export default function EditGuideForm({
 }: EditGuideFormProps): FunctionComponent {
   const queryClient = useQueryClient();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const confirm = useConfirm();
 
   const { data: guide } =
     guidePageType === GuidePageType.Observer
       ? useSuspenseQuery(observerGuideDetailsQueryOptions(currentElectionRoundId, guideId))
       : useSuspenseQuery(citizenGuideDetailsQueryOptions(currentElectionRoundId, guideId));
 
-  const { toast } = useToast();
 
   const editGuideFormSchema = z
     .object({
@@ -107,22 +115,22 @@ export default function EditGuideForm({
   const updateTextGuideMutation = useMutation({
     mutationFn: ({
       electionRoundId,
-      form,
+      guide,
       guideId,
     }: {
       electionRoundId: string;
-      form: EditGuideType;
+      guide: EditGuideType;
       guideId: string;
     }) => {
-      const url =
-        form.guidePageType === GuidePageType.Observer
-          ? `/election-rounds/${electionRoundId}/observer-guide/${guideId}`
-          : `/election-rounds/${electionRoundId}/citizen-guides/${guideId}`;
-      return authApi.put<void>(url, form);
+      if (guide.guidePageType === GuidePageType.Observer) {
+        return updateObserverGuide(electionRoundId, guideId, guide);
+      }
+
+      return updateCitizenGuide(electionRoundId, guideId, guide);
     },
 
-    onSuccess: (_, { electionRoundId, form }) => {
-      if (form.guidePageType === GuidePageType.Observer) {
+    onSuccess: (_, { electionRoundId, guide }) => {
+      if (guide.guidePageType === GuidePageType.Observer) {
         queryClient.invalidateQueries({ queryKey: observerGuidesKeys.all(electionRoundId) });
       } else {
         queryClient.invalidateQueries({ queryKey: citizenGuidesKeys.all(electionRoundId) });
@@ -130,19 +138,14 @@ export default function EditGuideForm({
 
       onSuccess?.();
 
-      toast({
-        title: 'Success',
-        description: 'Update was successful',
-      });
+      toast('Update was successful');
     },
 
     onError: () => {
       onError?.();
 
-      toast({
-        title: 'Error updating guide',
-        description: 'Please contact Platform admins',
-        variant: 'destructive',
+      toast.error('Error updating guide', {
+        description: 'Please contact tech support',
       });
     },
   });
@@ -150,93 +153,95 @@ export default function EditGuideForm({
   const isDirty = form.formState.isDirty;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => isDirty,
+  shouldBlockFn: () => isDirty,
     withResolver: true,
   });
 
-  useEffect(() => {
-    if (status === 'blocked') {
-      confirm({
-        title: `Unsaved Changes Detected`,
-        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-        actionButton: 'Leave',
-        cancelButton: 'Stay',
-      }).then((confirmed) => {
-        if (confirmed) {
-          proceed();
-        } else {
-          reset();
-        }
-      });
-    }
-  }, [status, confirm, proceed, reset]);
 
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful) {
-      form.reset({}, { keepValues: true });
-    }
-  }, [form.formState.isSubmitSuccessful, form.reset]);
-
-  function onSubmit(form: EditGuideType) {
-    updateTextGuideMutation.mutate({ electionRoundId: currentElectionRoundId, form, guideId });
+  async function onSubmit(guide: EditGuideType) {
+    await updateTextGuideMutation.mutateAsync({ electionRoundId: currentElectionRoundId, guide, guideId });
+    form.reset(form.getValues(), { keepValues: true, keepDirty: false, keepIsSubmitSuccessful: false });
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
-        <FormField
-          control={form.control}
-          name='title'
-          render={({ field, fieldState }) => (
-            <FormItem className='w-1/2'>
-              <FormLabel className='text-left'>
-                Title <span className='text-red-500'>*</span>
-              </FormLabel>
-              <FormControl>
-                <Input {...field} {...fieldState} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
+          <FormField
+            control={form.control}
+            name='title'
+            render={({ field, fieldState }) => (
+              <FormItem className='w-1/2'>
+                <FormLabel className='text-left'>
+                  Title <span className='text-red-500'>*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} {...fieldState} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {guide.guideType === GuideType.Website && (
+            <FormField
+              control={form.control}
+              name='websiteUrl'
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>
+                    Guide url <span className='text-red-500'>*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder='Guide url' {...field} {...fieldState} />
+                  </FormControl>
+                  <FormMessage className='mt-2' />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        {guide.guideType === GuideType.Website && (
-          <FormField
-            control={form.control}
-            name='websiteUrl'
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>
-                  Guide url <span className='text-red-500'>*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder='Guide url' {...field} {...fieldState} />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </FormItem>
-            )}
-          />
-        )}
 
-        {guide.guideType === GuideType.Text && (
-          <FormField
-            control={form.control}
-            name='text'
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>
-                  Text <span className='text-red-500'>*</span>
-                </FormLabel>
-                <FormControl>
-                  <RichTextEditor {...field} onValueChange={field.onChange} />
-                </FormControl>
-                <FormMessage className='mt-2' />
-              </FormItem>
-            )}
-          />
-        )}
+          {guide.guideType === GuideType.Text && (
+            <FormField
+              control={form.control}
+              name='text'
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>
+                    Text <span className='text-red-500'>*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <RichTextEditor {...field} onValueChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage className='mt-2' />
+                </FormItem>
+              )}
+            />
+          )}
 
-        {children}
-      </form>
-    </Form>
+          {children}
+        </form>
+      </Form>
+
+      <AlertDialog open={status === 'blocked'} onOpenChange={(open) => {
+        if (!open) reset?.()
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => reset?.()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => proceed?.()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

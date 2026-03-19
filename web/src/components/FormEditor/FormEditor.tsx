@@ -16,12 +16,11 @@ import {
   isSingleSelectQuestion,
   isTextQuestion,
 } from '@/common/guards';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
-import { useBlocker } from '@tanstack/react-router';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { useBlocker, useNavigate } from '@tanstack/react-router';
+import { FC, useMemo, useState } from 'react';
 import { FormFull } from '../../features/forms/models';
 
 import {
@@ -33,9 +32,18 @@ import {
   EditTextQuestionType,
   ZEditQuestionType,
 } from '@/common/form-requests';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 import { FormTemplateFull } from '@/features/form-templates/models';
 import EditFormDetails from './FormDetailEditor';
-
 export const ZEditFormType = z
   .object({
     languageCode: z.string().trim().min(1, 'Language code is required.'),
@@ -198,12 +206,12 @@ export type EditFormType = z.infer<typeof ZEditFormType>;
 
 interface FormEditorProps {
   formData?: FormFull | FormTemplateFull;
-  onSaveForm: (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => void;
+  onSaveForm: (formData: EditFormType) => Promise<void>;
+  onNavigateAway: () => void;
   hasCitizenReportingOption: boolean;
 }
 
-const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, onSaveForm }) => {
-  const confirm = useConfirm();
+const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, onSaveForm, onNavigateAway }) => {
   const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
   const editQuestions = useMemo(() => formData?.questions.map((question) => {
     if (isNumberQuestion(question)) {
@@ -369,12 +377,21 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
     reValidateMode: 'onChange',
   });
 
-  // Subscribe to isDirty by accessing it in component body
-  // This ensures React tracks form state changes
+  const save = async (values: EditFormType) => {
+    if (form.formState.isDirty) {
+      await onSaveForm(values);
+      form.reset(form.getValues(), { keepValues: true, keepDirty: false, keepIsSubmitSuccessful: false });
+    }
+
+    if (navigateAwayAfterSave) {
+      onNavigateAway();
+    }
+  };
+
   const isDirty = form.formState.isDirty;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => isDirty,
+    shouldBlockFn: () => isDirty && !navigateAwayAfterSave,
     withResolver: true,
   });
 
@@ -384,95 +401,95 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
     defaultValue: formData?.defaultLanguage,
   });
 
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful) {
-      form.reset({}, { keepValues: true });
-    }
-  }, [form.formState.isSubmitSuccessful, form.reset]);
-
-  useEffect(() => {
-    if (status === 'blocked') {
-      confirm({
-        title: `Unsaved Changes Detected`,
-        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-        actionButton: 'Leave',
-        cancelButton: 'Stay',
-      }).then((confirmed) => {
-        if (confirmed) {
-          proceed();
-        } else {
-          reset();
-        }
-      });
-    }
-  }, [status, confirm, proceed, reset]);
-
   return (
-    <Form {...form}>
-      <form
-        className='flex flex-col flex-1'
-        onSubmit={form.handleSubmit((data) => onSaveForm(data, navigateAwayAfterSave))}>
-        <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
-          <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-            <TabsTrigger
-              value='form-details'
-              className={cn({
-                'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid,
-              })}>
-              Form details
-            </TabsTrigger>
-            <TabsTrigger
-              value='questions'
-              className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>
-              Questions
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value='form-details'>
-            <Card className='pt-0'>
-              <CardHeader className='flex gap-2 flex-column'>
-                <div className='flex flex-row items-center justify-between'>
-                  <CardTitle className='text-xl'>Form details</CardTitle>
-                </div>
-                <Separator />
-              </CardHeader>
-              <CardContent className='flex flex-col items-baseline gap-6'>
-                <EditFormDetails languageCode={languageCode} hasCitizenReportingOption={hasCitizenReportingOption} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent className='flex flex-col flex-1' value='questions'>
-            <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
-              <CardHeader className='flex gap-2 flex-column'>
-                <div className='flex flex-row items-center justify-between'>
-                  <CardTitle className='text-xl'>
-                    {languageCode && (
-                      <div className='flex items-center gap-2'>
-                        <span className='text-sm'>Form questions</span>
-                        <LanguageBadge languageCode={languageCode} />
-                      </div>
-                    )}
-                  </CardTitle>
-                </div>
-                <Separator />
-              </CardHeader>
-              <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
-                <FormQuestionsEditor />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-        <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
-          <div className='container flex items-center justify-end h-full gap-4'>
-            <Button type='submit' variant='outline' onClick={() => setNavigateAwayAfterSave(false)}>
-              Save
-            </Button>
-            <Button type='submit' variant='default' onClick={() => setNavigateAwayAfterSave(true)}>
-              Save and exit form editor
-            </Button>
-          </div>
-        </footer>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form
+          className='flex flex-col flex-1'
+          onSubmit={form.handleSubmit((values) => save(values))}>
+          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
+            <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
+              <TabsTrigger
+                value='form-details'
+                className={cn({
+                  'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid,
+                })}>
+                Form details
+              </TabsTrigger>
+              <TabsTrigger
+                value='questions'
+                className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>
+                Questions
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value='form-details'>
+              <Card className='pt-0'>
+                <CardHeader className='flex gap-2 flex-column'>
+                  <div className='flex flex-row items-center justify-between'>
+                    <CardTitle className='text-xl'>Form details</CardTitle>
+                  </div>
+                  <Separator />
+                </CardHeader>
+                <CardContent className='flex flex-col items-baseline gap-6'>
+                  <EditFormDetails languageCode={languageCode} hasCitizenReportingOption={hasCitizenReportingOption} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent className='flex flex-col flex-1' value='questions'>
+              <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
+                <CardHeader className='flex gap-2 flex-column'>
+                  <div className='flex flex-row items-center justify-between'>
+                    <CardTitle className='text-xl'>
+                      {languageCode && (
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm'>Form questions</span>
+                          <LanguageBadge languageCode={languageCode} />
+                        </div>
+                      )}
+                    </CardTitle>
+                  </div>
+                  <Separator />
+                </CardHeader>
+                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
+                  <FormQuestionsEditor />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+          <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
+            <div className='container flex items-center justify-end h-full gap-4'>
+              <Button type='submit' variant='outline' onClick={() => setNavigateAwayAfterSave(false)}>
+                Save
+              </Button>
+              <Button type='submit' variant='default' onClick={() => setNavigateAwayAfterSave(true)}>
+                Save and exit form editor
+              </Button>
+            </div>
+          </footer>
+        </form>
+      </Form>
+
+      <AlertDialog open={status === 'blocked'} onOpenChange={(open) => {
+        if (!open) reset?.()
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => reset?.()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => proceed?.()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

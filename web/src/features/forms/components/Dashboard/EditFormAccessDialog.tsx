@@ -1,7 +1,3 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { create } from 'zustand';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,13 +13,17 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { queryClient } from '@/main';
-import { formsKeys } from '../../queries';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
 import { sortBy } from 'lodash';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { create } from 'zustand';
 import { NgoFormBase } from '../../models';
+import { formsKeys } from '../../queries';
 
 export interface EditFormAccessDialogProps {
   isOpen: boolean;
@@ -92,7 +92,7 @@ function EditFormAccessDialog() {
         ngoMembersIds,
       }),
     onSuccess: async () => {
-      toast({ title: 'Success', description: 'Access modified' });
+      toast('Access modified');
       await queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
       router.invalidate();
       dismiss();

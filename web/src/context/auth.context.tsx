@@ -1,7 +1,7 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
-import { useToast } from '@/components/ui/use-toast';
 import { parseJwt } from '@/lib/utils';
 import { createContext, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export type AuthContextType = {
   signIn: (user: LoginDTO) => Promise<boolean>;
@@ -30,8 +30,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [userRole, setUserRole] = useState<string>('Unknown');
   const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
 
-  const { toast } = useToast();
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
@@ -57,11 +55,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       return true;
     } catch (error: any) {
       if (error.response.status === 400) {
-        toast({
-          title: 'Error',
-          description: 'You have entered an invalid email or password',
-          variant: 'destructive',
-        });
+        toast.error('You have entered an invalid email or password');
       }
       return false;
     }

@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api'
+import { getPushMessageDetails } from '@/api/monitoring-observers/get-push-message-details'
 import PushMessageDetails from '@/features/monitoring-observers/components/PushMessageDetails/PushMessageDetails'
 import { redirectIfNotAuth } from '@/lib/utils'
 import { queryOptions } from '@tanstack/react-query'
@@ -15,15 +15,7 @@ export const pushMessageDetailsQueryOptions = (
   return queryOptions({
     queryKey: pushMessagesKeys.detail(electionRoundId, pushMessageId),
     queryFn: async () => {
-      const response = await authApi.get<PushMessageDetailedModel>(
-        `/election-rounds/${electionRoundId}/notifications/${pushMessageId}`,
-      )
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch notification details')
-      }
-
-      return response.data
+      return getPushMessageDetails(electionRoundId, pushMessageId)
     },
     enabled: !!electionRoundId,
   })

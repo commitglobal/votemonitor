@@ -2,12 +2,12 @@ import { authApi } from '@/common/auth-api';
 import { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { queryOptions, useMutation, useQuery, UseQueryResult, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
-import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 import axios, { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import { EditNgoFormData, NGO, NgoCreationFormData } from '../models/NGO';
 
 const STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
@@ -86,10 +86,8 @@ export const useCreateNgo = () => {
       // Handle non-Axios or unexpected errors
       console.error('Unexpected error:', error);
       onMutationError();
-      toast({
-        title: 'Error creating a new NGO',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error creating a new NGO',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -115,10 +113,8 @@ export const useNgoMutations = () => {
       navigate({ to: '/ngos/view/$ngoId/$tab', params: { ngoId: ngoId!, tab: 'details' } });
     },
     onError: () => {
-      toast({
-        title: 'Error editing NGO',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error editing NGO',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -132,17 +128,11 @@ export const useNgoMutations = () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was deactivated successfully',
-      });
+      toast('NGO was deactivated successfully');
     },
-
     onError: () => {
-      toast({
-        title: 'Error deactivating NGO',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error deactivating NGO',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -156,17 +146,12 @@ export const useNgoMutations = () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was activated successfully',
-      });
+      toast('NGO was activated successfully');
     },
 
     onError: () => {
-      toast({
-        title: 'Error activating NGO',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error activating NGO',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -180,19 +165,13 @@ export const useNgoMutations = () => {
       queryClient.invalidateQueries({ queryKey: ngosKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'NGO was deleted successfully',
-      });
-
+      toast('NGO was deleted successfully');
       if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
-      toast({
-        title: 'Error deleting NGO',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error deleting NGO',{
+        description: 'Please contact tech support',
       });
     },
   });

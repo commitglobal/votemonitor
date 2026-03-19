@@ -3,27 +3,21 @@ import { mapToQuestionRequest } from '@/common/form-requests';
 import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useToast } from '@/components/ui/use-toast';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { FormTemplateFull, NewFormTemplateRequest } from '../../models';
 import { formTemlatesKeys } from '../../queries';
 
 function FormTemplateNew() {
   const navigate = useNavigate();
   const router = useRouter();
-  const { toast } = useToast();
 
   const newFormTemplateMutation = useMutation({
-    mutationFn: async ({
-      formTemplate,
-    }: {
-      shouldNavigateAwayAfterSubmit: boolean;
-      formTemplate: NewFormTemplateRequest;
-    }) => {
+    mutationFn: async (formTemplate: NewFormTemplateRequest) => {
       return await authApi
         .post<FormTemplateFull>(`/form-templates`, {
           ...formTemplate,
@@ -31,31 +25,22 @@ function FormTemplateNew() {
         .then((response) => response.data);
     },
 
-    onSuccess: ({ id }, { shouldNavigateAwayAfterSubmit }) => {
-      toast({
-        title: 'Success',
-        description: 'Form template created successfully',
-      });
-
+    onSuccess: ({ id }) => {
+      toast('Form template created successfully');
       queryClient.invalidateQueries({ queryKey: formTemlatesKeys.all(), type: 'all' });
       router.invalidate();
-      if (shouldNavigateAwayAfterSubmit) {
-        navigate({ to: '/form-templates' });
-      } else {
-        navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
-      }
+
+      return navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
     },
 
     onError: () => {
-      toast({
-        title: 'Error creating form template',
+      toast.error('Error creating form template',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
-  const saveFormTemplate = useCallback((formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
+  const saveFormTemplate = useCallback(async (formData: EditFormType) => {
     const newFormTemplate: NewFormTemplateRequest = {
       code: formData.code,
       name: formData.name,
@@ -67,15 +52,16 @@ function FormTemplateNew() {
       questions: formData.questions.map(mapToQuestionRequest),
     };
 
-    newFormTemplateMutation.mutate({ formTemplate: newFormTemplate, shouldNavigateAwayAfterSubmit });
+    await newFormTemplateMutation.mutateAsync(newFormTemplate);
   }, []);
 
   return (
     <Layout backButton={<NavigateBack to='/form-templates' />} title={`Create new form template`}>
       <FormEditor
-        onSaveForm={(formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) =>
-          saveFormTemplate(formData, shouldNavigateAwayAfterSubmit)
-        }
+        onSaveForm={saveFormTemplate}
+        onNavigateAway={() => {
+          navigate({ to: '/form-templates' });
+        }}
         hasCitizenReportingOption={true}
       />
     </Layout>

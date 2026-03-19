@@ -1,4 +1,4 @@
-import { authApi } from '@/common/auth-api';
+import { getCoalitionDetails } from '@/api/election-event/get-coalition-details';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { Coalition } from './../../../common/types';
 
@@ -14,11 +14,7 @@ export function useCoalitionDetails(electionRoundId: string): CoalitionDetailRes
   return useQuery({
     queryKey: coalitionKeys.all(electionRoundId!),
     queryFn: async () => {
-      const response = await authApi.get<Coalition>(`/election-rounds/${electionRoundId}/coalitions:my`);
-
-      return {
-        ...response.data,
-      };
+      return getCoalitionDetails(electionRoundId);
     },
     enabled: !!electionRoundId,
     staleTime: STALE_TIME,
