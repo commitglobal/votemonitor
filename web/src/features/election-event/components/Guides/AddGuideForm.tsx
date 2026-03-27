@@ -1,23 +1,36 @@
-import { authApi } from '@/common/auth-api';
+import { uploadCitizenGuide } from '@/api/election-event/upload-citizen-guide';
+import { uploadObserverGuide } from '@/api/election-event/upload-observer-guide';
 import { FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useBlocker } from '@tanstack/react-router';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
 import { observerGuidesKeys } from '../../hooks/observer-guides-hooks';
 import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+
 export interface AddGuideFormProps {
   guidePageType: GuidePageType;
   guideType: GuideType;
@@ -118,16 +131,11 @@ export default function AddGuideForm({
         formData.append('Text', guide.text!);
       }
 
-      const url =
-        guidePageType === GuidePageType.Observer
-          ? `/election-rounds/${electionRoundId}/observer-guide`
-          : `/election-rounds/${electionRoundId}/citizen-guides`;
+      if (guidePageType === GuidePageType.Observer) {
+        return uploadObserverGuide(electionRoundId, formData);
+      }
 
-      return authApi.post(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      return uploadCitizenGuide(electionRoundId, formData);
     },
 
     onSuccess: ({ data }, { electionRoundId, guidePageType }) => {
@@ -138,20 +146,14 @@ export default function AddGuideForm({
       }
 
       onSuccess?.(data);
+      form.reset({}, { keepValues: true, keepDirty: false });
 
-      toast({
-        title: 'Success',
-        description: 'Upload was successful',
-      });
+      toast('Upload was successful');
     },
-
     onError: () => {
-      toast({
-        title: 'Error uploading citizen guide',
-        description: 'Please contact Platform admins',
-        variant: 'destructive',
+      toast.error('Error uploading citizen guide',{
+        description: 'Please contact tech support',
       });
-
       onError?.();
     },
   });
@@ -161,34 +163,12 @@ export default function AddGuideForm({
   }
 
   const isDirty = form.formState.isDirty;
+  const isSubmitSuccessful = form.formState.isSubmitSuccessful;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => isDirty,
+    shouldBlockFn: () => isDirty && !isSubmitSuccessful,
     withResolver: true,
   });
-
-  useEffect(() => {
-    if (status === 'blocked') {
-      confirm({
-        title: `Unsaved Changes Detected`,
-        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-        actionButton: 'Leave',
-        cancelButton: 'Stay',
-      }).then((confirmed) => {
-        if (confirmed) {
-          proceed();
-        } else {
-          reset();
-        }
-      });
-    }
-  }, [status, confirm, proceed, reset]);
-
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful) {
-      form.reset({}, { keepValues: true });
-    }
-  }, [form.formState.isSubmitSuccessful, form.reset]);
 
   return (
     <>
@@ -272,6 +252,26 @@ export default function AddGuideForm({
           {children}
         </form>
       </Form>
+      <AlertDialog open={status === 'blocked'} onOpenChange={(open) => {
+        if (!open) reset?.()
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => reset?.()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => proceed?.()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

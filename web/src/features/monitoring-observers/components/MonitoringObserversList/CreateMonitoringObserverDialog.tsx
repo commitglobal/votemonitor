@@ -1,16 +1,16 @@
-import { authApi } from '@/common/auth-api';
+import { createMonitoringObservers } from '@/api/monitoring-observers/create-monitoring-observers';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import TagsSelectFormField from '@/components/ui/tag-selector';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { monitoringObserversKeys } from '../../hooks/monitoring-observers-queries';
 import { targetedObserversKeys } from '../../hooks/push-messages-queries';
@@ -30,7 +30,7 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
     lastName: z.string(),
     email: z.string().email(),
     phoneNumber: z.string().optional().catch(''),
-    tags: z.any(),
+    tags: z.array(z.string()).default([]),
   });
 
   type ObserverFormData = z.infer<typeof newObserverSchema>;
@@ -46,14 +46,11 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
 
   const newObserverMutation = useMutation({
     mutationFn: ({ electionRoundId, values }: { electionRoundId: string; values: ObserverFormData }) => {
-      return authApi.post(`/election-rounds/${electionRoundId}/monitoring-observers`, { observers: [values] });
+      return createMonitoringObservers(electionRoundId, [values]);
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('onSuccess'),
-      });
+      toast(t('onSuccess'));
 
       queryClient.invalidateQueries({ queryKey: monitoringObserversKeys.all(electionRoundId) });
       queryClient.invalidateQueries({ queryKey: targetedObserversKeys.all(electionRoundId) });
@@ -62,10 +59,8 @@ function CreateMonitoringObserverDialog({ open, onOpenChange }: CreateMonitoring
       onOpenChange(false);
     },
     onError: () => {
-      toast({
-        title: t('onError'),
-        description: 'Please contact tech support',
-        variant: 'destructive',
+      toast.error(t('onError'), {
+        description: 'Please contact tech support'
       });
     },
   });

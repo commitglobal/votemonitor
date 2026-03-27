@@ -2,14 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { noAuthApi } from '@/common/no-auth-api';
+import Logo from '@/components/layout/Header/Logo';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import Logo from '@/components/layout/Header/Logo';
-import { noAuthApi } from '@/common/no-auth-api';
 import { useMutation } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   email: z
@@ -39,9 +39,11 @@ function ForgotPassword() {
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'An email was sent with reset password instructions',
+      toast('An email was sent with reset password instructions');
+    },
+    onError: () => {
+      toast.error('Error sending reset password instructions',{
+        description: 'Please contact tech support',
       });
     },
   });

@@ -8,12 +8,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { authApi } from '@/common/auth-api';
+import { sendPushNotification } from '@/api/monitoring-observers/send-push-notification';
 import type { FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { RichTextEditor } from '@/components/rich-text-editor';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { FormSubmissionsFollowUpFilter } from '@/features/filtering/components/FormSubmissionsFollowUpFilter';
@@ -31,6 +30,7 @@ import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
+import { toast } from 'sonner';
 import { MonitoringObserverStatusSelect } from '../../filtering/MonitoringObserverStatusSelect';
 import { MonitoringObserverTagsSelect } from '../../filtering/MonitoringObserverTagsSelect';
 import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
@@ -118,19 +118,12 @@ function PushMessageForm(): FunctionComponent {
       electionRoundId: string;
       request: SendPushNotificationRequest & { title: string; body: string };
     }) => {
-      return authApi.post<PushMessageTargetedObserversSearchParams>(
-        `/election-rounds/${electionRoundId}/notifications:send`,
-        request
-      );
+      return sendPushNotification(electionRoundId, request);
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pushMessagesKeys.all(currentElectionRoundId) });
-      toast({
-        title: 'Success',
-        description: 'Notification sent',
-      });
-
+      toast('Notification sent');
       router.invalidate();
       navigate({ to: '/monitoring-observers/$tab', params: { tab: 'push-messages' } });
     },

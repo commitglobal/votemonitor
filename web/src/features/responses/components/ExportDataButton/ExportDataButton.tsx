@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useExportedDataDetails, useStartDataExport } from '../../hooks/data-export';
 import { ExportStatus, type ExportedDataType } from '../../models/data-export';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ExportDataButtonProps {
   exportedDataType: ExportedDataType;
@@ -28,7 +28,9 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
         setExportedDataId(data.exportedDataId);
       },
       onError: () => {
-        toast({ title: 'Export failed, please try again later', variant: 'default' });
+        toast.error('Export failed, please try again later',{
+          description: 'Please contact tech support',
+        });
       },
     }
   );
@@ -73,7 +75,9 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
 
   useEffect(() => {
     if (exportStatus === ExportStatus.Failed) {
-      toast({ title: 'Export failed, please try again later', variant: 'default' });
+      toast.error('Export failed, please try again later',{
+        description: 'Please contact tech support',
+      });
     }
 
     if (exportStatus === ExportStatus.Completed) {

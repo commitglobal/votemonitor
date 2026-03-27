@@ -1,13 +1,11 @@
-import { authApi } from '@/common/auth-api';
-import { DateOnlyFormat } from '@/common/formats';
+import { createElectionRound } from '@/api/election-rounds/create-election-round';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
-import { format } from 'date-fns/format';
+import { toast } from 'sonner';
 import { ElectionRoundModel } from '../../models/types';
 import { electionRoundKeys } from '../../queries';
 import ElectionRoundForm, { ElectionRoundRequest } from '../ElectionRoundForm/ElectionRoundForm';
@@ -22,10 +20,7 @@ function CreateElectionRoundDialog({ open, onOpenChange }: ElectionRoundFormProp
 
   const createElectionRoundMutation = useMutation({
     mutationFn: (electionRound: ElectionRoundRequest) => {
-      return authApi.post<ElectionRoundModel>(`/election-rounds`, {
-        ...electionRound,
-        startDate: format(electionRound.startDate, DateOnlyFormat),
-      });
+      return createElectionRound(electionRound);
     },
 
     onSuccess: async ({ data }) => {
@@ -37,17 +32,12 @@ function CreateElectionRoundDialog({ open, onOpenChange }: ElectionRoundFormProp
       });
       onOpenChange(false);
 
-      toast({
-        title: 'Success',
-        description: 'Election round created',
-      });
+      toast('Election round created');
     },
 
     onError: () => {
-      toast({
-        title: 'Error creating election round',
-        description: 'Please contact Platform admins',
-        variant: 'destructive',
+      toast.error('Error creating election round',{
+        description: 'Please contact tech support',
       });
     },
   });

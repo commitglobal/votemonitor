@@ -1,13 +1,17 @@
-import { authApi } from '@/common/auth-api';
+import { createObserver } from '@/api/observers/create-observer';
+import { deleteObserver } from '@/api/observers/delete-observer';
+import { getObservers } from '@/api/observers/get-observers';
+import { toggleObserverStatus as toggleObserverStatusApi } from '@/api/observers/toggle-observer-status';
+import { updateObserver } from '@/api/observers/update-observer';
 import { addFormValidationErrorsFromBackend } from '@/common/form-backend-validation';
 import type { DataTableParameters, PageResponse, ProblemDetails } from '@/common/types';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { buttonVariants } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { type UseQueryResult, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { AxiosError } from 'axios';
 import { UseFormReturn } from 'react-hook-form';
+import { toast } from 'sonner';
 import { AddObserverFormData, EditObserverFormData, Observer } from '../models/observer';
 
 const STALE_TIME = 1000 * 60 * 5; // five minutes
@@ -28,17 +32,7 @@ export const useObservers = (queryParams: DataTableParameters): UseObserversResu
   return useQuery({
     queryKey: observersKeys.list(queryParams),
     queryFn: async () => {
-      const response = await authApi.get<PageResponse<Observer>>('/observers', {
-        params: {
-          ...queryParams.otherParams,
-          status: (queryParams.otherParams as any)?.observerStatus,
-        },
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch observers');
-      }
-
-      return response.data;
+      return getObservers(queryParams);
     },
     staleTime: STALE_TIME,
   });
@@ -58,14 +52,11 @@ export const useObserverMutations = () => {
       form: UseFormReturn<AddObserverFormData>;
       onOpenChange: (isOpen: boolean) => void;
     }) => {
-      return authApi.post(`/observers`, values);
+      return createObserver(values);
     },
 
     onSuccess: (_, { form, onOpenChange }) => {
-      toast({
-        title: 'Success',
-        description: 'Observer added',
-      });
+      toast('Observer added');
       queryClient.invalidateQueries({ queryKey: observersKeys.all() });
       router.invalidate();
       form.reset({});
@@ -74,10 +65,8 @@ export const useObserverMutations = () => {
     onError: (error: AxiosError<ProblemDetails>, { form }) => {
       console.error(error);
       addFormValidationErrorsFromBackend(form, error);
-      toast({
-        title: 'Error adding observer',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error adding observer',{
+        description: 'Please contact tech support',
       });
     },
   });
@@ -91,7 +80,7 @@ export const useObserverMutations = () => {
       values: EditObserverFormData;
       form: UseFormReturn<EditObserverFormData>;
     }) => {
-      return authApi.put(`/observers/${observerId}`, values);
+      return updateObserver(observerId, values);
     },
 
     onSuccess: (_, { observerId }) => {
@@ -103,63 +92,48 @@ export const useObserverMutations = () => {
       console.error(error);
       addFormValidationErrorsFromBackend(form, error);
 
-      toast({
-        title: 'Error editing observer',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error editing observer',{
+        description: 'Please contact tech support',
       });
     },
   });
 
   const toggleObserverStatus = useMutation({
     mutationFn: ({ observerId, isObserverActive }: { observerId: string; isObserverActive: boolean }) => {
-      const ACTION = isObserverActive ? 'deactivate' : 'activate';
-
-      return authApi.put<any>(`/observers/${observerId}:${ACTION}`, {});
+      return toggleObserverStatusApi(observerId, isObserverActive);
     },
 
     onSuccess: (_, { isObserverActive }) => {
       queryClient.invalidateQueries({ queryKey: observersKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: `Observer was ${isObserverActive ? 'deactivated' : 'activated'}`,
-      });
+      toast(`Observer was ${isObserverActive ? 'deactivated' : 'activated'}`);
     },
 
     onError: (err, { isObserverActive }) => {
       console.error(err);
-      toast({
-        title: `Error`,
-        description: `Error ${isObserverActive ? 'deactivating' : 'activating'} observer`,
-        variant: 'destructive',
+      toast.error(`Error ${isObserverActive ? 'deactivating' : 'activating'} observer`,{
+        description: 'Please contact tech support',
       });
     },
   });
 
   const deleteObserverMutation = useMutation({
     mutationFn: ({ observerId }: { observerId: string; onMutationSuccess?: () => void }) => {
-      return authApi.delete<any>(`/observers/${observerId}`);
+      return deleteObserver(observerId);
     },
 
     onSuccess: (_, { onMutationSuccess }) => {
       queryClient.invalidateQueries({ queryKey: observersKeys.all() });
       router.invalidate();
 
-      toast({
-        title: 'Success',
-        description: 'Observer was deleted successfully',
-      });
-
+      toast('Observer was deleted successfully');
       if (onMutationSuccess) onMutationSuccess();
     },
 
     onError: () => {
-      toast({
-        title: 'Error deleting observer',
-        description: '',
-        variant: 'destructive',
+      toast.error('Error deleting observer',{
+        description: 'Please contact tech support',
       });
     },
   });

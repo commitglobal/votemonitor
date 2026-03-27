@@ -1,4 +1,5 @@
-import { authApi } from '@/common/auth-api';
+import { getCitizenGuideDetails } from '@/api/election-event/get-citizen-guide-details';
+import { getCitizenGuides } from '@/api/election-event/get-citizen-guides';
 import { queryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { queryClient } from '@/main';
@@ -17,15 +18,13 @@ export function useCitizenGuides(electionRoundId: string): CitizenGuideResult {
   return useQuery({
     queryKey: citizenGuidesKeys.all(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<{ guides: GuideModel[] }>(
-        `/election-rounds/${electionRoundId}/citizen-guides`
-      );
+      const response = await getCitizenGuides(electionRoundId);
 
-      response.data.guides.forEach((guide) => {
+      response.guides.forEach((guide) => {
         queryClient.setQueryData(citizenGuidesKeys.details(electionRoundId, guide.id), guide);
       });
 
-      return response.data.guides;
+      return response.guides;
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,
@@ -36,13 +35,7 @@ export const citizenGuideDetailsQueryOptions = (electionRoundId: string, guideId
   return queryOptions({
     queryKey: citizenGuidesKeys.details(electionRoundId, guideId),
     queryFn: async () => {
-      const response = await authApi.get<GuideModel>(`/election-rounds/${electionRoundId}/citizen-guides/${guideId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch citizen guide details');
-      }
-
-      return response.data;
+      return getCitizenGuideDetails(electionRoundId, guideId);
     },
     enabled: !!electionRoundId,
     staleTime: STALE_TIME,

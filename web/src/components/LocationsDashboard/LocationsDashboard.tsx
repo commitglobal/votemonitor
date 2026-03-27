@@ -19,8 +19,8 @@ import { ArrowUpTrayIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useContext, useMemo, useState, type ReactElement } from 'react';
+import { toast } from 'sonner';
 import { LocationDataTableRowActions } from '../LocationDataTableRowActions/LocationDataTableRowActions';
-import { useToast } from '../ui/use-toast';
 import { locationColDefs } from './column-defs';
 import { useDeleteLocationMutation, useLocations, useUpdateLocationMutation } from './hooks';
 
@@ -29,7 +29,6 @@ export default function LocationsDashboard(): ReactElement {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
   const { userRole } = useContext(AuthContext);
-  const { toast } = useToast();
   const router = useRouter();
 
   const { mutate: deleteLocationMutation } = useDeleteLocationMutation();
@@ -44,15 +43,11 @@ export default function LocationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: locationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Location deleted',
-          });
+          toast('Location deleted');
         },
         onError: () =>
-          toast({
-            title: 'Error occured when deleting location',
-            variant: 'destructive',
+          toast.error('Error occured when deleting location',{
+            description: 'Please contact tech support',
           }),
       }),
     [currentElectionRoundId, deleteLocationMutation]
@@ -68,15 +63,11 @@ export default function LocationsDashboard(): ReactElement {
           queryClient.invalidateQueries({ queryKey: locationsKeys.all(currentElectionRoundId) });
           router.invalidate();
 
-          toast({
-            title: 'Success',
-            description: 'Location updated',
-          });
+          toast('Location updated');
         },
         onError: () =>
-          toast({
-            title: 'Error occured when updating location',
-            variant: 'destructive',
+          toast.error('Error occured when updating location',{
+            description: 'Please contact tech support',
           }),
       }),
     [currentElectionRoundId, updateLocationMutation]

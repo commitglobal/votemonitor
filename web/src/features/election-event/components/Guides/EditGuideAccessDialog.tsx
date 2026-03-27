@@ -1,8 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { create } from 'zustand';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from '@tanstack/react-router';
-import { authApi } from '@/common/auth-api';
+import { updateGuideAccess } from '@/api/election-event/update-guide-access';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,11 +13,15 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useCoalitionDetails } from '@/features/election-event/hooks/coalition-hooks';
 import { queryClient } from '@/main';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
 import { sortBy } from 'lodash';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { create } from 'zustand';
 import { observerGuidesKeys } from '../../hooks/observer-guides-hooks';
 import { GuideModel } from '../../models/guide';
 
@@ -88,11 +88,9 @@ function EditGuideAccessDialog() {
       guideId: string;
       ngoMembersIds: string[];
     }) =>
-      authApi.put<void>(`/election-rounds/${electionRoundId}/coalitions/${coalitionId}/guides/${guideId}:access`, {
-        ngoMembersIds,
-      }),
+      updateGuideAccess(electionRoundId, coalitionId, guideId, ngoMembersIds),
     onSuccess: async () => {
-      toast({ title: 'Success', description: 'Access modified' });
+      toast('Access modified');
       await queryClient.invalidateQueries({ queryKey: observerGuidesKeys.all(currentElectionRoundId) });
       router.invalidate();
       dismiss();

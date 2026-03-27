@@ -1,13 +1,12 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
 import { usePrevSearch } from '@/common/prev-search-store';
-import { QuickReportFollowUpStatus, type FunctionComponent, ElectionRoundStatus } from '@/common/types';
+import { ElectionRoundStatus, QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { queryClient } from '@/main';
@@ -16,6 +15,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 import { quickReportKeys } from '../../hooks/quick-reports';
 import { SubmissionType } from '../../models/common';
 import { mapIncidentCategory, mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
@@ -44,20 +44,15 @@ export default function QuickReportDetails(): FunctionComponent {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Follow-up status updated',
-      });
+      toast('Follow-up status updated successfully');
 
       invalidate();
       void queryClient.invalidateQueries({ queryKey: quickReportKeys.all(electionRoundId) });
     },
 
     onError: () => {
-      toast({
-        title: 'Error updating follow up status',
+      toast.error('Error updating follow up status',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

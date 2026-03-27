@@ -1,5 +1,5 @@
 import Header from '@/components/layout/Header/Header';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import { AuthContext } from '@/context/auth.context';
 import { RouterContext } from '@/routerContext';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
@@ -13,7 +13,7 @@ function RootComponent() {
   const { isAuthenticated } = useContext(AuthContext);
   return (
     <Suspense>
-      <Toaster />
+      <Toaster closeButton />
       <div className='flex flex-col min-h-screen pb-20'>
         {isAuthenticated && <Header />}
         <Outlet />

@@ -3,21 +3,20 @@ import { mapToQuestionRequest } from '@/common/form-requests';
 import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useToast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
+import { toast } from "sonner";
 import { FormFull, NewFormRequest } from '../../models';
 import { formsKeys } from '../../queries';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 function FormNew() {
   const navigate = useNavigate();
   const router = useRouter();
-  const { toast } = useToast();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
@@ -28,7 +27,6 @@ function FormNew() {
     }: {
       electionRoundId: string;
       form: NewFormRequest;
-      shouldNavigateAwayAfterSubmit: boolean;
     }) => {
       return authApi
         .post<FormFull>(`/election-rounds/${electionRoundId}/forms`, {
@@ -37,36 +35,24 @@ function FormNew() {
         .then((response) => response.data);
     },
 
-    onSuccess: ({ id }, { electionRoundId, shouldNavigateAwayAfterSubmit }) => {
-      toast({
-        title: 'Success',
-        description: 'Form created successfully',
-      });
+    onSuccess: ({ id }, { electionRoundId }) => {
+      toast('Form created successfully');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
       router.invalidate();
 
-      if (shouldNavigateAwayAfterSubmit) {
-        navigate({
-          to: '/election-event/$tab',
-          params: { tab: 'observer-forms' },
-        });
-      } else {
-        navigate({ to: '/forms/$formId/edit', params: { formId: id } });
-      }
+      navigate({ to: `/election-rounds/${electionRoundId}/forms/$formId/edit`, params: { formId: id } });
     },
 
     onError: () => {
-      toast({
-        title: 'Error creating form',
+      toast.error('Error creating form',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
   const saveForm = useCallback(
-    (electionRoundId: string, formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
+    async (formData: EditFormType) => {
       const newForm: NewFormRequest = {
         code: formData.code,
         name: formData.name,
@@ -78,9 +64,9 @@ function FormNew() {
         questions: formData.questions.map(mapToQuestionRequest),
       };
 
-      newFormMutation.mutate({ electionRoundId, form: newForm, shouldNavigateAwayAfterSubmit });
+      await newFormMutation.mutateAsync({ electionRoundId: currentElectionRoundId, form: newForm });
     },
-    []
+    [currentElectionRoundId, newFormMutation]
   );
 
   return (
@@ -89,9 +75,10 @@ function FormNew() {
       title={`Create new form template`}
       breadcrumbs={<></>}>
       <FormEditor
-        onSaveForm={(formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) =>
-          saveForm(currentElectionRoundId, formData, shouldNavigateAwayAfterSubmit)
-        }
+        onSaveForm={saveForm}
+        onNavigateAway={() => {
+          void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+        }}
         hasCitizenReportingOption={electionEvent?.isMonitoringNgoForCitizenReporting ?? false}
       />
     </Layout>

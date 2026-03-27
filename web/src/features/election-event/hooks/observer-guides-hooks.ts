@@ -1,4 +1,5 @@
-import { authApi } from '@/common/auth-api';
+import { getObserverGuideDetails } from '@/api/election-event/get-observer-guide-details';
+import { getObserverGuides } from '@/api/election-event/get-observer-guides';
 import { queryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { GuideModel } from '../models/guide';
@@ -18,15 +19,13 @@ export function useObserverGuides(electionRoundId: string): ObserverGuideResult 
   return useQuery({
     queryKey: observerGuidesKeys.all(electionRoundId),
     queryFn: async () => {
-      const response = await authApi.get<{ guides: GuideModel[] }>(
-        `/election-rounds/${electionRoundId}/observer-guide`
-      );
+      const response = await getObserverGuides(electionRoundId);
 
-      response.data.guides.forEach((guide) => {
+      response.guides.forEach((guide) => {
         queryClient.setQueryData(observerGuidesKeys.details(electionRoundId, guide.id), guide);
       });
 
-      return response.data.guides;
+      return response.guides;
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,
@@ -37,13 +36,7 @@ export const observerGuideDetailsQueryOptions = (electionRoundId: string, guideI
   return queryOptions({
     queryKey: observerGuidesKeys.details(electionRoundId, guideId),
     queryFn: async () => {
-      const response = await authApi.get<GuideModel>(`/election-rounds/${electionRoundId}/observer-guide/${guideId}`);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch observer guide details');
-      }
-
-      return response.data;
+      return getObserverGuideDetails(electionRoundId, guideId);
     },
     enabled: !!electionRoundId,
     staleTime: STALE_TIME,

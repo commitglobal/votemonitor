@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { ImportPollingStationRow } from '@/features/polling-stations/PollingStationsImport/PollingStationsImport';
 import { pollingStationsKeys } from '@/hooks/polling-stations-levels';
@@ -12,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export interface CreatePollingStationDialogProps {
   open: boolean;
@@ -34,10 +34,7 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
     },
 
     onSuccess: (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: t('addPollingStation.onSuccess'),
-      });
+      toast(t('addPollingStation.onSuccess'));
 
       queryClient.invalidateQueries({ queryKey: pollingStationsKeys.all(electionRoundId) });
 
@@ -45,10 +42,8 @@ function CreatePollingStationDialog({ open, onOpenChange }: CreatePollingStation
       onOpenChange(false);
     },
     onError: (err) => {
-      toast({
-        title: t('addPollingStation.onError'),
+      toast.error(t('addPollingStation.onError'),{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

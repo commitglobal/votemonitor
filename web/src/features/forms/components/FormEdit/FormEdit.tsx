@@ -4,8 +4,6 @@ import { FormDetailsBreadcrumbs } from '@/components/FormDetailsBreadcrumbs/Form
 import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { useToast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { isNilOrWhitespace } from '@/lib/utils';
@@ -14,6 +12,7 @@ import { Route } from '@/routes/forms/$formId_.edit';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { UpdateFormRequest } from '../../models';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 
@@ -26,8 +25,6 @@ function FormEdit() {
 
   const navigate = useNavigate();
   const router = useRouter();
-  const { toast } = useToast();
-  const confirm = useConfirm();
 
   const updateFormMutation = useMutation({
     mutationFn: ({
@@ -42,27 +39,22 @@ function FormEdit() {
       });
     },
 
-    onSuccess: async (_, { electionRoundId }) => {
-      toast({
-        title: 'Success',
-        description: 'Form updated successfully',
-      });
+    onSuccess: (_, { electionRoundId }) => {
+      toast('Form updated successfully');
 
-      await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
       router.invalidate();
     },
 
     onError: () => {
-      toast({
-        title: 'Error saving form template',
+      toast.error('Error saving form', {
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });
 
   const saveForm = useCallback(
-    async (formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) => {
+    async (formData: EditFormType) => {
       const updatedForm: UpdateFormRequest = {
         id: formId,
         code: formData.code,
@@ -79,19 +71,8 @@ function FormEdit() {
         electionRoundId: currentElectionRoundId,
         form: updatedForm,
       });
-
-      if (shouldNavigateAwayAfterSubmit) {
-        if (
-          await confirm({
-            title: 'Changes made to form template in base language',
-            body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
-          })
-        ) {
-          await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
-        }
-      }
     },
-    [updateFormMutation, formId, currentElectionRoundId]
+    [currentElectionRoundId, formId, updateFormMutation]
   );
 
   return (
@@ -101,9 +82,10 @@ function FormEdit() {
       title={`${form.code} - ${form.name[form.defaultLanguage] ?? ''}`}>
       <FormEditor
         formData={form}
-        onSaveForm={(formData: EditFormType, shouldNavigateAwayAfterSubmit: boolean) =>
-          saveForm(formData, shouldNavigateAwayAfterSubmit)
-        }
+        onSaveForm={saveForm}
+        onNavigateAway={() => {
+          void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+        }}
         hasCitizenReportingOption={electionEvent?.isMonitoringNgoForCitizenReporting ?? false}
       />
     </Layout>

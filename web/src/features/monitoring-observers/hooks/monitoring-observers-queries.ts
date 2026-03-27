@@ -1,6 +1,5 @@
-import { authApi } from '@/common/auth-api';
+import { getMonitoringObservers } from '@/api/monitoring-observers/get-monitoring-observers';
 import type { DataTableParameters, PageResponse } from '@/common/types';
-import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { MonitoringObserver } from '../models/monitoring-observer';
 
@@ -27,30 +26,7 @@ export const useMonitoringObservers = (
   return useQuery({
     queryKey: monitoringObserversKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const params = {
-        ...queryParams.otherParams,
-        PageNumber: String(queryParams.pageNumber),
-        PageSize: String(queryParams.pageSize),
-        SortColumnName: queryParams.sortColumnName,
-        SortOrder: queryParams.sortOrder,
-      };
-      const searchParams = buildURLSearchParams(params);
-
-      const response = await authApi.get<PageResponse<MonitoringObserver>>(
-        `/election-rounds/${electionRoundId}/monitoring-observers`,
-        {
-          params: searchParams,
-        }
-      );
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch monitoring observers');
-      }
-
-      return {
-        ...response.data,
-        isEmpty: !isQueryFiltered(queryParams.otherParams ?? {}) && response.data.items.length === 0,
-      };
+      return getMonitoringObservers(electionRoundId, queryParams);
     },
     enabled: !!electionRoundId,
     staleTime: STALE_TIME

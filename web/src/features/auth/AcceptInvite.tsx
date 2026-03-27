@@ -2,17 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { noAuthApi } from '@/common/no-auth-api';
 import Logo from '@/components/layout/Header/Logo';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Route as AcceptInviteRoute } from '@/routes/accept-invite/index';
 import { useMutation } from '@tanstack/react-query';
-import { noAuthApi } from '@/common/no-auth-api';
-import { toast } from '@/components/ui/use-toast';
-import { PasswordInput } from '@/components/ui/password-input';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 
 const formSchema = z
   .object({
@@ -53,19 +52,14 @@ function AcceptInvite() {
     },
 
     onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Password was set successfully',
-      });
+      toast('Password was set successfully');
 
       navigate({ to: '/accept-invite/success' });
     },
 
     onError: () => {
-      toast({
-        title: 'Error accepting invite',
+      toast.error('Error accepting invite',{
         description: 'Please contact tech support',
-        variant: 'destructive',
       });
     },
   });

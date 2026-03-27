@@ -12,10 +12,10 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useObserverMutations } from '../../hooks/observers-queries';
 import { EditObserverFormData, editObserverFormSchema } from '../../models/observer';
-import { useEffect } from 'react';
 
 export default function EditObserver() {
   const navigate = useNavigate();

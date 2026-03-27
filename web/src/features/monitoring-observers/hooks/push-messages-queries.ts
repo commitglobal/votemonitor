@@ -1,6 +1,6 @@
-import { authApi } from '@/common/auth-api';
+import { getPushMessages } from '@/api/monitoring-observers/get-push-messages';
+import { getTargetedMonitoringObservers } from '@/api/monitoring-observers/get-targeted-monitoring-observers';
 import type { DataTableParameters, PageResponse } from '@/common/types';
-import { buildURLSearchParams, isQueryFiltered } from '@/lib/utils';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import type { TargetedMonitoringObserver } from '../models/targeted-monitoring-observer';
 import type { PushMessageModel } from '../models/push-message';
@@ -31,26 +31,7 @@ export function usePushMessages(electionRoundId: string, queryParams: DataTableP
   return useQuery({
     queryKey: pushMessagesKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const params = {
-        ...queryParams.otherParams,
-        PageNumber: String(queryParams.pageNumber),
-        PageSize: String(queryParams.pageSize),
-        SortColumnName: queryParams.sortColumnName,
-        SortOrder: queryParams.sortOrder,
-      };
-      const searchParams = buildURLSearchParams(params);
-
-      const response = await authApi.get<PushMessageResponse>(
-        `/election-rounds/${electionRoundId}/notifications:listSent`,
-        {
-          params: searchParams,
-        }
-      );
-
-      return {
-        ...response.data,
-        isEmpty: !isQueryFiltered(params) && response.data.items.length === 0,
-      };
+      return getPushMessages(electionRoundId, queryParams);
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,
@@ -68,27 +49,7 @@ export const useTargetedMonitoringObservers = (
   return useQuery({
     queryKey: targetedObserversKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const params = {
-        ...queryParams.otherParams,
-        PageNumber: String(queryParams.pageNumber),
-        PageSize: String(queryParams.pageSize),
-        SortColumnName: queryParams.sortColumnName,
-        SortOrder: queryParams.sortOrder,
-      };
-      const searchParams = buildURLSearchParams(params);
-
-      const response = await authApi.get<PageResponse<TargetedMonitoringObserver>>(
-        `election-rounds/${electionRoundId}/notifications:listRecipients`,
-        {
-          params: searchParams,
-        }
-      );
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch notification');
-      }
-
-      return response.data;
+      return getTargetedMonitoringObservers(electionRoundId, queryParams);
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,

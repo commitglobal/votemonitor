@@ -9,13 +9,13 @@ import { z } from 'zod';
 import { authApi } from '@/common/auth-api';
 import { ElectionRoundStatus, type FunctionComponent } from '@/common/types';
 import { RichTextEditor } from '@/components/rich-text-editor';
-import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import { citizenNotificationsKeys } from '../hooks/citizen-notifications-queries';
-import { Button } from '@/components/ui/button';
-import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -53,13 +53,15 @@ function CitizenNotificationMessageForm(): FunctionComponent {
 
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: citizenNotificationsKeys.all(currentElectionRoundId) });
-      toast({
-        title: 'Success',
-        description: 'Notification sent',
-      });
+      toast('Notification sent');
 
       router.invalidate();
       await navigate({ to: '/election-event/$tab', params: { tab: 'citizen-notifications' } });
+    },
+    onError: () => {
+      toast.error('Error sending notification',{
+        description: 'Please contact tech support',
+      });
     },
   });
 
