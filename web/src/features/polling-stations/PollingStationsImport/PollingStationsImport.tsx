@@ -68,6 +68,7 @@ export function PollingStationsImport(): FunctionComponent {
       electionRoundId: string;
       pollingStations: ImportPollingStationRow[];
     }) => {
+
       return authApi.post(`/election-rounds/${electionRoundId}/polling-stations`, { pollingStations });
     },
 

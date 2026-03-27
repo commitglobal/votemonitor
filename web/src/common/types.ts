@@ -316,6 +316,13 @@ export interface Location {
   tags?: Record<string, any>;
 }
 
+const nullableNumber = z
+  .union([z.string(), z.number(), z.null(), z.literal('')])
+  .transform((val) => (val === '' || val === null ? null : +val))
+  .refine((val) => val === null || !isNaN(val), {
+    message: 'Invalid number',
+  });
+
 export const importPollingStationSchema = z
   .object({
     id: z.string().default(() => crypto.randomUUID()),
@@ -328,8 +335,15 @@ export const importPollingStationSchema = z
     number: z.string().min(1, 'Number is required'),
     displayOrder: z.coerce.number().catch(0),
     tags: z.record(z.string()).optional().catch({}),
-    latitude: z.coerce.number().min(-90).max(90).optional(),
-    longitude: z.coerce.number().min(-180).max(180).optional(),
+    latitude: nullableNumber
+      .refine((val) => val === null || (val >= -90 && val <= 90), {
+        message: 'Latitude must be between -90 and 90',
+      }),
+
+    longitude: nullableNumber
+      .refine((val) => val === null || (val >= -180 && val <= 180), {
+        message: 'Longitude must be between -180 and 180',
+      }),
   })
   .superRefine((val, ctx) => {
     if (isNilOrWhitespace(val.level2) && isNotNilOrWhitespace(val.level3)) {

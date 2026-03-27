@@ -15,6 +15,7 @@ import MonitoringNgosDashboard from '../MonitoringNgosDashboard/MonitoringNgosDa
 import CitizenReportingDashboard from '../CitizenReportingDashboard/CitizenReportingDashboard';
 import AssignedFormTemplatesDashboard from '../AssignedFormTemplatesDashboard/AssignedFormTemplatesDashboard';
 import { ElectionRoundDetailsTab } from './tabs';
+
 function ElectionRoundDetails() {
   const navigate = useNavigate();
   const { electionRoundId, tab } = Route.useParams();

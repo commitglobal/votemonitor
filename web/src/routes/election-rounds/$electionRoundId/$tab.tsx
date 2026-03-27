@@ -24,9 +24,10 @@ export const Route = createFileRoute('/election-rounds/$electionRoundId/$tab')({
   component: ElectionRoundDetails,
   loader: ({ context: { queryClient }, params: { electionRoundId } }) =>
     queryClient.ensureQueryData(electionRoundDetailsQueryOptions(electionRoundId)),
-  beforeLoad: ({ params: { tab, electionRoundId } }) => {
+  beforeLoad: ({ params: { tab, electionRoundId }, context: { currentElectionRoundContext } }) => {
     redirectIfNotAuth();
     redirectIfNotPlatformAdmin();
+    currentElectionRoundContext.setState({ currentElectionRoundId: electionRoundId });
 
     const coercedTab = coerceTabSlug(tab);
     if (tab !== coercedTab) {
