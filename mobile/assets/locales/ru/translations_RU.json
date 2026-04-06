@@ -380,7 +380,16 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "Управление моими избирательными участками"
+      "manage_my_polling_stations": "Управление моими избирательными участками",
+      "copy_polling_station_information": "Скопировать данные избирательного участка в буфер обмена",
+      "copy_success_toast": "Данные избирательного участка скопированы в буфер обмена",
+      "copy_error_toast": "Не удалось скопировать данные избирательного участка",
+      "navigate_to_polling_station": "Перейти к избирательному участку"
+    },
+    "navigate_to_polling_station": {
+      "title": "Перейти к избирательному участку",
+      "description": "Выберите приложение, чтобы проложить маршрут до избирательного участка.",
+      "cancel": "Отмена"
     }
   },
   "polling_station_information_form": {

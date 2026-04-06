@@ -1,18 +1,21 @@
 import { DrawerActions } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 import { router, useNavigation } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Popup } from "react-native-map-link";
+import Toast from "react-native-toast-message";
 import { YStack } from "tamagui";
-import SingleSubmissionFormList from "../../../../../../components/SingleSubmissionFormList";
-import MultiSubmissionFormList from "../../../../../../components/MultiSubmissionFormList";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
+import MultiSubmissionFormList from "../../../../../../components/MultiSubmissionFormList";
 import NoElectionRounds from "../../../../../../components/NoElectionRounds";
 import NoVisitsExist from "../../../../../../components/NoVisitsExist";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import { PollingStationGeneral } from "../../../../../../components/PollingStationGeneral";
 import { Screen } from "../../../../../../components/Screen";
 import SelectPollingStation from "../../../../../../components/SelectPollingStation";
+import SingleSubmissionFormList from "../../../../../../components/SingleSubmissionFormList";
 import ObservationSkeleton from "../../../../../../components/SkeletonLoaders/ObservationSkeleton";
 import { Typography } from "../../../../../../components/Typography";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
@@ -25,6 +28,7 @@ const Index = () => {
   const { t } = useTranslation("observation");
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
+  const [openSelectNavigationAppSheet, setOpenSelectNavigationAppSheet] = useState(false);
 
   const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
 
@@ -35,6 +39,75 @@ const Index = () => {
 
   const { data: psiFormQuestions, isLoading: isLoadingPsiFormQuestions } =
     usePollingStationInformationForm(activeElectionRound?.id);
+
+  const options = useMemo(() => {
+    if (!selectedPollingStation) {
+      return;
+    }
+
+    // Find the matching visit to get address and level information
+    const matchingVisit = visits?.find(
+      (visit) => visit.pollingStationId === selectedPollingStation.pollingStationId,
+    );
+
+    const fullAddress = [
+      matchingVisit?.level1,
+      matchingVisit?.level2,
+      matchingVisit?.level3,
+      matchingVisit?.level4,
+      matchingVisit?.level5,
+      matchingVisit?.address,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    return {
+      address: fullAddress,
+      latitude: selectedPollingStation.latitude,
+      longitude: selectedPollingStation.longitude,
+      dialogTitle: t("navigate_to_polling_station.title"),
+      dialogMessage: t("navigate_to_polling_station.description"),
+      cancelText: t("navigate_to_polling_station.actions.cancel"),
+    };
+  }, [selectedPollingStation, visits]);
+
+  const handleCopyPollingStationInfo = async () => {
+    if (!selectedPollingStation) {
+      return;
+    }
+
+    // Find the matching visit to get address and level information
+    const matchingVisit = visits?.find(
+      (visit) => visit.pollingStationId === selectedPollingStation.pollingStationId,
+    );
+
+    const infoText = [
+      matchingVisit?.level1,
+      matchingVisit?.level2,
+      matchingVisit?.level3,
+      matchingVisit?.level4,
+      matchingVisit?.level5,
+      matchingVisit?.number,
+      matchingVisit?.address,
+    ]
+      .filter(Boolean)
+      .join(" / ");
+
+    try {
+      await Clipboard.setStringAsync(infoText);
+      Toast.show({
+        type: "success",
+        text2: t("options_menu.copy_success_toast"),
+      });
+      setOpenContextualMenu(false);
+    } catch (error) {
+      console.error("Failed to copy polling station information:", error);
+      Toast.show({
+        type: "error",
+        text2: t("options_menu.copy_error_toast"),
+      });
+    }
+  };
 
   if (!isLoading && !activeElectionRound) {
     return <NoElectionRounds />;
@@ -61,20 +134,48 @@ const Index = () => {
 
       {openContextualMenu && (
         <OptionsSheet open setOpen={setOpenContextualMenu}>
-          <YStack
-            paddingVertical="$xxs"
-            paddingHorizontal="$sm"
-            onPress={() => {
-              setOpenContextualMenu(false);
-              router.push("/manage-polling-stations");
-            }}
-          >
-            <Typography preset="body1" color="$gray7" lineHeight={24}>
+          <YStack paddingHorizontal="$sm" gap="$xxs">
+            <Typography
+              preset="body1"
+              color="$gray7"
+              paddingVertical="$xs"
+              lineHeight={24}
+              onPress={() => {
+                setOpenContextualMenu(false);
+                router.push("/manage-polling-stations");
+              }}
+            >
               {t("options_menu.manage_my_polling_stations")}
+            </Typography>
+            <Typography
+              preset="body1"
+              color="$gray7"
+              paddingVertical="$xs"
+              lineHeight={24}
+              onPress={handleCopyPollingStationInfo}
+            >
+              {t("options_menu.copy_polling_station_information")}
+            </Typography>
+            <Typography
+              preset="body1"
+              color="$gray7"
+              paddingVertical="$xs"
+              lineHeight={24}
+              onPress={() => setOpenSelectNavigationAppSheet(true)}
+            >
+              {t("options_menu.navigate_to_polling_station")}
             </Typography>
           </YStack>
         </OptionsSheet>
       )}
+
+      <Popup
+        isVisible={openSelectNavigationAppSheet}
+        setIsVisible={setOpenSelectNavigationAppSheet}
+        onCancelPressed={() => setOpenSelectNavigationAppSheet(false)}
+        onAppPressed={() => setOpenSelectNavigationAppSheet(false)}
+        options={options ?? {}}
+      />
 
       <YStack paddingHorizontal="$md" flex={1}>
         {(isLoading || isLoadingPsiData || isLoadingPsiFormQuestions) && <ObservationSkeleton />}

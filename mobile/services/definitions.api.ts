@@ -78,10 +78,17 @@ export const getPollingStationNomenclatorVersion = (
 */
 export type PollingStationVisitsAPIResponse = {
   visits: {
-    pollingStationId: string;
-    visitedAt: string; // ISO date
-    address: string;
-    number: string;
+    pollingStationId: string,
+    visitedAt: string,
+    level1: string,
+    level2?: string,
+    level3?: string,
+    level4?: string,
+    level5?: string,
+    address: string,
+    number: string,
+    latitude?: number,
+    longitude?: number,
   }[];
 };
 
