@@ -46,9 +46,12 @@ import { difference } from 'lodash';
 import { useMemo, useState, type ReactElement } from 'react';
 import { toast } from 'sonner';
 import { NgoFormBase } from '../../models';
-import { formsKeys, useForms } from '../../queries';
+import { formDetailsQueryOptions, formsKeys, useForms } from '../../queries';
 import EditFormAccessDialog, { useEditFormAccessDialog } from './EditFormAccessDialog';
 import { FormFilters } from './FormFilters/FormFilters';
+import { FormExporter } from '@/lib/form-exporter';
+import { Packer } from 'docx';
+import saveAs from 'file-saver';
 
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -343,6 +346,9 @@ export default function FormsDashboard(): ReactElement {
                 </DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
+                <DropdownMenuItem onClick={() => handleExportForm(row.original.id)}>Export</DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 ? (
                 <DropdownMenuItem
                   className='text-red-600'
                   disabled={electionRound?.status === ElectionRoundStatus.Archived}
@@ -486,6 +492,9 @@ export default function FormsDashboard(): ReactElement {
                   </DropdownMenuItem>
                 ) : null}
                 {row.depth === 0 ? (
+                  <DropdownMenuItem onClick={() => handleExportForm(row.original.id)}>Export</DropdownMenuItem>
+                ) : null}
+                {row.depth === 0 ? (
                   <DropdownMenuItem
                     className='text-red-600'
                     disabled={!row.original.isFormOwner || electionRound?.status === ElectionRoundStatus.Archived}
@@ -584,6 +593,17 @@ export default function FormsDashboard(): ReactElement {
     navigate({ to: '/forms/$formId/edit-translation/$languageCode', params: { formId, languageCode } });
   };
 
+  const handleExportForm = async (formId: string) => {
+    const form = await queryClient.fetchQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
+
+    const formExporter = new FormExporter();
+    const doc = formExporter.create(form);
+    Packer.toBlob(doc).then(blob => {
+      saveAs(blob, `${form.code}.docx`);
+    });
+  };
+
+
   const deleteTranslationMutation = useMutation({
     mutationFn: ({
       electionRoundId,
@@ -665,7 +685,7 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast( 'Form published');
+      toast('Form published');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
@@ -674,13 +694,13 @@ export default function FormsDashboard(): ReactElement {
     onError: (error) => {
       // @ts-ignore
       if (error.response.status === 400) {
-        toast.error('Error publishing form',{
+        toast.error('Error publishing form', {
           description: 'You are missing translations. Please translate all fields and try again',
         });
 
         return;
       }
-      toast.error('Error publishing form',{
+      toast.error('Error publishing form', {
         description: 'Please contact tech support',
       });
     },
@@ -692,14 +712,14 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onSuccess: (_data, { electionRoundId }) => {
-      toast( 'Form obsoleted');
+      toast('Form obsoleted');
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
       router.invalidate();
     },
 
     onError: () => {
-      toast.error('Error obsoleting form',{
+      toast.error('Error obsoleting form', {
         description: 'Please contact tech support',
       });
     },
@@ -718,7 +738,7 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onError: (error) => {
-      toast.error('Error cloning form',{
+      toast.error('Error cloning form', {
         description: 'Please contact tech support',
       });
     },

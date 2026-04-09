@@ -17,7 +17,6 @@ import {
 import { ratingScaleToNumber } from "./utils";
 
 export class FormExporter {
-  // tslint:disable-next-line: typedef
   public create(form: FormFull | FormTemplateFull): Document {
     const document = new Document({
       sections: [
@@ -190,30 +189,26 @@ export class FormExporter {
   private createQuestionSection(question: BaseQuestion, allQuestions: BaseQuestion[], language: string): FileChild[] {
     const children: FileChild[] = [];
 
+    // Question text
     children.push(new Paragraph({
       children: [
-        new TextRun(
-          { text: `${question.code}. `, bold: true }
-        ),
-        new TextRun({
-          text: question.text[language],
-        })
-      ]
+        new TextRun({ text: `${question.code}. `, bold: true }),
+        new TextRun({ text: question.text[language] })
+      ],
     }));
 
+    // Helptext (if present)
     if (question.helptext?.[language]) {
       children.push(new Paragraph({
-        children: [
-          new TextRun({ text: question.helptext[language], italics: true })
-        ]
+        children: [new TextRun({ text: question.helptext[language], italics: true })],
       }));
     }
 
+    // Display logic (if present)
     if (question.displayLogic) {
       children.push(new Paragraph({
-        children: [
-          new TextRun({ text: this.getDisplayLogicText(question, allQuestions, language), italics: true })
-        ]
+        children: [new TextRun({ text: this.getDisplayLogicText(question, allQuestions, language), italics: true })],
+
       }));
     }
 
@@ -255,9 +250,6 @@ export class FormExporter {
               size: 1
             },
           },
-          spacing: {
-            after: 200, // space between lines
-          },
           children: [new TextRun("")],
         })
       );
@@ -285,9 +277,7 @@ export class FormExporter {
     if (isSingleSelectQuestion(question) || isMultiSelectQuestion(question)) {
       children.push(
         new Paragraph({
-          spacing: {
-            after: 100, // space between lines
-          },
+
           children:
             question.options.filter(option => !option.isFreeText).map(option => {
               return new TextRun({
@@ -302,9 +292,6 @@ export class FormExporter {
 
         children.push(
           new Paragraph({
-            spacing: {
-              after: 200,
-            },
             children: [
               new TextRun(`☐ ${freeTextOption?.text[language] ?? ""}`)
             ],
@@ -321,9 +308,6 @@ export class FormExporter {
                 style: BorderStyle.SINGLE,
                 size: 1
               },
-            },
-            spacing: {
-              after: 300,
             },
             children: [new TextRun("")],
           })

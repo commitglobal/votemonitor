@@ -68,22 +68,21 @@ export default function PreviewFormPage({
                 <LanguageBadge languageCode={languageCode} />
               </CardTitle>
               <div>
-              {!hideEditButton && (
-                <Button
-                  onClick={onNavigateToEdit}
-                  variant='ghost-primary'
-                  disabled={form.status !== FormStatus.Drafted}>
-                  <PencilIcon className='w-[18px] mr-2 text-purple-900' />
-                  <span className='text-base text-purple-900'>Edit</span>
-                </Button>
-              )}             
-              
-               <Button onClick={exportForm} 
-                variant='ghost-primary'>
-                <ArrowDownTrayIcon className='w-[18px] mr-2 text-purple-900' />
-               </Button>
-              </div>
+                {!hideEditButton && (
+                  <Button
+                    onClick={onNavigateToEdit}
+                    variant='ghost-primary'
+                    disabled={form.status !== FormStatus.Drafted}>
+                    <PencilIcon className='w-[18px] mr-2 text-purple-900' />
+                    <span className='text-base text-purple-900'>Edit</span>
+                  </Button>
+                )}
 
+                <Button onClick={exportForm}
+                  variant='ghost-primary'>
+                  <ArrowDownTrayIcon className='w-[18px] mr-2 text-purple-900' />
+                </Button>
+              </div>
             </div>
             <Separator />
           </CardHeader>
@@ -155,10 +154,16 @@ export default function PreviewFormPage({
                 <span className='text-xl'>Form questions</span>
                 <LanguageBadge languageCode={languageCode} />
               </CardTitle>
-              <Button onClick={onNavigateToEdit} variant='ghost-primary' disabled={form.status !== FormStatus.Drafted}>
-                <PencilIcon className='w-[18px] mr-2 text-purple-900' />
-                <span className='text-base text-purple-900'>Edit</span>
-              </Button>
+              <div>
+                <Button onClick={onNavigateToEdit} variant='ghost-primary' disabled={form.status !== FormStatus.Drafted}>
+                  <PencilIcon className='w-[18px] mr-2 text-purple-900' />
+                  <span className='text-base text-purple-900'>Edit</span>
+                </Button>
+                <Button onClick={exportForm}
+                  variant='ghost-primary'>
+                  <ArrowDownTrayIcon className='w-[18px] mr-2 text-purple-900' />
+                </Button>
+              </div>
             </div>
             <Separator />
           </CardHeader>
