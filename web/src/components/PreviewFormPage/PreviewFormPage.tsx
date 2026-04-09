@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PencilIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -25,6 +25,10 @@ import { FormTemplateFull } from '@/features/form-templates/models';
 import { FormFull } from '@/features/forms/models';
 import { getTranslationOrDefault, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import FormStatusBadge from '../FormStatusBadge/FormStatusBadge';
+import { useCallback } from 'react';
+import { Packer } from 'docx';
+import { FormExporter } from '@/lib/form-exporter';
+import { saveAs } from 'file-saver';
 
 export interface PreviewFormPageProps {
   form: FormFull | FormTemplateFull;
@@ -40,6 +44,15 @@ export default function PreviewFormPage({
 }: PreviewFormPageProps): FunctionComponent {
   const { t } = useTranslation();
 
+  const exportForm = useCallback(() => {
+    const formExporter = new FormExporter();
+    const doc = formExporter.create(form);
+
+    Packer.toBlob(doc).then(blob => {
+      saveAs(blob, `${form.code}.docx`);
+    });
+  }, [form]);
+
   return (
     <Tabs defaultValue='form-details'>
       <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
@@ -54,6 +67,7 @@ export default function PreviewFormPage({
                 <span className='text-xl'>Form details</span>
                 <LanguageBadge languageCode={languageCode} />
               </CardTitle>
+              <div>
               {!hideEditButton && (
                 <Button
                   onClick={onNavigateToEdit}
@@ -62,7 +76,14 @@ export default function PreviewFormPage({
                   <PencilIcon className='w-[18px] mr-2 text-purple-900' />
                   <span className='text-base text-purple-900'>Edit</span>
                 </Button>
-              )}
+              )}             
+              
+               <Button onClick={exportForm} 
+                variant='ghost-primary'>
+                <ArrowDownTrayIcon className='w-[18px] mr-2 text-purple-900' />
+               </Button>
+              </div>
+
             </div>
             <Separator />
           </CardHeader>
