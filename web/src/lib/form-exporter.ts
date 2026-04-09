@@ -51,7 +51,7 @@ export class FormExporter {
     ];
   }
 
-  public createObservationSection(): FileChild[] {
+  private createObservationSection(): FileChild[] {
     return [
       new Paragraph({
         text: `Observation details`,
@@ -187,7 +187,7 @@ export class FormExporter {
   }
 
 
-  public createQuestionSection(question: BaseQuestion, allQuestions: BaseQuestion[], language: string): FileChild[] {
+  private createQuestionSection(question: BaseQuestion, allQuestions: BaseQuestion[], language: string): FileChild[] {
     const children: FileChild[] = [];
 
     children.push(new Paragraph({
@@ -366,18 +366,11 @@ export class FormExporter {
     return children;
   }
 
-  public createHeading(text: string): Paragraph {
+  private createHeading(text: string): Paragraph {
     return new Paragraph({
       text: text,
       heading: HeadingLevel.HEADING_1,
       thematicBreak: true
-    });
-  }
-
-  public createSubHeading(text: string): Paragraph {
-    return new Paragraph({
-      text: text,
-      heading: HeadingLevel.HEADING_2
     });
   }
 }
