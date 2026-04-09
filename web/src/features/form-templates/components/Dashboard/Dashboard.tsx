@@ -42,8 +42,11 @@ import { format } from 'date-fns';
 import { difference } from 'lodash';
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
 import { toast } from 'sonner';
-import { formTemlatesKeys, useFormTemplates } from '../../queries';
+import { formTemlatesKeys, formTemplateDetailsQueryOptions, useFormTemplates } from '../../queries';
 import { FormTemplateFilters } from './FormTemplateFilters';
+import { FormExporter } from '@/lib/form-exporter';
+import { Packer } from 'docx';
+import saveAs from 'file-saver';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -248,6 +251,9 @@ export default function FormTemplatesDashboard(): ReactElement {
                 <DropdownMenuItem onClick={() => handleDuplicateFormTemplate(row.original)}>Duplicate</DropdownMenuItem>
               ) : null}
               {row.depth === 0 ? (
+                <DropdownMenuItem onClick={() => handleExportFormTemplate(row.original)}>Export</DropdownMenuItem>
+              ) : null}
+              {row.depth === 0 ? (
                 <DropdownMenuItem
                   className='text-red-600'
                   onClick={async () => {
@@ -327,6 +333,16 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const handleDuplicateFormTemplate = (formTemplate: FormBase) => {
     duplicateFormTemplateMutation.mutate({ formTemplateId: formTemplate.id });
+  };
+
+  const handleExportFormTemplate = async (form: FormBase) => {
+    const formTemplate = await queryClient.fetchQuery(formTemplateDetailsQueryOptions(form.id));
+
+    const formExporter = new FormExporter();
+    const doc = formExporter.create(formTemplate);
+    Packer.toBlob(doc).then(blob => {
+      saveAs(blob, `${form.code}.docx`);
+    });
   };
 
   const navigateToFormTemplate = (formTemplateId: string, languageCode: string) => {
@@ -425,13 +441,13 @@ export default function FormTemplatesDashboard(): ReactElement {
     onError: (error) => {
       // @ts-ignore
       if (error.response.status === 400) {
-        toast.error('Error publishing form template',{
+        toast.error('Error publishing form template', {
           description: 'You are missing translations. Please translate all fields and try again',
         });
 
         return;
       }
-      toast.error('Error publishing form template',{
+      toast.error('Error publishing form template', {
         description: 'Please contact tech support',
       });
     },
@@ -450,7 +466,7 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
 
     onError: () => {
-      toast.error('Error obsoleting form',{
+      toast.error('Error obsoleting form', {
         description: 'Please contact tech support',
       });
     },
@@ -469,7 +485,7 @@ export default function FormTemplatesDashboard(): ReactElement {
     },
 
     onError: () => {
-      toast.error('Error cloning form template',{
+      toast.error('Error cloning form template', {
         description: 'Please contact tech support',
       });
     },
