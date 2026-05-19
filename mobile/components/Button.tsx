@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, TextStyle, ViewStyle } from "react-native";
+import { StyleProp, TextStyle } from "react-native";
 import {
   Button as TamaguiButton,
   ButtonProps as TamaguiButtonProps,
@@ -11,10 +11,6 @@ import { Typography } from "./Typography";
 type PresetType = "default" | "outlined" | "chromeless" | "red" | "yellow";
 export interface ButtonProps extends TamaguiButtonProps {
   children: string;
-  /**
-   * Style overrides
-   */
-  style?: StyleProp<ViewStyle>;
   /**
    * One of the different types of button presets.
    */
@@ -31,7 +27,7 @@ export interface ButtonProps extends TamaguiButtonProps {
  * @param {ButtonProps} props - The props for the `Button` component.
  * @returns {JSX.Element} The rendered `Button` component.
  */
-const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
+const Button = (props: ButtonProps): React.ReactElement => {
   const theme = useTheme();
 
   const { style: $styleOverride, children, textStyle, ...rest } = props;
@@ -113,6 +109,6 @@ const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
       </Typography>
     </StyledButton>
   );
-});
+};
 
 export default Button;

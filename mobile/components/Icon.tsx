@@ -53,8 +53,6 @@ import Form from "../assets/icons/form.svg";
 import CheckCircle from "../assets/icons/check-circle.svg";
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
-import { StyleProp, ViewStyle } from "react-native";
-import { Ref } from "react";
 import Note from "../assets/icons/questionCard/note.svg";
 import Photo from "../assets/icons/questionCard/photo.svg";
 import Video from "../assets/icons/questionCard/video.svg";
@@ -85,10 +83,6 @@ interface IconProps extends ViewProps {
   width?: number;
   height?: number;
 
-  /**
-   * Style overrides for the view container
-   */
-  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -103,8 +97,7 @@ type IconRegistry = {
   [key: string]: React.ReactNode;
 };
 
-export const defaultIcon = React.forwardRef(
-  (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
+export const defaultIcon = (props: IconProps): React.ReactElement => {
     const {
       icon,
       color = "black",
@@ -186,8 +179,7 @@ export const defaultIcon = React.forwardRef(
         {iconRegistry[icon]}
       </View>
     );
-  },
-);
+};
 
 export const Icon = styled(
   defaultIcon,

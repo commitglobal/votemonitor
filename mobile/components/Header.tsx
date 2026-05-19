@@ -77,7 +77,7 @@ const Header = ({
 
   return (
     <StyledWrapper>
-      <XStack style={[$headerContainer, $styleOverride]}>
+      <XStack style={[$headerContainer, $styleOverride] as any}>
         {/* manipulating status bar icons to desired color */}
         <StatusBar barStyle={barStyle} />
         {/* left icon */}

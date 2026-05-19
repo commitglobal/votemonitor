@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import Input, { InputProps } from "../Inputs/Input";
 import WizardFormElement from "./WizardFormElement";
 
@@ -15,14 +15,12 @@ interface WizardFormInputProps extends InputProps {
   ref?: any;
 }
 
-const WizardFormInput: React.FC<WizardFormInputProps> = forwardRef(
-  ({ type, label, paragraph, helper, placeholder = "", ...rest }, ref) => {
-    return (
-      <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
-        <Input type={type} {...rest} placeholder={placeholder} ref={ref} />
-      </WizardFormElement>
-    );
-  },
-);
+const WizardFormInput = ({ type, label, paragraph, helper, placeholder = "", ref, ...rest }: WizardFormInputProps) => {
+  return (
+    <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
+      <Input type={type} {...rest} placeholder={placeholder} ref={ref} />
+    </WizardFormElement>
+  );
+};
 
 export default WizardFormInput;

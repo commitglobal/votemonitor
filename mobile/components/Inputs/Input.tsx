@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   styled,
   Input as TamaguiInput,
@@ -31,29 +31,27 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input: React.FC<InputProps> = forwardRef(
-  ({ type, value, iconRight, borderColor, onIconRightPress, ...rest }, ref) => {
-    return (
-      <>
-        {type === "textarea" ? (
-          <StyledTextArea ref={ref} value={value} borderColor={borderColor || "$gray3"} {...rest} />
-        ) : (
-          <InputWrapper borderColor={borderColor || "$gray3"}>
-            <SearchInput
-              value={value}
-              secureTextEntry={type === "password"}
-              keyboardType={type === "numeric" || type === "email-address" ? type : "default"}
-              // fix ios keyboard flicker bug
-              textContentType={"oneTimeCode"}
-              {...rest}
-            />
-            {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
-          </InputWrapper>
-        )}
-      </>
-    );
-  },
-);
+const Input = ({ type, value, iconRight, borderColor, onIconRightPress, ref, ...rest }: InputProps) => {
+  return (
+    <>
+      {type === "textarea" ? (
+        <StyledTextArea ref={ref} value={value} borderColor={borderColor || "$gray3"} {...rest} />
+      ) : (
+        <InputWrapper borderColor={borderColor || "$gray3"}>
+          <SearchInput
+            value={value}
+            secureTextEntry={type === "password"}
+            keyboardType={type === "numeric" || type === "email-address" ? type : "default"}
+            // fix ios keyboard flicker bug
+            textContentType={"oneTimeCode"}
+            {...rest}
+          />
+          {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
+        </InputWrapper>
+      )}
+    </>
+  );
+};
 
 const InputWrapper = styled(XStack, {
   backgroundColor: "white",

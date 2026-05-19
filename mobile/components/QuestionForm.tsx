@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { Control, Controller } from "react-hook-form";
 import WizardFormInput from "./WizardFormInputs/WizardFormInput";
 import WizardDateFormInput from "./WizardFormInputs/WizardDateFormInput";
@@ -19,6 +19,7 @@ interface IQuestionFormProps {
   language: string;
   required?: boolean;
   handleFocus?: () => void;
+  ref?: React.Ref<any>;
 }
 
 interface IActiveQuestion {
@@ -27,11 +28,14 @@ interface IActiveQuestion {
   question: ApiFormQuestion;
 }
 
-const QuestionForm = forwardRef(
-  (
-    { control, activeQuestion, handleFocus, language, required }: IQuestionFormProps,
-    textareaRef,
-  ) => {
+const QuestionForm = ({
+  control,
+  activeQuestion,
+  handleFocus,
+  language,
+  required,
+  ref: textareaRef,
+}: IQuestionFormProps) => {
     const { t } = useTranslation("polling_station_form_wizard");
 
     let returnedComponent: React.ReactNode;
@@ -227,7 +231,6 @@ const QuestionForm = forwardRef(
         />
       </>
     );
-  },
-);
+};
 
 export default QuestionForm;

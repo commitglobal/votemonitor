@@ -1,9 +1,7 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
 import { styled, Card as TamaguiCard, CardProps as TamaguiCardProps } from "tamagui";
 
 export interface CardProps extends TamaguiCardProps {
-  style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
 }
 
@@ -21,7 +19,7 @@ const StyledCard = styled(TamaguiCard, {
   },
 });
 
-const Card = (props: CardProps): JSX.Element => {
+const Card = (props: CardProps): React.ReactElement => {
   const { children, style: $styleOverride, ...rest } = props;
 
   return (

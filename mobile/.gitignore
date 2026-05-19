@@ -38,3 +38,9 @@ android/
 
 
 google-services.json
+
+# builds
+*.aab
+*.ipa
+*.apk
+*.gz

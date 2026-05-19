@@ -1,3 +1,4 @@
+import React, { useCallback, useState } from "react";
 import { YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { ListView } from "./ListView";
@@ -8,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 import Card, { CardProps } from "./Card";
 import CardFooter from "./CardFooter";
-import { useCallback, useState } from "react";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 interface GuideCardProps extends CardProps {
@@ -59,7 +59,7 @@ interface ResourcesListProps {
   isLoading: boolean;
   resources: Guide[];
   refetch: () => Promise<unknown>;
-  header?: JSX.Element;
+  header?: React.ReactElement;
   translationKey?: string;
   emptyContainerMarginTop?: string;
   onResourcePress?: (resource: Guide) => void;

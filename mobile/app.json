@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "2.5.3",
+    "version": "2.5.5",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -12,26 +12,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "135",
+      "buildNumber": "146",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       }
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 135,
+      "versionCode": 146,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -57,6 +52,7 @@
     "updates": {
       "url": "https://u.expo.dev/93e17628-ddcd-4e67-849c-b356a18a6082"
     },
+    "newArchEnabled": false,
     "plugins": [
       "expo-router",
       [
@@ -79,9 +75,7 @@
           "color": "#FDD20C"
         }
       ],
-      [
-        "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
-      ],
+      ["@lovesworking/watermelondb-expo-plugin-sdk-52-plus"],
       [
         "expo-build-properties",
         {
@@ -89,10 +83,7 @@
             "extraPods": [
               {
                 "name": "simdjson",
-                "configurations": [
-                  "Debug",
-                  "Release"
-                ],
+                "configurations": ["Debug", "Release"],
                 "path": "../node_modules/@nozbe/simdjson",
                 "modular_headers": true
               }
@@ -102,10 +93,9 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
+            "edgeToEdgeEnabled": false,
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }
@@ -127,7 +117,8 @@
         }
       ],
       "react-native-compressor",
-      "react-native-map-link"
+      "react-native-map-link",
+      "@react-native-community/datetimepicker"
     ]
   }
 }

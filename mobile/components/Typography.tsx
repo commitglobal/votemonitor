@@ -1,14 +1,9 @@
 import React from "react";
-import { StyleProp, TextStyle } from "react-native";
 import { Text, styled, TextProps as TamaguiTextProps } from "tamagui";
 
 type PresetType = "default" | "heading" | "subheading" | "body1" | "body2" | "helper";
 
 export interface TextProps extends TamaguiTextProps {
-  /**
-   * Style overrides
-   */
-  style?: StyleProp<TextStyle>;
   /**
    * One of the different types of text presets.
    */

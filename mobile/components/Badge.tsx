@@ -29,7 +29,7 @@ export interface BadgeProps extends ViewProps {
  * @param {BadgeProps} props - The props for the `Badge` component.
  * @returns {JSX.Element} The rendered `Badge` component.
  */
-const Badge = (props: BadgeProps): JSX.Element => {
+const Badge = (props: BadgeProps): React.ReactElement => {
   const { status, textStyle, ...rest } = props;
 
   // TODO @madalinazanficu: use strong typed values for props

@@ -67,17 +67,14 @@ const availableUpdateDescription = (updatesSystem: UseUpdatesReturnType) => {
 };
 
 const errorDescription = (updatesSystem: UseUpdatesReturnType) => {
-  const { initializationError, checkError, downloadError } = updatesSystem;
-  const initializationErrorDescription = initializationError?.message
-    ? `Error on init: ${initializationError?.message}\n`
-    : '';
+  const { checkError, downloadError } = updatesSystem;
   const checkErrorDescription = checkError?.message
     ? `Error on check: ${checkError?.message}\n`
     : '';
   const downloadErrorDescription = downloadError?.message
     ? `Error on download: ${downloadError?.message}\n`
     : '';
-  return initializationErrorDescription + checkErrorDescription + downloadErrorDescription;
+  return checkErrorDescription + downloadErrorDescription;
 };
 
 export {

@@ -20,7 +20,7 @@ const ReportCard = ({
   description,
   numberOfAttachments,
   onPress,
-}: ReportCardProps): JSX.Element => {
+}: ReportCardProps): React.ReactElement => {
   const { t } = useTranslation("quick_report");
 
   const incidentCategoryString = useMemo(() => {

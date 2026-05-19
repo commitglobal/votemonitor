@@ -12,7 +12,7 @@ import { AppState, AppStateStatus } from 'react-native';
 export const useAppState: (callback?: (activating: boolean) => void) => AppStateStatus = (
   callback = undefined,
 ) => {
-  const callbackRef = useRef<typeof callback>();
+  const callbackRef = useRef<typeof callback>(undefined);
   useEffect(() => {
     callbackRef.current = callback;
   }, [callback]);

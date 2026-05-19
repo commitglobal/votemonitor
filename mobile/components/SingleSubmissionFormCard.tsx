@@ -22,7 +22,7 @@ export interface SingleSubmissionFormCardProps extends CardProps {
   onPress: () => void;
 }
 
-const SingleSubmissionFormCard = (props: SingleSubmissionFormCardProps): JSX.Element => {
+const SingleSubmissionFormCard = (props: SingleSubmissionFormCardProps): React.ReactElement => {
   const { t } = useTranslation("common");
   const { form, onPress, ...rest } = props;
 

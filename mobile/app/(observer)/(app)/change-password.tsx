@@ -23,7 +23,7 @@ interface FormData {
   confirmPassword: string;
 }
 
-const PasswordInput = (props: FormInputProps): JSX.Element => {
+const PasswordInput = (props: FormInputProps): React.ReactElement => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   return (
     <FormInput
