@@ -77,7 +77,7 @@ const Select = ({
           open={isOpen}
           moveOnKeyboardChange={isOpen || Keyboard.isVisible()}
         >
-          <Sheet.Frame>
+          <Sheet.Frame backgroundColor="white">
             <YStack
               borderBottomWidth={1}
               borderBottomColor="$gray3"
@@ -100,6 +100,7 @@ const Select = ({
               marginBottom={insets.bottom}
               paddingHorizontal="$sm"
               keyboardShouldPersistTaps="handled"
+              backgroundColor="white"
             >
               <Adapt.Contents />
             </Sheet.ScrollView>
@@ -109,8 +110,8 @@ const Select = ({
       </Adapt>
 
       <TamaguiSelect.Content>
-        <TamaguiSelect.Viewport>
-          <TamaguiSelect.Group>
+        <TamaguiSelect.Viewport backgroundColor="white">
+          <TamaguiSelect.Group backgroundColor="white">
             {filteredOptions.length === 0 ? (
               <Typography padding="$md"> {t("no_data")}</Typography>
             ) : (
@@ -122,11 +123,14 @@ const Select = ({
                     value={entry.value}
                     gap="$3"
                     paddingBottom="$sm"
+                    backgroundColor="white"
+                    pressStyle={{ backgroundColor: "$purple1" }}
                   >
                     <TamaguiSelect.ItemText
                       width={"90%"}
                       numberOfLines={itemNumberOfLines}
                       maxFontSizeMultiplier={1.2}
+                      color="$gray9"
                     >
                       {entry.label}
                     </TamaguiSelect.ItemText>
@@ -148,6 +152,8 @@ const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
   color: "$purple5",
   placeholderTextColor: "$purple5",
+  borderColor: "transparent",
+  borderWidth: 0,
   focusStyle: {
     borderColor: "transparent",
   },

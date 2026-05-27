@@ -87,7 +87,7 @@ function RootLayout() {
   // !: To improve performance and cause fewer renders, try to reduce the scope of your providers to only the routes that need them.
 
   return (
-    <TamaguiProvider config={tamaguiConfig}>
+    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
       <NetInfoProvider>
         <AuthContextProvider>
           <PersistQueryContextProvider>
