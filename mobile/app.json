@@ -12,16 +12,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "148",
+      "buildNumber": "150",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": ["fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -75,7 +80,9 @@
           "color": "#FDD20C"
         }
       ],
-      ["@lovesworking/watermelondb-expo-plugin-sdk-52-plus"],
+      [
+        "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
+      ],
       [
         "expo-build-properties",
         {
@@ -83,7 +90,10 @@
             "extraPods": [
               {
                 "name": "simdjson",
-                "configurations": ["Debug", "Release"],
+                "configurations": [
+                  "Debug",
+                  "Release"
+                ],
                 "path": "../node_modules/@nozbe/simdjson",
                 "modular_headers": true
               }
@@ -95,7 +105,9 @@
             "buildToolsVersion": "35.0.0",
             "edgeToEdgeEnabled": false,
             "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
             }
           }
         }
