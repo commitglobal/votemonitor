@@ -1,0 +1,1261 @@
+{
+    "id": "b50d5b1a-ab50-4105-98c0-cffd76201fe1",
+    "name": {
+        "EN": "",
+        "HY": "7:00-8:00 հանձնաժողովի նիստի դիտարկման քարտ",
+        "RU": "O - 7:00-8:00 карточка наблюдения за заседанием комиссии"
+    },
+    "description": {
+        "EN": "",
+        "HY": "Դիտորդը պետք է լրացնի մինչև 08:05",
+        "RU": "Наблюдатель должен завершить заполнение к 08:05"
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "43821659-b4b7-4298-9550-3bd3054565e1",
+            "Code": "O1",
+            "Text": {
+                "EN": "",
+                "HY": "1․ Դիտարկումը սկսելու ժամը",
+                "RU": "1. Время начала наблюдения"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "820ae83d-76a6-4b3c-9511-40be02999a9c",
+            "Code": "O2",
+            "Text": {
+                "EN": "",
+                "HY": "2․ Ե՞րբ է սկսվել հանձնաժողովի նիստը",
+                "RU": "2. Когда началось заседание комиссии?"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Մինչև 5 րոպե ուշացումը կարող եք անտեսել, եթե այդ ուշացումը միջադեպով չի պայմանավորված: «Այլ» տարբերակում ժամը նշելու պարագայում նշեք նաև ուշացման պատճառը:",
+                "RU": "Задержку до 5 минут можно игнорировать, если она не вызвана инцидентом. Если вы указываете время в опции «Другое», также укажите причину задержки."
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "49954e53-7ee2-468b-aa45-e6792df40fe4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "7:00",
+                        "RU": "7:00"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "55b79506-e493-4d89-ab1f-5b4b75aa7ede",
+                    "Text": {
+                        "EN": "",
+                        "HY": "7:05 կամ ավելի ուշ ժամ",
+                        "RU": "7:05 или позже"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "be82b52c-a768-4daa-9965-6e5652af2c95",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նշել նիստի սկսվելու ժամը",
+                        "RU": "Укажите время начала сессии"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "838aac0a-face-41f0-b2c9-61663698c94f",
+            "Code": "Օ3",
+            "Text": {
+                "EN": "",
+                "HY": "3. Հանձնաժողովի բացակա անդամների թիվը 7:00-8:00",
+                "RU": "3. Количество отсутствующих членов Комиссии 7:00-8:00"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Նիստը իրավազոր չէ, եթե ներկա չէ հանձնաժողովի անդամների կեսից ավելին",
+                "RU": "Заседание не считается состоявшимся, если отсутствует более половины членов комиссии."
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "0dba15e0-79ea-42ce-9f5f-129c9793b320",
+            "Code": "Օ4.2",
+            "Text": {
+                "EN": "",
+                "HY": "3.1 Հանձնաժողովի բացակա անդամների թիվը 8:00-ից հետո",
+                "RU": "3.1 Количество отсутствующих членов комиссии после 8:00"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Մինչև 1000 ընտրողի դեպքում պիտի լինի առնվազն 5 ՏԸՀ անդամ, 1000-ից ավել ընտրողի դեպքում առնվազն 7 անդամ, իսկ ժամը 9։00-ի դրությամբ ցանկացած դեպքում պիտի լինի առնվազն 6 անդամ։",
+                "RU": "В случае, если число избирателей достигает 1000, должно быть не менее 5 членов Избирательной комиссии, в случае, если число избирателей превышает 1000, должно быть не менее 7 членов, и в любом случае, по состоянию на 9:00 утра, должно быть не менее 6 членов."
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": {
+                "Value": "0",
+                "Condition": "GreaterThan",
+                "ParentQuestionId": "d226c8eb-5c86-4d39-a37a-d0aafc3dba3f"
+            },
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "4405b02d-5ee3-4ec2-9738-97b1a705b357",
+            "Code": "O4",
+            "Text": {
+                "EN": "",
+                "HY": "4․ Հանձնաժողովի գործառույթներ",
+                "RU": "4.4. Функции Комиссии"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "a07b8dd1-4940-4d2c-a27e-52f8614dfd67",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վիճակահանությամբ չեն սահմանվել հանձնաժողովի գործառույթները",
+                        "RU": "Функции комиссии не были определены жеребьевкой."
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b7c2628c-d56b-456f-ba2f-cefeebaf09b2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովի նախագահը չի իրականացնում իր գործառույթները",
+                        "RU": "Председатель комиссии не исполняет свои обязанности"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "70bcb508-d4ae-49f4-9d86-0bc4d76b4344",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Պատշաճ չի տպվել կամ փակցվել տեխնիկական սարքի 0-ական տեղեկանքը",
+                        "RU": "Нулевой талон на техническом устройстве была напечатана или размещена ненадлежащим образом"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2a6b775b-dada-4b51-afa2-682b6dbfd824",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ կերպ խախտվել է նիստի ընթացակարգը",
+                        "RU": "Процедура заседания была нарушена иным образом."
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1d1d7174-1f62-4f5a-af54-687300d47e6c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Արդյո՞ք տեղի է ունեցել միջադեպ",
+                        "RU": "Произошел ли инцидент?"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ee1884e4-20f4-4f5e-bd30-25d49f0a1410",
+            "Code": "O5.1",
+            "Text": {
+                "EN": "",
+                "HY": "4.1 Վիճակահանությամբ չեն սահմանվել հանձնաժողովի գործառույթները",
+                "RU": "4.1 Функции комиссии не определялись жеребьевкой"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "a07b8dd1-4940-4d2c-a27e-52f8614dfd67",
+                "Condition": "Includes",
+                "ParentQuestionId": "4405b02d-5ee3-4ec2-9738-97b1a705b357"
+            },
+            "Options": [
+                {
+                    "Id": "b77bd904-745c-463c-9bb6-4505b81be305",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վիճակահանությունը չէր դիտարկվել, բայց կասկածելի է",
+                        "RU": "Жеребьевка не проводилась, но вызывает подозрения"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c432cefa-2f3a-44b4-b06f-2a53fb5899d2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վիճակահանության արդյունքները մասամբ փոփոխվել են",
+                        "RU": "Результаты жеребьевки были частично изменены"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2bc6b449-5ede-4ff1-8328-56c1e3c60e57",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վիճակահանությունը չի իրականացվել",
+                        "RU": "Жеребьевка не проводилась"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "529f39bf-aff2-4417-9aff-da4cd69ebff3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնեք",
+                        "RU": "Узнать больше"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9504879e-799e-4cd7-9f97-77ded98ee0ab",
+            "Code": "O5.2",
+            "Text": {
+                "EN": "",
+                "HY": "4․2 Հանձնաժողովի նախագահը չի իրականացնում իր գործառույթները",
+                "RU": "4.2 Председатель Комиссии не исполняет свои функции."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "b7c2628c-d56b-456f-ba2f-cefeebaf09b2",
+                "Condition": "Includes",
+                "ParentQuestionId": "4405b02d-5ee3-4ec2-9738-97b1a705b357"
+            },
+            "Options": [
+                {
+                    "Id": "859004fd-e91b-41e8-bc88-71ffe0e7b938",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ անձի է հանձնարարում իրեն վերապահված գործառույթների իրականացումը",
+                        "RU": "Поручает другому человеку выполнение порученных ему/ей функций"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b77bd904-745c-463c-9bb6-4505b81be305",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չի տիրապետում գործառույթներին, հետևում է ավելի փորձառու անդամի հուշումներին",
+                        "RU": "Не владеет функциями в совершенстве, следует указаниям более опытного сотрудника"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c432cefa-2f3a-44b4-b06f-2a53fb5899d2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գործում է այլ անձի հրահանգներով",
+                        "RU": "Действует по указаниям другого человека."
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "529f39bf-aff2-4417-9aff-da4cd69ebff3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ո՞վ է իր վրա վերցնում նախագահի գործառույթների կատարումը",
+                        "RU": "Кто исполняет обязанности председателя?"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "b9ac6c51-eb3d-4209-95b6-061e9f21a4fe",
+            "Code": "O5.3",
+            "Text": {
+                "EN": "",
+                "HY": "4.3 Պատշաճ չի տպվել կամ փակցվել տեխնիկական սարքի 0-ական տեղեկանքը",
+                "RU": "4.3. Нулевой талон не был должным образом напечатан или размещен."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "70bcb508-d4ae-49f4-9d86-0bc4d76b4344",
+                "Condition": "Includes",
+                "ParentQuestionId": "4405b02d-5ee3-4ec2-9738-97b1a705b357"
+            },
+            "Options": [
+                {
+                    "Id": "749eeec5-5ce7-484d-9d5e-b4334f5ae960",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անսարքության պատճառով",
+                        "RU": "Из-за неисправности"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c5a1d1ed-79ff-41cd-856f-5d95bd05f14b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Տպվել է 8:00-ից էականորեն շուտ կամ ավելի ուշ",
+                        "RU": "Распечатано значительно раньше или позже 8:00"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f998c013-cd77-4324-8bc9-82a3a2d7911e",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չի փակցվել մատյանում և/կամ տեսանելի վայրում",
+                        "RU": "Не внесено в журнал и/или не размещено на видном месте"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "117ec414-44bb-4244-a97d-4dea75a9762f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնեք",
+                        "RU": "Узнать больше"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "749a80bf-2638-46f5-95bd-65785e14aac8",
+            "Code": "O5.4",
+            "Text": {
+                "EN": "",
+                "HY": "4.4 Այլ կերպ խախտվել է նիստի ընթացակարգը",
+                "RU": "4.4. В противном случае была нарушена процедура проведения сессии."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "2a6b775b-dada-4b51-afa2-682b6dbfd824",
+                "Condition": "Includes",
+                "ParentQuestionId": "4405b02d-5ee3-4ec2-9738-97b1a705b357"
+            },
+            "Options": [
+                {
+                    "Id": "e73c9fa7-cb88-411d-a8cb-255de1154200",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովը անկանոն է գործում",
+                        "RU": "Комиссия действует ненадлежащим образом"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2d413bb2-a638-43f6-be0b-7acd9d08f122",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովը բաց է թողել և չի իրականացրել մինչև 8:00 որևէ քայլը",
+                        "RU": "Комитет пропустил заседание и не предпринял никаких действий к 8:00"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "08a90534-be61-4e42-b264-4bc78ed81d92",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ ընթացակարգային խախտում կամ մանրամասներ",
+                        "RU": "Другие процессуальные нарушения или подробности"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "322d9fca-f92b-4f22-9d51-f8c8df2b665c",
+            "Code": "O5.5",
+            "Text": {
+                "EN": "",
+                "HY": "4.5 Նիստին տեղի են ունեցել միջադեպեր",
+                "RU": "4.5. В ходе заседания произошли инциденты."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Անպայման լրացրեք Խախտումների արձանագրման քարտը",
+                "RU": "Обязательно заполните отчет о нарушениях."
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "1d1d7174-1f62-4f5a-af54-687300d47e6c",
+                "Condition": "Includes",
+                "ParentQuestionId": "4405b02d-5ee3-4ec2-9738-97b1a705b357"
+            },
+            "Options": [
+                {
+                    "Id": "dd0b71f0-7258-462c-9e07-49aa0a0111be",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջադեպը չի ազդել նիստի իրականացման վրա",
+                        "RU": "Инцидент не повлиял на проведение занятия"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0f523aa5-6b90-4943-8401-899c50aa2a6b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջադեպը ազդել է նիստի իրականացման վրա",
+                        "RU": "Инцидент повлиял на проведение занятия"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "783f0836-ab68-428b-947e-703e1a2b7828",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնեք",
+                        "RU": "Узнать больше"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "24de4924-bc7c-4447-8095-be3960a50914",
+            "Code": "O5",
+            "Text": {
+                "EN": "",
+                "HY": "5․ Կահավորանքի վերաբերյալ հարցեր",
+                "RU": "5. Вопросы о мебели"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "14ef419d-3858-445f-b57e-3ebb5ce7f523",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Լուսավորությունը անբավարար է քվեարկության կամ հանձնաժողովի աշխատանքի համար",
+                        "RU": "Недостаточное освещение для голосования или работы комиссий"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "75f0d570-7078-488b-b6fc-06a3d358c60a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Պակասում են կամ վնասված են քվեարկության համար անհրաժեշտ պարագաները",
+                        "RU": "Отсутствуют или повреждены канцелярские принадлежности для голосования"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b7698c92-4cf5-4cb0-877e-c8b7bdca23a7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեարկության գաղտնիությունը ապահովված չի",
+                        "RU": "Тайна голосования не обеспечена"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e83fa668-b18d-43e5-8c9e-c5df73232fb0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Փակցված չեն քվեաթերթիկի նմուշը, քվեարկության կարգը",
+                        "RU": "Образцы бюллетеней и порядок голосования не вывешены"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bed32be1-9acf-4f3a-bdeb-f1b09d9b0eb2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեախցիկում տեղադրված չեն յուրաքանչյուր կուսակցության 3-5 քվեաթերթիկներ",
+                        "RU": "В кабину для голосования не помещено 3-5 бюллетеней для каждой партии"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "56c46946-084c-40fe-8b11-492e51b7dff8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կահավորանքի հետ կապված այլ խնդիրներ",
+                        "RU": "Другие вопросы, связанные с обустройством помещения"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "3e0900dc-9ae3-4c94-bee5-d45c42c07f0a",
+            "Code": "O5.1",
+            "Text": {
+                "EN": "",
+                "HY": "5.1 Լուսավորությունը անբավարար է քվեարկության կամ հանձնաժողովի աշխատանքի համար",
+                "RU": "5.1 Освещение недостаточно для проведения голосования или работы комиссий."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "14ef419d-3858-445f-b57e-3ebb5ce7f523",
+                "Condition": "Includes",
+                "ParentQuestionId": "24de4924-bc7c-4447-8095-be3960a50914"
+            },
+            "Options": [
+                {
+                    "Id": "b4da343e-d183-4b06-aa62-1d86ba6c42a8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անբավարար է քվեախցիկների հատվածում",
+                        "RU": "Недостаточно места в зоне для голосования"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c404157d-e77a-4cbc-acb5-1a061f3ba9c2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անբավարար է հանձնաժողովի աշխատանքի համար",
+                        "RU": "Недостаточно для работы комиссии"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "a42df931-ac2c-40c0-ba88-ac76b1e64148",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": "Подробности"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "f0459416-2d0d-4fdc-b293-39d71423a4bf",
+            "Code": "O5.2",
+            "Text": {
+                "EN": "",
+                "HY": "5.2 Պակասում են կամ վնասաված են քվեարկության համար անհրաժեշտ պարագաները",
+                "RU": "5.2. Избирательные материалы отсутствуют или повреждены."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "75f0d570-7078-488b-b6fc-06a3d358c60a",
+                "Condition": "Includes",
+                "ParentQuestionId": "24de4924-bc7c-4447-8095-be3960a50914"
+            },
+            "Options": [
+                {
+                    "Id": "b4da343e-d183-4b06-aa62-1d86ba6c42a8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեաթերթիկները",
+                        "RU": "Бюллетени"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c404157d-e77a-4cbc-acb5-1a061f3ba9c2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դրոշմանիշերը",
+                        "RU": "Марки"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8f8c6cc5-eddb-4100-9802-44412b4d0db0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մատյանը",
+                        "RU": "Журнал для записей "
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "be37c9a2-8181-45e7-94c4-c233969e8ff1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրողների ստորագրման ցուցակը",
+                        "RU": " Список подписей избирателей"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "476ea562-0228-46ca-bdb6-c57026698607",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասներ կամ այլ պակասող պարագաներ",
+                        "RU": "Недостающие детали или другие элементы"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "fb7ded6c-23ec-42d7-99f8-8b1069602ee3",
+            "Code": "O5.3",
+            "Text": {
+                "EN": "",
+                "HY": "5.3 Քվեարկության գաղտնիությունը ապահովված չի",
+                "RU": "5.3 Тайна голосования не гарантирована"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Անհրաժեշտության դեպքում կցեք լուսանկար ",
+                "RU": "При необходимости прикрепите фотографию."
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "b7698c92-4cf5-4cb0-877e-c8b7bdca23a7",
+                "Condition": "Includes",
+                "ParentQuestionId": "24de4924-bc7c-4447-8095-be3960a50914"
+            },
+            "Options": [
+                {
+                    "Id": "a98a239a-58f5-4b1f-8dde-6cbed6834cbd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անհնար է ապահովել ավելի բարձր գաղտնիություն տվյալ սենյակում",
+                        "RU": "Обеспечить более высокий уровень приватности в данном помещении невозможно"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6cefb362-a7f8-461f-94a6-ae0bfba46fbc",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հնարավոր է և հանձնաժողովը պատրաստակամ է",
+                        "RU": "Это возможно, и комиссия готова"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d85cae80-683d-42dc-ad9d-f3ae2e791b3a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հնարավոր է, բայց հանձնաժողովը չի անում",
+                        "RU": "Это возможно, но комиссия не готова."
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d5d10ab1-0178-459f-ac9f-31d9a3a34b7d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նկարագրել գաղտնիության հետ կապված խնդիրը",
+                        "RU": "Опишите проблему конфиденциальности"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "a53aa235-42ea-445f-bd9c-7bc9005a6994",
+            "Code": "Օ5.4",
+            "Text": {
+                "EN": "",
+                "HY": "5.4 Փակցված չեն քվեաթերթիկի նմուշը, քվեարկության կարգը",
+                "RU": "5.4 Образец бюллетеня и порядок голосования не опубликованы."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "e83fa668-b18d-43e5-8c9e-c5df73232fb0",
+                "Condition": "Includes",
+                "ParentQuestionId": "24de4924-bc7c-4447-8095-be3960a50914"
+            },
+            "Options": [
+                {
+                    "Id": "80ca80eb-62b1-4827-a333-58453a89e325",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեաթերթիկի նմուշը",
+                        "RU": "Образец бюллетеня"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "541df877-7f40-4fba-ae7c-cce01df59169",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեարկության կարգը",
+                        "RU": " Процедура голосования"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "695504de-c159-4469-bedc-2c036cbd857c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թեկնածուների ցուցակը",
+                        "RU": " Список кандидатов"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ea964d49-6010-4192-80e1-deda5737055a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Արդյո՞ք հանձնաժողովը ունի և չի փակցնում, թե տրամադրված չի եղել: Արդյո՞ք  փակցրեցին:",
+                        "RU": "Комиссия располагает материалами, но не публикует или материалы не были предоставлена? Опубликовали ли в результате?"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "859fcc6f-8228-4824-a2ec-fbec5306ae9f",
+            "Code": "Օ5.5",
+            "Text": {
+                "EN": "",
+                "HY": "5․5 Քվեախցիկում տեղադրված չեն յուրաքանչյուր կուսակցության 3-5 քվեաթերթիկներ",
+                "RU": "5.5 3-5 бюллетеней от каждой партии не были помещены в кабину для голосования"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "591cfab5-ec5d-4df1-89b1-800bf720a782",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Առհասարակ քվեաթերթիկներ տեղադրված չեն",
+                        "RU": " Ни один бюллетень не был помещен"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d4a653ab-bb13-4352-8875-58ffbe4b3fa9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ բոլոր քվեաթերթիկներն են տեղադրված",
+                        "RU": "Не все бюллетени помещены"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "f862fe0b-63e7-438b-ad88-65dd84e7cab1",
+            "Code": "Օ6",
+            "Text": {
+                "EN": "",
+                "HY": "6. Ե՞րբ է ավարտվել հանձնաժողովի նիստը / տեղամասը բացվել քվեարկության համար",
+                "RU": "6. Когда закончилось заседание комиссии / когда открылся избирательный участок для голосования?"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Առանց էական պատճառի և հետևանքի ուշացումը անտեսել",
+                "RU": "Игнорировать задержку без веской причины и без серьезных последствий"
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "6cfcff21-4d63-40be-9a0d-9e3801a07337",
+                    "Text": {
+                        "EN": "",
+                        "HY": "8:00",
+                        "RU": "8:00"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "200eabee-19ad-493f-aa9f-07ab29b460a6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նշեք հստակ ժամը և ուշացման պատճառը",
+                        "RU": "Укажите точное время и причину задержки."
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "a9de55c9-fe8b-4ee8-8231-118fb853c8ce",
+            "Code": "Օ7",
+            "Text": {
+                "EN": "",
+                "HY": "7. Վստահված անձանց ներկայությունը",
+                "RU": "7. Наличие доверенных лиц"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "df08029c-2697-42ab-964e-2bd2120ee333",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկան",
+                        "RU": "Отсутствуют "
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "085b2701-cb68-4923-b422-0f14d99df7d5",
+                    "Text": {
+                        "EN": "",
+                        "HY": "1․ Ռեֆորմիստների Կուսակցություն",
+                        "RU": "1. Партия реформистов"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "4be05e2a-38a3-44f0-90e7-0714c9b97ffc",
+                    "Text": {
+                        "EN": "",
+                        "HY": "2․ «Բոլորին Դեմ Եմ» Ժողովրդավարական Կուսակցություն",
+                        "RU": "2. Демократическая партия «Против всех»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ee345839-00cd-4fa1-9dd2-a54f9d3b1606",
+                    "Text": {
+                        "EN": "",
+                        "HY": "3․ «Ուժեղ Հայաստան» Դաշինք",
+                        "RU": "3. Альянс «Сильная Армения»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ced6463e-f1ab-482b-9399-c7ee12e63044",
+                    "Text": {
+                        "EN": "",
+                        "HY": "4․ Հայաստանի Շնորհապետական Կուսակցություն",
+                        "RU": "4. Армянская националистическая партия"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "a860e84c-8c62-4da0-8cb0-d270261e93d7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "5․ «Նոր Ուժ» Ռեֆորմիստական Կուսակցություն",
+                        "RU": "5. Партия реформистов «Новая сила»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b08ae9ed-7d2b-45d2-a3c7-cd55ab3b88c1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "6․ «Միասնության Թևեր» Կուսակցություն",
+                        "RU": "6. Партия «Крылья единства»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "058f4d67-1a31-40ce-9224-9b2ab07b9745",
+                    "Text": {
+                        "EN": "",
+                        "HY": "7․ «Բարգավաճ Հայաստան» Կուսակցություն",
+                        "RU": "7. Партия «Процветающая Армения»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "32dd1f97-e687-4f42-82c9-017b292a691c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "8․ «Ազգային Ժողովրդավարական Բևեռ» Համահայկական Կուսակցություն",
+                        "RU": "8. Всеармянская панармянская партия «Национальный демократический полюс»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "efc8f86f-9b58-4f56-ae08-6663423f0745",
+                    "Text": {
+                        "EN": "",
+                        "HY": "9․ «Քոչարի Ազգային Վերածնունդ և Ազգի Զարթոնք» Կուսակցություն",
+                        "RU": " 9. Партия «Кочарьянское национальное возрождение и национальное пробуждение»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2ad53884-f32b-4265-8269-8cbe7520dc7d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "10․ Հայ Ազգային Կոնգրես Կուսակցություն",
+                        "RU": "10. Партия Армянского национального конгресса"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b0bb9fd4-950d-418b-b196-3c80b3c6209c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "11․ «Հանրապետություն» Կուսակցություն",
+                        "RU": "11. Партия «Республика»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "369e75d3-4eb1-4a41-961a-132973a9dabb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "12․ Քրիստոնեա-Ժողովրդավարական Կուսակցություն",
+                        "RU": "12. Христианско-демократическая партия"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ecad0a37-d858-4546-87fe-b520bb5e7ea7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "14․ «Ժողովրդավարական Համախմբում» Կուսակցություն",
+                        "RU": "14. Партия «Демократическая солидарность»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9534d9bd-8cfd-407d-8cd0-5ac060840f0a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "15․ «Դեմոկրատիա Օրենք Կարգապահություն» Կուսակցություն",
+                        "RU": "15. Партия «Дисциплина демократии и права»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2ae51fed-c2be-4ab9-89c0-f51b63d6680f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "16․ «Քաղաքացիական Պայմանագիր» Կուսակցություն",
+                        "RU": "16. Партия «Гражданский договор»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "076fb612-b72e-4e2e-b175-2c9c5578a555",
+                    "Text": {
+                        "EN": "",
+                        "HY": "17․ Հայաստան Կուսակցությունների Դաշինք",
+                        "RU": "17. Армянский альянс партий"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6bba0a38-0237-4ff0-810f-9a997e2966a4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "18․ «Հանուն Հանրապետության Ժողովրդավարության Պաշտպանների Դաշինք» Կուսակցություն",
+                        "RU": "18. «Альянс Партия «Защитники демократии за Республику»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "78940e9a-8fe1-4e46-9565-4191dd008875",
+                    "Text": {
+                        "EN": "",
+                        "HY": "19․ «Լուսավոր Հայաստան» Կուսակցություն",
+                        "RU": "9. Партия «Светлая Армения»"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "17d1cafb-c92e-4532-9a39-7a66a7598fb4",
+            "Code": "Օ8",
+            "Text": {
+                "EN": "",
+                "HY": " 8. Արդյո՞ք հանձնաժողովի նիստին ներկա են այլ կազմակերպության/ների դիտորդներ/այցելուներ (հավատարմագրում չունեցող կազմակերպություններին նշեք այլ-ում)",
+                "RU": "8. Присутствуют ли на заседании комиссии наблюдатели/посетители из других организаций (укажите организации без аккредитации в разделе «другие»)?"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "bbd79254-f84c-40bb-9dba-0c70efda0b2d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկան",
+                        "RU": "Нет"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5ba2d7bf-e137-4481-9760-673b8e246974",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թրանսփարենսի",
+                        "RU": "Аканатес"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "4d05e59e-dbd9-416f-96cc-55dfb6805bec",
+                    "Text": {
+                        "EN": "",
+                        "HY": "ՀայաՔվե",
+                        "RU": "Айакве"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "a2396a7e-b428-411d-a6ef-e5e7bf019be4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Պարլամենտարիզմի զարգացման կենտրոն",
+                        "RU": "/"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7014ffc6-fbb0-4fda-8cb6-c85b59b6991d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միտք",
+                        "RU": "//"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dbbcfde3-4c3e-4acc-8de3-3d14233b8d98",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թաթոյան հիմնադրամ",
+                        "RU": "///"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5215aa03-2f33-4116-92be-c06cbafc5553",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Օտարերկրյա այցելուներ, միջազգային դիտորդներ",
+                        "RU": "Международные наблюдатели"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7035ab02-54cc-40b0-a2b4-c2b7bb69dfbe",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դիտորդների վարքի վերաբերյալ դիտարկումներ",
+                        "RU": "Замечания о поведении наблюдателей"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ed87f3f2-85ff-4d87-b8b5-4eb9b5517231",
+            "Code": "O9",
+            "Text": {
+                "EN": "",
+                "HY": "9. Արդյո՞ք հանձնաժողովի նիստին ներկա են ԶԼՄ ներկայացուցիչներ",
+                "RU": "9. Присутствуют ли представители СМИ на заседании комиссии?"
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Նշեք ԶԼՄ-ի անունը ( Հավաարմագրված ԶԼՄ-ների անվանումները )",
+                "RU": "Укажите название медиафайла (проверенные названия медиафайлов)"
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "2b719bc3-a9d9-436e-aae8-2c83ebfb9cdb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": "Нет"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "87b95349-0de0-4648-86f2-67c3e2b2de18",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նշել ԶԼՄ-ի անվանումը",
+                        "RU": "Укажите название средства массовой информации"
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "d6f7d772-efe4-4ab6-92bc-ad6ab55a04b9",
+            "Code": "Օ10",
+            "Text": {
+                "EN": "",
+                "HY": "10. Լրացուցիչ դիտարկումներ (եթե եղել են վերոնշյալ հարցերի շրջանակից դուրս, այլ խախտումներ, հակիրճ նկարագրեք)",
+                "RU": "10. Дополнительные замечания (если были другие нарушения, выходящие за рамки вышеуказанных вопросов, пожалуйста, кратко опишите их)."
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        }
+    ]
+}

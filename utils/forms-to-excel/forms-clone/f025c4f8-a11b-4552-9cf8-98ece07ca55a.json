@@ -1,0 +1,430 @@
+{
+    "id": "f025c4f8-a11b-4552-9cf8-98ece07ca55a",
+    "name": {
+        "EN": "",
+        "HY": "Շրջիկ խմբի  ԱՄՓՈՓԻՉ  դիտարկման քարտ - Անկախ դիտորդ",
+        "RU": ""
+    },
+    "description": {
+        "EN": "",
+        "HY": "Լրացնել քարտը դիտարկման ընթացքում նշումներ անելով և նշված ժամերին մուտքագրողին հաղորդելով:\n\nԴիտորդը պիտի լրացնի այս քարտը 12:45, 17:45 և դիտարկման ավարտի պահի դրությամբ:\n\nԵթե որևէ նկարագրվող երևույթի մասին տեղեկատվությունը դիտորդը ստացել է այլ անձից, լսել կամ կարդացել է այն, սակայն անձամբ չի դիտարկել, նա պիտի գնահատի այդ տեղեկատվության հավաստիությունը ինքնուրույն: Եթե տեղեկատվությունը գնահատվել է ոչ հավաստի, այն չպիտի ազդի ռիսկայինության գնահատման վրա,  սակայն պիտի ներառվի տեքստային նկարագրության մեջ:   \n",
+        "RU": ""
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "d5891542-edf2-4bd5-8b76-9102e004eaf3",
+            "Code": "S1",
+            "Text": {
+                "EN": "",
+                "HY": "1․ Դիտարկման ժամանակահատվածը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "57631425-bb38-4820-896e-7d1a538f4010",
+                    "Text": {
+                        "EN": "",
+                        "HY": "7:00 - 12:45",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6720eae4-5618-41c6-abb2-70fb1b24d507",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մինչև 17։45",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2f6281fe-93a7-4ffc-a579-b9565e029d44",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մինչև դիտարկման ավարտ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "703b88d7-8b31-4202-9ad6-343995977728",
+            "Code": "S2",
+            "Text": {
+                "EN": "",
+                "HY": "2․ Ամփոփ նկարագրեք դիտարկման շրջանում ընտրությունների ընթացքը, ուշադրություն գրավող գործընթացները, մթնոլորտը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Որքան մանրամասն, այնքան լավ: Հնարավորինս կոնկրետ նշեք բնակավայրերը, տեղանունները, տեղամասերը, դերակատարներին... Նկարագրեք միայն զեկուցման ժամանակահատվածում ձեռք բերված տեղեկատվությունը:",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "9276ce67-f5b1-4f40-abd8-615dacb94f2f",
+            "Code": "S3",
+            "Text": {
+                "EN": "",
+                "HY": "3․ Ընտրողների տեղափոխություն, ուղղորդում / քվեարկության վերահսկողություն",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Օգտագործեք ռիսկայինության գնահատման աղյուսակը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "3d815841-43fe-44fe-9a4a-8d438c069850",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցածր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7daf5639-f19d-47e3-a828-0710f034c9f0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1b66d67a-7775-4262-bb06-5a927250020a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Էական",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5acc3a88-e9cc-428a-884a-2bebd34ce60a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7cb5b124-8978-4306-a8e8-c01953fc001a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "fef23dcf-1467-40dc-84f1-dffbe8332501",
+            "Code": "S4",
+            "Text": {
+                "EN": "",
+                "HY": "4․ Լարվածություն, բախման վտանգ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Օգտագործեք ռիսկայինության գնահատման աղյուսակը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "6bc2de16-2dfd-4824-a6a1-07fbf22eabb6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցածր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8f4d7c77-9206-47c1-b364-d333c301a59f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8414fef2-7525-4a33-a931-d06d35783ef9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Էական",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8f9c2132-8daa-4192-ac01-fb443a0ecb96",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9533ecf3-f7c7-4aed-9fab-3709787e8223",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "0de1f47b-1bdf-44ff-88af-340fc6dd5502",
+            "Code": "S5",
+            "Text": {
+                "EN": "",
+                "HY": "5․ Դիտորդների, ԶԼՄ-ների, վստ. անձանց իրավունքների խախտում",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Օգտագործեք ռիսկայինության գնահատման աղյուսակը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "30ff6b98-2a54-47db-9f14-6f51d31ff8bc",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցածր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0613f048-9235-41c8-b2d1-22de03566e6b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e9c06490-f548-41db-852e-c19d04cfc489",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Էական",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "4ffb13a8-f284-4a64-a781-b961dfe7ba85",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ad628868-ffab-4dae-9d44-5f08f08da5b4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "f812e2c1-ae89-490f-8ede-82da01b53660",
+            "Code": "S6",
+            "Text": {
+                "EN": "",
+                "HY": "6․ Ընտրակաշառքի բաժանում, ընտրությունների արդյունքների կեղծում",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Օգտագործեք ռիսկայինության գնահատման աղյուսակը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "05ebcdf2-4a64-4a28-87cf-e6a063d4c677",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցածր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7e9541ef-5a8c-487b-9de4-a68a30fe18ba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f634e32d-30ec-4cf9-b536-8030923733dd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Էական",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "4b8944c2-5347-4772-ace0-609c9d4ad21b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "fcfe24c7-eca8-4a0b-b6c8-73728b4270e2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9ae87c7b-515f-4bd9-b4b9-dcb5b20635b5",
+            "Code": "S7",
+            "Text": {
+                "EN": "",
+                "HY": "7․ Սադրանքներ և կեղծ ահազանգեր",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Օգտագործեք ռիսկայինության գնահատման աղյուսակը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "05ebcdf2-4a64-4a28-87cf-e6a063d4c677",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցածր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7e9541ef-5a8c-487b-9de4-a68a30fe18ba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միջին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f634e32d-30ec-4cf9-b536-8030923733dd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Էական",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "4b8944c2-5347-4772-ace0-609c9d4ad21b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "fcfe24c7-eca8-4a0b-b6c8-73728b4270e2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        }
+    ]
+}

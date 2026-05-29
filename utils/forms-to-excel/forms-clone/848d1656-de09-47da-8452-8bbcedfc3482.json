@@ -1,0 +1,617 @@
+{
+    "id": "848d1656-de09-47da-8452-8bbcedfc3482",
+    "name": {
+        "EN": "",
+        "HY": "Տեղամասային կենտրոնների դիտարկման քարտ",
+        "RU": ""
+    },
+    "description": {
+        "EN": "",
+        "HY": "Տեղամասային կենտրոնների դիտարկման քարտ - Անկախ դիտորդ",
+        "RU": ""
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "848ca823-ed14-4394-845a-515e1a1d42ac",
+            "Code": "V1",
+            "Text": {
+                "EN": "",
+                "HY": "1. Արդյո՞ք կան խոչընդոտներ տեղամասային կենտրոնի մուտքի մոտ հասնելու ճանապարհին, որոնք կխանգարեին հենաշարժական խնդիրներ ունեցող անձանց:",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Ուսումնասիրեք մինչև բուն տեղամասային կենտրոնի շինությունն ընկած տարածքը",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "e189fbc4-7843-4ab8-a3d4-bd77d9f61d02",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "05023eb6-3928-4007-9063-1ece5f629321",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "45f2ba6b-6a58-4ab9-a7d4-1469bf1f6e36",
+            "Code": "V2",
+            "Text": {
+                "EN": "",
+                "HY": "2. Արդյո՞ք տեղամասային կենտրոնի մուտքը մատչելի է",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "f5945643-9e9a-4b36-8b03-9aafc4096613",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո։ Մուտքը հարթ է",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5b283dca-6786-4ae1-bc30-e6a270d13976",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո։ Կա հարմար թեքահարթակ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ff945c86-45da-47da-86fc-ade953e3472d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ։ Կա թեքահարթակ, որը հարմար չէ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f27b216a-31f9-41c2-9b76-c9335376b813",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bef2cdc3-86fe-448d-b089-0af5232f774e",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "d6c308eb-9347-44b1-8ecb-cb870b960d1c",
+            "Code": "V3",
+            "Text": {
+                "EN": "",
+                "HY": "3. Ո՞ր հարկում է գտնվում քվեասենյակը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "7cf25fc0-853c-4d1e-a9f2-9a6daabebb4d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "1-ին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ea20b194-e613-412d-8afc-71b4424e6528",
+                    "Text": {
+                        "EN": "",
+                        "HY": "2-րդ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "29ad3c66-efd2-4767-a0fc-c43a6bcb455a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նկուղ կամ կիսանկուղ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9632bee2-04a5-4cbd-a6f8-64b4ac69391a",
+            "Code": "V4",
+            "Text": {
+                "EN": "",
+                "HY": "4. Արդյո՞ք գտնում եք, որ ԱՆԲԱՎԱՐԱՐ են տեղամասի ՍԵՆՅԱԿԱՅԻՆ պայմանները",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "9eaf63d8-c48f-45d0-aa3e-77e23a74f1f7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Տարածքը՝ ընտրողների և գտնվելու իրավունք ունեցող այլ անձանց համար",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "aaa15bcc-3d95-4476-8003-33150b103f98",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեասենյակի լուսավորությունը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b2cef6d5-1680-433f-a0a1-bec826876bc3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեախցիկի լուսավորությունը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e65955ec-7feb-44d4-b610-f835e615d9ff",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեախցիկի դիրքը՝ գաղտնիության տեսանկյունից",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8e20d4ae-f321-4303-8bf8-a039f96683eb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կահավորման հարմարությունը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d24b10dd-cbee-49fa-a17f-dd4ebf03133b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Տեխնիկական սարքերի սնուցումը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f6d7fc78-8456-48f8-a0f4-db46f9217f3a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "1327cc71-994b-4e07-9905-07c9d1eb7021",
+            "Code": "V5",
+            "Text": {
+                "EN": "",
+                "HY": "5. Արդյո՞ք գտնում եք, որ անբավարար են հանձնաժողովի ԱՇԽԱՏԱՆՔԱՅԻՆ պայմանները",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "43869aae-29c1-44d7-8a94-f4b0759fc9dd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Սենյակի ջերմաստիճանը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "977b62fd-0856-484e-8cdf-6327024093ce",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Տարածք՝ հանձնաժողովի անդամների համար",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "eee5915b-df68-4b29-a92a-cc4f454f177a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Սանհանգույց",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "28d86523-128e-47d2-9f8a-cf64cd12fdca",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "f4f00d12-dce6-4dd2-adf7-c369a6c4c838",
+            "Code": "V6",
+            "Text": {
+                "EN": "",
+                "HY": "6. Արդյո՞ք հանձնաժողովի բոլոր անդամները վերապատրաստում են անցել այս ընտրությունների համար",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "2d850080-3e02-4fbf-854b-ba4e2c410c94",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5dd67b58-2ffa-485e-99e6-9cc2e8e4a8f3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընդհանուր գործառույնթների և լիազորությունների վերաբերյալ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7e2f5f31-5b16-4675-a77d-9341f4604085",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հաշմանդամություն ունեցող անձանց աջակցության համար",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "75198d30-b490-4023-ae73-67cde1dbb1a4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "bf5a6525-b91f-4bf2-8ca9-b5d2158d9cdc",
+            "Code": "V7",
+            "Text": {
+                "EN": "",
+                "HY": "7. Արդյո՞ք ԽՆԴԻՐ եք նկատում հանձնաժողովի մատյանում արձանագրվող տեղեկատվության հետ կապված",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Խնդիր նկատելու դեպքում արձանագրեք ընթացակարգային խախտում համապատասխան քարտում",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "2b63a78d-d57f-467e-b0d3-0448843042c0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անհատական կնիքների դրոշմի առկայության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2218c95f-da87-41d3-99e4-e20bb0aad405",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հերթափոխ և հերթափոխի համաձայն գործառույթների բաժանման",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6edb9efe-3f5c-44a8-90f3-05d6d18c19c4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Օգնող անձանց ցուցակի վարման",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0449b97e-d427-4b08-8173-42e176c9c9dd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վստահված անձանց գրանցման ցուցակի վարման",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "75f74c45-3ecc-4522-99cc-1d8960ee7dd7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դիտորդների գրանցման ցուցակի վարման",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "053d4403-c6e2-4d8c-8618-4878d9ba28a5",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "783c5fee-7cd0-4951-97ed-908fb42b4646",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հակիրճ մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9f99e47d-4025-4186-8ce3-55425c49ed1c",
+            "Code": "V8",
+            "Text": {
+                "EN": "",
+                "HY": "8. Գնահատեք հանձնաժողովի ընդհանուր պատրաստվածությունը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "ratingQuestion",
+            "DisplayLogic": null,
+            "LowerLabel": {
+                "EN": "",
+                "HY": "Շատ ցածր",
+                "RU": ""
+            },
+            "Scale": "OneTo4",
+            "UpperLabel": {
+                "EN": "",
+                "HY": "Շատ բարձր",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "2c33e514-404b-47ca-b56e-1376c8a3f5e5",
+            "Code": "V9",
+            "Text": {
+                "EN": "",
+                "HY": "9. Գնահատեք տեղամասի ընդհանուր կարգապահությունը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "ratingQuestion",
+            "DisplayLogic": null,
+            "LowerLabel": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "Scale": "OneTo4",
+            "UpperLabel": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "7a0c94d4-880e-4814-b4c8-d0a45cac4b41",
+            "Code": "V10",
+            "Text": {
+                "EN": "",
+                "HY": "10. Արդյո՞ք հանձնաժողովը պատրաստակամ է վերացնել արձանագրված կամ բարձրաձայնված խախտումները",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "6c6f6a4e-0615-42ca-8999-0a52b6854273",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6d2a3e9d-e591-4ab8-aa3b-b91e30014067",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d08e0201-9eb0-4269-b5e5-1c95dba6c98b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "635719f8-3bde-4e02-b8a0-9509d18a1851",
+            "Code": "V11",
+            "Text": {
+                "EN": "",
+                "HY": "11. Արդյո՞ք դիտարկման ընթացքում արձանագրվել են խախտումներ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "67583168-913f-4e74-adf9-80e81a472714",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7f47b707-9258-4d12-a56a-cd427a17ba5f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո, լրացվել է Խախտումների արձանագրման քարտը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "30998265-febb-4ac4-af68-df39ad9de951",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կարճ նկարագրություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1366 @@
+{
+    "id": "0ce2b66d-1f50-4dcc-87a2-52cc3a5ca775",
+    "name": {
+        "EN": "",
+        "HY": "Ձայների հաշվարկի դիտարկման քարտ - Անկախ Դիտորդ",
+        "RU": ""
+    },
+    "description": {
+        "EN": "",
+        "HY": "Պետք է լրացվի հաշվարկի ընթացքում և վերջնականացվի նիստից ավարտից անմիջապես հետո։\nՏեղեկանքի և քաղվածքի մեկական օրինակը պահվում են դիտորդի մոտ, իսկ քաղվածքի ԸՆԹԵՌՆԵԼԻ լուսանկարը կցվում է քարտին։",
+        "RU": ""
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "d921bc1e-6471-4805-bde7-fb3f3ca937da",
+            "Code": "C1",
+            "Text": {
+                "EN": "",
+                "HY": "1. Տեղամասի փակման ժամը ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե 20:00-ից տարբերվող ժամ եք նշում, մանրամասնեք պատճառը",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "100d63e6-ad8e-4b71-88bc-d5988940d489",
+            "Code": "C2",
+            "Text": {
+                "EN": "",
+                "HY": "2. Արդյո՞ք ՆԵՐԿԱ են եղել ձայների ամփոփման գործընթացին... (նշել նաև կարճ ժամանակով ներկա գտնված կամ սենյակ մուտք գործած անձանց)",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "a64dbfeb-d055-43d1-a30e-859dc5228873",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովի բոլոր անդամներ (առանց բացակաների)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "25f6202b-92f1-4859-9335-bfdd97a582a3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վերադաս ընտրական հանձնաժողովի անդամներ (ԸԸՀ կամ ԿԸՀ)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1a6630ce-e543-446e-b31e-b5381f363300",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դիտորդներ (առավելագույնը 2)\t",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dc04eaea-ac12-4750-a40a-c023cedf47f6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թեկնածուներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0aa73aef-6032-42e2-b514-7c62fcc46eec",
+                    "Text": {
+                        "EN": "",
+                        "HY": "ԶԼՄ ներկայացուցիչներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "696be523-0fc0-4357-ba43-7fba08e81753",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վստահված անձինք (առավելագույնը 2)\t",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9967dfc7-4325-461b-ac67-445dd88c67c1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այցելուներ, միջազգային դիտորդներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0e3e2d20-2e5e-4ec1-a574-4ac577297d36",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նույն կուսակցությունից 2-ից ավել վստահված անձինք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bba5c8b3-d604-474e-b633-e07462cc1adb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոստիկաններ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d1ce975a-5dab-4ec2-87ea-11ab31435043",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անհայտ անձինք (պարզել ինքնությունը)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b0621ea5-4b59-4b92-8d52-69ab4243d8e8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կուսակցության լիազոր ներկայացուցիչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "338a5817-0c7a-4cf5-9b36-eeaa4819e139",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասներ կամ այլ ներկաներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "710438f0-9eef-4789-91a3-82083e1851fa",
+            "Code": "C3",
+            "Text": {
+                "EN": "",
+                "HY": "3․ Արդյո՞ք ՀԵՌԱՑՎԵԼ է որևէ մեկը ձայների հաշվարկի ընթացքում",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "a64dbfeb-d055-43d1-a30e-859dc5228873",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովի որևէ անդամ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "25f6202b-92f1-4859-9335-bfdd97a582a3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վերադաս ընտրական հանձնաժողովի անդամներ (ԸԸՀ կամ ԿԸՀ)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1a6630ce-e543-446e-b31e-b5381f363300",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դիտորդներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dc04eaea-ac12-4750-a40a-c023cedf47f6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թեկնածուներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0aa73aef-6032-42e2-b514-7c62fcc46eec",
+                    "Text": {
+                        "EN": "",
+                        "HY": "ԶԼՄ ներկայացուցիչներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "696be523-0fc0-4357-ba43-7fba08e81753",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վստահված անձ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9967dfc7-4325-461b-ac67-445dd88c67c1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այցելուներ, միջազգային դիտորդներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bba5c8b3-d604-474e-b633-e07462cc1adb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոստիկաններ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d1ce975a-5dab-4ec2-87ea-11ab31435043",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անհայտ անձինք (պարզել ինքնությունը)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b0621ea5-4b59-4b92-8d52-69ab4243d8e8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կուսակցության լիազոր ներկայացուցիչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b7b0c80e-9923-434f-b27f-b904446b523d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գտնվելու իրավունք չունեցող այլ անձ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "338a5817-0c7a-4cf5-9b36-eeaa4819e139",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "716446ab-ea0f-4b82-9c88-0e9f19ced6fc",
+            "Code": "C4",
+            "Text": {
+                "EN": "",
+                "HY": "4. Արդյո՞ք ԱՐԳԵԼՎԵԼ Է որևէ մեկի ՄՈՒՏՔԸ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "a64dbfeb-d055-43d1-a30e-859dc5228873",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանձնաժողովի որևէ անդամի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "25f6202b-92f1-4859-9335-bfdd97a582a3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վերադաս ընտրական հանձնաժողովի անդամներ (ԸԸՀ կամ ԿԸՀ)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1a6630ce-e543-446e-b31e-b5381f363300",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Դիտորդներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dc04eaea-ac12-4750-a40a-c023cedf47f6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թեկնածուներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0aa73aef-6032-42e2-b514-7c62fcc46eec",
+                    "Text": {
+                        "EN": "",
+                        "HY": "ԶԼՄ ներկայացուցիչներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "696be523-0fc0-4357-ba43-7fba08e81753",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վստահված անձինք (նույն կուսակցությունից 2 վստահված անձ)\t",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9967dfc7-4325-461b-ac67-445dd88c67c1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այցելուներ, միջազգային դիտորդներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0e3e2d20-2e5e-4ec1-a574-4ac577297d36",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նույն կուսակցության 3-րդ վստահված անձ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bba5c8b3-d604-474e-b633-e07462cc1adb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոստիկաններ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d1ce975a-5dab-4ec2-87ea-11ab31435043",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անհայտ անձինք (պարզել ինքնությունը)",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b0621ea5-4b59-4b92-8d52-69ab4243d8e8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Կուսակցության լիազոր ներկայացուցիչ [Խ]\t",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cba5121b-70ab-4bde-afc4-8a295618e0aa",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ կամ մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ad025fda-451d-4e6d-9272-e8e9213aaabd",
+            "Code": "C5",
+            "Text": {
+                "EN": "",
+                "HY": "5. Արդյո՞ք ձայների ամփոփման նիստի ժամանակ  բոլոր տեխնիկական սարքավորումներով է տպվել ընտրողների մասնակցության վերաբերյալ տեղեկանքը և արդյո՞ք դրանց տվյալները համընկել են",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե ոչ, հակիրճ նկարագրեք",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "0b65c8c3-9c34-4ed4-b712-1b1fce001a33",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "39776907-605f-4cb3-8b97-a0ab8af2d423",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "17c0c5ae-872b-46d1-8546-4a730cd2d9b2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ace2636c-106e-44c1-9f1e-845a6ce41e82",
+            "Code": "C6",
+            "Text": {
+                "EN": "",
+                "HY": "6. Ինքնուրույն քվեարկելու կարողություն չունեցող ընտրողների թիվն՝ ըստ գրանցամատյանի",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "aeba2190-24ff-4f54-8164-9656e93edccb",
+            "Code": "C7",
+            "Text": {
+                "EN": "",
+                "HY": "7. Արդյո՞ք ՁԱՅՆԵՐԻ ՀԱՇՎԱՐԿԻ նիստը սկսվել է ուշացումով կամ ընդհատվել է",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "1496d946-fe4d-4164-8cd6-3c20e5ef5834",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ, նիստը սկսվել է անհապաղ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "68d997ad-9302-4454-a6b4-7b8b5ccf2c5f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ուշացումով՝ սնվելու նպատակով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d3a46aa8-fe43-44bc-9d6f-dc0ae79039ef",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ուշացումով՝ միջադեպի պատճառով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b42ebfdf-dae8-43a8-8c36-63ed0c4b1fb4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընդհատվել է՝ սնվելու նպատակով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bb6ec55e-0016-4a80-9b5d-97e4120c3091",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընդհատվել է՝ միջադեպի պատճառով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "13689a12-39d3-402a-b6cf-d8f5c01d412a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9e98eb98-fc76-42bf-b3a8-66d251bf5791",
+            "Code": "С8",
+            "Text": {
+                "EN": "",
+                "HY": "8. Արդյո՞ք ընթացակարգի խախտում եք նկատում նիստի ընթացքում",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Ձայների հաշվարկի նիստի ընթացագարգը տե՛ս Ուղեցույցներ բաժնում",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "ccd6020d-dac5-4c43-9272-1332bb27a54b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ամփոփման գործողությունների հերթականությունը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0f88f1bc-1fa6-430d-8616-fe83bf963c06",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քվեաթերթիկների հաշվելու կարգը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "74677de9-7d04-4bc2-ab87-f86e54ced2b2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անվավեր քվեաթերթիկ որոշելու կարգը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "19b94f89-e1ff-4e12-942c-d800a659501e",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անվավեր քվեաթերթիկների վերաբերյալ կողմնակալ մոտեցումը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "64cac322-8df5-4735-805e-e73d46474416",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չի ապահովվում ներկա գտնվողների անխոչընդոտ հետևելու իրավունքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d65f8f4a-c8bc-4596-952d-4c91fffc3db4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քաղվածքը ոչ բոլոր ցանկացողներին է տրամադրվում ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "79b572a5-5747-4f71-829b-6755b24a96b7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնություններ և այլ ընթացակարգային խախտումներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "602f8ab0-8701-4231-b178-b48fd2469247",
+            "Code": "С9",
+            "Text": {
+                "EN": "",
+                "HY": " 9. Արդյո՞ք նկատվել են ավելորդ գրառում պարունակող քվեաթերթիկներ/ծրարներ կամ այլ իրեր պարունակող ծրարներ   ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Լուսանկարեք բոլորը և կցեք պատասխանին",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "2c57528a-2efc-4c87-9647-6fd28377c1a1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "17b71aae-5cba-4dd9-82ab-137f9f0ab073",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո, քվեաթերթիկ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "af26e78d-5496-4870-b953-979b7e0d4767",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո, ծրար",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9820dc6b-723c-414f-adbd-adff9a85bfe6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նկարագրել անվավերության պատճառը կամ իրը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ca06f07c-3695-414b-b97d-3eb28d14ed20",
+            "Code": "С9.1",
+            "Text": {
+                "EN": "",
+                "HY": "9.1 Արդյոք այդ քվեաթերթիկները անվավեր են ճանաչվել",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": {
+                "Value": "17b71aae-5cba-4dd9-82ab-137f9f0ab073",
+                "Condition": "Includes",
+                "ParentQuestionId": "602f8ab0-8701-4231-b178-b48fd2469247"
+            },
+            "Options": [
+                {
+                    "Id": "0899dce2-6d53-4558-89a9-62a6d76ca89c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "64278d16-a756-439e-a536-5b8d97b27d9d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e2adc29a-d97d-4ad5-80cd-867c10ac8556",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ բոլորը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "eca61349-95ce-4ce1-9be2-f91c12c6e32a",
+            "Code": "С9.2",
+            "Text": {
+                "EN": "",
+                "HY": "9.2 Արդյոք այդ ծրարը մարվել է",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": {
+                "Value": "af26e78d-5496-4870-b953-979b7e0d4767",
+                "Condition": "Includes",
+                "ParentQuestionId": "602f8ab0-8701-4231-b178-b48fd2469247"
+            },
+            "Options": [
+                {
+                    "Id": "0899dce2-6d53-4558-89a9-62a6d76ca89c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ծրարը մարվել է",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "64278d16-a756-439e-a536-5b8d97b27d9d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e2adc29a-d97d-4ad5-80cd-867c10ac8556",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ բոլորը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "10c95d2e-3671-4f79-9529-583d703b08fc",
+            "Code": "С10",
+            "Text": {
+                "EN": "",
+                "HY": "10. Արդյո՞ք հանձնաժողովը արձանագրել / գրանցել է իրականությանը չհամապատասխանող որևէ թիվ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "51f767aa-242f-40b6-8c3a-87969bbb135b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7d5ee90c-3d43-4ba2-b963-474bf109d0f1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e264204c-879e-454b-bc6b-388e455dea78",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Փորձել է, բայց չի կատարել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0724f0f2-e15d-4865-b0a1-cf6d8f7d3c23",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մանրամասնել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "5a250321-86da-4976-ba5d-e07e91a19fa1",
+            "Code": "С11",
+            "Text": {
+                "EN": "",
+                "HY": "11. Վստահված անձանց ներկայությունը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "29142236-4fbe-47ce-a2f7-3045034385bb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկան",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "81e14362-5445-4116-8ea0-8115f30b4e6e",
+                    "Text": {
+                        "EN": "",
+                        "HY": "1․ Ռեֆորմիստների Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "08017c6b-5845-43ea-aed9-839382afb818",
+                    "Text": {
+                        "EN": "",
+                        "HY": "2․ «Բոլորին Դեմ Եմ» Ժողովրդավարական Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ba2d3146-f1a4-4fd9-99fc-48351a41fb23",
+                    "Text": {
+                        "EN": "",
+                        "HY": " 3․ «Ուժեղ Հայաստան» Դաշինք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "a6edd03a-c3e4-4cfa-ab22-0d1b76f1c52b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "4․ Հայաստանի Շնորհապետական Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2061e8a7-858e-4da7-b535-e5ab542d59ce",
+                    "Text": {
+                        "EN": "",
+                        "HY": "5․ «Նոր Ուժ» Ռեֆորմիստական Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ff4f20e2-fbad-417d-9362-0ce1bcde1904",
+                    "Text": {
+                        "EN": "",
+                        "HY": "6․ «Միասնության Թևեր» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6966719f-aa58-4160-9c92-96a25f66a825",
+                    "Text": {
+                        "EN": "",
+                        "HY": "7․ «Բարգավաճ Հայաստան» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b1f522a0-f8ce-4a3a-a666-49e4f429ccc2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "8․ «Ազգային Ժողովրդավարական Բևեռ» Համահայկական Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "09c9aa9b-cd54-4101-b517-31f93931cc47",
+                    "Text": {
+                        "EN": "",
+                        "HY": "9․ «Քոչարի Ազգային Վերածնունդ և Ազգի Զարթոնք» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "046eec03-db68-440f-8570-bc204ae5abba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "10․ Հայ Ազգային Կոնգրես Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b6a7908f-3cf8-410c-a1ad-823b87f82029",
+                    "Text": {
+                        "EN": "",
+                        "HY": "11․ «Հանրապետություն» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cb5035c4-fbd2-4f8e-a165-9a69d211435f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "12․ Քրիստոնեա-Ժողովրդավարական Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cd717a66-611d-45fa-9ad7-a7cba976f848",
+                    "Text": {
+                        "EN": "",
+                        "HY": "14․ «Ժողովրդավարական Համախմբում» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e01af809-8a7a-4bbc-b5e8-0b4f0f925616",
+                    "Text": {
+                        "EN": "",
+                        "HY": "15․ «Դեմոկրատիա Օրենք Կարգապահություն» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2b09688a-061a-40af-b1ee-b4f941823a57",
+                    "Text": {
+                        "EN": "",
+                        "HY": "16․ «Քաղաքացիական Պայմանագիր» Կուսակցություն ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7dd7c821-e2d0-4d40-8a6c-6336cfcf436b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "17․ Հայաստան Կուսակցությունների Դաշինք ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7a2d207c-c35e-4fe8-85b8-161de3a8fbbd",
+                    "Text": {
+                        "EN": "",
+                        "HY": "18․ «Հանուն Հանրապետության Ժողովրդավարության Պաշտպանների Դաշինք» Կուսակցություն ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "fad78ad6-b32e-402b-93d7-785046b769f6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "19․ «Լուսավոր Հայաստան» Կուսակցություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "f9d02347-a81f-491b-8681-3ca515ea480c",
+            "Code": "С12",
+            "Text": {
+                "EN": "",
+                "HY": "12. Արդյո՞ք հաշվարկի նիստին ներկա են այլ կազմակերպության/ների դիտորդներ («Անկախ դիտորդ» դաշինքի անդամ կազմակերպություններից բացի)",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "dd64bfc8-fcfe-47dd-ac5c-98365e1840af",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չկան",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dc31d54b-dc8b-4299-8372-1c734d0a768c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թրանսփարենսի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7f6bb18e-5ae7-4fd4-815c-13945babe0ba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "ՀայաՔվե",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "a643202f-88c5-4791-b5c7-3df8a80a3547",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Պառլամենտարիզմի զարգացման միջազգային կենտրոն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dae68f0e-3505-44b9-b58a-60445d75d241",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Միտք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "14c512b5-f175-4430-8e25-d90733f87331",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Թաթոյան հիմնադրամ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2bbdc964-af08-475d-ba06-0d05b5de5221",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այցելուներ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "556ad423-6a4a-4cbc-a61a-ef5f7c63a6d7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Նկարագրեք այդ դիտորդների վարքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "5953d2c8-4623-4f95-bc16-05ffd819f2a6",
+            "Code": "C13",
+            "Text": {
+                "EN": "",
+                "HY": "13. Արդյո՞ք հաշվարկի նիստին ներկա են հավատարմագրված ԶԼՄ ներկայացուցիչներ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե, այո Նշել ԶԼՄ-ի անվանումը։ ԶԼՄ-ների ցուցակը տես Ուղեցույցներ բաժնում",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "a99ff65e-cf0e-4536-a3e9-71d5837bc5e4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2a94fec6-8183-4cd7-a968-03b7687e4b15",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "29696aa7-a367-4855-8958-588db63e803a",
+            "Code": "C14",
+            "Text": {
+                "EN": "",
+                "HY": "14. Արդյո՞ք հանձնաժողովի անդամներից որևէ մեկը գրել է հատուկ կարծիք",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "bfd8234a-f5d8-4c32-8926-ce52b9cac4fa",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "af4ecdab-f210-44ea-b902-c0f2de28dae6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b0e0827e-941d-45c5-a785-6dc54edc4b58",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Եթե այո, մանրամասնեք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "ba91a904-e79f-4e46-ac17-e085abddddb8",
+            "Code": "C15",
+            "Text": {
+                "EN": "",
+                "HY": "15. Լրացուցիչ դիտարկումներ (եթե եղել են վերոնշյալ հարցերի շրջանակից դուրս այլ խախտումներ, հակիրճ նկարագրեք)",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "d7c7efdf-f070-401b-96b1-e5b12488e7c0",
+            "Code": "C16",
+            "Text": {
+                "EN": "",
+                "HY": "16. Ձայների ամփոփման ավարտը՝ ըստ ԱՐՁԱՆԱԳՐՈՒԹՅԱՆ վրա նշված ժամի",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Կցեք հարցին արձանագրության ընթեռնելի լուսանկարը և սարքից տպվող տեղեկանքի վերջին մասը",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "7074a31a-caa2-47e6-9fe9-b45ae264449c",
+            "Code": "C17",
+            "Text": {
+                "EN": "",
+                "HY": "17. Դիտարկման ավարտ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Նշեք տեղամասից մեկնելու ժամը (նույնիսկ նիստի ավարտից շուտ մեկնելու դեպքում)",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        }
+    ]
+}

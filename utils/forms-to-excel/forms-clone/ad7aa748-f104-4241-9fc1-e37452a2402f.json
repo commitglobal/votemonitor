@@ -1,0 +1,1358 @@
+{
+    "id": "ad7aa748-f104-4241-9fc1-e37452a2402f",
+    "name": {
+        "EN": "",
+        "HY": "Ընտրողների վարքի հարցում",
+        "RU": ""
+    },
+    "description": {
+        "EN": "",
+        "HY": "Յուրաքանչյուր դիտորդ կարող է իրականացնել 2-4 հարցազրույց: Հարցված կանանց և տղամարդկանց թիվը պետք է լինի հավասար։ Յուրաքանչյուր տարիքային խմբից պետք է իրականացնել մեկ հարցազրույց։\nՍեռերի բաշխվածությունը պիտի լինի հավասար, իսկ տարիքային խմբերի առումով՝ յուրաքանչյուր տարիքային խմբից մեկական հարցված կին և տղամարդ:\n\nՀարցմանը մասնակցելու համար ընտրողներին դիմել միայն նրանց տեղամասից դուրս գալուց հետո։ Խնդրեք հարցվողին առանձնանալ մյուս ընտրողներից, հարցազրույցը իրականացրեք մյուսներից առնվազն մի քանի մետր հեռավորության վրա:\n\nԽնդրում ենք տեղեկացնել ընտրողին, որ դուք կապ չունեք որևէ թեկնածուի կամ կուսակցության հետ, հարցումը անանուն է և հրապարակվելու է ընդհանուր վիճակագրական տվյալներով։ \n\n\nՀիմնականում խուսափեք կարդալ տարբերակներից։ Ոչ մի դեպքում մի կարդացեք \"դժվարանում եմ պատասխանել\" տարբերակը։ Եթե ընտրողը տալիս է պատասխան, որն առաջին հայացքից չի տեղավորվում ներկայացված տարբերակներում, գրանցեք դա Այլ-ում, և զրույցից հետո փորձեք գտնել մոտ տարբերակը։ Միայն չգտնելու դեպքում թողեք դա որպես Այլ տարբերակ։",
+        "RU": ""
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "900c233d-b4d9-45ef-901e-353875dc3f0b",
+            "Code": "B1",
+            "Text": {
+                "EN": "",
+                "HY": "Մինչև այս հարցազրույցը անընդմեջ հրաժարվողների թիվը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Հարցաշարը լրացրեք այն տեղամասի տակ, որտեղ ընտրողը քվեարկել են, սակայն հրաժարվողների քանակում նշեք նախորդ հարցումից հետո հրաժարվածների թիվը՝ անկախ նրանից, թե որտեղ են հրաժարվել",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "2a8d6101-f98c-4a2b-b1d5-5851fd03ad62",
+            "Code": "B2",
+            "Text": {
+                "EN": "",
+                "HY": "2․ Հարցվողի սեռը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "91a885fc-b516-4073-83d6-517e8e02e7a2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Իգ․",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ffda04a0-eb47-4dc6-96ba-764a77876580",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ար․",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "0328b15d-7837-4f93-bc90-47bec9630ca7",
+            "Code": "B3",
+            "Text": {
+                "EN": "",
+                "HY": "3․ Հարցվողի տարիքը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "405b1156-9899-4532-b234-be8915ff55a2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "18-29",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "2503d6f6-60fa-49c9-9b91-f69897649f16",
+                    "Text": {
+                        "EN": "",
+                        "HY": "30-49",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "75cd9014-24bc-4518-802b-4626d478b984",
+                    "Text": {
+                        "EN": "",
+                        "HY": "50-64",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "fbfe237c-6769-4613-a595-93271e609408",
+                    "Text": {
+                        "EN": "",
+                        "HY": "65 և բարձր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "780553f4-0714-4fa8-8b06-c53e483c3286",
+            "Code": "B4",
+            "Text": {
+                "EN": "",
+                "HY": "4. Ո՞րն է այն խնդիրը, որը կլուծվի, եթե ձեր ընտրած կուսակցությունը մեծամասնություն ստանա։",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "textQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "b25cbdc6-a10e-4e0a-b70b-fbaf261d40ad",
+            "Code": "B5․1",
+            "Text": {
+                "EN": "",
+                "HY": "5․1 Իմ և Ձեր նման քաղաքացիները ինչպե՞ս կարող են ազդել քաղաքական գործընթացների վրա",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "(Առաջին պատասխան) Կարդացեք տարբերակները, միայն եթե հարցվողը ինքնուրույն չի պատասխանում։ \"Ոչ մի ձևով\" տարբերակը մի կարդացեք",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "970c0ad9-cb83-40b5-9f3d-aa7868d90aba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "(Չկարդալ) Ոչ մի ձևով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5f15e440-3088-45bd-896d-1e16eba1a789",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Սեփական բարեխղճությամբ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5279c72f-66d4-4f19-a131-b30d7cd2eab0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրություններին մասնակցելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "7b78f72f-8a85-49ee-b168-9c9584ec4d1a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քաղաքական աշխատանքով՝ շտաբում, կուսակցությունում, թեկնածություն դնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b763aec4-4458-4cc9-9947-aeef8d84a16a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցույցերի, խաղաղ անհնազանդության միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8c9d7bca-ac73-41c7-931a-c5a24ddd12b3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Զինված պայքարի միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "337c0039-117f-48d5-90ba-451e29cd2598",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Խնդիրների, հանցագործությունների մասին բարձրաձայնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "c05f51f3-67f5-4658-be9f-83206f380053",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "2e168946-f24f-4a0f-bb64-07a4b6cf87a0",
+            "Code": "B5․2",
+            "Text": {
+                "EN": "",
+                "HY": "5․2 Իմ և Ձեր նման քաղաքացիները ինչպե՞ս կարող են ազդել քաղաքական գործընթացների վրա",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "(Երկրորդ պատասխան) Եթե ընտրողը տվել է մեկից ավելի պատասխան, ապա երկրորդ տարբերակը գրեք այստեղ, իսկ երրորդը՝ հաջորդում",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "970c0ad9-cb83-40b5-9f3d-aa7868d90aba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ մի ձևով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5f15e440-3088-45bd-896d-1e16eba1a789",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Սեփական բարեխղճությամբ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5279c72f-66d4-4f19-a131-b30d7cd2eab0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրություններին մասնակցելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ee5cf697-e32c-4d2f-a791-1d314894f1b6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քաղաքական աշխատանքով՝ շտաբում, կուսակցությունում, թեկնածություն դնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b763aec4-4458-4cc9-9947-aeef8d84a16a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցույցերի միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8c9d7bca-ac73-41c7-931a-c5a24ddd12b3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Զինված պայքարի միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "337c0039-117f-48d5-90ba-451e29cd2598",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Խնդիրների, հանցագործությունների մասին բարձրաձայնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "68af8e28-7a58-40b7-9108-bf23d08cafa4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "9a10a0f1-262a-49ab-a0f0-a1c959ebd1bb",
+            "Code": "B5․3",
+            "Text": {
+                "EN": "",
+                "HY": "5․3 Իմ և Ձեր նման քաղաքացիները ինչպե՞ս կարող են ազդել քաղաքական գործընթացների վրա",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "(Երկրորդ պատասխան) Եթե ընտրողը տվել է մեկից ավելի պատասխան, ապա երկրորդ տարբերակը գրեք այստեղ, իսկ երրորդը՝ հաջորդում",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "970c0ad9-cb83-40b5-9f3d-aa7868d90aba",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ մի ձևով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5f15e440-3088-45bd-896d-1e16eba1a789",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Սեփական բարեխղճությամբ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5279c72f-66d4-4f19-a131-b30d7cd2eab0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրություններին մասնակցելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e410023b-11df-466a-a3f4-5519e9288e3b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քաղաքական աշխատանքով՝ շտաբում, կուսակցությունում, թեկնածություն դնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b763aec4-4458-4cc9-9947-aeef8d84a16a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ցույցերի միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8c9d7bca-ac73-41c7-931a-c5a24ddd12b3",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Զինված պայքարի միջոցով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "337c0039-117f-48d5-90ba-451e29cd2598",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Խնդիրների, հանցագործությունների մասին բարձրաձայնելով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "9b2a4997-203e-499c-af2f-22abe208dff5",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "a5c976c5-8ee5-4eb2-8b5c-737b81434f95",
+            "Code": "B6",
+            "Text": {
+                "EN": "",
+                "HY": "6․ Ե՞րբ էիք որոշել, թե որ կուսակցությունն եք ընտրելու",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "30d49692-f234-406e-9fdd-6cf643f2fad7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այսօր",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e18fee88-6f2f-4231-974b-83f2ef5b53c5",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վերջին շաբաթվա ընթացքում",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "1e7745bd-8a96-43b4-b527-5b46415e07c9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Վերջին մեկ ամսվա ընթացքում",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f6f1ac0e-f403-4524-9964-e1cb23e9ba2d",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գարնան ընթացքում",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "69041121-b59a-42de-9a3c-ed6496dc03b2",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ձմռանը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cd34661c-a7e2-434d-91d5-1c14b04c84af",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անցած աշնանը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "3247ddde-e7ed-45fa-a16b-d703cea3238a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Անցած ամռանը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "38d33c5a-f200-4577-a3b8-df3934676d7b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ ժամկետ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "513d5770-c30f-447a-bf76-ff30c0c6657e",
+            "Code": "B7",
+            "Text": {
+                "EN": "",
+                "HY": "7․ Ձեր կարծիքով, ձեր ընտրած կուսակցությունը/դաշինքը ինչպիսի՞ արդյունք կարձանագրի",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Ընտրողին կարող եք բացատրել, որ կոալիցիա ասելով նկատի ունեք, որ կմիանա այլ ուժերի և իրար հետ կձևավորեն կառավարությունը՝ կընտրեն վարչապետին",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "791f0cfd-d050-4b28-adf7-082116cf5e5c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ինքնուրույն կստանա մեծամասնություն",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "df5e0a89-ec62-44e4-887a-cef52e269817",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մեծամասնություն կստանա կոալիցիայով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "38fcef9b-8a4c-472b-9f7e-923be471da89",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Փոքրամասնություն կստանա, բայց կմիանա կուալիցիայի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "6652d07f-a76e-4731-92ce-0a5417e270fc",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Փոքրամասնություն կստանա և չի ձևավորի կոալիցիա",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "83cd5177-c815-4258-8db1-0a5e5f2d4007",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չի հաղթահարի անցողիկ շեմը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "c050abfe-3dad-4d07-b1ea-7ad83edbdc2e",
+            "Code": "B8",
+            "Text": {
+                "EN": "",
+                "HY": "8․ Արդյո՞ք մտածել եք թեկնածու լինելու մասին",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "146b14ab-53a5-472c-99c6-55f317cf85ee",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո, առաջադրվել եմ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "42992249-5f84-4bb2-a334-e6bfdbf4410a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո, բայց չեմ առաջադրվել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "05db5ae6-3d94-4c37-a246-a5ed44cb21c1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ոչ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "32665c43-4835-4bd7-94e2-ca216e8a9c84",
+            "Code": "B8․1",
+            "Text": {
+                "EN": "",
+                "HY": "8․1 Իսկ ինչո՞ւ չեք առաջադրվել",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե ընտրողը տալիս է մեկից ավելի պատասխան, մյուս պատասխանները նշեք այլում։ Եթե ընտրողը պատասխանում է՝ \"հետաքրքրության պակաս և այլ պատասխան, ապա որպես առաջին տարբերակ նշեք այդ պատասխանը, իսկ հետաքրքրության պակասը կարող եք նշել Այլում",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "42992249-5f84-4bb2-a334-e6bfdbf4410a",
+                "Condition": "Includes",
+                "ParentQuestionId": "c050abfe-3dad-4d07-b1ea-7ad83edbdc2e"
+            },
+            "Options": [
+                {
+                    "Id": "b79dcb00-52be-449e-bea6-b121b2c9b14c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Առաջարկ չստանալու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "95e9d0ad-8159-463c-8159-71a78d00c698",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ֆինանսական միջոցների սղության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0631c6d2-505c-48fd-80ad-d4ae8c3db602",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չընտրվելու հավանականության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "32750dc0-4f57-467b-8174-8101967f02c7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտանիքի դեմ լինելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "07a8d64f-b403-4061-9ce4-3f55dc64599c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանրային վատ վերաբերմունքի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "082a4144-d1cf-46f8-8eae-7b9a552d3310",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գիտելիքի/կարողությունների պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e1c33268-f10a-4520-8a42-1f4b835e87eb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Որևէ կուսակցության հետ չասոցացվելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "3143548c-9cc1-456a-a220-11e6215b4de8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հետաքրքրության պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cccb8ca1-2aff-4364-823c-1efcc5f277c9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "95319016-f082-4ba5-913b-afcc265dd563",
+            "Code": "B8․2",
+            "Text": {
+                "EN": "",
+                "HY": "8․2 Իսկ ինչո՞ւ չեք մտածել",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե ընտրողը տալիս է մեկից ավելի պատասխան, մյուս պատասխանները նշեք այլում։ Եթե ընտրողը պատասխանում է՝ \"հետաքրքրության պակաս և այլ պատասխան, ապա որպես առաջին տարբերակ նշեք այդ պատասխանը, իսկ հետաքրքրության պակասը կարող եք նշել Այլում",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": {
+                "Value": "05db5ae6-3d94-4c37-a246-a5ed44cb21c1",
+                "Condition": "Includes",
+                "ParentQuestionId": "c050abfe-3dad-4d07-b1ea-7ad83edbdc2e"
+            },
+            "Options": [
+                {
+                    "Id": "b79dcb00-52be-449e-bea6-b121b2c9b14c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Առաջարկ չստանալու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "95e9d0ad-8159-463c-8159-71a78d00c698",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ֆինանսական միջոցների սղության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0631c6d2-505c-48fd-80ad-d4ae8c3db602",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չընտրվելու հավանականության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "32750dc0-4f57-467b-8174-8101967f02c7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտանիքի դեմ լինելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "07a8d64f-b403-4061-9ce4-3f55dc64599c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանրային վատ վերաբերմունքի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "082a4144-d1cf-46f8-8eae-7b9a552d3310",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գիտելիքի/կարողությունների պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e1c33268-f10a-4520-8a42-1f4b835e87eb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Որևէ կուսակցության հետ չասոցացվելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "3143548c-9cc1-456a-a220-11e6215b4de8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հետաքրքրության պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cccb8ca1-2aff-4364-823c-1efcc5f277c9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "fb329dc4-4786-45d3-91d4-cf52b0c4cb3f",
+            "Code": "B9",
+            "Text": {
+                "EN": "",
+                "HY": "9․ Կանայք ավելի քիչ են առաջադրվում և մասնակցում քաղաքական գործընթացներին, Ձեր կարծիքով, ո՞րն է պատճառը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե ընտրողը տալիս է մեկից ավելի պատասխան, մյուս պատասխանները նշեք այլում։ ",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "b79dcb00-52be-449e-bea6-b121b2c9b14c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Առաջարկ չստանալու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "95e9d0ad-8159-463c-8159-71a78d00c698",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ֆինանսական միջոցների սղության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "0631c6d2-505c-48fd-80ad-d4ae8c3db602",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Չընտրվելու հավանականության",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "32750dc0-4f57-467b-8174-8101967f02c7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտանիքի դեմ լինելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "07a8d64f-b403-4061-9ce4-3f55dc64599c",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հանրային վատ վերաբերմունքի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "082a4144-d1cf-46f8-8eae-7b9a552d3310",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գիտելիքի/կարողությունների պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e1c33268-f10a-4520-8a42-1f4b835e87eb",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Որևէ կուսակցության հետ չասոցացվելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "3143548c-9cc1-456a-a220-11e6215b4de8",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հետաքրքրության պակասի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "cccb8ca1-2aff-4364-823c-1efcc5f277c9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "56fed5af-b0c5-4db5-8b22-360e252dffcc",
+            "Code": "B10",
+            "Text": {
+                "EN": "",
+                "HY": "10․ Ձեր կարծիքով ինչո՞ւ են մարդիկ ընտրում այս կամ այն կուսակցությունը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Եթե ընտրողը տալիս է մեկից ավելի պատասխան, կամ այնպիսի պատասխան, որը չեք կարողանում անմիջապես դնել տարբերակներում՝ դրանք գրեք այլում․",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "3d1467b3-d082-4646-b062-70a33711badf",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են վարչապետին/կուսակցության ղեկավարին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "b6fac909-b7f0-4c14-9e52-e668ca237887",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են քաղաքական թիմին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "bd295a41-c8be-40fc-9629-bdc5339bb9c4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են ըստ նախընտրական ծրագրի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e53d406f-c353-42a6-9e3e-8e2861ee090f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են ինչպես կինը/ամուսինը որոշի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "f221151b-7712-4fb5-9f83-5bd529af40a0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են իրենց ծանոթին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "97b60767-2ce6-40b8-bea5-74553046e379",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են ընտրակաշառքով",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8a5429c3-4c41-4c99-b17e-95c7ab62e7d1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են չարյաց փոքրագույնին",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8e992ab6-130d-484e-9f62-45720d93271f",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրում են ընդդեմ ինչ-որ ուժի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "27c25f30-d79a-4c1b-9629-7331f41e42a6",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "6031b17e-178c-4ba1-9e7d-f324d4a834a4",
+            "Code": "B11",
+            "Text": {
+                "EN": "",
+                "HY": "11․ Ի՞նչն է ամենից շատ ազդել ձեր ընտրության վրա",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "68bf09c4-64ad-4633-9737-8ebcc2f165df",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Քաղաքական գործչի/գործիչների խոսքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5eb204d5-d024-4f38-a6b2-cfc49815cb91",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Լուրերը/քաղաքական իրադարձությունները",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "5854dbb8-f74d-472c-bcfd-848c7a264bfa",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտանիքի անդամների, բարեկամների կարծիքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "69a457c8-a709-4ce7-bf8c-682a04d9135b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընկերների, գործընկերների, մասնագիտական կամ ուսումնական համայնքի կարծիքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "220a6b02-977c-4b5a-bbbc-a7ff8efc3a70",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Որևէ մեկի խնդրանքը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "03f08796-dd6c-413f-9d41-2f20a146fcc7",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Որևէ մեկի պահանջը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "33aebc6d-573c-4118-9132-d20fdc086bf1",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այլ",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "7281cedf-41be-4f4e-b99c-a4c2ce034868",
+            "Code": "B12",
+            "Text": {
+                "EN": "",
+                "HY": "12․ Եթե բնութագրեք ձեր ընտրության շարժառիթները, արդյո՞ք ընտրել եք վախից, որ կարող է լինել ավելի վատ, թե հույսով, որ լինելու է ավելի լավ։",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "ratingQuestion",
+            "DisplayLogic": null,
+            "LowerLabel": {
+                "EN": "",
+                "HY": "Վախից",
+                "RU": ""
+            },
+            "Scale": "OneTo4",
+            "UpperLabel": {
+                "EN": "",
+                "HY": "Հույսով",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "a7fbb61c-a585-4df9-a20e-45857d915092",
+            "Code": "B13",
+            "Text": {
+                "EN": "",
+                "HY": "13․ Արդյո՞ք անձամբ ճանաչում եք մարդկանց, որոնք․․․",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Նշեք բոլոր տարբերակները, եթե ճանաչում եք",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "bf388b02-8e71-41a4-9adf-88c0f277fe27",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Գումարի դիմաց կամ հարկադրաբար մասնակցել են ցույցերի",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "024c7a75-9ce4-4f27-8927-0ddb0c053540",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հարկադրել են, կամ գումարի դիմաց տարել են մարդկանց ցույցերին մասնակցելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "dd4758a5-0735-4c62-97f8-9e039752d54a",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ստացել են  ընտրակաշառք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "e200f03d-a564-446f-95af-3e5c0fe78ab0",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բաժանել են ընտրակաշառք",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "746983c7-8b9f-408f-9c87-6c18d3c76fbe",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հարկադրանքի ներքո են քվեարկել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "8eb457a7-fe20-4285-a384-efa1584cea25",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Հարկադրել են այլ մարդկանց քվեարկել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "aa7180f8-47d7-4079-81ec-34b558b707c8",
+            "Code": "B14",
+            "Text": {
+                "EN": "",
+                "HY": "14․ Արդյո՞ք հավատում եք, որ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "Նշեք բոլոր այն տարբերակները, որոնց հավատում եք",
+                "RU": ""
+            },
+            "$questionType": "multiSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "9faa5d5f-0cc3-4cee-be10-ff131dd693a4",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Բոլոր թեկնածուները ազատ էին քարոզչություն իրականացնում",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "d4cc6e1e-073a-4a54-8fb5-316928f3b6fa",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ձեր քվեն գաղտնի է և ոչ ոք չի կարող այն վերահսկել",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "ed3a0f0a-34d8-41e1-b9f2-e7166aa973a9",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Մարդիկ ազատ են քվեարկել ում ուզենան",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "82625eea-226c-49ce-b78c-e91fbc064611",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Ընտրությունների արդյունքները չեն կեղծվելու",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        }
+    ]
+}

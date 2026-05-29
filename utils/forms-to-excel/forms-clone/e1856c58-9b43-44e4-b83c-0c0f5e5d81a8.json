@@ -1,0 +1,290 @@
+{
+    "id": "e1856c58-9b43-44e4-b83c-0c0f5e5d81a8",
+    "name": {
+        "EN": "",
+        "HY": "ԱՆՏԵՍԵԼ Արդյունքների արձանագրման քարտ",
+        "RU": ""
+    },
+    "description": {
+        "EN": "",
+        "HY": "Լրացնել ըստ արձանագրության, նշել, եթե առկա է իրականությանը չհամապատասխանող թիվ",
+        "RU": ""
+    },
+    "defaultLanguage": "HY",
+    "languages": [
+        "EN",
+        "HY",
+        "RU"
+    ],
+    "questions": [
+        {
+            "Id": "f207e5ea-05d5-4869-a2c0-5de90318b897",
+            "Code": "R1",
+            "Text": {
+                "EN": "",
+                "HY": "1. Տեղամասում ընտրողների թիվը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "7bbf8d6d-d228-4747-98ee-6c1acedc2a09",
+            "Code": "R2",
+            "Text": {
+                "EN": "",
+                "HY": "2. Քվեարկությանը մասնակցածների թիվը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "70ccd8a5-fc29-48c4-b359-58fcabaa2504",
+            "Code": "R3",
+            "Text": {
+                "EN": "",
+                "HY": "3. Անվավեր քվեաթերթիկների թիվը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "e09567a2-2009-4b9b-b506-7e50b9a8bd13",
+            "Code": "R4",
+            "Text": {
+                "EN": "",
+                "HY": "4. Արդյո՞ք վերցնել եք քաղվածքը",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "singleSelectQuestion",
+            "DisplayLogic": null,
+            "Options": [
+                {
+                    "Id": "1122858d-261c-4841-ac71-ee1818a5b51b",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Այո: Կցել քաղվածքը պատասխանին:",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                },
+                {
+                    "Id": "aad05fba-ef72-4b7d-8afd-3e77e5594c11",
+                    "Text": {
+                        "EN": "",
+                        "HY": "Եթե ոչ, նշել պատճառը, ըստ անհրաժեշտության լրացնել խախտումների քարտը",
+                        "RU": ""
+                    },
+                    "IsFlagged": "[object Object]",
+                    "IsFreeText": "[object Object]"
+                }
+            ]
+        },
+        {
+            "Id": "25d5e6bd-bb51-4a75-b258-e54e42fa89b6",
+            "Code": "R6G2",
+            "Text": {
+                "EN": "",
+                "HY": "1․ «ՀԱՂԹԱՆԱԿ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆՆԵՐԻ ԴԱՇԻՆՔ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "54190671-b3f4-47f4-b4a9-e576002c3a41",
+            "Code": "R6G3",
+            "Text": {
+                "EN": "",
+                "HY": "2․ «ՀԱՄԱՀԱՅԿԱԿԱՆ ՃԱԿԱՏ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "1506539f-5d3d-43f9-b2b7-510e23c067ca",
+            "Code": "R6G5",
+            "Text": {
+                "EN": "",
+                "HY": "3․ «ՀԱՆՐԱՊԵՏՈՒԹՅՈՒՆ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "77e86a39-02ec-40be-9628-ab82e9ea5d13",
+            "Code": "R6G4",
+            "Text": {
+                "EN": "",
+                "HY": "4. «Մայր Հայաստան» կուսակցություն",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "45e81a09-42ad-487c-a281-904ecba0541a",
+            "Code": "R6G6",
+            "Text": {
+                "EN": "",
+                "HY": "5․ «ԱԶԱՏ ԴԵՄՈԿՐԱՏՆԵՐ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "1a9ca0ee-2641-4570-821a-a873728d028d",
+            "Code": "R6G7",
+            "Text": {
+                "EN": "",
+                "HY": "6․ «ԺԱՌԱՆԳՈՒԹՅՈՒՆ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "fe6e5ca9-5af6-4341-b073-027190665e83",
+            "Code": "R6G1",
+            "Text": {
+                "EN": "",
+                "HY": "7. Քաղաքացիական պայմանագիր",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        },
+        {
+            "Id": "8cfc67be-d9d1-4836-874d-27b678c7d4b4",
+            "Code": "R6G8",
+            "Text": {
+                "EN": "",
+                "HY": "8. «ՀԱՅՐԵՆԻՔ» ԿՈՒՍԱԿՑՈՒԹՅՈՒՆ",
+                "RU": ""
+            },
+            "Helptext": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            },
+            "$questionType": "numberQuestion",
+            "DisplayLogic": null,
+            "InputPlaceholder": {
+                "EN": "",
+                "HY": "",
+                "RU": ""
+            }
+        }
+    ]
+}

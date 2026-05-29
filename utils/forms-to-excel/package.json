@@ -1,0 +1,20 @@
+{
+  "name": "generate-translations-excel",
+  "version": "1.0.0",
+  "description": "Generates excel containing all translations from locales",
+  "type": "module",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "extract": "./index.js",
+    "import-forms": "./excel-to-forms.js"
+  },
+  "scripts": {
+    "export": "node index.js",
+    "import": "node excel-to-forms.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}
