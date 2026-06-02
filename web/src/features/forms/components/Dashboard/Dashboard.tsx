@@ -68,7 +68,7 @@ export default function FormsDashboard(): ReactElement {
     const params = [
       ['searchText', searchText],
       ['typeFilter', debouncedSearch.formTypeFilter],
-      ['statusFilter', debouncedSearch.formStatusFilter],
+      ['formStatusFilter', debouncedSearch.formStatusFilter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormsSearchParams;
