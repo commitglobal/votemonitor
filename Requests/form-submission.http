@@ -1,11 +1,18 @@
-@electionRoundId=ec618650-b83d-4969-ae18-f638edeedae4
+@electionRoundId=6bdf707f-e4cf-49a1-9bd7-27f68bc7a12b
 @pollingStationId=5d00b66f-d874-4936-9eca-5eac0d4baf7c
 
 # get election round forms
-GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/forms:fetchAll
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/forms?formStatusFilter=Published
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
+
+# get election round forms
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions:byEntryDetailed
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
 
 ###
 # upsert a form submission
