@@ -1,4 +1,3 @@
-using Module.Answers.Models;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Specifications;
@@ -9,7 +8,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<PagedResponse<FormSubmissionViewV2>>, NotFound>>
+    : Endpoint<Request, Results<Ok<PagedResponse<DetailedSubmissionEntry>>, NotFound>>
 {
     public override void Configure()
     {
@@ -20,7 +19,7 @@ public class Endpoint(
         Summary(x => { x.Summary = "Lists form submissions by entry detailed"; });
     }
 
-    public override async Task<Results<Ok<PagedResponse<FormSubmissionViewV2>>, NotFound>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<PagedResponse<DetailedSubmissionEntry>>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var authorizationResult =
@@ -148,7 +147,6 @@ public class Endpoint(
                                                               psi."Answers",
                                                               '[]'::jsonb AS "Attachments",
                                                               '[]'::jsonb AS "Notes",
-                                                              psif."Questions",
                                                               psi."ArrivalTime",
                                                               psi."DepartureTime",
                                                               psi."Breaks",
@@ -156,10 +154,9 @@ public class Endpoint(
                                                               psi."NumberOfFlaggedAnswers",
                                                               0        AS                                     "MediaFilesCount",
                                                               0        AS                                     "NotesCount",
-                                                              psi."LastUpdatedAt" AS "TimeSubmitted",
+                                                              psi."LastUpdatedAt" AS "CreatedAt",
+                                                              psi."LastUpdatedAt" AS "LastUpdatedAt",
                                                               psi."FollowUpStatus",
-                                                              psif."DefaultLanguage",
-                                                              psif."Name" as "FormName",
                                                               psi."IsCompleted"
                                                        FROM "PollingStationInformation" psi
                                                                 INNER JOIN "PollingStationInformationForms" psif
@@ -213,7 +210,6 @@ public class Endpoint(
                                                                          OR N."SubmissionId" = FS."Id"
                                                                      )
                                                                AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
-                                                   f."Questions",
                                                    NULL::timestamp AS "ArrivalTime",
                                                    NULL::timestamp AS "DepartureTime",
                                                    '[]'::jsonb AS "Breaks",
@@ -236,10 +232,9 @@ public class Endpoint(
                                                           OR N."SubmissionId" = FS."Id"
                                                         )
                                                       AND N."MonitoringObserverId" = fs."MonitoringObserverId") AS "NotesCount",
-                                                   fs."LastUpdatedAt"        AS "TimeSubmitted",
+                                                   fs."LastUpdatedAt"        AS "CreatedAt",
+                                                   fs."LastUpdatedAt"        AS "LastUpdatedAt",
                                                    fs."FollowUpStatus",
-                                                   f."DefaultLanguage",
-                                                   f."Name" as "FormName",
                                                    fs."IsCompleted"
                                             FROM "FormSubmissions" fs
                                                      INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -265,12 +260,11 @@ public class Endpoint(
                                                     f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered")
                                                 OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0)))
                   SELECT s."SubmissionId",
-                         s."TimeSubmitted",
+                         s."CreatedAt",
+                         s."LastUpdatedAt",
                          s."FormId",
                          s."FormCode",
                          s."FormType",
-                         s."DefaultLanguage",
-                         s."FormName",
                          ps."Id"          AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",
@@ -290,7 +284,6 @@ public class Endpoint(
                          s."NumberOfFlaggedAnswers",
                          s."MediaFilesCount",
                          s."NotesCount",
-                         s."Questions",
                          s."Answers",
                          s."Notes",
                          s."Attachments",
@@ -325,8 +318,10 @@ public class Endpoint(
                     AND (@hasAttachments IS NULL
                       OR (s."MediaFilesCount" = 0 AND @hasAttachments = false)
                       OR (s."MediaFilesCount" > 0 AND @hasAttachments = true))
-                  ORDER BY CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN s."TimeSubmitted" END ASC,
-                           CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN s."TimeSubmitted" END DESC,
+                  ORDER BY CASE WHEN @sortExpression = 'LastUpdatedAt ASC' THEN s."LastUpdatedAt" END ASC,
+                           CASE WHEN @sortExpression = 'LastUpdatedAt DESC' THEN s."LastUpdatedAt" END DESC,
+                           CASE WHEN @sortExpression = 'CreatedAt ASC' THEN s."CreatedAt" END ASC,
+                            CASE WHEN @sortExpression = 'CreatedAt DESC' THEN s."CreatedAt" END DESC,
                            CASE WHEN @sortExpression = 'FormCode ASC' THEN s."FormCode" END ASC,
                            CASE WHEN @sortExpression = 'FormCode DESC' THEN s."FormCode" END DESC,
                            CASE WHEN @sortExpression = 'FormType ASC' THEN s."FormType" END ASC,
@@ -389,13 +384,13 @@ public class Endpoint(
         };
 
         int totalRowCount;
-        List<FormSubmissionViewV2> entries;
+        List<DetailedSubmissionEntry> entries;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
             totalRowCount = multi.Read<int>().Single();
-            entries = multi.Read<FormSubmissionViewV2>().ToList();
+            entries = multi.Read<DetailedSubmissionEntry>().ToList();
         }
 
         entries = (await Task.WhenAll(
@@ -415,14 +410,14 @@ public class Endpoint(
         )).ToList();
 
         return TypedResults.Ok(
-            new PagedResponse<FormSubmissionViewV2>(entries, totalRowCount, req.PageNumber, req.PageSize));
+            new PagedResponse<DetailedSubmissionEntry>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(FormSubmissionViewV2.TimeSubmitted)} DESC";
+            return $"{nameof(DetailedSubmissionEntry.CreatedAt)} DESC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
@@ -439,76 +434,76 @@ public class Endpoint(
             return $"FormType {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Level1),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Level1),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Level1)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Level1)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Level2),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Level2),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Level2)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Level2)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Level3),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Level3),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Level3)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Level3)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Level4),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Level4),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Level4)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Level4)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Level5),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Level5),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Level5)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Level5)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Number),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Number),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Number)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Number)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.ObserverName),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.ObserverName),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.ObserverName)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.ObserverName)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Email),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Email),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Email)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Email)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.PhoneNumber),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.PhoneNumber),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.PhoneNumber)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.PhoneNumber)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.Tags),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.Tags),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.Tags)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.Tags)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.NumberOfQuestionsAnswered),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.NumberOfQuestionsAnswered),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.NumberOfQuestionsAnswered)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.NumberOfQuestionsAnswered)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.NumberOfFlaggedAnswers),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.NumberOfFlaggedAnswers)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.NumberOfFlaggedAnswers)} {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, "MediaFilesCount",
@@ -523,10 +518,16 @@ public class Endpoint(
             return $"NotesCount {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(FormSubmissionViewV2.TimeSubmitted),
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.CreatedAt),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(FormSubmissionViewV2.TimeSubmitted)} {sortOrder}";
+            return $"{nameof(DetailedSubmissionEntry.CreatedAt)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(DetailedSubmissionEntry.LastUpdatedAt),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(DetailedSubmissionEntry.LastUpdatedAt)} {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, "MonitoringObserverStatus",
@@ -535,6 +536,6 @@ public class Endpoint(
             return $"MonitoringObserverStatus {sortOrder}";
         }
 
-        return $"{nameof(FormSubmissionViewV2.TimeSubmitted)} DESC";
+        return $"{nameof(DetailedSubmissionEntry.CreatedAt)} DESC";
     }
 }
