@@ -6,6 +6,7 @@ import FormTranslationEditor from '@/components/FormTranslationEditor/FormTransl
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/form-templates/$formTemplateId_.edit-translation.$languageCode';
@@ -23,6 +24,7 @@ function FormTemplateTranslationEdit() {
   const navigate = useNavigate();
   const router = useRouter();
   const confirm = useConfirm();
+  const prevSearch = usePrevSearch();
 
   const updateFormTemplateMutation = useMutation({
     mutationFn: ({
@@ -49,7 +51,7 @@ function FormTemplateTranslationEdit() {
             body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
           })
         ) {
-          await navigate({ to: '/form-templates' });
+          await navigate({ to: '/form-templates', search: prevSearch });
         }
       }
     },
@@ -82,7 +84,7 @@ function FormTemplateTranslationEdit() {
 
   return (
     <Layout
-      backButton={<NavigateBack to='/form-templates' />}
+      backButton={<NavigateBack to='/form-templates' search={prevSearch} />}
       breadcrumbs={
         <FormTemplateDetailsBreadcrumbs
           formCode={formTemplate.code}

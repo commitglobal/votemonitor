@@ -27,6 +27,7 @@ import i18n from '@/i18n';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormTemplatesSearchParams, Route } from '@/routes/form-templates/index';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -35,7 +36,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -51,10 +52,12 @@ import saveAs from 'file-saver';
 export default function FormTemplatesDashboard(): ReactElement {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
   const [searchText, setSearchText] = useState('');
   const { filteringIsActive } = useFilteringContainer();
   const router = useRouter();
+  const setPrevSearch = useSetPrevSearch();
 
   const queryParams = useMemo(() => {
     const params: FormTemplatesSearchParams = {
@@ -346,14 +349,17 @@ export default function FormTemplatesDashboard(): ReactElement {
   };
 
   const navigateToFormTemplate = (formTemplateId: string, languageCode: string) => {
+    setPrevSearch(fullSearch);
     navigate({ to: '/form-templates/$formTemplateId/$languageCode', params: { formTemplateId, languageCode } });
   };
 
   const navigateToEdit = (formTemplateId: string) => {
+    setPrevSearch(fullSearch);
     navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId } });
   };
 
   const navigateToEditTranslation = (formTemplateId: string, languageCode: string) => {
+    setPrevSearch(fullSearch);
     navigate({
       to: '/form-templates/$formTemplateId/edit-translation/$languageCode',
       params: { formTemplateId, languageCode },

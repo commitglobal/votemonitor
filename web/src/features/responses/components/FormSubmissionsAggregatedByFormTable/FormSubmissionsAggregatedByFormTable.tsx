@@ -2,8 +2,9 @@ import { DataSources, FunctionComponent } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import { getValueOrDefault, toBoolean } from '@/lib/utils';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
@@ -24,10 +25,13 @@ export function FormSubmissionsAggregatedByFormTable({
   const navigate = routeApi.useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const search = routeApi.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
+  const setPrevSearch = useSetPrevSearch();
   
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
+      setPrevSearch(fullSearch);
       navigate({
         to: '/responses/form-submissions/$formId/aggregated',
         params: { formId },

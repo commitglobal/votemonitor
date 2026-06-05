@@ -2,6 +2,8 @@ import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
 import { ElectionRoundStatus, IncidentReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
@@ -23,6 +25,7 @@ export default function IncidentReportDetails(): FunctionComponent {
   const { incidentReportId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: electionRound } = useElectionRoundDetails(currentElectionRoundId);
+  const prevSearch = usePrevSearch();
 
   const { data: incidentReport } = useSuspenseQuery(
     incidentReportDetailsQueryOptions(currentElectionRoundId, incidentReportId)
@@ -65,7 +68,9 @@ export default function IncidentReportDetails(): FunctionComponent {
   }
 
   return (
-    <Layout title={`#${incidentReport.incidentReportId}`}>
+    <Layout
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
+      title={`#${incidentReport.incidentReportId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
           <CardContent className='flex flex-col gap-4 pt-6'>

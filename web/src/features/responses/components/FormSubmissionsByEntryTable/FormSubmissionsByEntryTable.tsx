@@ -2,9 +2,10 @@ import { DataSources, FormSubmissionFollowUpStatus, FunctionComponent, Questions
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import { getValueOrDefault, toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/responses';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
@@ -40,8 +41,10 @@ export interface FormSubmissionsSearchRequest{
 export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEntryTableProps): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const setPrevSearch = useSetPrevSearch();
 
   const columnsVisibility = useFormSubmissionsByEntryColumns();
 
@@ -73,9 +76,10 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
 
   const navigateToFormSubmission = useCallback(
     (submissionId: string) => {
+      setPrevSearch(fullSearch);
       navigate({ to: '/responses/form-submissions/$submissionId', params: { submissionId } });
     },
-    [navigate]
+    [navigate, setPrevSearch, fullSearch]
   );
 
   return (

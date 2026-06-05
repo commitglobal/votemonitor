@@ -4,6 +4,7 @@ import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import { FormTemplateDetailsBreadcrumbs } from '@/components/FormTemplateDetailsBreadcrumbs/FormTemplateDetailsBreadcrumbs';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/form-templates/$formTemplateId_.edit';
@@ -20,6 +21,7 @@ function FormTemplateEdit() {
 
   const navigate = useNavigate();
   const router = useRouter();
+  const prevSearch = usePrevSearch();
 
   const updateFormTemplateMutation = useMutation({
     mutationFn: (formTemplate: UpdateFormTemplateRequest) => {
@@ -62,7 +64,7 @@ function FormTemplateEdit() {
 
   return (
     <Layout
-      backButton={<NavigateBack to='/form-templates' />}
+      backButton={<NavigateBack to='/form-templates' search={prevSearch} />}
       breadcrumbs={
         <FormTemplateDetailsBreadcrumbs
           formCode={formTemplate.code}
@@ -76,7 +78,7 @@ function FormTemplateEdit() {
           saveFormTemplate(formData)
         }
         onNavigateAway={() => {
-          navigate({ to: '/form-templates' });
+          navigate({ to: '/form-templates', search: prevSearch });
         }}
         hasCitizenReportingOption={true}
       />

@@ -29,6 +29,7 @@ import i18n from '@/i18n';
 import { cn, isNotNilOrWhitespace, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { FormsSearchParams, Route } from '@/routes/election-event/$tab';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -38,7 +39,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { ColumnDef, createColumnHelper, Row } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -56,6 +57,7 @@ import saveAs from 'file-saver';
 export default function FormsDashboard(): ReactElement {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
   const [searchText, setSearchText] = useState('');
   const { filteringIsActive } = useFilteringContainer();
@@ -564,6 +566,7 @@ export default function FormsDashboard(): ReactElement {
   }, [currentElectionRoundId, electionRound?.isMonitoringNgoForCitizenReporting, electionRound?.isCoalitionLeader]);
 
   const [isFiltering, setIsFiltering] = useState(filteringIsActive);
+  const setPrevSearch = useSetPrevSearch();
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -582,14 +585,17 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const navigateToForm = (formId: string, languageCode: string) => {
+    setPrevSearch(fullSearch);
     navigate({ to: '/forms/$formId/$languageCode', params: { formId, languageCode } });
   };
 
   const navigateToEdit = (formId: string) => {
+    setPrevSearch(fullSearch);
     navigate({ to: '/forms/$formId/edit', params: { formId } });
   };
 
   const navigateToEditTranslation = (formId: string, languageCode: string) => {
+    setPrevSearch(fullSearch);
     navigate({ to: '/forms/$formId/edit-translation/$languageCode', params: { formId, languageCode } });
   };
 

@@ -22,7 +22,7 @@ import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringCo
 import { getValueOrDefault } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useQuickReports } from '../../hooks/quick-reports';
@@ -54,6 +54,7 @@ export interface QuickReportFilterRequest {
 export function QuickReportsTab(): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
 
   const columnsVisibility = useQuickReportsColumnsVisibility();
@@ -110,9 +111,10 @@ export function QuickReportsTab(): FunctionComponent {
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {
+      setPrevSearch(fullSearch);
       navigate({ to: '/responses/quick-reports/$quickReportId', params: { quickReportId } });
     },
-    [navigate]
+    [navigate, setPrevSearch, fullSearch]
   );
 
   return (
