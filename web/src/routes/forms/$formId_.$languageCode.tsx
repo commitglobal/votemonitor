@@ -34,7 +34,7 @@ function Details() {
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} search={prevSearch} />}
       breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[languageCode] ?? ''} />}
       title={`${form.code} - ${form.name[languageCode]}`}>
-      <PreviewForm form={form} languageCode={form.defaultLanguage} onNavigateToEdit={navigateToEdit} />
+      <PreviewForm form={form} languageCode={languageCode} onNavigateToEdit={navigateToEdit} />
     </Layout>
   );
 }
