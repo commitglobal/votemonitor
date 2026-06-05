@@ -232,7 +232,7 @@ public class Endpoint(
                                                           OR N."SubmissionId" = FS."Id"
                                                         )
                                                       AND N."MonitoringObserverId" = fs."MonitoringObserverId") AS "NotesCount",
-                                                   fs."LastUpdatedAt"        AS "CreatedAt",
+                                                   fs."CreatedAt"        AS "CreatedAt",
                                                    fs."LastUpdatedAt"        AS "LastUpdatedAt",
                                                    fs."FollowUpStatus",
                                                    fs."IsCompleted"
