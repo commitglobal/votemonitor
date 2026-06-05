@@ -6,6 +6,7 @@ import FormTranslationEditor from '@/components/FormTranslationEditor/FormTransl
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
@@ -26,6 +27,7 @@ function FormTranslationEdit() {
 
   const navigate = useNavigate();
   const router = useRouter();
+  const prevSearch = usePrevSearch();
 
   const updateFormMutation = useMutation({
     mutationFn: ({
@@ -72,7 +74,7 @@ function FormTranslationEdit() {
         form: updatedForm,
       });
       if (shouldNavigateAwayAfterSubmit) {
-        await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+        await navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' }, search: prevSearch });
       }
     },
     [updateFormMutation, formId, currentElectionRoundId]
@@ -80,7 +82,7 @@ function FormTranslationEdit() {
 
   return (
     <Layout
-      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} search={prevSearch} />}
       breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[form.defaultLanguage] ?? ''} />}
       title={`${form.code} - ${form.name[form.defaultLanguage] ?? ''}`}>
       <FormTranslationEditor

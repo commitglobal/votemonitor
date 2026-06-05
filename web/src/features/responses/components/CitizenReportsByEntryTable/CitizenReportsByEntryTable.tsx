@@ -2,8 +2,9 @@ import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import { Route } from '@/routes/responses';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useCitizenReports } from '../../hooks/citizen-reports';
@@ -16,8 +17,10 @@ type CitizenReportsByEntryTableProps = {
 export function CitizenReportsByEntryTable(props: CitizenReportsByEntryTableProps): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const setPrevSearch = useSetPrevSearch();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -29,9 +32,10 @@ export function CitizenReportsByEntryTable(props: CitizenReportsByEntryTableProp
 
   const navigateToCitizenReport = useCallback(
     (citizenReportId: string) => {
+      setPrevSearch(fullSearch);
       navigate({ to: '/responses/citizen-reports/$citizenReportId', params: { citizenReportId } });
     },
-    [navigate]
+    [navigate, setPrevSearch, fullSearch]
   );
 
   return (

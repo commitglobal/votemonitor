@@ -2,8 +2,9 @@ import { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import { Route } from '@/routes/responses';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useIncidentReportsByForm } from '../../hooks/incident-reports-queries';
@@ -16,7 +17,9 @@ export function IncidentReportsAggregatedByFormTable(): FunctionComponent {
   const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
+  const setPrevSearch = useSetPrevSearch();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -35,9 +38,10 @@ export function IncidentReportsAggregatedByFormTable(): FunctionComponent {
   }, [debouncedSearch]);
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
+      setPrevSearch(fullSearch);
       navigate({ to: '/responses/incident-reports/$formId/aggregated', params: { formId } });
     },
-    [navigate]
+    [navigate, setPrevSearch, fullSearch]
   );
 
   return (

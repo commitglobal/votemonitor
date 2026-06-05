@@ -3,6 +3,7 @@ import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import PreviewForm from '@/components/PreviewFormPage/PreviewFormPage';
 import { formTemplateDetailsQueryOptions } from '@/features/form-templates/queries';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { redirectIfNotAuth, redirectIfNotPlatformAdmin } from '@/lib/utils';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
@@ -22,13 +23,14 @@ function Details() {
   const { formTemplateId, languageCode } = Route.useParams();
   const form = Route.useLoaderData();
   const navigate = useNavigate();
+  const prevSearch = usePrevSearch();
   const navigateToEdit = useCallback(() => {
-    navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId } });
-  }, [navigate]);
+    navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId }, search: prevSearch });
+  }, [navigate, prevSearch]);
 
   return (
     <Layout
-      backButton={<NavigateBack to='/form-templates' />}
+      backButton={<NavigateBack to='/form-templates' search={prevSearch} />}
       breadcrumbs={<FormTemplateDetailsBreadcrumbs formCode={form.code} formName={form.name[languageCode] ?? ''} />}
       title={`${form.code} - ${form.name[languageCode]}`}>
       <PreviewForm form={form} languageCode={form.defaultLanguage} onNavigateToEdit={navigateToEdit} />

@@ -2,8 +2,9 @@ import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import { Route } from '@/routes/responses';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import { useIncidentReportsByEntry } from '../../hooks/incident-reports-queries';
@@ -18,8 +19,10 @@ type FormsTableByEntryProps = {
 export function IncidentReportsByEntryTable({ searchText }: FormsTableByEntryProps): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const fullSearch = useSearch({ strict: false });
   const debouncedSearch = useDebounce(search, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const setPrevSearch = useSetPrevSearch();
 
   const columnsVisibility = useIncidentReportsByEntryColumns();
 
@@ -42,9 +45,10 @@ export function IncidentReportsByEntryTable({ searchText }: FormsTableByEntryPro
 
   const navigateToIncidentReport = useCallback(
     (incidentReportId: string) => {
+      setPrevSearch(fullSearch);
       navigate({ to: '/responses/incident-reports/$incidentReportId', params: { incidentReportId } });
     },
-    [navigate]
+    [navigate, setPrevSearch, fullSearch]
   );
 
   return (

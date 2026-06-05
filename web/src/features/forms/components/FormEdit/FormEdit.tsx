@@ -5,6 +5,7 @@ import FormEditor, { EditFormType } from '@/components/FormEditor/FormEditor';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { usePrevSearch } from '@/common/prev-search-store';
 import { useElectionRoundDetails } from '@/features/election-event/hooks/election-event-hooks';
 import { isNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
@@ -25,6 +26,7 @@ function FormEdit() {
 
   const navigate = useNavigate();
   const router = useRouter();
+  const prevSearch = usePrevSearch();
 
   const updateFormMutation = useMutation({
     mutationFn: ({
@@ -77,14 +79,14 @@ function FormEdit() {
 
   return (
     <Layout
-      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} search={prevSearch} />}
       breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[form.defaultLanguage] ?? ''} />}
       title={`${form.code} - ${form.name[form.defaultLanguage] ?? ''}`}>
       <FormEditor
         formData={form}
         onSaveForm={saveForm}
         onNavigateAway={() => {
-          void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+          void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' }, search: prevSearch });
         }}
         hasCitizenReportingOption={electionEvent?.isMonitoringNgoForCitizenReporting ?? false}
       />
