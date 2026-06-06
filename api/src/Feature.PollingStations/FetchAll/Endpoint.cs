@@ -45,7 +45,9 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
                     Level5 = x.Level5,
                     Number = x.Number,
                     Address = x.Address,
-                    DisplayOrder = x.DisplayOrder
+                    DisplayOrder = x.DisplayOrder,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
                 })
                 .ToListAsync(cancellationToken: ct);
 
