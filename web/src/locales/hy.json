@@ -44,13 +44,6 @@
       "searchPlaceholder": "փնտրել լեզուն..."
     }
   },
-  "election-round.action.create": "Ստեղծել նոր ընտրական իրադարձություն",
-  "election-round.field.country": "երկիր",
-  "election-round.field.englishTitle": "Անգլերեն վերնագիր",
-  "election-round.field.startDate": "Մեկնարկի ամսաթիվ",
-  "election-round.field.title": "Վերնագիր",
-  "election-round.placeholder.englishTitle": "Վերնագիրը անգլերենով",
-  "election-round.placeholder.title": "Վերնագիր",
   "electionEvent": {
     "eventDetails": {
       "cardTitle": "Միջոցառման մանրամասները",
@@ -153,37 +146,13 @@
     "other": "այլ",
     "voting": "քվեարկություն"
   },
-  "formType": {
-    "citizenReporting": "Քաղաքացիական հաշվետվություն",
-    "closingAndCounting": "Փակում և հաշվում",
-    "opening": "բացում",
-    "other": "այլ",
-    "voting": "քվեարկություն"
-  },
   "navigation.button.back": "հետ",
   "navigation.button.next": "հաջորդ",
   "navigation.button.submit": "հաստատել, ներկայացնել",
   "ngoAdminDashboard": {
-    "citizenReportsCardTitle": "Քաղաքացիների հաշվետվություններ",
-    "citizenReportsIndicatorTitle": "քաղաքացիական զեկույցները ստացվել են {{ինտերվալ}} - ով",
-    "flaggedAnswersCardTitle": "Պիտակավորված պատասխաններ",
-    "flaggedAnswersIndicatorTitle": "պատասխանները պիտակավորվել են ՝ օգտագործելով {{ինտերվալ}} - ը",
-    "observersAccountsCardTitle": "Դիտորդների հաշիվներ",
-    "observersAccountsIndicatorTitle": "Հաշիվների ընդհանուր քանակը",
-    "observersInPollingStationsIndicatorMetricLabel": "Առնվազն մեկ հարցի պատասխանել",
-    "observersInPollingStationsIndicatorTitle": "Դիտորդները ընտրատեղամասերում",
     "observersOnFieldCardTitle": "Դիտորդները տեղում",
     "pollingStationCardTitle": "Ընտրական տեղամասեր",
-    "questionsAnsweredCardTitle": "Հարցերի պատասխաններ",
-    "questionsAnsweredIndicatorTitle": "Հարցերի պատասխաններ {{ինտերվալ}}-ի մեջ",
-    "quickReportsCardTitle": "Արագ հաշվետվություններ",
-    "quickReportsIndicatorTitle": "արագ զեկույցները փոխանցվել են {{ինտերվալ}}-ով",
-    "startedFormsCardTitle": "Սկզբնական ձևեր",
-    "startedFormsIndicatorTitle": "Ձևաթղթեր, որոնք գործարկվում են {{ինտերվալնե}} - ի միջև",
-    "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Առնվազն մեկ դիտորդի կողմից այցելված ընտրատեղամաս",
     "subtitle": "Հիմնական ցուցանիշներ.",
-    "timeSpentObservingCardTitle": "Դիտարկման վրա ծախսված ժամանակը",
-    "timeSpentObservingIndicatorTitle": "Մեկնարկի և ավարտի հիման վրա հաղորդված",
     "title": "Կառավարման վահանակ"
   },
   "pagination": {
