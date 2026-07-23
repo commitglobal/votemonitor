@@ -3,7 +3,10 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
-import { getFormLanguagePreference, setFormLanguagePreference } from "../common/language.preferences";
+import {
+  getFormLanguagePreference,
+  setFormLanguagePreference,
+} from "../common/language.preferences";
 import {
   PollingStationInformationAPIResponse,
   PollingStationInformationFormAPIResponse,
@@ -34,9 +37,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
     setDisplayLanguageDialog(false);
     setFormLanguagePreference({ formId: psiFormQuestions.id, language });
 
-    router.push(
-      `/polling-station-questionnaire?language=${language}`,
-    );
+    router.push(`/polling-station-questionnaire?language=${language}`);
   };
 
   const openForm = async () => {
@@ -47,7 +48,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
     const preferedLanguage = await getFormLanguagePreference({ formId: psiFormQuestions.id });
 
     if (preferedLanguage && psiFormQuestions.languages.includes(preferedLanguage)) {
-      onConfirmFormLanguage( preferedLanguage);
+      onConfirmFormLanguage(preferedLanguage);
     } else if (psiFormQuestions?.languages?.length === 1) {
       onConfirmFormLanguage(psiFormQuestions.languages[0]);
     } else {
@@ -61,7 +62,6 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
     formState: { errors },
   } = useForm({});
 
-
   return (
     <YStack gap="$xxs">
       <Typography preset="body2" fontWeight="700" color="$gray7">
@@ -74,9 +74,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
       {psiFormQuestions && psiFormQuestions.questions && psiFormQuestions.questions.length > 0 && (
         <Card gap="$md" onPress={openForm}>
           {!psi?.answers?.length && !psi?.isCompleted ? (
-            <PollingStationInfoDefault
-              onPress={openForm}
-            />
+            <PollingStationInfoDefault onPress={openForm} />
           ) : (
             <PollingStationInfo
               nrOfAnswers={psi?.answers?.length}
@@ -93,7 +91,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
       {displayLanguageDialog && (
         <Controller
           key={psiFormQuestions.id}
-          name={'psi'}
+          name={"psi"}
           control={control}
           rules={{
             required: { value: true, message: t("forms.select_language_modal.error") },
@@ -117,10 +115,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
                   <Button preset="chromeless" onPress={setDisplayLanguageDialog.bind(null, false)}>
                     {t("cancel", { ns: "common" })}
                   </Button>
-                  <Button
-                    onPress={handleSubmit(() => onConfirmFormLanguage(value))}
-                    flex={1}
-                  >
+                  <Button onPress={handleSubmit(() => onConfirmFormLanguage(value))} flex={1}>
                     {t("save", { ns: "common" })}
                   </Button>
                 </XStack>

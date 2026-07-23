@@ -9,13 +9,13 @@ const MediaLoading = ({
   isUploading,
   uploadedAttachments,
   onAbortUpload,
-  confirmAbort
+  confirmAbort,
 }: {
   progress?: string;
   isUploading?: boolean;
   uploadedAttachments?: number;
   onAbortUpload?: () => void;
-  confirmAbort?: boolean
+  confirmAbort?: boolean;
 }) => {
   const { isOnline } = useNetInfoContext();
   const { t } = useTranslation("polling_station_form_wizard");
@@ -32,14 +32,19 @@ const MediaLoading = ({
           <Typography preset="body1" fontWeight="500" color="$purple5">
             {t("attachments.upload.abort_offline")}
           </Typography>
-          {typeof uploadedAttachments === 'number' && uploadedAttachments > 0 && (
+          {typeof uploadedAttachments === "number" && uploadedAttachments > 0 && (
             <Typography preset="body1" fontWeight="500" color="$purple5">
               {t("attachments.upload.uploaded", { value: uploadedAttachments })}
             </Typography>
           )}
 
           {!promptConfirmAbort && (
-            <Button preset="red" onPress={() => { confirmAbort ? setPromptConfirmAbort(true) : onAbortUpload() }}>
+            <Button
+              preset="red"
+              onPress={() => {
+                confirmAbort ? setPromptConfirmAbort(true) : onAbortUpload();
+              }}
+            >
               {t("attachments.upload.abort_offline_button")}
             </Button>
           )}
@@ -53,7 +58,12 @@ const MediaLoading = ({
                 <Button preset="red" onPress={onAbortUpload}>
                   {t("attachments.upload.abort_offline_button")}
                 </Button>
-                <Button preset="outlined" onPress={() => { setPromptConfirmAbort(false) }}>
+                <Button
+                  preset="outlined"
+                  onPress={() => {
+                    setPromptConfirmAbort(false);
+                  }}
+                >
                   {t("attachments.upload.abort_offline_cancel")}
                 </Button>
               </XStack>

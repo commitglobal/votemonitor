@@ -15,7 +15,15 @@ interface WizardFormInputProps extends InputProps {
   ref?: any;
 }
 
-const WizardFormInput = ({ type, label, paragraph, helper, placeholder = "", ref, ...rest }: WizardFormInputProps) => {
+const WizardFormInput = ({
+  type,
+  label,
+  paragraph,
+  helper,
+  placeholder = "",
+  ref,
+  ...rest
+}: WizardFormInputProps) => {
   return (
     <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
       <Input type={type} {...rest} placeholder={placeholder} ref={ref} />

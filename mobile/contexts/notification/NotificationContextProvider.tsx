@@ -21,8 +21,8 @@ import { NotificationsKeys } from "../../services/queries/notifications.query";
 const NotificationContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [pushToken, setPushToken] = useState<string | undefined>();
 
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<Notifications.Subscription | undefined>(undefined);
+  const responseListener = useRef<Notifications.Subscription | undefined>(undefined);
 
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
@@ -87,14 +87,8 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
     ) as any;
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current as Notifications.Subscription,
-        );
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(
-          responseListener.current as Notifications.Subscription,
-        );
+      notificationListener.current?.remove();
+      responseListener.current?.remove();
     };
   }, []);
 

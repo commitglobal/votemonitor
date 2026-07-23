@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "2.5.6",
+    "version": "2.6.0",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "150",
+      "buildNumber": "156",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -31,7 +31,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 148,
+      "versionCode": 156,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -58,6 +58,9 @@
       "url": "https://u.expo.dev/93e17628-ddcd-4e67-849c-b356a18a6082"
     },
     "newArchEnabled": false,
+    "experiments": {
+      "reactCompiler": true
+    },
     "plugins": [
       "expo-router",
       [
@@ -100,9 +103,6 @@
             ]
           },
           "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0",
             "edgeToEdgeEnabled": false,
             "packagingOptions": {
               "pickFirst": [

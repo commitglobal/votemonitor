@@ -31,7 +31,15 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input = ({ type, value, iconRight, borderColor, onIconRightPress, ref, ...rest }: InputProps) => {
+const Input = ({
+  type,
+  value,
+  iconRight,
+  borderColor,
+  onIconRightPress,
+  ref,
+  ...rest
+}: InputProps) => {
   return (
     <>
       {type === "textarea" ? (
