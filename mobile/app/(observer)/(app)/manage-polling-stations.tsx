@@ -9,7 +9,6 @@ import PollingStationCard from "../../../components/PollingStationCard";
 import { useMemo, useState } from "react";
 import { PollingStationVisitVM } from "../../../common/models/polling-station.model";
 import WarningDialog from "../../../components/WarningDialog";
-import { useWindowDimensions } from "react-native";
 import { ListView } from "../../../components/ListView";
 import { useDeletePollingStationVisitMutation } from "../../../services/mutations/delete-polling-station.mutation";
 import { usePSHasFormSubmissions } from "../../../services/queries/form-submissions.query";
@@ -20,8 +19,6 @@ import NoVisitsMPS from "../../../components/NoVisitsMPS";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import { getPollingStationDisplay } from "../../../common/utils/polling-stations";
-
-const ESTIMATED_ITEM_SIZE = 225;
 
 const ManagePollingStation = () => {
   const { t } = useTranslation("manage_my_polling_stations");
@@ -47,7 +44,6 @@ const ManagePollingStation = () => {
 
   const insets = useSafeAreaInsets();
   const { shouldDisplayBanner } = useNetInfoContext();
-  const { width } = useWindowDimensions();
 
   if (visits === undefined || visits.length === 0) {
     return <NoVisitsMPS />;
@@ -131,8 +127,6 @@ const ManagePollingStation = () => {
               />
             );
           }}
-          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
-          estimatedItemSize={ESTIMATED_ITEM_SIZE}
         />
       </YStack>
       {selectedPS && (

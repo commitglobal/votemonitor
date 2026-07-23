@@ -3,7 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
-import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
+import { ScrollView, Spinner, YStack } from "tamagui";
 import Button from "../../../../../../../components/Button";
 import Card from "../../../../../../../components/Card";
 import FormSubmissionListItem, {
@@ -19,8 +19,6 @@ import { useUserData } from "../../../../../../../contexts/user/UserContext.prov
 import { mapFormToFormSubmissionListItem } from "../../../../../../../services/form.parser";
 import { useFormSubmissionsByFormId } from "../../../../../../../services/queries/form-submissions.query";
 import { useFormById } from "../../../../../../../services/queries/forms.query";
-
-const ESTIMATED_ITEM_SIZE = 100;
 
 type SearchParamsType = {
   formId: string;
@@ -38,7 +36,6 @@ const MultiSubmissionFormDetails = () => {
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { width } = useWindowDimensions();
 
   const {
     data: currentForm,
@@ -182,8 +179,6 @@ const MultiSubmissionFormDetails = () => {
               />
             );
           }}
-          estimatedItemSize={ESTIMATED_ITEM_SIZE}
-          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
         />
       </YStack>

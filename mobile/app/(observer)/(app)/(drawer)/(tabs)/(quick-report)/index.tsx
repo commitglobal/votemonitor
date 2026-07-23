@@ -11,7 +11,7 @@ import { useQuickReports } from "../../../../../../services/queries/quick-report
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../../components/ListView";
 import ReportCard from "../../../../../../components/ReportCard";
-import { RefreshControl, useWindowDimensions, ViewStyle } from "react-native";
+import { RefreshControl, ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 import { useTranslation } from "react-i18next";
 import { ElectionRoundVM } from "../../../../../../common/models/election-round.model";
@@ -90,8 +90,6 @@ interface QuickReportContentProps {
   activeElectionRound: ElectionRoundVM | undefined;
 }
 
-const ESTIMATED_ITEM_SIZE = 200;
-
 const QuickReportContent = ({
   quickReports,
   isLoading,
@@ -100,8 +98,6 @@ const QuickReportContent = ({
 }: QuickReportContentProps) => {
   const { t } = useTranslation(["quick_report", "common"]);
   const { isOnline } = useNetInfoContext();
-
-  const { width } = useWindowDimensions();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -165,15 +161,6 @@ const QuickReportContent = ({
             onPress={() => router.push(`/report-details/${item.id}?reportTitle=${item.title}`)}
           />
         )}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={
-          !quickReports.length
-            ? undefined
-            : {
-                height: ESTIMATED_ITEM_SIZE * 5,
-                width: width - 32,
-              }
-        }
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
       />
     </YStack>

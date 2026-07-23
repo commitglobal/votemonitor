@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
+import { Spinner, XStack, YStack } from "tamagui";
 import {
   getFormLanguagePreference,
   setFormLanguagePreference,
@@ -27,8 +27,6 @@ import FormListErrorScreen from "./FormListError";
 import { ListView } from "./ListView";
 import SelectFormLanguageDialogContent from "./SelectFormLanguageDialogContent";
 import { Typography } from "./Typography";
-
-const ESTIMATED_ITEM_SIZE = 100;
 
 export type FormListItem = {
   id: string;
@@ -54,7 +52,6 @@ interface ISingleSubmissionFormListProps {
 const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionFormListProps) => {
   const { t } = useTranslation(["observation", "common"]);
   const { isOnline } = useNetInfoContext();
-  const { width } = useWindowDimensions();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const queryClient = useQueryClient();
@@ -178,8 +175,6 @@ const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionForm
             />
           );
         }}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         refreshing={isRefreshing}
         onRefresh={handleRefetch}
       />

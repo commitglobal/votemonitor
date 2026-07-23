@@ -32,7 +32,7 @@
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/elements": "^2.6.5",
     "@sentry/react-native": "~7.2.0",
-    "@shopify/flash-list": "1.7.6",
+    "@shopify/flash-list": "^2.3.2",
     "@tamagui/babel-plugin": "^1.100.0",
     "@tamagui/config": "^1.100.0",
     "@tanstack/query-async-storage-persister": "^5.36.0",
@@ -72,17 +72,17 @@
     "react-i18next": "^14.1.0",
     "react-native": "0.81.5",
     "react-native-compressor": "^1.13.0",
-    "react-native-date-picker": "^5.0.0",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-map-link": "^3.11.0",
     "react-native-pager-view": "6.9.1",
-    "react-native-reanimated": "^3.19.5",
+    "react-native-reanimated": "~4.1.1",
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
     "react-native-toast-message": "^2.2.0",
+    "react-native-worklets": "0.5.1",
     "superjson": "^2.2.1",
     "tamagui": "^1.100.0",
     "zod": "^3.23.3"
@@ -113,13 +113,6 @@
   },
   "engines": {
     "node": ">=20"
-  },
-  "expo": {
-    "install": {
-      "exclude": [
-        "react-native-reanimated"
-      ]
-    }
   },
   "prettier": {
     "printWidth": 100,

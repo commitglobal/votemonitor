@@ -20,8 +20,6 @@ interface CitizenFormsListProps {
   onFormPress: (form: FormAPIModel) => void;
 }
 
-const ESTIMATED_ITEM_SIZE = 115;
-
 export const CitizenFormsList = ({
   forms,
   isLoading,
@@ -58,7 +56,6 @@ export const CitizenFormsList = ({
             ))}
           </YStack>
         }
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
         ListEmptyComponent={CitizenFormsListEmptyContent}
         renderItem={({ item }) => (
           <IssueCard key={item.id} form={item} onClick={() => onFormPress(item)} />

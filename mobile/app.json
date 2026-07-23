@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "156",
+      "buildNumber": "157",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -31,7 +31,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 156,
+      "versionCode": 159,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -57,7 +57,7 @@
     "updates": {
       "url": "https://u.expo.dev/93e17628-ddcd-4e67-849c-b356a18a6082"
     },
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "experiments": {
       "reactCompiler": true
     },

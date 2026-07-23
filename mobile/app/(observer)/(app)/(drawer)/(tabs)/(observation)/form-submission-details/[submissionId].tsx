@@ -4,7 +4,7 @@ import Header from "../../../../../../../components/Header";
 import { Icon } from "../../../../../../../components/Icon";
 import { useUserData } from "../../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../../components/Typography";
-import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
+import { ScrollView, Spinner, YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../../components/ListView";
 import OptionsSheet from "../../../../../../../components/OptionsSheet";
@@ -30,8 +30,6 @@ import { useNotesForSubmission } from "../../../../../../../services/queries/not
 import { RefreshControl } from "react-native";
 import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 
-const ESTIMATED_ITEM_SIZE = 100;
-
 type SearchParamsType = {
   formId: string;
   language: string;
@@ -53,7 +51,6 @@ const FormSubmissionDetails = () => {
   const [clearingForm, setClearingForm] = useState(false);
   const [deletingSubmission, setDeletingSubmission] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { width } = useWindowDimensions();
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -356,8 +353,6 @@ const FormSubmissionDetails = () => {
               />
             );
           }}
-          estimatedItemSize={ESTIMATED_ITEM_SIZE}
-          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
         />
       </YStack>

@@ -1,9 +1,9 @@
 import React, { PropsWithoutRef } from "react";
 import { FlatList } from "react-native";
-import { FlashList, FlashListProps } from "@shopify/flash-list";
+import { FlashList, FlashListProps, FlashListRef } from "@shopify/flash-list";
 import { isRTL } from "../common/config/i18n";
 
-export type ListViewRef<T> = FlashList<T> | FlatList<T>;
+export type ListViewRef<T> = FlashListRef<T> | FlatList<T>;
 
 export type ListViewProps<T> = PropsWithoutRef<FlashListProps<T>>;
 
@@ -37,7 +37,7 @@ function ListViewComponent<T>({
     );
   }
 
-  return <FlashList {...props} ref={ref as React.Ref<FlashList<T>>} />;
+  return <FlashList {...props} ref={ref as React.Ref<FlashListRef<T>>} />;
 }
 
 ListViewComponent.displayName = "ListView";

@@ -256,7 +256,6 @@ const PollingStationWizzardContent = ({
             data={filteredOptions}
             showsVerticalScrollIndicator={false}
             bounces={false}
-            estimatedItemSize={64}
             extraData={selectedOption}
             ListEmptyComponent={<Typography>{t("no_data", { ns: "common" })}</Typography>}
             keyExtractor={(item) => item.value}

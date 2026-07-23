@@ -1,14 +1,11 @@
 import { LoadingContent, EmptyContent } from "./ListContent";
 import { ListView } from "./ListView";
 import { Notification } from "../services/api/notifications/notifications-get.api";
-import { useWindowDimensions } from "react-native";
 import { YStack } from "tamagui";
 import NotificationListItem from "./NotificationListItem";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
-
-const ESTIMATED_ITEM_SIZE = 200;
 
 interface NewsListProps {
   isLoading: boolean;
@@ -19,7 +16,6 @@ interface NewsListProps {
 
 const NewsList = ({ isLoading, news = [], refetch, translationKey = "inbox" }: NewsListProps) => {
   const { i18n } = useTranslation(translationKey);
-  const { width } = useWindowDimensions();
   const { isOnline } = useNetInfoContext();
   const [sliceNumber, setSliceNumber] = useState<number>(10);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,8 +53,6 @@ const NewsList = ({ isLoading, news = [], refetch, translationKey = "inbox" }: N
           <EmptyContent translationKey={translationKey} illustrationIconKey="undrawInbox" />
         }
         bounces={isOnline}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }} // for width we need to take into account the padding also
         onEndReached={handleLoadMore}
         refreshing={refreshing}
         onEndReachedThreshold={0.5}

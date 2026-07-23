@@ -6,7 +6,6 @@ import { Guide, guideType } from "../services/api/get-guides.api";
 import * as Linking from "expo-linking";
 import { EmptyContent, LoadingContent } from "./ListContent";
 import { useTranslation } from "react-i18next";
-import { useWindowDimensions } from "react-native";
 import Card, { CardProps } from "./Card";
 import CardFooter from "./CardFooter";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
@@ -53,8 +52,6 @@ const GuideCard = ({ guide, onResourcePress, ...rest }: GuideCardProps) => {
   );
 };
 
-const ESTIMATED_ITEM_SIZE = 115;
-
 interface ResourcesListProps {
   isLoading: boolean;
   resources: Guide[];
@@ -74,7 +71,6 @@ const ResourcesGuidesList = ({
   emptyContainerMarginTop,
   onResourcePress,
 }: ResourcesListProps) => {
-  const { width } = useWindowDimensions();
   const { isOnline } = useNetInfoContext();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -104,8 +100,6 @@ const ResourcesGuidesList = ({
             emptyContainerMarginTop={emptyContainerMarginTop}
           />
         }
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         renderItem={({ item, index }) => (
           <GuideCard
             key={index}

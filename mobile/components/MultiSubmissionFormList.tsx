@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
+import { Spinner, XStack, YStack } from "tamagui";
 import {
   getFormLanguagePreference,
   setFormLanguagePreference,
@@ -29,8 +29,6 @@ import { ListView } from "./ListView";
 import { Typography } from "./Typography";
 import SelectFormLanguageDialogContent from "./SelectFormLanguageDialogContent";
 
-const ESTIMATED_ITEM_SIZE = 100;
-
 export type MultiSubmissionFormListItem = {
   id: string;
   name: string;
@@ -52,7 +50,6 @@ interface IMultiSubmissionFormListProps {
 const MultiSubmissionFormList = ({ ListHeaderComponent }: IMultiSubmissionFormListProps) => {
   const { t } = useTranslation(["observation", "common"]);
   const { isOnline } = useNetInfoContext();
-  const { width } = useWindowDimensions();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const queryClient = useQueryClient();
@@ -182,8 +179,6 @@ const MultiSubmissionFormList = ({ ListHeaderComponent }: IMultiSubmissionFormLi
             />
           );
         }}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         refreshing={isRefreshing}
         onRefresh={handleRefetch}
       />
