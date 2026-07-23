@@ -32,7 +32,8 @@
         "ru": "Russisch",
         "az": "Aserbaidschanisch",
         "es": "Spanisch",
-        "de": "Deutsch"
+        "de": "Deutsch",
+        "pt-BR": "Portugiesisch (Brasilien)"
     },
     "onboarding": {
         "language": {
@@ -390,9 +391,9 @@
             "navigate_to_polling_station": "Zur Wahllokal-Ansicht wechseln"
         },
         "navigate_to_polling_station": {
-          "title": "Zum Wahllokal navigieren",
-          "description": "Wählen Sie eine Karten-App, um eine Wegbeschreibung zum Wahllokal zu erhalten.",
-          "cancel": "Abbrechen"
+            "title": "Zum Wahllokal navigieren",
+            "description": "Wählen Sie eine Karten-App, um eine Wegbeschreibung zum Wahllokal zu erhalten.",
+            "cancel": "Abbrechen"
         }
     },
     "polling_station_information_form": {

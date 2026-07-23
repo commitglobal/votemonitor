@@ -22,7 +22,7 @@ export const useDeleteAttachment = (
       id: scopeId,
     },
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return deleteAttachment({ electionRoundId: electionRoundId as string, ...payload });
+      return deleteAttachment({ ...payload, electionRoundId: electionRoundId as string });
     },
     onMutate: async (payload: AttachmentApiResponse) => {
       // Cancel any outgoing refetches

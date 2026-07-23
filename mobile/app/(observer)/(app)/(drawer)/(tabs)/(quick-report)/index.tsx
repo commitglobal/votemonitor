@@ -64,7 +64,7 @@ const QuickReport = () => {
           <Button
             preset="outlined"
             backgroundColor="white"
-            onPress={router.push.bind(null, "/report-issue")}
+            onPress={() => router.push("/report-issue")}
           >
             {t("list.add")}
           </Button>
@@ -145,7 +145,7 @@ const QuickReportContent = ({
                   width="100%"
                   height="100%"
                   textStyle={{ textAlign: "center" }}
-                  onPress={router.push.bind(null, "/report-issue")}
+                  onPress={() => router.push("/report-issue")}
                   backgroundColor="white"
                 >
                   {t("list.add")}

@@ -82,7 +82,6 @@ interface IconProps extends ViewProps {
   size?: number;
   width?: number;
   height?: number;
-
 }
 
 /**
@@ -98,87 +97,87 @@ type IconRegistry = {
 };
 
 export const defaultIcon = (props: IconProps): React.ReactElement => {
-    const {
-      icon,
-      color = "black",
-      size = 24,
-      style: $viewStyleOverride,
-      width,
-      height,
-      ...tamaguiProps
-    } = props;
+  const {
+    icon,
+    color = "black",
+    size = 24,
+    style: $viewStyleOverride,
+    width,
+    height,
+    ...tamaguiProps
+  } = props;
 
-    const iconRegistry: IconRegistry = {
-      eyeOff: <EyeOff fill={color} width={size} height={size} />,
-      eye: <Eye fill={color} width={size} height={size} />,
-      observation: <Observation fill={color} width={size} height={size} />,
-      quickReport: <QuickReport fill={color} width={size} height={size} />,
-      learning: <Learning fill={color} width={size} height={size} />,
-      inbox: <Inbox fill={color} width={size} height={size} />,
-      more: <More fill={color} width={size} height={size} />,
-      chevronRight: <ChevronRight fill={color} width={size} height={size} />,
-      chevronLeft: <ChevronLeft fill={color} width={size} height={size} />,
-      addNote: <AddNote fill={color} width={size} height={size} />,
-      trash: <Trash fill={color} width={size} height={size} />,
-      logout: <Logout fill={color} width={size} height={size} />,
-      pencilAlt: <PencilAlt fill={color} width={size} height={size} />,
-      xCircle: <XCircle fill={color} width={size} height={size} />,
-      menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
-      dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
-      check: <Check fill={color} width={size} height={size} />,
-      calendar: <Calendar stroke={color} width={size} height={size} />,
-      peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
-      loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
-      missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
-      x: <X fill={color} width={size} height={size} />,
-      termsConds: <TermsConds fill={color} width={size} height={size} />,
-      privacyPolicy: <PrivacyPolicy fill={color} width={size} height={size} />,
-      contactNGO: <ContactNGO fill={color} width={size} height={size} />,
-      aboutVM: <AboutVM fill={color} width={size} height={size} />,
-      feedback: <Feedback fill={color} width={size} height={size} />,
-      language: <Language fill={color} width={size} height={size} />,
-      changePassword: <ChangePassword fill={color} width={size} height={size} />,
-      settings: <Settings fill={color} width={size} height={size} />,
-      logoutNoBackground: <LogoutNoBackground fill={color} width={size} height={size} />,
-      attachment: <Attachment fill={color} width={size} height={size} />,
-      dragHandle: <DragHandle fill={color} width={size} height={size} />,
-      search: <Search fill={color} width={size} height={size} />,
-      loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
-      infoCircle: <InfoCircle width={size} height={size} stroke={color} />,
-      successCheck: <EmailSent fill={color} width={size} height={size} />,
-      undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
-      undrawReading: <UndrawReading fill={color} width={size} height={size} />,
-      undrawFlag: <UndrawFlag fill={color} width={size | 187} height={170 | size} />,
-      loginError: <LoginError fill={color} width={size} height={size} />,
-      passwordConfirmation: <PasswordConfirmation fill={color} width={size} height={size} />,
-      splashLogo: <SplashLogo width={315.6} height={72} />,
-      onboardingLanguage: <OnboardingLanguage width={243} height={187} />,
-      monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
-      observationForms: <ObservationForms width={202} height={188} />,
-      notesOrMedia: <NotesOrMedia width={202} height={188} />,
-      bin: <Bin width={size} height={size} stroke={color} />,
-      commitGlobal: <CommitGlobal fill={color} />,
-      pollingStationPin: <PollingStationPin fill={color} />,
-      note: <Note fill={color} />,
-      photo: <Photo fill={color} />,
-      video: <Video fill={color} />,
-      audio: <Audio fill={color} />,
-      form: <Form fill={color} />,
-      checkCircle: <CheckCircle fill={color} width={size} height={size} />,
-      vmCitizenLogo: <VMCitizenLogo fill="none" width={width} height={height} />,
-      warning: <Warning stroke={color} width={size} height={size} />,
-      publicResourcesProblems: <PublicResourcesProblems fill="white" />,
-      appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
-      coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
-      updates: <Updates fill={color} width={size} height={size} />,
-      vmObserverLogo: <VMObserverLogo fill="none" width={width} height={height} />,
-    };
+  const iconRegistry: IconRegistry = {
+    eyeOff: <EyeOff fill={color} width={size} height={size} />,
+    eye: <Eye fill={color} width={size} height={size} />,
+    observation: <Observation fill={color} width={size} height={size} />,
+    quickReport: <QuickReport fill={color} width={size} height={size} />,
+    learning: <Learning fill={color} width={size} height={size} />,
+    inbox: <Inbox fill={color} width={size} height={size} />,
+    more: <More fill={color} width={size} height={size} />,
+    chevronRight: <ChevronRight fill={color} width={size} height={size} />,
+    chevronLeft: <ChevronLeft fill={color} width={size} height={size} />,
+    addNote: <AddNote fill={color} width={size} height={size} />,
+    trash: <Trash fill={color} width={size} height={size} />,
+    logout: <Logout fill={color} width={size} height={size} />,
+    pencilAlt: <PencilAlt fill={color} width={size} height={size} />,
+    xCircle: <XCircle fill={color} width={size} height={size} />,
+    menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
+    dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
+    check: <Check fill={color} width={size} height={size} />,
+    calendar: <Calendar stroke={color} width={size} height={size} />,
+    peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
+    loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
+    missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
+    x: <X fill={color} width={size} height={size} />,
+    termsConds: <TermsConds fill={color} width={size} height={size} />,
+    privacyPolicy: <PrivacyPolicy fill={color} width={size} height={size} />,
+    contactNGO: <ContactNGO fill={color} width={size} height={size} />,
+    aboutVM: <AboutVM fill={color} width={size} height={size} />,
+    feedback: <Feedback fill={color} width={size} height={size} />,
+    language: <Language fill={color} width={size} height={size} />,
+    changePassword: <ChangePassword fill={color} width={size} height={size} />,
+    settings: <Settings fill={color} width={size} height={size} />,
+    logoutNoBackground: <LogoutNoBackground fill={color} width={size} height={size} />,
+    attachment: <Attachment fill={color} width={size} height={size} />,
+    dragHandle: <DragHandle fill={color} width={size} height={size} />,
+    search: <Search fill={color} width={size} height={size} />,
+    loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
+    infoCircle: <InfoCircle width={size} height={size} stroke={color} />,
+    successCheck: <EmailSent fill={color} width={size} height={size} />,
+    undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
+    undrawReading: <UndrawReading fill={color} width={size} height={size} />,
+    undrawFlag: <UndrawFlag fill={color} width={size | 187} height={170 | size} />,
+    loginError: <LoginError fill={color} width={size} height={size} />,
+    passwordConfirmation: <PasswordConfirmation fill={color} width={size} height={size} />,
+    splashLogo: <SplashLogo width={315.6} height={72} />,
+    onboardingLanguage: <OnboardingLanguage width={243} height={187} />,
+    monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
+    observationForms: <ObservationForms width={202} height={188} />,
+    notesOrMedia: <NotesOrMedia width={202} height={188} />,
+    bin: <Bin width={size} height={size} stroke={color} />,
+    commitGlobal: <CommitGlobal fill={color} />,
+    pollingStationPin: <PollingStationPin fill={color} />,
+    note: <Note fill={color} />,
+    photo: <Photo fill={color} />,
+    video: <Video fill={color} />,
+    audio: <Audio fill={color} />,
+    form: <Form fill={color} />,
+    checkCircle: <CheckCircle fill={color} width={size} height={size} />,
+    vmCitizenLogo: <VMCitizenLogo fill="none" width={width} height={height} />,
+    warning: <Warning stroke={color} width={size} height={size} />,
+    publicResourcesProblems: <PublicResourcesProblems fill="white" />,
+    appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
+    coffeeBreak: <CoffeeBreak fill={color} width={size} height={size} />,
+    updates: <Updates fill={color} width={size} height={size} />,
+    vmObserverLogo: <VMObserverLogo fill="none" width={width} height={height} />,
+  };
 
-    return (
-      <View {...tamaguiProps} style={$viewStyleOverride}>
-        {iconRegistry[icon]}
-      </View>
-    );
+  return (
+    <View {...tamaguiProps} style={$viewStyleOverride}>
+      {iconRegistry[icon]}
+    </View>
+  );
 };
 
 export const Icon = styled(

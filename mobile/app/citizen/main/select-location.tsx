@@ -63,7 +63,7 @@ export default function CitizenSelectLocation() {
   );
 
   const filteredOptions = useMemo(() => {
-    const options = mapCitizenLocationsToSelectValues(citizenLocations);
+    const options = mapCitizenLocationsToSelectValues(citizenLocations ?? []);
     if (!searchTerm) return options.slice(0, sliceNumber);
     return options
       .filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -71,7 +71,7 @@ export default function CitizenSelectLocation() {
   }, [citizenLocations, searchTerm, sliceNumber]);
 
   const isLastElement: boolean = useMemo(
-    () => !!citizenLocations[0]?.locationId,
+    () => !!citizenLocations?.[0]?.locationId,
     [citizenLocations],
   );
 
@@ -106,7 +106,7 @@ export default function CitizenSelectLocation() {
   };
 
   const onFinishButtonPress = async () => {
-    const selectedLocationId = citizenLocations.find(
+    const selectedLocationId = citizenLocations?.find(
       (location) => location.id === selectedOption?.id,
     )?.locationId;
     router.replace(

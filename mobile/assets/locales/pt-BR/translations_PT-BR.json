@@ -1,0 +1,906 @@
+{
+    "common": {
+        "skip": "Próximo",
+        "search": "Buscar",
+        "loading": "Carregando...",
+        "status": {
+            "completed": "Concluído",
+            "in_progress": "Em andamento",
+            "not_started": "Não iniciado",
+            "marked_as_completed": "Marcar como concluído"
+        },
+        "forms": {
+            "mark_as_done": "Marcar formulário como concluído",
+            "mark_as_in_progress": "Marcar formulário como em andamento"
+        },
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "no_data": "Nenhum dado encontrado.",
+        "select": "Selecionar",
+        "done": "Concluído",
+        "ok": "OK",
+        "back": "Voltar"
+    },
+    "languages": {
+        "ro": "Romeno",
+        "en": "Inglês",
+        "pl": "Polonês",
+        "bg": "Búlgaro",
+        "sr": "Sérvio",
+        "ka": "Georgiano",
+        "hy": "Armênio",
+        "ru": "Russo",
+        "az": "Azerbaijano",
+        "es": "Espanhol",
+        "de": "Alemão",
+        "pt-BR": "Português (Brasil)"
+    },
+    "onboarding": {
+        "language": {
+            "heading": "Escolha seu idioma",
+            "description": "Este será o idioma em que o seu aplicativo será exibido e pode ser alterado a qualquer momento na seção Mais do aplicativo.",
+            "save": "Aplicar seleção"
+        },
+        "polling_stations": {
+            "heading": "Monitorar processos eleitorais",
+            "description": "e relatar irregularidades de campanha, problemas nas seções eleitorais e sinalizar quaisquer problemas com os procedimentos do dia da votação."
+        },
+        "forms": {
+            "heading": "Preencher formulários de observação",
+            "description": "e enviar relatórios para cada etapa de monitoramento para ajudar a garantir um processo eleitoral transparente e justo."
+        },
+        "media": {
+            "heading": "Adicionar notas ou arquivos de mídia",
+            "description": "para apoiar ainda mais as suas observações e fornecer evidências de quaisquer irregularidades.",
+            "save": "Ir para o aplicativo"
+        }
+    },
+    "select_app_mode": {
+        "heading": "Selecionar o modo do aplicativo",
+        "description": "Você pode monitorar o processo eleitoral como observador credenciado ou apenas como um cidadão interessado em apoiar eleições justas e democráticas.",
+        "accredited_observer": {
+            "title": "Vote Monitor para Observadores Credenciados",
+            "description": "Sou um observador independente credenciado, convidado por uma ONG para observar o processo eleitoral. **"
+        },
+        "citizen": {
+            "title": "Vote Monitor para cidadãos ",
+            "description": "Sou um/a cidadão/ã e quero relatar irregularidades eleitorais que vejo durante a campanha eleitoral ou no dia da eleição."
+        },
+        "helper": "**Como observador/a credenciado/a, você poderá mudar para o modo Cidadão a qualquer momento, a partir do menu do aplicativo.",
+        "continue": "Continuar"
+    },
+    "select_election_event": {
+        "heading": "Eventos eleitorais disponíveis",
+        "description": "Selecione o evento para o qual você gostaria de enviar um relatório:",
+        "continue": "Continuar",
+        "empty_description": "No momento, não há eventos eleitorais ativos para os quais você possa relatar incidentes como cidadão. Assim que um evento estiver disponível, você o verá nesta seção.",
+        "error_description": "Ocorreu um erro ao recuperar os eventos eleitorais disponíveis. Tente novamente.",
+        "retry": "Tentar novamente"
+    },
+    "drawer": {
+        "report_as_citizen": "Relatar como cidadão/ã",
+        "report_as_accredited_observer": "Relatar como observador/a credenciado/a"
+    },
+    "citizen_report_issue": {
+        "header_title": "Relatar um problema",
+        "description": "Como cidadão/ã, você pode reportar um problema relacionado às eleições preenchendo um dos formulários de relato disponíveis abaixo.",
+        "disclaimer": "Enviar um relatório pelo Vote Monitor Citizen não é o mesmo que registrar uma denúncia oficial junto às autoridades responsáveis por organizar as eleições. Para obter mais informações sobre como os relatórios são usados, verifique o botão de informações no canto superior direito. Se você deseja enviar uma denúncia oficial, consulte o artigo Como Enviar uma Denúncia Oficial na seção de Recursos.",
+        "empty_forms": "Os formulários de relato aparecerão aqui assim que a equipe do Monitor de Voto os publicar no sistema.",
+        "error_message": "Ocorreu um erro ao recuperar os formulários de relato. Tente novamente.",
+        "retry": "Tentar novamente",
+        "info_modal": {
+            "p1": "O envio de um relatório através do Vote Monitor Citizen não constitui uma denúncia oficial às autoridades responsáveis por organizar as eleições e não garante que o seu relatório será analisado ou atendido.",
+            "p2": "Após a análise dos dados, alguns relatórios enviados pelo aplicativo podem ser incluídos em relatórios de observação eleitoral preparados por organizações parceiras da Code for Romania/Commit Global. Dados agregados e anonimizados também podem ser usados para fins estatísticos.",
+            "p3": "Em certos casos, os seus relatórios podem ser compartilhados com as autoridades responsáveis por organizar as eleições para ajudar a melhorar os processos eleitorais futuros, embora isso não seja garantido.",
+            "p4": "Você tem controle total sobre os seus dados pessoais. Os formulários de relato permitem que você escolha se quer relatar anonimamente ou consentir em ser contatado por uma organização caso o seu relatório seja analisado.",
+            "ok": "OK"
+        }
+    },
+    "citizen_form": {
+        "review": {
+            "heading": "Revisar seu relatório",
+            "send": "Enviar relatório",
+            "sending_report": "Estamos enviando seu relatório. Aguarde..."
+        },
+        "progress_bar_label": "Progresso do formulário",
+        "success": {
+            "title": "Seu relatório foi enviado com sucesso! ",
+            "description": "Obrigado pelo seu envolvimento cívico. Você tem a opção de enviar uma cópia das suas respostas para o seu e-mail, ou pode retornar à página principal.\n",
+            "back_to_main": "Voltar para a página principal",
+            "send_copy": "Enviar-me uma cópia"
+        },
+        "error": "Houve um problema ao enviar a sua revisão.",
+        "email_copy": {
+            "title": "Digite seu e-mail para receber uma cópia do formulário",
+            "description": "Para receber uma cópia do seu formulário, digite o seu endereço de e-mail abaixo. Este endereço de e-mail será usado apenas para enviar a cópia e não será armazenado ou usado para nenhum outro propósito.",
+            "placeholder": "Digite seu e-mail",
+            "required": "O e-mail é obrigatório",
+            "invalid": "O formato do e-mail não é válido",
+            "cancel": "Cancelar",
+            "send": "Enviar"
+        },
+        "copy_sent": {
+            "title": "Sua cópia foi enviada",
+            "description": "Sua cópia deve chegar instantaneamente, mas em raras ocasiões pode levar alguns minutos para processar. Você pode retornar à página principal enquanto isso."
+        },
+        "unsaved_changes_dialog": {
+            "title": "Você tem alterações não salvas",
+            "description": "Sair desta página fará com que todo o seu progresso no formulário seja perdido. Tem certeza de que deseja voltar?",
+            "actions": {
+                "discard": "Voltar",
+                "save": "Permanecer aqui"
+            }
+        },
+        "attachments": {
+            "heading": "Mídia enviada",
+            "loading": "Adicionando anexo...",
+            "error": "Erro ao enviar o anexo!",
+            "add": "Adicionar arquivos de mídia",
+            "menu": {
+                "load": "Carregar da galeria",
+                "take_picture": "Tirar uma foto",
+                "record_video": "Gravar um vídeo",
+                "upload_audio": "Enviar arquivo de áudio"
+            },
+            "upload": {
+                "compressing": "Compactando anexo:",
+                "preparing": "Preparando anexo...",
+                "starting": "Iniciando o envio...",
+                "progress": "Enviando anexos:",
+                "completed": "Envio concluído.",
+                "aborted": "Envio cancelado.",
+                "offline": "Você precisa de uma conexão com a internet para realizar esta ação."
+            },
+            "delete": {
+                "title": "Excluir arquivo de mídia",
+                "description": "Esta ação não pode ser desfeita. Uma vez excluído, um arquivo de mídia não pode ser recuperado.",
+                "actions": {
+                    "cancel": "Cancelar",
+                    "clear": "Excluir"
+                }
+            }
+        }
+    },
+    "login": {
+        "disclaimer": {
+            "paragraph1": "O Vote Monitor Observer só pode ser usado por observadores independentes, credenciados por uma organização que monitora processos eleitorais. É necessário um e-mail de convite da sua organização, com instruções para configurar uma conta.",
+            "paragraph2": {
+                "slice1": "Se você não for um/a observador/a credenciado, ainda poderá ",
+                "link": "relatar irregularidades como cidadão/ã",
+                "slice2": "para um evento eleitoral em andamento, sem precisar de uma conta."
+            }
+        },
+        "heading": "Iniciar sessão",
+        "paragraph": "Por favor, use o endereço de e-mail com o qual você se registrou como observador independente:",
+        "form": {
+            "email": {
+                "label": "E-mail *",
+                "placeholder": "E-mail",
+                "required": "O e-mail é obrigatório",
+                "pattern": "O formato do e-mail não é válido"
+            },
+            "password": {
+                "label": "Senha *",
+                "placeholder": "Senha",
+                "required": "A senha é obrigatória"
+            },
+            "submit": {
+                "save": "Iniciar sessão",
+                "loading": "Iniciar sessão..."
+            },
+            "errors": {
+                "invalid_credentials": "Ocorreu um erro com as suas credenciais. Tente novamente.",
+                "offline": "Você precisa de uma conexão com a internet para fazer login."
+            }
+        },
+        "actions": {
+            "forgot_password": "Esqueceu sua senha?"
+        },
+        "email_toast": "Endereço de e-mail copiado para a área de transferência"
+    },
+    "forgot_password": {
+        "header": {
+            "title": "Esqueceu a senha"
+        },
+        "heading": "Esqueceu sua senha?",
+        "paragraph": "Por favor, insira o endereço de e-mail associado à sua conta e enviaremos um link para redefinir sua senha.",
+        "form": {
+            "email": {
+                "label": "E-mail *",
+                "placeholder": "E-mail",
+                "required": "O e-mail é obrigatório",
+                "pattern": "O formato do e-mail não é válido"
+            },
+            "submit": {
+                "loading": "Enviando...",
+                "save": "Enviar"
+            },
+            "errors": {
+                "invalid_email": "O e-mail atual não está registrado no sistema. Tente novamente."
+            }
+        },
+        "confirmation": {
+            "heading": "E-mail enviado",
+            "paragraph": "Verifique seu e-mail e abra o link que enviamos para continuar. Verifique sua caixa de spam se não tiver recebido o e-mail.",
+            "confirm": "Voltar para o login"
+        }
+    },
+    "about_app": {
+        "title": "Sobre o Vote Monitor Observer",
+        "title_observer": "Sobre o Vote Monitor Observer",
+        "general": "O Vote Monitor é uma ferramenta digital dedicada a observadores/as independentes e organizações internacionais envolvidas no monitoramento de eleições. O Vote Monitor é desenvolvido e gerenciado pela Code for Romania/Commit Global.",
+        "purpose": "O aplicativo auxilia observadores/as independentes a monitorar as seções eleitorais e documentar o processo de votação em tempo real para um determinado turno eleitoral. Todos os dados coletados através do aplicativo móvel são enviados em tempo real para as organizações credenciadoras para identificar possíveis alertas que possam indicar fraude ou outras irregularidades. Nosso objetivo fundamental é fornecer um panorama claro, simples e realista dos procedimentos da votação.",
+        "app_provides": {
+            "paragraph": "O aplicativo oferece aos/às observadores/as:",
+            "item1": "Uma maneira de gerenciar várias seções eleitorais visitadas",
+            "item2": "Um método eficiente para monitorar o fluxo do processo de votação por meio de formulários configurados pelas organizações credenciadoras",
+            "item3": "Um meio de relatar rapidamente outros problemas fora dos formulários padrão"
+        },
+        "usage": "O aplicativo Vote Monitor pode ser usado durante qualquer tipo de eleição em qualquer país do mundo. Desde 2016, tem sido utilizado em vários turnos eleitorais na Romênia, Polônia e Bulgária.",
+        "version": "Versão do Vote Monitor {{value}}"
+    },
+    "about_app_citizen": {
+        "title": "Sobre o Vote Monitor",
+        "title_observer": "Sobre o Vote Monitor Citizen",
+        "p1": "O Vote Monitor Citizen permite que os cidadãos e cidadãs participem ativamente do monitoramento das eleições, relatando qualquer irregularidade encontrada durante o período eleitoral, incluindo atividades de campanha, operações nas seções eleitorais e procedimentos do dia da votação.",
+        "p2": "O Vote Monitor Citizen é uma extensão do aplicativo Monitor de Voto, que foi inicialmente desenvolvido pela Code for Romania/Commit Global para observadores independentes que trabalham ao lado de ONGs nos esforços de monitoramento eleitoral.",
+        "p3": "Os/As usuários/as podem enviar relatórios em tempo real que serão analisados por organizações não governamentais envolvidas no processo eleitoral. Esses relatórios podem contribuir para documentos detalhados de observação e, em alguns casos, podem ser encaminhados às instituições relevantes para melhorar futuras eleições.",
+        "p4": "Embora os relatórios dos/as cidadão/ãs desempenhem um papel vital na promoção da transparência, observe que o envio de um relatório através deste aplicativo não constitui uma denúncia oficial às instituições responsáveis por organizar as eleições.",
+        "version": "Versão do Vote Monitor {{value}}"
+    },
+    "loading_screen": {
+        "heading": "Carregando...",
+        "paragraph": "Estamos preparando todos os dados, por favor aguarde!"
+    },
+    "tabs": {
+        "observation": "Observação",
+        "quick_report": "Relatório",
+        "guides": "Guias",
+        "inbox": "Caixa de entrada",
+        "more": "Mais",
+        "report": "Relatório",
+        "resources": "Recursos",
+        "updates": "Atualizações"
+    },
+    "add_polling_station": {
+        "title": "Adicionar seção eleitoral",
+        "progress": {
+            "location": "Adicionar seção eleitoral de {{value}}"
+        },
+        "actions": {
+            "next_step": "Próximo passo",
+            "back": "Voltar",
+            "finalize": "Finalizar"
+        },
+        "error": "Erro ao carregar as seções eleitorais!"
+    },
+    "observation": {
+        "title": "Seção Eleitoral Observada",
+        "no_election_round": {
+            "heading": "Nenhum evento eleitoral para observar ainda",
+            "paragraph": "Você poderá usar o aplicativo assim que for atribuído a um evento eleitoral pela sua organização"
+        },
+        "no_form": "O formulário de Informações da Seção Eleitoral não está configurado",
+        "refresh_page": "Se os dados não estiverem visíveis, tente atualizar a página para recuperar as informações mais recentes",
+        "no_visited_polling_stations": {
+            "heading": "Nenhuma seção eleitoral visitada ainda",
+            "paragraph": "Comece a configurar sua primeira seção eleitoral antes de preencher os formulários de observação.",
+            "add": "Adicione sua primeira seção eleitoral"
+        },
+        "my_polling_stations": {
+            "heading": "Minhas seções eleitorais",
+            "paragraph": "Você pode alternar entre as seções eleitorais se quiser revisar as respostas do formulário ou as informações da seção eleitoral.",
+            "add": "Adicionar nova seção eleitoral"
+        },
+        "polling_stations_information": {
+            "heading": "Informações da seção eleitoral",
+            "time_select": {
+                "not_defined": "Não definido",
+                "arrival_time": "Hora de chegada",
+                "departure_time": "Hora de partida",
+                "save": "Concluído",
+                "error": {
+                    "arrival_first": "Por favor, selecione uma hora de chegada primeiro.",
+                    "later_departure": "Por favor, selecione uma hora de partida posterior à de chegada.",
+                    "earlier_arrival": "Por favor, selecione uma hora de chegada anterior à de partida.",
+                    "server": "Não foi possível enviar as informações para o servidor."
+                }
+            },
+            "observation_time": {
+                "observation_time": "Hora da observação",
+                "not_defined": "Não definido",
+                "no_of_breaks": "{{value}} intervalos",
+                "one_break": "{{value}} intervalo",
+                "arrival_and_departure": "Hora de chegada e partida",
+                "arrival_time": "Hora de chegada",
+                "departure_time": "Hora de partida",
+                "departure_after_arrival": "A hora de partida deve ser posterior à hora de chegada",
+                "select_arrival_time": "Selecionar hora de chegada",
+                "select_departure_time": "Selecionar hora de partida",
+                "add_break": "Adicionar novo intervalo na observação",
+                "break": "Intervalo {{value}}",
+                "start_time": "Hora de início",
+                "select_start_time": "Selecionar hora de início",
+                "end_time": "Hora de término",
+                "select_end_time": "Selecionar hora de término",
+                "undefined_date": "DD/MM/AAAA",
+                "undefined_time": "HH:MM",
+                "save": "Salvar hora da observação",
+                "clear": "Limpar hora da observação",
+                "confirmation_modals": {
+                    "clear": {
+                        "title": "Limpar hora da observação",
+                        "description": "Esta ação excluirá sua hora de chegada e partida, incluindo todos os intervalos inseridos até o momento para esta seção eleitoral. Para evitar perda de informações não intencional, certifique-se de verificar os horários antes de realizar esta ação.",
+                        "actions": {
+                            "cancel": "Cancelar",
+                            "clear": "Limpar hora da observação"
+                        }
+                    },
+                    "delete": {
+                        "title": "Excluir intervalo",
+                        "description": "Esta ação excluirá seu intervalo. Para evitar perda de informações não intencional, certifique-se de verificar os horários antes de realizar esta ação.",
+                        "actions": {
+                            "cancel": "Cancelar",
+                            "delete": "Excluir intervalo"
+                        }
+                    },
+                    "unsaved_changes": {
+                        "title": "Salvar alterações na hora da observação",
+                        "description": "Você tem alterações não salvas relacionadas à hora da observação que inseriu. Deseja salvar suas alterações antes de sair da página?",
+                        "actions": {
+                            "discard": "Descartar",
+                            "save": "Salvar alterações"
+                        }
+                    },
+                    "unable_to_save": {
+                        "title": "Não foi possível salvar a hora da observação",
+                        "p1": "Os horários inseridos não podem ser salvos devido a um conflito entre os períodos de intervalo e os horários de chegada/partida. ",
+                        "p2": "Por favor, certifique-se de que os períodos de intervalo não excedam o intervalo de tempo definido pelos horários de observação de chegada e partida. Revise e ajuste os horários de acordo.",
+                        "ok": "OK"
+                    }
+                }
+            },
+            "polling_station_form": {
+                "paragraph": "Responda a algumas perguntas rápidas sobre a seção eleitoral.",
+                "form_details_button_label": "Perguntas da seção eleitoral",
+                "number_of_questions": "{{value}} perguntas",
+                "answer_questions": "Responder às perguntas"
+            }
+        },
+        "forms": {
+            "heading": "Formulários de observação",
+            "list": {
+                "empty": "Os formulários de observação aparecerão aqui assim que sua organização os publicar no sistema.",
+                "error": {
+                    "paragraph1": "Algo deu errado!",
+                    "paragraph2": "Não foi possível obter os dados. Pressione o botão de tentar novamente para tentar outra vez!",
+                    "retry": "Tentar novamente"
+                }
+            },
+            "select_language_modal": {
+                "header": "Selecionar o idioma do formulário",
+                "helper": "O formulário selecionado está disponível em vários idiomas. Selecione com qual você gostaria de continuar.",
+                "error": "Por favor, selecione uma das opções"
+            }
+        },
+        "options_menu": {
+            "manage_my_polling_stations": "Gerenciar minhas seções eleitorais",
+            "copy_polling_station_information": "Copiar detalhes da seção eleitoral para a área de transferência",
+            "copy_success_toast": "Detalhes da seção eleitoral copiados para a área de transferência",
+            "copy_error_toast": "Falha ao copiar os detalhes da seção eleitoral",
+            "navigate_to_polling_station": "Navegar para a seção eleitoral"
+        },
+        "navigate_to_polling_station": {
+            "title": "Navegar para a seção eleitoral",
+            "description": "Selecione um aplicativo de mapas para obter direções para a seção eleitoral.",
+            "cancel": "Cancelar"
+        }
+    },
+    "polling_station_information_form": {
+        "title": "Informações da seção eleitoral",
+        "submit": "Enviar respostas",
+        "form": {
+            "max": "A entrada não pode exceder {{value}} caracteres",
+            "placeholder": "Por favor, insira um texto.."
+        },
+        "menu": {
+            "clear": "Limpar formulário (excluir todas as respostas)",
+            "change_language": "Alterar idioma"
+        },
+        "warning_modal": {
+            "title": "Limpar formulário de informações da seção eleitoral",
+            "description": "Esta ação excluirá todas as respostas inseridas até o momento neste formulário. Para evitar perda de informações não intencional, certifique-se de verificar o formulário antes de realizar esta ação.",
+            "actions": {
+                "cancel": "Cancelar",
+                "clear": "Limpar formulário"
+            }
+        },
+        "unsaved_changes_dialog": {
+            "title": "Salvar alterações no formulário",
+            "description": "Você tem alterações não salvas neste formulário. Deseja salvar suas alterações antes de sair?",
+            "actions": {
+                "discard": "Descartar",
+                "save": "Salvar alterações"
+            }
+        }
+    },
+    "form_overview": {
+        "overview": {
+            "heading": "Visão geral do formulário",
+            "status": "Status do formulário",
+            "answered_questions": "Perguntas respondidas",
+            "resume": "Retomar formulário",
+            "start_form": "Iniciar formulário",
+            "progress": "progresso",
+            "submissions_list": "Envios do formulário",
+            "add_submission": "Adicionar envio",
+            "number_of_submissions": "Nº de envios: {{value}}"
+        },
+        "questions": {
+            "title": "Perguntas",
+            "not_answered": "Não respondidas",
+            "answered": "Respondidas",
+            "no_notes": "Nenhuma nota anexada",
+            "notes": "Inclui notas anexadas"
+        },
+        "attachments": {
+            "notes": "{{count}} Nota(s)",
+            "media": "{{count}} Arquivo(s) de mídia"
+        },
+        "error": "Erro ao carregar os dados do formulário!",
+        "menu": {
+            "clear": "Limpar formulário (excluir todas as respostas)",
+            "change_language": "Alterar idioma",
+            "delete": "Excluir envio"
+        },
+        "clear_answers_modal": {
+            "title": "Limpar formulário {{value}}",
+            "description": {
+                "p1": "Esta ação excluirá todas as respostas inseridas até o momento para este formulário (incluindo notas e arquivos de mídia). O status de todas as perguntas será revertido para 'Não respondidas'.",
+                "p2": "Para evitar a perda não intencional de informações, certifique-se de verificar o formulário antes de realizar esta ação"
+            },
+            "actions": {
+                "clear": "Limpar formulário",
+                "cancel": "Cancelar"
+            }
+        },
+        "delete_submission_modal": {
+            "title": "Excluir envio",
+            "description": {
+                "p1": "Esta ação excluirá este envio do formulário (incluindo notas e arquivos de mídia). ",
+                "p2": "Para evitar a perda não intencional de informações, certifique-se de verificar o formulário antes de realizar esta ação"
+            },
+            "actions": {
+                "clear": "Excluir envio",
+                "cancel": "Cancelar"
+            }
+        }
+    },
+    "polling_station_form_wizard": {
+        "progress_bar": {
+            "label": "Progresso do formulário",
+            "clear_answer": "Limpar resposta"
+        },
+        "form": {
+            "min": "O campo deve ter pelo menos {{value}} caracteres de comprimento",
+            "max": "O campo deve ter um máximo de {{value}} caracteres",
+            "required": "Este campo é obrigatório",
+            "date_placeholder": "Por favor, insira uma data",
+            "text_placeholder": "Por favor, insira um texto"
+        },
+        "save_and_continue": "Salvar e continuar",
+        "attachments": {
+            "heading": "Mídia enviada",
+            "loading": "Adicionando anexo...",
+            "error": "Erro ao enviar o anexo!",
+            "add": "Adicionar notas e mídia",
+            "menu": {
+                "add_note": "Adicionar nota",
+                "load": "Carregar da galeria",
+                "take_picture": "Tirar uma foto",
+                "record_video": "Gravar um vídeo",
+                "upload_audio": "Enviar arquivo de áudio"
+            },
+            "upload": {
+                "compressing": "Comprimir anexo:",
+                "preparing": "Preparando anexo...",
+                "starting": "Iniciando o envio...",
+                "progress": "progresso: Envio concluído.",
+                "completed": "Envio concluído.",
+                "aborted": "Envio cancelado.",
+                "offline": "Você precisa de uma conexão com a internet para realizar esta ação.",
+                "abort_offline": "Conecte-se à internet para continuar ou cancelar o envio",
+                "abort_offline_button": "Cancelar o envio",
+                "uploaded": "Arquivos {{value}} enviados com sucesso.",
+                "abort_offline_confirm": "Tem certeza de que deseja cancelar o envio?",
+                "abort_offline_cancel": "Cancelar"
+            }
+        },
+        "notes": {
+            "heading": "Notas",
+            "add": {
+                "heading": "Adicionar uma nota",
+                "form": {
+                    "input": {
+                        "placeholder": "Adicione quaisquer notas relevantes a esta pergunta.",
+                        "max": "A entrada não pode exceder 10.000 caracteres",
+                        "required": "Este campo é obrigatório"
+                    }
+                }
+            },
+            "edit": {
+                "heading": "Editar nota",
+                "delete": "Excluir nota"
+            },
+            "delete": {
+                "title": "Excluir nota",
+                "description": "Esta ação não pode ser desfeita. Uma vez excluída, uma nota não pode ser recuperada.",
+                "actions": {
+                    "cancel": "Cancelar",
+                    "delete": "Apagar"
+                }
+            }
+        },
+        "warning_modal": {
+            "question": {
+                "title": "Limpar resposta da pergunta {{value}}",
+                "description": "Limpar a resposta desta pergunta excluirá permanentemente todas as suas informações (incluindo notas e arquivos de mídia), bem como todas as perguntas conectadas a ela. O status das perguntas será revertido para Não respondidas.",
+                "actions": {
+                    "cancel": "Cancelar",
+                    "clear": "Limpar resposta"
+                }
+            },
+            "attachment": {
+                "title": "Excluir arquivo de mídia",
+                "description": "Esta ação não pode ser desfeita. Uma vez excluído, um arquivo de mídia não pode ser recuperado.",
+                "actions": {
+                    "cancel": "Cancelar",
+                    "clear": "Excluir"
+                }
+            },
+            "unsaved_answer": {
+                "title": "Salvar alterações na pergunta",
+                "description": "Você tem alterações não salvas nesta pergunta. Deseja salvar suas alterações antes de sair?",
+                "actions": {
+                    "cancel": "Descartar",
+                    "save": "Salvar alterações"
+                }
+            }
+        },
+        "error": "Erro ao carregar os dados da pergunta!"
+    },
+    "manage_my_polling_stations": {
+        "empty": {
+            "title": "Nenhuma seção eleitoral visitada ainda"
+        },
+        "general_text": "Gerenciar minhas seções eleitorais",
+        "ps_card": {
+            "header": "Seção eleitoral: {{value}}",
+            "l1": "[Local L1]",
+            "l2": "[Local L2]",
+            "l3": "[Local L3]",
+            "l4": "[Local L4]",
+            "l5": "[Local L5]",
+            "street": "Rua",
+            "ps_number": "Número da seção eleitoral"
+        },
+        "warning_dialog": {
+            "title": "Remover seção eleitoral: {{value}}",
+            "description": "Esta ação removerá a seção eleitoral da sua lista de seções eleitorais visitadas. Você pode adicioná-la novamente através do processo de Adicionar Nova Seção Eleitoral.",
+            "actions": {
+                "cancel": "Cancelar",
+                "remove": "Remover",
+                "loading": "Carregando..."
+            }
+        },
+        "removal_unallowed_dialog": {
+            "title": "Não é permitido remover a seção eleitoral {{value}}",
+            "description": "A seção eleitoral não pode ser removida da sua lista porque contém dados (Informações da seção eleitoral e/ou Respostas do formulário) que não podem ser excluídos pelo sistema em seu nome. Se você deseja remover esta seção eleitoral, por favor, limpe as informações da seção eleitoral e as respostas do formulário manualmente e, em seguida, tente esta ação novamente."
+        },
+        "delete_success": "Seção eleitoral excluída com sucesso!",
+        "delete_error": "Ocorreu um problema ao excluir a visita da seção eleitoral. Tente novamente.",
+        "offline_error_toast_msg": "Você precisa de uma conexão com a internet para realizar esta ação."
+    },
+    "quick_report": {
+        "list": {
+            "title": "Relatório rápido",
+            "heading": "Meus problemas relatados",
+            "error": "Erro ao carregar os relatórios!",
+            "empty": "Comece a enviar relatórios rápidos para a organização se você notar irregularidades dentro ou fora da seção eleitoral ou sempre que necessário.",
+            "add": "Relatar novo problema",
+            "no_files": "Nenhum arquivo anexado",
+            "attachment_one": "{{count}} arquivo anexado",
+            "attachment_other": "{{count}} arquivos anexados"
+        },
+        "attachments": {
+            "heading": "Mídia enviada",
+            "loading": "Adicionando anexo...",
+            "upload": {
+                "preparing": "Preparando anexo...",
+                "starting": "Iniciando o envio...",
+                "progress": "Progresso do envio: ",
+                "completed": "Envio concluído.",
+                "aborted": "Envio cancelado."
+            },
+            "error": "Erro ao enviar o anexo!"
+        },
+        "options_menu": {
+            "manage_my_polling_stations": "Gerenciar minhas seções eleitorais"
+        },
+        "info_modal": {
+            "p1": "A partir desta seção, você pode reportar rapidamente quaisquer irregularidades eleitorais que observar nas seções eleitorais ou áreas próximas.",
+            "p2": "Este recurso permite que você alerte a organização instantaneamente, fora dos formulários regulares de observação, garantindo que os problemas urgentes sejam tratados prontamente."
+        }
+    },
+    "report_new_issue": {
+        "title": "Relatar novo problema",
+        "upload": {
+            "compressing": "Comprimindo anexo:",
+            "preparing": "Preparando anexo...",
+            "starting": "Iniciando o envio...",
+            "progress": "Enviando anexos: ",
+            "completed": "Envio concluído.",
+            "aborted": "Envio cancelado.",
+            "offline": "Você precisa de uma conexão com a internet para realizar esta ação."
+        },
+        "media": {
+            "heading": "Mídia enviada",
+            "add": "Adicionar mídia",
+            "error": "Erro ao enviar o anexo!",
+            "menu": {
+                "load": "Carregar da galeria",
+                "take_picture": "Tirar uma foto",
+                "record_video": "Gravar vídeo",
+                "upload_audio": "Enviar arquivo de áudio"
+            }
+        },
+        "form": {
+            "polling_station_id": {
+                "label": "Seção eleitoral *",
+                "placeholder": "Selecionar seção eleitoral",
+                "extra": "Por favor, escreva aqui alguns detalhes de identificação para esta seção eleitoral (como endereço, nome, número, etc.)",
+                "required": "Este campo é obrigatório.",
+                "options": {
+                    "other": "Outra seção eleitoral",
+                    "not_related": "Não relacionado a uma seção eleitoral"
+                }
+            },
+            "incident_category": {
+                "label": "Categoria da ocorrência *",
+                "placeholder": "Categoria",
+                "required": "Este campo é obrigatório.",
+                "options": {
+                    "PhysicalViolenceIntimidationPressure": "Violência física/intimidação/pressão",
+                    "CampaigningAtPollingStation": "Campanha na seção eleitoral",
+                    "RestrictionOfObserversRights": "Restrição dos direitos do observador (representante/mídia)",
+                    "UnauthorizedPersonsAtPollingStation": "Pessoa(s) não autorizada(s) na seção eleitoral",
+                    "ViolationDuringVoterVerificationProcess": "Violação durante o processo de verificação do eleitor",
+                    "VotingWithImproperDocumentation": "Votar com documentação inadequada",
+                    "IllegalRestrictionOfVotersRightToVote": "Restrição ilegal do direito de voto do eleitor",
+                    "DamagingOrSeizingElectionMaterials": "Danificar/apreender materiais eleitorais",
+                    "ImproperFilingOrHandlingOfElectionDocumentation": "Arquivamento/manuseio inadequado de documentação eleitoral",
+                    "BallotStuffing": "Enchimento de votos",
+                    "ViolationsRelatedToControlPaper": "Irregularidades no controle da documentação",
+                    "NotCheckingVoterIdentificationSafeguardMeasures": "Ausência de verificação das medidas de segurança de identificação do eleitor",
+                    "VotingWithoutVoterIdentificationSafeguardMeasures": "Voto sem as medidas de segurança de identificação do eleitor",
+                    "BreachOfSecrecyOfVote": "Violação do sigilo do voto",
+                    "ViolationsRelatedToMobileBallotBox": "Violações relacionadas à urna itinerante",
+                    "NumberOfBallotsExceedsNumberOfVoters": "O número de cédulas excede o número de eleitores",
+                    "ImproperInvalidationOrValidationOfBallots": "Invalidação/validação inadequada das cédulas",
+                    "FalsificationOrImproperCorrectionOfFinalProtocol": "Falsificação/correção inadequada do protocolo final",
+                    "RefusalToIssueCopyOfFinalProtocolOrIssuingImproperCopy": "Recusa em emitir cópia do protocolo final/emissão de cópia inadequada",
+                    "ImproperFillingInOfFinalProtocol": "Preenchimento inadequado do protocolo final",
+                    "ViolationOfSealingProceduresOfElectionMaterials": "Violação dos procedimentos de lacre dos materiais eleitorais",
+                    "ViolationsRelatedToVoterLists": "Violações relacionadas às listas de eleitores",
+                    "Other": "Outros"
+                }
+            },
+            "polling_station_details": {
+                "label": "Detalhes da seção eleitoral *",
+                "placeholder": "Por favor, escreva aqui alguns detalhes de identificação para esta seção eleitoral (como endereço, nome, número, etc.)",
+                "required": "Este campo é obrigatório.",
+                "max": "A entrada não pode exceder {{value}} caracteres"
+            },
+            "issue_title": {
+                "label": "Título do problema *",
+                "placeholder": "Escreva um título para o problema.",
+                "required": "O título do problema é obrigatório",
+                "max": "A entrada não pode exceder {{value}} caracteres"
+            },
+            "issue_description": {
+                "label": "Descrição *",
+                "placeholder": "Descreva a situação em detalhes aqui.",
+                "required": "A descrição do problema é obrigatória",
+                "max": "A entrada não pode exceder {{value}} caracteres"
+            },
+            "submit": "Enviar problema",
+            "clear": "Limpar",
+            "loading": "Processando...",
+            "error": "Erro ao adicionar o relatório"
+        }
+    },
+    "report_details": {
+        "title": "",
+        "uploaded_media": "Mídia enviada",
+        "no_files": "Nenhum arquivo anexado",
+        "error": "Erro ao carregar o relatório"
+    },
+    "guides": {
+        "title": "Recursos",
+        "empty": {
+            "heading": "Nenhum guia para ler ainda",
+            "paragraph": "Guias e recursos da sua organização em suas mãos."
+        },
+        "list": {
+            "heading": "Guias",
+            "guide": {
+                "backup_title": "Documento",
+                "created_on": "Criado em"
+            }
+        },
+        "options_sheet": {
+            "manage_my_polling_stations": "Gerenciar minhas seções eleitorais"
+        },
+        "info_modal": "Nesta seção, você encontrará informações e recursos essenciais projetados para ajudá-lo a observar os processos eleitorais e relatar quaisquer problemas ou irregularidades eleitorais que encontrar como observador independente."
+    },
+    "resources": {
+        "title": "Recursos",
+        "info": "Nesta seção, você encontrará informações e recursos essenciais projetados para ajudá-lo a observar os processos eleitorais e relatar quaisquer problemas ou irregularidades eleitorais que encontrar como cidadão/ã.",
+        "empty": {
+            "heading": "Nenhum guia para ler ainda",
+            "paragraph": "Guias e recursos sobre a observação de processos eleitorais e o relato de problemas como cidadão em suas mãos."
+        },
+        "types": {
+            "Document": "Tipo de arquivo PDF",
+            "Website": "URL externa",
+            "Text": "Guia no aplicativo"
+        }
+    },
+    "inbox": {
+        "title": "Caixa de entrada",
+        "empty": {
+            "heading": "Nenhuma mensagem recebida ainda",
+            "paragraph": "Mensagens push e alertas da sua organização aparecerão aqui."
+        },
+        "banner": "Mensagens de {{ngoName}}",
+        "today": "Hoje",
+        "your_organization": "sua organização",
+        "menu": {
+            "manage_polling_stations": "Gerenciar minhas seções eleitorais"
+        },
+        "info_modal": {
+            "p1": "Nesta caixa de entrada, você pode esperar receber atualizações e mensagens em tempo real da ONG que o credenciou como observador.",
+            "p2": "Verifique periodicamente para ver se você recebeu alguma nova informação relevante para sua atividade de observação."
+        }
+    },
+    "updates": {
+        "title": "Atualizações",
+        "empty": {
+            "heading": "Nenhuma atualização recebida ainda",
+            "paragraph": "Atualizações sobre o período eleitoral aparecerão aqui."
+        },
+        "info_modal": {
+            "p1": "Nesta seção, você pode esperar receber atualizações em tempo real da equipe do Vote Monitor sobre o período eleitoral relevantes para você como cidadão/ã interessado/a em engajamento cívico.",
+            "p2": "Verifique periodicamente para ver se você recebeu alguma informação nova."
+        }
+    },
+    "more": {
+        "title": "Mais",
+        "change-language": "Alterar o idioma do aplicativo",
+        "change-password": "Alterar senha",
+        "terms": "Termos e Condições",
+        "privacy_policy": "Política de Privacidade",
+        "about": "Sobre o Vote Monitor",
+        "app_version": "Versão do Vote Monitor {{value}}",
+        "support": "Ligar para a linha direta da ONG",
+        "feedback": "Oferecer feedback do aplicativo",
+        "logout": "Sair",
+        "logged_in": "Conectado como {{user}}",
+        "warning_modal": {
+            "logout_offline": {
+                "title": "Atenção: Você possui dados não sincronizados",
+                "description": "Você está offline no momento. Se você sair agora, quaisquer formulários, anexos ou notas que você preencheu ou enviou durante o modo offline serão perdidos. \n\nPara evitar a perda de seus dados, reconecte-se à internet antes de sair.",
+                "cancel": "Cancelar",
+                "action": "Sair"
+            },
+            "logout_online": {
+                "title": "Tem certeza de que deseja sair?",
+                "cancel": "Cancelar",
+                "action": "Sair"
+            }
+        },
+        "feedback_toast": {
+            "success": "Feedback enviado!",
+            "offline": "Você precisa de uma conexão com a internet para realizar esta ação.",
+            "error": "Erro ao adicionar o feedback!",
+            "required": "Este campo é obrigatório"
+        },
+        "feedback_sheet": {
+            "heading": "Envie-nos o seu feedback",
+            "p1": "Por favor, nos informe sobre quaisquer problemas que possa ter encontrado com o funcionamento do aplicativo ou quaisquer sugestões que gostaria de compartilhar para melhorar o Vote Monitor no futuro. Agradecemos todo e qualquer feedback!",
+            "placeholder": "Escreva o seu feedback aqui...",
+            "cancel": "Cancelar",
+            "action": "Enviar",
+            "input": {
+                "max": "A entrada não pode exceder {{value}} caracteres"
+            }
+        },
+        "options_sheet": {
+            "manage_my_polling_stations": "Gerenciar minhas seções eleitorais"
+        }
+    },
+    "change_password": {
+        "title": "Alterar senha",
+        "form": {
+            "current_password": {
+                "label": "Senha atual *",
+                "placeholder": "Digite a senha atual",
+                "required": "A senha é obrigatória",
+                "credentials_error": "A senha atual está incorreta"
+            },
+            "new_password": {
+                "label": "Nova senha *",
+                "placeholder": "Digite a nova senha",
+                "helper": "Deve ter pelo menos 8 caracteres",
+                "required": "A nova senha é obrigatória"
+            },
+            "confirm_password": {
+                "label": "Confirmar nova senha *",
+                "placeholder": "Confirmar senha",
+                "helper": "Ambas as senhas devem coincidir.",
+                "required": "A nova senha é obrigatória",
+                "no_match": "As senhas não coincidem"
+            },
+            "save": "Salvar nova senha"
+        },
+        "confirmation": {
+            "heading": "Senha alterada!",
+            "paragraph": "Sua senha foi alterada com sucesso.",
+            "confirm": "Voltar para o aplicativo"
+        },
+        "error": {
+            "offline": "O aplicativo está offline e não pode fazer a solicitação"
+        }
+    },
+    "generic_error_screen": {
+        "paragraph1": "Opa, algo deu errado!",
+        "paragraph2": "Não foi possível recuperar após este erro. Por favor, verifique sua conexão com a internet e reinicie o aplicativo!",
+        "retry": "Tentar novamente",
+        "logout": "Sair"
+    },
+    "network_banner": {
+        "online": "Aplicativo online. Todas as respostas enviadas ao servidor.",
+        "offline": "Modo offline. Salvando respostas localmente.",
+        "offline_citizen": "Modo offline. Você precisa de internet para enviar o formulário.",
+        "more_details": "Mais detalhes",
+        "offline_warning": "Parece que você está offline no momento. Não se preocupe, suas respostas estão armazenadas em segurança localmente e serão sincronizadas com nossos servidores assim que a conexão for restaurada. Fique à vontade para continuar preenchendo os formulários de observação e enviando relatórios rápidos.",
+        "offline_warning_citizen": "Parece que você está offline no momento. Para enviar o formulário, você precisa estar online."
+    },
+    "sync": {
+        "sync_data": "Sincronizando dados offline...",
+        "warning": "Por favor, NÃO FECHE o aplicativo ou a conexão com a internet, ou os dados serão perdidos.",
+        "files": "Estamos enviando seus arquivos, pode demorar um pouco..."
+    },
+    "delete_submission": {
+        "title": "Revisar o envio antes de excluir",
+        "description": "Esta ação não pode ser desfeita. Uma vez excluído, nenhum dado deste envio poderá ser recuperado.",
+        "header": "Excluir Envio #{{submissionNumber}}",
+        "attachments": "Anexos: {{value}}",
+        "notes": "Notas: {{value}}",
+        "delete": "Excluir envio",
+        "warning_dialog": {
+            "title": "Tem certeza de que deseja excluir este envio?",
+            "description": "Esta ação não pode ser desfeita.",
+            "cancel": "Cancelar",
+            "delete": "Excluir"
+        }
+    },
+    "form_submission_card": {
+        "header": "Envio #{{value}}",
+        "last_updated_at": "Última atualização em:",
+        "form_status": "Status do formulário:",
+        "answered_questions": "Perguntas respondidas:",
+        "attachments": "Anexos:",
+        "notes": "Notas:"
+    }
+}

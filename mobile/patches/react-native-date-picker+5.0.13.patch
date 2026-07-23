@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-date-picker/ios/RNDatePicker.h b/node_modules/react-native-date-picker/ios/RNDatePicker.h
+index 480746e..0d7dcad 100644
+--- a/node_modules/react-native-date-picker/ios/RNDatePicker.h
++++ b/node_modules/react-native-date-picker/ios/RNDatePicker.h
+@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_END
+ #import "DatePicker.h"
+ #import <UIKit/UIKit.h>
+ 
++#include <string>
++
+ @interface RNDatePicker : DatePicker
+ 
+ 

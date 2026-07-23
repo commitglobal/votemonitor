@@ -60,15 +60,21 @@ const Index = () => {
     ]
       .filter(Boolean)
       .join(" ");
-
-    return {
-      address: fullAddress,
-      latitude: selectedPollingStation.latitude,
-      longitude: selectedPollingStation.longitude,
+    const options = {
       dialogTitle: t("navigate_to_polling_station.title"),
       dialogMessage: t("navigate_to_polling_station.description"),
-      cancelText: t("navigate_to_polling_station.actions.cancel"),
+      cancelText: t("navigate_to_polling_station.cancel"),
     };
+
+    if (selectedPollingStation.latitude && selectedPollingStation.longitude) {
+      return {
+        latitude: selectedPollingStation.latitude,
+        longitude: selectedPollingStation.longitude,
+        ...options,
+      };
+    }
+
+    return { ...options, address: fullAddress };
   }, [selectedPollingStation, visits]);
 
   const handleCopyPollingStationInfo = async () => {

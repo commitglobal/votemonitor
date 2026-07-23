@@ -26,7 +26,7 @@ import {
   useUploadAttachmentCitizenMutation,
 } from "../services/mutations/citizen/add-attachment-citizen.mutation";
 import { AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { Buffer } from "buffer";
 import * as Sentry from "@sentry/react-native";
 import MediaLoading from "./MediaLoading";
@@ -65,7 +65,7 @@ export default function ReviewCitizenFormSheet({
   answers: Record<string, ApiFormAnswer | undefined> | undefined;
   questions: ApiFormQuestion[] | undefined;
   attachments: Record<string, AttachmentData[]> | undefined;
-  setAttachments: Dispatch<SetStateAction<Record<string, AttachmentData[]>>>
+  setAttachments: Dispatch<SetStateAction<Record<string, AttachmentData[]>>>;
   setIsReviewSheetOpen: Dispatch<SetStateAction<boolean>>;
   selectedLocationId: string;
   language: string;
@@ -178,7 +178,6 @@ export default function ReviewCitizenFormSheet({
           setResponseId(response.id);
           await uploadAttachments(citizenReportId);
 
-
           if (cancelRef.current === true) {
             return;
           } else {
@@ -211,10 +210,14 @@ export default function ReviewCitizenFormSheet({
 
     if (attachments && Object.keys(attachments).length > 0) {
       setIsUploading(true);
-      const attachmentArray: { questionId: string; fileMetadata: FileMetadata; id: string, uploaded: boolean }[] =
-        Object.entries(attachments)
-          .map(([questionId, attachments]) => attachments.map((a) => ({ ...a, questionId })))
-          .flat();
+      const attachmentArray: {
+        questionId: string;
+        fileMetadata: FileMetadata;
+        id: string;
+        uploaded: boolean;
+      }[] = Object.entries(attachments)
+        .map(([questionId, attachments]) => attachments.map((a) => ({ ...a, questionId })))
+        .flat();
       try {
         const totalParts = attachmentArray.reduce((acc, attachment) => {
           return acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
@@ -316,13 +319,12 @@ export default function ReviewCitizenFormSheet({
           id: attachmentId,
           citizenReportId,
         });
-        setAttachments((attachments) =>
-        ({
+        setAttachments((attachments) => ({
           ...attachments,
-          [questionId]: attachments[questionId].map(
-            (attachment) => attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment)
-        })
-        );
+          [questionId]: attachments[questionId].map((attachment) =>
+            attachment.id === attachmentId ? { ...attachment, uploaded: true } : attachment,
+          ),
+        }));
       }
     } catch (err) {
       Sentry.captureException(err, {
@@ -374,7 +376,11 @@ export default function ReviewCitizenFormSheet({
             <MediaLoading
               progress={uploadProgress}
               isUploading={isUploading}
-              uploadedAttachments={Object.entries(attachments).map(([, attachments]) => attachments.filter((a) => a.uploaded)).flat().length}
+              uploadedAttachments={
+                Object.entries(attachments)
+                  .map(([, attachments]) => attachments.filter((a) => a.uploaded))
+                  .flat().length
+              }
               onAbortUpload={onAbortUpload}
               confirmAbort
             />

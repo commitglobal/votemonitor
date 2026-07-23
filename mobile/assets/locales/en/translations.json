@@ -32,7 +32,8 @@
     "ru": "Russian",
     "az": "Azerbaijani",
     "es": "Spanish",
-    "de": "German"
+    "de": "German",
+    "pt-BR": "Portuguese (Brazil)"
   },
   "onboarding": {
     "language": {
@@ -463,7 +464,6 @@
         "cancel": "Cancel"
       }
     },
-
     "delete_submission_modal": {
       "title": "Delete submission",
       "description": {

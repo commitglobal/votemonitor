@@ -20,6 +20,8 @@ export const addPollingStationsNomenclatureBulk = async (
         pollingStation.pollingStationId = node.pollingStationId;
         pollingStation.pollingStationNumber = node.number;
         pollingStation.parentId = node.parentId || -1;
+        pollingStation.latitude = node.latitude;
+        pollingStation.longitude = node.longitude;
       }),
     );
     await database.batch(newNomenclature);

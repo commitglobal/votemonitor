@@ -31,7 +31,7 @@ const ReportCard = ({
     <Card onPress={onPress} marginTop="$xxs">
       <YStack gap="$md">
         <Typography preset="body2">{title}</Typography>
-        <Typography >{incidentCategoryString}</Typography>
+        <Typography>{incidentCategoryString}</Typography>
         <Typography>{description}</Typography>
         <CardFooter
           text={

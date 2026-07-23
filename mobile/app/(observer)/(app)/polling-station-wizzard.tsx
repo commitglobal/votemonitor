@@ -102,7 +102,7 @@ const PollingStationWizzardContent = ({
   );
 
   const pollingStationsMappedOptions = useMemo(
-    () => mapPollingStationOptionsToSelectValues(pollingStationOptions),
+    () => mapPollingStationOptionsToSelectValues(pollingStationOptions ?? []),
     [pollingStationOptions],
   );
 
@@ -118,7 +118,7 @@ const PollingStationWizzardContent = ({
   };
 
   const isLastElement: boolean = useMemo(
-    () => !!pollingStationOptions[0]?.pollingStationId,
+    () => !!pollingStationOptions?.[0]?.pollingStationId,
     [pollingStationOptions],
   );
 
@@ -150,7 +150,7 @@ const PollingStationWizzardContent = ({
     if (!selectedOption) {
       return;
     }
-    const pollingStation = pollingStationOptions.find((option) => option.id === selectedOption.id);
+    const pollingStation = pollingStationOptions?.find((option) => option.id === selectedOption.id);
 
     if (pollingStation?.pollingStationId && activeElectionRound) {
       await queryClient.cancelQueries({

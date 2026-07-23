@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, TextStyle } from "react-native";
+import { TextStyle } from "react-native";
 import {
   Button as TamaguiButton,
   ButtonProps as TamaguiButtonProps,

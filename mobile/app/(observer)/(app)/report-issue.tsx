@@ -42,7 +42,7 @@ import {
   MULTIPART_FILE_UPLOAD_SIZE,
   MUTATION_SCOPE_DO_NOT_HYDRATE,
 } from "../../../common/constants";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";

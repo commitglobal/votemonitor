@@ -67,7 +67,7 @@ const NoVisitsExist = ({
             width="100%"
             height="100%"
             textStyle={{ textAlign: "center" }}
-            onPress={router.push.bind(null, "/polling-station-wizzard")}
+            onPress={() => router.push("/polling-station-wizzard")}
           >
             {t("no_visited_polling_stations.add")}
           </Button>

@@ -6,7 +6,16 @@ export interface FormInputProps extends InputProps, Omit<FormElementProps, "chil
   placeholder?: string;
 }
 
-const FormInput = ({ type, title, placeholder = "", titleProps, error, helper, ref, ...rest }: FormInputProps) => {
+const FormInput = ({
+  type,
+  title,
+  placeholder = "",
+  titleProps,
+  error,
+  helper,
+  ref,
+  ...rest
+}: FormInputProps) => {
   return (
     <FormElement title={title} titleProps={titleProps} error={error} helper={helper}>
       <Input
