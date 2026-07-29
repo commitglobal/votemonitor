@@ -28,6 +28,7 @@ const NewsList = ({ isLoading, news = [], refetch, translationKey = "inbox" }: N
   }, []);
 
   const handleLoadMore = () => {
+    if (sliceNumber >= (news?.length ?? 0)) return;
     setSliceNumber((prev) => prev + 10);
   };
 

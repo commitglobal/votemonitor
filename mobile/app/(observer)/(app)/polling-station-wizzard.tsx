@@ -106,14 +106,20 @@ const PollingStationWizzardContent = ({
     [pollingStationOptions],
   );
 
-  const filteredOptions = useMemo(() => {
-    if (!searchTerm) return pollingStationsMappedOptions.slice(0, sliceNumber);
-    return pollingStationsMappedOptions
-      .filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
-      .slice(0, sliceNumber);
-  }, [pollingStationsMappedOptions, searchTerm, sliceNumber]);
+  const searchedOptions = useMemo(() => {
+    if (!searchTerm) return pollingStationsMappedOptions;
+    return pollingStationsMappedOptions.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [pollingStationsMappedOptions, searchTerm]);
+
+  const filteredOptions = useMemo(
+    () => searchedOptions.slice(0, sliceNumber),
+    [searchedOptions, sliceNumber],
+  );
 
   const loadMore = () => {
+    if (sliceNumber >= searchedOptions.length) return;
     setSliceNumber((sliceNum) => sliceNum + 50);
   };
 

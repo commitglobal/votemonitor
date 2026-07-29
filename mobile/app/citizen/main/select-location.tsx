@@ -62,13 +62,18 @@ export default function CitizenSelectLocation() {
     selectedElectionRound,
   );
 
-  const filteredOptions = useMemo(() => {
+  const searchedOptions = useMemo(() => {
     const options = mapCitizenLocationsToSelectValues(citizenLocations ?? []);
-    if (!searchTerm) return options.slice(0, sliceNumber);
-    return options
-      .filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
-      .slice(0, sliceNumber);
-  }, [citizenLocations, searchTerm, sliceNumber]);
+    if (!searchTerm) return options;
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [citizenLocations, searchTerm]);
+
+  const filteredOptions = useMemo(
+    () => searchedOptions.slice(0, sliceNumber),
+    [searchedOptions, sliceNumber],
+  );
 
   const isLastElement: boolean = useMemo(
     () => !!citizenLocations?.[0]?.locationId,
@@ -76,6 +81,7 @@ export default function CitizenSelectLocation() {
   );
 
   const loadMore = () => {
+    if (sliceNumber >= searchedOptions.length) return;
     setSliceNumber((sliceNum) => sliceNum + 50);
   };
 
