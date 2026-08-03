@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Screen } from "../../../components/Screen";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { Icon } from "../../../components/Icon";
 import { View, XStack, YStack } from "tamagui";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -37,6 +37,7 @@ const ObservationTime = () => {
 
   const { selectedPollingStation, activeElectionRound } = useUserData();
   const queryClient = useQueryClient();
+  const navigation = useNavigation();
 
   const { data: psiData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -138,6 +139,20 @@ const ObservationTime = () => {
       reset(getValues());
     }
   }, [psiData, getValues, reset]);
+
+  // Navigate back immediately, but only run the mutation (and its optimistic cache
+  // update) once the pop transition has actually finished. mutate() updates the query
+  // cache that the previous screen also reads, re-rendering it — doing that while the
+  // transition is still animating races with Fabric's view-tree commit on Android and
+  // crashes with "addViewAt: failed to insert view". Waiting for the real
+  // `transitionEnd` event removes the race instead of guessing a frame count.
+  const saveAndGoBack = (data: any) => {
+    const unsubscribe = navigation.addListener("transitionEnd" as never, () => {
+      unsubscribe();
+      onSubmit(data);
+    });
+    router.back();
+  };
 
   const handleGoBack = () => {
     if (isDirty) {
@@ -330,10 +345,7 @@ const ObservationTime = () => {
         isFirstElement
         onActionButtonPress={() => {
           handleSubmit(
-            async (data) => {
-              await onSubmit(data);
-              router.back();
-            },
+            saveAndGoBack,
             (errors) => {
               if (Object.keys(errors).includes("breaks")) {
                 setIsUnableToSaveObservationTime(true);
@@ -386,10 +398,7 @@ const ObservationTime = () => {
           }}
           action={() => {
             handleSubmit(
-              async (data) => {
-                await onSubmit(data);
-                router.back();
-              },
+              saveAndGoBack,
               (errors) => {
                 // close modal in order to see the input error displayed for departureTime
                 if (errors.departureTime) {

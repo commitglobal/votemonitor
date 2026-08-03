@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Animated } from "react-native";
 import useAnimatedBottomPadding from "../hooks/useAnimatedBottomPadding";
 
+const AnimatedXStack = Animated.createAnimatedComponent(XStack);
+
 interface WizzardControlsProps extends XStackProps {
   isFirstElement?: boolean;
   isLastElement?: boolean;
@@ -27,8 +29,6 @@ const WizzardControls = ({
 }: WizzardControlsProps) => {
   const { t } = useTranslation("add_polling_station");
   const paddingBottom = useAnimatedBottomPadding(16);
-
-  const AnimatedXStack = Animated.createAnimatedComponent(XStack);
 
   return (
     <AnimatedXStack

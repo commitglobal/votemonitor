@@ -9,6 +9,71 @@ import {
 import { Typography } from "./Typography";
 
 type PresetType = "default" | "outlined" | "chromeless" | "red" | "yellow";
+
+const StyledButton = styled(TamaguiButton, {
+  name: "StyledButton",
+  paddingHorizontal: "$md",
+  paddingVertical: "$xs",
+  borderRadius: 8,
+  backgroundColor: "$purple5",
+  alignItems: "center",
+  disabledStyle: {
+    backgroundColor: "$gray3",
+  },
+  variants: {
+    presets: {
+      default: {
+        pressStyle: {
+          backgroundColor: "$purple5",
+          opacity: 0.8,
+        },
+      },
+      outlined: {
+        borderWidth: 1,
+        borderColor: "$purple5",
+        backgroundColor: "transparent",
+        pressStyle: {
+          backgroundColor: "transparent",
+          opacity: 0.8,
+          borderColor: "$purple7",
+        },
+        disabledStyle: {
+          backgroundColor: "transparent",
+          opacity: 0.5,
+        },
+      },
+      chromeless: {
+        backgroundColor: "transparent",
+        pressStyle: {
+          backgroundColor: "transparent",
+          opacity: 0.8,
+          borderColor: "transparent",
+        },
+        disabledStyle: {
+          backgroundColor: "transparent",
+          opacity: 0.5,
+        },
+      },
+      red: {
+        backgroundColor: "$red10",
+        pressStyle: {
+          backgroundColor: "$red10",
+          opacity: 0.8,
+        },
+      },
+      yellow: {
+        backgroundColor: "$yellow5",
+        color: "$purple6",
+        pressStyle: {
+          backgroundColor: "$yellow5",
+          opacity: 0.8,
+          borderColor: "$yellow5",
+        },
+      },
+    },
+  } as const,
+});
+
 export interface ButtonProps extends TamaguiButtonProps {
   children: string;
   /**
@@ -37,70 +102,6 @@ const Button = (props: ButtonProps): React.ReactElement => {
   };
 
   const $textStyles: TextStyle = { ...$presetTextStyles, ...textStyle };
-
-  const StyledButton = styled(TamaguiButton, {
-    name: "StyledButton",
-    paddingHorizontal: "$md",
-    paddingVertical: "$xs",
-    borderRadius: 8,
-    backgroundColor: "$purple5",
-    alignItems: "center",
-    disabledStyle: {
-      backgroundColor: "$gray3",
-    },
-    variants: {
-      presets: {
-        default: {
-          pressStyle: {
-            backgroundColor: "$purple5",
-            opacity: 0.8,
-          },
-        },
-        outlined: {
-          borderWidth: 1,
-          borderColor: "$purple5",
-          backgroundColor: "transparent",
-          pressStyle: {
-            backgroundColor: "transparent",
-            opacity: 0.8,
-            borderColor: "$purple7",
-          },
-          disabledStyle: {
-            backgroundColor: "transparent",
-            opacity: 0.5,
-          },
-        },
-        chromeless: {
-          backgroundColor: "transparent",
-          pressStyle: {
-            backgroundColor: "transparent",
-            opacity: 0.8,
-            borderColor: "transparent",
-          },
-          disabledStyle: {
-            backgroundColor: "transparent",
-            opacity: 0.5,
-          },
-        },
-        red: {
-          backgroundColor: "$red10",
-          pressStyle: {
-            backgroundColor: "$red10",
-            opacity: 0.8,
-          },
-        },
-        yellow: {
-          backgroundColor: "$yellow5",
-          color: "$purple6",
-          pressStyle: {
-            backgroundColor: "$yellow5",
-            opacity: 0.8,
-            borderColor: "$yellow5",
-          },
-        },
-      },
-    } as const,
-  });
 
   return (
     <StyledButton presets={presetType} style={$styleOverride} {...rest}>

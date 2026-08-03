@@ -52,6 +52,12 @@ interface HeaderProps {
   children?: React.ReactNode;
 }
 
+const StyledWrapper = styled(YStack, {
+  name: "StyledWrapper",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
 const Header = ({
   backgroundColor = "$purple5",
   barStyle = "light-content",
@@ -66,17 +72,12 @@ const Header = ({
 }: HeaderProps) => {
   const insets = useSafeAreaInsets();
 
-  const StyledWrapper = styled(YStack, {
-    name: "StyledWrapper",
-    backgroundColor,
-    minHeight: 50 + insets.top,
-    paddingTop: insets.top,
-    justifyContent: "center",
-    alignItems: "center",
-  });
-
   return (
-    <StyledWrapper>
+    <StyledWrapper
+      backgroundColor={backgroundColor}
+      minHeight={50 + insets.top}
+      paddingTop={insets.top}
+    >
       <XStack style={[$headerContainer, $styleOverride] as any}>
         {/* manipulating status bar icons to desired color */}
         <StatusBar barStyle={barStyle} />
