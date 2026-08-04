@@ -31,6 +31,7 @@ public class IncidentReportModel
     public string DisplayName { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
+    public string[] Tags { get; set; } = [];
     public bool IsCompleted { get; set; } = default!;
     public BaseAnswer[] Answers { get; set; } = [];
     public SubmissionNoteModel[] Notes { get; set; } = [];

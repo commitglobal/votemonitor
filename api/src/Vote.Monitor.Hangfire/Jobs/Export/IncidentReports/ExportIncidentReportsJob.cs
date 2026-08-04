@@ -208,6 +208,7 @@ public class ExportIncidentReportsJob(
                 IR."DisplayName",
                 IR."Email",
                 IR."PhoneNumber",
+                IR."Tags",
                 IR."Answers",
                 IR."Attachments",
                 IR."Notes",

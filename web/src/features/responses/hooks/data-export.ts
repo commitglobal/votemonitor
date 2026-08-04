@@ -9,26 +9,28 @@ import {
 } from '@tanstack/react-query';
 import { type DataExport, type ExportedDataDetails, ExportedDataType, ExportStatus } from '../models/data-export';
 
-type UseDataExportOptions = UseMutationOptions<DataExport, Error, void>;
+type UseDataExportOptions = UseMutationOptions<DataExport, Error, ExportedDataType>;
+
+const isFormSubmissionsExport = (exportedDataType: ExportedDataType): boolean =>
+  exportedDataType === ExportedDataType.FormSubmissions ||
+  exportedDataType === ExportedDataType.FormSubmissionsSimplified;
 
 export function useStartDataExport(
   {
     electionRoundId,
-    exportedDataType,
     filterParams,
   }: {
     electionRoundId: string;
-    exportedDataType: ExportedDataType;
     filterParams?: Record<string, any>;
   },
   options?: UseDataExportOptions
-): UseMutationResult<DataExport, Error, void> {
+): UseMutationResult<DataExport, Error, ExportedDataType> {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (exportedDataType: ExportedDataType) => {
       const response = await authApi.post<DataExport>(`/exported-data`, {
         electionRoundId,
         exportedDataType,
-        formSubmissionsFilters: exportedDataType === ExportedDataType.FormSubmissions ? filterParams : undefined,
+        formSubmissionsFilters: isFormSubmissionsExport(exportedDataType) ? filterParams : undefined,
         quickReportsFilters: exportedDataType === ExportedDataType.QuickReports ? filterParams : undefined,
         citizenReportsFilters: exportedDataType === ExportedDataType.CitizenReports ? filterParams : undefined,
         incidentReportsFilters: exportedDataType === ExportedDataType.IncidentReports ? filterParams : undefined,

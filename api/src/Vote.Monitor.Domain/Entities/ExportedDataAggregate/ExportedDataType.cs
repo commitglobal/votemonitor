@@ -4,6 +4,7 @@
 public sealed class ExportedDataType : SmartEnum<ExportedDataType, string>
 {
     public static readonly ExportedDataType FormSubmissions = new(nameof(FormSubmissions), nameof(FormSubmissions));
+    public static readonly ExportedDataType FormSubmissionsSimplified = new(nameof(FormSubmissionsSimplified), nameof(FormSubmissionsSimplified));
     public static readonly ExportedDataType QuickReports = new(nameof(QuickReports), nameof(QuickReports));
     public static readonly ExportedDataType PollingStations = new(nameof(PollingStations), nameof(PollingStations));
     public static readonly ExportedDataType CitizenReports = new(nameof(CitizenReports), nameof(CitizenReports));

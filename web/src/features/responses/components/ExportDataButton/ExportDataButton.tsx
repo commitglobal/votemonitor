@@ -2,25 +2,56 @@ import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useCallback, useEffect, useState } from 'react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useExportedDataDetails, useStartDataExport } from '../../hooks/data-export';
-import { ExportStatus, type ExportedDataType } from '../../models/data-export';
+import { ExportStatus, ExportedDataType } from '../../models/data-export';
+
+const exportDataTypeLabels: Record<ExportedDataType, string> = {
+  [ExportedDataType.FormSubmissions]: 'Detailed export',
+  [ExportedDataType.FormSubmissionsSimplified]: 'Simplified export',
+  [ExportedDataType.QuickReports]: 'Quick reports',
+  [ExportedDataType.CitizenReports]: 'Citizen reports',
+  [ExportedDataType.IncidentReports]: 'Incident reports',
+  [ExportedDataType.PollingStations]: 'Polling stations',
+  [ExportedDataType.Locations]: 'Locations',
+};
 
 interface ExportDataButtonProps {
-  exportedDataType: ExportedDataType;
+  exportedDataType?: ExportedDataType;
+  exportedDataTypes?: ExportedDataType[];
   filterParams?: Record<string, any>;
 }
 
-export function ExportDataButton({ exportedDataType, filterParams }: ExportDataButtonProps): FunctionComponent {
+export function ExportDataButton({
+  exportedDataType,
+  exportedDataTypes,
+  filterParams,
+}: ExportDataButtonProps): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+
+  const availableExportTypes = useMemo(() => {
+    if (exportedDataTypes?.length) {
+      return exportedDataTypes;
+    }
+
+    return exportedDataType ? [exportedDataType] : [];
+  }, [exportedDataType, exportedDataTypes]);
+
+  const hasMultipleExportTypes = availableExportTypes.length > 1;
 
   const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport(
     {
       electionRoundId: currentElectionRoundId,
-      exportedDataType,
       filterParams,
     },
     {
@@ -28,16 +59,19 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
         setExportedDataId(data.exportedDataId);
       },
       onError: () => {
-        toast.error('Export failed, please try again later',{
+        toast.error('Export failed, please try again later', {
           description: 'Please contact tech support',
         });
       },
     }
   );
 
-  const downloadHandler = useCallback(() => {
-    createExportData();
-  }, [createExportData]);
+  const downloadHandler = useCallback(
+    (type: ExportedDataType) => {
+      createExportData(type);
+    },
+    [createExportData]
+  );
 
   const { data: exportedDataDetails, isFetching: isFetchingExportedDataDetails } = useExportedDataDetails(
     { electionRoundId: currentElectionRoundId, exportedDataId },
@@ -75,7 +109,7 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
 
   useEffect(() => {
     if (exportStatus === ExportStatus.Failed) {
-      toast.error('Export failed, please try again later',{
+      toast.error('Export failed, please try again later', {
         description: 'Please contact tech support',
       });
     }
@@ -85,12 +119,37 @@ export function ExportDataButton({ exportedDataType, filterParams }: ExportDataB
     }
   }, [downloadExportedData, exportStatus]);
 
+  const buttonClassName = 'flex gap-2 text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500';
+
+  if (hasMultipleExportTypes) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button disabled={isLoading} className={buttonClassName} variant='outline'>
+            <CsvFileIcon />
+            {isLoading ? 'Please wait...' : 'Export data'}
+            <ChevronDownIcon className='w-4' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end'>
+          {availableExportTypes.map((type) => (
+            <DropdownMenuItem key={type} disabled={isLoading} onClick={() => downloadHandler(type)}>
+              {exportDataTypeLabels[type]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  const singleExportType = availableExportTypes[0];
+
   return (
     <Button
-      disabled={isLoading}
-      className='flex gap-2 text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
+      disabled={isLoading || !singleExportType}
+      className={buttonClassName}
       variant='outline'
-      onClick={downloadHandler}>
+      onClick={() => singleExportType && downloadHandler(singleExportType)}>
       <CsvFileIcon />
       {isLoading ? 'Please wait...' : 'Export data'}
     </Button>

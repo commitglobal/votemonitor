@@ -11,6 +11,7 @@ export enum ExportStatus {
 
 export enum ExportedDataType {
   FormSubmissions = "FormSubmissions",
+  FormSubmissionsSimplified = "FormSubmissionsSimplified",
   QuickReports = "QuickReports",
   CitizenReports = "CitizenReports",
   IncidentReports = "IncidentReports",

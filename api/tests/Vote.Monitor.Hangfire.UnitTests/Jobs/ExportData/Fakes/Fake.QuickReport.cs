@@ -16,6 +16,7 @@ public sealed partial class Fake
             .RuleFor(x => x.DisplayName, f => f.Name.FullName())
             .RuleFor(x => x.Email, f => f.Internet.Email())
             .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
+            .RuleFor(x => x.Tags, f => f.Make(f.Random.Number(0, 3), () => f.Lorem.Word()).Distinct().ToArray())
             .RuleFor(x => x.MonitoringObserverId, f => f.Random.Guid())
             .RuleFor(x => x.Attachments, attachments)
             .RuleFor(x => x.Title, f => f.Lorem.Sentence(10))

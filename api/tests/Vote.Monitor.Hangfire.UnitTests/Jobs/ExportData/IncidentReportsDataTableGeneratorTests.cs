@@ -127,7 +127,8 @@ public class IncidentReportsDataTableGeneratorTests
         "MonitoringObserverId",
         "Name",
         "Email",
-        "PhoneNumber"
+        "PhoneNumber",
+        "Tags"
     ];
 
     [Fact]
@@ -891,7 +892,8 @@ public class IncidentReportsDataTableGeneratorTests
             incidentReport.MonitoringObserverId.ToString(),
             incidentReport.DisplayName,
             incidentReport.Email,
-            incidentReport.PhoneNumber
+            incidentReport.PhoneNumber,
+            string.Join(", ", incidentReport.Tags ?? [])
         ];
     }
 

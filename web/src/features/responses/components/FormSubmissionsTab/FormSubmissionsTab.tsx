@@ -102,7 +102,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
 
           <div className='flex items-center gap-4'>
             <ExportDataButton
-              exportedDataType={ExportedDataType.FormSubmissions}
+              exportedDataTypes={[ExportedDataType.FormSubmissions, ExportedDataType.FormSubmissionsSimplified]}
               filterParams={formSubmissionsFilter}
             />
 

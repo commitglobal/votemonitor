@@ -120,6 +120,7 @@ builder.Services.AddScoped<ImportValidationErrorsCleanerJob>();
 
 builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
+builder.Services.AddScoped<IExportFormSubmissionsSimplifiedJob, ExportFormSubmissionsSimplifiedJob>();
 builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
 builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>();
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();

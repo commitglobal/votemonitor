@@ -27,6 +27,7 @@ public class SubmissionModel
     public string DisplayName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
+    public string[] Tags { get; init; } = [];
     public bool IsCompleted { get; init; } = default!;
     public BaseAnswer[] Answers { get; init; }
     public SubmissionNoteModel[] Notes { get; init; }

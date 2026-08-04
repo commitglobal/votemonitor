@@ -34,6 +34,7 @@ public class QuickReportsDataTableGenerator
             quickReport.DisplayName,
             quickReport.Email,
             quickReport.PhoneNumber,
+            string.Join(", ", quickReport.Tags ?? []),
             quickReport.QuickReportLocationType.Value,
             quickReport.Level1 ?? "",
             quickReport.Level2 ?? "",

@@ -133,6 +133,7 @@ public class ExportQuickReportsJob(
             	MO."DisplayName",
             	MO."Email",
             	MO."PhoneNumber",
+            	MO."Tags",
             	QR."PollingStationDetails",
             	PS."Id" AS "PollingStationId",
             	PS."Level1",

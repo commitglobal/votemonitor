@@ -19,6 +19,7 @@ public class QuickReportModel
     public string DisplayName { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public string[] Tags { get; set; } = [];
     public string? PollingStationDetails { get; set; }
     public string? Level1 { get; set; }
     public string? Level2 { get; set; }

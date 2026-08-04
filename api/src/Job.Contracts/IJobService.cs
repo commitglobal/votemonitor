@@ -10,4 +10,5 @@ public interface IJobService
     void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId);
     void EnqueueExportIncidentReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
     void EnqueueSendNotifications(List<string> userIdentifiers, string title, string body);
+    void EnqueueExportFormSubmissionsSimplified(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
 }
