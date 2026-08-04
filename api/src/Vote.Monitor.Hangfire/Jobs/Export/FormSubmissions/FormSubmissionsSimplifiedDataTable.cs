@@ -4,19 +4,19 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 
-public class FormSubmissionsDataTable
+public class FormSubmissionsSimplifiedDataTable
 {
     private readonly List<string> _header;
     private readonly List<List<object>> _dataTable;
     private readonly Guid _formId;
-    private readonly List<AnswerWriter> _answerWriters;
+    private readonly List<SimplifiedAnswerWriter> _answerWriters;
 
-    private FormSubmissionsDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
+    private FormSubmissionsSimplifiedDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
     {
         _header = new List<string>();
         _dataTable = new List<List<object>>();
         _formId = formId;
-        _answerWriters = questions.Select(question => new AnswerWriter(defaultLanguage, question)).ToList();
+        _answerWriters = questions.Select(question => new SimplifiedAnswerWriter(defaultLanguage, question)).ToList();
 
         _header.AddRange([
             "SubmissionId",
@@ -38,18 +38,18 @@ public class FormSubmissionsDataTable
         ]);
     }
 
-    public static FormSubmissionsDataTable FromForm(PollingStationInformationForm psiForm)
+    public static FormSubmissionsSimplifiedDataTable FromForm(PollingStationInformationForm psiForm)
     {
-        return new FormSubmissionsDataTable(psiForm.Id, psiForm.DefaultLanguage, psiForm.Questions);
+        return new FormSubmissionsSimplifiedDataTable(psiForm.Id, psiForm.DefaultLanguage, psiForm.Questions);
     }
 
-    public static FormSubmissionsDataTable FromForm(Form form)
+    public static FormSubmissionsSimplifiedDataTable FromForm(Form form)
     {
-        return new FormSubmissionsDataTable(form.Id, form.DefaultLanguage, form.Questions);
+        return new FormSubmissionsSimplifiedDataTable(form.Id, form.DefaultLanguage, form.Questions);
     }
 
-    public FormSubmissionsDataTableGenerator WithData()
+    public FormSubmissionsSimplifiedDataTableGenerator WithData()
     {
-        return FormSubmissionsDataTableGenerator.For(_header, _dataTable, _formId, _answerWriters);
+        return FormSubmissionsSimplifiedDataTableGenerator.For(_header, _dataTable, _formId, _answerWriters);
     }
 }

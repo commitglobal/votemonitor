@@ -25,6 +25,7 @@ public class QuickReportsDataTableGeneratorTests
         "Name",
         "Email",
         "PhoneNumber",
+        "Tags",
         "LocationType",
         "Level1",
         "Level2",
@@ -190,6 +191,7 @@ public class QuickReportsDataTableGeneratorTests
             quickReport.DisplayName,
             quickReport.Email,
             quickReport.PhoneNumber,
+            string.Join(", ", quickReport.Tags ?? []),
             quickReport.QuickReportLocationType.Value
         ];
     }

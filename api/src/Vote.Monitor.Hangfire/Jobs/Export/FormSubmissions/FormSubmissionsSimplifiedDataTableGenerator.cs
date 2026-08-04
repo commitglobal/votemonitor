@@ -2,19 +2,19 @@
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 
-public class FormSubmissionsDataTableGenerator
+public class FormSubmissionsSimplifiedDataTableGenerator
 {
     private readonly List<string> _header;
     private readonly List<List<object>> _dataTable;
     private readonly Guid _formId;
 
-    private readonly Dictionary<Guid, AnswerWriter> _answerWriters;
+    private readonly Dictionary<Guid, SimplifiedAnswerWriter> _answerWriters;
     private readonly List<SubmissionModel> _submissions = [];
 
-    private FormSubmissionsDataTableGenerator(List<string> header,
+    private FormSubmissionsSimplifiedDataTableGenerator(List<string> header,
         List<List<object>> dataTable,
         Guid formId,
-        List<AnswerWriter> answerWriters)
+        List<SimplifiedAnswerWriter> answerWriters)
     {
         _header = header;
         _dataTable = dataTable;
@@ -22,15 +22,15 @@ public class FormSubmissionsDataTableGenerator
         _answerWriters = answerWriters.ToDictionary(x => x.QuestionId);
     }
 
-    internal static FormSubmissionsDataTableGenerator For(List<string> header,
+    internal static FormSubmissionsSimplifiedDataTableGenerator For(List<string> header,
         List<List<object>> dataTable,
         Guid formId,
-        List<AnswerWriter> answerWriters)
+        List<SimplifiedAnswerWriter> answerWriters)
     {
-        return new FormSubmissionsDataTableGenerator(header, dataTable, formId, answerWriters);
+        return new FormSubmissionsSimplifiedDataTableGenerator(header, dataTable, formId, answerWriters);
     }
 
-    public FormSubmissionsDataTableGenerator ForSubmission(SubmissionModel submission)
+    public FormSubmissionsSimplifiedDataTableGenerator ForSubmission(SubmissionModel submission)
     {
         if (submission.FormId != _formId)
         {
@@ -57,14 +57,14 @@ public class FormSubmissionsDataTableGenerator
            submission.DisplayName,
            submission.Email,
            submission.PhoneNumber,
-           string.Join(", ", submission.Tags ?? [])
+           string.Join(", ", submission.Tags ?? []),
         };
 
         _dataTable.Add(row);
         return this;
     }
 
-    public FormSubmissionsDataTableGenerator ForSubmissions(List<SubmissionModel> submissions)
+    public FormSubmissionsSimplifiedDataTableGenerator ForSubmissions(List<SubmissionModel> submissions)
     {
         foreach (var submission in submissions)
         {

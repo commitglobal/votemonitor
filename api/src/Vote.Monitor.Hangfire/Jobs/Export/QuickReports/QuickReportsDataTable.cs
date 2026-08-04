@@ -20,6 +20,7 @@ public class QuickReportsDataTable
             "Name",
             "Email",
             "PhoneNumber",
+            "Tags",
             "LocationType",
             "Level1",
             "Level2",

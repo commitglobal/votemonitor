@@ -34,7 +34,8 @@ public class IncidentReportsDataTable
             "MonitoringObserverId",
             "Name",
             "Email",
-            "PhoneNumber"
+            "PhoneNumber",
+            "Tags"
         ]);
     }
 

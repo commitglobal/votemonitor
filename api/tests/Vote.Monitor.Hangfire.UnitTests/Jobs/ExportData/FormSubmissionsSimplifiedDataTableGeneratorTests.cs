@@ -1,4 +1,3 @@
-﻿using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -9,7 +8,7 @@ using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
-public class FormSubmissionsDataTableGeneratorTests
+public class FormSubmissionsSimplifiedDataTableGeneratorTests
 {
     private const string DefaultLanguageCode = "EN";
     private const string OtherLanguageCode = "RO";
@@ -29,9 +28,13 @@ public class FormSubmissionsDataTableGeneratorTests
 
     private const string Note1 = "Some Note 1";
     private const string Note2 = "Some Note 2";
+    private const string NotesSeparator = "--------------------------\n\n";
 
     private const string Attachment1Url = "https://example.com/1";
     private const string Attachment2Url = "https://example.com/2";
+
+    private static readonly string JoinedNotes = string.Join(NotesSeparator, Note1, Note2);
+    private static readonly string JoinedAttachments = string.Join(NotesSeparator, Attachment1Url, Attachment2Url);
 
     private static readonly TranslatedString _questionText = new()
     {
@@ -130,10 +133,10 @@ public class FormSubmissionsDataTableGeneratorTests
     ];
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generate_DataTable_With_Default_Columns()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generate_DataTable_With_Default_Columns()
     {
         // Arrange
-        var generator = FormSubmissionsDataTable
+        var generator = FormSubmissionsSimplifiedDataTable
             .FromForm(Fake.Form(DefaultLanguageCode))
             .WithData();
 
@@ -147,7 +150,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenTextAnswers()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenTextAnswers()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion);
@@ -166,14 +169,14 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "answer 1", 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), "answer 3", 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), "answer 4", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), "answer 1", "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "answer 2", "", JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission3), "answer 3", JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission4), "answer 4", JoinedNotes, JoinedAttachments],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -188,14 +191,11 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "TQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
+        result.header.Should().ContainInOrder(expectedColumns);
         result.header.Should().HaveSameCount(expectedColumns);
         result.dataTable.Should().HaveCount(4);
 
@@ -206,7 +206,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenNumberAnswers()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenNumberAnswers()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _numberQuestion);
@@ -224,14 +224,14 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 42, 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), 43, 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 44, 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), 45, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 42, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 43, "", JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission3), 44, JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission4), 45, JoinedNotes, JoinedAttachments],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -246,11 +246,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "NQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -264,7 +260,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenRatingAnswer()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenRatingAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _ratingQuestion);
@@ -282,14 +278,14 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 4, 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), 5, 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 9, 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), 10, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 4, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 5, "", JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission3), 9, JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission4), 10, JoinedNotes, JoinedAttachments],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -304,11 +300,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "RQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -322,7 +314,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenDateAnswer()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenDateAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _dateQuestion);
@@ -345,20 +337,14 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), 0, "", "", 0, "", ""],
-            [
-                .. GetDefaultExpectedColumns(submission2), date2.ToString("s"), 0, "", "", 2, Attachment1Url,
-                Attachment2Url
-            ],
-            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), 2, Note1, Note2, 0, "", ""],
-            [
-                .. GetDefaultExpectedColumns(submission4), date4.ToString("s"), 2, Note1, Note2, 2, Attachment1Url,
-                Attachment2Url
-            ],
+            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), "", ""],
+            [.. GetDefaultExpectedColumns(submission2), date2.ToString("s"), "", JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission4), date4.ToString("s"), JoinedNotes, JoinedAttachments],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -373,11 +359,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "DQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -391,7 +373,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenSingleSelectAnswer()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenSingleSelectAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _singleSelectQuestion);
@@ -413,27 +395,14 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [
-                .. GetDefaultExpectedColumns(submission1), Option1Text, true, false, false, false, "", 0, "", "", 0, "",
-                ""
-            ],
-            [
-                .. GetDefaultExpectedColumns(submission2), Option2Text, false, true, false, false, "", 0, "", "", 2,
-                Attachment1Url, Attachment2Url
-            ],
-            [
-                .. GetDefaultExpectedColumns(submission3), Option3Text, false, false, true, false, "", 2, Note1, Note2,
-                0, "", ""
-            ],
-            [
-                .. GetDefaultExpectedColumns(submission4), Option4Text, false, false, false, true, "some free text", 2,
-                Note1,
-                Note2, 2, Attachment1Url, Attachment2Url
-            ],
+            [.. GetDefaultExpectedColumns(submission1), Option1Text, null, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), Option2Text, null, "", JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission3), Option3Text, null, JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission4), Option4Text, "some free text", JoinedNotes, JoinedAttachments],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -447,17 +416,9 @@ public class FormSubmissionsDataTableGeneratorTests
         [
             .. _submissionColumns,
             "SC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -471,7 +432,7 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultiSelectAnswer()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultiSelectAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _multiSelectQuestion);
@@ -510,28 +471,22 @@ public class FormSubmissionsDataTableGeneratorTests
         [
             [
                 .. GetDefaultExpectedColumns(submission1),
-                string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
-                "user written text", 0, "", "",
-                0, "", ""
+                string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", "", ""
             ],
             [
-                .. GetDefaultExpectedColumns(submission2), string.Join(",", Option4Text), false, false, false, true,
-                "some written text", 0, "",
-                "", 2, Attachment1Url, Attachment2Url
+                .. GetDefaultExpectedColumns(submission2), Option4Text, "some written text", "", JoinedAttachments
             ],
             [
-                .. GetDefaultExpectedColumns(submission3), string.Join(",", Option2Text, Option3Text), false, true,
-                true, false, "", 2, Note1, Note2, 0, "", ""
+                .. GetDefaultExpectedColumns(submission3), string.Join(",", Option2Text, Option3Text), "", JoinedNotes, ""
             ],
             [
-                .. GetDefaultExpectedColumns(submission4), string.Join(",", Option1Text, Option4Text), true, false,
-                false, true, "some free text", 2, Note1,
-                Note2, 2, Attachment1Url, Attachment2Url
+                .. GetDefaultExpectedColumns(submission4), string.Join(",", Option1Text, Option4Text), "some free text",
+                JoinedNotes, JoinedAttachments
             ],
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -545,17 +500,9 @@ public class FormSubmissionsDataTableGeneratorTests
         [
             .. _submissionColumns,
             "MC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -570,7 +517,7 @@ public class FormSubmissionsDataTableGeneratorTests
 
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions()
+    public void FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion,
@@ -631,28 +578,28 @@ public class FormSubmissionsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        object[] expectedTextAnswerColumns = ["some answer", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedNumberAnswerColumns = [42, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedRatingAnswerColumns = [3, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedDateAnswerColumns =
-            [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedTextAnswerColumns = ["some answer", JoinedNotes, JoinedAttachments];
+        object[] expectedNumberAnswerColumns = [42, JoinedNotes, JoinedAttachments];
+        object[] expectedRatingAnswerColumns = [3, JoinedNotes, JoinedAttachments];
+        object[] expectedDateAnswerColumns = [_utcNow.ToString("s"), JoinedNotes, JoinedAttachments];
 
         object[] expectedSingleSelectAnswerColumns =
-        [
-            Option4Text, false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url,
-            Attachment2Url
-        ];
+            [Option4Text, "user written text", JoinedNotes, JoinedAttachments];
         object[] expectedMultiSelectAnswerColumns =
         [
-            string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
-            "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url
+            string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", JoinedNotes,
+            JoinedAttachments
         ];
+
+        object[] emptyTextColumns = ["", "", ""];
+        object[] emptyRatingColumns = ["", "", ""];
+        object[] emptySingleSelectColumns = ["", "", "", ""];
 
         List<object[]> expectedData =
         [
             [
                 .. GetDefaultExpectedColumns(submission1),
-                "", "", "", "", "", "", "",
+                .. emptyTextColumns,
                 .. expectedNumberAnswerColumns,
                 .. expectedRatingAnswerColumns,
                 .. expectedDateAnswerColumns,
@@ -664,7 +611,7 @@ public class FormSubmissionsDataTableGeneratorTests
                 .. GetDefaultExpectedColumns(submission2),
                 .. expectedTextAnswerColumns,
                 .. expectedNumberAnswerColumns,
-                "", "", "", "", "", "", "",
+                .. emptyRatingColumns,
                 .. expectedDateAnswerColumns,
                 .. expectedSingleSelectAnswerColumns,
                 .. expectedMultiSelectAnswerColumns
@@ -676,13 +623,13 @@ public class FormSubmissionsDataTableGeneratorTests
                 .. expectedNumberAnswerColumns,
                 .. expectedRatingAnswerColumns,
                 .. expectedDateAnswerColumns,
-                "", "", "", "", "", "", "", "", "", "", "", "",
+                .. emptySingleSelectColumns,
                 .. expectedMultiSelectAnswerColumns
             ]
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission1)
@@ -697,61 +644,29 @@ public class FormSubmissionsDataTableGeneratorTests
             // text question columns
             "TQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // number answer columns
             "NQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // rating answer columns
             "RQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Date question columns
             "DQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Single select question columns
             "SC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Multi select question columns
             "MC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -765,7 +680,7 @@ public class FormSubmissionsDataTableGeneratorTests
 
     [Fact]
     public void
-        FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
+        FormSubmissionsSimplifiedDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion,
@@ -782,10 +697,8 @@ public class FormSubmissionsDataTableGeneratorTests
         object[] expectedRatingAnswerColumns = ["", "", ""];
         object[] expectedDateAnswerColumns = ["", "", ""];
 
-        object[] expectedSingleSelectAnswerColumns =
-            ["", "", "", "", "", "", "", ""];
-        object[] expectedMultiSelectAnswerColumns =
-            ["", "", "", "", "", "", "", ""];
+        object[] expectedSingleSelectAnswerColumns = ["", "", "", ""];
+        object[] expectedMultiSelectAnswerColumns = ["", "", "", ""];
 
         object[] expectedData =
         [
@@ -799,7 +712,7 @@ public class FormSubmissionsDataTableGeneratorTests
         ];
 
         // Act
-        var result = FormSubmissionsDataTable
+        var result = FormSubmissionsSimplifiedDataTable
             .FromForm(form)
             .WithData()
             .ForSubmission(submission)
@@ -827,20 +740,12 @@ public class FormSubmissionsDataTableGeneratorTests
             "Attachments",
             // Single select question columns
             "SC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
             "Attachments",
             // Multi select question columns
             "MC - Question text",
-            Option1Text,
-            Option2Text,
-            Option3Text + ColorMarkers.Red,
-            Option4Text,
-            Option4Text + "-UserInput",
+            "FreeText",
             "Notes",
             "Attachments",
         ];
@@ -857,6 +762,7 @@ public class FormSubmissionsDataTableGeneratorTests
         return
         [
             submission.SubmissionId.ToString(),
+            submission.SubmissionNumber,
             submission.TimeSubmitted.ToString("s"),
             submission.FollowUpStatus.Value,
             submission.Level1,

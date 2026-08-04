@@ -61,7 +61,8 @@ public class IncidentReportsDataTableGenerator
                 incidentReport.MonitoringObserverId.ToString(),
                 incidentReport.DisplayName,
                 incidentReport.Email,
-                incidentReport.PhoneNumber
+                incidentReport.PhoneNumber,
+                string.Join(", ", incidentReport.Tags ?? [])
             };
 
             _dataTable.Add(row);
