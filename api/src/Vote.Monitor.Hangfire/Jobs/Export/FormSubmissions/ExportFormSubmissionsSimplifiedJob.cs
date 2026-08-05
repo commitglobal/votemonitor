@@ -82,7 +82,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 			var excelFileGenerator = ExcelFileGenerator.New();
 			if (psiForm != null)
 			{
-				var psiDataTable = FormSubmissionsDataTable
+				var psiDataTable = FormSubmissionsSimplifiedDataTable
 					.FromForm(psiForm)
 					.WithData()
 					.ForSubmissions(submissions)
@@ -94,7 +94,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 			for (var index = 0; index < publishedForms.Count; index++)
 			{
 				var form = publishedForms[index];
-				var sheetData = FormSubmissionsDataTable
+				var sheetData = FormSubmissionsSimplifiedDataTable
 					.FromForm(form)
 					.WithData()
 					.ForSubmissions(submissions)
