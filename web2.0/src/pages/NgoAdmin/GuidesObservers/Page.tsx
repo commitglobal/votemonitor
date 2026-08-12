@@ -1,14 +1,29 @@
-import {Route} from "@/routes/(app)/elections/$electionRoundId/guides";
-import {useDebounce} from "@/hooks/use-debounce.ts";
-import {useListMonitoringObservers} from "@/queries/monitoring-observers.ts";
-import Table from "@/pages/NgoAdmin/GuidesObservers/components/Table.tsx";
+import { useCurrentElectionRound } from '@/contexts/election-round.context'
+import { ElectionRoundStatus } from '@/types/election'
+import { H1, P } from '@/components/ui/typography'
+import { GuidesDialogs } from './components/Dialogs'
+import { GuidesProvider } from './components/GuidesProvider'
+import GuidesTable from './components/Table'
+import { UploadGuideMenu } from './components/UploadGuideMenu'
 
-export default function Page() {
-    const { electionRoundId } = Route.useParams();
-    const search = Route.useSearch();
-    const debouncedSearch = useDebounce(search, 200);
-    const { data } = useListMonitoringObservers(electionRoundId, debouncedSearch);
+function Page() {
+  const { electionRound } = useCurrentElectionRound()
+  // Archived election rounds are frozen, so nothing new can be uploaded to them.
+  const isArchived = electionRound?.status === ElectionRoundStatus.Archived
 
-    // @ts-ignore
-    return <Table data={data} />;
+  return (
+    <GuidesProvider>
+      <div className='flex items-center justify-between'>
+        <div>
+          <H1>Observer guides</H1>
+          <P>Here&apos;s all guides your observers have access to</P>
+        </div>
+        <UploadGuideMenu disabled={isArchived} />
+      </div>
+      <GuidesTable />
+      <GuidesDialogs />
+    </GuidesProvider>
+  )
 }
+
+export default Page

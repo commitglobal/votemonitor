@@ -1,53 +1,92 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { getRouteApi } from "@tanstack/react-router";
-import type { Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
-import React from "react";
-import type {GuidesObserverModel} from "@/types/guides-observer.ts";
+import React from 'react'
+import { Route } from '@/routes/(app)/elections/$electionRoundId/guides'
+import type { Option } from '@/types/data-table'
+import {
+  GuideTypeLabels,
+  GuideTypeList,
+  type GuideType,
+} from '@/types/guides-observer'
+import { X } from 'lucide-react'
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { SingleSelectDataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 
-interface DataTableToolbarProps extends React.ComponentProps<"div"> {
-  table: Table<GuidesObserverModel>;
-}
+const guideTypeOptions: Option[] = GuideTypeList.map((guideType) => ({
+  label: GuideTypeLabels[guideType],
+  value: guideType,
+}))
 
-const route = getRouteApi(
-  "/(app)/elections/$electionRoundId/guides/" as const
-);
+function TableFilters() {
+  const search = Route.useSearch()
+  const navigate = Route.useNavigate()
 
-function TableFilters({ table }: DataTableToolbarProps) {
-  const search = route.useSearch();
-  const navigate = route.useNavigate();
-
-  const isFiltered = table.getState().columnFilters.length > 0;
-
-  //   const onReset = React.useCallback(() => {
-  //     table.resetColumnFilters();
-  //   }, [table]);
+  const isFiltered =
+    Boolean(search.searchText) || Boolean(search.guideTypeFilter)
 
   const onReset = React.useCallback(() => {
-    console.log("reset");
-  }, []);
+    navigate({
+      search: {
+        pageNumber: 1,
+        pageSize: search.pageSize,
+      },
+      replace: true,
+    })
+  }, [navigate, search.pageSize])
+
+  // The input is kept in local state so typing stays responsive while the url,
+  // and with it the filtered list, is only rewritten once the user pauses.
+  const [searchInput, setSearchInput] = React.useState(search.searchText ?? '')
+
+  React.useEffect(() => {
+    setSearchInput(search.searchText ?? '')
+  }, [search.searchText])
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    navigate({
+      // Back to the first page: the current one may no longer exist once the
+      // list shrinks.
+      search: (prev) => ({ ...prev, searchText: value, pageNumber: 1 }),
+      replace: true,
+    })
+  }, 500)
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value)
+    debouncedSearch(event.target.value)
+  }
 
   return (
-    <div className="flex flex-1 flex-wrap items-center gap-2">
+    <div className='flex flex-1 flex-wrap items-center gap-2'>
       <Input
-        placeholder="Search"
-        value={search.searchText ?? ""}
-        onChange={(event) =>
+        placeholder='Search'
+        value={searchInput}
+        onChange={handleInputChange}
+        className='h-8 w-40 lg:w-56'
+      />
+
+      <SingleSelectDataTableFacetedFilter
+        title='Guide type'
+        options={guideTypeOptions}
+        value={search.guideTypeFilter as string}
+        onValueChange={(value) =>
           navigate({
-            search: (prev) => ({ ...prev, searchText: event.target.value }),
+            search: (prev) => ({
+              ...prev,
+              guideTypeFilter: value as GuideType,
+              pageNumber: 1,
+            }),
             replace: true,
           })
         }
-        className="h-8 w-40 lg:w-56"
       />
 
       {isFiltered && (
         <Button
-          aria-label="Reset filters"
-          variant="outline"
-          size="sm"
-          className="border-dashed"
+          aria-label='Reset filters'
+          variant='outline'
+          size='sm'
+          className='border-dashed'
           onClick={onReset}
         >
           <X />
@@ -55,7 +94,7 @@ function TableFilters({ table }: DataTableToolbarProps) {
         </Button>
       )}
     </div>
-  );
+  )
 }
 
-export default TableFilters;
+export default TableFilters
