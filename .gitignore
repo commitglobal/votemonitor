@@ -273,3 +273,5 @@ log*.txt
 OfflineCapabilities
 /api/src/Vote.Monitor.Api/Uploads
 **/**/dist
+web2.0/.env.local
+web2.0/.vite
