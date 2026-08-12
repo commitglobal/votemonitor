@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Screen } from "../../../components/Screen";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { Icon } from "../../../components/Icon";
 import { View, XStack, YStack } from "tamagui";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -37,7 +37,6 @@ const ObservationTime = () => {
 
   const { selectedPollingStation, activeElectionRound } = useUserData();
   const queryClient = useQueryClient();
-  const navigation = useNavigation();
 
   const { data: psiData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -140,18 +139,18 @@ const ObservationTime = () => {
     }
   }, [psiData, getValues, reset]);
 
-  // Navigate back immediately, but only run the mutation (and its optimistic cache
-  // update) once the pop transition has actually finished. mutate() updates the query
-  // cache that the previous screen also reads, re-rendering it — doing that while the
-  // transition is still animating races with Fabric's view-tree commit on Android and
-  // crashes with "addViewAt: failed to insert view". Waiting for the real
-  // `transitionEnd` event removes the race instead of guessing a frame count.
+  // Run the mutation first so the save always happens, then defer the navigation
+  // to the next frame. mutate() updates the query cache that the previous screen
+  // also reads, re-rendering it — doing that in the same tick as starting the pop
+  // transition races with Fabric's view-tree commit on Android and crashes with
+  // "addViewAt: failed to insert view". Deferring router.back() by a frame lets
+  // that re-render commit before the transition starts, without making the save
+  // itself depend on a native transition-end event that isn't guaranteed to fire.
   const saveAndGoBack = (data: any) => {
-    const unsubscribe = navigation.addListener("transitionEnd" as never, () => {
-      unsubscribe();
-      onSubmit(data);
+    onSubmit(data);
+    requestAnimationFrame(() => {
+      router.back();
     });
-    router.back();
   };
 
   const handleGoBack = () => {
@@ -344,14 +343,11 @@ const ObservationTime = () => {
       <WizzardControls
         isFirstElement
         onActionButtonPress={() => {
-          handleSubmit(
-            saveAndGoBack,
-            (errors) => {
-              if (Object.keys(errors).includes("breaks")) {
-                setIsUnableToSaveObservationTime(true);
-              }
-            },
-          )();
+          handleSubmit(saveAndGoBack, (errors) => {
+            if (Object.keys(errors).includes("breaks")) {
+              setIsUnableToSaveObservationTime(true);
+            }
+          })();
         }}
         actionBtnLabel={t("polling_stations_information.observation_time.save")}
         marginTop="auto"
@@ -397,20 +393,17 @@ const ObservationTime = () => {
             router.back();
           }}
           action={() => {
-            handleSubmit(
-              saveAndGoBack,
-              (errors) => {
-                // close modal in order to see the input error displayed for departureTime
-                if (errors.departureTime) {
-                  return setIsSaveChangesModalOpen(false);
-                }
-                if (Object.keys(errors).includes("breaks")) {
-                  // close this modal and display the unable to save observation time one
-                  setIsSaveChangesModalOpen(false);
-                  return setIsUnableToSaveObservationTime(true);
-                }
-              },
-            )();
+            handleSubmit(saveAndGoBack, (errors) => {
+              // close modal in order to see the input error displayed for departureTime
+              if (errors.departureTime) {
+                return setIsSaveChangesModalOpen(false);
+              }
+              if (Object.keys(errors).includes("breaks")) {
+                // close this modal and display the unable to save observation time one
+                setIsSaveChangesModalOpen(false);
+                return setIsUnableToSaveObservationTime(true);
+              }
+            })();
           }}
         />
       )}
