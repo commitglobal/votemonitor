@@ -1,15 +1,16 @@
-import { useDebounce } from "@/hooks/use-debounce";
-import { Route } from "@/routes/(app)/elections/$electionRoundId/observers";
-import Table from "./components/Table";
-import { useListMonitoringObservers } from "@/queries/monitoring-observers";
+import { H1, P } from '@/components/ui/typography'
+import Table from './components/Table'
 
 function Page() {
-  const { electionRoundId } = Route.useParams();
-  const search = Route.useSearch();
-  const debouncedSearch = useDebounce(search, 200);
-  const { data } = useListMonitoringObservers(electionRoundId, debouncedSearch);
-
-  return <Table data={data} />;
+  return (
+    <div className='flex flex-col gap-6'>
+      <div>
+        <H1>Observers</H1>
+        <P>Everyone monitoring this election round on your behalf</P>
+      </div>
+      <Table />
+    </div>
+  )
 }
 
-export default Page;
+export default Page
