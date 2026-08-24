@@ -18,7 +18,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
     public string? RefreshToken { get; private set; }
     public DateTime RefreshTokenExpiryTime { get; private set; }
     public UserStatus Status { get; private set; }
-    public UserPreferences Preferences { get; private set; }
+    public Dictionary<string, string> Preferences { get; private set; } = new();
     public string? InvitationToken { get; private set; } = null;
 
     private ApplicationUser(UserRole role, string firstName, string lastName, string email, string? phoneNumber,
@@ -34,7 +34,6 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         PhoneNumber = phoneNumber?.Trim();
 
         Status = UserStatus.Pending;
-        Preferences = UserPreferences.Defaults;
 
         if (string.IsNullOrEmpty(password.Trim()))
         {
@@ -114,5 +113,10 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         {
             Deactivate();
         }
+    }
+
+    public void UpdatePreferences(Dictionary<string, string> preferences)
+    {
+        Preferences = preferences ?? new Dictionary<string, string>();
     }
 }

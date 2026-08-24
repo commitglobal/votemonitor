@@ -5,5 +5,6 @@ public class Request
 {
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid Id { get; set; }
-    public string LanguageCode { get; set; }
+
+    public Dictionary<string, string> Preferences { get; set; } = new();
 }

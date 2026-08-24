@@ -4,12 +4,7 @@ using FluentValidation.TestHelper;
 namespace Feature.UserPreferences.UnitTests.ValidatorTests;
 public class UpdateValidatorTests
 {
-    private readonly Validator _validator;
-
-    public UpdateValidatorTests()
-    {
-        _validator = new Validator();
-    }
+    private readonly Validator _validator = new();
 
     [Fact]
     public void ShouldHaveErrorWhenIdIsEmpty()
@@ -23,31 +18,24 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void ShouldHaveErrorWhenLanguageIdIsEmpty()
+    public void ShouldHaveErrorWhenPreferencesIsNull()
     {
         //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "" };
+        var model = new Request { Id = Guid.NewGuid(), Preferences = null! };
         //act
         var result = _validator.TestValidate(model);
         //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageCode);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorWhenLanguageUnknown()
-    {
-        //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "Unknown" };
-        //act
-        var result = _validator.TestValidate(model);
-        //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageCode);
+        result.ShouldHaveValidationErrorFor(x => x.Preferences);
     }
 
     [Fact]
     public void ShouldNotHaveErrors_WhenValidRequest()
     {
-        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "EN" };
+        var model = new Request
+        {
+            Id = Guid.NewGuid(),
+            Preferences = new Dictionary<string, string> { ["languageCode"] = "EN" }
+        };
         //act
         var result = _validator.TestValidate(model);
         //assert

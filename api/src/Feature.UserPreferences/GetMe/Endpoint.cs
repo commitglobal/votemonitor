@@ -29,10 +29,7 @@ public class Endpoint(IReadRepository<ApplicationUser> repository)
             PhoneNumber = user.PhoneNumber,
             Role = user.Role,
             Status = user.Status,
-            Preferences = new UserPreferencesModel
-            {
-                LanguageCode = user.Preferences.LanguageCode
-            }
+            Preferences = user.Preferences
         });
     }
 }

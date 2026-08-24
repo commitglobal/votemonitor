@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.ValueComparers;
+using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -17,10 +19,9 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
             .Property(p => p.DisplayName)
             .HasComputedColumnSql("\"FirstName\" || ' ' || \"LastName\"", stored: true)
             .ValueGeneratedOnAddOrUpdate();
-        
-        builder.OwnsOne(u => u.Preferences, b =>
-        {
-            b.ToJson();
-        });
+
+        builder.Property(u => u.Preferences)
+            .HasConversion<DictionaryToJsonConverter, DictionaryValueComparer>()
+            .HasColumnType("jsonb");
     }
 }

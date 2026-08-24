@@ -32,7 +32,7 @@ public class GetMeEndpointTests
         result.PhoneNumber.Should().Be(appUser.PhoneNumber);
         result.Role.Should().Be(appUser.Role);
         result.Status.Should().Be(appUser.Status);
-        result.Preferences.LanguageCode.Should().Be(appUser.Preferences.LanguageCode);
+        result.Preferences.Should().BeEquivalentTo(appUser.Preferences);
     }
 
     [Fact]

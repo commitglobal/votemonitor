@@ -20,5 +20,5 @@ public record UserModel
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
     public required UserStatus Status { get; init; }
 
-    public required UserPreferencesModel Preferences { get; init; }
+    public required Dictionary<string, string> Preferences { get; init; }
 }
