@@ -1,4 +1,4 @@
-﻿namespace Feature.UserPreferences.Get;
+namespace Feature.UserPreferences.GetMe;
 
 public class Validator : Validator<Request>
 {

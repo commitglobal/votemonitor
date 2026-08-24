@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Core.Security;
+using Vote.Monitor.Core.Security;
 
-namespace Feature.UserPreferences.Get;
+namespace Feature.UserPreferences.GetMe;
 
 public class Request
 {
