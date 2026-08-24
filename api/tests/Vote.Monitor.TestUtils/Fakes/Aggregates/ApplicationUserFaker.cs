@@ -7,14 +7,13 @@ public sealed class ApplicationUserFaker : PrivateFaker<ApplicationUser>
     public ApplicationUserFaker(Guid? id = null,
         string? name = null,
         UserStatus? status = null,
-        UserPreferences? preferences = null)
+        Dictionary<string, string>? preferences = null)
     {
         UsePrivateConstructor();
         RuleFor(fake => fake.Id, faker => id ?? faker.Random.Guid());
         RuleFor(fake => fake.FirstName, fake => name ?? fake.Name.FirstName());
         RuleFor(fake => fake.LastName, fake => name ?? fake.Name.LastName());
-        RuleFor(fake => fake.Preferences, preferences);
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
-        RuleFor(fake => fake.Preferences, fake => preferences ?? UserPreferences.Defaults);
+        RuleFor(fake => fake.Preferences, fake => preferences ?? new Dictionary<string, string>());
     }
 }

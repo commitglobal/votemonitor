@@ -13,7 +13,7 @@ public class UpdateEndpointTests
         var appUser = new ApplicationUserFaker().Generate();
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageCode = "EN" };
+        var request = new Request { Id = Guid.NewGuid(), Preferences = new Dictionary<string, string>() };
 
         //act 
 
@@ -35,7 +35,7 @@ public class UpdateEndpointTests
         ApplicationUser appUser = null;
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageCode = "UNKNOWN" };
+        var request = new Request { Id = Guid.NewGuid(), Preferences = new Dictionary<string, string>()};
 
         //act 
         var response = await endpoint.ExecuteAsync(request, CancellationToken.None);

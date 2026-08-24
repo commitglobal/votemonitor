@@ -1,16 +1,11 @@
-﻿
-using Feature.UserPreferences.Get;
+using Feature.UserPreferences.GetMe;
 using FluentValidation.TestHelper;
 
 namespace Feature.UserPreferences.UnitTests.ValidatorTests;
-public class GetValidatorTests
-{
-    private readonly Validator _validator;
 
-    public GetValidatorTests()
-    {
-        _validator = new Validator();
-    }
+public class GetMeValidatorTests
+{
+    private readonly Validator _validator = new();
 
     [Fact]
     public void ShouldHaveErrorWhenIdIsEmpty()
@@ -33,5 +28,4 @@ public class GetValidatorTests
         //assert
         result.ShouldNotHaveAnyValidationErrors();
     }
-
 }

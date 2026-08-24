@@ -20,7 +20,7 @@ public class Endpoint(IRepository<ApplicationUser> repository) : Endpoint<Reques
             return TypedResults.NotFound("User not found");
         }
 
-        user.Preferences.Update(req.LanguageCode);
+        user.UpdatePreferences(req.Preferences);
 
         await repository.SaveChangesAsync(ct);
 
