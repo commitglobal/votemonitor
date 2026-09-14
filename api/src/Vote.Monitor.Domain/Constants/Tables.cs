@@ -7,5 +7,6 @@ public static class Tables
     public const string Attachments = "Attachments";
 
     public const string FormSubmissions = "FormSubmissions";
+    public const string FormSubmissionComments = "FormSubmissionComments";
     public const string ExportedData = "ExportedData";
 }

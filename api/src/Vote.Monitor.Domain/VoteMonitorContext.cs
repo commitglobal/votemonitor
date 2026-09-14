@@ -12,6 +12,7 @@ using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.FormSubmissionCommentAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate;
@@ -51,6 +52,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<FormTemplate> FormTemplates { set; get; }
     public DbSet<Entities.FormAggregate.Form> Forms { set; get; }
     public DbSet<FormSubmission> FormSubmissions { set; get; }
+    public DbSet<FormSubmissionComment> FormSubmissionComments { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformation { set; get; }
     public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
@@ -144,6 +146,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new ObserverGuideConfiguration());
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new FormSubmissionConfiguration());
+        builder.ApplyConfiguration(new FormSubmissionCommentConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
         builder.ApplyConfiguration(new NotificationStubConfiguration());
         builder.ApplyConfiguration(new ExportedDataConfiguration());
