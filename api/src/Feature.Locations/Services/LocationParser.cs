@@ -1,4 +1,5 @@
 ﻿using Feature.Locations.Options;
+using Sentry;
 
 namespace Feature.Locations.Services;
 

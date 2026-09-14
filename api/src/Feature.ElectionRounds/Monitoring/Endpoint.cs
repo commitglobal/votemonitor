@@ -8,7 +8,7 @@ public class Endpoint(VoteMonitorContext context)
 {
     public override void Configure()
     {
-        Get("/api/election-rounds:monitoring");
+        Get("/api/election-rounds:monitoring", "api/users/me/election-rounds");
         DontAutoTag();
         Options(x => x.WithTags("election-rounds"));
         Summary(s =>
@@ -25,7 +25,7 @@ public class Endpoint(VoteMonitorContext context)
         var electionRounds = await context.MonitoringNgos
             .Include(x => x.ElectionRound)
             .ThenInclude(x => x.MonitoringNgoForCitizenReporting)
-            .Include(x=>x.ElectionRound.Country)
+            .Include(x => x.ElectionRound.Country)
             .Where(x => x.NgoId == req.NgoId)
             .OrderBy(x => x.ElectionRound.StartDate)
             .Select(x => new ElectionRoundModel
