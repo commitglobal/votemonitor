@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.CitizenReports.Comments.List;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizationService authorizationService)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -18,6 +18,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
                   SELECT
                       c."Id",
@@ -42,9 +50,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
         var queryArgs = new
         {
-            electionRoundId = req.ElectionRoundId,
-            citizenReportId = req.CitizenReportId,
-            ngoId = req.NgoId
+            electionRoundId = req.ElectionRoundId, citizenReportId = req.CitizenReportId, ngoId = req.NgoId
         };
 
         List<CitizenReportCommentModel> comments;

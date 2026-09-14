@@ -1,6 +1,11 @@
+using Feature.CitizenReports.Comments.Specifications;
+using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+
 namespace Feature.CitizenReports.Comments.Create;
 
 public class Endpoint(
+    IAuthorizationService authorizationService,
+    IReadRepository<CitizenReport> citizenReportRepository,
     IRepository<CitizenReportCommentAggregate> repository)
     : Endpoint<Request, Results<Ok<CitizenReportCommentModel>, NotFound>>
 {
@@ -17,7 +22,22 @@ public class Endpoint(
     public override async Task<Results<Ok<CitizenReportCommentModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        // todo: check if citizen report belongs to the NGO responsible for citizen reporting
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var citizenReportExists = await citizenReportRepository.AnyAsync(
+            new GetCitizenReportInElectionRoundSpecification(req.ElectionRoundId, req.CitizenReportId), ct);
+
+        if (!citizenReportExists)
+        {
+            return TypedResults.NotFound();
+        }
+
         var comment = CitizenReportCommentAggregate.Create(
             req.ElectionRoundId,
             req.CitizenReportId,

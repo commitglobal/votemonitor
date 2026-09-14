@@ -1,3 +1,4 @@
+global using Ardalis.Specification;
 global using FastEndpoints;
 global using FluentAssertions;
 global using FluentValidation.TestHelper;

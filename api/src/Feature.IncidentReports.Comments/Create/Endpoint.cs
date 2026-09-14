@@ -1,6 +1,10 @@
+using Feature.IncidentReports.Comments.Specifications;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
+
 namespace Feature.IncidentReports.Comments.Create;
 
 public class Endpoint(
+    IReadRepository<IncidentReport> incidentReportRepository,
     IRepository<IncidentReportCommentAggregate> repository)
     : Endpoint<Request, Results<Ok<IncidentReportCommentModel>, NotFound>>
 {
@@ -17,7 +21,14 @@ public class Endpoint(
     public override async Task<Results<Ok<IncidentReportCommentModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        // todo: check if incident report is from an observer from same ngo
+        var incidentReportExists = await incidentReportRepository.AnyAsync(
+            new GetIncidentReportForNgoSpecification(req.ElectionRoundId, req.NgoId, req.IncidentReportId), ct);
+
+        if (!incidentReportExists)
+        {
+            return TypedResults.NotFound();
+        }
+
         var comment = IncidentReportCommentAggregate.Create(
             req.ElectionRoundId,
             req.IncidentReportId,

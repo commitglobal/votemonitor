@@ -3,6 +3,7 @@ using Feature.CitizenReports.Comments.Specifications;
 namespace Feature.CitizenReports.Comments.Delete;
 
 public class Endpoint(
+    IAuthorizationService authorizationService,
     IRepository<CitizenReportCommentAggregate> repository)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
@@ -18,6 +19,14 @@ public class Endpoint(
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+        
         var comment = await repository.FirstOrDefaultAsync(
             new GetCommentByIdSpecification(req.ElectionRoundId, req.CitizenReportId, req.UserId, req.Id), ct);
 

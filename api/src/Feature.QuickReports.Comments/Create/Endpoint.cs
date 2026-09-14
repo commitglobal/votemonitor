@@ -1,6 +1,10 @@
+using Feature.QuickReports.Comments.Specifications;
+using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+
 namespace Feature.QuickReports.Comments.Create;
 
 public class Endpoint(
+    IReadRepository<QuickReport> quickReportRepository,
     IRepository<QuickReportCommentAggregate> repository)
     : Endpoint<Request, Results<Ok<QuickReportCommentModel>, NotFound>>
 {
@@ -17,7 +21,14 @@ public class Endpoint(
     public override async Task<Results<Ok<QuickReportCommentModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        // todo: check if quick report is from an observer from same ngo
+        var quickReportExists = await quickReportRepository.AnyAsync(
+            new GetQuickReportForNgoSpecification(req.ElectionRoundId, req.NgoId, req.QuickReportId), ct);
+
+        if (!quickReportExists)
+        {
+            return TypedResults.NotFound();
+        }
+
         var comment = QuickReportCommentAggregate.Create(
             req.ElectionRoundId,
             req.QuickReportId,
