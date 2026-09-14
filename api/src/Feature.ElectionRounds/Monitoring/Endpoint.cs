@@ -8,7 +8,7 @@ public class Endpoint(VoteMonitorContext context)
 {
     public override void Configure()
     {
-        Get("/api/election-rounds:monitoring");
+        Get("/api/election-rounds:monitoring", "api/users/me/election-rounds");
         DontAutoTag();
         Options(x => x.WithTags("election-rounds"));
         Summary(s =>
