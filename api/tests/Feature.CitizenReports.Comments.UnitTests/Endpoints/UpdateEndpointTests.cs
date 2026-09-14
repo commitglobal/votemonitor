@@ -1,23 +1,55 @@
+using System.Security.Claims;
 using Feature.CitizenReports.Comments.Specifications;
 using Feature.CitizenReports.Comments.Update;
+using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.CitizenReportCommentAggregate;
 
 namespace Feature.CitizenReports.Comments.UnitTests.Endpoints;
 
 public class UpdateEndpointTests
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IRepository<CitizenReportComment> _repository;
     private readonly Endpoint _endpoint;
 
     public UpdateEndpointTests()
     {
+        _authorizationService = Substitute.For<IAuthorizationService>();
         _repository = Substitute.For<IRepository<CitizenReportComment>>();
-        _endpoint = Factory.Create<Endpoint>(_repository);
+        _endpoint = Factory.Create<Endpoint>(_authorizationService, _repository);
+    }
+
+    [Fact]
+    public async Task ShouldReturnNotFound_WhenNotAuthorized()
+    {
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Failed());
+
+        var result = await _endpoint.ExecuteAsync(new Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            CitizenReportId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
+            Text = "updated"
+        }, CancellationToken.None);
+
+        result
+            .Should().BeOfType<Results<Ok<CitizenReportCommentModel>, NotFound>>()
+            .Which
+            .Result.Should().BeOfType<NotFound>();
+
+        await _repository.DidNotReceive().UpdateAsync(Arg.Any<CitizenReportComment>());
     }
 
     [Fact]
     public async Task ShouldReturnNotFound_WhenCommentDoesNotExist()
     {
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
+
         _repository.FirstOrDefaultAsync(Arg.Any<GetCommentByIdSpecification>())
             .ReturnsNull();
 
@@ -43,6 +75,10 @@ public class UpdateEndpointTests
     {
         var userId = Guid.NewGuid();
         var fakeComment = new CitizenReportCommentFaker(authorId: userId).Generate();
+
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetCommentByIdSpecification>())
             .Returns(fakeComment);
