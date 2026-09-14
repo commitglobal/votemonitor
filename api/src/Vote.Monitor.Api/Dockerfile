@@ -35,6 +35,7 @@ COPY ["src/Feature.Coalitions/Feature.Coalitions.csproj", "src/Feature.Coalition
 COPY ["src/Feature.ObserverGuide/Feature.ObserverGuide.csproj", "src/Feature.ObserverGuide/"]
 COPY ["src/Feature.PollingStation.Information/Feature.PollingStation.Information.csproj", "src/Feature.PollingStation.Information/"]
 COPY ["src/Feature.QuickReports/Feature.QuickReports.csproj", "src/Feature.QuickReports/"]
+COPY ["src/Feature.QuickReports.Comments/Feature.QuickReports.Comments.csproj", "src/Feature.QuickReports.Comments/"]
 COPY ["src/Feature.Statistics/Feature.Statistics.csproj", "src/Feature.Statistics/"]
 COPY ["src/Feature.UserPreferences/Feature.UserPreferences.csproj", "src/Feature.UserPreferences/"]
 COPY ["src/Feature.PollingStations/Feature.PollingStations.csproj", "src/Feature.PollingStations/"]

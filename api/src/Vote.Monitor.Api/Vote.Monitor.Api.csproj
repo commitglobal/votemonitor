@@ -67,6 +67,7 @@
         <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />
         <ProjectReference Include="..\Feature.PollingStation.Visits\Feature.PollingStation.Visits.csproj" />
         <ProjectReference Include="..\Feature.QuickReports\Feature.QuickReports.csproj" />
+        <ProjectReference Include="..\Feature.QuickReports.Comments\Feature.QuickReports.Comments.csproj" />
         <ProjectReference Include="..\Feature.Statistics\Feature.Statistics.csproj" />
         <ProjectReference Include="..\Feature.Auth\Feature.Auth.csproj" />
         <ProjectReference Include="..\Feature.Countries\Feature.Countries.csproj" />

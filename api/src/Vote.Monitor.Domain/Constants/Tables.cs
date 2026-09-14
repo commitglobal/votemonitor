@@ -8,5 +8,6 @@ public static class Tables
 
     public const string FormSubmissions = "FormSubmissions";
     public const string FormSubmissionComments = "FormSubmissionComments";
+    public const string QuickReportComments = "QuickReportComments";
     public const string ExportedData = "ExportedData";
 }

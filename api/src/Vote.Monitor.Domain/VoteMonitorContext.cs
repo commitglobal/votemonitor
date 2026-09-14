@@ -32,6 +32,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportCommentAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -66,6 +67,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ExportedData> ExportedData { get; set; }
     public DbSet<QuickReport> QuickReports { get; set; }
     public DbSet<QuickReportAttachment> QuickReportAttachments { get; set; }
+    public DbSet<QuickReportComment> QuickReportComments { get; set; }
     public DbSet<Feedback> UserFeedback { get; set; }
     public DbSet<CitizenReport> CitizenReports { get; set; }
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
@@ -151,6 +153,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new NotificationStubConfiguration());
         builder.ApplyConfiguration(new ExportedDataConfiguration());
         builder.ApplyConfiguration(new QuickReportConfiguration());
+        builder.ApplyConfiguration(new QuickReportCommentConfiguration());
 
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
