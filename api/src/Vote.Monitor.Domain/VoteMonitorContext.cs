@@ -6,15 +6,18 @@ using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenNotificationAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.CitizenReportCommentAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.FormSubmissionCommentAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportCommentAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -31,6 +34,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportCommentAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -51,6 +55,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<FormTemplate> FormTemplates { set; get; }
     public DbSet<Entities.FormAggregate.Form> Forms { set; get; }
     public DbSet<FormSubmission> FormSubmissions { set; get; }
+    public DbSet<FormSubmissionComment> FormSubmissionComments { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformation { set; get; }
     public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
@@ -64,10 +69,12 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ExportedData> ExportedData { get; set; }
     public DbSet<QuickReport> QuickReports { get; set; }
     public DbSet<QuickReportAttachment> QuickReportAttachments { get; set; }
+    public DbSet<QuickReportComment> QuickReportComments { get; set; }
     public DbSet<Feedback> UserFeedback { get; set; }
     public DbSet<CitizenReport> CitizenReports { get; set; }
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
+    public DbSet<CitizenReportComment> CitizenReportComments { get; set; }
     public DbSet<CitizenNotification> CitizenNotifications { get; set; }
     public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
     public DbSet<CitizenGuide> CitizenGuides { get; set; }
@@ -76,6 +83,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<IncidentReport> IncidentReports { get; set; }
     public DbSet<IncidentReportNote> IncidentReportNotes { get; set; }
     public DbSet<IncidentReportAttachment> IncidentReportAttachments { get; set; }
+    public DbSet<IncidentReportComment> IncidentReportComments { get; set; }
     public DbSet<Coalition> Coalitions { get; set; }
     public DbSet<CoalitionMembership> CoalitionMemberships { get; set; }
     public DbSet<CoalitionFormAccess> CoalitionFormAccess { get; set; }
@@ -144,20 +152,24 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new ObserverGuideConfiguration());
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new FormSubmissionConfiguration());
+        builder.ApplyConfiguration(new FormSubmissionCommentConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
         builder.ApplyConfiguration(new NotificationStubConfiguration());
         builder.ApplyConfiguration(new ExportedDataConfiguration());
         builder.ApplyConfiguration(new QuickReportConfiguration());
+        builder.ApplyConfiguration(new QuickReportCommentConfiguration());
 
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
+        builder.ApplyConfiguration(new CitizenReportCommentConfiguration());
         builder.ApplyConfiguration(new CitizenGuideConfiguration());
         builder.ApplyConfiguration(new CitizenNotificationConfiguration());
 
         builder.ApplyConfiguration(new IncidentReportConfiguration());
         builder.ApplyConfiguration(new IncidentReportNoteConfiguration());
         builder.ApplyConfiguration(new IncidentReportAttachmentConfiguration());
+        builder.ApplyConfiguration(new IncidentReportCommentConfiguration());
 
         builder.ApplyConfiguration(new LocationConfiguration());
 
