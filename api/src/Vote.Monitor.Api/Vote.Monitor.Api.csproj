@@ -47,6 +47,7 @@
         <ProjectReference Include="..\Feature.Citizen.Notifications\Feature.Citizen.Notifications.csproj" />
         <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj" />
         <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
+        <ProjectReference Include="..\Feature.CitizenReports.Comments\Feature.CitizenReports.Comments.csproj" />
         <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
         <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
         <ProjectReference Include="..\Feature.DataCleanup\Feature.DataCleanup.csproj" />
@@ -57,6 +58,7 @@
         <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
         <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj" />
+        <ProjectReference Include="..\Feature.IncidentReports.Comments\Feature.IncidentReports.Comments.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj" />
         <ProjectReference Include="..\Feature.IncidentReports\Feature.IncidentReports.csproj" />
         <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj" />
