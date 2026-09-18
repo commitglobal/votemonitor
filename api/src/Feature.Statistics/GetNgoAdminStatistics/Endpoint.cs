@@ -1,13 +1,20 @@
 ﻿using Authorization.Policies;
 using Dapper;
 using Feature.Statistics.GetNgoAdminStatistics.Models;
+using Feature.Statistics.Options;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Statistics.GetNgoAdminStatistics;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFusionCache cache) : Endpoint<Request, Response>
+public class Endpoint(
+    INpgsqlConnectionFactory dbConnectionFactory,
+    IFusionCache cache,
+    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Response>
 {
+    private readonly StatisticsFeatureOptions _options = options.Value;
+
     public override void Configure()
     {
         Get("/api/election-rounds/{electionRoundId}/statistics");
@@ -24,7 +31,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFusionCache
         return await cache.GetOrSetAsync(
             cacheKey,
             async _ => await GetNgoStatistics(req, ct),
-            options => options.SetDuration(StatisticsInstaller.DefaultCacheDuration),
+            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
             token: ct);
     }
 

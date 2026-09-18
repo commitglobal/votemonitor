@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Extensions;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.PollingStations.FetchAll;
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context, IFusionCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -31,39 +31,41 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
 
         var cacheKey = $"election-rounds/{request.ElectionRoundId}/polling-stations/{electionRound.PollingStationsVersion}";
 
-        var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            var pollingStations = await context.PollingStations
-                .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .Select(x => new PollingStationModel
-                {
-                    Id = x.Id,
-                    Level1 = x.Level1,
-                    Level2 = x.Level2,
-                    Level3 = x.Level3,
-                    Level4 = x.Level4,
-                    Level5 = x.Level5,
-                    Number = x.Number,
-                    Address = x.Address,
-                    DisplayOrder = x.DisplayOrder,
-                    Latitude = x.Latitude,
-                    Longitude = x.Longitude
-                })
-                .ToListAsync(cancellationToken: ct);
-
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-            var nodes = GetLocationNodes(pollingStations);
-
-            return new Response
+        var cachedResponse = await cache.GetOrSetAsync(
+            cacheKey,
+            async _ =>
             {
-                ElectionRoundId = electionRound.Id,
-                Version = electionRound.PollingStationsVersion.ToString(),
-                Nodes = nodes
-            };
-        });
+                var pollingStations = await context.PollingStations
+                    .Where(x => x.ElectionRoundId == request.ElectionRoundId)
+                    .Select(x => new PollingStationModel
+                    {
+                        Id = x.Id,
+                        Level1 = x.Level1,
+                        Level2 = x.Level2,
+                        Level3 = x.Level3,
+                        Level4 = x.Level4,
+                        Level5 = x.Level5,
+                        Number = x.Number,
+                        Address = x.Address,
+                        DisplayOrder = x.DisplayOrder,
+                        Latitude = x.Latitude,
+                        Longitude = x.Longitude
+                    })
+                    .ToListAsync(cancellationToken: ct);
 
-        return TypedResults.Ok(cachedResponse!);
+                var nodes = GetLocationNodes(pollingStations);
+
+                return new Response
+                {
+                    ElectionRoundId = electionRound.Id,
+                    Version = electionRound.PollingStationsVersion.ToString(),
+                    Nodes = nodes
+                };
+            },
+            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            token: ct);
+
+        return TypedResults.Ok(cachedResponse);
     }
 
     private static List<LocationNode> GetLocationNodes(List<PollingStationModel> pollingStations)

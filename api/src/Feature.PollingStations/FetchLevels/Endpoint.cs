@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Extensions;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.PollingStations.FetchLevels;
-public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context, IFusionCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -31,93 +31,95 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
 
         var cacheKey = $"election-rounds/{request.ElectionRoundId}/polling-station-nodes/{electionRound.PollingStationsVersion}";
 
-        var cachedResponse = await memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            var pollingStations = await context.PollingStations
-                .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .Select(x => new 
-                {
-                    x.Level1,
-                    x.Level2,
-                    x.Level3,
-                    x.Level4,
-                    x.Level5
-                })
-                .Distinct()
-                .ToListAsync(cancellationToken: ct);
-
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-            Dictionary<string, LevelNode> cache = new();
-            int id = 0;
-
-            foreach (var ps in pollingStations)
+        var cachedResponse = await cache.GetOrSetAsync(
+            cacheKey,
+            async _ =>
             {
-                var parentNode = cache.GetOrCreate(BuildKey(ps.Level1), () => new LevelNode
-                {
-                    Id = ++id,
-                    Name = ps.Level1,
-                    Depth = 1
-                });
+                var pollingStations = await context.PollingStations
+                    .Where(x => x.ElectionRoundId == request.ElectionRoundId)
+                    .Select(x => new 
+                    {
+                        x.Level1,
+                        x.Level2,
+                        x.Level3,
+                        x.Level4,
+                        x.Level5
+                    })
+                    .Distinct()
+                    .ToListAsync(cancellationToken: ct);
 
-                if (!string.IsNullOrWhiteSpace(ps.Level2))
+                Dictionary<string, LevelNode> nodes = new();
+                int id = 0;
+
+                foreach (var ps in pollingStations)
                 {
-                    var level2Key = BuildKey(ps.Level1, ps.Level2);
-                    parentNode = cache.GetOrCreate(level2Key, () => new LevelNode
+                    var parentNode = nodes.GetOrCreate(BuildKey(ps.Level1), () => new LevelNode
                     {
                         Id = ++id,
-                        Name = ps.Level2,
-                        ParentId = parentNode.Id,
-                        Depth = 2
+                        Name = ps.Level1,
+                        Depth = 1
                     });
-                }
 
-                if (!string.IsNullOrWhiteSpace(ps.Level3))
-                {
-                    var level3Key = BuildKey(ps.Level1, ps.Level2, ps.Level3);
-                    parentNode = cache.GetOrCreate(level3Key, () => new LevelNode
+                    if (!string.IsNullOrWhiteSpace(ps.Level2))
                     {
-                        Id = ++id,
-                        Name = ps.Level3,
-                        ParentId = parentNode.Id,
-                        Depth = 3
-                    });
-                }
+                        var level2Key = BuildKey(ps.Level1, ps.Level2);
+                        parentNode = nodes.GetOrCreate(level2Key, () => new LevelNode
+                        {
+                            Id = ++id,
+                            Name = ps.Level2,
+                            ParentId = parentNode.Id,
+                            Depth = 2
+                        });
+                    }
 
-                if (!string.IsNullOrWhiteSpace(ps.Level4))
-                {
-                    var level4Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4);
-                    parentNode = cache.GetOrCreate(level4Key, () => new LevelNode
+                    if (!string.IsNullOrWhiteSpace(ps.Level3))
                     {
-                        Id = ++id,
-                        Name = ps.Level4,
-                        ParentId = parentNode.Id,
-                        Depth = 4
-                    });
-                }
+                        var level3Key = BuildKey(ps.Level1, ps.Level2, ps.Level3);
+                        parentNode = nodes.GetOrCreate(level3Key, () => new LevelNode
+                        {
+                            Id = ++id,
+                            Name = ps.Level3,
+                            ParentId = parentNode.Id,
+                            Depth = 3
+                        });
+                    }
 
-                if (!string.IsNullOrWhiteSpace(ps.Level5))
-                {
-                    var level5Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4, ps.Level5);
-                    parentNode = cache.GetOrCreate(level5Key, () => new LevelNode
+                    if (!string.IsNullOrWhiteSpace(ps.Level4))
                     {
-                        Id = ++id,
-                        Name = ps.Level5,
-                        ParentId = parentNode.Id,
-                        Depth = 5
-                    });
+                        var level4Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4);
+                        parentNode = nodes.GetOrCreate(level4Key, () => new LevelNode
+                        {
+                            Id = ++id,
+                            Name = ps.Level4,
+                            ParentId = parentNode.Id,
+                            Depth = 4
+                        });
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(ps.Level5))
+                    {
+                        var level5Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4, ps.Level5);
+                        parentNode = nodes.GetOrCreate(level5Key, () => new LevelNode
+                        {
+                            Id = ++id,
+                            Name = ps.Level5,
+                            ParentId = parentNode.Id,
+                            Depth = 5
+                        });
+                    }
                 }
-            }
 
-            return new Response
-            {
-                ElectionRoundId = electionRound.Id,
-                Version = electionRound.PollingStationsVersion.ToString(),
-                Nodes = [.. cache.Values]
-            };
-        });
+                return new Response
+                {
+                    ElectionRoundId = electionRound.Id,
+                    Version = electionRound.PollingStationsVersion.ToString(),
+                    Nodes = [.. nodes.Values]
+                };
+            },
+            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            token: ct);
 
-        return TypedResults.Ok(cachedResponse!);
+        return TypedResults.Ok(cachedResponse);
     }
 
     private static string BuildKey(params string[] keyParts)

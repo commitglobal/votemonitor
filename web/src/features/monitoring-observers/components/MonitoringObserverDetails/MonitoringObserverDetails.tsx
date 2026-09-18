@@ -13,6 +13,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 import { MonitoringObserverQuickReports } from '../MonitoringObserverQuickReports/MonitoringObserverQuickReports';
+import MonitoringObserverStatistics from '../MonitoringObserverStatistics/MonitoringObserverStatistics';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
   const { monitoringObserverId, tab } = Route.useParams();
@@ -45,7 +46,10 @@ export default function MonitoringObserverDetails(): FunctionComponent {
           {/* <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger> */}
         </TabsList>
         <TabsContent value='details'>
-          <MonitoringObserverDetailsView />
+          <div className='flex flex-col gap-8'>
+            <MonitoringObserverDetailsView />
+            <MonitoringObserverStatistics />
+          </div>
         </TabsContent>
         <TabsContent value='responses'>
           <MonitoringObserverFormSubmissions />

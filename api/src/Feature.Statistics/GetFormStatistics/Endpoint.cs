@@ -1,7 +1,9 @@
 using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Dapper;
+using Feature.Statistics.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
 
@@ -10,8 +12,11 @@ namespace Feature.Statistics.GetFormStatistics;
 public class Endpoint(
     IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
-    IFusionCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+    IFusionCache cache,
+    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
+    private readonly StatisticsFeatureOptions _options = options.Value;
+
     public override void Configure()
     {
         Get("/api/election-rounds/{electionRoundId}/statistics/forms/{formId}");
@@ -35,7 +40,7 @@ public class Endpoint(
         var response = await cache.GetOrSetAsync(
             cacheKey,
             async _ => await GetStatisticsAsync(req, ct),
-            options => options.SetDuration(StatisticsInstaller.DefaultCacheDuration),
+            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
             token: ct);
 
         return TypedResults.Ok(response);

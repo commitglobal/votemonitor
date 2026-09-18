@@ -1,9 +1,14 @@
 import { getMonitoringObservers } from '@/api/monitoring-observers/get-monitoring-observers';
-import type { DataTableParameters, PageResponse } from '@/common/types';
+import {
+  getMonitoringObserverStatistics,
+  type MonitoringObserverStats,
+} from '@/api/monitoring-observers/get-monitoring-observer-statistics';
+import type { DataSources, DataTableParameters, PageResponse } from '@/common/types';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { MonitoringObserver } from '../models/monitoring-observer';
 
 const STALE_TIME = 1000 * 60 * 5; // five minutes
+const STATISTICS_STALE_TIME = 1000 * 10 * 60; // 10 minutes
 
 export const monitoringObserversKeys = {
   all: (electionRoundId: string) => ['monitoring-observers', electionRoundId] as const,
@@ -13,6 +18,8 @@ export const monitoringObserversKeys = {
   details: (electionRoundId: string) => [...monitoringObserversKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) => [...monitoringObserversKeys.details(electionRoundId), id] as const,
   tags: (electionRoundId: string) => [...monitoringObserversKeys.details(electionRoundId), 'tags'] as const,
+  statistics: (electionRoundId: string, id: string, dataSource: DataSources) =>
+    [...monitoringObserversKeys.detail(electionRoundId, id), 'statistics', dataSource] as const,
 };
 
 type MonitoringObserverResponse = PageResponse<MonitoringObserver>;
@@ -29,6 +36,20 @@ export const useMonitoringObservers = (
       return getMonitoringObservers(electionRoundId, queryParams);
     },
     enabled: !!electionRoundId,
-    staleTime: STALE_TIME
+    staleTime: STALE_TIME,
   });
 };
+
+export function useMonitoringObserverStatistics(
+  electionRoundId: string,
+  monitoringObserverId: string,
+  dataSource: DataSources
+): UseQueryResult<MonitoringObserverStats, Error> {
+  return useQuery({
+    queryKey: monitoringObserversKeys.statistics(electionRoundId, monitoringObserverId, dataSource),
+    queryFn: () => getMonitoringObserverStatistics(electionRoundId, monitoringObserverId, dataSource),
+    enabled: !!electionRoundId && !!monitoringObserverId,
+    staleTime: STATISTICS_STALE_TIME,
+    refetchOnMount: false,
+  });
+}
