@@ -19,6 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
+import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { getValueOrDefault, toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
@@ -51,6 +52,7 @@ export interface QuickReportFilterRequest {
   coalitionMemberId: string | undefined;
   monitoringObserverId: string | undefined;
   hasAttachments: boolean | undefined;
+  tagsFilter: string[] | undefined;
 }
 export function QuickReportsTab(): FunctionComponent {
   const navigate = useNavigate();
@@ -89,6 +91,7 @@ export function QuickReportsTab(): FunctionComponent {
       monitoringObserverId: debouncedSearch.monitoringObserverId || undefined,
       searchText: searchText,
       hasAttachments: toBoolean(debouncedSearch.hasAttachments),
+      tagsFilter: debouncedSearch.tagsFilter,
     };
 
     return params;
@@ -103,6 +106,22 @@ export function QuickReportsTab(): FunctionComponent {
         to: '.',
         search: (prev: any) => {
           const newSearch = { ...prev, ...filters };
+          setPrevSearch(newSearch);
+          return newSearch;
+        },
+      });
+    },
+    [navigate, setPrevSearch]
+  );
+
+  const onClearTagFilter = useCallback(
+    (tag: string) => () => {
+      navigate({
+        to: '.',
+        search: (prev: any) => {
+          const prevTagsFilter = prev.tagsFilter ?? [];
+          const newTags = prevTagsFilter.filter((t: string) => t !== tag);
+          const newSearch = { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
           setPrevSearch(newSearch);
           return newSearch;
         },
@@ -258,8 +277,10 @@ export function QuickReportsTab(): FunctionComponent {
               </SelectContent>
             </Select>
 
+            <MonitoringObserverTagsSelect isUsingAlternativeFilteringKey />
+
             <PollingStationsFilters />
-            <ResetFiltersButton disabled={!filtersExpanded} params={{ tag: 'quick-reports' }} />
+            <ResetFiltersButton disabled={!filtersExpanded} params={{ tab: 'quick-reports' }} />
 
             {filtersExpanded && (
               <div className='flex flex-wrap gap-2 col-span-full'>
@@ -287,6 +308,9 @@ export function QuickReportsTab(): FunctionComponent {
                     onClear={onClearFilter(['hasAttachments'])}
                   />
                 )}
+                {search.tagsFilter?.map((tag) => (
+                  <FilterBadge key={tag} label={`Observer tags: ${tag}`} onClear={onClearTagFilter(tag)} />
+                ))}
                 {search.level1Filter && (
                   <FilterBadge
                     label={`Location - L1: ${search.level1Filter}`}

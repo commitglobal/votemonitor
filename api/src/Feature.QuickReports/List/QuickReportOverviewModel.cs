@@ -20,6 +20,7 @@ public class QuickReportOverviewModel
     public string Email { get; set; }
     public string? PhoneNumber { get; set; }
     public string NgoName { get; set; }
+    public string[] Tags { get; set; } = [];
     public string? PollingStationDetails { get; set; }
     public Guid? PollingStationId { get; set; }
     public string? Level1 { get; set; }

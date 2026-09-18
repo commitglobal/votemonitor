@@ -1,5 +1,4 @@
 ﻿using Module.Answers.Models;
-using Module.Forms.Models;
 using Vote.Monitor.Core.Models;
 
 namespace Feature.Form.Submissions.ListEntriesDetailed;

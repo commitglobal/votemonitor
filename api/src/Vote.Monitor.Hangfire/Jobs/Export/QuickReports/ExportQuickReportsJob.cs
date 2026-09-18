@@ -217,7 +217,12 @@ public class ExportQuickReportsJob(
             	)
             	AND (
             		@MONITORINGOBSERVERID IS NULL
-            		OR AMO."MonitoringObserverId" = @MONITORINGOBSERVERID
+            		OR MO."MonitoringObserverId" = @MONITORINGOBSERVERID
+            	)
+            	AND (
+            		@TAGSFILTER IS NULL
+            		OR CARDINALITY(@TAGSFILTER) = 0
+            		OR MO."Tags" && @TAGSFILTER
             	)
             ORDER BY
             	QR."LastUpdatedAt" DESC
@@ -241,6 +246,7 @@ public class ExportQuickReportsJob(
             toDate = filters.ToDateFilter?.ToString("O"),
             hasAttachments = filters.HasAttachments,
             monitoringObserverId = filters.MonitoringObserverId,
+            tagsFilter = filters.TagsFilter ?? [],
         };
 
         IEnumerable<QuickReportModel> quickReports = [];
