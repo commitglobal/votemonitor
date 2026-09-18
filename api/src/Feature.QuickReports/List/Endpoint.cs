@@ -156,7 +156,23 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                         AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
-            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC
+            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
+            CASE WHEN @sortExpression = 'NumberOfAttachments ASC' THEN (
+                SELECT COUNT(*)
+                FROM "QuickReportAttachments" QRA
+                WHERE QRA."QuickReportId" = QR."Id"
+                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                  AND QRA."IsDeleted" = FALSE
+                  AND QRA."IsCompleted" = TRUE
+            ) END ASC,
+            CASE WHEN @sortExpression = 'NumberOfAttachments DESC' THEN (
+                SELECT COUNT(*)
+                FROM "QuickReportAttachments" QRA
+                WHERE QRA."QuickReportId" = QR."Id"
+                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
+                  AND QRA."IsDeleted" = FALSE
+                  AND QRA."IsCompleted" = TRUE
+            ) END DESC
         OFFSET
             @offset ROWS
         FETCH NEXT
@@ -210,6 +226,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         if (string.Equals(sortColumnName, nameof(QuickReportOverviewModel.Timestamp), StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(QuickReportOverviewModel.Timestamp)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(QuickReportOverviewModel.NumberOfAttachments),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(QuickReportOverviewModel.NumberOfAttachments)} {sortOrder}";
         }
 
         return $"{nameof(QuickReportOverviewModel.Timestamp)} ASC";
