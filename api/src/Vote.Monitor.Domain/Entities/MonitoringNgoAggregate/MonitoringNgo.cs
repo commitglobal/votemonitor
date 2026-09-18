@@ -39,7 +39,12 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
             return null;
         }
 
-        var monitoringObserver = MonitoringObserver.Create(ElectionRoundId, Id, observer.Id, []);
+        var monitoringObserver = MonitoringObserver.CreateForExisting(
+            ElectionRoundId,
+            Id,
+            observer.Id,
+            [],
+            observer.ApplicationUser.Status);
         MonitoringObservers.Add(monitoringObserver);
 
         return monitoringObserver;
