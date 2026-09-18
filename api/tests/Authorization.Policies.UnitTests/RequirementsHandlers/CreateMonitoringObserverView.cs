@@ -88,7 +88,41 @@ public class CreateMonitoringObserverView
             MonitoringObserverId = Guid.NewGuid(),
             MonitoringObserverStatus = MonitoringObserverStatus.Suspended
         };
-    } 
+    }
+
+    internal MonitoringObserverView PendingMonitoringObserver()
+    {
+        return new MonitoringObserverView
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundStatus = ElectionRoundStatus.Started,
+            NgoId = Guid.NewGuid(),
+            NgoStatus = NgoStatus.Activated,
+            MonitoringNgoId = Guid.NewGuid(),
+            MonitoringNgoStatus = MonitoringNgoStatus.Active,
+            ObserverId = Guid.NewGuid(),
+            UserStatus = UserStatus.Active,
+            MonitoringObserverId = Guid.NewGuid(),
+            MonitoringObserverStatus = MonitoringObserverStatus.Pending
+        };
+    }
+
+    internal MonitoringObserverView PendingObserver()
+    {
+        return new MonitoringObserverView
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundStatus = ElectionRoundStatus.Started,
+            NgoId = Guid.NewGuid(),
+            NgoStatus = NgoStatus.Activated,
+            MonitoringNgoId = Guid.NewGuid(),
+            MonitoringNgoStatus = MonitoringNgoStatus.Active,
+            ObserverId = Guid.NewGuid(),
+            UserStatus = UserStatus.Pending,
+            MonitoringObserverId = Guid.NewGuid(),
+            MonitoringObserverStatus = MonitoringObserverStatus.Active
+        };
+    }
     
     internal static MonitoringObserverView ForValidAccess()
     {

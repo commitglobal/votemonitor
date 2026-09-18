@@ -49,7 +49,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                           FROM
                               "MonitoringObserverNotification" MON
                               INNER JOIN "MonitoringObservers" MO ON MO."Id" = MON."MonitoringObserverId"
-                              INNER JOIN "AspNetUsers" MOU ON MOU."Id" = MO."ObserverId"
+                              LEFT JOIN "AspNetUsers" MOU ON MOU."Id" = MO."ObserverId"
                           WHERE
                               MON."NotificationId" = N."Id"
                       ) "Receivers"
@@ -57,7 +57,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                       "Notifications" N
                       INNER JOIN "NgoAdmins" NA ON N."SenderId" = NA."Id"
                       INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = NA."Id"
+                      LEFT JOIN "AspNetUsers" U ON U."Id" = NA."Id"
                   WHERE
                       MN."NgoId" = @ngoId
                       AND N."ElectionRoundId" = @electionRoundId

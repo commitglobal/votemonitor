@@ -1,6 +1,7 @@
 ﻿using Feature.Forms.Models;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Forms.GetFormsVersion;
 
@@ -25,6 +26,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
             .Include(x => x.MonitoringNgo)
             .Where(x => x.ObserverId == req.ObserverId)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => x.Status == MonitoringObserverStatus.Active)
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
             .Select(x => new { x.MonitoringNgo.FormsVersion, x.MonitoringNgo.ElectionRoundId })
             .FirstOrDefaultAsync(ct);

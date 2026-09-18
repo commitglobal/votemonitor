@@ -36,7 +36,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                                             left join "Ngos" n on n."Id" = mn."NgoId"
                                    where mo."ObserverId" = o."Id"), '[]'::JSONB) AS "MonitoredElections"
                   from "Observers" o
-                           inner join "AspNetUsers" u on u."Id" = o."ApplicationUserId"
+                           left join "AspNetUsers" u on u."Id" = o."ApplicationUserId"
 
                   where o."Id" = @observerId
                   """;

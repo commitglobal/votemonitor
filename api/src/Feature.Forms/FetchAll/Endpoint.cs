@@ -4,6 +4,7 @@ using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Forms.FetchAll;
 
@@ -32,6 +33,7 @@ public class Endpoint(VoteMonitorContext context)
             .ThenInclude(cm => cm.Coalition)
             .Where(x => x.ObserverId == req.ObserverId)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => x.Status == MonitoringObserverStatus.Active)
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
             .Select(x => new
             {

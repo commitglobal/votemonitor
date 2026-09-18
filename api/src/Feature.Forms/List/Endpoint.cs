@@ -238,7 +238,7 @@ public class Endpoint(
                               "CoalitionFormAccess" CFA
                                   INNER JOIN "Coalitions" C ON CFA."CoalitionId" = C."Id"
                                   INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
-                                  INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
+                                  LEFT JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
                                   LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                           WHERE
                               CFA."MonitoringNgoId" = (
@@ -286,7 +286,7 @@ public class Endpoint(
                               true as "IsFormOwner"
                           FROM
                               "Forms" F
-                                  INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
+                                  LEFT JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
                                   LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                           WHERE
                               F."ElectionRoundId" = @electionRoundId

@@ -42,7 +42,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       "Notifications" N
                       INNER JOIN "NgoAdmins" NA ON N."SenderId" = NA."Id"
                       INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = NA."Id"
+                      LEFT JOIN "AspNetUsers" U ON U."Id" = NA."Id"
                       LEFT JOIN "MonitoringObserverNotification" MON ON MON."NotificationId" = N."Id"
 
                   WHERE

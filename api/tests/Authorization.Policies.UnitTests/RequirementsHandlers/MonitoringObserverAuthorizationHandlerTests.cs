@@ -147,6 +147,42 @@ public class MonitoringObserverAuthorizationHandlerTests
     }
 
     [Fact]
+    public async Task HandleRequirementAsync_MonitoringObserverIsPending_Failure()
+    {
+        // Arrange
+        _currentUserRoleProvider.IsObserver().Returns(true);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+
+        _monitoringObserverRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
+            .Returns(CreateMonitoringObserverView.With().PendingMonitoringObserver());
+
+        // Act
+        await _handler.HandleAsync(_context);
+
+        // Assert
+        _context.HasSucceeded.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task HandleRequirementAsync_UserIsPending_Failure()
+    {
+        // Arrange
+        _currentUserRoleProvider.IsObserver().Returns(true);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+
+        _monitoringObserverRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
+            .Returns(CreateMonitoringObserverView.With().PendingObserver());
+
+        // Act
+        await _handler.HandleAsync(_context);
+
+        // Assert
+        _context.HasSucceeded.Should().BeFalse();
+    }
+
+    [Fact]
     public async Task HandleRequirementAsync_ValidMonitoringObserver_Success()
     {
         // Arrange

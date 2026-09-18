@@ -57,7 +57,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                           "MonitoringObservers" MO
                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                           INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                       WHERE
                           MN."ElectionRoundId" = @electionRoundId
                           AND MN."NgoId" = @ngoId

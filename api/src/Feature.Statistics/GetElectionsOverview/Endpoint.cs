@@ -45,7 +45,7 @@ public class Endpoint(
                 COUNT(*)
             FROM
                 "MonitoringObservers" MO
-                INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                LEFT JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
             WHERE
                 "ElectionRoundId" = ANY (@electionRoundIds)
                 AND U."Status" = 'Active'

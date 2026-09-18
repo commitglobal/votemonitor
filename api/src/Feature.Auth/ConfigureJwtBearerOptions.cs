@@ -2,7 +2,10 @@
 using System.Text;
 using Feature.Auth.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Feature.Auth;
 
@@ -50,6 +53,23 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
                     context.Response.Headers.Add("Token-Expired", "true");
                 }
                 return Task.CompletedTask;
+            },
+            OnTokenValidated = async context =>
+            {
+                var userIdClaim = context.Principal?.FindFirst(ApplicationClaimTypes.UserId)?.Value;
+                if (userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
+                {
+                    context.Fail("Invalid user");
+                    return;
+                }
+
+                var userManager = context.HttpContext.RequestServices
+                    .GetRequiredService<UserManager<ApplicationUser>>();
+                var user = await userManager.FindByIdAsync(userId.ToString());
+                if (user is null || user.Status != UserStatus.Active)
+                {
+                    context.Fail("User is not active");
+                }
             }
         };
     }

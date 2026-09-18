@@ -11,7 +11,9 @@ public sealed class GetObserverElectionSpecification : Specification<ElectionRou
             .Include(x => x.MonitoringNgos)
             .ThenInclude(x => x.MonitoringObservers)
             .Where(x => x.Status == ElectionRoundStatus.Started)
-            .Where(x => x.MonitoringNgos.Any(ngo => ngo.MonitoringObservers.Any(o => o.ObserverId == observerId)));
+            .Where(x => x.MonitoringNgos.Any(ngo =>
+                ngo.MonitoringObservers.Any(o =>
+                    o.ObserverId == observerId && o.Status == MonitoringObserverStatus.Active)));
 
         Query.Select(x => new ElectionRoundModel
         {
@@ -32,7 +34,9 @@ public sealed class GetObserverElectionSpecification : Specification<ElectionRou
             CoalitionName = null,
             IsCoalitionLeader = false,
             IsMonitoringNgoForCitizenReporting = false,
-            AllowMultipleFormSubmission = x.MonitoringNgos.First(ngo => ngo.MonitoringObservers.Any(o => o.ObserverId == observerId)).AllowMultipleFormSubmission
+            AllowMultipleFormSubmission = x.MonitoringNgos.First(ngo =>
+                ngo.MonitoringObservers.Any(o =>
+                    o.ObserverId == observerId && o.Status == MonitoringObserverStatus.Active)).AllowMultipleFormSubmission
         });
     }
 }

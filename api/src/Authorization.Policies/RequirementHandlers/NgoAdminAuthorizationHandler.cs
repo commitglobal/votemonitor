@@ -33,7 +33,7 @@ internal class NgoAdminAuthorizationHandler(ICurrentUserProvider currentUserProv
             return;
         }
 
-        if (result.UserStatus == UserStatus.Deactivated)
+        if (result.UserStatus != UserStatus.Active)
         {
             context.Fail();
             return;

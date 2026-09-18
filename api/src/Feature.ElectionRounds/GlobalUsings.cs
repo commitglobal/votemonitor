@@ -13,4 +13,5 @@ global using Microsoft.AspNetCore.Http;
 global using Feature.ElectionRounds.Specifications;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Constants;
+global using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound;
