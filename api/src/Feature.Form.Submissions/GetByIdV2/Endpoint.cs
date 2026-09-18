@@ -34,6 +34,7 @@ public class Endpoint(
                                    psi."PollingStationId",
                                    psi."MonitoringObserverId",
                                    psi."Answers",
+                                   psif."Questions" AS "Questions",
                                    psif."Id" AS "FormId",
                                    psi."FollowUpStatus" as "FollowUpStatus",
                                    '[]'::jsonb AS "Attachments",
@@ -53,6 +54,7 @@ public class Endpoint(
                                 fs."PollingStationId",
                                 fs."MonitoringObserverId",
                                 fs."Answers",
+                                f."Questions",
                                 f."Id" AS "FormId",
                                 fs."FollowUpStatus",
                                 COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
@@ -104,6 +106,7 @@ public class Endpoint(
                          s."Attachments",
                          s."Notes",
                          s."Answers",
+                         s."Questions",
                          s."FollowUpStatus",
                          s."ArrivalTime",
                          s."DepartureTime",

@@ -22,6 +22,7 @@ public record QuickReportsFilters
     public DateTime? ToDateFilter { get; init; }
     public bool? HasAttachments { get; init; }
     public Guid? MonitoringObserverId { get; init; }
+    public string[]? TagsFilter { get; init; } = [];
 
     public ExportQuickReportsFilters ToFilter()
     {
@@ -41,7 +42,8 @@ public record QuickReportsFilters
             DataSource = DataSource,
             CoalitionMemberId = CoalitionMemberId,
             HasAttachments = HasAttachments,
-            MonitoringObserverId = MonitoringObserverId
+            MonitoringObserverId = MonitoringObserverId,
+            TagsFilter = TagsFilter
         };
     }
 }
