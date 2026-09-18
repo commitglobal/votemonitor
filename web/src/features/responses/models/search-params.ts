@@ -65,6 +65,7 @@ export const QuickReportsSearchParamsSchema = ZDataSourceSearchSchema.merge(
     quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
     quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
     incidentCategory: z.nativeEnum(IncidentCategory).optional(),
+    hasAttachments: z.string().catch('').optional(),
   })
 );
 

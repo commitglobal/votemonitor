@@ -57,8 +57,11 @@ public class Endpoint(
                   -- =====================================================================================
                   SELECT 
                     DISTINCT F."Id" AS "FormId", 
-                    F."Name" ->> F."DefaultLanguage" "FormName", 
-                    F."Code" "FormCode" 
+                    F."Code" AS "FormCode",
+                    F."Name" AS "FormName",
+                    F."DefaultLanguage",
+                    F."Languages",
+                    F."Status" AS "FormStatus"
                   FROM 
                     "FormSubmissions" FS 
                     INNER JOIN "Forms" F ON F."Id" = FS."FormId" 
@@ -69,14 +72,42 @@ public class Endpoint(
                   UNION ALL 
                   SELECT 
                     DISTINCT F."Id" AS "FormId", 
-                    F."Name" ->> F."DefaultLanguage" "FormName", 
-                    F."Code" "FormCode" 
+                    F."Code" AS "FormCode",
+                    F."Name" AS "FormName",
+                    F."DefaultLanguage",
+                    F."Languages",
+                    F."Status" AS "FormStatus"
                   FROM 
                     "PollingStationInformation" PSI 
                     INNER JOIN "PollingStationInformationForms" F ON F."Id" = PSI."PollingStationInformationFormId" 
+                    INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                      ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
                     inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on F."Id" = af."FormId" 
                   WHERE 
-                    PSI."ElectionRoundId" = @electionRoundId
+                    PSI."ElectionRoundId" = @electionRoundId;
+
+                  -- =====================================================================================
+                  SELECT DISTINCT
+                    MO."MonitoringObserverId",
+                    MO."DisplayName",
+                    MO."Email",
+                    MO."AccountStatus"
+                  FROM "FormSubmissions" FS
+                    INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                      ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                    INNER JOIN "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) AF
+                      ON FS."FormId" = AF."FormId"
+                  WHERE FS."ElectionRoundId" = @electionRoundId
+                  UNION
+                  SELECT DISTINCT
+                    MO."MonitoringObserverId",
+                    MO."DisplayName",
+                    MO."Email",
+                    MO."AccountStatus"
+                  FROM "PollingStationInformation" PSI
+                    INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                      ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
+                  WHERE PSI."ElectionRoundId" = @electionRoundId
                   """;
 
         var queryArgs = new
@@ -88,18 +119,21 @@ public class Endpoint(
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
         List<SubmissionsFormFilterOption> formFilterOptions;
+        List<SubmissionsObserverFilterOption> observerFilterOptions;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
 
             timestampFilterOptions = multi.Read<SubmissionsTimestampsFilterOptions>().Single();
             formFilterOptions = multi.Read<SubmissionsFormFilterOption>().ToList();
+            observerFilterOptions = multi.Read<SubmissionsObserverFilterOption>().ToList();
         }
 
         return TypedResults.Ok(new Response
         {
             TimestampsFilterOptions = timestampFilterOptions,
-            FormFilterOptions = formFilterOptions
+            FormFilterOptions = formFilterOptions,
+            ObserverFilterOptions = observerFilterOptions
         });
     }
 }

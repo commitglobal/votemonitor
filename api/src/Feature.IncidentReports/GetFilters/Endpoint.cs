@@ -30,44 +30,57 @@ public class Endpoint(
                   SELECT MIN(IR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
                          MAX(IR."LastUpdatedAt") AS "LastSubmissionTimestamp"
                   FROM "IncidentReports" IR
-                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                  WHERE IR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId;
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
+                  WHERE IR."ElectionRoundId" = @electionRoundId;
 
                   -- =====================================================================================
-
-                  SELECT DISTINCT F."Id" AS                       "FormId",
-                                  F."Name" ->> F."DefaultLanguage" "FormName",
-                                  F."Code"                        "FormCode"
+                  SELECT DISTINCT
+                    F."Id" AS "FormId",
+                    F."Name" ->> F."DefaultLanguage" AS "FormName",
+                    F."Code" AS "FormCode"
                   FROM "IncidentReports" IR
-                           INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                  INNER JOIN "Forms" F ON F."Id" = IR."FormId"
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
+                  WHERE IR."ElectionRoundId" = @electionRoundId;
+
+                  -- =====================================================================================
+                  SELECT DISTINCT
+                    MO."MonitoringObserverId",
+                    MO."DisplayName",
+                    MO."Email",
+                    MO."AccountStatus"
+                  FROM "IncidentReports" IR
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
                   WHERE IR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
                   """;
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId
+            ngoId = req.NgoId,
+            dataSource = req.DataSource.ToString()
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
         List<SubmissionsFormFilterOption> formFilterOptions;
+        List<SubmissionsObserverFilterOption> observerFilterOptions;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
 
             timestampFilterOptions = multi.Read<SubmissionsTimestampsFilterOptions>().Single();
             formFilterOptions = multi.Read<SubmissionsFormFilterOption>().ToList();
+            observerFilterOptions = multi.Read<SubmissionsObserverFilterOption>().ToList();
         }
 
         return TypedResults.Ok(new Response
         {
             TimestampsFilterOptions = timestampFilterOptions,
-            FormFilterOptions = formFilterOptions
+            FormFilterOptions = formFilterOptions,
+            ObserverFilterOptions = observerFilterOptions
         });
     }
 }

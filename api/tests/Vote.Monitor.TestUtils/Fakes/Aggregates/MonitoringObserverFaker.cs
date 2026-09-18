@@ -9,7 +9,8 @@ public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
         [MonitoringObserverStatus.Active, MonitoringObserverStatus.Suspended];
 
     public MonitoringObserverFaker(ElectionRound? electionRound = null, MonitoringNgo? monitoringNgo = null,
-        ObserverAggregate? observer = null, Guid? id = null, Guid? observerId = null)
+        ObserverAggregate? observer = null, Guid? id = null, Guid? observerId = null,
+        MonitoringObserverStatus? status = null)
     {
         UsePrivateConstructor();
         electionRound ??= new ElectionRoundAggregateFaker().Generate();
@@ -23,7 +24,7 @@ public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
         RuleFor(fake => fake.MonitoringNgoId, monitoringNgo.Id);
         RuleFor(fake => fake.Observer, observer);
         RuleFor(fake => fake.ObserverId, observer.Id);
-        RuleFor(fake => fake.Status, fake => fake.PickRandom(_statuses));
+        RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
         RuleFor(fake => fake.Tags, []);
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Authorization.Policies;
 using Dapper;
 using Feature.Statistics.GetNgoAdminStatistics.Models;
-using Microsoft.Extensions.Caching.Memory;
 using Vote.Monitor.Domain.ConnectionFactory;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Statistics.GetNgoAdminStatistics;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache cache) : Endpoint<Request, Response>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFusionCache cache) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -21,11 +21,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
     {
         var cacheKey = $"statistics-{req.ElectionRoundId}-{req.NgoId}-{req.DataSource}";
 
-        return await cache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            return await GetNgoStatistics(req, ct);
-        }) ?? new Response();
+        return await cache.GetOrSetAsync(
+            cacheKey,
+            async _ => await GetNgoStatistics(req, ct),
+            options => options.SetDuration(StatisticsInstaller.DefaultCacheDuration),
+            token: ct);
     }
 
     private async Task<Response> GetNgoStatistics(Request req, CancellationToken ct)
@@ -54,383 +54,297 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
             
             ----------------------------Levels stats--------------------------------------
             WITH
+                "AvailableObservers" AS (
+                    SELECT "MonitoringObserverId"
+                    FROM "GetAvailableMonitoringObservers"(@ELECTIONROUNDID, @NGOID, @DATASOURCE)
+                ),
                 "ActiveObservers" AS (
                     SELECT
-                        "PollingStationId",
+                        FS."PollingStationId",
                         FS."MonitoringObserverId"
-                    FROM
-                        "FormSubmissions" FS
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                    FROM "FormSubmissions" FS
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
                     UNION
                     SELECT
-                        "PollingStationId",
+                        PSI."PollingStationId",
                         PSI."MonitoringObserverId"
-                    FROM
-                        "PollingStationInformation" PSI
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
+                    FROM "PollingStationInformation" PSI
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
                     UNION
                     SELECT
-                        "PollingStationId",
+                        QR."PollingStationId",
                         QR."MonitoringObserverId"
-                    FROM
-                        "QuickReports" QR
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
-                    WHERE
-                        QR."PollingStationId" IS NOT NULL
+                    FROM "QuickReports" QR
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
+                    WHERE QR."PollingStationId" IS NOT NULL
                     UNION
                     SELECT
-                        "PollingStationId",
+                        IR."PollingStationId",
                         IR."MonitoringObserverId"
-                    FROM
-                        "IncidentReports" IR
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                    WHERE
-                        IR."PollingStationId" IS NOT NULL
+                    FROM "IncidentReports" IR
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
+                    WHERE IR."PollingStationId" IS NOT NULL
                 ),
-                "ActiveObserversPerLevel" AS (
+                "PollingStationsStatsRaw" AS (
                     SELECT
-                        '/' AS "Path",
-                        0 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
+                        FS."PollingStationId",
+                        0 AS "NumberOfIncidentReports",
+                        0 AS "NumberOfQuickReports",
+                        COUNT(1) AS "NumberOfFormSubmissions",
+                        0::float AS "MinutesMonitoring",
+                        SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                        SUM(FS."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered"
+                    FROM "FormSubmissions" FS
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                    GROUP BY FS."PollingStationId"
                     UNION ALL
                     SELECT
-                        PS."Level1" AS "Path",
-                        1 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
-                            INNER JOIN "PollingStations" PS ON PS."Id" = AO."PollingStationId"
-                    WHERE
-                        PS."Level1" != ''
-                    GROUP BY
-                        PS."Level1"
+                        PSI."PollingStationId",
+                        0 AS "NumberOfIncidentReports",
+                        0 AS "NumberOfQuickReports",
+                        COUNT(1) AS "NumberOfFormSubmissions",
+                        SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks")) AS "MinutesMonitoring",
+                        SUM(PSI."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                        SUM(PSI."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered"
+                    FROM "PollingStationInformation" PSI
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
+                    GROUP BY PSI."PollingStationId"
                     UNION ALL
                     SELECT
-                        PS."Level1" || ' / ' || PS."Level2" AS "Path",
-                        2 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
-                            INNER JOIN "PollingStations" PS ON PS."Id" = AO."PollingStationId"
-                    WHERE
-                        PS."Level2" IS NOT NULL
-                      AND PS."Level2" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2"
+                        QR."PollingStationId",
+                        0 AS "NumberOfIncidentReports",
+                        COUNT(1) AS "NumberOfQuickReports",
+                        0 AS "NumberOfFormSubmissions",
+                        0::float AS "MinutesMonitoring",
+                        0 AS "NumberOfFlaggedAnswers",
+                        0 AS "NumberOfQuestionsAnswered"
+                    FROM "QuickReports" QR
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
+                    WHERE QR."PollingStationId" IS NOT NULL
+                    GROUP BY QR."PollingStationId"
                     UNION ALL
                     SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" AS "Path",
-                        3 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
-                            INNER JOIN "PollingStations" PS ON PS."Id" = AO."PollingStationId"
-                    WHERE
-                        PS."Level3" IS NOT NULL
-                      AND PS."Level3" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" AS "Path",
-                        4 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
-                            INNER JOIN "PollingStations" PS ON PS."Id" = AO."PollingStationId"
-                    WHERE
-                        PS."Level4" IS NOT NULL
-                      AND PS."Level4" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5" AS "Path",
-                        5 AS "Level",
-                        COUNT(DISTINCT AO."MonitoringObserverId") "ActiveObservers"
-                    FROM
-                        "ActiveObservers" AO
-                            INNER JOIN "PollingStations" PS ON PS."Id" = AO."PollingStationId"
-                    WHERE
-                        PS."Level5" IS NOT NULL
-                      AND PS."Level5" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5"
+                        IR."PollingStationId",
+                        COUNT(1) AS "NumberOfIncidentReports",
+                        0 AS "NumberOfQuickReports",
+                        0 AS "NumberOfFormSubmissions",
+                        0::float AS "MinutesMonitoring",
+                        0 AS "NumberOfFlaggedAnswers",
+                        0 AS "NumberOfQuestionsAnswered"
+                    FROM "IncidentReports" IR
+                        INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
+                    WHERE IR."PollingStationId" IS NOT NULL
+                    GROUP BY IR."PollingStationId"
                 ),
                 "PollingStationsStats" AS (
                     SELECT
                         "PollingStationId",
-                        0 AS "NumberOfIncidentReports",
-                        0 AS "NumberOfQuickReports",
-                        COUNT(1) AS "NumberOfSubmissions",
-                        0 AS "MinutesMonitoring",
-                        SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM(FS."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        COUNT(FS."MonitoringObserverId") AS "ActiveObservers"
-                    FROM
-                        "FormSubmissions" FS
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
-                    GROUP BY
-                        "PollingStationId"
-                    UNION ALL
-                    SELECT
-                        "PollingStationId",
-                        0 AS "NumberOfIncidentReports",
-                        0 AS "NumberOfQuickReports",
-                        COUNT(1) AS "NumberOfSubmissions",
-                        SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks")) AS "MinutesMonitoring",
-                        SUM(PSI."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM(PSI."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        COUNT(PSI."MonitoringObserverId") AS "ActiveObservers"
-                    FROM
-                        "PollingStationInformation" PSI
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
-                    GROUP BY
-                        "PollingStationId"
-                    UNION ALL
-                    SELECT
-                        "PollingStationId",
-                        0 AS "NumberOfIncidentReports",
-                        COUNT(1) AS "NumberOfQuickReports",
-                        0 AS "NumberOfSubmissions",
-                        0 AS "MinutesMonitoring",
-                        0 AS "NumberOfFlaggedAnswers",
-                        0 AS "NumberOfQuestionsAnswered",
-                        COUNT(QR."MonitoringObserverId") AS "ActiveObservers"
-                    FROM
-                        "QuickReports" QR
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
-                    GROUP BY
-                        "PollingStationId"
-                    UNION ALL
-                    SELECT
-                        "PollingStationId",
-                        COUNT(1) AS "NumberOfIncidentReports",
-                        0 AS "NumberOfQuickReports",
-                        0 AS "NumberOfSubmissions",
-                        0 AS "MinutesMonitoring",
-                        0 AS "NumberOfFlaggedAnswers",
-                        0 AS "NumberOfQuestionsAnswered",
-                        COUNT(IR."MonitoringObserverId") AS "ActiveObservers"
-                    FROM
-                        "IncidentReports" IR
-                            INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                    GROUP BY
-                        "PollingStationId"
+                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
+                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
+                        SUM("NumberOfFormSubmissions") AS "NumberOfFormSubmissions",
+                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
+                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered"
+                    FROM "PollingStationsStatsRaw"
+                    GROUP BY "PollingStationId"
                 ),
-                "PollingStationLevelsStats" AS (
+                "ElectionPollingStations" AS (
                     SELECT
-                        '/' AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        0 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                    UNION ALL
-                    SELECT
-                        PS."Level1" AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        1 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                            INNER JOIN "PollingStations" PS ON PSV."PollingStationId" = PS."Id"
-                    WHERE
-                        PS."Level1" != ''
-                    GROUP BY
-                        PS."Level1"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        2 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                            INNER JOIN "PollingStations" PS ON PSV."PollingStationId" = PS."Id"
-                            INNER JOIN "ActiveObservers" AO ON AO."PollingStationId" = PS."Id"
-                    WHERE
-                        PS."Level2" IS NOT NULL
-                      AND PS."Level2" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        3 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                            INNER JOIN "PollingStations" PS ON PSV."PollingStationId" = PS."Id"
-                            INNER JOIN "ActiveObservers" AO ON AO."PollingStationId" = PS."Id"
-                    WHERE
-                        PS."Level3" IS NOT NULL
-                      AND PS."Level3" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        4 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                            INNER JOIN "PollingStations" PS ON PSV."PollingStationId" = PS."Id"
-                            INNER JOIN "ActiveObservers" AO ON AO."PollingStationId" = PS."Id"
-                    WHERE
-                        PS."Level4" IS NOT NULL
-                      AND PS."Level4" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5" AS "Path",
-                        COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
-                        SUM("NumberOfIncidentReports") AS "NumberOfIncidentReports",
-                        SUM("NumberOfQuickReports") AS "NumberOfQuickReports",
-                        SUM("NumberOfSubmissions") AS "NumberOfSubmissions",
-                        SUM("MinutesMonitoring") AS "MinutesMonitoring",
-                        SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                        SUM("NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered",
-                        5 AS "Level"
-                    FROM
-                        "PollingStationsStats" PSV
-                            INNER JOIN "PollingStations" PS ON PSV."PollingStationId" = PS."Id"
-                            INNER JOIN "ActiveObservers" AO ON AO."PollingStationId" = PS."Id"
-                    WHERE
-                        PS."Level5" IS NOT NULL
-                      AND PS."Level5" != ''
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5"
+                        PS."Id",
+                        NULLIF(PS."Level1", '') AS "Level1",
+                        NULLIF(PS."Level2", '') AS "Level2",
+                        NULLIF(PS."Level3", '') AS "Level3",
+                        NULLIF(PS."Level4", '') AS "Level4",
+                        NULLIF(PS."Level5", '') AS "Level5"
+                    FROM "PollingStations" PS
+                    WHERE PS."ElectionRoundId" = @ELECTIONROUNDID
+                      AND PS."Level1" != ''
                 ),
                 "PollingStationsPerLevel" AS (
                     SELECT
-                        '/' AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        0 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        PS."Level1" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    UNION ALL
-                    SELECT
-                        PS."Level1" AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        1 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        PS."Level1" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    GROUP BY
-                        PS."Level1"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        2 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        "Level2" IS NOT NULL
-                      AND "Level2" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        3 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        "Level3" IS NOT NULL
-                      AND "Level3" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        4 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        "Level4" IS NOT NULL
-                      AND "Level4" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4"
-                    UNION ALL
-                    SELECT
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5" AS "Path",
-                        COUNT(PS."Id") AS "NumberOfPollingStations",
-                        5 AS "Level"
-                    FROM
-                        "PollingStations" PS
-                    WHERE
-                        "Level5" IS NOT NULL
-                      AND "Level5" != ''
-                      AND PS."ElectionRoundId" = @ELECTIONROUNDID
-                    GROUP BY
-                        PS."Level1" || ' / ' || PS."Level2" || ' / ' || PS."Level3" || ' / ' || PS."Level4" || ' / ' || PS."Level5"
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN 0
+                            WHEN GROUPING(PS."Level2") = 1 THEN 1
+                            WHEN GROUPING(PS."Level3") = 1 THEN 2
+                            WHEN GROUPING(PS."Level4") = 1 THEN 3
+                            WHEN GROUPING(PS."Level5") = 1 THEN 4
+                            ELSE 5
+                        END AS "Level",
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN '/'
+                            ELSE CONCAT_WS(' / ', PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                        END AS "Path",
+                        COUNT(PS."Id") AS "NumberOfPollingStations"
+                    FROM "ElectionPollingStations" PS
+                    GROUP BY GROUPING SETS (
+                        (),
+                        (PS."Level1"),
+                        (PS."Level1", PS."Level2"),
+                        (PS."Level1", PS."Level2", PS."Level3"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                    )
+                    HAVING
+                        GROUPING(PS."Level1") = 1
+                        OR (
+                            GROUPING(PS."Level2") = 1
+                            AND PS."Level1" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level3") = 1
+                            AND GROUPING(PS."Level2") = 0
+                            AND PS."Level2" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level4") = 1
+                            AND GROUPING(PS."Level3") = 0
+                            AND PS."Level3" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 1
+                            AND GROUPING(PS."Level4") = 0
+                            AND PS."Level4" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 0
+                            AND PS."Level5" IS NOT NULL
+                        )
                 ),
-                "AllPollingStationLevelsStats" AS (
+                "PollingStationLevelsStats" AS (
                     SELECT
-                        S.*,
-                        PS."NumberOfPollingStations" AS "NumberOfPollingStations"
-                    FROM
-                        "PollingStationLevelsStats" S
-                            INNER JOIN "PollingStationsPerLevel" PS ON S."Level" = PS."Level"
-                            AND S."Path" = PS."Path"
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN 0
+                            WHEN GROUPING(PS."Level2") = 1 THEN 1
+                            WHEN GROUPING(PS."Level3") = 1 THEN 2
+                            WHEN GROUPING(PS."Level4") = 1 THEN 3
+                            WHEN GROUPING(PS."Level5") = 1 THEN 4
+                            ELSE 5
+                        END AS "Level",
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN '/'
+                            ELSE CONCAT_WS(' / ', PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                        END AS "Path",
+                        COUNT(PSV."PollingStationId") AS "NumberOfVisitedPollingStations",
+                        COALESCE(SUM(PSV."NumberOfIncidentReports"), 0) AS "NumberOfIncidentReports",
+                        COALESCE(SUM(PSV."NumberOfQuickReports"), 0) AS "NumberOfQuickReports",
+                        COALESCE(SUM(PSV."NumberOfFormSubmissions"), 0) AS "NumberOfFormSubmissions",
+                        COALESCE(SUM(PSV."MinutesMonitoring"), 0) AS "MinutesMonitoring",
+                        COALESCE(SUM(PSV."NumberOfFlaggedAnswers"), 0) AS "NumberOfFlaggedAnswers",
+                        COALESCE(SUM(PSV."NumberOfQuestionsAnswered"), 0) AS "NumberOfQuestionsAnswered"
+                    FROM "PollingStationsStats" PSV
+                        INNER JOIN "ElectionPollingStations" PS ON PS."Id" = PSV."PollingStationId"
+                    GROUP BY GROUPING SETS (
+                        (),
+                        (PS."Level1"),
+                        (PS."Level1", PS."Level2"),
+                        (PS."Level1", PS."Level2", PS."Level3"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                    )
+                    HAVING
+                        GROUPING(PS."Level1") = 1
+                        OR (
+                            GROUPING(PS."Level2") = 1
+                            AND PS."Level1" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level3") = 1
+                            AND GROUPING(PS."Level2") = 0
+                            AND PS."Level2" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level4") = 1
+                            AND GROUPING(PS."Level3") = 0
+                            AND PS."Level3" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 1
+                            AND GROUPING(PS."Level4") = 0
+                            AND PS."Level4" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 0
+                            AND PS."Level5" IS NOT NULL
+                        )
+                ),
+                "ActiveObserversPerLevel" AS (
+                    SELECT
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN 0
+                            WHEN GROUPING(PS."Level2") = 1 THEN 1
+                            WHEN GROUPING(PS."Level3") = 1 THEN 2
+                            WHEN GROUPING(PS."Level4") = 1 THEN 3
+                            WHEN GROUPING(PS."Level5") = 1 THEN 4
+                            ELSE 5
+                        END AS "Level",
+                        CASE
+                            WHEN GROUPING(PS."Level1") = 1 THEN '/'
+                            ELSE CONCAT_WS(' / ', PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                        END AS "Path",
+                        COUNT(DISTINCT AO."MonitoringObserverId") AS "ActiveObservers"
+                    FROM "ActiveObservers" AO
+                        INNER JOIN "ElectionPollingStations" PS ON PS."Id" = AO."PollingStationId"
+                    GROUP BY GROUPING SETS (
+                        (),
+                        (PS."Level1"),
+                        (PS."Level1", PS."Level2"),
+                        (PS."Level1", PS."Level2", PS."Level3"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4"),
+                        (PS."Level1", PS."Level2", PS."Level3", PS."Level4", PS."Level5")
+                    )
+                    HAVING
+                        GROUPING(PS."Level1") = 1
+                        OR (
+                            GROUPING(PS."Level2") = 1
+                            AND PS."Level1" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level3") = 1
+                            AND GROUPING(PS."Level2") = 0
+                            AND PS."Level2" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level4") = 1
+                            AND GROUPING(PS."Level3") = 0
+                            AND PS."Level3" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 1
+                            AND GROUPING(PS."Level4") = 0
+                            AND PS."Level4" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(PS."Level5") = 0
+                            AND PS."Level5" IS NOT NULL
+                        )
                 )
             SELECT
-                A.*,
-                AOL."ActiveObservers" AS "ActiveObservers",
+                S."Path",
+                S."Level",
+                S."NumberOfVisitedPollingStations",
+                PS."NumberOfPollingStations",
+                S."NumberOfIncidentReports",
+                S."NumberOfQuickReports",
+                S."NumberOfFormSubmissions",
+                S."MinutesMonitoring",
+                S."NumberOfFlaggedAnswers",
+                S."NumberOfQuestionsAnswered",
+                AOL."ActiveObservers",
                 (
-                    A."NumberOfVisitedPollingStations" * 100.0 / NULLIF(A."NumberOfPollingStations", 0)
-                    ) AS "CoveragePercentage"
-            FROM
-                "AllPollingStationLevelsStats" A
-                    INNER JOIN "ActiveObserversPerLevel" AOL ON A."Level" = AOL."Level"
-                    AND A."Path" = AOL."Path";
-            
+                    S."NumberOfVisitedPollingStations" * 100.0 / NULLIF(PS."NumberOfPollingStations", 0)
+                ) AS "CoveragePercentage"
+            FROM "PollingStationLevelsStats" S
+                INNER JOIN "PollingStationsPerLevel" PS ON S."Level" = PS."Level" AND S."Path" = PS."Path"
+                INNER JOIN "ActiveObserversPerLevel" AOL ON S."Level" = AOL."Level" AND S."Path" = AOL."Path";
+
             ------------------------------------------------------------------------------
             -------------------------- read hourly histogram------------------------------
-            
-            WITH submission_histogram AS (
+
+            WITH "AvailableObservers" AS (
+                SELECT "MonitoringObserverId"
+                FROM "GetAvailableMonitoringObservers"(@ELECTIONROUNDID, @NGOID, @DATASOURCE)
+            ),
+            submission_histogram AS (
                 SELECT
                     DATE_TRUNC(
                             'hour',
@@ -440,13 +354,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                     FS."NumberOfQuestionsAnswered" AS number_of_questions_answered,
                     FS."NumberOfFlaggedAnswers" AS number_of_flagged_answers
                 FROM "FormSubmissions" FS
-                         INNER JOIN "GetAvailableMonitoringObservers"(
-                            @ELECTIONROUNDID,
-                            @NGOID,
-                            @DATASOURCE) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
-            
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+
                 UNION ALL
-            
+
                 SELECT
                     DATE_TRUNC(
                             'hour',
@@ -456,12 +367,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
                     qr."NumberOfQuestionsAnswered" AS number_of_questions_answered,
                     qr."NumberOfFlaggedAnswers" AS number_of_flagged_answers
                 FROM "PollingStationInformation" qr
-                         INNER JOIN "GetAvailableMonitoringObservers"(
-                            @ELECTIONROUNDID,
-                            @NGOID,
-                            @DATASOURCE) MO ON MO."MonitoringObserverId" = qr."MonitoringObserverId"
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = qr."MonitoringObserverId"
             )
-            
             SELECT
                 bucket AS "Bucket",
                 COUNT(*) AS "FormsSubmitted",
@@ -470,55 +377,50 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
             FROM submission_histogram
             GROUP BY bucket
             ORDER BY bucket;
-            
+
+            WITH "AvailableObservers" AS (
+                SELECT "MonitoringObserverId"
+                FROM "GetAvailableMonitoringObservers"(@ELECTIONROUNDID, @NGOID, @DATASOURCE)
+            )
             SELECT
                 DATE_TRUNC(
                         'hour',
-                        TIMEZONE (
-                                'utc',
-                                QR."LastUpdatedAt"
-                        )
+                        TIMEZONE('utc', QR."LastUpdatedAt")
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"
-            FROM
-                "QuickReports" QR
-                    INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
-            GROUP BY
-                1;
-            
+            FROM "QuickReports" QR
+                INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
+            GROUP BY 1;
+
             SELECT
                 DATE_TRUNC(
                         'hour',
-                        TIMEZONE (
+                        TIMEZONE(
                                 'utc',
                                 COALESCE(CR."LastModifiedOn", CR."CreatedOn")
                         )
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"
-            FROM
-                "CitizenReports" CR
-                    INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-            WHERE
-                CR."ElectionRoundId" = @ELECTIONROUNDID
+            FROM "CitizenReports" CR
+                INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
+                INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
+            WHERE CR."ElectionRoundId" = @ELECTIONROUNDID
               AND MN."NgoId" = @NGOID
-            GROUP BY
-                1;
-            
+            GROUP BY 1;
+
+            WITH "AvailableObservers" AS (
+                SELECT "MonitoringObserverId"
+                FROM "GetAvailableMonitoringObservers"(@ELECTIONROUNDID, @NGOID, @DATASOURCE)
+            )
             SELECT
                 DATE_TRUNC(
                         'hour',
-                        TIMEZONE (
-                                'utc',
-                                IR."LastUpdatedAt"
-                        )
+                        TIMEZONE('utc', IR."LastUpdatedAt")
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"
-            FROM
-                "IncidentReports" IR
-                    INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-            GROUP BY
-                1;
+            FROM "IncidentReports" IR
+                INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
+            GROUP BY 1;
             """;
 
         var queryArgs = new

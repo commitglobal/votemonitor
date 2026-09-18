@@ -4,6 +4,7 @@ import type {
   IncidentReportFollowUpStatus,
   MultiSelectAnswer,
   NumberAnswer,
+  ObserverStatus,
   RatingAnswer,
   SingleSelectAnswer,
   TextAnswer,
@@ -89,7 +90,15 @@ export interface FormFilterOption {
   formName: string;
 }
 
+export interface ObserverFilterOption {
+  monitoringObserverId: string;
+  displayName: string;
+  email: string;
+  accountStatus: ObserverStatus;
+}
+
 export interface IncidentReportsFilters  {
   timestampsFilterOptions: TimestampsFilterOptions;
   formFilterOptions: FormFilterOption[];
+  observerFilterOptions: ObserverFilterOption[];
 }

@@ -63,7 +63,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 OR PS."Level5" = @level5
             )
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp);
+            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
+            AND (@hasAttachments IS NULL
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportAttachments" QRA
+                      WHERE QRA."QuickReportId" = QR."Id"
+                        AND QRA."IsDeleted" = FALSE
+                        AND QRA."IsCompleted" = TRUE) = 0 AND @hasAttachments = FALSE)
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportAttachments" QRA
+                      WHERE QRA."QuickReportId" = QR."Id"
+                        AND QRA."IsDeleted" = FALSE
+                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE));
 
         SELECT
             QR."Id",
@@ -132,6 +143,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             )
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
             AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
+            AND (@hasAttachments IS NULL
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportAttachments" QRA
+                      WHERE QRA."QuickReportId" = QR."Id"
+                        AND QRA."IsDeleted" = FALSE
+                        AND QRA."IsCompleted" = TRUE) = 0 AND @hasAttachments = FALSE)
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportAttachments" QRA
+                      WHERE QRA."QuickReportId" = QR."Id"
+                        AND QRA."IsDeleted" = FALSE
+                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
             CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC
@@ -160,6 +182,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             incidentCategory = req.IncidentCategory?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
+            hasAttachments = req.HasAttachments,
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

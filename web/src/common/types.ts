@@ -58,6 +58,8 @@ export const ZDisplayLogicCondition = z.enum([
   'GreaterThan',
   'GreaterEqual',
   'Includes',
+  'AnyOf',
+  'All',
 ]);
 
 export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>;
@@ -65,7 +67,8 @@ export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>;
 export interface DisplayLogic {
   parentQuestionId: string;
   condition: DisplayLogicCondition;
-  value: string;
+  value?: string;
+  optionIds?: string[];
 }
 
 export interface BaseQuestion {

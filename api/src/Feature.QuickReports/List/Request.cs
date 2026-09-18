@@ -24,4 +24,5 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
     [QueryParam] public Guid? CoalitionMemberId { get; set; }
+    [QueryParam] public bool? HasAttachments { get; set; }
 }

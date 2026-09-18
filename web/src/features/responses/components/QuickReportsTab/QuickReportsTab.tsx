@@ -19,7 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
-import { getValueOrDefault } from '@/lib/utils';
+import { getValueOrDefault, toBoolean } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -50,6 +50,7 @@ export interface QuickReportFilterRequest {
   incidentCategory: IncidentCategory | undefined;
   coalitionMemberId: string | undefined;
   monitoringObserverId: string | undefined;
+  hasAttachments: boolean | undefined;
 }
 export function QuickReportsTab(): FunctionComponent {
   const navigate = useNavigate();
@@ -87,10 +88,11 @@ export function QuickReportsTab(): FunctionComponent {
       coalitionMemberId: search.coalitionMemberId,
       monitoringObserverId: undefined,
       searchText: searchText,
+      hasAttachments: toBoolean(debouncedSearch.hasAttachments),
     };
 
     return params;
-  }, [debouncedSearch, searchText]);
+  }, [debouncedSearch, searchText, search.coalitionMemberId]);
 
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
@@ -236,6 +238,26 @@ export function QuickReportsTab(): FunctionComponent {
               </SelectContent>
             </Select>
 
+            <Select
+              onValueChange={(value) => {
+                navigate({ to: '.', search: (prev: any) => ({ ...prev, hasAttachments: value }) });
+              }}
+              value={search.hasAttachments ?? ''}>
+              <SelectTrigger>
+                <SelectValue placeholder='Media files' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem key={'true'} value='true'>
+                    Yes
+                  </SelectItem>
+                  <SelectItem key={'false'} value='false'>
+                    No
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             <PollingStationsFilters />
             <ResetFiltersButton disabled={!filtersExpanded} params={{ tag: 'quick-reports' }} />
 
@@ -257,6 +279,12 @@ export function QuickReportsTab(): FunctionComponent {
                   <FilterBadge
                     label={`Location Type: ${mapIncidentCategory(search.incidentCategory)}`}
                     onClear={onClearFilter(['incidentCategory'])}
+                  />
+                )}
+                {search.hasAttachments && (
+                  <FilterBadge
+                    label={`Media files: ${search.hasAttachments === 'true' ? 'Yes' : 'No'}`}
+                    onClear={onClearFilter(['hasAttachments'])}
                   />
                 )}
                 {search.level1Filter && (

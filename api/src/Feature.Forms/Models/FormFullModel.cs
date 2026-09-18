@@ -30,8 +30,13 @@ public class FormFullModel
 
     public int DisplayOrder { get; init; }
 
-    
-    public static FormFullModel FromEntity(FormAggregate form) => form == null
+    public required DateTime LastModifiedOn { get; init; }
+
+    public string LastModifiedBy { get; init; } = string.Empty;
+
+    public static FormFullModel FromEntity(FormAggregate form) => FromEntity(form, string.Empty);
+
+    public static FormFullModel FromEntity(FormAggregate form, string lastModifiedBy) => form == null
         ? null
         : new FormFullModel
         {
@@ -47,10 +52,15 @@ public class FormFullModel
             Description = form.Description,
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
             Icon = form.Icon,
-            DisplayOrder = form.DisplayOrder
+            DisplayOrder = form.DisplayOrder,
+            LastModifiedOn = form.LastModifiedOn ?? form.CreatedOn,
+            LastModifiedBy = lastModifiedBy
         };
-    
-    public static FormFullModel FromEntity(PollingStationInformationForm form) => form == null
+
+    public static FormFullModel FromEntity(PollingStationInformationForm form) =>
+        FromEntity(form, string.Empty);
+
+    public static FormFullModel FromEntity(PollingStationInformationForm form, string lastModifiedBy) => form == null
         ? null
         : new FormFullModel
         {
@@ -66,5 +76,7 @@ public class FormFullModel
             Description = form.Description,
             LanguagesTranslationStatus = form.LanguagesTranslationStatus,
             Icon = form.Icon,
+            LastModifiedOn = form.LastModifiedOn ?? form.CreatedOn,
+            LastModifiedBy = lastModifiedBy
         };
 }

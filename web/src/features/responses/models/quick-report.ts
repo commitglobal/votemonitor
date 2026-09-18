@@ -1,4 +1,4 @@
-import { QuickReportFollowUpStatus } from "@/common/types";
+import { ObserverStatus, QuickReportFollowUpStatus } from "@/common/types";
 import { Attachment } from "./common";
 
 export enum QuickReportLocationType {
@@ -89,6 +89,14 @@ export interface TimestampsFilterOptions {
   lastSubmissionTimestamp: string;
 }
 
+export interface ObserverFilterOption {
+  monitoringObserverId: string;
+  displayName: string;
+  email: string;
+  accountStatus: ObserverStatus;
+}
+
 export interface QuickReportsFilters  {
   timestampsFilterOptions: TimestampsFilterOptions;
+  observerFilterOptions: ObserverFilterOption[];
 }

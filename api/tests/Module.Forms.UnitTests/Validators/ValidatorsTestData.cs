@@ -59,6 +59,8 @@ public class ValidatorsTestData
         new List<object?[]>
         {
             new object?[] { new DisplayLogicRequest{ParentQuestionId= Guid.NewGuid(), Condition = DisplayLogicCondition.GreaterEqual, Value = "1"} },
+            new object?[] { new DisplayLogicRequest{ParentQuestionId= Guid.NewGuid(), Condition = DisplayLogicCondition.AnyOf, OptionIds = ["opt-1", "opt-2"]} },
+            new object?[] { new DisplayLogicRequest{ParentQuestionId= Guid.NewGuid(), Condition = DisplayLogicCondition.All, OptionIds = ["opt-1"]} },
             new object?[] { null }
         };
 

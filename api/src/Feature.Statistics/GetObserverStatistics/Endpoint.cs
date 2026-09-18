@@ -1,11 +1,11 @@
 ﻿using Authorization.Policies;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 using Vote.Monitor.Domain.ConnectionFactory;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Statistics.GetObserverStatistics;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache cache) : Endpoint<Request, Response>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFusionCache cache) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -20,11 +20,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IMemoryCache
     {
         var cacheKey = $"statistics-{req.ElectionRoundId}-{req.ObserverId}";
 
-        return await cache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(120);
-            return await GetObserverStatisticsAsync(req, ct);
-        }) ?? new Response();
+        return await cache.GetOrSetAsync(
+            cacheKey,
+            async _ => await GetObserverStatisticsAsync(req, ct),
+            options => options.SetDuration(StatisticsInstaller.ObserverCacheDuration),
+            token: ct);
     }
 
     private async Task<Response> GetObserverStatisticsAsync(Request req, CancellationToken ct)

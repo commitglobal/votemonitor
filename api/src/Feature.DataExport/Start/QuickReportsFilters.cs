@@ -20,6 +20,7 @@ public record QuickReportsFilters
     public IncidentCategory? IncidentCategory { get; init; }
     public DateTime? FromDateFilter { get; init; }
     public DateTime? ToDateFilter { get; init; }
+    public bool? HasAttachments { get; init; }
 
     public ExportQuickReportsFilters ToFilter()
     {
@@ -37,7 +38,8 @@ public record QuickReportsFilters
             FromDateFilter = FromDateFilter,
             ToDateFilter = ToDateFilter,
             DataSource = DataSource,
-            CoalitionMemberId = CoalitionMemberId
+            CoalitionMemberId = CoalitionMemberId,
+            HasAttachments = HasAttachments
         };
     }
 }

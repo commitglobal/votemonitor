@@ -100,10 +100,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             MO."Tags",
             MO."Status",
             MO."IsOwnObserver",
-            MAX(LT."LatestActivityAt") AS "LatestActivityAt"
+            MAX(LT."LatestActivityAt") AS "LatestActivityAt",
+            CASE WHEN MO."Status" = 'Pending' THEN U."InvitationToken" ELSE NULL END AS "InvitationToken"
         FROM
             MONITORINGOBSERVER MO
             LEFT JOIN LATESTTIMESTAMPS LT ON TRUE
+            INNER JOIN "MonitoringObservers" M ON M."Id" = MO."Id"
+            INNER JOIN "Observers" O ON O."Id" = M."ObserverId"
+            INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         GROUP BY
             MO."Id",
             MO."DisplayName",
@@ -113,7 +117,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             MO."Email",
             MO."Tags",
             MO."Status",
-            MO."IsOwnObserver";
+            MO."IsOwnObserver",
+            U."InvitationToken";
         """;
 
         var queryArgs = new

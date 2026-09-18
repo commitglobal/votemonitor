@@ -22,5 +22,11 @@ public static class SchedulingExtensions
 
         recurringJobManager
             .AddOrUpdate<ImportValidationErrorsCleanerJob>(RecurringJobNames.ImportValidationErrorsCleaner, x => x.Run(), Cron.Daily);
+
+        recurringJobManager
+            .AddOrUpdate<PendingInviteResendJob>(RecurringJobNames.PendingInviteResend, x => x.Run(), Cron.Daily);
+
+        recurringJobManager
+            .AddOrUpdate<PendingMonitoringObserverCleanerJob>(RecurringJobNames.PendingMonitoringObserverCleaner, x => x.Run(), Cron.Daily);
     }
 }

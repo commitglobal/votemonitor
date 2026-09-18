@@ -2,6 +2,7 @@
 using Feature.Forms.Models;
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
@@ -14,11 +15,12 @@ public class GetEndpointTests
     private readonly IReadRepository<Form> _repository = Substitute.For<IReadRepository<Form>>();
     private readonly IReadRepository<Coalition> _coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
     private readonly IReadRepository<PollingStationInformationForm> _psiFormRepository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
+    private readonly IReadRepository<ApplicationUser> _userRepository = Substitute.For<IReadRepository<ApplicationUser>>();
     private readonly Get.Endpoint _endpoint;
 
     public GetEndpointTests()
     {
-        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository, _coalitionRepository, _psiFormRepository);
+        _endpoint = Factory.Create<Get.Endpoint>(_authorizationService, _repository, _coalitionRepository, _psiFormRepository, _userRepository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -64,7 +66,10 @@ public class GetEndpointTests
             .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<Ok<FormFullModel>>()
-            .Which.Value.Should().BeEquivalentTo(psiForm, options => options.ExcludingMissingMembers());
+            .Which.Value.Should().BeEquivalentTo(psiForm, options => options
+                .ExcludingMissingMembers()
+                .Excluding(x => x.LastModifiedOn)
+                .Excluding(x => x.LastModifiedBy));
     }
 
     [Fact]
@@ -86,7 +91,10 @@ public class GetEndpointTests
             .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<Ok<FormFullModel>>()
-            .Which.Value.Should().BeEquivalentTo(form, options => options.ExcludingMissingMembers());
+            .Which.Value.Should().BeEquivalentTo(form, options => options
+                .ExcludingMissingMembers()
+                .Excluding(x => x.LastModifiedOn)
+                .Excluding(x => x.LastModifiedBy));
     }
 
     [Fact]

@@ -11,6 +11,8 @@ public class DisplayLogicCondition : SmartEnum<DisplayLogicCondition, string>
     public static readonly DisplayLogicCondition GreaterThan = new(nameof(GreaterThan), nameof(GreaterThan));
     public static readonly DisplayLogicCondition GreaterEqual = new(nameof(GreaterEqual), nameof(GreaterEqual));
     public static readonly DisplayLogicCondition Includes = new(nameof(Includes), nameof(Includes));
+    public static readonly DisplayLogicCondition AnyOf = new(nameof(AnyOf), nameof(AnyOf));
+    public static readonly DisplayLogicCondition All = new(nameof(All), nameof(All));
 
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>

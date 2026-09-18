@@ -33,7 +33,19 @@ public class Endpoint(
                   SELECT MIN(QR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
                          MAX(QR."LastUpdatedAt") AS "LastSubmissionTimestamp"
                   FROM "QuickReports" QR
-                  INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                    ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
+                  WHERE QR."ElectionRoundId" = @electionRoundId;
+
+                  -- =====================================================================================
+                  SELECT DISTINCT
+                    MO."MonitoringObserverId",
+                    MO."DisplayName",
+                    MO."Email",
+                    MO."AccountStatus"
+                  FROM "QuickReports" QR
+                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                    ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
                   WHERE QR."ElectionRoundId" = @electionRoundId
                   """;
 
@@ -41,20 +53,23 @@ public class Endpoint(
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            DataSource = req.DataSource.ToString()
+            dataSource = req.DataSource.ToString()
         };
 
         SubmissionsTimestampsFilterOptions timestampFilterOptions;
+        List<SubmissionsObserverFilterOption> observerFilterOptions;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
 
             timestampFilterOptions = multi.Read<SubmissionsTimestampsFilterOptions>().Single();
+            observerFilterOptions = multi.Read<SubmissionsObserverFilterOption>().ToList();
         }
 
         return TypedResults.Ok(new Response
         {
-            TimestampsFilterOptions = timestampFilterOptions
+            TimestampsFilterOptions = timestampFilterOptions,
+            ObserverFilterOptions = observerFilterOptions
         });
     }
 }

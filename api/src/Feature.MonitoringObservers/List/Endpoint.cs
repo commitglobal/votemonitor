@@ -50,7 +50,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             "Email",
             "Tags",
             "Status",
-            "LatestActivityAt"
+            "LatestActivityAt",
+            "InvitationToken"
         FROM (
             SELECT
                 MO."Id",
@@ -61,7 +62,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 U."Email",
                 MO."Tags",
                 MO."Status",
-                MAX(LATESTACTIVITY."LatestActivityAt") AS "LatestActivityAt"
+                MAX(LATESTACTIVITY."LatestActivityAt") AS "LatestActivityAt",
+                CASE WHEN MO."Status" = 'Pending' THEN U."InvitationToken" ELSE NULL END AS "InvitationToken"
             FROM
                 "MonitoringObservers" MO
                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
@@ -137,7 +139,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 U."PhoneNumber",
                 U."Email",
                 MO."Tags",
-                MO."Status"
+                MO."Status",
+                U."InvitationToken"
             ) T
 
         ORDER BY

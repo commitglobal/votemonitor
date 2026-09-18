@@ -154,13 +154,14 @@ export class FormExporter {
 
     let valueText = logic.value;
 
-    // If the condition is 'Includes', get the option text from parent
-    if (logic.condition === 'Includes') {
+    // If the condition is option-based, get the option text from parent
+    if (logic.condition === 'Includes' || logic.condition === 'AnyOf' || logic.condition === 'All') {
       if (isSingleSelectQuestion(parent) || isMultiSelectQuestion(parent)) {
-        const option = parent.options.find(opt => opt.id === logic.value);
-        if (option) {
-          valueText = option.text[language] ?? '';
-        }
+        const ids = logic.condition === 'Includes' ? [logic.value] : (logic.optionIds ?? []);
+        valueText = ids
+          .map((id) => parent.options.find((opt) => opt.id === id)?.text[language] ?? id)
+          .filter(Boolean)
+          .join(', ');
       }
     }
 
@@ -180,6 +181,10 @@ export class FormExporter {
         return `Fill in when ${parent.code} is greater than or equal to "${valueText}"`;
       case 'Includes':
         return `Fill in when ${parent.code} includes "${valueText}"`;
+      case 'AnyOf':
+        return `Fill in when ${parent.code} matches any of "${valueText}"`;
+      case 'All':
+        return `Fill in when ${parent.code} matches all of "${valueText}"`;
       default:
         return '';
     }

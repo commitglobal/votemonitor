@@ -21,6 +21,7 @@ export interface MonitoringObserver {
   tags: string[];
   isOwnObserver: boolean;
   latestActivityAt?: string;
+  invitationToken?: string | null;
 }
 
 export const monitoringObserverDetailsRouteSearchSchema = z.object({

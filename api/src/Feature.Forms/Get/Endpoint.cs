@@ -2,6 +2,7 @@
 using Feature.Forms.Models;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using GetCoalitionFormSpecification = Feature.Forms.Specifications.GetCoalitionFormSpecification;
@@ -12,7 +13,8 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IReadRepository<FormAggregate> formRepository,
     IReadRepository<Coalition> coalitionRepository,
-    IReadRepository<PollingStationInformationForm> psiFormRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
+    IReadRepository<PollingStationInformationForm> psiFormRepository,
+    IReadRepository<ApplicationUser> userRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -29,8 +31,9 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-        var psiFormSpecification =                                               
-            new GetPsiFormById(req.ElectionRoundId, req.Id); 
+
+        var psiFormSpecification =
+            new GetPsiFormById(req.ElectionRoundId, req.Id);
         var coalitionFormSpecification =
             new GetCoalitionFormSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var ngoFormSpecification =
@@ -40,9 +43,10 @@ public class Endpoint(
 
         if (psiForm is not null)
         {
-            return TypedResults.Ok(FormFullModel.FromEntity(psiForm));
+            var lastModifiedBy = await ResolveLastModifiedByAsync(psiForm.LastModifiedBy, psiForm.CreatedBy, ct);
+            return TypedResults.Ok(FormFullModel.FromEntity(psiForm, lastModifiedBy));
         }
-        
+
         var form = (await coalitionRepository.FirstOrDefaultAsync(coalitionFormSpecification, ct)) ??
                    (await formRepository.FirstOrDefaultAsync(ngoFormSpecification, ct));
 
@@ -51,6 +55,20 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(FormFullModel.FromEntity(form));
+        var formLastModifiedBy = await ResolveLastModifiedByAsync(form.LastModifiedBy, form.CreatedBy, ct);
+        return TypedResults.Ok(FormFullModel.FromEntity(form, formLastModifiedBy));
+    }
+
+    private async Task<string> ResolveLastModifiedByAsync(Guid lastModifiedBy, Guid createdBy, CancellationToken ct)
+    {
+        var userId = lastModifiedBy != Guid.Empty ? lastModifiedBy : createdBy;
+        if (userId == Guid.Empty)
+        {
+            return string.Empty;
+        }
+
+        return (await userRepository.FirstOrDefaultAsync(new GetUserByIdSpecification(userId), ct))
+                   ?.DisplayName
+               ?? string.Empty;
     }
 }
