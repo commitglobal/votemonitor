@@ -215,6 +215,10 @@ public class ExportQuickReportsJob(
             			AND @HASATTACHMENTS = TRUE
             		)
             	)
+            	AND (
+            		@MONITORINGOBSERVERID IS NULL
+            		OR AMO."MonitoringObserverId" = @MONITORINGOBSERVERID
+            	)
             ORDER BY
             	QR."LastUpdatedAt" DESC
             """;
@@ -236,6 +240,7 @@ public class ExportQuickReportsJob(
             fromDate = filters.FromDateFilter?.ToString("O"),
             toDate = filters.ToDateFilter?.ToString("O"),
             hasAttachments = filters.HasAttachments,
+            monitoringObserverId = filters.MonitoringObserverId,
         };
 
         IEnumerable<QuickReportModel> quickReports = [];

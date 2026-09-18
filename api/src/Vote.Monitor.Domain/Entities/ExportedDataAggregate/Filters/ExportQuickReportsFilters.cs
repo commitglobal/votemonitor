@@ -23,4 +23,5 @@ public record ExportQuickReportsFilters
     public DateTime? FromDateFilter { get; init; }
     public DateTime? ToDateFilter { get; init; }
     public bool? HasAttachments { get; init; }
+    public Guid? MonitoringObserverId { get; init; }
 }

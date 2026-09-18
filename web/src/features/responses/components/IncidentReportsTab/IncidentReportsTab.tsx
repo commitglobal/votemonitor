@@ -65,6 +65,7 @@ export default function IncidentReportsTab(): FunctionComponent {
       ['pollingStationNumberFilter', search.pollingStationNumberFilter],
       ['followUpStatus', search.incidentReportFollowUpStatus],
       ['locationType', search.incidentReportLocationType],
+      ['monitoringObserverId', search.monitoringObserverId],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);

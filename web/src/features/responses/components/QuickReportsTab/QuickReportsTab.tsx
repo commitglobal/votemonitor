@@ -86,7 +86,7 @@ export function QuickReportsTab(): FunctionComponent {
       quickReportLocationType: debouncedSearch.quickReportLocationType,
       incidentCategory: debouncedSearch.incidentCategory,
       coalitionMemberId: search.coalitionMemberId,
-      monitoringObserverId: undefined,
+      monitoringObserverId: debouncedSearch.monitoringObserverId || undefined,
       searchText: searchText,
       hasAttachments: toBoolean(debouncedSearch.hasAttachments),
     };

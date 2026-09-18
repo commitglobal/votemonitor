@@ -36,6 +36,7 @@ export interface FormSubmissionsSearchRequest{
   fromDateFilter: string | undefined;
   toDateFilter: string | undefined;
   coalitionMemberId: string | undefined;
+  monitoringObserverId: string | undefined;
 }
 
 export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEntryTableProps): FunctionComponent {
@@ -68,7 +69,8 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       formId: debouncedSearch.formId,
       fromDateFilter: debouncedSearch.submissionsFromDate?.toISOString(),
       toDateFilter: debouncedSearch.submissionsToDate?.toISOString(),
-      coalitionMemberId: debouncedSearch.coalitionMemberId
+      coalitionMemberId: debouncedSearch.coalitionMemberId,
+      monitoringObserverId: debouncedSearch.monitoringObserverId || undefined,
     };
 
     return params;

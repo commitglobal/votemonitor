@@ -76,7 +76,7 @@ export default function QuickReportDetails(): FunctionComponent {
               <Link
                 className='flex gap-1 font-bold text-purple-500'
                 to='/responses'
-                search={{ searchText: quickReport.monitoringObserverId, tab: 'quick-reports', viewBy: 'byEntry' }}
+                search={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'quick-reports', viewBy: 'byEntry' }}
                 target='_blank'
                 preload={false}>
                 {quickReport.observerName}

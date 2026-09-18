@@ -33,6 +33,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         WHERE
             QR."ElectionRoundId" = @electionRoundId
             AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
+            AND (@monitoringObserverId IS NULL OR AMO."MonitoringObserverId" = @monitoringObserverId)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
@@ -112,6 +113,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         WHERE
             QR."ElectionRoundId" = @electionRoundId
             AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
+            AND (@monitoringObserverId IS NULL OR AMO."MonitoringObserverId" = @monitoringObserverId)
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
             AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
@@ -199,6 +201,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
             hasAttachments = req.HasAttachments,
+            monitoringObserverId = req.MonitoringObserverId,
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
