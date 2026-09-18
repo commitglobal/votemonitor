@@ -50,7 +50,7 @@ public class PendingInviteResendJob(
 
         foreach (var observer in pendingObservers)
         {
-            var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
+            var endpointUri = new Uri(Path.Join($"{_apiConfig.WebAppUrl}", "accept-invite"));
             var acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken",
                 observer.InvitationToken);
 
