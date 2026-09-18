@@ -14,4 +14,5 @@ public class MonitoringObserverModel
     public bool IsOwnObserver { get; init; }
     public DateTime? LatestActivityAt { get; init; }
     public MonitoringObserverStatus Status { get; init; }
+    public string? InvitationToken { get; init; }
 }

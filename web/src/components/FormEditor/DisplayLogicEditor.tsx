@@ -6,6 +6,7 @@ import {
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { MultiSelectDropdown } from '@/components/ui/multiple-select-dropdown';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -23,8 +24,8 @@ interface DisplayLogicEditorProps {
 const conditions: {
   [questionType: string]: DisplayLogicCondition[];
 } = {
-  multiSelectQuestion: ['Includes'],
-  singleSelectQuestion: ['Includes'],
+  multiSelectQuestion: ['Includes', 'AnyOf', 'All'],
+  singleSelectQuestion: ['Includes', 'AnyOf', 'All'],
   numberQuestion: ['Equals', 'NotEquals', 'LessThan', 'LessEqual', 'GreaterThan', 'GreaterEqual'],
   ratingQuestion: ['Equals', 'NotEquals', 'LessThan', 'LessEqual', 'GreaterThan', 'GreaterEqual'],
 };
@@ -58,6 +59,7 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
   register(`questions.${questionIndex}.hasDisplayLogic`);
   register(`questions.${questionIndex}.parentQuestionId`);
   register(`questions.${questionIndex}.value`);
+  register(`questions.${questionIndex}.optionIds`);
   register(`questions.${questionIndex}.condition`);
 
 
@@ -108,11 +110,13 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
     if (parentQuestion?.$questionType === QuestionType.RatingQuestionType) {
       setValue(`questions.${questionIndex}.condition`, 'Equals', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       setValue(`questions.${questionIndex}.value`, '1', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.optionIds`, undefined, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
 
     if (parentQuestion?.$questionType === QuestionType.NumberQuestionType) {
       setValue(`questions.${questionIndex}.condition`, 'Equals', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       setValue(`questions.${questionIndex}.value`, '0', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.optionIds`, undefined, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
 
     if (
@@ -122,18 +126,47 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
       const optionId = parentQuestion!.options[0]?.optionId;
       setValue(`questions.${questionIndex}.condition`, 'Includes', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       setValue(`questions.${questionIndex}.value`, optionId, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.optionIds`, undefined, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
   }
 
   function handleConditionChanged(condition: DisplayLogicCondition) {
     if (!!condition) {
       setValue(`questions.${questionIndex}.condition`, condition, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+
+      if (condition === 'AnyOf' || condition === 'All') {
+        const optionId =
+          parentQuestion &&
+          (parentQuestion.$questionType === QuestionType.SingleSelectQuestionType ||
+            parentQuestion.$questionType === QuestionType.MultiSelectQuestionType)
+            ? parentQuestion.options[0]?.optionId
+            : undefined;
+        setValue(`questions.${questionIndex}.optionIds`, optionId ? [optionId] : [], {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        });
+        setValue(`questions.${questionIndex}.value`, undefined, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      } else if (
+        parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType ||
+        parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType
+      ) {
+        const optionId = parentQuestion.options[0]?.optionId;
+        setValue(`questions.${questionIndex}.value`, optionId, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+        setValue(`questions.${questionIndex}.optionIds`, undefined, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      }
     }
   }
 
   function handleValueChanged(value: string) {
     setValue(`questions.${questionIndex}.value`, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
   }
+
+  function handleOptionIdsChanged(optionIds: string[]) {
+    setValue(`questions.${questionIndex}.optionIds`, optionIds, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+  }
+
+  const usesOptionIds = question?.condition === 'AnyOf' || question?.condition === 'All';
 
   return (
     <div className='mt-3'>
@@ -229,7 +262,8 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
             </div>
           )}
           {(parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType ||
-            parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType) && (
+            parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType) &&
+            !usesOptionIds && (
               <div className='justify-left flex flex-col mt-3'>
                 <Select value={question?.value} onValueChange={handleValueChanged}>
                   <SelectTrigger className='min-w-fit flex-1'>
@@ -247,6 +281,21 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+            )}
+          {(parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType ||
+            parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType) &&
+            usesOptionIds && (
+              <div className='justify-left flex flex-col mt-3'>
+                <MultiSelectDropdown
+                  options={parentQuestion.options.map((option) => ({
+                    label: option.text[languageCode] ?? option.optionId,
+                    value: option.optionId,
+                  }))}
+                  defaultValue={question?.optionIds ?? []}
+                  onValueChange={handleOptionIdsChanged}
+                  placeholder='Select options'
+                />
               </div>
             )}
         </CollapsibleContent>

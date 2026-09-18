@@ -6,5 +6,6 @@ public class DisplayLogicRequest
 {
     public Guid ParentQuestionId { get; set; }
     public DisplayLogicCondition Condition { get; set; }
-    public string Value { get; set; }
+    public string? Value { get; set; }
+    public List<string>? OptionIds { get; set; }
 }

@@ -191,7 +191,16 @@ export const ZEditFormType = z
           });
         }
 
-        if (question.value === undefined) {
+        const usesOptionIds = question.condition === 'AnyOf' || question.condition === 'All';
+        if (usesOptionIds) {
+          if (!question.optionIds?.length) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Question option ids are required',
+              path: ['questions', index, 'optionIds'],
+            });
+          }
+        } else if (question.value === undefined) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question value is required',
@@ -227,6 +236,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -248,6 +258,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -269,6 +280,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -290,6 +302,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -320,6 +333,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -348,6 +362,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
         value: question.displayLogic?.value,
+        optionIds: question.displayLogic?.optionIds,
 
         code: question.code,
         languageCode: formData.defaultLanguage,

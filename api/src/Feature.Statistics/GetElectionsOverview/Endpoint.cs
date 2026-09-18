@@ -1,10 +1,18 @@
 ﻿using Dapper;
+using Feature.Statistics.Options;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Statistics.GetElectionsOverview;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Response>
+public class Endpoint(
+    INpgsqlConnectionFactory dbConnectionFactory,
+    IFusionCache cache,
+    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Response>
 {
+    private readonly StatisticsFeatureOptions _options = options.Value;
+
     public override void Configure()
     {
         Get("/api/statistics/overview");
@@ -18,6 +26,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     }
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
+    {
+        var electionRoundKey = string.Join(",", (req.ElectionRoundIds ?? []).OrderBy(x => x));
+        var cacheKey = $"statistics-overview-{electionRoundKey}";
+
+        return await cache.GetOrSetAsync(
+            cacheKey,
+            async _ => await GetOverviewStatisticsAsync(req, ct),
+            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            token: ct);
+    }
+
+    private async Task<Response> GetOverviewStatisticsAsync(Request req, CancellationToken ct)
     {
         var statisticsQuery = """
             -- number of monitoring observers with active account

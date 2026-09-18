@@ -42,20 +42,41 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
   function meetsDisplayLogicCondition(
     condition: DisplayLogicCondition | undefined,
     value: string | undefined,
+    optionIds: string[] | undefined,
     answer: BaseAnswer | undefined
   ): boolean {
-    if (condition === undefined || value === undefined) return true;
+    if (condition === undefined) return true;
     if (answer === undefined) return false;
 
     if (isSingleSelectAnswer(answer)) {
-      return condition === 'Includes' && answer.selection?.optionId === value;
+      const selectedOptionId = answer.selection?.optionId;
+      if (condition === 'Includes') {
+        return selectedOptionId === value;
+      }
+      if (condition === 'AnyOf') {
+        return !!selectedOptionId && (optionIds?.includes(selectedOptionId) ?? false);
+      }
+      if (condition === 'All') {
+        return optionIds?.length === 1 && selectedOptionId === optionIds[0];
+      }
+      return false;
     }
 
     if (isMultiSelectAnswer(answer)) {
-      return condition === 'Includes' && (answer.selection?.some((o) => o.optionId === value) ?? false);
+      const selectedOptionIds = answer.selection?.map((o) => o.optionId) ?? [];
+      if (condition === 'Includes') {
+        return selectedOptionIds.includes(value ?? '');
+      }
+      if (condition === 'AnyOf') {
+        return optionIds?.some((id) => selectedOptionIds.includes(id)) ?? false;
+      }
+      if (condition === 'All') {
+        return optionIds?.every((id) => selectedOptionIds.includes(id)) ?? false;
+      }
+      return false;
     }
     if (isNumberAnswer(answer) || isRatingAnswer(answer)) {
-      if (answer.value === undefined) return false;
+      if (answer.value === undefined || value === undefined) return false;
       const numericValue = +value;
       switch (condition) {
         case 'Equals':
@@ -86,7 +107,7 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
     for (let index = questionIndex - 1; index >= 0; index--) {
       const prev = questions[index]!;
       if (prev.hasDisplayLogic) {
-        if (meetsDisplayLogicCondition(prev.condition, prev.value, getAnswer(prev.parentQuestionId!))) {
+        if (meetsDisplayLogicCondition(prev.condition, prev.value, prev.optionIds, getAnswer(prev.parentQuestionId!))) {
           setActiveQuestionId(prev.questionId);
           break;
         }
@@ -106,7 +127,7 @@ function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId 
     for (let index = questionIndex + 1; index < questions.length; index++) {
       const next = questions[index]!;
       if (next.hasDisplayLogic) {
-        if (meetsDisplayLogicCondition(next.condition, next.value, getAnswer(next.parentQuestionId!))) {
+        if (meetsDisplayLogicCondition(next.condition, next.value, next.optionIds, getAnswer(next.parentQuestionId!))) {
           setActiveQuestionId(next.questionId);
           break;
         }

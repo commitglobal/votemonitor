@@ -699,7 +699,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row) => row.numberOfAttachments,
     id: 'numberOfAttachments',
-    enableSorting: false,
+    enableSorting: true,
     enableGlobalFilter: true,
   },
   {
@@ -834,7 +834,7 @@ export const observerQuickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row) => row.numberOfAttachments,
     id: 'numberOfAttachments',
-    enableSorting: false,
+    enableSorting: true,
     enableGlobalFilter: true,
   },
   {

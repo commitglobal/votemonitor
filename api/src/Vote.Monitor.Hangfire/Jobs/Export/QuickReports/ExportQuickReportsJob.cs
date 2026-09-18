@@ -192,6 +192,33 @@ public class ExportQuickReportsJob(
             		@TODATE IS NULL
             		OR QR."LastUpdatedAt" <= @TODATE::TIMESTAMP
             	)
+            	AND (
+            		@HASATTACHMENTS IS NULL
+            		OR (
+            			(
+            				SELECT COUNT(1)
+            				FROM "QuickReportAttachments" QRA
+            				WHERE QRA."QuickReportId" = QR."Id"
+            				  AND QRA."IsDeleted" = FALSE
+            				  AND QRA."IsCompleted" = TRUE
+            			) = 0
+            			AND @HASATTACHMENTS = FALSE
+            		)
+            		OR (
+            			(
+            				SELECT COUNT(1)
+            				FROM "QuickReportAttachments" QRA
+            				WHERE QRA."QuickReportId" = QR."Id"
+            				  AND QRA."IsDeleted" = FALSE
+            				  AND QRA."IsCompleted" = TRUE
+            			) > 0
+            			AND @HASATTACHMENTS = TRUE
+            		)
+            	)
+            	AND (
+            		@MONITORINGOBSERVERID IS NULL
+            		OR AMO."MonitoringObserverId" = @MONITORINGOBSERVERID
+            	)
             ORDER BY
             	QR."LastUpdatedAt" DESC
             """;
@@ -212,6 +239,8 @@ public class ExportQuickReportsJob(
             incidentCategory = filters.IncidentCategory?.ToString(),
             fromDate = filters.FromDateFilter?.ToString("O"),
             toDate = filters.ToDateFilter?.ToString("O"),
+            hasAttachments = filters.HasAttachments,
+            monitoringObserverId = filters.MonitoringObserverId,
         };
 
         IEnumerable<QuickReportModel> quickReports = [];

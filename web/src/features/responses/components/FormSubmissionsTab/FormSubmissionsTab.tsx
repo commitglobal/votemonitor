@@ -79,6 +79,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
       fromDateFilter: search.submissionsFromDate?.toISOString(),
       toDateFilter: search.submissionsToDate?.toISOString(),
       coalitionMemberId: search.coalitionMemberId,
+      monitoringObserverId: search.monitoringObserverId || undefined,
     };
 
     return params;

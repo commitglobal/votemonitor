@@ -11,6 +11,7 @@ public static class StatisticsInstaller
     public static IServiceCollection AddStatisticsFeature(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<StatisticsFeatureOptions>(configuration);
+
         return services;
     }
 }

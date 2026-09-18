@@ -23,6 +23,7 @@ import {
     parentQuestionId: z.string().optional(),
     condition: ZDisplayLogicCondition.optional().catch('Equals'),
     value: z.string().optional(),
+    optionIds: z.array(z.string()).optional(),
   
     code: z.string().trim().min(1),
   });
@@ -92,6 +93,19 @@ import {
   export type EditDateQuestionType = z.infer<typeof ZEditDateQuestionType>;
   
   export type EditQuestionType = z.infer<typeof ZEditQuestionType>;
+
+  const mapDisplayLogic = (q: EditQuestionType) => {
+    if (!q.hasDisplayLogic) {
+      return undefined;
+    }
+
+    return {
+      condition: q.condition!,
+      parentQuestionId: q.parentQuestionId!,
+      value: q.value,
+      optionIds: q.optionIds,
+    };
+  };
   
   export const mapToQuestionRequest = (
     q: EditQuestionType
@@ -104,9 +118,7 @@ import {
         text: q.text,
         helptext: q.helptext,
         inputPlaceholder: q.inputPlaceholder,
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return numberQuestion;
@@ -120,9 +132,7 @@ import {
         text: q.text,
         helptext: q.helptext,
         inputPlaceholder: q.inputPlaceholder,
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return textQuestion;
@@ -138,9 +148,7 @@ import {
         scale: q.scale,
         lowerLabel: q.lowerLabel,
         upperLabel: q.upperLabel,
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return ratingQuestion;
@@ -153,9 +161,7 @@ import {
         id: q.questionId,
         text: q.text,
         helptext: q.helptext,
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return dateQuestion;
@@ -174,9 +180,7 @@ import {
           isFreeText: o.isFreeText,
           text: o.text,
         })),
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return singleSelectQuestion;
@@ -195,9 +199,7 @@ import {
           isFreeText: o.isFreeText,
           text: o.text,
         })),
-        displayLogic: q.hasDisplayLogic
-          ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! }
-          : undefined,
+        displayLogic: mapDisplayLogic(q),
       };
   
       return multiSelectQuestion;

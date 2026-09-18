@@ -10,7 +10,10 @@ public class DisplayLogicModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<DisplayLogicCondition, string>))]
     public DisplayLogicCondition Condition { get; init; }
-    public string Value { get; init; }
+
+    public string? Value { get; init; }
+
+    public IReadOnlyList<string>? OptionIds { get; init; }
 
     public static DisplayLogicModel? FromEntity(DisplayLogic? entity) => entity == null
         ? null
@@ -18,6 +21,7 @@ public class DisplayLogicModel
         {
             ParentQuestionId = entity.ParentQuestionId,
             Condition = entity.Condition,
-            Value = entity.Value
+            Value = entity.Value,
+            OptionIds = entity.OptionIds
         };
 }

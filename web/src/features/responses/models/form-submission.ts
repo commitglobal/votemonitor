@@ -1,10 +1,12 @@
 import type {
   BaseQuestion,
   DateAnswer,
+  FormStatus,
   FormSubmissionFollowUpStatus,
   FormType,
   MultiSelectAnswer,
   NumberAnswer,
+  ObserverStatus,
   RatingAnswer,
   SingleSelectAnswer,
   TextAnswer,
@@ -93,10 +95,21 @@ export interface TimestampsFilterOptions {
 export interface FormFilterOption {
   formId: string;
   formCode: string;
-  formName: string;
+  formName: TranslatedString;
+  defaultLanguage: string;
+  languages: string[];
+  formStatus: FormStatus;
+}
+
+export interface ObserverFilterOption {
+  monitoringObserverId: string;
+  displayName: string;
+  email: string;
+  accountStatus: ObserverStatus;
 }
 
 export interface FormSubmissionsFilters {
   timestampsFilterOptions: TimestampsFilterOptions;
   formFilterOptions: FormFilterOption[];
+  observerFilterOptions: ObserverFilterOption[];
 }

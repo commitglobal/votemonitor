@@ -107,6 +107,10 @@ public static class QuestionsMapper
     {
         return displayLogic == null
             ? null
-            : DisplayLogic.Create(displayLogic.ParentQuestionId, displayLogic.Condition, displayLogic.Value);
+            : DisplayLogic.Create(
+                displayLogic.ParentQuestionId,
+                displayLogic.Condition,
+                displayLogic.Value,
+                displayLogic.OptionIds);
     }
 }

@@ -110,6 +110,8 @@ builder.Services.AddSingleton<ICurrentUserProvider, MockCurrentUserProvider>();
 builder.Services.AddApplicationDomain(builder.Configuration.GetRequiredSection(DomainInstaller.SectionKey), builder.Environment.IsProduction());
 builder.Services.AddMailing(builder.Configuration.GetRequiredSection(MailingInstaller.SectionKey));
 builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
+builder.Services.Configure<Vote.Monitor.Core.Options.ApiConfiguration>(
+    builder.Configuration.GetSection(Vote.Monitor.Core.Options.ApiConfiguration.Key));
 
 #region register jobs
 builder.Services.AddScoped<IRecurringJobManager, RecurringJobManager>();
@@ -117,6 +119,8 @@ builder.Services.AddScoped<AuditLogCleanerJob>();
 builder.Services.AddScoped<ExportedDataCleanerJob>();
 builder.Services.AddScoped<ExportedDataFailerJob>();
 builder.Services.AddScoped<ImportValidationErrorsCleanerJob>();
+builder.Services.AddScoped<PendingInviteResendJob>();
+builder.Services.AddScoped<PendingMonitoringObserverCleanerJob>();
 
 builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();

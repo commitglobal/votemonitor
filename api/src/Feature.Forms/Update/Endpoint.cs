@@ -38,11 +38,6 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        if (form.Status == FormStatus.Published)
-        {
-            ThrowError(x => x.Id, "Cannot edit published form");
-        }
-
         var questions = req.Questions
             .Select(QuestionsMapper.ToEntity)
             .ToList()

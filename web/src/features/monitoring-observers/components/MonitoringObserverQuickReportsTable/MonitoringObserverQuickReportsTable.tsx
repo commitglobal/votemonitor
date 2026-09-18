@@ -38,9 +38,10 @@ export function MonitoringObserverQuickReportsTable({
       quickReportFollowUpStatus: debouncedSearch.quickReportFollowUpStatus,
       incidentCategory: debouncedSearch.incidentCategory,
       dataSource: DataSources.Ngo,
-      monitoringObserverId: debouncedSearch.monitoringObserverId,
+      monitoringObserverId: monitoringObserverId,
       coalitionMemberId: undefined,
-      searchText: searchText
+      searchText: searchText,
+      hasAttachments: undefined,
     };
 
     return params;
