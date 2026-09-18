@@ -107,7 +107,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             LEFT JOIN LATESTTIMESTAMPS LT ON TRUE
             INNER JOIN "MonitoringObservers" M ON M."Id" = MO."Id"
             INNER JOIN "Observers" O ON O."Id" = M."ObserverId"
-            INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         GROUP BY
             MO."Id",
             MO."DisplayName",

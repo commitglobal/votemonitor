@@ -110,6 +110,31 @@ public class NgoAdminAuthorizationHandlerTests
     }
 
     [Fact]
+    public async Task HandleRequirementAsync_UserIsPending_Failure()
+    {
+        // Arrange
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
+
+        _ngoAdminRepository
+            .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
+            .Returns(new NgoAdminView
+            {
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
+                NgoAdminId = _ngoAdminId,
+                UserStatus = UserStatus.Pending
+            });
+
+        // Act
+        await _handler.HandleAsync(_context);
+
+        // Assert
+        _context.HasSucceeded.Should().BeFalse();
+    }
+
+    [Fact]
     public async Task HandleRequirementAsync_ValidNgoAdmin_Success()
     {
         // Arrange

@@ -128,7 +128,7 @@ public class Endpoint(
             			"CoalitionGuideAccess" CGA
             			INNER JOIN "Coalitions" C ON CGA."CoalitionId" = C."Id"
             			INNER JOIN "ObserversGuides" G ON CGA."GuideId" = G."Id"
-            			INNER JOIN "AspNetUsers" CREATOR ON G."CreatedBy" = CREATOR."Id"
+            			LEFT JOIN "AspNetUsers" CREATOR ON G."CreatedBy" = CREATOR."Id"
             			LEFT JOIN "AspNetUsers" UPDATER ON G."LastModifiedBy" = UPDATER."Id"
             		WHERE
             			CGA."MonitoringNgoId" = (
@@ -171,7 +171,7 @@ public class Endpoint(
             		FROM
             			"ObserversGuides" G
             			INNER JOIN "MonitoringNgos" MN ON G."MonitoringNgoId" = MN."Id"
-            			INNER JOIN "AspNetUsers" CREATOR ON G."CreatedBy" = CREATOR."Id"
+            			LEFT JOIN "AspNetUsers" CREATOR ON G."CreatedBy" = CREATOR."Id"
             			LEFT JOIN "AspNetUsers" UPDATER ON G."LastModifiedBy" = UPDATER."Id"
             		WHERE
             			MN."ElectionRoundId" = @electionRoundId

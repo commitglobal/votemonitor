@@ -101,6 +101,8 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
     {
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
+        RefreshToken = null;
+        RefreshTokenExpiryTime = DateTime.MinValue;
     }
 
     public void UpdateStatus(UserStatus status)

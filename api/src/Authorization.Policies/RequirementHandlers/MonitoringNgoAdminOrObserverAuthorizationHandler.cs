@@ -29,8 +29,8 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
             {
                 if (result.NgoStatus == NgoStatus.Deactivated ||
                     result.MonitoringNgoStatus == MonitoringNgoStatus.Suspended ||
-                    result.UserStatus == UserStatus.Deactivated ||
-                    result.MonitoringObserverStatus == MonitoringObserverStatus.Suspended)
+                    result.UserStatus != UserStatus.Active ||
+                    result.MonitoringObserverStatus != MonitoringObserverStatus.Active)
                 {
                     context.Fail();
                     return;

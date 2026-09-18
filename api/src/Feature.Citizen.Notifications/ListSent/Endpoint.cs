@@ -50,7 +50,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                       "CitizenNotifications" CN
                       INNER JOIN "ElectionRounds" ER ON CN."ElectionRoundId" = ER."Id"
                       INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                      INNER JOIN "AspNetUsers" U ON U."Id" = CN."SenderId"
+                      LEFT JOIN "AspNetUsers" U ON U."Id" = CN."SenderId"
                   WHERE
                       MN."NgoId" = @ngoId
                       AND CN."ElectionRoundId" = @electionRoundId

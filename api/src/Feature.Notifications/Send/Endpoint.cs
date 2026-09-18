@@ -172,7 +172,7 @@ public class Endpoint(
                         NT."Token"
                     FROM
                         "MonitoringObservers" MO
-                            INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                            LEFT JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
                             INNER JOIN "MonitoringNgos" MN ON MO."MonitoringNgoId" = MN."Id"
                             LEFT JOIN "ObserversActivity" OA ON MO."Id" = OA."MonitoringObserverId"
                             LEFT JOIN "PollingStations" PS ON OA."PollingStationId" = PS."Id"

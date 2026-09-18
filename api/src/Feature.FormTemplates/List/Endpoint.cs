@@ -52,7 +52,7 @@ public class Endpoint(
                          COALESCE(FT."LastModifiedOn", FT."CreatedOn")          AS "LastModifiedOn",
                          COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy"
                   FROM "FormTemplates" FT
-                           INNER JOIN "AspNetUsers" CREATOR ON FT."CreatedBy" = CREATOR."Id"
+                           LEFT JOIN "AspNetUsers" CREATOR ON FT."CreatedBy" = CREATOR."Id"
                            LEFT JOIN "AspNetUsers" UPDATER ON FT."LastModifiedBy" = UPDATER."Id"
                   WHERE (
                       @searchText IS NULL

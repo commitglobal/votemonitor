@@ -27,7 +27,8 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
         var validationCtx = ValidationContext.Instance;
         if (await userManager.FindByEmailAsync(email.Trim()) is not { }
                 user
-            || !await userManager.CheckPasswordAsync(user, password))
+            || !await userManager.CheckPasswordAsync(user, password)
+            || user.Status != UserStatus.Active)
         {
             validationCtx.AddError("Invalid username or password");
             logger.LogWarning("Authentication failed for {email}", email);
@@ -48,7 +49,7 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
 
         string? userEmail = userPrincipal.GetEmail();
         var user = await userManager.FindByEmailAsync(userEmail!.Trim());
-        if (user is null)
+        if (user is null || user.Status != UserStatus.Active)
         {
             return TypedResults.Unauthorized();
         }

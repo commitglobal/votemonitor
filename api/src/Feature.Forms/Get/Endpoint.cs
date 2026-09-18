@@ -95,7 +95,7 @@ public class Endpoint(
                            FROM "CoalitionFormAccess" CFA
                                     INNER JOIN "Coalitions" C ON CFA."CoalitionId" = C."Id"
                                     INNER JOIN "Forms" F ON CFA."FormId" = F."Id"
-                                    INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
+                                    LEFT JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
                                     LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                            WHERE CFA."MonitoringNgoId" = (SELECT "MonitoringNgoId" FROM "MonitoringNgoData")
                              AND C."ElectionRoundId" = @electionRoundId
@@ -125,7 +125,7 @@ public class Endpoint(
                                COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy",
                                TRUE AS "IsFormOwner"
                            FROM "Forms" F
-                                    INNER JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
+                                    LEFT JOIN "AspNetUsers" CREATOR ON F."CreatedBy" = CREATOR."Id"
                                     LEFT JOIN "AspNetUsers" UPDATER ON F."LastModifiedBy" = UPDATER."Id"
                            WHERE F."ElectionRoundId" = @electionRoundId
                              AND F."MonitoringNgoId" = (SELECT "MonitoringNgoId" FROM "MonitoringNgoData")
@@ -151,7 +151,7 @@ public class Endpoint(
                                COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy",
                                FALSE AS "IsFormOwner"
                            FROM "PollingStationInformationForms" PSIF
-                                    INNER JOIN "AspNetUsers" CREATOR ON PSIF."CreatedBy" = CREATOR."Id"
+                                    LEFT JOIN "AspNetUsers" CREATOR ON PSIF."CreatedBy" = CREATOR."Id"
                                     LEFT JOIN "AspNetUsers" UPDATER ON PSIF."LastModifiedBy" = UPDATER."Id"
                            WHERE PSIF."ElectionRoundId" = @electionRoundId
                              AND PSIF."Id" = @id

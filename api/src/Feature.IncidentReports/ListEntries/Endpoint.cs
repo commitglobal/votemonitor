@@ -37,7 +37,7 @@ public class Endpoint(
                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                           INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                           LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
                   WHERE
                       MN."ElectionRoundId" = @electionRoundId
@@ -182,7 +182,7 @@ public class Endpoint(
                           INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
                           INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                           INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                           LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
                   WHERE
                       MN."ElectionRoundId" = @electionRoundId

@@ -160,7 +160,7 @@ public class Endpoint(
                          
                   FROM "QuickReports" QR
                            INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
-                           INNER JOIN "AspNetUsers" u on u."Id" = mo."ObserverId"
+                           LEFT JOIN "AspNetUsers" u on u."Id" = mo."ObserverId"
                            LEFT JOIN "PollingStations" ps on ps."Id" = qr."PollingStationId"
                   WHERE qr."ElectionRoundId" = @electionRoundId
                     and qr."Id" = @quickReportId

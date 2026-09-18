@@ -40,7 +40,7 @@ internal class MonitoringObserverAuthorizationHandler(
             return;
         }
 
-        if (result.UserStatus == UserStatus.Deactivated || result.MonitoringObserverStatus == MonitoringObserverStatus.Suspended)
+        if (result.UserStatus != UserStatus.Active || result.MonitoringObserverStatus != MonitoringObserverStatus.Active)
         {
             context.Fail();
             return;
