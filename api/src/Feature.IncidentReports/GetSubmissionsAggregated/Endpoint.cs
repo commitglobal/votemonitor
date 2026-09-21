@@ -80,6 +80,7 @@ public class Endpoint(
             .Where(x => x.PollingStation != null
                         && (string.IsNullOrWhiteSpace(req.PollingStationNumberFilter)
                             || EF.Functions.ILike(x.PollingStation.Number, req.PollingStationNumberFilter)))
+            .Where(x => req.PollingStationId == null || x.PollingStationId == req.PollingStationId)
             .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
                 : x.NumberOfFlaggedAnswers == 0))
@@ -147,7 +148,8 @@ public class Endpoint(
                 IsCompletedFilter = req.IsCompletedFilter,
                 LocationTypeFilter = req.LocationTypeFilter,
                 FollowUpStatusFilter = req.FollowUpStatusFilter,
-                PollingStationNumberFilter = req.PollingStationNumberFilter
+                PollingStationNumberFilter = req.PollingStationNumberFilter,
+                PollingStationId = req.PollingStationId
             }
         });
     }

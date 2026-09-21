@@ -185,6 +185,10 @@ public class ExportQuickReportsJob(
             		OR PS."Level5" = @LEVEL5
             	)
             	AND (
+            		@POLLINGSTATIONID IS NULL
+            		OR QR."PollingStationId" = @POLLINGSTATIONID
+            	)
+            	AND (
             		@FROMDATE IS NULL
             		OR QR."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
             	)
@@ -246,6 +250,7 @@ public class ExportQuickReportsJob(
             toDate = filters.ToDateFilter?.ToString("O"),
             hasAttachments = filters.HasAttachments,
             monitoringObserverId = filters.MonitoringObserverId,
+            pollingStationId = filters.PollingStationId,
             tagsFilter = filters.TagsFilter ?? [],
         };
 

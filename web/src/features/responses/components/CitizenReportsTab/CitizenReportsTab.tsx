@@ -49,6 +49,7 @@ export function CitizenReportsTab(): FunctionComponent {
     const params = [
       ['followUpStatus', search.citizenReportFollowUpStatus],
       ['hasFlaggedAnswers', search.hasFlaggedAnswers],
+      ['locationId', search.locationId],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);

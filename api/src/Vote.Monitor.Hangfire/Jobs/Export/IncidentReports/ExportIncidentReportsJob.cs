@@ -233,6 +233,7 @@ public class ExportIncidentReportsJob(
               AND (@level4 IS NULL OR PS."Level4" = @level4)
               AND (@level5 IS NULL OR PS."Level5" = @level5)
               AND (@pollingStationNumber IS NULL OR PS."Number" = @pollingStationNumber)
+              AND (@pollingStationId IS NULL OR IR."PollingStationId" = @pollingStationId)
               AND (@hasFlaggedAnswers IS NULL
                 OR (IR."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = FALSE)
                 OR (IR."NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = TRUE)
@@ -264,6 +265,7 @@ public class ExportIncidentReportsJob(
             level4 = filters.Level4Filter,
             level5 = filters.Level5Filter,
             pollingStationNumber = filters.PollingStationNumberFilter,
+            pollingStationId = filters.PollingStationId,
             hasFlaggedAnswers = filters.HasFlaggedAnswers,
             followUpStatus = filters.FollowUpStatus?.ToString(),
             tagsFilter = filters.TagsFilter ?? [],

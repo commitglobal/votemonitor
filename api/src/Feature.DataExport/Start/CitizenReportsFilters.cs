@@ -13,6 +13,7 @@ public record CitizenReportsFilters
     public string? Level3Filter { get; init; }
     public string? Level4Filter { get; init; }
     public string? Level5Filter { get; init; }
+    public Guid? LocationId { get; init; }
     public bool? HasFlaggedAnswers { get; init; }
     public CitizenReportFollowUpStatus? FollowUpStatus { get; init; }
     public Guid? FormId { get; init; }
@@ -34,6 +35,7 @@ public record CitizenReportsFilters
             Level3Filter = Level3Filter,
             Level4Filter = Level4Filter,
             Level5Filter = Level5Filter,
+            LocationId = LocationId,
             HasFlaggedAnswers = HasFlaggedAnswers,
             FollowUpStatus = FollowUpStatus,
             FormId = FormId,

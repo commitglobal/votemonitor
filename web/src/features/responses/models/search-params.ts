@@ -29,6 +29,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     level4Filter: z.string().catch('').optional(),
     level5Filter: z.string().catch('').optional(),
     pollingStationNumberFilter: z.string().catch('').optional(),
+    pollingStationId: z.string().catch('').optional(),
     hasFlaggedAnswers: z.string().catch('').optional(),
     monitoringObserverId: z.string().catch('').optional(),
     tagsFilter: z.array(z.string()).optional().catch([]).optional(),
@@ -45,6 +46,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     hasNotes: z.string().catch('').optional(),
     hasAttachments: z.string().catch('').optional(),
     formId: z.string().optional(),
+    locationId: z.string().catch('').optional(),
 
     submissionsFromDate: z.coerce.date().optional(),
     submissionsToDate: z.coerce.date().optional(),
@@ -67,6 +69,7 @@ export const QuickReportsSearchParamsSchema = ZDataSourceSearchSchema.merge(
     incidentCategory: z.nativeEnum(IncidentCategory).optional(),
     hasAttachments: z.string().catch('').optional(),
     monitoringObserverId: z.string().catch('').optional(),
+    pollingStationId: z.string().catch('').optional(),
     tagsFilter: z.array(z.string()).optional().catch([]).optional(),
   })
 );
@@ -76,6 +79,7 @@ export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSc
 export const CitizenReportsSearchParamsSchema = ZDataSourceSearchSchema.merge(
   z.object({
     citizenReportFollowUpStatus: z.nativeEnum(CitizenReportFollowUpStatus).optional(),
+    locationId: z.string().catch('').optional(),
   })
 );
 
@@ -95,6 +99,7 @@ export const IncidentReportsSearchParamsSchema = ZDataSourceSearchSchema.merge(
     level4Filter: z.string().catch('').optional(),
     level5Filter: z.string().catch('').optional(),
     pollingStationNumberFilter: z.string().catch('').optional(),
+    pollingStationId: z.string().catch('').optional(),
     hasFlaggedAnswers: z.string().catch('').optional(),
     monitoringObserverId: z.string().catch('').optional(),
     tagsFilter: z.array(z.string()).optional().catch([]).optional(),

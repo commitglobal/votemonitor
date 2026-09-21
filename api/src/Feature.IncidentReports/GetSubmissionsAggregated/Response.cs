@@ -26,6 +26,7 @@ public class SubmissionsFilterModel
 
     public string? Level5Filter { get; set; }
     public string? PollingStationNumberFilter { get; set; }
+    public Guid? PollingStationId { get; set; }
 
     public bool? HasFlaggedAnswers { get; set; }
 

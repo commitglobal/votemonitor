@@ -52,6 +52,7 @@ public class Endpoint(
                           AND (@level4 IS NULL OR ps."Level4" = @level4)
                           AND (@level5 IS NULL OR ps."Level5" = @level5)
                           AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
+                          AND (@pollingStationId IS NULL OR ps."Id" = @pollingStationId)
                           AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
                           AND (@followUpStatus is NULL OR psi."FollowUpStatus" = @followUpStatus)
                           AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
@@ -87,6 +88,7 @@ public class Endpoint(
                           AND (@level4 IS NULL OR ps."Level4" = @level4)
                           AND (@level5 IS NULL OR ps."Level5" = @level5)
                           AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
+                          AND (@pollingStationId IS NULL OR ps."Id" = @pollingStationId)
                           AND (@hasFlaggedAnswers is NULL OR (fs."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR
                                ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
                           AND (@followUpStatus is NULL OR fs."FollowUpStatus" = @followUpStatus)
@@ -307,6 +309,7 @@ public class Endpoint(
                     AND (@level4 IS NULL OR ps."Level4" = @level4)
                     AND (@level5 IS NULL OR ps."Level5" = @level5)
                     AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
+                          AND (@pollingStationId IS NULL OR ps."Id" = @pollingStationId)
                     AND (@hasFlaggedAnswers IS NULL
                       OR (s."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false)
                       OR (s."NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
@@ -369,6 +372,7 @@ public class Endpoint(
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
             pollingStationNumber = req.PollingStationNumberFilter,
+            pollingStationId = req.PollingStationId,
             hasFlaggedAnswers = req.HasFlaggedAnswers,
             followUpStatus = req.FollowUpStatus?.ToString(),
             tagsFilter = req.TagsFilter ?? [],

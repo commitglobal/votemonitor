@@ -39,6 +39,7 @@ export function IncidentReportsByEntryTable({ searchText }: FormsTableByEntryPro
       ['followUpStatus', debouncedSearch.incidentReportFollowUpStatus],
       ['locationType', debouncedSearch.incidentReportLocationType],
       ['monitoringObserverId', debouncedSearch.monitoringObserverId],
+      ['pollingStationId', debouncedSearch.pollingStationId],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as IncidentReportsSearchParams;

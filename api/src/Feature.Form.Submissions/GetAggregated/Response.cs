@@ -26,6 +26,8 @@ public class SubmissionsFilterModel
 
     public string? PollingStationNumberFilter { get; set; }
 
+    public Guid? PollingStationId { get; set; }
+
     public bool? HasFlaggedAnswers { get; set; }
 
     public SubmissionFollowUpStatus? FollowUpStatus { get; set; }

@@ -25,6 +25,8 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] public string? PollingStationNumberFilter { get; set; }
 
+    [QueryParam] public Guid? PollingStationId { get; set; }
+
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
 
     [QueryParam] public Guid? MonitoringObserverId { get; set; }

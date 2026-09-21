@@ -24,5 +24,6 @@ public record ExportQuickReportsFilters
     public DateTime? ToDateFilter { get; init; }
     public bool? HasAttachments { get; init; }
     public Guid? MonitoringObserverId { get; init; }
+    public Guid? PollingStationId { get; init; }
     public string[]? TagsFilter { get; init; } = [];
 }

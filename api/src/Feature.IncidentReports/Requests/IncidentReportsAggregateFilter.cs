@@ -23,6 +23,8 @@ public class IncidentReportsAggregateFilter
     [QueryParam] public string? Level5Filter { get; set; }
     [QueryParam] public string? PollingStationNumberFilter { get; set; }
 
+    [QueryParam] public Guid? PollingStationId { get; set; }
+
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
 
     [QueryParam] public IncidentReportFollowUpStatus? FollowUpStatusFilter { get; set; }
