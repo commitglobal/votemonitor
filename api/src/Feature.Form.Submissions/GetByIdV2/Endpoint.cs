@@ -31,10 +31,15 @@ public class Endpoint(
         var sql = """
                   WITH submissions AS
                            (SELECT psi."Id" AS "SubmissionId",
+                                   'PSI' AS "FormType",
+                                   'PSI' AS "FormCode",
+                                   psif."Name" AS "FormName",
                                    psi."PollingStationId",
                                    psi."MonitoringObserverId",
                                    psi."Answers",
                                    psif."Questions" AS "Questions",
+                                   psif."DefaultLanguage" AS "DefaultLanguage",
+                                   psif."Languages" AS "Languages",
                                    psif."Id" AS "FormId",
                                    psi."FollowUpStatus" as "FollowUpStatus",
                                    '[]'::jsonb AS "Attachments",
@@ -51,10 +56,15 @@ public class Endpoint(
                             UNION ALL
                             SELECT
                                 fs."Id" AS "SubmissionId",
+                                f."FormType" AS "FormType",
+                                f."Code" AS "FormCode",
+                                f."Name" AS "FormName",
                                 fs."PollingStationId",
                                 fs."MonitoringObserverId",
                                 fs."Answers",
                                 f."Questions",
+                                f."DefaultLanguage",
+                                f."Languages",
                                 f."Id" AS "FormId",
                                 fs."FollowUpStatus",
                                 COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
@@ -89,6 +99,11 @@ public class Endpoint(
                   SELECT s."SubmissionId",
                          s."FormId",
                          s."TimeSubmitted",
+                         s."FormCode",
+                         s."FormName",
+                         s."FormType",
+                         s."DefaultLanguage",
+                         s."Languages",
                          ps."Id" AS "PollingStationId",
                          ps."Level1",
                          ps."Level2",
