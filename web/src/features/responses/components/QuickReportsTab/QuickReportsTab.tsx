@@ -51,6 +51,7 @@ export interface QuickReportFilterRequest {
   incidentCategory: IncidentCategory | undefined;
   coalitionMemberId: string | undefined;
   monitoringObserverId: string | undefined;
+  pollingStationId: string | undefined;
   hasAttachments: boolean | undefined;
   tagsFilter: string[] | undefined;
 }
@@ -89,6 +90,7 @@ export function QuickReportsTab(): FunctionComponent {
       incidentCategory: debouncedSearch.incidentCategory,
       coalitionMemberId: search.coalitionMemberId,
       monitoringObserverId: debouncedSearch.monitoringObserverId || undefined,
+      pollingStationId: debouncedSearch.pollingStationId || undefined,
       searchText: searchText,
       hasAttachments: toBoolean(debouncedSearch.hasAttachments),
       tagsFilter: debouncedSearch.tagsFilter,

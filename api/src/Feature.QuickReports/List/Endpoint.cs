@@ -64,6 +64,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 @level5 IS NULL
                 OR PS."Level5" = @level5
             )
+            AND (@pollingStationId IS NULL OR QR."PollingStationId" = @pollingStationId)
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
             AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
             AND (@hasAttachments IS NULL
@@ -145,6 +146,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 @level5 IS NULL
                 OR PS."Level5" = @level5
             )
+            AND (@pollingStationId IS NULL OR QR."PollingStationId" = @pollingStationId)
             AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
             AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
             AND (@hasAttachments IS NULL
@@ -204,6 +206,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             toDate = req.ToDateFilter?.ToString("O"),
             hasAttachments = req.HasAttachments,
             monitoringObserverId = req.MonitoringObserverId,
+            pollingStationId = req.PollingStationId,
             tagsFilter = req.TagsFilter ?? [],
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };

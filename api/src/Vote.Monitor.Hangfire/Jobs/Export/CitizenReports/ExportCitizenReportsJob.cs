@@ -184,6 +184,7 @@ public class ExportCitizenReportsJob(
                    AND (@level3 IS NULL OR L."Level3" = @level3)
                    AND (@level4 IS NULL OR L."Level4" = @level4)
                    AND (@level5 IS NULL OR L."Level5" = @level5)
+                   AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                    AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
                    AND (@formId IS NULL OR CR."FormId" = @formId)
                    AND (@questionsAnswered IS NULL
@@ -212,6 +213,7 @@ public class ExportCitizenReportsJob(
             level3 = filters?.Level3Filter,
             level4 = filters?.Level4Filter,
             level5 = filters?.Level5Filter,
+            locationId = filters?.LocationId,
             formId = filters?.FormId,
             hasAttachments = filters?.HasAttachments,
             hasNotes = filters?.HasNotes,

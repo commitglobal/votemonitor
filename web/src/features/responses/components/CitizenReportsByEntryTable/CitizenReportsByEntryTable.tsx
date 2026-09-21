@@ -25,6 +25,7 @@ export function CitizenReportsByEntryTable(props: CitizenReportsByEntryTableProp
   const queryParams = useMemo(() => {
     const params = [
       ['followUpStatus', debouncedSearch.citizenReportFollowUpStatus],
+      ['locationId', debouncedSearch.locationId],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

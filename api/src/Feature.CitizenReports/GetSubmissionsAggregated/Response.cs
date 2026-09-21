@@ -26,6 +26,8 @@ public class SubmissionsFilterModel
 
     public string? Level5Filter { get; set; }
 
+    public Guid? LocationId { get; set; }
+
     public bool? HasFlaggedAnswers { get; set; }
 
     public CitizenReportFollowUpStatus? FollowUpStatus { get; set; }

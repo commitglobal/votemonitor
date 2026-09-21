@@ -22,6 +22,8 @@ public class CitizenReportsAggregateFilter
 
     [QueryParam] public string? Level5Filter { get; set; }
 
+    [QueryParam] public Guid? LocationId { get; set; }
+
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
 
     [QueryParam] public CitizenReportFollowUpStatus? FollowUpStatus { get; set; }

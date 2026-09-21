@@ -368,6 +368,10 @@ public class ExportFormSubmissionsSimplifiedJob(
             		OR PS."Level5" = @LEVEL5
             	)
             	AND (
+            		@POLLINGSTATIONID IS NULL
+            		OR PS."Id" = @POLLINGSTATIONID
+            	)
+            	AND (
             		@POLLINGSTATIONNUMBER IS NULL
             		OR PS."Number" = @POLLINGSTATIONNUMBER
             	)
@@ -429,6 +433,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 			level4 = filters.Level4Filter,
 			level5 = filters.Level5Filter,
 			pollingStationNumber = filters.PollingStationNumberFilter,
+			pollingStationId = filters.PollingStationId,
 			hasFlaggedAnswers = filters.HasFlaggedAnswers,
 			followUpStatus = filters.FollowUpStatus?.ToString(),
 			tagsFilter = filters.TagsFilter ?? [],

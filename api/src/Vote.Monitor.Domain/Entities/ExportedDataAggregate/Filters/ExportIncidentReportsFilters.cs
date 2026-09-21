@@ -14,6 +14,7 @@ public record ExportIncidentReportsFilters
     public string? Level4Filter { get; init; }
     public string? Level5Filter { get; init; }
     public string? PollingStationNumberFilter { get; init; }
+    public Guid? PollingStationId { get; init; }
     public bool? HasFlaggedAnswers { get; init; }
     public Guid? MonitoringObserverId { get; init; }
     public string[]? TagsFilter { get; init; } = [];

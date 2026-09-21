@@ -346,6 +346,10 @@ public class Endpoint(
                              		OR PS."Number" = @POLLINGSTATIONNUMBER
                              	)
                              	AND (
+                             		@POLLINGSTATIONID IS NULL
+                             		OR PS."Id" = @POLLINGSTATIONID
+                             	)
+                             	AND (
                              		@HASFLAGGEDANSWERS IS NULL
                              		OR (
                              			S."NumberOfFlaggedAnswers" = 0
@@ -400,6 +404,7 @@ public class Endpoint(
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
             pollingStationNumber = req.PollingStationNumberFilter,
+            pollingStationId = req.PollingStationId,
             hasFlaggedAnswers = req.HasFlaggedAnswers,
             followUpStatus = req.FollowUpStatus?.ToString(),
             tagsFilter = req.TagsFilter ?? [],
@@ -474,6 +479,7 @@ public class Endpoint(
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 MonitoringObserverStatus = req.MonitoringObserverStatus,
                 PollingStationNumberFilter = req.PollingStationNumberFilter,
+                PollingStationId = req.PollingStationId,
                 DataSource = req.DataSource!,
                 CoalitionMemberId = req.CoalitionMemberId,
             }
@@ -506,6 +512,7 @@ public class Endpoint(
                         EF.Functions.ILike(x.PollingStation.Level5, req.Level5Filter))
             .Where(x => string.IsNullOrWhiteSpace(req.PollingStationNumberFilter) ||
                         EF.Functions.ILike(x.PollingStation.Number, req.PollingStationNumberFilter))
+            .Where(x => req.PollingStationId == null || x.PollingStationId == req.PollingStationId)
             .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
                 : x.NumberOfFlaggedAnswers == 0))

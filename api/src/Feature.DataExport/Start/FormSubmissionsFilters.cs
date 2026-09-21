@@ -26,6 +26,8 @@ public record FormSubmissionsFilters
 
     public string? PollingStationNumberFilter { get; init; }
 
+    public Guid? PollingStationId { get; init; }
+
     public bool? HasFlaggedAnswers { get; init; }
 
     public SubmissionFollowUpStatus? FollowUpStatus { get; init; }
@@ -57,6 +59,7 @@ public record FormSubmissionsFilters
             Level4Filter = Level4Filter,
             Level5Filter = Level5Filter,
             PollingStationNumberFilter = PollingStationNumberFilter,
+            PollingStationId = PollingStationId,
             HasFlaggedAnswers = HasFlaggedAnswers,
             FollowUpStatus = FollowUpStatus,
             MonitoringObserverId = MonitoringObserverId,

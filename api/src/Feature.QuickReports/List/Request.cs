@@ -26,5 +26,6 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public Guid? CoalitionMemberId { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public Guid? MonitoringObserverId { get; set; }
+    [QueryParam] public Guid? PollingStationId { get; set; }
     [QueryParam] public string[]? TagsFilter { get; set; } = [];
 }

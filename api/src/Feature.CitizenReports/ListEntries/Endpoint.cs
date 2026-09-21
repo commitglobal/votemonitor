@@ -48,7 +48,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   	AND (@level2 IS NULL OR L."Level2" = @level2)
                   	AND (@level3 IS NULL OR L."Level3" = @level3)
                   	AND (@level4 IS NULL OR L."Level4" = @level4)
-                  	AND (@level5 IS NULL OR L."Level5" = @level5)
+                    AND (@level5 IS NULL OR L."Level5" = @level5)
+                    AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                   	AND (@formId IS NULL OR CR."FormId" = @formId)
                   	AND (@questionsAnswered IS NULL 
                   	  OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
@@ -125,6 +126,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                             AND (@level3 IS NULL OR L."Level3" = @level3)
                             AND (@level4 IS NULL OR L."Level4" = @level4)
                             AND (@level5 IS NULL OR L."Level5" = @level5)
+                            AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                             AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
                             AND (@formId IS NULL OR CR."FormId" = @formId)
                             AND (@questionsAnswered IS NULL 
@@ -225,6 +227,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             level3 = req.Level3Filter,
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
+            locationId = req.LocationId,
             formId = req.FormId,
             hasAttachments = req.HasAttachments,
             hasNotes = req.HasNotes,

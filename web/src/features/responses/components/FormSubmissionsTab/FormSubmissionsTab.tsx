@@ -80,6 +80,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
       toDateFilter: search.submissionsToDate?.toISOString(),
       coalitionMemberId: search.coalitionMemberId,
       monitoringObserverId: search.monitoringObserverId || undefined,
+      pollingStationId: search.pollingStationId || undefined,
     };
 
     return params;

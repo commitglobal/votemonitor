@@ -12,6 +12,7 @@ public record ExportCitizenReportsFilers
     public string? Level3Filter { get; init; }
     public string? Level4Filter { get; init; }
     public string? Level5Filter { get; init; }
+    public Guid? LocationId { get; init; }
     public bool? HasFlaggedAnswers { get; init; }
 
     public CitizenReportFollowUpStatus? FollowUpStatus { get; init; }

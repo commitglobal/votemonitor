@@ -73,6 +73,7 @@ public class Endpoint(
                         EF.Functions.ILike(x.Location.Level4, req.Level4Filter))
             .Where(x => string.IsNullOrWhiteSpace(req.Level5Filter) ||
                         EF.Functions.ILike(x.Location.Level5, req.Level5Filter))
+            .Where(x => req.LocationId == null || x.LocationId == req.LocationId)
             .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
                 : x.NumberOfFlaggedAnswers == 0))
@@ -133,6 +134,7 @@ public class Endpoint(
                 Level3Filter = req.Level3Filter,
                 Level4Filter = req.Level4Filter,
                 Level5Filter = req.Level5Filter,
+                LocationId = req.LocationId,
                 HasFlaggedAnswers = req.HasFlaggedAnswers,
                 QuestionsAnswered = req.QuestionsAnswered,
                 FollowUpStatus = req.FollowUpStatus
