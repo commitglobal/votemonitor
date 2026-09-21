@@ -1,5 +1,6 @@
 ﻿using Module.Forms.Models;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Module.Answers.Models;
@@ -9,6 +10,11 @@ public record FormSubmissionViewV2
     public Guid SubmissionId { get; init; }
     public DateTime TimeSubmitted { get; init; }
     public Guid FormId { get; init; }
+    public string FormCode { get; init; } = null!;
+    public string DefaultLanguage { get; init; } = null!;
+    public string[] Languages { get; init; } = [];
+    public FormType FormType { get; init; } = null!;
+    public TranslatedString FormName { get; init; } = null!;
 
     public SubmissionFollowUpStatus FollowUpStatus { get; init; } = null!;
 
