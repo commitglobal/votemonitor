@@ -1,13 +1,14 @@
 ﻿using Feature.Forms.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Forms.FetchCitizenReportingForms;
 
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
+public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceScopeFactory scopeFactory)
     : Endpoint<Request, Results<NotFound, Ok<NgoFormsResponseModel>>>
 {
     public override void Configure()
@@ -44,26 +45,32 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
         var cacheKey =
             $"election-rounds/{req.ElectionRoundId}/monitoring-ngo/{monitoringNgo.MonitoringNgoForCitizenReportingId}/citizen-reports-forms/{monitoringNgo.FormsVersion}";
 
-        var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            var forms = await context.Forms
-                .Where(x => x.Status == FormStatus.Published)
-                .Where(x => x.ElectionRoundId == req.ElectionRoundId)
-                .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoForCitizenReportingId)
-                .Where(x => x.FormType == FormType.CitizenReporting)
-                .OrderBy(x => x.Code)
-                .ToListAsync(cancellationToken: ct);
-
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-            return new NgoFormsResponseModel
+        var cachedResponse = await cache.GetOrSetAsync(
+            cacheKey,
+            async factoryCt =>
             {
-                ElectionRoundId = monitoringNgo.ElectionRoundId,
-                Version = monitoringNgo.FormsVersion.ToString(),
-                Forms = forms.Select(FormFullModel.FromEntity).OrderBy(x => x.DisplayOrder).ToList()
-            };
-        });
+                // Fresh scope: FusionCache eager refresh may outlive the request DbContext.
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var db = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
 
-        return TypedResults.Ok(cachedResponse!);
+                var forms = await db.Forms
+                    .Where(x => x.Status == FormStatus.Published)
+                    .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+                    .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoForCitizenReportingId)
+                    .Where(x => x.FormType == FormType.CitizenReporting)
+                    .OrderBy(x => x.Code)
+                    .ToListAsync(cancellationToken: factoryCt);
+
+                return new NgoFormsResponseModel
+                {
+                    ElectionRoundId = monitoringNgo.ElectionRoundId,
+                    Version = monitoringNgo.FormsVersion.ToString(),
+                    Forms = forms.Select(FormFullModel.FromEntity).OrderBy(x => x.DisplayOrder).ToList()
+                };
+            },
+            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            token: ct);
+
+        return TypedResults.Ok(cachedResponse);
     }
 }

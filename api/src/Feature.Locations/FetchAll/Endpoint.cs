@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Extensions;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.Locations.FetchAll;
 
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
+public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceScopeFactory scopeFactory)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -34,36 +35,42 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
 
         var cacheKey = $"election-rounds/{request.ElectionRoundId}/locations/{electionRound.LocationsVersion}";
 
-        var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
-        {
-            var locations = await context.Locations
-                .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .OrderBy(x => x.DisplayOrder)
-                .Select(x => new LocationModel
-                {
-                    Id = x.Id,
-                    Level1 = x.Level1,
-                    Level2 = x.Level2,
-                    Level3 = x.Level3,
-                    Level4 = x.Level4,
-                    Level5 = x.Level5,
-                    DisplayOrder = x.DisplayOrder
-                })
-                .ToListAsync(cancellationToken: ct);
-
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-
-            var nodes = GetLocationNodes(locations);
-
-            return new Response
+        var cachedResponse = await cache.GetOrSetAsync(
+            cacheKey,
+            async factoryCt =>
             {
-                ElectionRoundId = electionRound.Id,
-                Version = electionRound.LocationsVersion.ToString(),
-                Nodes = nodes
-            };
-        });
+                // Fresh scope: FusionCache eager refresh may outlive the request DbContext.
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var db = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
 
-        return TypedResults.Ok(cachedResponse!);
+                var locations = await db.Locations
+                    .Where(x => x.ElectionRoundId == request.ElectionRoundId)
+                    .OrderBy(x => x.DisplayOrder)
+                    .Select(x => new LocationModel
+                    {
+                        Id = x.Id,
+                        Level1 = x.Level1,
+                        Level2 = x.Level2,
+                        Level3 = x.Level3,
+                        Level4 = x.Level4,
+                        Level5 = x.Level5,
+                        DisplayOrder = x.DisplayOrder
+                    })
+                    .ToListAsync(cancellationToken: factoryCt);
+
+                var nodes = GetLocationNodes(locations);
+
+                return new Response
+                {
+                    ElectionRoundId = electionRound.Id,
+                    Version = electionRound.LocationsVersion.ToString(),
+                    Nodes = nodes
+                };
+            },
+            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            token: ct);
+
+        return TypedResults.Ok(cachedResponse);
     }
 
     private static List<LocationNode> GetLocationNodes(List<LocationModel> locations)

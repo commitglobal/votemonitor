@@ -1,8 +1,9 @@
-﻿using Vote.Monitor.Core.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Vote.Monitor.Core.Extensions;
 using ZiggyCreatures.Caching.Fusion;
 
 namespace Feature.PollingStations.FetchAll;
-public class Endpoint(VoteMonitorContext context, IFusionCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceScopeFactory scopeFactory) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -33,9 +34,13 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache) : Endpoint
 
         var cachedResponse = await cache.GetOrSetAsync(
             cacheKey,
-            async _ =>
+            async factoryCt =>
             {
-                var pollingStations = await context.PollingStations
+                // Fresh scope: FusionCache eager refresh may outlive the request DbContext.
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var db = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
+
+                var pollingStations = await db.PollingStations
                     .Where(x => x.ElectionRoundId == request.ElectionRoundId)
                     .Select(x => new PollingStationModel
                     {
@@ -51,7 +56,7 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache) : Endpoint
                         Latitude = x.Latitude,
                         Longitude = x.Longitude
                     })
-                    .ToListAsync(cancellationToken: ct);
+                    .ToListAsync(cancellationToken: factoryCt);
 
                 var nodes = GetLocationNodes(pollingStations);
 
