@@ -212,7 +212,9 @@ public class Endpoint(
                              								'Text',
                              								"Text",
                              								'TimeSubmitted',
-                             								"LastUpdatedAt"
+                             								"LastUpdatedAt",
+                             								'MonitoringObserverId',
+                             								N."MonitoringObserverId"
                              							)
                              						)
                              					FROM
@@ -433,7 +435,11 @@ public class Endpoint(
         }
         
         var notes = submissions
-            .SelectMany(x => x.Notes.Select(note => note with { SubmissionId = x.SubmissionId }))
+            .SelectMany(x => x.Notes.Select(note => note with
+            {
+                SubmissionId = x.SubmissionId,
+                MonitoringObserverId = x.MonitoringObserverId
+            }))
             .ToList();
 
         var attachments = submissions
