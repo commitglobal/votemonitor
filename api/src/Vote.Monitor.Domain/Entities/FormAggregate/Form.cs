@@ -23,6 +23,11 @@ public class Form : BaseForm
     public ElectionRound ElectionRound { get; private set; }
     public int DisplayOrder { get; private set; }
 
+    public void UpdateDisplayOrder(int displayOrder)
+    {
+        DisplayOrder = displayOrder;
+    }
+
     private Form(
         ElectionRound electionRound,
         MonitoringNgo monitoringNgo,
