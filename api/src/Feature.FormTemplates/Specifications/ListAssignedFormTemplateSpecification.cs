@@ -1,7 +1,5 @@
-﻿using System.Xml;
-using Feature.FormTemplates.ListAssignedTemplates;
+﻿using Feature.FormTemplates.ListAssignedTemplates;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
-using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.FormTemplates.Specifications;
 
@@ -12,8 +10,7 @@ public sealed class ListAssignedFormTemplateSpecification : Specification<Electi
         Query
             .Where(x => x.ElectionRoundId == request.ElectionRoundId)
             .Include(x => x.FormTemplate)
-            .ApplyDefaultOrdering(request)
-            .Paginate(request);
+            .OrderBy(x => x.FormTemplate.Code);
 
         Query
             .Select(x => new FormTemplateSlimModel

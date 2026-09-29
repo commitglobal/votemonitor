@@ -3,7 +3,6 @@ using Authorization.Policies.Requirements;
 using Feature.FormTemplates.ListAssignedTemplates;
 using Feature.FormTemplates.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 
@@ -63,7 +62,7 @@ public class ListAssignedEndpointTests
 
         // Assert
         result.Should()
-            .BeOfType<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>()
+            .BeOfType<Results<Ok<List<FormTemplateSlimModel>>, NotFound>>()
             .Which.Result.Should()
             .BeOfType<NotFound>();
     }
@@ -90,11 +89,14 @@ public class ListAssignedEndpointTests
 
         // Assert
         result.Should()
-            .BeOfType<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>();
+            .BeOfType<Results<Ok<List<FormTemplateSlimModel>>, NotFound>>()
+            .Which.Result.Should()
+            .BeOfType<Ok<List<FormTemplateSlimModel>>>()
+            .Which.Value.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task Should_Return_Ok_With_Paginated_List_When_Assigned_Templates_Exist()
+    public async Task Should_Return_Ok_With_List_When_Assigned_Templates_Exist()
     {
         // Arrange
         _userRoleProvider.IsNgoAdmin().Returns(true);
@@ -105,36 +107,21 @@ public class ListAssignedEndpointTests
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        var numberOfFormTemplates = 3;
-        var totalCount = 154;
-        var pageSize = 100;
-
-        var formTemplates = new FormTemplateSlimModelFaker().Generate(numberOfFormTemplates);
+        var formTemplates = new FormTemplateSlimModelFaker().Generate(3);
 
         _electionRoundFormTemplateRepository
             .ListAsync(Arg.Any<ListAssignedFormTemplateSpecification>())
             .Returns(formTemplates);
 
-        _electionRoundFormTemplateRepository
-            .CountAsync(Arg.Any<ListAssignedFormTemplateSpecification>())
-            .Returns(totalCount);
-
         // Act
-        var request = new Request { PageSize = pageSize, PageNumber = numberOfFormTemplates };
+        var request = new Request();
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PagedResponse<FormTemplateSlimModel>>, NotFound>>()
+            .Should().BeOfType<Results<Ok<List<FormTemplateSlimModel>>, NotFound>>()
             .Which
-            .Result.Should().BeOfType<Ok<PagedResponse<FormTemplateSlimModel>>>()
-            .Which.Value.Should().NotBeNull();
-
-        var pagedResult = (result.Result as Ok<PagedResponse<FormTemplateSlimModel>>)!.Value!;
-
-        pagedResult.PageSize.Should().Be(pageSize);
-        pagedResult.CurrentPage.Should().Be(numberOfFormTemplates);
-        pagedResult.TotalCount.Should().Be(totalCount);
-        pagedResult.Items.Should().BeEquivalentTo(formTemplates);
+            .Result.Should().BeOfType<Ok<List<FormTemplateSlimModel>>>()
+            .Which.Value.Should().BeEquivalentTo(formTemplates);
     }
 }

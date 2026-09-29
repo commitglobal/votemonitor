@@ -1,8 +1,6 @@
-﻿using Vote.Monitor.Core.Models;
+﻿namespace Feature.FormTemplates.ListAssignedTemplates;
 
-namespace Feature.FormTemplates.ListAssignedTemplates;
-
-public class Request : BaseSortPaginatedRequest
+public class Request
 {
     public Guid ElectionRoundId { get; set; }
 }
