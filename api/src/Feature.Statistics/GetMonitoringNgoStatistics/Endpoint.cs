@@ -367,6 +367,150 @@ public class Endpoint(
                 INNER JOIN "PollingStationsPerLevel" PS ON S."Level" = PS."Level" AND S."Path" = PS."Path"
                 INNER JOIN "ActiveObserversPerLevel" AOL ON S."Level" = AOL."Level" AND S."Path" = AOL."Path";
 
+            WITH
+                "LocationStatsRaw" AS (
+                    SELECT
+                        CR."LocationId",
+                        COUNT(1) AS "NumberOfCitizenReports",
+                        SUM(CR."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                        SUM(CR."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered"
+                    FROM "CitizenReports" CR
+                        INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
+                    WHERE CR."ElectionRoundId" = @electionRoundId
+                      AND ER."MonitoringNgoForCitizenReportingId" = @monitoringNgoId
+                      AND CR."NumberOfQuestionsAnswered" > 0
+                    GROUP BY CR."LocationId"
+                ),
+                "ElectionLocations" AS (
+                    SELECT
+                        L."Id",
+                        NULLIF(L."Level1", '') AS "Level1",
+                        NULLIF(L."Level2", '') AS "Level2",
+                        NULLIF(L."Level3", '') AS "Level3",
+                        NULLIF(L."Level4", '') AS "Level4",
+                        NULLIF(L."Level5", '') AS "Level5"
+                    FROM "Locations" L
+                    WHERE L."ElectionRoundId" = @electionRoundId
+                      AND L."Level1" != ''
+                ),
+                "LocationsPerLevel" AS (
+                    SELECT
+                        CASE
+                            WHEN GROUPING(L."Level1") = 1 THEN 0
+                            WHEN GROUPING(L."Level2") = 1 THEN 1
+                            WHEN GROUPING(L."Level3") = 1 THEN 2
+                            WHEN GROUPING(L."Level4") = 1 THEN 3
+                            WHEN GROUPING(L."Level5") = 1 THEN 4
+                            ELSE 5
+                        END AS "Level",
+                        CASE
+                            WHEN GROUPING(L."Level1") = 1 THEN '/'
+                            ELSE CONCAT_WS(' / ', L."Level1", L."Level2", L."Level3", L."Level4", L."Level5")
+                        END AS "Path",
+                        COUNT(L."Id") AS "NumberOfLocations"
+                    FROM "ElectionLocations" L
+                    GROUP BY GROUPING SETS (
+                        (),
+                        (L."Level1"),
+                        (L."Level1", L."Level2"),
+                        (L."Level1", L."Level2", L."Level3"),
+                        (L."Level1", L."Level2", L."Level3", L."Level4"),
+                        (L."Level1", L."Level2", L."Level3", L."Level4", L."Level5")
+                    )
+                    HAVING
+                        GROUPING(L."Level1") = 1
+                        OR (
+                            GROUPING(L."Level2") = 1
+                            AND L."Level1" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level3") = 1
+                            AND GROUPING(L."Level2") = 0
+                            AND L."Level2" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level4") = 1
+                            AND GROUPING(L."Level3") = 0
+                            AND L."Level3" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level5") = 1
+                            AND GROUPING(L."Level4") = 0
+                            AND L."Level4" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level5") = 0
+                            AND L."Level5" IS NOT NULL
+                        )
+                ),
+                "LocationLevelsStats" AS (
+                    SELECT
+                        CASE
+                            WHEN GROUPING(L."Level1") = 1 THEN 0
+                            WHEN GROUPING(L."Level2") = 1 THEN 1
+                            WHEN GROUPING(L."Level3") = 1 THEN 2
+                            WHEN GROUPING(L."Level4") = 1 THEN 3
+                            WHEN GROUPING(L."Level5") = 1 THEN 4
+                            ELSE 5
+                        END AS "Level",
+                        CASE
+                            WHEN GROUPING(L."Level1") = 1 THEN '/'
+                            ELSE CONCAT_WS(' / ', L."Level1", L."Level2", L."Level3", L."Level4", L."Level5")
+                        END AS "Path",
+                        COUNT(LS."LocationId") AS "NumberOfVisitedLocations",
+                        COALESCE(SUM(LS."NumberOfCitizenReports"), 0) AS "NumberOfCitizenReports",
+                        COALESCE(SUM(LS."NumberOfFlaggedAnswers"), 0) AS "NumberOfFlaggedAnswers",
+                        COALESCE(SUM(LS."NumberOfQuestionsAnswered"), 0) AS "NumberOfQuestionsAnswered"
+                    FROM "LocationStatsRaw" LS
+                        INNER JOIN "ElectionLocations" L ON L."Id" = LS."LocationId"
+                    GROUP BY GROUPING SETS (
+                        (),
+                        (L."Level1"),
+                        (L."Level1", L."Level2"),
+                        (L."Level1", L."Level2", L."Level3"),
+                        (L."Level1", L."Level2", L."Level3", L."Level4"),
+                        (L."Level1", L."Level2", L."Level3", L."Level4", L."Level5")
+                    )
+                    HAVING
+                        GROUPING(L."Level1") = 1
+                        OR (
+                            GROUPING(L."Level2") = 1
+                            AND L."Level1" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level3") = 1
+                            AND GROUPING(L."Level2") = 0
+                            AND L."Level2" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level4") = 1
+                            AND GROUPING(L."Level3") = 0
+                            AND L."Level3" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level5") = 1
+                            AND GROUPING(L."Level4") = 0
+                            AND L."Level4" IS NOT NULL
+                        )
+                        OR (
+                            GROUPING(L."Level5") = 0
+                            AND L."Level5" IS NOT NULL
+                        )
+                )
+            SELECT
+                S."Path",
+                S."Level",
+                S."NumberOfVisitedLocations",
+                L."NumberOfLocations",
+                S."NumberOfCitizenReports",
+                S."NumberOfFlaggedAnswers",
+                S."NumberOfQuestionsAnswered",
+                (
+                    S."NumberOfVisitedLocations" * 100.0 / NULLIF(L."NumberOfLocations", 0)
+                ) AS "CoveragePercentage"
+            FROM "LocationLevelsStats" S
+                INNER JOIN "LocationsPerLevel" L ON S."Level" = L."Level" AND S."Path" = L."Path";
+
             WITH "AvailableObservers" AS (
                 SELECT MO."Id" AS "MonitoringObserverId"
                 FROM "MonitoringObservers" MO
@@ -472,6 +616,7 @@ public class Endpoint(
 
         var observersStats = multi.ReadSingle<ObserversStats>();
         var visitedPollingStationsStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
+        var visitedLocationStats = multi.Read<VisitedLocationLevelStats>().ToList();
         var formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
         var quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
@@ -487,6 +632,12 @@ public class Endpoint(
             Level3Stats = visitedPollingStationsStats.Where(x => x.Level == 3).ToList(),
             Level4Stats = visitedPollingStationsStats.Where(x => x.Level == 4).ToList(),
             Level5Stats = visitedPollingStationsStats.Where(x => x.Level == 5).ToList(),
+            TotalLocationStats = visitedLocationStats.FirstOrDefault(x => x.Level == 0),
+            LocationLevel1Stats = visitedLocationStats.Where(x => x.Level == 1).ToList(),
+            LocationLevel2Stats = visitedLocationStats.Where(x => x.Level == 2).ToList(),
+            LocationLevel3Stats = visitedLocationStats.Where(x => x.Level == 3).ToList(),
+            LocationLevel4Stats = visitedLocationStats.Where(x => x.Level == 4).ToList(),
+            LocationLevel5Stats = visitedLocationStats.Where(x => x.Level == 5).ToList(),
             FormsHistogram = formSubmissionsHistogram.Select(x => new HistogramPoint
             {
                 Bucket = x.Bucket,
