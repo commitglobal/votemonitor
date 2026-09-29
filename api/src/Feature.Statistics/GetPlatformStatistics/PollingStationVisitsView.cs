@@ -1,4 +1,4 @@
-﻿namespace Feature.Statistics.GetElectionsOverview;
+﻿namespace Feature.Statistics.GetPlatformStatistics;
 
 public class PollingStationVisitsView
 {
@@ -8,5 +8,4 @@ public class PollingStationVisitsView
     public int NumberOfLevel3Covered { get; set; }
     public int NumberOfLevel4Covered { get; set; }
     public int NumberOfLevel5Covered { get; set; }
-
 }

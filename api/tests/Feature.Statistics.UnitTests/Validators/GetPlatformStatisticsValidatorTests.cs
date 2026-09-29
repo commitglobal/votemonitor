@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Feature.Statistics.UnitTests.Validators;
 
-public class GetElectionsOverviewValidatorTests
+public class GetPlatformStatisticsValidatorTests
 {
     private const string API_KEY = "secret-api-key";
 
-    private readonly GetElectionsOverview.Validator _validator = Factory.CreateValidator<GetElectionsOverview.Validator>(
+    private readonly GetPlatformStatistics.Validator _validator = Factory.CreateValidator<GetPlatformStatistics.Validator>(
         sp =>
         {
             sp.Configure<StatisticsFeatureOptions>(x =>
@@ -21,7 +21,7 @@ public class GetElectionsOverviewValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundIds_Empty()
     {
         // Arrange
-        var request = new GetElectionsOverview.Request { ElectionRoundIds = [] };
+        var request = new GetPlatformStatistics.Request { ElectionRoundIds = [] };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -34,7 +34,7 @@ public class GetElectionsOverviewValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundIds_Contains_EmptyId()
     {
         // Arrange
-        var request = new GetElectionsOverview.Request { ElectionRoundIds = [Guid.NewGuid(), Guid.Empty] };
+        var request = new GetPlatformStatistics.Request { ElectionRoundIds = [Guid.NewGuid(), Guid.Empty] };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -48,7 +48,7 @@ public class GetElectionsOverviewValidatorTests
     public void Validation_ShouldFail_When_ApiKey_Empty(string emptyValue)
     {
         // Arrange
-        var request = new GetElectionsOverview.Request { ApiKey = emptyValue};
+        var request = new GetPlatformStatistics.Request { ApiKey = emptyValue};
 
         // Act
         var result = _validator.TestValidate(request);
@@ -61,7 +61,7 @@ public class GetElectionsOverviewValidatorTests
     public void Validation_ShouldFail_When_ApiKey_Invalid()
     {
         // Arrange
-        var request = new GetElectionsOverview.Request { ApiKey = "invalid-value"};
+        var request = new GetPlatformStatistics.Request { ApiKey = "invalid-value"};
 
         // Act
         var result = _validator.TestValidate(request);
@@ -74,7 +74,7 @@ public class GetElectionsOverviewValidatorTests
     public void Validation_ShouldPass_When_Request_Valid()
     {
         // Arrange
-        var request = new GetElectionsOverview.Request
+        var request = new GetPlatformStatistics.Request
         {
             ApiKey = API_KEY,
             ElectionRoundIds = [Guid.NewGuid()]

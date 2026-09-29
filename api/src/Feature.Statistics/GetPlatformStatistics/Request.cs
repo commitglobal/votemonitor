@@ -1,4 +1,4 @@
-﻿namespace Feature.Statistics.GetElectionsOverview;
+﻿namespace Feature.Statistics.GetPlatformStatistics;
 
 public class Request
 {
