@@ -4,6 +4,8 @@ using Dapper;
 using Feature.Statistics.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
 
@@ -11,6 +13,7 @@ namespace Feature.Statistics.GetPollingStationStats;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
+    ICurrentUserRoleProvider userRoleProvider,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFusionCache cache,
     IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Results<Ok<Response>, NotFound>>
@@ -23,37 +26,56 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("statistics", "polling-stations"));
         Summary(s => { s.Summary = "Overview statistics for a specific polling station"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.AdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
-        if (!authorizationResult.Succeeded)
+        var isPlatformAdmin = userRoleProvider.IsPlatformAdmin();
+
+        if (!isPlatformAdmin)
         {
-            return TypedResults.NotFound();
+            var authorizationResult =
+                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            if (!authorizationResult.Succeeded || !req.NgoId.HasValue || req.NgoId == Guid.Empty)
+            {
+                return TypedResults.NotFound();
+            }
         }
 
-        var cacheKey =
-            $"polling-station-stats-{req.ElectionRoundId}-{req.NgoId}-{req.PollingStationId}-{req.DataSource}";
+        var dataSource = req.DataSource ?? DataSource.Ngo;
+
+        var cacheKey = isPlatformAdmin
+            ? $"polling-station-stats-{req.ElectionRoundId}-all-{req.PollingStationId}"
+            : $"polling-station-stats-{req.ElectionRoundId}-{req.NgoId}-{req.PollingStationId}-{dataSource}";
 
         var response = await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetStatisticsAsync(req, ct),
+            async _ => await GetStatisticsAsync(req, isPlatformAdmin, dataSource, ct),
             cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
             token: ct);
 
         return TypedResults.Ok(response);
     }
 
-    private async Task<Response> GetStatisticsAsync(Request req, CancellationToken ct)
+    private async Task<Response> GetStatisticsAsync(Request req, bool isPlatformAdmin, DataSource dataSource,
+        CancellationToken ct)
     {
-        const string sql =
-            """
+        var availableObserversSql = isPlatformAdmin
+            ? """
+              SELECT MO."Id" AS "MonitoringObserverId"
+              FROM "MonitoringObservers" MO
+              WHERE MO."ElectionRoundId" = @electionRoundId
+              """
+            : """
+              SELECT "MonitoringObserverId"
+              FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)
+              """;
+
+        var sql =
+            $"""
             WITH "AvailableObservers" AS (
-                SELECT "MonitoringObserverId"
-                FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)
+                {availableObserversSql}
             )
             SELECT
                 (
@@ -151,7 +173,7 @@ public class Endpoint(
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             pollingStationId = req.PollingStationId,
-            dataSource = req.DataSource.ToString()
+            dataSource = dataSource.Value
         };
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
