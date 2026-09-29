@@ -200,7 +200,7 @@ public class Endpoint(
         int numberOfMonitoringObservers;
         int numberOfMonitoringNgos;
         int totalNumberOfPollingStations;
-        PollingStationVisitsView pollingStationVisitsView = null!;
+        PollingStationVisitsView pollingStationVisitsView;
         int numberOfSubmittedForms;
         int numberOfAnsweredQuestions;
         int numberOfFlaggedAnswers;
