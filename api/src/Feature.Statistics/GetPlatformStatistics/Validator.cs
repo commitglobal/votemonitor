@@ -1,7 +1,7 @@
 ﻿using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 
-namespace Feature.Statistics.GetElectionsOverview;
+namespace Feature.Statistics.GetPlatformStatistics;
 
 public class Validator : Validator<Request>
 {
