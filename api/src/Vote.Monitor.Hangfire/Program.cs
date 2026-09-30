@@ -39,6 +39,7 @@ using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
 using Vote.Monitor.Hangfire.Jobs.Export.Locations;
+using Vote.Monitor.Hangfire.Jobs.Export.PollingStationInformation;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
@@ -130,6 +131,7 @@ builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>(
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
 builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
 builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
+builder.Services.AddScoped<IExportPollingStationInformationJob, ExportPollingStationInformationJob>();
 builder.Services.AddScoped<ISendNotificationJob, SendNotificationJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");

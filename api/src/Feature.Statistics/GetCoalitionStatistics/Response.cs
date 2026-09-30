@@ -1,11 +1,11 @@
 using Feature.Statistics.GetNgoAdminStatistics.Models;
 
-namespace Feature.Statistics.GetElectionRoundStatistics;
+namespace Feature.Statistics.GetCoalitionStatistics;
 
 public class Response
 {
-    public NgosStats NgosStats { get; set; } = new();
-    public int NumberOfCoalitions { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int NumberOfMembers { get; set; }
     public ObserversStats ObserversStats { get; set; } = new();
 
     public VisitedPollingStationLevelStats? TotalStats { get; set; }

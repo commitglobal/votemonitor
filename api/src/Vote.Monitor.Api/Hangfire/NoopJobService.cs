@@ -39,4 +39,8 @@ internal class NoopJobService : IJobService
     public void EnqueueExportFormSubmissionsSimplified(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
     }
+
+    public void EnqueueExportPollingStationInformation(Guid electionRoundId, Guid exportedDataId)
+    {
+    }
 }
