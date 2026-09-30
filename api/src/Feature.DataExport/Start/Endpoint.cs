@@ -58,6 +58,15 @@ public class Endpoint(
             }
         }
 
+        if (req.ExportedDataType == ExportedDataType.PollingStationInformation)
+        {
+            if (!userRoleProvider.IsPlatformAdmin())
+            {
+                AddError(x => x.ExportedDataType, "Only platform admins can export this type of data");
+                return new ProblemDetails(ValidationFailures);
+            }
+        }
+
         var exportedData = CreateExportedData(req);
 
         await repository.AddAsync(exportedData, ct);
@@ -95,6 +104,11 @@ public class Endpoint(
         if (req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified)
         {
             jobService.EnqueueExportFormSubmissionsSimplified(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
+        }
+
+        if (req.ExportedDataType == ExportedDataType.PollingStationInformation)
+        {
+            jobService.EnqueueExportPollingStationInformation(req.ElectionRoundId, exportedData.Id);
         }
 
         return TypedResults.Ok(new Response { ExportedDataId = exportedData.Id, EnqueuedAt = timeProvider.UtcNow });

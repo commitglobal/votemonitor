@@ -37,5 +37,10 @@ public class Validator : Validator<Request>
         {
             RuleFor(x => x.ElectionRoundId).NotEmpty();
         });
+
+        When(x => x.ExportedDataType == ExportedDataType.PollingStationInformation, () =>
+        {
+            RuleFor(x => x.ElectionRoundId).NotEmpty();
+        });
     }
 }

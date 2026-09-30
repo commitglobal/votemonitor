@@ -6,52 +6,59 @@ using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
 
-namespace Feature.Statistics.GetElectionRoundStatistics;
+namespace Feature.Statistics.GetCoalitionStatistics;
 
 public class Endpoint(
     INpgsqlConnectionFactory dbConnectionFactory,
     IFusionCache cache,
-    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Response>
+    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     private readonly StatisticsFeatureOptions _options = options.Value;
 
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}:stats");
+        Get("/api/election-rounds/{electionRoundId}/coalitions/{coalitionId}:stats");
         DontAutoTag();
         Options(x => x.WithTags("statistics"));
         Policies(PolicyNames.PlatformAdminsOnly);
-        Summary(s =>
-        {
-            s.Summary = "Statistics for an election round across all monitoring NGOs";
-        });
+        Summary(s => { s.Summary = "Statistics for a coalition in an election round"; });
     }
 
-    public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var cacheKey = $"statistics-election-round-{req.ElectionRoundId}";
+        var cacheKey = $"statistics-coalition-{req.ElectionRoundId}-{req.CoalitionId}";
 
-        return await cache.GetOrSetAsync(
+        var cached = await cache.TryGetAsync<Response>(cacheKey, token: ct);
+        if (cached.HasValue)
+        {
+            return TypedResults.Ok(cached.Value);
+        }
+
+        var result = await GetStatisticsAsync(req, ct);
+        if (result is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        await cache.SetAsync(
             cacheKey,
-            async _ => await GetStatisticsAsync(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            result,
+            options => options.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
             token: ct);
+
+        return TypedResults.Ok(result);
     }
 
-    private async Task<Response> GetStatisticsAsync(Request req, CancellationToken ct)
+    private async Task<Response?> GetStatisticsAsync(Request req, CancellationToken ct)
     {
         const string sql =
             """
             SELECT
-                COUNT(*) FILTER (WHERE "Status" = 'Active') AS "ActiveNgos",
-                COUNT(*) FILTER (WHERE "Status" = 'Suspended') AS "InactiveNgos"
-            FROM "MonitoringNgos"
-            WHERE "ElectionRoundId" = @electionRoundId;
-            ------------------------------
-
-            SELECT COUNT(*)::INT
-            FROM "Coalitions"
-            WHERE "ElectionRoundId" = @electionRoundId;
+                C."Name",
+                (SELECT COUNT(*) FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = C."Id")::INT AS "NumberOfMembers"
+            FROM "Coalitions" C
+            WHERE C."Id" = @coalitionId
+              AND C."ElectionRoundId" = @electionRoundId;
             ------------------------------
 
             SELECT
@@ -69,7 +76,8 @@ public class Endpoint(
                 ) AS "SuspendedObservers"
             FROM "MonitoringObservers" MO
                 INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
-            WHERE MO."ElectionRoundId" = @electionRoundId;
+            WHERE MO."ElectionRoundId" = @electionRoundId
+              AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId);
             ------------------------------
 
             WITH
@@ -77,6 +85,7 @@ public class Endpoint(
                     SELECT MO."Id" AS "MonitoringObserverId"
                     FROM "MonitoringObservers" MO
                     WHERE MO."ElectionRoundId" = @electionRoundId
+                      AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
                 ),
                 "ActiveObservers" AS (
                     SELECT
@@ -365,7 +374,9 @@ public class Endpoint(
                         SUM(CR."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
                         SUM(CR."NumberOfQuestionsAnswered") AS "NumberOfQuestionsAnswered"
                     FROM "CitizenReports" CR
+                        INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
                     WHERE CR."ElectionRoundId" = @electionRoundId
+                      AND ER."MonitoringNgoForCitizenReportingId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
                       AND CR."NumberOfQuestionsAnswered" > 0
                     GROUP BY CR."LocationId"
                 ),
@@ -503,6 +514,7 @@ public class Endpoint(
                 SELECT MO."Id" AS "MonitoringObserverId"
                 FROM "MonitoringObservers" MO
                 WHERE MO."ElectionRoundId" = @electionRoundId
+                  AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             ),
             submission_histogram AS (
                 SELECT
@@ -542,6 +554,7 @@ public class Endpoint(
                 SELECT MO."Id" AS "MonitoringObserverId"
                 FROM "MonitoringObservers" MO
                 WHERE MO."ElectionRoundId" = @electionRoundId
+                  AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             )
             SELECT
                 DATE_TRUNC(
@@ -563,13 +576,16 @@ public class Endpoint(
                 )::TIMESTAMPTZ "Bucket",
                 COUNT(1) "Value"
             FROM "CitizenReports" CR
+                INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
             WHERE CR."ElectionRoundId" = @electionRoundId
+              AND ER."MonitoringNgoForCitizenReportingId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             GROUP BY 1;
 
             WITH "AvailableObservers" AS (
                 SELECT MO."Id" AS "MonitoringObserverId"
                 FROM "MonitoringObservers" MO
                 WHERE MO."ElectionRoundId" = @electionRoundId
+                  AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             )
             SELECT
                 DATE_TRUNC(
@@ -582,37 +598,33 @@ public class Endpoint(
             GROUP BY 1;
             """;
 
-        var queryArgs = new { electionRoundId = req.ElectionRoundId };
-
-        NgosStats ngosStats;
-        int numberOfCoalitions;
-        ObserversStats observersStats;
-        List<VisitedPollingStationLevelStats> visitedPollingStationsStats;
-        List<VisitedLocationLevelStats> visitedLocationStats;
-        List<FormSubmissionsHistogramPoint> formSubmissionsHistogram;
-        List<HistogramPoint> quickReportsHistogram;
-        List<HistogramPoint> citizenReportsHistogram;
-        List<HistogramPoint> incidentReportsHistogram;
-
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        var queryArgs = new
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            electionRoundId = req.ElectionRoundId,
+            coalitionId = req.CoalitionId
+        };
 
-            ngosStats = multi.ReadSingle<NgosStats>();
-            numberOfCoalitions = multi.ReadSingle<int>();
-            observersStats = multi.ReadSingle<ObserversStats>();
-            visitedPollingStationsStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
-            visitedLocationStats = multi.Read<VisitedLocationLevelStats>().ToList();
-            formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
-            quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
-            citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
-            incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+
+        var coalition = multi.Read<CoalitionHeader>().SingleOrDefault();
+        if (coalition is null)
+        {
+            return null;
         }
+
+        var observersStats = multi.ReadSingle<ObserversStats>();
+        var visitedPollingStationsStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
+        var visitedLocationStats = multi.Read<VisitedLocationLevelStats>().ToList();
+        var formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
+        var quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
+        var citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
+        var incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
 
         return new Response
         {
-            NgosStats = ngosStats,
-            NumberOfCoalitions = numberOfCoalitions,
+            Name = coalition.Name,
+            NumberOfMembers = coalition.NumberOfMembers,
             ObserversStats = observersStats,
             TotalStats = visitedPollingStationsStats.FirstOrDefault(x => x.Level == 0),
             Level1Stats = visitedPollingStationsStats.Where(x => x.Level == 1).ToList(),
