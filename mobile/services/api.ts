@@ -1,4 +1,4 @@
-import axios, { AxiosRequestHeaders } from "axios";
+import axios, { AxiosError, AxiosRequestHeaders } from "axios";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
@@ -151,18 +151,68 @@ API.interceptors.response.use(
       return handleTokenRefresh(originalRequest);
     }
 
-    if (error.request) {
-      console.log("❌ [API FAILED] Request", error.request);
-      Sentry.captureException(new Error("Network request failed"), {
-        extra: { request: error.request },
-      });
-    } else {
-      console.log("❌ [API FAILED] Error", error);
-      Sentry.captureException(error);
-    }
+    console.log("❌ [API FAILED] Error", error);
+    reportApiError(error);
 
     throw error;
   },
 );
+
+const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
+
+// Replace ids so the same endpoint is grouped into a single Sentry issue
+const normalizeUrl = (url?: string) =>
+  (url ?? "").split("?")[0].replace(UUID_REGEX, "{id}").replace(/^\//, "");
+
+const reportApiError = (error: AxiosError) => {
+  if (axios.isCancel(error)) {
+    return;
+  }
+
+  const method = error.config?.method?.toUpperCase() ?? "";
+  const url = normalizeUrl(error.config?.url);
+  const status = error.response?.status;
+
+  // Wrong credentials are a user error, not an app error
+  if (url === "auth/login" && (status === 400 || status === 401)) {
+    return;
+  }
+
+  let title: string;
+  let level: Sentry.SeverityLevel;
+
+  if (status) {
+    // The server responded with an error status
+    title = `API ${status} ${method} ${url}`;
+    level = status >= 500 ? "error" : "warning";
+  } else if (error.request) {
+    // No response: timeout or no connectivity
+    const isTimeout = error.code === "ECONNABORTED" || error.code === "ETIMEDOUT";
+    title = `API ${isTimeout ? "timeout" : "network error"} ${method} ${url}`;
+    level = "warning";
+  } else {
+    // The request could not be created
+    Sentry.captureException(error);
+    return;
+  }
+
+  const apiError = new Error(title);
+  apiError.name = "ApiError";
+
+  Sentry.captureException(apiError, {
+    level,
+    fingerprint: ["api-error", method, url, String(status ?? error.code)],
+    contexts: {
+      api: {
+        method,
+        url: error.config?.url,
+        status,
+        code: error.code,
+        message: error.message,
+        responseData: JSON.stringify(error.response?.data)?.slice(0, 1000),
+      },
+    },
+  });
+};
 
 export default API;

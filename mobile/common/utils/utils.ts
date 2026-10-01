@@ -1,5 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
+import { Linking, Platform } from "react-native";
+
+// openURL rejects when no app can handle the URL (e.g. no browser installed)
+export const openExternalUrl = (url: string) =>
+  Linking.openURL(url).catch((err) => console.log("Could not open URL", url, err));
 
 export const clearAsyncStorage = async () => {
   const asyncStorageKeys = await AsyncStorage.getAllKeys();

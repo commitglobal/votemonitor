@@ -38,16 +38,16 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
     const token = await registerForPushNotificationsAsync();
     setPushToken(token);
 
+    // Permission denied or token fetch failed, already handled in registerForPushNotificationsAsync
     if (!token) {
-      throw new Error("No token aquired");
+      return;
     }
 
     try {
       await subscribeToPushNotifications({ token });
     } catch (err) {
+      // API errors are already reported by the API interceptor
       console.log(err);
-      Sentry.captureException(err);
-      throw err;
     }
   };
 

@@ -26,8 +26,8 @@ export async function registerForPushNotificationsAsync() {
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
+        // The user declined notifications, not an error
         console.error("Failed to get push token for push notification!");
-        Sentry.captureMessage("Push Notifications - Permission not granted");
         return;
       }
       token = (
@@ -36,8 +36,9 @@ export async function registerForPushNotificationsAsync() {
         })
       ).data;
     } catch (err) {
+      // Usually a network or FCM/APNs issue on the device
       console.log(err);
-      Sentry.captureException(err);
+      Sentry.captureException(err, { level: "warning" });
     }
   } else {
     console.error("Must use physical device for Push Notifications");

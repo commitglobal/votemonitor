@@ -14,7 +14,6 @@ import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-ho
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import Constants from "expo-constants";
-import * as Sentry from "@sentry/react-native";
 import CredentialsError from "../../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
@@ -58,9 +57,9 @@ const Login = () => {
       await signIn(email, password);
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
-    } catch (err) {
+    } catch {
+      // signIn already reports unexpected errors to Sentry
       setAuthError(true);
-      Sentry.captureException(err);
     } finally {
       setIsLoading(false);
     }

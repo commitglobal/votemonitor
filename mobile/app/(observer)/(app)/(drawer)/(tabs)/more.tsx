@@ -5,7 +5,7 @@ import { Screen } from "../../../../../components/Screen";
 import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
 import { useTranslation } from "react-i18next";
-import * as Linking from "expo-linking";
+import { openExternalUrl } from "../../../../../common/utils/utils";
 import { router, useNavigation } from "expo-router";
 import { useAuth } from "../../../../../hooks/useAuth";
 import Header from "../../../../../components/Header";
@@ -107,7 +107,7 @@ const More = () => {
           icon="termsConds"
           chevronRight={true}
           onClick={() => {
-            Linking.openURL(URL);
+            openExternalUrl(URL);
           }}
         ></MoreMenuItem>
         <MoreMenuItem
@@ -115,7 +115,7 @@ const More = () => {
           icon="privacyPolicy"
           chevronRight={true}
           onClick={() => {
-            Linking.openURL(URL);
+            openExternalUrl(URL);
           }}
         ></MoreMenuItem>
         <MoreMenuItem
@@ -132,7 +132,7 @@ const More = () => {
         <MoreMenuItem
           label={t("support")}
           icon="contactNGO"
-          onClick={() => Linking.openURL(HOTLINE_URL)}
+          onClick={() => openExternalUrl(HOTLINE_URL)}
         ></MoreMenuItem>
         <MoreMenuItem
           label={t("change-password")}

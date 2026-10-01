@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { AuthContext } from "./auth-context";
 import API from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -48,7 +49,10 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       }
       setIsAuthenticated(true);
     } catch (err: unknown) {
-      Sentry.captureException(err);
+      // API errors are already reported by the API interceptor
+      if (!axios.isAxiosError(err)) {
+        Sentry.captureException(err);
+      }
       console.log("Error while trying to sign in", err);
       setIsAuthenticated(false);
       throw new Error("Error while trying to sign in");
