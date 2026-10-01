@@ -1,6 +1,6 @@
 import { Typography } from "../../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, View, XStack, YStack } from "tamagui";
+import { View, XStack, YStack } from "tamagui";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
@@ -8,12 +8,13 @@ import {
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import { Screen } from "../../../components/Screen";
+import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import CheckboxInput from "../../../components/Inputs/CheckboxInput";
 import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../../services/interfaces/answer.type";
-import { createRef, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import FormInput from "../../../components/FormInputs/FormInput";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -28,12 +29,11 @@ import {
   mapAPIQuestionsToFormQuestions,
 } from "../../../services/form.parser";
 import Button from "../../../components/Button";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomInset } from "../../../hooks/useBottomInset";
 import { useMutatePollingStationGeneralData } from "../../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import { BackHandler, Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../../components/WarningDialog";
-import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import ChangeLanguageDialog from "../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../common/language.preferences";
@@ -42,7 +42,7 @@ type SearchParamsType = {
 };
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
-  const insets = useSafeAreaInsets();
+  const bottomInset = useBottomInset();
   const { isOnline } = useNetInfoContext();
 
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
@@ -258,24 +258,6 @@ const PollingStationQuestionnaire = () => {
     defaultValues: setFormDefaultValues(),
   });
 
-  // ref for the scrollview
-  const scrollViewRef = useRef(null);
-
-  // create  a ref for each question we receive that has any of the types: "textQuestion", "singleSelectQuestion", "multiSelectQuestion"
-  // so basically for all of the cases where we might deal with a 'textarea' that needs scrolling to
-  const questionRefs = useRef(
-    formStructure?.questions.map((question) => {
-      if (
-        question.$questionType === "textQuestion" ||
-        question.$questionType === "singleSelectQuestion" ||
-        question.$questionType === "multiSelectQuestion"
-      ) {
-        return createRef();
-      }
-      return null;
-    }),
-  );
-
   const onBackPress = () => {
     // if the user changed one of the answers in the meantime -> show condirmation modal
     if (isDirty) {
@@ -304,7 +286,24 @@ const PollingStationQuestionnaire = () => {
 
   return (
     <>
-      <Screen preset="fixed" backgroundColor="white" contentContainerStyle={{ flex: 1 }}>
+      <Screen
+        preset="fixed"
+        backgroundColor="white"
+        contentContainerStyle={{ flex: 1 }}
+        footer={
+          <XStack
+            backgroundColor="white"
+            padding="$xs"
+            justifyContent="center"
+            paddingBottom={bottomInset + 10}
+            elevation={2}
+          >
+            <Button flex={1} onPress={handleSubmit(onSubmit)}>
+              {t("submit")}
+            </Button>
+          </XStack>
+        }
+      >
         <Header
           title={t("title")}
           titleColor="white"
@@ -318,15 +317,14 @@ const PollingStationQuestionnaire = () => {
           }}
         />
 
-        <ScrollView
-          ref={scrollViewRef}
+        <ScreenScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           bounces={isOnline}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
         >
           <YStack padding="$md" gap="$lg" flex={1}>
-            {formStructure?.questions.map((question: ApiFormQuestion, index: number) => {
+            {formStructure?.questions.map((question: ApiFormQuestion) => {
               const _label = `${question.code}. ${question.text[currentLanguage]}`;
               const _helper = question.helptext?.[currentLanguage] || "";
               if (question.$questionType === "numberQuestion") {
@@ -368,13 +366,6 @@ const PollingStationQuestionnaire = () => {
                       <YStack>
                         <FormInput
                           type="textarea"
-                          ref={questionRefs.current && questionRefs.current[index]}
-                          onFocus={() =>
-                            scrollToTextarea(
-                              scrollViewRef,
-                              questionRefs.current && questionRefs.current[index],
-                            )
-                          }
                           title={question.text[currentLanguage]}
                           placeholder={question.helptext?.[currentLanguage] || ""}
                           onChangeText={onChange}
@@ -436,13 +427,6 @@ const PollingStationQuestionnaire = () => {
                               return (
                                 <FormInput
                                   type="textarea"
-                                  ref={questionRefs.current && questionRefs.current[index]}
-                                  onFocus={() =>
-                                    scrollToTextarea(
-                                      scrollViewRef,
-                                      questionRefs.current && questionRefs.current[index],
-                                    )
-                                  }
                                   marginTop="$md"
                                   key={question.id + option.id}
                                   value={value.textValue}
@@ -525,13 +509,6 @@ const PollingStationQuestionnaire = () => {
                                   option.isFreeText && (
                                     <FormInput
                                       type="textarea"
-                                      ref={questionRefs.current && questionRefs.current[index]}
-                                      onFocus={() =>
-                                        scrollToTextarea(
-                                          scrollViewRef,
-                                          questionRefs.current && questionRefs.current[index],
-                                        )
-                                      }
                                       marginTop="$md"
                                       value={selections[option.id]?.text}
                                       placeholder={t("form.placeholder")}
@@ -561,7 +538,7 @@ const PollingStationQuestionnaire = () => {
               return <Typography key={question.id}></Typography>;
             })}
           </YStack>
-        </ScrollView>
+        </ScreenScrollView>
         {openContextualMenu && (
           <OptionsSheet open setOpen={setOpenContextualMenu}>
             <OptionSheetContent
@@ -617,18 +594,6 @@ const PollingStationQuestionnaire = () => {
           />
         )}
       </Screen>
-
-      <XStack
-        backgroundColor="white"
-        padding="$xs"
-        justifyContent="center"
-        paddingBottom={insets.bottom + 10}
-        elevation={2}
-      >
-        <Button flex={1} onPress={handleSubmit(onSubmit)}>
-          {t("submit")}
-        </Button>
-      </XStack>
     </>
   );
 };

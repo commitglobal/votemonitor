@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BackHandler, Keyboard, ViewStyle } from "react-native";
 import Toast from "react-native-toast-message";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import {
   MULTIPART_FILE_UPLOAD_SIZE,
   MUTATION_SCOPE_DO_NOT_HYDRATE,
@@ -26,13 +26,13 @@ import QuestionAttachments from "../../../../components/QuestionAttachments";
 import QuestionForm from "../../../../components/QuestionForm";
 import QuestionNotes from "../../../../components/QuestionNotes";
 import { Screen } from "../../../../components/Screen";
+import { ScreenScrollView } from "../../../../components/ScreenScrollView";
 import NotesSkeleton from "../../../../components/SkeletonLoaders/NotesSkeleton";
 import { Typography } from "../../../../components/Typography";
 import WarningDialog from "../../../../components/WarningDialog";
 import WizzardControls from "../../../../components/WizzardControls";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
-import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import { useCamera } from "../../../../hooks/useCamera";
 import { AddAttachmentStartAPIPayload } from "../../../../services/api/add-attachment.api";
 import {
@@ -555,15 +555,6 @@ const FormSubmissions = () => {
     }
   };
 
-  // scroll view ref
-  const scrollViewRef = useRef(null);
-  // textarea ref - where we're going to scroll to
-  const textareaRef = useRef(null);
-
-  const handleFocus = () => {
-    scrollToTextarea(scrollViewRef, textareaRef);
-  };
-
   const handleOnShowAttachementSheet = () => {
     Keyboard.dismiss();
     setIsOptionsSheetOpen(true);
@@ -586,6 +577,22 @@ const FormSubmissions = () => {
       backgroundColor="white"
       style={$screenStyle}
       contentContainerStyle={$containerStyle}
+      footer={
+        <WizzardControls
+          isFirstElement={activeQuestion?.indexInAllQuestions === 0}
+          isLastElement={
+            currentForm?.questions &&
+            activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
+          }
+          isNextDisabled={false}
+          actionBtnLabel={t("save_and_continue")}
+          onActionButtonPress={handleSubmit(async (formValues) => {
+            const nextQuestion = await onSubmitAnswer(formValues);
+            goToNextQuestion(nextQuestion);
+          })}
+          onPreviousButtonPress={onBackButtonPress}
+        />
+      }
     >
       <Header
         title={`${formTitle}`}
@@ -595,11 +602,7 @@ const FormSubmissions = () => {
         onLeftPress={handleLeaveFormWizard}
       />
 
-      <ScrollView
-        ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
@@ -637,13 +640,7 @@ const FormSubmissions = () => {
         </YStack>
 
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
-          <QuestionForm
-            control={control}
-            activeQuestion={activeQuestion}
-            handleFocus={handleFocus}
-            ref={textareaRef}
-            language={language}
-          />
+          <QuestionForm control={control} activeQuestion={activeQuestion} language={language} />
 
           {/* notes section */}
           {isLoadingNotes && <NotesSkeleton />}
@@ -674,22 +671,8 @@ const FormSubmissions = () => {
             onPress={handleOnShowAttachementSheet}
           />
         </YStack>
-      </ScrollView>
+      </ScreenScrollView>
 
-      <WizzardControls
-        isFirstElement={activeQuestion?.indexInAllQuestions === 0}
-        isLastElement={
-          currentForm?.questions &&
-          activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
-        }
-        isNextDisabled={false}
-        actionBtnLabel={t("save_and_continue")}
-        onActionButtonPress={handleSubmit(async (formValues) => {
-          const nextQuestion = await onSubmitAnswer(formValues);
-          goToNextQuestion(nextQuestion);
-        })}
-        onPreviousButtonPress={onBackButtonPress}
-      />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
       {isOptionsSheetOpen && (
         <OptionsSheet

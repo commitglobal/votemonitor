@@ -68,6 +68,14 @@ const SelectElectionEvent = () => {
           flex: 1,
           backgroundColor: "white",
         }}
+        footer={
+          <FooterButtons
+            primaryAction={refetchElectionEvents}
+            primaryActionLabel={t("retry")}
+            isPrimaryButtonDisabled={isRefetchingElectionEvents}
+            handleGoBack={handleGoBack}
+          />
+        }
       >
         {renderHeader()}
 
@@ -89,13 +97,6 @@ const SelectElectionEvent = () => {
             <Icon icon="warning" color="$purple5" size={100} />
           </ScrollView>
         </YStack>
-
-        <FooterButtons
-          primaryAction={refetchElectionEvents}
-          primaryActionLabel={t("retry")}
-          isPrimaryButtonDisabled={isRefetchingElectionEvents}
-          handleGoBack={handleGoBack}
-        />
       </Screen>
     );
   }
@@ -109,6 +110,8 @@ const SelectElectionEvent = () => {
           flex: 1,
           backgroundColor: "white",
         }}
+        // todo: continue
+        footer={<FooterButtons primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />}
       >
         {renderHeader()}
 
@@ -130,9 +133,6 @@ const SelectElectionEvent = () => {
             <Icon icon="peopleAddingVote" />
           </ScrollView>
         </YStack>
-
-        {/* //todo: continue */}
-        <FooterButtons primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
       </Screen>
     );
   }
@@ -144,6 +144,22 @@ const SelectElectionEvent = () => {
         flex: 1,
         backgroundColor: "white",
       }}
+      footer={
+        <FooterButtons
+          primaryActionLabel={t("continue")}
+          isPrimaryButtonDisabled={!selectedElectionRoundLocal}
+          primaryAction={() => {
+            if (selectedElectionRoundLocal) {
+              setSelectedElectionRound(selectedElectionRoundLocal, {
+                onSuccess: () => {
+                  router.push("citizen/main");
+                },
+              });
+            }
+          }}
+          handleGoBack={handleGoBack}
+        />
+      }
     >
       {renderHeader()}
 
@@ -178,21 +194,6 @@ const SelectElectionEvent = () => {
           )}
         </ScrollView>
       </YStack>
-
-      <FooterButtons
-        primaryActionLabel={t("continue")}
-        isPrimaryButtonDisabled={!selectedElectionRoundLocal}
-        primaryAction={() => {
-          if (selectedElectionRoundLocal) {
-            setSelectedElectionRound(selectedElectionRoundLocal, {
-              onSuccess: () => {
-                router.push("citizen/main");
-              },
-            });
-          }
-        }}
-        handleGoBack={handleGoBack}
-      />
     </Screen>
   );
 };

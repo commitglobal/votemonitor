@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "../../../components/Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ListView } from "../../../components/ListView";
+import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import WizzardControls from "../../../components/WizzardControls";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -144,7 +145,20 @@ export default function CitizenSelectLocation() {
   }
 
   return (
-    <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
+    <Screen
+      backgroundColor="white"
+      contentContainerStyle={$containerStyle}
+      preset="fixed"
+      footer={
+        <WizzardControls
+          isFirstElement={!activeStep?.id}
+          isLastElement={isLastElement}
+          onPreviousButtonPress={onBackButtonPress}
+          isNextDisabled={!selectedOption}
+          onActionButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
+        />
+      }
+    >
       <Header
         title={"Select location"}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -182,16 +196,11 @@ export default function CitizenSelectLocation() {
             onEndReachedThreshold={0.5}
             renderItem={SelectItem}
             keyboardShouldPersistTaps="handled"
+            // keeps the end of the list reachable above the keyboard and footer while searching
+            renderScrollComponent={ScreenScrollView}
           />
         )}
       </YStack>
-      <WizzardControls
-        isFirstElement={!activeStep?.id}
-        isLastElement={isLastElement}
-        onPreviousButtonPress={onBackButtonPress}
-        isNextDisabled={!selectedOption}
-        onActionButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
-      />
     </Screen>
   );
 }

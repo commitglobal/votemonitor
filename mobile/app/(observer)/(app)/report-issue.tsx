@@ -4,7 +4,7 @@ import { Screen } from "../../../components/Screen";
 import { Icon } from "../../../components/Icon";
 import { router } from "expo-router";
 import Header from "../../../components/Header";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomInset } from "../../../hooks/useBottomInset";
 import Button from "../../../components/Button";
 import FormInput from "../../../components/FormInputs/FormInput";
 import Select from "../../../components/Select";
@@ -35,7 +35,7 @@ import { QuickReportKeys } from "../../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
 import { AddAttachmentQuickReportStartAPIPayload } from "../../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import Toast from "react-native-toast-message";
 // import { t } from "i18next";
 import {
@@ -125,7 +125,7 @@ type ReportIssueFormType = {
 const ReportIssue = () => {
   const cancelRef = useRef<boolean>(false);
   const { t } = useTranslation("report_new_issue");
-  const insets = useSafeAreaInsets();
+  const bottomInset = useBottomInset();
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits, t), [visits, t]);
@@ -446,14 +446,39 @@ const ReportIssue = () => {
   return (
     <>
       <Screen
-        preset="scroll"
+        preset="fixed"
         backgroundColor="white"
-        keyboardShouldPersistTaps="never"
-        ScrollViewProps={{
-          stickyHeaderIndices: [0],
-          bounces: false,
-          keyboardShouldPersistTaps: "handled",
-        }}
+        contentContainerStyle={{ flex: 1 }}
+        footer={
+          <XStack
+            backgroundColor="white"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingTop="$xs"
+            paddingBottom={bottomInset + 10}
+            paddingHorizontal="$md"
+            elevation={2}
+            gap="$sm"
+          >
+            {/* this will reset form to defaultValues */}
+            <Button preset="chromeless" onPress={() => reset()}>
+              {t("form.clear")}
+            </Button>
+            <Button
+              flex={1}
+              height="100%"
+              textStyle={{ textAlign: "center" }}
+              onPress={handleSubmit(onSubmit)}
+              disabled={
+                (isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments
+              }
+            >
+              {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
+                ? t("form.submit")
+                : t("form.loading")}
+            </Button>
+          </XStack>
+        }
       >
         <Header
           title={t("title")}
@@ -462,7 +487,7 @@ const ReportIssue = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}>
           <YStack paddingVertical="$lg" paddingHorizontal="$md" flex={1}>
             {/* questions container */}
 
@@ -652,7 +677,7 @@ const ReportIssue = () => {
               />
             </YStack>
           </YStack>
-        </KeyboardAwareScrollView>
+        </ScreenScrollView>
 
         <OptionsSheet
           open={optionsSheetOpen}
@@ -696,33 +721,6 @@ const ReportIssue = () => {
           )}
         </OptionsSheet>
       </Screen>
-
-      <XStack
-        backgroundColor="white"
-        justifyContent="space-between"
-        alignItems="center"
-        paddingTop="$xs"
-        paddingBottom={insets.bottom + 10}
-        paddingHorizontal="$md"
-        elevation={2}
-        gap="$sm"
-      >
-        {/* this will reset form to defaultValues */}
-        <Button preset="chromeless" onPress={() => reset()}>
-          {t("form.clear")}
-        </Button>
-        <Button
-          flex={1}
-          height="100%"
-          textStyle={{ textAlign: "center" }}
-          onPress={handleSubmit(onSubmit)}
-          disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
-        >
-          {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
-            ? t("form.submit")
-            : t("form.loading")}
-        </Button>
-      </XStack>
     </>
   );
 };

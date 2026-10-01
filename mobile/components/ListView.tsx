@@ -29,9 +29,15 @@ function ListViewComponent<T>({
   ...props
 }: ListViewProps<T> & { ref?: React.Ref<ListViewRef<T>> }) {
   if (isRTL) {
+    const { renderScrollComponent: ScrollComponent, ...flatListProps } = props;
+
     return (
       <FlatList
-        {...(props as PropsWithoutRef<React.ComponentProps<typeof FlatList<T>>>)}
+        {...(flatListProps as PropsWithoutRef<React.ComponentProps<typeof FlatList<T>>>)}
+        // FlatList expects a render function, while FlashList expects a component
+        renderScrollComponent={
+          ScrollComponent ? (scrollProps) => <ScrollComponent {...scrollProps} /> : undefined
+        }
         ref={ref as React.Ref<FlatList<T>>}
       />
     );

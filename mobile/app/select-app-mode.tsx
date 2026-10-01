@@ -35,6 +35,15 @@ export default function SelectAppMode() {
       contentContainerStyle={{
         flex: 1,
       }}
+      footer={
+        <WizzardControls
+          actionBtnPreset="yellow"
+          onActionButtonPress={handleSetAppModeContext}
+          actionBtnLabel={t("continue")}
+          isFirstElement
+          backgroundColor="$purple6"
+        />
+      }
     >
       <Header barStyle="light-content" backgroundColor="$purple6">
         <Icon icon="loginLogo" paddingBottom="$md" />
@@ -75,14 +84,6 @@ export default function SelectAppMode() {
             {t("helper")}
           </Typography>
         </ScrollView>
-
-        <WizzardControls
-          actionBtnPreset="yellow"
-          onActionButtonPress={handleSetAppModeContext}
-          actionBtnLabel={t("continue")}
-          isFirstElement
-          backgroundColor="$purple6"
-        />
       </YStack>
     </Screen>
   );

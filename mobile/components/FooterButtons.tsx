@@ -1,8 +1,7 @@
 import { XStack } from "tamagui";
 import { Icon } from "./Icon";
 import Button from "./Button";
-import { Animated } from "react-native";
-import useAnimatedBottomPadding from "../hooks/useAnimatedBottomPadding";
+import { useBottomInset } from "../hooks/useBottomInset";
 
 export const FooterButtons = ({
   primaryAction,
@@ -15,12 +14,10 @@ export const FooterButtons = ({
   isPrimaryButtonDisabled?: boolean;
   handleGoBack: () => void;
 }) => {
-  const paddingBottom = useAnimatedBottomPadding(16);
-
-  const AnimatedXStack = Animated.createAnimatedComponent(XStack);
+  const paddingBottom = 16 + useBottomInset();
 
   return (
-    <AnimatedXStack
+    <XStack
       justifyContent="center"
       alignItems="center"
       paddingRight="$xl"
@@ -49,6 +46,6 @@ export const FooterButtons = ({
           {primaryActionLabel}
         </Button>
       </XStack>
-    </AnimatedXStack>
+    </XStack>
   );
 };

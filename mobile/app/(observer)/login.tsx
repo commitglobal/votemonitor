@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { SplashScreen, router } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
-import { ScrollView, View, XStack, YStack } from "tamagui";
+import { View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../../components/Screen";
+import { ScreenScrollView } from "../../components/ScreenScrollView";
 import { Keyboard } from "react-native";
 import { Image } from "expo-image";
 import { Icon } from "../../components/Icon";
@@ -73,12 +74,23 @@ const Login = () => {
         flexGrow: 1,
         flex: 1,
       }}
+      footer={
+        <FooterButtons
+          primaryAction={() => {
+            Keyboard.dismiss();
+            handleSubmit(onLogin)();
+          }}
+          primaryActionLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+          isPrimaryButtonDisabled={isLoading}
+          handleGoBack={() => router.push("/select-app-mode")}
+        />
+      }
     >
       <Header barStyle="light-content">
         <Icon icon="vmObserverLogo" width={294} height={83} paddingBottom="$md" />
       </Header>
 
-      <ScrollView>
+      <ScreenScrollView>
         <YStack padding="$md" gap="$md">
           <LoginForm control={control} errors={errors} authError={authError} />
 
@@ -112,17 +124,7 @@ const Login = () => {
             />
           </XStack>
         </YStack>
-      </ScrollView>
-
-      <FooterButtons
-        primaryAction={() => {
-          Keyboard.dismiss();
-          handleSubmit(onLogin)();
-        }}
-        primaryActionLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
-        isPrimaryButtonDisabled={isLoading}
-        handleGoBack={() => router.push("/select-app-mode")}
-      />
+      </ScreenScrollView>
     </Screen>
   );
 };

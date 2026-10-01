@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { ListView } from "./ListView";
+import { ScreenScrollView } from "./ScreenScrollView";
 import { Guide, guideType } from "../services/api/get-guides.api";
 import * as Linking from "expo-linking";
 import { EmptyContent, LoadingContent } from "./ListContent";
@@ -92,6 +93,8 @@ const ResourcesGuidesList = ({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 16 }}
         bounces={isOnline}
+        // keeps the end of the list reachable above the keyboard while searching
+        renderScrollComponent={ScreenScrollView}
         ListHeaderComponent={header}
         ListEmptyComponent={
           <EmptyContent

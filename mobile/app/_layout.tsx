@@ -4,6 +4,7 @@ import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
 import React, { useEffect } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 import { PortalProvider } from "tamagui";
 import "../common/config/i18n";
@@ -87,25 +88,29 @@ function RootLayout() {
   // !: To improve performance and cause fewer renders, try to reduce the scope of your providers to only the routes that need them.
 
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
-      <NetInfoProvider>
-        <AuthContextProvider>
-          <PersistQueryContextProvider>
-            <PortalProvider>
-              <LanguageContextProvider>
-                <EasUpdateMonitorContextProvider>
-                  <AppModeContextProvider>
-                    <Slot />
-                    <Toast config={toastConfig} position="top" />
-                    <NetInfoBanner />
-                  </AppModeContextProvider>
-                </EasUpdateMonitorContextProvider>
-              </LanguageContextProvider>
-            </PortalProvider>
-          </PersistQueryContextProvider>
-        </AuthContextProvider>
-      </NetInfoProvider>
-    </TamaguiProvider>
+    // the app draws behind the status and navigation bars on android, without these flags
+    // the keyboard height is off by the system bars and keyboard avoiding views add extra space
+    <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
+      <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
+        <NetInfoProvider>
+          <AuthContextProvider>
+            <PersistQueryContextProvider>
+              <PortalProvider>
+                <LanguageContextProvider>
+                  <EasUpdateMonitorContextProvider>
+                    <AppModeContextProvider>
+                      <Slot />
+                      <Toast config={toastConfig} position="top" />
+                      <NetInfoBanner />
+                    </AppModeContextProvider>
+                  </EasUpdateMonitorContextProvider>
+                </LanguageContextProvider>
+              </PortalProvider>
+            </PersistQueryContextProvider>
+          </AuthContextProvider>
+        </NetInfoProvider>
+      </TamaguiProvider>
+    </KeyboardProvider>
   );
 }
 

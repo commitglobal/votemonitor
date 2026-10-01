@@ -2,10 +2,7 @@ import { XStack, XStackProps } from "tamagui";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useTranslation } from "react-i18next";
-import { Animated } from "react-native";
-import useAnimatedBottomPadding from "../hooks/useAnimatedBottomPadding";
-
-const AnimatedXStack = Animated.createAnimatedComponent(XStack);
+import { useBottomInset } from "../hooks/useBottomInset";
 
 interface WizzardControlsProps extends XStackProps {
   isFirstElement?: boolean;
@@ -28,10 +25,10 @@ const WizzardControls = ({
   ...rest
 }: WizzardControlsProps) => {
   const { t } = useTranslation("add_polling_station");
-  const paddingBottom = useAnimatedBottomPadding(16);
+  const paddingBottom = 16 + useBottomInset();
 
   return (
-    <AnimatedXStack
+    <XStack
       elevation={2}
       backgroundColor="white"
       alignItems="center"
@@ -67,7 +64,7 @@ const WizzardControls = ({
           {!isLastElement ? actionBtnLabel || t("actions.next_step") : t("actions.finalize")}
         </Button>
       </XStack>
-    </AnimatedXStack>
+    </XStack>
   );
 };
 

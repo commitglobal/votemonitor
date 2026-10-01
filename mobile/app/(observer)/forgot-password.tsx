@@ -1,14 +1,16 @@
 import Header from "../../components/Header";
-import { Screen } from "../../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
-import { ScrollView, YStack } from "tamagui";
+import { YStack } from "tamagui";
+import { Screen } from "../../components/Screen";
+import { ScreenScrollView } from "../../components/ScreenScrollView";
 import { Typography } from "../../components/Typography";
 import { useForm, Controller } from "react-hook-form";
 import FormInput from "../../components/FormInputs/FormInput";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
+import { KeyboardController } from "react-native-keyboard-controller";
 import PasswordConfirmationScreen from "../../components/PasswordConfirmationScreen";
 import { ForgotPasswwordPayload, forgotPassword } from "../../services/definitions.api";
 import * as Sentry from "@sentry/react-native";
@@ -39,6 +41,7 @@ const ForgotPassword = () => {
       setIsLoading(true);
       const payload: ForgotPasswwordPayload = { email: data.email };
       await forgotPassword(payload);
+      await KeyboardController.dismiss();
       setEmailConfirmation(true);
     } catch (error) {
       Sentry.captureException(error);
@@ -55,10 +58,16 @@ const ForgotPassword = () => {
   return (
     <Screen
       preset="fixed"
-      contentContainerStyle={{
-        flexGrow: 1,
-        flex: 1,
-      }}
+      backgroundColor="white"
+      contentContainerStyle={{ flex: 1 }}
+      footer={
+        <WizzardControls
+          isFirstElement
+          onActionButtonPress={handleSubmit(onSubmit)}
+          isNextDisabled={isLoading}
+          actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+        />
+      }
     >
       <Header
         title={t("header.title")}
@@ -68,7 +77,11 @@ const ForgotPassword = () => {
         onLeftPress={() => router.back()}
       />
 
-      <ScrollView>
+      <ScreenScrollView
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
           <Typography preset="heading" fontWeight="700">
             {t("heading")}
@@ -105,15 +118,7 @@ const ForgotPassword = () => {
             )}
           />
         </YStack>
-      </ScrollView>
-
-      <WizzardControls
-        isFirstElement
-        onActionButtonPress={handleSubmit(onSubmit)}
-        isNextDisabled={isLoading}
-        actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
-        marginTop="auto"
-      />
+      </ScreenScrollView>
     </Screen>
   );
 };

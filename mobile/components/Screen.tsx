@@ -1,18 +1,18 @@
 import { useScrollToTop } from "@react-navigation/native";
 import { StatusBar, StatusBarProps } from "expo-status-bar";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  KeyboardAvoidingViewProps,
   LayoutChangeEvent,
-  Platform,
   ScrollView,
   ScrollViewProps,
   StyleProp,
   View,
   ViewStyle,
 } from "react-native";
+import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../hooks/useSafeAreaInsetsStyle";
+import { useBottomInset } from "../hooks/useBottomInset";
+import { ScreenFooterContext, ScreenScrollView } from "./ScreenScrollView";
 import { useTheme } from "tamagui";
 
 interface BaseScreenProps {
@@ -41,17 +41,15 @@ interface BaseScreenProps {
    */
   statusBarStyle?: "light" | "dark";
   /**
-   * By how much should we offset the keyboard? Defaults to 0.
-   */
-  keyboardOffset?: number;
-  /**
    * Pass any additional props directly to the StatusBar component.
    */
   StatusBarProps?: StatusBarProps;
   /**
-   * Pass any additional props directly to the KeyboardAvoidingView component.
+   * Footer pinned to the bottom of the screen, which sticks to the top of the keyboard when it opens.
+   * The footer is responsible for its own bottom inset padding (see `useBottomInset`).
+   * Scrollable content with inputs should use `ScreenScrollView`, so the focused input stays above the footer.
    */
-  KeyboardAvoidingViewProps?: KeyboardAvoidingViewProps;
+  footer?: React.ReactNode;
 }
 
 interface FixedScreenProps extends BaseScreenProps {
@@ -80,8 +78,6 @@ interface AutoScreenProps extends Omit<ScrollScreenProps, "preset"> {
 }
 
 export type ScreenProps = ScrollScreenProps | FixedScreenProps | AutoScreenProps;
-
-const isIos = Platform.OS === "ios";
 
 type ScreenPreset = "fixed" | "scroll" | "auto";
 
@@ -194,7 +190,7 @@ function ScreenWithScrolling(props: ScreenProps) {
   useScrollToTop(ref);
 
   return (
-    <ScrollView
+    <ScreenScrollView
       {...{ keyboardShouldPersistTaps, scrollEnabled, ref }}
       {...ScrollViewProps}
       onLayout={(e) => {
@@ -213,14 +209,14 @@ function ScreenWithScrolling(props: ScreenProps) {
       ]}
     >
       {children}
-    </ScrollView>
+    </ScreenScrollView>
   );
 }
 
 /**
  * Represents a screen component that provides a consistent layout and behavior for different screen presets.
  * The `Screen` component can be used with different presets such as "fixed", "scroll", or "auto".
- * It handles safe area insets, status bar settings, keyboard avoiding behavior, and scrollability based on the preset.
+ * It handles safe area insets, status bar settings, the footer sticking to the keyboard, and scrollability based on the preset.
  * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/Screen/}
  * @param {ScreenProps} props - The props for the `Screen` component.
  * @returns {JSX.Element} The rendered `Screen` component.
@@ -229,31 +225,42 @@ export function Screen(props: ScreenProps) {
   const theme = useTheme();
   const {
     backgroundColor = theme.backgroundColor?.val,
-    KeyboardAvoidingViewProps,
-    keyboardOffset = 0,
     safeAreaEdges,
     StatusBarProps,
     statusBarStyle = "light",
+    footer,
   } = props;
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+  const bottomInset = useBottomInset();
+  const [footerHeight, setFooterHeight] = useState(0);
+  const footerContext = useMemo(
+    () => ({ footerHeight: footer ? footerHeight : 0, bottomInset }),
+    [footer, footerHeight, bottomInset],
+  );
 
   return (
     <View style={[$containerStyle, { backgroundColor }, $containerInsets]}>
       <StatusBar style={statusBarStyle} {...StatusBarProps} />
 
-      <KeyboardAvoidingView
-        behavior={isIos ? "padding" : "height"}
-        keyboardVerticalOffset={keyboardOffset}
-        {...KeyboardAvoidingViewProps}
-        style={[$keyboardAvoidingViewStyle, KeyboardAvoidingViewProps?.style]}
-      >
+      <ScreenFooterContext.Provider value={footerContext}>
         {isNonScrolling(props.preset) ? (
           <ScreenWithoutScrolling {...props} />
         ) : (
           <ScreenWithScrolling {...props} />
         )}
-      </KeyboardAvoidingView>
+      </ScreenFooterContext.Provider>
+
+      {footer && (
+        <KeyboardStickyView
+          offset={{ closed: 0, opened: bottomInset }}
+          // the footer is translated over the scroll content when the keyboard opens, so it needs a background
+          style={{ backgroundColor }}
+          onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
+        >
+          {footer}
+        </KeyboardStickyView>
+      )}
     </View>
   );
 }
@@ -262,10 +269,6 @@ const $containerStyle: ViewStyle = {
   flex: 1,
   height: "100%",
   width: "100%",
-};
-
-const $keyboardAvoidingViewStyle: ViewStyle = {
-  flex: 1,
 };
 
 const $outerStyle: ViewStyle = {

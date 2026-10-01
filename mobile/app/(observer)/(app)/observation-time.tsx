@@ -234,6 +234,20 @@ const ObservationTime = () => {
         flex: 1,
         backgroundColor: "white",
       }}
+      footer={
+        <WizzardControls
+          isFirstElement
+          onActionButtonPress={() => {
+            handleSubmit(saveAndGoBack, (errors) => {
+              if (Object.keys(errors).includes("breaks")) {
+                setIsUnableToSaveObservationTime(true);
+              }
+            })();
+          }}
+          actionBtnLabel={t("polling_stations_information.observation_time.save")}
+          isNextDisabled={isLoading}
+        />
+      }
     >
       <Header
         title={t("polling_stations_information.observation_time.observation_time")}
@@ -339,20 +353,6 @@ const ObservationTime = () => {
           </YStack>
         </ScrollView>
       </YStack>
-
-      <WizzardControls
-        isFirstElement
-        onActionButtonPress={() => {
-          handleSubmit(saveAndGoBack, (errors) => {
-            if (Object.keys(errors).includes("breaks")) {
-              setIsUnableToSaveObservationTime(true);
-            }
-          })();
-        }}
-        actionBtnLabel={t("polling_stations_information.observation_time.save")}
-        marginTop="auto"
-        isNextDisabled={isLoading}
-      />
 
       {breakToDelete !== null && (
         <WarningDialog

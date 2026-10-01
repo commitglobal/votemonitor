@@ -119,6 +119,14 @@ const ChangePassword = () => {
         bounces: false,
       }}
       contentContainerStyle={$containerStyle}
+      footer={
+        <WizzardControls
+          isFirstElement
+          onActionButtonPress={handleSubmit(onSubmit)}
+          actionBtnLabel={isLoadingUpdatePassword ? t("loading", { ns: "common" }) : t("form.save")}
+          isNextDisabled={isLoadingUpdatePassword}
+        />
+      }
     >
       <Header
         title={t("title")}
@@ -185,13 +193,6 @@ const ChangePassword = () => {
           )}
         />
       </YStack>
-      <WizzardControls
-        isFirstElement
-        onActionButtonPress={handleSubmit(onSubmit)}
-        actionBtnLabel={isLoadingUpdatePassword ? t("loading", { ns: "common" }) : t("form.save")}
-        marginTop="auto"
-        isNextDisabled={isLoadingUpdatePassword}
-      />
     </Screen>
   );
 };

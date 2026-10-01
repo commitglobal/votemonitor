@@ -19,6 +19,7 @@ import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../../components/WizzardControls";
 import { ListView } from "../../../components/ListView";
+import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapPollingStationOptionsToSelectValues = (
@@ -54,23 +55,24 @@ const PollingStationWizzard = () => {
   const activeStep = useMemo(() => [...steps].pop(), [steps]);
 
   return (
-    <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
-      <Header
-        title={t("title")}
-        leftIcon={<Icon icon="chevronLeft" color="white" />}
-        onLeftPress={router.back}
-      />
-      <PollingStationWizzardContent
-        activeStep={activeStep}
-        onPreviousPress={onPreviousPress}
-        onNextPress={onNextPress}
-        steps={steps}
-      />
-    </Screen>
+    <PollingStationWizzardContent
+      header={
+        <Header
+          title={t("title")}
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={router.back}
+        />
+      }
+      activeStep={activeStep}
+      onPreviousPress={onPreviousPress}
+      onNextPress={onNextPress}
+      steps={steps}
+    />
   );
 };
 
 interface PollingStationWizzardContentProps {
+  header: React.ReactNode;
   onPreviousPress: () => PollingStationStep | undefined;
   onNextPress: (nextStep: PollingStationStep) => void;
   activeStep?: PollingStationStep;
@@ -78,6 +80,7 @@ interface PollingStationWizzardContentProps {
 }
 
 const PollingStationWizzardContent = ({
+  header,
   onPreviousPress,
   onNextPress,
   activeStep,
@@ -204,7 +207,12 @@ const PollingStationWizzardContent = ({
 
   // TODO: To be handled
   if (pollingStationsError) {
-    return <Typography>{t("error")}</Typography>;
+    return (
+      <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
+        {header}
+        <Typography>{t("error")}</Typography>
+      </Screen>
+    );
   }
 
   const SelectItem = useCallback(
@@ -230,7 +238,21 @@ const PollingStationWizzardContent = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <>
+    <Screen
+      backgroundColor="white"
+      contentContainerStyle={$containerStyle}
+      preset="fixed"
+      footer={
+        <WizzardControls
+          isFirstElement={!activeStep?.id}
+          isLastElement={isLastElement}
+          onPreviousButtonPress={onBackButtonPress}
+          isNextDisabled={!selectedOption}
+          onActionButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
+        />
+      }
+    >
+      {header}
       <YStack paddingHorizontal="$md" gap={"$1"}>
         {activeStep && (
           <YStack paddingTop={"$sm"} minHeight="$xl">
@@ -269,17 +291,12 @@ const PollingStationWizzardContent = ({
             onEndReachedThreshold={0.5}
             renderItem={SelectItem}
             keyboardShouldPersistTaps="handled"
+            // keeps the end of the list reachable above the keyboard and footer while searching
+            renderScrollComponent={ScreenScrollView}
           />
         )}
       </YStack>
-      <WizzardControls
-        isFirstElement={!activeStep?.id}
-        isLastElement={isLastElement}
-        onPreviousButtonPress={onBackButtonPress}
-        isNextDisabled={!selectedOption}
-        onActionButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
-      />
-    </>
+    </Screen>
   );
 };
 

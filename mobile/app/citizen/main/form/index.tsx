@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { useEffect, useMemo, useState } from "react";
+import { XStack, YStack } from "tamagui";
 import { Screen } from "../../../../components/Screen";
+import { ScreenScrollView } from "../../../../components/ScreenScrollView";
 import Header from "../../../../components/Header";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Icon } from "../../../../components/Icon";
@@ -19,7 +20,6 @@ import {
 } from "../../../../services/form.parser";
 import QuestionForm from "../../../../components/QuestionForm";
 import { useForm } from "react-hook-form";
-import { scrollToTextarea } from "../../../../helpers/scrollToTextarea";
 import WizzardControls from "../../../../components/WizzardControls";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
@@ -41,8 +41,6 @@ import { AttachmentData } from "../../../../services/api/add-attachment.api";
 const CitizenForm = () => {
   const { t, i18n } = useTranslation(["citizen_form", "network_banner"]);
   const router = useRouter();
-  const scrollViewRef = useRef(null);
-  const textareaRef = useRef(null);
 
   const { selectedElectionRound } = useCitizenUserData();
   const { isOnline } = useNetInfoContext();
@@ -75,10 +73,6 @@ const CitizenForm = () => {
   if (!formId || !selectedLocationId || !initialQuestionId) {
     return <Typography>Incorrect page params</Typography>;
   }
-
-  const handleFocus = () => {
-    scrollToTextarea(scrollViewRef, textareaRef);
-  };
 
   const [answers, setAnswers] = useState<Record<string, ApiFormAnswer | undefined> | undefined>();
   const [questionId, setQuestionId] = useState<string>(initialQuestionId);
@@ -347,17 +341,27 @@ const CitizenForm = () => {
       backgroundColor="white"
       style={$screenStyle}
       contentContainerStyle={$containerStyle}
+      footer={
+        <WizzardControls
+          isFirstElement={activeQuestion?.indexInAllQuestions === 0}
+          isLastElement={
+            currentForm?.questions &&
+            activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
+          }
+          isNextDisabled={false}
+          onActionButtonPress={() => {
+            handleSubmit(onSubmitAnswer)();
+          }}
+          onPreviousButtonPress={goToPrevQuestion}
+        />
+      }
     >
       <Header
         title={formTitle}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={handleGoBack}
       />
-      <ScrollView
-        ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar_label")}</Typography>
@@ -373,8 +377,6 @@ const CitizenForm = () => {
           <QuestionForm
             control={control}
             activeQuestion={activeQuestion}
-            handleFocus={handleFocus}
-            ref={textareaRef}
             language={language}
             required={true}
           />
@@ -446,19 +448,7 @@ const CitizenForm = () => {
             onPress={handleOnShowAttachementSheet}
           />
         </YStack>
-      </ScrollView>
-      <WizzardControls
-        isFirstElement={activeQuestion?.indexInAllQuestions === 0}
-        isLastElement={
-          currentForm?.questions &&
-          activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
-        }
-        isNextDisabled={false}
-        onActionButtonPress={() => {
-          handleSubmit(onSubmitAnswer)();
-        }}
-        onPreviousButtonPress={goToPrevQuestion}
-      />
+      </ScreenScrollView>
 
       {isReviewSheetOpen && (
         <ReviewCitizenFormSheet
