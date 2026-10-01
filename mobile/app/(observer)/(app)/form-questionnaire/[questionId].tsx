@@ -37,6 +37,7 @@ import { useCamera } from "../../../../hooks/useCamera";
 import { AddAttachmentStartAPIPayload } from "../../../../services/api/add-attachment.api";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  removeAnswersForHiddenQuestions,
   setFormDefaultValues,
   shouldDisplayQuestion,
 } from "../../../../services/form.parser";
@@ -165,21 +166,14 @@ const FormQuestionnaire = () => {
         formValues[questionId],
       );
 
-      const updatedAnswers = {
+      // Remove answers only for dependent questions that are no longer displayed
+      const updatedAnswers = removeAnswersForHiddenQuestions(currentForm?.questions, {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
-      };
+      });
 
       // Send to server only if the answer is different then the saved one
       if (isDirty) {
-        // Find dependent questions for the current one and remove their answers
-        currentForm?.questions
-          ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
-          .map((q) => q.id)
-          .forEach((qId) => {
-            if (updatedAnswers) delete updatedAnswers[qId];
-          });
-
         updateSubmission({
           pollingStationId: selectedPollingStation?.pollingStationId,
           electionRoundId: activeElectionRound?.id,

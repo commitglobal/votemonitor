@@ -15,6 +15,7 @@ import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
 import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  removeAnswersForHiddenQuestions,
   setFormDefaultValues,
   shouldDisplayQuestion,
 } from "../../../../services/form.parser";
@@ -207,18 +208,11 @@ const CitizenForm = () => {
         formValues[questionId],
       );
 
-      const updatedAnswers = {
+      // Remove answers only for dependent questions that are no longer displayed
+      const updatedAnswers = removeAnswersForHiddenQuestions(currentForm?.questions, {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
-      };
-
-      // Find dependent questions for the current one and remove their answers
-      currentForm?.questions
-        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
-        .map((q) => q.id)
-        .forEach((qId) => {
-          if (updatedAnswers) delete updatedAnswers[qId];
-        });
+      });
 
       const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
       if (nextQuestion) {

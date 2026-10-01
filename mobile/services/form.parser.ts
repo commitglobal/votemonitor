@@ -102,6 +102,25 @@ export const shouldDisplayQuestion = (
   return true;
 };
 
+/**
+ * Removes answers of questions that are no longer displayed given the current answers.
+ * Questions are processed in form order so hiding a parent also hides its descendants.
+ */
+export const removeAnswersForHiddenQuestions = (
+  questions: ApiFormQuestion[] = [],
+  answers: Record<string, ApiFormAnswer | undefined>,
+): Record<string, ApiFormAnswer | undefined> => {
+  const updatedAnswers = { ...answers };
+
+  questions.forEach((q) => {
+    if (q.displayLogic && !shouldDisplayQuestion(q, updatedAnswers)) {
+      delete updatedAnswers[q.id];
+    }
+  });
+
+  return updatedAnswers;
+};
+
 export const mapAPIQuestionsToFormQuestions = (
   apiQuestions: ApiFormQuestion[] = [],
 ): Record<string, ApiFormQuestion> => {
