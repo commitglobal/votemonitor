@@ -326,6 +326,20 @@ const FormQuestionnaire = () => {
     setDeletingAnswer(false);
   };
 
+  // Hooks must stay above the loading/error early returns below: a failed refetch (e.g. lost connection)
+  // flips `answersError` after a full render, and a changing hook count crashes the app.
+  const { uploadCameraOrMedia } = useCamera();
+
+  const {
+    mutateAsync: addAttachmentStart,
+    isPending: isLoadingAddAttachmentt,
+    isPaused,
+  } = useUploadAttachmentMutation();
+
+  const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
+  const { mutateAsync: addAttachmentComplete } = useUploadAttachmentCompleteMutation();
+  const { mutateAsync: addAttachmentAbort } = useUploadAttachmentAbortMutation();
+
   if (isLoadingCurrentForm || isLoadingAnswers) {
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
@@ -346,17 +360,6 @@ const FormQuestionnaire = () => {
       </Screen>
     );
   }
-  const { uploadCameraOrMedia } = useCamera();
-
-  const {
-    mutateAsync: addAttachmentStart,
-    isPending: isLoadingAddAttachmentt,
-    isPaused,
-  } = useUploadAttachmentMutation();
-
-  const { mutateAsync: uploadS3Chunk } = useUploadS3ChunkMutation();
-  const { mutateAsync: addAttachmentComplete } = useUploadAttachmentCompleteMutation();
-  const { mutateAsync: addAttachmentAbort } = useUploadAttachmentAbortMutation();
 
   const onCompressionProgress = (progress: number) => {
     setUploadProgress(`${t("attachments.upload.compressing")} ${Math.ceil(progress * 100)}%`);
