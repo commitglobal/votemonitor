@@ -18,6 +18,23 @@ import ptBr from "../../assets/locales/pt-BR/translations_PT-BR.json";
 import { SECURE_STORAGE_KEYS } from "../constants";
 import { getSecureStoreItem } from "../../helpers/SecureStoreWrapper";
 
+// languages the user can pick in the language selectors
+// (do not use i18n.languages for this: it is the resolution chain and includes e.g. "pt" when "pt-BR" is active)
+export const APP_LANGUAGES = [
+  "en",
+  "ro",
+  "pl",
+  "bg",
+  "sr",
+  "ka",
+  "hy",
+  "ru",
+  "az",
+  "es",
+  "de",
+  "pt-BR",
+] as const;
+
 const systemLocale =
   getSecureStoreItem(SECURE_STORAGE_KEYS.I18N_LANGUAGE) ||
   Localization.getLocales()?.[0]?.languageCode ||

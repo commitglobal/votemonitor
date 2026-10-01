@@ -9,6 +9,7 @@ import Button from "./Button";
 import { Icon } from "./Icon";
 import Select from "./Select";
 import { Typography } from "./Typography";
+import { APP_LANGUAGES } from "../common/config/i18n";
 
 const ChooseOnboardingLanguage = ({
   setLanguageSelectionApplied,
@@ -24,7 +25,8 @@ const ChooseOnboardingLanguage = ({
   const { control, handleSubmit } = useForm({
     defaultValues: {
       selectedLanguage:
-        systemLocale?.languageCode && i18n.languages.includes(systemLocale.languageCode)
+        systemLocale?.languageCode &&
+        (APP_LANGUAGES as readonly string[]).includes(systemLocale.languageCode)
           ? (systemLocale.languageCode as Language)
           : ("en" as Language),
     },
@@ -47,7 +49,7 @@ const ChooseOnboardingLanguage = ({
   };
 
   const mappedLanguages = useMemo(
-    () => mapLanguagesToSelectOptions(i18n.languages),
+    () => mapLanguagesToSelectOptions(APP_LANGUAGES),
     [i18n.language, t],
   );
 

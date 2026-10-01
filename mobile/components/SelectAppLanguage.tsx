@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { SECURE_STORAGE_KEYS } from "../common/constants";
 import { setSecureStoreItem } from "../helpers/SecureStoreWrapper";
+import { APP_LANGUAGES } from "../common/config/i18n";
 
 interface SelectLanguageProps {
   open: boolean;
@@ -70,7 +71,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
       <Select.Content>
         <Select.Viewport>
           <Select.Group>
-            {i18n.languages?.map((lang, i) => (
+            {APP_LANGUAGES.map((lang, i) => (
               <Select.Item index={i} key={lang} value={lang} gap="$3" paddingBottom="$sm">
                 <Select.ItemText
                   color={lang === i18n.language ? "$purple5" : "$gray9"}
