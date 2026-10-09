@@ -52,6 +52,31 @@ public static class SubmissionFilterFields
                 "uuid",
                 Set,
                 FilterValue.Guid),
+            ["level1"] = new(
+                "s.\"Level1\"",
+                "text",
+                Set,
+                FilterValue.String),            
+            ["level2"] = new(
+                "s.\"Level2\"",
+                "text",
+                Set,
+                FilterValue.String),
+            ["level3"] = new(
+                "s.\"Level3\"",
+                "text",
+                Set,
+                FilterValue.String),
+            ["level4"] = new(
+                "s.\"Level4\"",
+                "text",
+                Set,
+                FilterValue.String),
+            ["level5"] = new(
+                "s.\"Level5\"",
+                "text",
+                Set,
+                FilterValue.String),
             ["pollingStationNumber"] = new(
                 "s.\"Number\"",
                 "text",
@@ -83,7 +108,6 @@ public static class SubmissionFilterFields
                 Boolean,
                 FilterValue.Boolean),
 
-            // Replace FollowUpStatus with your actual enum type.
             ["followUpStatus"] = new(
                 "s.\"FollowUpStatus\"",
                 "text",

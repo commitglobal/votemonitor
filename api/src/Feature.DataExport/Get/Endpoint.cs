@@ -15,7 +15,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         {
             s.Summary = "Gets exported data excel";
         });
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

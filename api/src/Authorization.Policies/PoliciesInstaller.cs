@@ -16,6 +16,7 @@ public static class AuthorizationPoliciesInstaller
         services.AddScoped<IAuthorizationHandler, NgoAdminAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, CitizenReportingNgoAdminAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, CoalitionLeaderAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, MonitoringNgoAdminOrStaffAuthorizationHandler>();
 
         services.AddAuthorization(options =>
         {
@@ -23,6 +24,7 @@ public static class AuthorizationPoliciesInstaller
             options.AddPolicy(PolicyNames.NgoAdminsOnly, policy => policy.RequireRole(UserRole.NgoAdmin));
             options.AddPolicy(PolicyNames.ObserversOnly, policy => policy.RequireRole(UserRole.Observer));
             options.AddPolicy(PolicyNames.AdminsOnly, policy => policy.RequireRole(UserRole.PlatformAdmin, UserRole.NgoAdmin));
+            options.AddPolicy(PolicyNames.NgoAdminOrStaff, policy => policy.RequireRole(UserRole.NgoStaff, UserRole.NgoAdmin));
         });
 
         services

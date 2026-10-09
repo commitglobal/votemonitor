@@ -11,7 +11,7 @@ public class Endpoint(VoteMonitorContext context, IAuthorizationService authoriz
         Post("/api/election-rounds/{electionRoundId}/citizen-reports:byFormV2");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(x => { x.Summary = "Citizen report submissions aggregated by form (v2)"; });
     }

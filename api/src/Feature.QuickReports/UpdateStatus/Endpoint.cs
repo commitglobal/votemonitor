@@ -16,7 +16,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, NoContent>
             s.Summary = "Updates follow up status for a quick report";
         });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<NoContent> ExecuteAsync(Request req, CancellationToken ct)

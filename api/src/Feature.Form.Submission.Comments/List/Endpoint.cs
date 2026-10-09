@@ -13,7 +13,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Options(x => x.WithTags("form-submission-comments"));
         Summary(s => { s.Summary = "Lists comments for a form submission."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

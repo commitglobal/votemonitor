@@ -17,7 +17,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/forms:listAll");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(s =>
         {
             s.Summary = "Lists all forms for an election round";

@@ -10,7 +10,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         Get("/api/election-rounds/{electionRoundId}/incident-reports:byForm");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(x => { x.Summary = "Incident reports aggregated by form"; });
     }

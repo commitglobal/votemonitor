@@ -14,7 +14,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/incident-reports:byEntry");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists incident reports by entry in our system"; });
     }
 

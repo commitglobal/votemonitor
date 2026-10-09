@@ -24,7 +24,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Gets aggregated form with all the notes and attachments"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req,

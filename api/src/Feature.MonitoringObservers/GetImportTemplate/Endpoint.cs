@@ -19,7 +19,7 @@ public class Endpoint : EndpointWithoutRequest
             s.Summary = "Gets monitoring observers import template";
         });
 
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task HandleAsync(CancellationToken ct)

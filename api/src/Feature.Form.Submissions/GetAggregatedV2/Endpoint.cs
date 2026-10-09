@@ -1,8 +1,10 @@
 using Feature.Form.Submissions.GetAggregated;
+using Feature.Form.Submissions.ListEntries;
 using Microsoft.EntityFrameworkCore;
 using Module.Answers.Aggregators;
 using Module.Answers.Models;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -23,7 +25,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Gets aggregated form with all the notes and attachments (v2)"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -69,52 +71,61 @@ public class Endpoint(
         Request req,
         CancellationToken ct)
     {
-        const string sql =
-            """
-            SELECT s."SubmissionId",
-                   s."TimeSubmitted",
-                   s."FormId",
-                   s."FormCode",
-                   s."FormType",
-                   s."DefaultLanguage",
-                   s."FormName",
-                   s."PollingStationId",
-                   s."Level1",
-                   s."Level2",
-                   s."Level3",
-                   s."Level4",
-                   s."Level5",
-                   s."Number",
-                   s."MonitoringObserverId",
-                   s."DisplayName" AS "ObserverName",
-                   s."Email",
-                   s."PhoneNumber",
-                   s."Tags",
-                   s."NgoName",
-                   s."NumberOfQuestionsAnswered",
-                   s."NumberOfFlaggedAnswers",
-                   s."FollowUpStatus",
-                   s."IsCompleted",
-                   s."IsOwnObserver",
-                   s."Notes",
-                   s."Attachments",
-                   s."Answers"
-            FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
-            WHERE s."FormId" = @formId
-            """;
+        var compiler = new FilterSqlCompiler(SubmissionFilterFields.All);
+        var filter = compiler.Build(req.Filter);
 
-        List<FormSubmissionView> submissions;
-        using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("dataSource", req.DataSource.ToString());
+
+        foreach (var name in filter.Parameters.ParameterNames)
         {
-            submissions = (await dbConnection.QueryAsync<FormSubmissionView>(sql, new
-            {
-                electionRoundId = req.ElectionRoundId,
-                ngoId = req.NgoId,
-                dataSource = req.DataSource.ToString(),
-                formId = req.FormId
-            })).ToList();
+            parameters.Add(name, filter.Parameters.Get<object>(name));
         }
 
+        var selectSql = $"""
+                         SELECT s."SubmissionId",
+                                s."TimeSubmitted",
+                                s."FormId",
+                                s."FormCode",
+                                s."FormType",
+                                s."DefaultLanguage",
+                                s."FormName",
+                                s."PollingStationId",
+                                s."Level1",
+                                s."Level2",
+                                s."Level3",
+                                s."Level4",
+                                s."Level5",
+                                s."Number",
+                                s."MonitoringObserverId",
+                                s."DisplayName" AS "ObserverName",
+                                s."Email",
+                                s."PhoneNumber",
+                                s."MonitoringObserverStatus" AS "Status",
+                                s."Tags",
+                                s."NgoName",
+                                s."NumberOfQuestionsAnswered",
+                                s."NumberOfFlaggedAnswers",
+                                s."MediaFilesCount",
+                                s."NotesCount",
+                                s."CommentsCount",
+                                s."HasComments",
+                                s."HasNotes",
+                                s."HasAttachments",
+                                s."FollowUpStatus",
+                                s."IsCompleted",
+                                s."MonitoringObserverStatus",
+                                s."Answers"
+                         FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         WHERE {filter.Sql}
+                         """;
+
+
+        using var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct);
+        var submissions = (await dbConnection.QueryAsync<FormSubmissionView>(selectSql, parameters)).ToList();
+        
         var formSubmissionsAggregate = new FormSubmissionsAggregate(form);
         foreach (var formSubmission in submissions)
         {

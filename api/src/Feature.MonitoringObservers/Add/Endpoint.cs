@@ -10,7 +10,7 @@ public class Endpoint(IObserverImportService importService) : Endpoint<Request>
         Post("/api/election-rounds/{electionRoundId}/monitoring-observers");
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(s => { s.Summary = "Creates new monitoring observers"; });
     }
 

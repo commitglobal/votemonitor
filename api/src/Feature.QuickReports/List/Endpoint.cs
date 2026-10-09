@@ -18,7 +18,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         {
             s.Summary = "Gets all quick-reports submitted by observers for a monitoring ngo";
         });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)

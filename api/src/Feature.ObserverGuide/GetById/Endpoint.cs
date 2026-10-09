@@ -26,7 +26,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/observer-guide/{id}");
         DontAutoTag();
         Options(x => x.WithTags("observer-guide"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<ObserverGuideModel>, NotFound>> ExecuteAsync(Request req,

@@ -15,7 +15,7 @@ public class Endpoint(
         Options(x => x.WithTags("form-submissions"));
         Summary(s => { s.Summary = "Gets submission by id"; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<FormSubmissionViewV2>, NotFound>> ExecuteAsync(Request req,

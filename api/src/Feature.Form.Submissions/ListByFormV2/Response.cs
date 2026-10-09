@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Models;
 
-namespace Feature.Form.Submissions.ListByForm;
+namespace Feature.Form.Submissions.ListByFormV2;
 
 public record Response
 {

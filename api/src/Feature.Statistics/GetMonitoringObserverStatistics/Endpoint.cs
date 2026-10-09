@@ -24,7 +24,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("statistics"));
         Summary(s => { s.Summary = "Statistics for a specific monitoring observer"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

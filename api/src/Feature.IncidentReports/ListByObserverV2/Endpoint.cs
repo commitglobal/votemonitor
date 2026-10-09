@@ -13,7 +13,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Post("/api/election-rounds/{electionRoundId}/incident-reports:byObserverV2");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(x => { x.Summary = "Incident reports aggregated by observer (v2)"; });
     }

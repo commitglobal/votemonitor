@@ -18,7 +18,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         {
             s.Summary = "Gets monitoring observer details";
         });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<MonitoringObserverModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

@@ -13,7 +13,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         Get("/api/election-rounds/{electionRoundId}/citizen-reports:byEntry");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists citizen report submissions by entry in our system"; });
     }
 

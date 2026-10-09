@@ -13,7 +13,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(s => { s.Summary = "Gets incident report by id including notes and attachments"; });
     }

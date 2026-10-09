@@ -17,7 +17,7 @@ public class Endpoint(VoteMonitorContext context)
             s.Description = "Election rounds with status NotStarted and Started are listed";
         });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Ok<Result>> ExecuteAsync(Request req, CancellationToken ct)

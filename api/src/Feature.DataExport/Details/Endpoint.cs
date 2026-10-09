@@ -16,7 +16,7 @@ public class Endpoint(IReadRepository<ExportedData> repository) : Endpoint<Reque
             s.Summary = "Gets details about an exported data";
         });
 
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

@@ -16,7 +16,7 @@ public class Endpoint(
         Post("/api/election-rounds/{electionRoundId}/incident-reports/forms/{formId}:aggregated-submissionsV2");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(s =>
         {
             s.Summary = "Gets aggregated incident report form submissions with all the notes and attachments (v2)";

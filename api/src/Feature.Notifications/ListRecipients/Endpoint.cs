@@ -14,7 +14,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
         Get("/api/election-rounds/{electionRoundId}/notifications:listRecipients");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<PagedResponse<TargetedMonitoringObserverModel>> ExecuteAsync(Request req,

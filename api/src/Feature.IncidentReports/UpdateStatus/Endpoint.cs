@@ -9,7 +9,7 @@ public class Endpoint(IAuthorizationService authorizationService,VoteMonitorCont
         Options(x => x.WithTags("incident-reports"));
         Summary(s => { s.Summary = "Updates follow up status for a incident report"; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

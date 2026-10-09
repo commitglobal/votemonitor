@@ -16,7 +16,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/form-submissions:byEntryDetailed");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists form submissions by entry detailed"; });
     }
 

@@ -13,7 +13,7 @@ public class Endpoint(
         Options(x => x.WithTags("incident-report-comments"));
         Summary(s => { s.Summary = "Updates an incident report comment. Only the author can update it."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<IncidentReportCommentModel>, NotFound>> ExecuteAsync(Request req,

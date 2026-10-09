@@ -13,7 +13,7 @@ public class Endpoint(
     public override void Configure()
     {
         Get("/api/election-rounds/{id}");
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task<Results<Ok<ElectionRoundModel>, NotFound>> ExecuteAsync(Request req,

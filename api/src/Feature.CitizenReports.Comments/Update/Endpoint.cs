@@ -14,7 +14,7 @@ public class Endpoint(
         Options(x => x.WithTags("citizen-report-comments"));
         Summary(s => { s.Summary = "Updates a citizen report comment. Only the author can update it."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<CitizenReportCommentModel>, NotFound>> ExecuteAsync(Request req,

@@ -13,7 +13,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Post("/api/election-rounds/{electionRoundId}/form-submissions:byEntryV2");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists form submissions by entry (v2)"; });
     }
 

@@ -39,7 +39,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             s.Summary = "Exports monitoring observers to csv file";
         });
 
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

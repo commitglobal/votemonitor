@@ -19,7 +19,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/forms");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<PagedResponse<FormSlimModel>>, NotFound>> ExecuteAsync(Request req,

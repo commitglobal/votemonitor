@@ -19,7 +19,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/citizen-guides/{id}");
         DontAutoTag();
         Options(x => x.WithTags("citizen-guides"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<CitizenGuideModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
