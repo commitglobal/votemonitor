@@ -137,6 +137,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CountryConfiguration());
         builder.ApplyConfiguration(new LanguageConfiguration());
         builder.ApplyConfiguration(new NgoConfiguration());
+        builder.ApplyConfiguration(new NgoStaffConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new MonitoringNgoConfiguration());
         builder.ApplyConfiguration(new MonitoringObserverConfiguration());

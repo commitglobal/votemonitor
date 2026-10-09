@@ -1,5 +1,3 @@
-using Feature.UserPreferences;
-
 namespace Feature.UserPreferences.UnitTests.Endpoints;
 
 public class GetMeEndpointTests

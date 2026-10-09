@@ -1,20 +1,15 @@
 ﻿using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
+using Vote.Monitor.Domain.Entities.NgoStaffAggregate;
 
 namespace Vote.Monitor.Domain.Entities.NgoAggregate;
 
 public class Ngo : AuditableBaseEntity, IAggregateRoot
 {
-#pragma warning disable CS8618 // Required by Entity Framework
-    internal Ngo()
-    {
-
-    }
-#pragma warning restore CS8618
-
     public Guid Id { get; private set; }
     public string Name { get; private set; }
     public NgoStatus Status { get; private set; }
     public HashSet<NgoAdmin> Admins { get; private set; } = new();
+    public HashSet<NgoStaff> Staff { get; private set; } = new();
 
     public Ngo(string name)
     {
@@ -30,13 +25,19 @@ public class Ngo : AuditableBaseEntity, IAggregateRoot
 
     public virtual void Activate()
     {
-        // TODO: handle invariants
         Status = NgoStatus.Activated;
     }
 
     public virtual void Deactivate()
     {
-        // TODO: handle invariants
         Status = NgoStatus.Deactivated;
     }
+    
+#pragma warning disable CS8618 // Required by Entity Framework
+    internal Ngo()
+    {
+
+    }
+#pragma warning restore CS8618
+
 }

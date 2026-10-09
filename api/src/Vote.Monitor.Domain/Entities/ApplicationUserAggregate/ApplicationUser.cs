@@ -59,6 +59,10 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
     public static ApplicationUser CreateNgoAdmin(string firstName, string lastName, string email, string? phoneNumber,
         string password) =>
         new(UserRole.NgoAdmin, firstName, lastName, email, phoneNumber, password);
+    
+    public static ApplicationUser CreateNgoStaff(string firstName, string lastName, string email, string? phoneNumber,
+        string password) =>
+        new(UserRole.NgoStaff, firstName, lastName, email, phoneNumber, password);
 
     public static ApplicationUser CreateObserver(string firstName, string lastName, string email, string? phoneNumber,
         string password) =>

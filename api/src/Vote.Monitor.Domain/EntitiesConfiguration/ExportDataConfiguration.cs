@@ -37,6 +37,9 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
         builder.Property(x => x.CitizenReportsFilers)
             .HasConversion<ExportCitizenReportsFilersToJsonConverter, ExportCitizenReportsFilersValueComparer>()
             .HasColumnType("jsonb");
+
+        builder.Property(x => x.FilterConditions)
+            .HasColumnType("jsonb");
         
         builder.HasOne(x => x.Owner)
             .WithMany()

@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 namespace Feature.DataCleanup.DeleteNgoData;
 

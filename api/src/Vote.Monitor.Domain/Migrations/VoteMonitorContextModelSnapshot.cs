@@ -3467,6 +3467,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<JsonDocument>("FilterConditions")
+                        .HasColumnType("jsonb");
+
                     b.Property<string>("FormSubmissionsFilters")
                         .HasColumnType("jsonb");
 
@@ -5734,6 +5737,39 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("Ngos");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoStaffAggregate.NgoStaff", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("NgoId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("NgoId");
+
+                    b.ToTable("NgoStaff");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NoteAggregate.Note", b =>
                 {
                     b.Property<Guid>("Id")
@@ -6949,6 +6985,25 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("Ngo");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoStaffAggregate.NgoStaff", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "Ngo")
+                        .WithMany("Staff")
+                        .HasForeignKey("NgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Ngo");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NoteAggregate.Note", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
@@ -7187,6 +7242,8 @@ namespace Vote.Monitor.Domain.Migrations
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
                 {
                     b.Navigation("Admins");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ObserverAggregate.Observer", b =>

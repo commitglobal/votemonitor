@@ -36,6 +36,10 @@ public record FormSubmissionEntry
     public int NumberOfFlaggedAnswers { get; init; }
     public int MediaFilesCount { get; init; }
     public int NotesCount { get; init; }
+    public int CommentsCount { get; init; }
+    public bool HasComments { get; init; }
+    public bool HasNotes { get; init; }
+    public bool HasAttachments { get; init; }
 
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }

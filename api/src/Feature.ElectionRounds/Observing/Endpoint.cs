@@ -1,5 +1,4 @@
-﻿using Feature.ElectionRounds.Specifications;
-using Vote.Monitor.Core.Services.Security;
+﻿using Vote.Monitor.Core.Services.Security;
 
 namespace Feature.ElectionRounds.Observing;
 

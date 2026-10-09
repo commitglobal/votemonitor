@@ -28,6 +28,9 @@ public record DetailedSubmissionEntry
     public string NgoName { get; init; } = null!;
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfQuestionsAnswered { get; init; }
+    public bool HasComments { get; init; }
+    public bool HasNotes { get; init; }
+    public bool HasAttachments { get; init; }
 
     public BaseAnswerModel[] Answers { get; init; } = [];
     public NoteModel[] Notes { get; init; } = [];

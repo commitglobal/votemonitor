@@ -1,6 +1,4 @@
-﻿using Feature.PollingStations.Specifications;
-
-namespace Feature.PollingStations.Delete;
+﻿namespace Feature.PollingStations.Delete;
 public class Endpoint(IRepository<PollingStationAggregate> repository,
     IRepository<ElectionRoundAggregate> electionRoundRepository)
     : Endpoint<Request, Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>>

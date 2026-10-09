@@ -45,6 +45,7 @@ COPY ["src/Feature.Observers/Feature.Observers.csproj", "src/Feature.Observers/"
 COPY ["src/Feature.Ngos/Feature.Ngos.csproj", "src/Feature.Ngos/"]
 COPY ["src/Feature.Monitoring/Feature.Monitoring.csproj", "src/Feature.Monitoring/"]
 COPY ["src/Feature.NgoAdmins/Feature.NgoAdmins.csproj", "src/Feature.NgoAdmins/"]
+COPY ["src/Feature.NgoStaff/Feature.NgoStaff.csproj", "src/Feature.NgoStaff/"]
 COPY ["src/Feature.Languages/Feature.Languages.csproj", "src/Feature.Languages/"]
 COPY ["src/Feature.Notifications/Feature.Notifications.csproj", "src/Feature.Notifications/"]
 COPY ["src/Feature.ElectionRounds/Feature.ElectionRounds.csproj", "src/Feature.ElectionRounds/"]

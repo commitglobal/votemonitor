@@ -1,5 +1,4 @@
-﻿using Feature.PollingStation.Information.Forms.Specifications;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Feature.PollingStation.Information.Forms.Upsert;

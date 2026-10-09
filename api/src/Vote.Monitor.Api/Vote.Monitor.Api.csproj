@@ -65,6 +65,7 @@
         <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj" />
         <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
         <ProjectReference Include="..\Feature.Coalitions\Feature.Coalitions.csproj" />
+        <ProjectReference Include="..\Feature.NgoStaff\Feature.NgoStaff.csproj" />
         <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
         <ProjectReference Include="..\Feature.PollingStation.Information.Forms\Feature.PollingStation.Information.Forms.csproj" />
         <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />

@@ -1,0 +1,249 @@
+using Dapper;
+using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Specifications;
+
+namespace Feature.IncidentReports.ListEntriesV2;
+
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, Results<Ok<PagedResponse<IncidentReportEntryModel>>, NotFound>>
+{
+    public override void Configure()
+    {
+        Post("/api/election-rounds/{electionRoundId}/incident-reports:byEntryV2");
+        DontAutoTag();
+        Options(x => x.WithTags("incident-reports"));
+        Policies(PolicyNames.NgoAdminsOnly);
+        Summary(x => { x.Summary = "Lists incident reports by entry (v2)"; });
+    }
+
+    public override async Task<Results<Ok<PagedResponse<IncidentReportEntryModel>>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
+    {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var sql = """
+                  SELECT
+                      COUNT(*) AS COUNT
+                  FROM
+                      "IncidentReports" IR
+                          INNER JOIN "Forms" F ON F."Id" = IR."FormId"
+                          INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                  WHERE
+                      MN."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId;
+
+                  WITH
+                      INCIDENT_REPORTS AS (
+                          SELECT
+                              IR."Id" AS "IncidentReportId",
+                              F."Code" AS "FormCode",
+                              F."Name" AS "FormName",
+                              F."DefaultLanguage" "FormDefaultLanguage",
+                              IR."LocationType",
+                              IR."LocationDescription",
+                              IR."PollingStationId",
+                              IR."MonitoringObserverId",
+                              IR."NumberOfQuestionsAnswered",
+                              IR."NumberOfFlaggedAnswers",
+                              (
+                                  SELECT
+                                      COUNT(1)
+                                  FROM
+                                      "IncidentReportAttachments" A
+                                  WHERE
+                                      A."IncidentReportId" = IR."Id"
+                                    AND "IsDeleted" = FALSE
+                                    AND "IsCompleted" = TRUE
+                              ) AS "MediaFilesCount",
+                              ( SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") AS "NotesCount",
+                              IR."LastUpdatedAt" AS "TimeSubmitted",
+                              IR."FollowUpStatus",
+                              IR."IsCompleted"
+                          FROM
+                              "IncidentReports" IR
+                                  INNER JOIN "Forms" F ON F."Id" = IR."FormId"
+                                  INNER JOIN "MonitoringObservers" MO ON IR."MonitoringObserverId" = MO."Id"
+                                  INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                          WHERE
+                            MN."ElectionRoundId" = @electionRoundId
+                            AND MN."NgoId" = @ngoId
+                      )
+                  SELECT
+                      IR."IncidentReportId",
+                      IR."TimeSubmitted",
+                      IR."FormCode",
+                      IR."FormName",
+                      IR."FormDefaultLanguage",
+                      IR."LocationType",
+                      IR."LocationDescription",
+                      PS."Id" AS "PollingStationId",
+                      PS."Level1",
+                      PS."Level2",
+                      PS."Level3",
+                      PS."Level4",
+                      PS."Level5",
+                      PS."Number" "PollingStationNumber",
+                      IR."MonitoringObserverId",
+                      U."DisplayName" AS "ObserverName",
+                      U."Email",
+                      U."PhoneNumber",
+                      MO."Status",
+                      MO."Tags",
+                      IR."NumberOfQuestionsAnswered",
+                      IR."NumberOfFlaggedAnswers",
+                      IR."MediaFilesCount",
+                      IR."NotesCount",
+                      IR."FollowUpStatus",
+                      IR."IsCompleted"
+                  FROM
+                      INCIDENT_REPORTS IR
+                          INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                          LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
+                  ORDER BY
+                      CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN IR."TimeSubmitted" END ASC,
+                      CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN IR."TimeSubmitted" END DESC,
+                      CASE WHEN @sortExpression = 'FormCode ASC' THEN IR."FormCode" END ASC,
+                      CASE WHEN @sortExpression = 'FormCode DESC' THEN IR."FormCode" END DESC,
+                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN IR."NumberOfQuestionsAnswered" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered DESC' THEN IR."NumberOfQuestionsAnswered" END DESC,
+                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN IR."NumberOfFlaggedAnswers" END ASC,
+                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN IR."NumberOfFlaggedAnswers" END DESC,
+                      CASE WHEN @sortExpression = 'MediaFilesCount ASC' THEN IR."MediaFilesCount" END ASC,
+                      CASE WHEN @sortExpression = 'MediaFilesCount DESC' THEN IR."MediaFilesCount" END DESC,
+                      CASE WHEN @sortExpression = 'NotesCount ASC' THEN IR."NotesCount" END ASC,
+                      CASE WHEN @sortExpression = 'NotesCount DESC' THEN IR."NotesCount" END DESC,
+                      CASE WHEN @sortExpression = 'Level1 ASC' THEN PS."Level1" END ASC,
+                      CASE WHEN @sortExpression = 'Level1 DESC' THEN PS."Level1" END DESC,
+                      CASE WHEN @sortExpression = 'Level2 ASC' THEN PS."Level2" END ASC,
+                      CASE WHEN @sortExpression = 'Level2 DESC' THEN PS."Level2" END DESC,
+                      CASE WHEN @sortExpression = 'Level3 ASC' THEN PS."Level3" END ASC,
+                      CASE WHEN @sortExpression = 'Level3 DESC' THEN PS."Level3" END DESC,
+                      CASE WHEN @sortExpression = 'Level4 ASC' THEN PS."Level4" END ASC,
+                      CASE WHEN @sortExpression = 'Level4 DESC' THEN PS."Level4" END DESC,
+                      CASE WHEN @sortExpression = 'Level5 ASC' THEN PS."Level5" END ASC,
+                      CASE WHEN @sortExpression = 'Level5 DESC' THEN PS."Level5" END DESC,
+                      CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN PS."Number" END ASC,
+                      CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN PS."Number" END DESC,
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."DisplayName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."DisplayName" END DESC
+                  OFFSET @offset ROWS
+                  FETCH NEXT @pageSize ROWS ONLY;
+                  """;
+
+        var queryArgs = new
+        {
+            electionRoundId = req.ElectionRoundId,
+            ngoId = req.NgoId,
+            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
+            pageSize = req.PageSize,
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+        };
+
+        int totalRowCount;
+        List<IncidentReportEntryModel> entries;
+
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            totalRowCount = multi.Read<int>().Single();
+            entries = multi.Read<IncidentReportEntryModel>().ToList();
+        }
+
+        return TypedResults.Ok(
+            new PagedResponse<IncidentReportEntryModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
+    }
+
+    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    {
+        if (string.IsNullOrWhiteSpace(sortColumnName))
+        {
+            return $"{nameof(IncidentReportEntryModel.TimeSubmitted)} DESC";
+        }
+
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.FormCode),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.FormCode)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.NumberOfQuestionsAnswered),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.NumberOfQuestionsAnswered)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.NumberOfFlaggedAnswers),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.NumberOfFlaggedAnswers)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.MediaFilesCount),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.MediaFilesCount)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.NotesCount),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.NotesCount)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.TimeSubmitted),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.TimeSubmitted)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.Level1),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.Level1)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.Level2),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.Level2)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.Level3),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.Level3)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.Level4),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.Level4)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.Level5),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.Level5)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.PollingStationNumber),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(IncidentReportEntryModel.PollingStationNumber)} {sortOrder}";
+        }
+
+        return $"{nameof(IncidentReportEntryModel.TimeSubmitted)} DESC";
+    }
+}

@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Core.Security;
 
 namespace Feature.IncidentReports.GetFilters;
 
