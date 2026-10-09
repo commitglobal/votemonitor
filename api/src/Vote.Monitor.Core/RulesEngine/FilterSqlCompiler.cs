@@ -109,12 +109,54 @@ public sealed class FilterSqlCompiler
 
     private string CompileAnswerRule(AnswerRule rule)
     {
-        if (_compileAnswer is null)
-            throw new NotSupportedException(
-                "Answer rules require an answer SQL compiler configured for your answer schema.");
+        string? value1 = "NULL::jsonb";
+        string? value2 = "NULL::jsonb";
 
-        return _compileAnswer(rule, this);
+        switch (rule.Discriminator)
+        {
+            case "answer-isEmpty":
+            case "answer-isNotEmpty":
+                break;
+
+            case "answer-between":
+                value1 = AddParameter(rule.From);
+                value2 = AddParameter(rule.To);
+                break;
+
+            case "answer-in":
+            case "answer-notIn":
+                value1 = rule.Values is not null
+                    ? AddParameter(rule.Values)
+                    : AddParameter([]);
+                break;
+
+            default:
+                // Supports scalar values and array-valued equality for multi-select.
+                value1 = rule.Values is not null
+                    ? AddParameter(rule.Values)
+                    : AddParameter(rule.Value);
+                break;
+        }
+
+        string[] parts =
+        [
+            $"""
+             "FormId" = {AddParameter(rule.Form)}
+             """,
+            $"""
+             "AnswerMatches"(
+                 "Answers",
+                 {AddParameter(rule.Question)},
+                 {AddParameter(rule.Discriminator)},
+                 {value1},
+                 {value2}
+             )
+             """
+        ];
+
+        return "(" + string.Join(" AND ", parts) + ")";
     }
+ 
 
     private string CompileBetween(
         string column,
@@ -210,6 +252,50 @@ public sealed class FilterSqlCompiler
 
         // SqlType comes only from server-side field configuration.
         return $"@{name}::{field.SqlType}";
+    }
+    
+    private string AddParameter(Guid value)
+    {
+        var name = $"filter_{_parameterIndex++}";
+        _parameters.Add(name, value);
+        return $"@{name}::uuid";
+    }
+    
+    private string AddParameter(string value)
+    {
+        var name = $"filter_{_parameterIndex++}";
+        _parameters.Add(name, value);
+        return $"@{name}::text";
+    }
+    
+    private string AddParameter(JsonElement? value)
+    {
+        var name = $"filter_{_parameterIndex++}";
+        if (value == null || value.Value.ValueKind == JsonValueKind.Null)
+        {
+            _parameters.Add(name, null);
+        }
+        else
+        {
+            _parameters.Add(name, JsonSerializer.Serialize(value));
+        }
+        
+        return $"@{name}::jsonb";
+    }
+    
+    private string AddParameter(List<JsonElement>? values)
+    {
+        var name = $"filter_{_parameterIndex++}";
+        if (values == null)
+        {
+            _parameters.Add(name, null);
+        }
+        else
+        {
+            _parameters.Add(name, JsonSerializer.Serialize(values));
+        }
+        
+        return $"@{name}::jsonb";
     }
 
     private static JsonElement RequireValue(JsonElement? value)

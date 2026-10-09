@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.RulesEngine;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.RulesEngine.Rules;
 using Vote.Monitor.Domain.Entities.FormBase;
 
@@ -52,7 +53,7 @@ public static class SubmissionFilterFields
                 Set,
                 FilterValue.Guid),
             ["pollingStationNumber"] = new(
-                "s.\"PollingStationNumber\"",
+                "s.\"Number\"",
                 "text",
                 Text,
                 FilterValue.String),
@@ -87,11 +88,16 @@ public static class SubmissionFilterFields
                 "s.\"FollowUpStatus\"",
                 "text",
                 Set,
-                FilterValue.Enum<SubmissionFollowUpStatus>())          ,
+                FilterValue.Enum<SubmissionFollowUpStatus>()),
             ["formType"] = new(
                 "s.\"FormType\"",
                 "text",
                 Set,
-                FilterValue.Enum<FormType>())
+                FilterValue.Enum<FormType>()),
+            ["questionsAnswered"] = new(
+                "s.\"QuestionsAnswered\"",
+                "text",
+                Set,
+                FilterValue.Enum<QuestionsAnsweredFilter>())
         };
 }

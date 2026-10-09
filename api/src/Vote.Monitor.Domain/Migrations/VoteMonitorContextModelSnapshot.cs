@@ -5767,7 +5767,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("NgoId");
 
-                    b.ToTable("NgoStaff");
+                    b.ToTable("NgoStaff", (string)null);
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NoteAggregate.Note", b =>

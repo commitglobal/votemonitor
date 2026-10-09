@@ -62,7 +62,8 @@ namespace Vote.Monitor.Domain.Migrations
                                 "IsOwnObserver"              BOOLEAN,
                                 "HasComments"                BOOLEAN,
                                 "HasNotes"                   BOOLEAN,
-                                "HasAttachments"             BOOLEAN
+                                "HasAttachments"    BOOLEAN,
+                                "QuestionsAnswered" TEXT
                             )
                 AS
                 $$
@@ -110,7 +111,12 @@ namespace Vote.Monitor.Domain.Migrations
                                mo."IsOwnObserver",
                                FALSE                                                 AS "HasComments",
                                FALSE                                                 AS "HasNotes",
-                               FALSE                                                 AS "HasAttachments"
+                               FALSE                                                 AS "HasAttachments",
+                               CASE
+                                 WHEN psi."NumberOfQuestionsAnswered" = 0 THEN 'None'::text
+                                 WHEN psi."NumberOfQuestionsAnswered" = psif."NumberOfQuestions" THEN 'All'::text
+                               ELSE 'Some'::text
+                END AS "QuestionsAnswered"
                         FROM "PollingStationInformation" psi
                                  INNER JOIN "PollingStationInformationForms" psif
                                             ON psif."Id" = psi."PollingStationInformationFormId"
@@ -148,10 +154,14 @@ namespace Vote.Monitor.Domain.Migrations
                                     ))                                               AS "NotesCount",
                                (SELECT COUNT(1)
                                 FROM "FormSubmissionComments" c
-                                    INNER JOIN "NgoAdmins" na
-                                        ON na."ApplicationUserId" = c."CreatedBy"
-                                            AND na."NgoId" = ngoId
-                                WHERE c."SubmissionId" = fs."Id")                    AS "CommentsCount",
+                                WHERE c."SubmissionId" = fs."Id"
+                                  AND EXISTS (
+                                      SELECT 1 FROM "NgoAdmins" na 
+                                      WHERE na."ApplicationUserId" = c."CreatedBy" AND na."NgoId" = ngoId
+                                      UNION
+                                      SELECT 1 FROM "NgoStaff" ns 
+                                      WHERE ns."ApplicationUserId" = c."CreatedBy" AND ns."NgoId" = ngoId
+                                  )) AS "CommentsCount",
                                fs."LastUpdatedAt"                                    AS "TimeSubmitted",
                                fs."CreatedAt",
                                fs."LastUpdatedAt",
@@ -228,7 +238,12 @@ namespace Vote.Monitor.Domain.Migrations
                                         OR a."SubmissionId" = fs."Id"
                                     )
                                   AND a."IsDeleted" = false
-                                  AND a."IsCompleted" = true) > 0              AS "HasAttachments"
+                                  AND a."IsCompleted" = true) > 0              AS "HasAttachments",
+                               CASE
+                                 WHEN fs."NumberOfQuestionsAnswered" = 0 THEN 'None'::text
+                                 WHEN fs."NumberOfQuestionsAnswered" = f."NumberOfQuestions" THEN 'All'::text
+                               ELSE 'Some'::text
+                END AS "QuestionsAnswered"
                         FROM "FormSubmissions" fs
                                  INNER JOIN "Forms" f ON f."Id" = fs."FormId"
                                  INNER JOIN "PollingStations" ps ON ps."Id" = fs."PollingStationId"
