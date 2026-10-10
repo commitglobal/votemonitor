@@ -16,7 +16,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(s => { s.Summary = "Gets citizen report by id including notes and attachments"; });
     }

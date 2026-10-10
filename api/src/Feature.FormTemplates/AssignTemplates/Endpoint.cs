@@ -1,6 +1,4 @@
 ﻿using Feature.FormTemplates.Specifications;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 

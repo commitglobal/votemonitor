@@ -10,7 +10,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Get("/api/election-rounds/{electionRoundId}/form-submissions:byForm");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
 
         Summary(x => { x.Summary = "Form submissions aggregated by form"; });
     }

@@ -11,4 +11,5 @@ public class CurrentUserRoleProvider(ICurrentUserProvider currentUserProvider) :
     public bool IsNgoAdmin() => currentUserProvider.User?.IsInRole(UserRole.NgoAdmin.Value) is true;
 
     public bool IsObserver() => currentUserProvider.User?.IsInRole(UserRole.Observer.Value) is true;
+    public bool IsNgoStaff() => currentUserProvider.User?.IsInRole(UserRole.NgoStaff.Value) is true;
 }

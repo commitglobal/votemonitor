@@ -15,6 +15,7 @@ public class QuickReportOverviewModel
     public string Title { get; set; }
     public string Description { get; set; }
     public int NumberOfAttachments { get; set; }
+    public int CommentsCount { get; set; }
     public Guid MonitoringObserverId { get; set; }
     public string ObserverName { get; set; }
     public string Email { get; set; }

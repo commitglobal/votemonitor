@@ -16,7 +16,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/forms/{id}");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<FormFullModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

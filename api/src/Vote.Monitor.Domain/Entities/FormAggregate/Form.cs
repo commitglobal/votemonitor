@@ -280,13 +280,6 @@ public class Form : BaseForm
 
     public Form Clone(Guid electionRoundId, Guid monitoringNgoId, string defaultLanguage, string[] languages)
     {
-        if (Status != FormStatus.Published)
-        {
-            throw new ValidationException([
-                new ValidationFailure(nameof(Status), "Form template is not published.")
-            ]);
-        }
-
         if (!Languages.Contains(defaultLanguage))
         {
             throw new ValidationException([
@@ -304,7 +297,7 @@ public class Form : BaseForm
             }
         }
 
-        return Form.Create(electionRoundId,
+        return Create(electionRoundId,
             monitoringNgoId,
             FormType,
             Code,

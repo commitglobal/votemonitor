@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Module.Answers.Aggregators;
 using Module.Answers.Models;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Queries;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -23,7 +24,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s => { s.Summary = "Gets aggregated form with all the notes and attachments"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(FormSubmissionsAggregateFilter req,
@@ -70,362 +71,75 @@ public class Endpoint(
         FormSubmissionsAggregateFilter req,
         CancellationToken ct)
     {
-        var submissionsSql = """
-                             WITH
-                             	POLLING_STATION_SUBMISSIONS AS (
-                             		SELECT
-                             			PSI."Id" AS "SubmissionId",
-                             			'PSI' AS "FormType",
-                             			'PSI' AS "FormCode",
-                             			PSI."PollingStationId",
-                             			PSI."MonitoringObserverId",
-                             			PSI."NumberOfQuestionsAnswered",
-                             			PSI."NumberOfFlaggedAnswers",
-                             			0 AS "MediaFilesCount",
-                             			0 AS "NotesCount",
-                             			'[]'::JSONB AS "Attachments",
-                             			'[]'::JSONB AS "Notes",
-                             			PSI."LastUpdatedAt" AS "TimeSubmitted",
-                             			PSI."FollowUpStatus",
-                             			PSIF."DefaultLanguage",
-                             			PSIF."Languages",
-                             			PSIF."Name",
-                             			PSI."IsCompleted",
-                             			PSI."Answers"
-                             		FROM
-                             			"PollingStationInformation" PSI
-                             			INNER JOIN "PollingStationInformationForms" PSIF ON PSIF."Id" = PSI."PollingStationInformationFormId"
-                             			INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
-                             		WHERE
-                             			PSI."ElectionRoundId" = @ELECTIONROUNDID
-                             			AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
-                             			AND (
-                             				@MONITORINGOBSERVERSTATUS IS NULL
-                             				OR MO."Status" = @MONITORINGOBSERVERSTATUS
-                             			)
-                             			AND (
-                             				@FORMID IS NULL
-                             				OR PSI."PollingStationInformationFormId" = @FORMID
-                             			)
-                             			AND (
-                             				@FROMDATE IS NULL
-                             				OR PSI."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
-                             			)
-                             			AND (
-                             				@TODATE IS NULL
-                             				OR PSI."LastUpdatedAt" <= @TODATE::TIMESTAMP
-                             			)
-                             			AND (
-                             				@QUESTIONSANSWERED IS NULL
-                             				OR (
-                             					@QUESTIONSANSWERED = 'All'
-                             					AND PSIF."NumberOfQuestions" = PSI."NumberOfQuestionsAnswered"
-                             				)
-                             				OR (
-                             					@QUESTIONSANSWERED = 'Some'
-                             					AND PSIF."NumberOfQuestions" <> PSI."NumberOfQuestionsAnswered"
-                             				)
-                             				OR (
-                             					@QUESTIONSANSWERED = 'None'
-                             					AND PSI."NumberOfQuestionsAnswered" = 0
-                             				)
-                             			)
-                             	),
-                             	FORM_SUBMISSIONS AS (
-                             		SELECT
-                             			FS."Id" AS "SubmissionId",
-                             			F."FormType",
-                             			F."Code" AS "FormCode",
-                             			FS."PollingStationId",
-                             			FS."MonitoringObserverId",
-                             			FS."NumberOfQuestionsAnswered",
-                             			FS."NumberOfFlaggedAnswers",
-                             			(
-                             				SELECT
-                             					COUNT(1)
-                             				FROM
-                             					"Attachments" A
-                             				WHERE
-                             				    (
-                                                     (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
-                                                     OR A."SubmissionId" = FS."Id"
-                                                 )
-                             					AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                             					AND A."IsDeleted" = FALSE
-                             					AND A."IsCompleted" = TRUE
-                             			) AS "MediaFilesCount",
-                             			(
-                             				SELECT
-                             					COUNT(1)
-                             				FROM
-                             					"Notes" N
-                             				WHERE
-                             					(
-                             					    (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
-                             					    OR N."SubmissionId" = FS."Id"
-                             					)
-                             					AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             			) AS "NotesCount",
-                             			COALESCE(
-                             				(
-                             					SELECT
-                             						JSONB_AGG(
-                             							JSONB_BUILD_OBJECT(
-                             							    'SubmissionId',
-                             							    FS."Id",
-                             								'QuestionId',
-                             								"QuestionId",
-                             								'FileName',
-                             								"FileName",
-                             								'MimeType',
-                             								"MimeType",
-                             								'FilePath',
-                             								"FilePath",
-                             								'UploadedFileName',
-                             								"UploadedFileName",
-                             								'TimeSubmitted',
-                             								"LastUpdatedAt"
-                             							)
-                             						)
-                             					FROM
-                             						"Attachments" A
-                             					WHERE
-                             					    (
-                                                         (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
-                                                         OR A."SubmissionId" = FS."Id"
-                                                     )
-                             						AND A."MonitoringObserverId" = FS."MonitoringObserverId"
-                             						AND A."IsDeleted" = FALSE
-                             						AND A."IsCompleted" = TRUE
-                             				),
-                             				'[]'::JSONB
-                             			) AS "Attachments",
-                             			COALESCE(
-                             				(
-                             					SELECT
-                             						JSONB_AGG(
-                             							JSONB_BUILD_OBJECT(
-                             							    'SubmissionId',
-                             							    FS."Id",
-                             								'QuestionId',
-                             								"QuestionId",
-                             								'Text',
-                             								"Text",
-                             								'TimeSubmitted',
-                             								"LastUpdatedAt",
-                             								'MonitoringObserverId',
-                             								N."MonitoringObserverId"
-                             							)
-                             						)
-                             					FROM
-                             						"Notes" N
-                             					WHERE
-                             						(
-                                                        (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
-                                                        OR N."SubmissionId" = FS."Id"
-                                                    )
-                             						AND N."MonitoringObserverId" = FS."MonitoringObserverId"
-                             				),
-                             				'[]'::JSONB
-                             			) AS "Notes",
-                             			"LastUpdatedAt" AS "TimeSubmitted",
-                             			FS."FollowUpStatus",
-                             			F."DefaultLanguage",
-                             			F."Languages",
-                             			F."Name",
-                             			FS."IsCompleted",
-                             			FS."Answers"
-                             		FROM
-                             			"FormSubmissions" FS
-                             			INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-                             			INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON FS."MonitoringObserverId" = MO."MonitoringObserverId"
-                             			INNER JOIN "GetAvailableForms" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) AF ON AF."FormId" = FS."FormId"
-                             		WHERE
-                             			FS."ElectionRoundId" = @ELECTIONROUNDID
-                                        AND (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
-                             			AND (
-                             				@MONITORINGOBSERVERSTATUS IS NULL
-                             				OR MO."Status" = @MONITORINGOBSERVERSTATUS
-                             			)
-                             			AND (
-                             				@FORMID IS NULL
-                             				OR FS."FormId" = @FORMID
-                             			)
-                             			AND (
-                             				@FROMDATE IS NULL
-                             				OR "LastUpdatedAt" >= @FROMDATE::TIMESTAMP
-                             			)
-                             			AND (
-                             				@TODATE IS NULL
-                             				OR "LastUpdatedAt" <= @TODATE::TIMESTAMP
-                             			)
-                             			AND (
-                             				@QUESTIONSANSWERED IS NULL
-                             				OR (
-                             					@QUESTIONSANSWERED = 'All'
-                             					AND F."NumberOfQuestions" = FS."NumberOfQuestionsAnswered"
-                             				)
-                             				OR (
-                             					@QUESTIONSANSWERED = 'Some'
-                             					AND F."NumberOfQuestions" <> FS."NumberOfQuestionsAnswered"
-                             				)
-                             				OR (
-                             					@QUESTIONSANSWERED = 'None'
-                             					AND FS."NumberOfQuestionsAnswered" = 0
-                             				)
-                             			)
-                             	)
-                             SELECT
-                             	S."SubmissionId",
-                             	S."TimeSubmitted",
-                             	S."FormCode",
-                             	S."FormType",
-                             	S."DefaultLanguage",
-                             	S."Languages",
-                             	S."Name" AS "FormName",
-                             	PS."Id" AS "PollingStationId",
-                             	PS."Level1",
-                             	PS."Level2",
-                             	PS."Level3",
-                             	PS."Level4",
-                             	PS."Level5",
-                             	PS."Number",
-                             	S."MonitoringObserverId",
-                             	MO."DisplayName" AS "ObserverName",
-                             	MO."Email",
-                             	MO."PhoneNumber",
-                             	MO."Status",
-                             	MO."Tags",
-                             	MO."NgoName",
-                             	S."NumberOfQuestionsAnswered",
-                             	S."NumberOfFlaggedAnswers",
-                             	S."MediaFilesCount",
-                             	S."NotesCount",
-                             	S."FollowUpStatus",
-                             	S."IsCompleted",
-                             	MO."Status" "MonitoringObserverStatus",
-                             	S."Notes",
-                             	S."Attachments",
-                             	S."Answers"
-                             FROM
-                             	(
-                             		SELECT
-                             			*
-                             		FROM
-                             			POLLING_STATION_SUBMISSIONS
-                             		UNION ALL
-                             		SELECT
-                             			*
-                             		FROM
-                             			FORM_SUBMISSIONS
-                             	) S
-                             	INNER JOIN "PollingStations" PS ON PS."Id" = S."PollingStationId"
-                             	INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = S."MonitoringObserverId"
-                             WHERE
-                                (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
-                             	AND (
-                             		@LEVEL1 IS NULL
-                             		OR PS."Level1" = @LEVEL1
-                             	)
-                             	AND (
-                             		@LEVEL2 IS NULL
-                             		OR PS."Level2" = @LEVEL2
-                             	)
-                             	AND (
-                             		@LEVEL3 IS NULL
-                             		OR PS."Level3" = @LEVEL3
-                             	)
-                             	AND (
-                             		@LEVEL4 IS NULL
-                             		OR PS."Level4" = @LEVEL4
-                             	)
-                             	AND (
-                             		@LEVEL5 IS NULL
-                             		OR PS."Level5" = @LEVEL5
-                             	)
-                             	AND (
-                             		@POLLINGSTATIONNUMBER IS NULL
-                             		OR PS."Number" = @POLLINGSTATIONNUMBER
-                             	)
-                             	AND (
-                             		@POLLINGSTATIONID IS NULL
-                             		OR PS."Id" = @POLLINGSTATIONID
-                             	)
-                             	AND (
-                             		@HASFLAGGEDANSWERS IS NULL
-                             		OR (
-                             			S."NumberOfFlaggedAnswers" = 0
-                             			AND @HASFLAGGEDANSWERS = FALSE
-                             		)
-                             		OR (
-                             			S."NumberOfFlaggedAnswers" > 0
-                             			AND @HASFLAGGEDANSWERS = TRUE
-                             		)
-                             	)
-                             	AND (
-                             		@FOLLOWUPSTATUS IS NULL
-                             		OR S."FollowUpStatus" = @FOLLOWUPSTATUS
-                             	)
-                             	AND (
-                             		@TAGSFILTER IS NULL
-                             		OR CARDINALITY(@TAGSFILTER) = 0
-                             		OR MO."Tags" && @TAGSFILTER
-                             	)
-                             	AND (
-                             		@HASNOTES IS NULL
-                             		OR (
-                             			S."NotesCount" = 0
-                             			AND @HASNOTES = FALSE
-                             		)
-                             		OR (
-                             			S."NotesCount" > 0
-                             			AND @HASNOTES = TRUE
-                             		)
-                             	)
-                             	AND (
-                             		@HASATTACHMENTS IS NULL
-                             		OR (
-                             			S."MediaFilesCount" = 0
-                             			AND @HASATTACHMENTS = FALSE
-                             		)
-                             		OR (
-                             			S."MediaFilesCount" > 0
-                             			AND @HASATTACHMENTS = TRUE
-                             		)
-                             	)
-                             """;
-
-        var submissionsQueryArgs = new
+        var builder = new SqlBuilder();
+        builder.AddParameters(new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            coalitionMemberId = req.CoalitionMemberId,
-            level1 = req.Level1Filter,
-            level2 = req.Level2Filter,
-            level3 = req.Level3Filter,
-            level4 = req.Level4Filter,
-            level5 = req.Level5Filter,
-            pollingStationNumber = req.PollingStationNumberFilter,
-            pollingStationId = req.PollingStationId,
-            hasFlaggedAnswers = req.HasFlaggedAnswers,
-            followUpStatus = req.FollowUpStatus?.ToString(),
-            tagsFilter = req.TagsFilter ?? [],
-            monitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
-            formId = req.FormId,
-            hasNotes = req.HasNotes,
-            hasAttachments = req.HasAttachments,
-            questionsAnswered = req.QuestionsAnswered?.ToString(),
-            fromDate = req.FromDateFilter?.ToString("O"),
-            toDate = req.ToDateFilter?.ToString("O"),
-            dataSource = req.DataSource?.ToString(),
-        };
+            dataSource = req.DataSource.ToString()
+        });
+
+        builder.ApplyFilters(new FormSubmissionEntriesFilterCriteria
+        {
+            CoalitionMemberId = req.CoalitionMemberId,
+            Level1 = req.Level1Filter,
+            Level2 = req.Level2Filter,
+            Level3 = req.Level3Filter,
+            Level4 = req.Level4Filter,
+            Level5 = req.Level5Filter,
+            PollingStationNumber = req.PollingStationNumberFilter,
+            PollingStationId = req.PollingStationId,
+            HasFlaggedAnswers = req.HasFlaggedAnswers,
+            FollowUpStatus = req.FollowUpStatus?.ToString(),
+            Tags = req.TagsFilter,
+            MonitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
+            FormId = req.FormId,
+            HasNotes = req.HasNotes,
+            HasAttachments = req.HasAttachments,
+            QuestionsAnswered = req.QuestionsAnswered?.ToString(),
+            FromDate = req.FromDateFilter,
+            ToDate = req.ToDateFilter
+        });
+
+        var template = builder.AddTemplate(
+            """
+            SELECT s."SubmissionId",
+                   s."TimeSubmitted",
+                   s."FormId",
+                   s."FormCode",
+                   s."FormType",
+                   s."DefaultLanguage",
+                   s."FormName",
+                   s."PollingStationId",
+                   s."Level1",
+                   s."Level2",
+                   s."Level3",
+                   s."Level4",
+                   s."Level5",
+                   s."Number",
+                   s."MonitoringObserverId",
+                   s."DisplayName" AS "ObserverName",
+                   s."Email",
+                   s."PhoneNumber",
+                   s."Tags",
+                   s."NgoName",
+                   s."NumberOfQuestionsAnswered",
+                   s."NumberOfFlaggedAnswers",
+                   s."FollowUpStatus",
+                   s."IsCompleted",
+                   s."IsOwnObserver",
+                   s."Notes",
+                   s."Attachments",
+                   s."Answers"
+            FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+            /**where**/
+            """);
 
         List<FormSubmissionView> submissions;
-
         using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(submissionsSql, submissionsQueryArgs);
-            submissions = multi.Read<FormSubmissionView>().ToList();
+            submissions = (await dbConnection.QueryAsync<FormSubmissionView>(template.RawSql, template.Parameters))
+                .ToList();
         }
 
         var formSubmissionsAggregate = new FormSubmissionsAggregate(form);

@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+﻿using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.NoteAggregate;
 

@@ -13,7 +13,7 @@ public class Endpoint(
         Options(x => x.WithTags("form-submission-comments"));
         Summary(s => { s.Summary = "Updates a form submission comment. Only the author can update it."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<FormSubmissionCommentModel>, NotFound>> ExecuteAsync(Request req,

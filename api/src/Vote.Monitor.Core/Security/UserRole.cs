@@ -7,6 +7,7 @@ public sealed class UserRole : SmartEnum<UserRole, string>
 {
     public static readonly UserRole PlatformAdmin = new(nameof(PlatformAdmin), nameof(PlatformAdmin));
     public static readonly UserRole NgoAdmin = new(nameof(NgoAdmin), nameof(NgoAdmin));
+    public static readonly UserRole NgoStaff = new(nameof(NgoStaff), nameof(NgoStaff));
     public static readonly UserRole Observer = new(nameof(Observer), nameof(Observer));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>

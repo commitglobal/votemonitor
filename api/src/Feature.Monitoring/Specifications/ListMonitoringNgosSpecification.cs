@@ -14,7 +14,8 @@ public sealed class ListMonitoringNgosSpecification : SingleResultSpecification<
             NgoId = x.NgoId,
             Name = x.Ngo.Name,
             NgoStatus = x.Ngo.Status,
-            MonitoringNgoStatus = x.Status
+            MonitoringNgoStatus = x.Status,
+            AllowMultipleFormSubmission = x.AllowMultipleFormSubmission
         });
     }
 }

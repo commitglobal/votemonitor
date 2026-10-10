@@ -1,5 +1,4 @@
-﻿using Feature.Observers.Specifications;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Core.Extensions;
 
 namespace Feature.Observers.Deactivate;

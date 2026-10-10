@@ -1,6 +1,4 @@
-﻿using Feature.ElectionRounds.Specifications;
-
-namespace Feature.ElectionRounds.Update;
+﻿namespace Feature.ElectionRounds.Update;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository)
     : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>

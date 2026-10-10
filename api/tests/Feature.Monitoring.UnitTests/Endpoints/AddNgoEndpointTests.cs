@@ -92,12 +92,17 @@ public class AddNgoEndpointTests
 
         var electionRound = Substitute.For<ElectionRoundAggregate>();
         _repository.FirstOrDefaultAsync(Arg.Any<GetElectionRoundByIdSpecification>()).Returns(electionRound);
-        var monitoringNgo = new MonitoringNgo(electionRound, ngo);
-        electionRound.AddMonitoringNgo(ngo).Returns(monitoringNgo);
+        var monitoringNgo = new MonitoringNgo(electionRound, ngo, allowMultipleFormSubmission: true);
+        electionRound.AddMonitoringNgo(ngo, true).Returns(monitoringNgo);
         _ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
 
         // Act
-        var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
+        var request = new Request
+        {
+            ElectionRoundId = electionRoundId,
+            NgoId = ngo.Id,
+            AllowMultipleFormSubmission = true
+        };
         var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
 
         // Assert
@@ -106,6 +111,7 @@ public class AddNgoEndpointTests
             .Which
             .Result.Should().BeOfType<Ok<Response>>();
 
+        electionRound.Received(1).AddMonitoringNgo(ngo, true);
         await _monitoringNgoRepository.Received(1).AddAsync(monitoringNgo);
     }
 }

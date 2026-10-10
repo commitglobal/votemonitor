@@ -17,7 +17,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/citizen-reports/forms/{formId}:aggregated-submissions");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(s =>
         {
             s.Summary =

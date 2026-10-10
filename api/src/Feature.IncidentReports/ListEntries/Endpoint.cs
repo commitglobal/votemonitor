@@ -14,7 +14,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/incident-reports:byEntry");
         DontAutoTag();
         Options(x => x.WithTags("incident-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists incident reports by entry in our system"; });
     }
 
@@ -100,6 +100,10 @@ public class Endpoint(
                           OR (@hasNotes = FALSE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") = 0)
                           OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
                       ))
+                    AND (@hasComments IS NULL
+                          OR (@hasComments = FALSE AND (SELECT COUNT(1) FROM "IncidentReportComments" ICC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy" AND NA."NgoId" = @ngoId WHERE ICC."IncidentReportId" = IR."Id") = 0)
+                          OR (@hasComments = TRUE AND (SELECT COUNT(1) FROM "IncidentReportComments" ICC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy" AND NA."NgoId" = @ngoId WHERE ICC."IncidentReportId" = IR."Id") > 0)
+                      )
                     AND (@fromDate is NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
                     AND (@toDate is NULL OR IR."LastUpdatedAt" <= @toDate::timestamp);
                       
@@ -128,6 +132,11 @@ public class Endpoint(
                                     AND "IsCompleted" = TRUE
                               ) AS "MediaFilesCount",
                               ( SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") AS "NotesCount",
+                              ( SELECT COUNT(1)
+                                FROM "IncidentReportComments" ICC
+                                    INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy"
+                                        AND NA."NgoId" = @ngoId
+                                WHERE ICC."IncidentReportId" = IR."Id") AS "CommentsCount",
                               IR."LastUpdatedAt" AS "TimeSubmitted",
                               IR."FollowUpStatus",
                               IR."IsCompleted"
@@ -176,6 +185,7 @@ public class Endpoint(
                       IR."NumberOfFlaggedAnswers",
                       IR."MediaFilesCount",
                       IR."NotesCount",
+                      IR."CommentsCount",
                       IR."FollowUpStatus",
                       IR."IsCompleted"
                   FROM
@@ -217,6 +227,10 @@ public class Endpoint(
                     AND (@hasAttachments IS NULL
                       OR (IR."MediaFilesCount" = 0 AND @hasAttachments = FALSE)
                       OR (IR."MediaFilesCount" > 0 AND @hasAttachments = TRUE)
+                      )
+                    AND (@hasComments IS NULL
+                      OR (IR."CommentsCount" = 0 AND @hasComments = FALSE)
+                      OR (IR."CommentsCount" > 0 AND @hasComments = TRUE)
                       )
                   ORDER BY
                       CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN IR."TimeSubmitted" END ASC,
@@ -272,6 +286,7 @@ public class Endpoint(
             formId = req.FormId,
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
+            hasComments = req.HasComments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),

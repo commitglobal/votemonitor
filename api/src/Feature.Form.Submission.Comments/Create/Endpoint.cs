@@ -18,7 +18,7 @@ public class Endpoint(
             s.Summary = "Creates a comment for a form submission. Omit questionId for a submission-level comment.";
         });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<FormSubmissionCommentModel>, NotFound>> ExecuteAsync(Request req,

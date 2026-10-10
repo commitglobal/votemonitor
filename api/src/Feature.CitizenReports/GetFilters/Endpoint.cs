@@ -14,7 +14,7 @@ public class Endpoint(
         Options(x => x.WithTags("citizen-reports"));
         Summary(s => { s.Summary = "Filter options for citizen reports."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

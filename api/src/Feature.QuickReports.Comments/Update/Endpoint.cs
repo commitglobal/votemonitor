@@ -13,7 +13,7 @@ public class Endpoint(
         Options(x => x.WithTags("quick-report-comments"));
         Summary(s => { s.Summary = "Updates a quick report comment. Only the author can update it."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<QuickReportCommentModel>, NotFound>> ExecuteAsync(Request req,

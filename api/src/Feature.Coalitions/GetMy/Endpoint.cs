@@ -16,7 +16,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         {
             s.Summary = "Gets coalition details for current ngo and selected election round";
         });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<CoalitionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

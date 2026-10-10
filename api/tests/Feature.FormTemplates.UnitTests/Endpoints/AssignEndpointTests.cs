@@ -1,6 +1,5 @@
 ﻿using Feature.FormTemplates.AssignTemplates;
 using Feature.FormTemplates.Specifications;
-using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundFormTemplateAggregate;
 

@@ -26,7 +26,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("statistics", "polling-stations"));
         Summary(s => { s.Summary = "Overview statistics for a specific polling station"; });
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

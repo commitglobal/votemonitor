@@ -2,6 +2,7 @@ using Dapper;
 using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
@@ -10,6 +11,7 @@ using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
@@ -58,7 +60,8 @@ public class ExportIncidentReportsJob(
                 .ToListAsync(ct);
 
             var filters = exportedData.IncidentReportsFilters ?? new ExportIncidentReportsFilters();
-            var incidentReports = await GetIncidentReports(electionRoundId, ngoId, filters, ct);
+            var incidentReports = await GetIncidentReports(
+                electionRoundId, ngoId, filters, exportedData.FilterConditions, ct);
 
             foreach (var attachment in incidentReports.SelectMany(
                          incidentReportModel => incidentReportModel.Attachments))
@@ -103,10 +106,38 @@ public class ExportIncidentReportsJob(
     }
 
     private async Task<IncidentReportModel[]> GetIncidentReports(Guid electionRoundId, Guid ngoId,
-        ExportIncidentReportsFilters filters, CancellationToken ct)
+        ExportIncidentReportsFilters filters, System.Text.Json.JsonDocument? filterConditions, CancellationToken ct)
     {
-        var sql =
-            """
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports)
+            .Build(FilterRuleJson.Deserialize(filterConditions));
+        var queryParams = new DynamicParameters();
+        queryParams.Add("electionRoundId", electionRoundId);
+        queryParams.Add("ngoId", ngoId);
+        queryParams.Add("dataSource", filters.DataSource.ToString());
+        queryParams.Add("coalitionMemberId", filters.CoalitionMemberId);
+        queryParams.Add("searchText", $"%{filters.SearchText?.Trim() ?? string.Empty}%");
+        queryParams.Add("LocationType", filters.LocationType?.ToString());
+        queryParams.Add("level1", filters.Level1Filter);
+        queryParams.Add("level2", filters.Level2Filter);
+        queryParams.Add("level3", filters.Level3Filter);
+        queryParams.Add("level4", filters.Level4Filter);
+        queryParams.Add("level5", filters.Level5Filter);
+        queryParams.Add("pollingStationNumber", filters.PollingStationNumberFilter);
+        queryParams.Add("pollingStationId", filters.PollingStationId);
+        queryParams.Add("hasFlaggedAnswers", filters.HasFlaggedAnswers);
+        queryParams.Add("followUpStatus", filters.FollowUpStatus?.ToString());
+        queryParams.Add("tagsFilter", filters.TagsFilter ?? []);
+        queryParams.Add("monitoringObserverStatus", filters.MonitoringObserverStatus?.ToString());
+        queryParams.Add("formId", filters.FormId);
+        queryParams.Add("hasNotes", filters.HasNotes);
+        queryParams.Add("hasAttachments", filters.HasAttachments);
+        queryParams.Add("questionsAnswered", filters.QuestionsAnswered?.ToString());
+        queryParams.Add("fromDate", filters.FromDateFilter?.ToString("O"));
+        queryParams.Add("toDate", filters.ToDateFilter?.ToString("O"));
+        queryParams.Add("isCompleted", filters.IsCompletedFilter);
+        filter.AddTo(queryParams);
+
+        var sql = $"""
             WITH
                 INCIDENT_REPORTS AS (
                     SELECT
@@ -171,8 +202,9 @@ public class ExportIncidentReportsJob(
                     FROM
                         "IncidentReports" IR
                                 INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                        INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                        INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
                         inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on IR."FormId" = af."FormId"
+                        LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
                     WHERE
                        (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                       AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
@@ -186,6 +218,12 @@ public class ExportIncidentReportsJob(
                       AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
                       AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
                       AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
+                      AND IR."Id" IN (
+                          SELECT s."Id"
+                          FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                          WHERE s."ElectionRoundId" = @electionRoundId
+                            AND {filter.Sql}
+                      )
                 )
             SELECT
                 IR."IncidentReportId",
@@ -250,34 +288,6 @@ public class ExportIncidentReportsJob(
                 )
             ORDER BY IR."TimeSubmitted" DESC;
             """;
-
-        var queryParams = new
-        {
-            electionRoundId,
-            ngoId,
-            dataSource = filters.DataSource,
-            coalitionMemberId = filters.CoalitionMemberId,
-            searchText = $"%{filters.SearchText?.Trim() ?? string.Empty}%",
-            LocationType = filters.LocationType?.ToString(),
-            level1 = filters.Level1Filter,
-            level2 = filters.Level2Filter,
-            level3 = filters.Level3Filter,
-            level4 = filters.Level4Filter,
-            level5 = filters.Level5Filter,
-            pollingStationNumber = filters.PollingStationNumberFilter,
-            pollingStationId = filters.PollingStationId,
-            hasFlaggedAnswers = filters.HasFlaggedAnswers,
-            followUpStatus = filters.FollowUpStatus?.ToString(),
-            tagsFilter = filters.TagsFilter ?? [],
-            monitoringObserverStatus = filters.MonitoringObserverStatus?.ToString(),
-            formId = filters.FormId,
-            hasNotes = filters.HasNotes,
-            hasAttachments = filters.HasAttachments,
-            questionsAnswered = filters.QuestionsAnswered?.ToString(),
-            fromDate = filters.FromDateFilter?.ToString("O"),
-            toDate = filters.ToDateFilter?.ToString("O"),
-            isCompleted = filters.IsCompletedFilter
-        };
 
         IEnumerable<IncidentReportModel> incidentReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))

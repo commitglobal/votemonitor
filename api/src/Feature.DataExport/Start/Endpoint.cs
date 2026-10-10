@@ -23,7 +23,7 @@ public class Endpoint(
         Options(x => x.WithTags("exported-data"));
 
         Summary(s => { s.Summary = "Enqueues a job to export data and returns job id to poll for results"; });
-        Policies(PolicyNames.AdminsOnly);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task<Results<Ok<Response>, NotFound, ProblemDetails>> ExecuteAsync(Request req,

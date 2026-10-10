@@ -82,6 +82,11 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         FormsVersion = Guid.NewGuid();
     }
 
+    public void UpdateAllowMultipleFormSubmission(bool allowMultipleFormSubmission)
+    {
+        AllowMultipleFormSubmission = allowMultipleFormSubmission;
+    }
+
     public void EnableMultipleFormSubmission()
     {
         AllowMultipleFormSubmission = true;
@@ -89,7 +94,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     public void DisableMultipleFormSubmission()
     {
-        AllowMultipleFormSubmission = true;
+        AllowMultipleFormSubmission = false;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

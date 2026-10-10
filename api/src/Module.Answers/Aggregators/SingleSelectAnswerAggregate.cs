@@ -7,8 +7,10 @@ namespace Module.Answers.Aggregators;
 
 public class SingleSelectAnswerAggregate : BaseAnswerAggregate
 {
+    private readonly List<TextResponse> _freeTexts = new();
     private readonly Dictionary<Guid, int> _answersHistogram;
     public IReadOnlyDictionary<Guid, int> AnswersHistogram => _answersHistogram.AsReadOnly();
+    public IReadOnlyList<TextResponse> FreeTexts => _freeTexts.ToList().AsReadOnly();
 
     public SingleSelectAnswerAggregate(SingleSelectQuestion question, int displayOrder) : base(question, displayOrder)
     {
@@ -23,6 +25,13 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         }
 
         _answersHistogram.IncrementFor(singleSelectAnswer.Selection.OptionId);
+        
+        var selection = singleSelectAnswer.Selection;
+        var questionOption = ((SingleSelectQuestion)Question).Options.FirstOrDefault(o => o.Id == selection.OptionId);
+        if (questionOption != null && questionOption.IsFreeText && !string.IsNullOrWhiteSpace(selection.Text))
+        {
+            _freeTexts.Add(new TextResponse(submissionId, monitoringObserverId, selection.Text));
+        }
     }
 
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
@@ -33,5 +42,12 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         }
 
         _answersHistogram.IncrementFor(singleSelectAnswer.Selection.OptionId);
+        
+        var selection = singleSelectAnswer.Selection;
+        var questionOption = ((SingleSelectQuestion)Question).Options.FirstOrDefault(o => o.Id == selection.OptionId);
+        if (questionOption != null && questionOption.IsFreeText && !string.IsNullOrWhiteSpace(selection.Text))
+        {
+            _freeTexts.Add(new TextResponse(submissionId, monitoringObserverId, selection.Text));
+        }
     }
 }

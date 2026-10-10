@@ -37,6 +37,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public Guid? FormId { get; set; }
     [QueryParam] public bool? HasNotes { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
+    [QueryParam] public bool? HasComments { get; set; }
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
     [QueryParam] public IncidentReportFollowUpStatus? FollowUpStatus { get; set; }
     [QueryParam] public IncidentReportLocationType? LocationType { get; set; }

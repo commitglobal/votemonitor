@@ -22,4 +22,6 @@ public class MonitoringNgoModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<MonitoringNgoStatus, string>))]
     public required MonitoringNgoStatus MonitoringNgoStatus { get; init; }
+
+    public required bool AllowMultipleFormSubmission { get; init; }
 }

@@ -18,7 +18,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         {
             s.Summary = "Gets all quick-reports submitted by observers for a monitoring ngo";
         });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)
@@ -77,7 +77,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       FROM "QuickReportAttachments" QRA
                       WHERE QRA."QuickReportId" = QR."Id"
                         AND QRA."IsDeleted" = FALSE
-                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE));
+                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
+            AND (@hasComments IS NULL
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportComments" QRC
+                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
+                          AND NA."NgoId" = @ngoId
+                      WHERE QRC."QuickReportId" = QR."Id") = 0 AND @hasComments = FALSE)
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportComments" QRC
+                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
+                          AND NA."NgoId" = @ngoId
+                      WHERE QRC."QuickReportId" = QR."Id") > 0 AND @hasComments = TRUE));
 
         SELECT
             QR."Id",
@@ -93,6 +104,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   AND Qr."MonitoringObserverId" = QRA."MonitoringObserverId"
                   AND qra."IsDeleted" = FALSE
                   AND qra."IsCompleted" = TRUE) AS "NumberOfAttachments",
+            (SELECT COUNT(*)
+                FROM "QuickReportComments" QRC
+                INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
+                    AND NA."NgoId" = @ngoId
+                WHERE QRC."QuickReportId" = QR."Id") AS "CommentsCount",
             AMO."MonitoringObserverId",
             AMO."DisplayName" "ObserverName",
             AMO."PhoneNumber",
@@ -160,6 +176,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       WHERE QRA."QuickReportId" = QR."Id"
                         AND QRA."IsDeleted" = FALSE
                         AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
+            AND (@hasComments IS NULL
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportComments" QRC
+                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
+                          AND NA."NgoId" = @ngoId
+                      WHERE QRC."QuickReportId" = QR."Id") = 0 AND @hasComments = FALSE)
+                 OR ((SELECT COUNT(1)
+                      FROM "QuickReportComments" QRC
+                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
+                          AND NA."NgoId" = @ngoId
+                      WHERE QRC."QuickReportId" = QR."Id") > 0 AND @hasComments = TRUE))
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
             CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
@@ -205,6 +232,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             fromDate = req.FromDateFilter?.ToString("O"),
             toDate = req.ToDateFilter?.ToString("O"),
             hasAttachments = req.HasAttachments,
+            hasComments = req.HasComments,
             monitoringObserverId = req.MonitoringObserverId,
             pollingStationId = req.PollingStationId,
             tagsFilter = req.TagsFilter ?? [],

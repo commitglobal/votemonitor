@@ -21,6 +21,7 @@ public record IncidentReportEntryModel
     public int NumberOfFlaggedAnswers { get; set; }
     public int NotesCount { get; set; }
     public int MediaFilesCount { get; set; }
+    public int CommentsCount { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
     public IncidentReportLocationType LocationType { get; set; }

@@ -14,7 +14,7 @@ public class Endpoint(
         Options(x => x.WithTags("form-submissions"));
         Summary(s => { s.Summary = "Filter options for submissions."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

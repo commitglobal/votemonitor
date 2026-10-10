@@ -19,4 +19,5 @@ public class AggregatedFormOverview
     public int NumberOfFlaggedAnswers { get; set; }
     public int NumberOfNotes { get; set; }
     public int NumberOfMediaFiles { get; set; }
+    public int NumberOfComments { get; set; }
 }

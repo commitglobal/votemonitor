@@ -1,6 +1,4 @@
-﻿using Feature.PollingStation.Information.Forms.Specifications;
-
-namespace Feature.PollingStation.Information.Forms.Get;
+﻿namespace Feature.PollingStation.Information.Forms.Get;
 
 public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {

@@ -16,6 +16,7 @@ public class ExportedData : BaseEntity, IAggregateRoot
     public ExportQuickReportsFilters? QuickReportsFilters { get; private set; }
     public ExportCitizenReportsFilers? CitizenReportsFilers { get; private set; }
     public ExportIncidentReportsFilters? IncidentReportsFilters { get; private set; }
+    public JsonDocument? FilterConditions { get; private set; }
 
     private ExportedData(
         Guid ownerId,
@@ -24,7 +25,8 @@ public class ExportedData : BaseEntity, IAggregateRoot
         ExportFormSubmissionsFilters? formSubmissionsFilters,
         ExportQuickReportsFilters? quickReportsFilters,
         ExportCitizenReportsFilers? citizenReportsFilers,
-        ExportIncidentReportsFilters? incidentReportsFilters) : base(Guid.NewGuid())
+        ExportIncidentReportsFilters? incidentReportsFilters,
+        JsonDocument? filterConditions = null) : base(Guid.NewGuid())
     {
         OwnerId = ownerId;
         ExportStatus = ExportedDataStatus.Started;
@@ -34,6 +36,7 @@ public class ExportedData : BaseEntity, IAggregateRoot
         QuickReportsFilters = quickReportsFilters;
         CitizenReportsFilers = citizenReportsFilers;
         IncidentReportsFilters = incidentReportsFilters;
+        FilterConditions = filterConditions;
     }
 
     public static ExportedData Create(Guid ownerId, ExportedDataType dataType, DateTime startedAt)
@@ -61,7 +64,7 @@ public class ExportedData : BaseEntity, IAggregateRoot
     }
 
     public static ExportedData CreateForFormSubmissions(Guid ownerId,
-        DateTime startedAt, ExportFormSubmissionsFilters? filters)
+        DateTime startedAt, ExportFormSubmissionsFilters? filters, JsonDocument? filterConditions = null)
     {
         return new ExportedData(ownerId: ownerId,
             exportedDataType: ExportedDataType.FormSubmissions,
@@ -69,11 +72,12 @@ public class ExportedData : BaseEntity, IAggregateRoot
             formSubmissionsFilters: filters,
             quickReportsFilters: null,
             citizenReportsFilers: null,
-            incidentReportsFilters: null);
+            incidentReportsFilters: null,
+            filterConditions: filterConditions);
     }
 
     public static ExportedData CreateForFormSubmissionsSimplified(Guid ownerId,
-    DateTime startedAt, ExportFormSubmissionsFilters? filters)
+        DateTime startedAt, ExportFormSubmissionsFilters? filters, JsonDocument? filterConditions = null)
     {
         return new ExportedData(ownerId: ownerId,
             exportedDataType: ExportedDataType.FormSubmissionsSimplified,
@@ -81,12 +85,13 @@ public class ExportedData : BaseEntity, IAggregateRoot
             formSubmissionsFilters: filters,
             quickReportsFilters: null,
             citizenReportsFilers: null,
-            incidentReportsFilters: null);
+            incidentReportsFilters: null,
+            filterConditions: filterConditions);
     }
 
 
     public static ExportedData CreateForQuickReports(Guid ownerId,
-        DateTime startedAt, ExportQuickReportsFilters? filters)
+        DateTime startedAt, ExportQuickReportsFilters? filters, JsonDocument? filterConditions = null)
     {
         return new ExportedData(ownerId: ownerId,
             exportedDataType: ExportedDataType.QuickReports,
@@ -94,11 +99,12 @@ public class ExportedData : BaseEntity, IAggregateRoot
             formSubmissionsFilters: null,
             quickReportsFilters: filters,
             citizenReportsFilers: null,
-            incidentReportsFilters: null);
+            incidentReportsFilters: null,
+            filterConditions: filterConditions);
     }
 
     public static ExportedData CreateForCitizenReports(Guid ownerId,
-        DateTime startedAt, ExportCitizenReportsFilers? filters)
+        DateTime startedAt, ExportCitizenReportsFilers? filters, JsonDocument? filterConditions = null)
     {
         return new ExportedData(ownerId: ownerId,
             exportedDataType: ExportedDataType.CitizenReports,
@@ -106,11 +112,12 @@ public class ExportedData : BaseEntity, IAggregateRoot
             formSubmissionsFilters: null,
             quickReportsFilters: null,
             citizenReportsFilers: filters,
-            incidentReportsFilters: null);
+            incidentReportsFilters: null,
+            filterConditions: filterConditions);
     }
 
     public static ExportedData CreateForIncidentReports(Guid ownerId,
-        DateTime startedAt, ExportIncidentReportsFilters? filters)
+        DateTime startedAt, ExportIncidentReportsFilters? filters, JsonDocument? filterConditions = null)
     {
         return new ExportedData(ownerId: ownerId,
             exportedDataType: ExportedDataType.IncidentReports,
@@ -118,7 +125,8 @@ public class ExportedData : BaseEntity, IAggregateRoot
             formSubmissionsFilters: null,
             quickReportsFilters: null,
             citizenReportsFilers: null,
-            incidentReportsFilters: filters);
+            incidentReportsFilters: filters,
+            filterConditions: filterConditions);
     }
 
 

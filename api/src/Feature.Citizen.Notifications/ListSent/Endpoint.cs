@@ -16,7 +16,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         Get("/api/election-rounds/{electionRoundId}/citizen-notifications:listSent");
         DontAutoTag();
         Options(x => x.WithTags("citizen-notifications"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<PagedResponse<CitizenNotificationModel>>, NotFound>> ExecuteAsync(Request req,

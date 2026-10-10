@@ -24,10 +24,12 @@
     <PackageReference Include="AWSSDK.Core" />
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="Dapper" />
+    <PackageReference Include="Dapper.SqlBuilder" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FirebaseAdmin" />
     <PackageReference Include="HtmlSanitizer" />
     <PackageReference Include="Humanizer" />
+    <PackageReference Include="Json.More.Net" />
     <PackageReference Include="MailKit" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="FastEndpoints.Attributes" />

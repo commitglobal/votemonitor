@@ -21,7 +21,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("statistics"));
         Summary(s => { s.Summary = "Statistics for an election round"; });
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)

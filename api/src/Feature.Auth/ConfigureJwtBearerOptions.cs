@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Vote.Monitor.Core.Security;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Feature.Auth;
 

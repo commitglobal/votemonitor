@@ -42,7 +42,7 @@ public class Endpoint(
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        var monitoringNgo = electionRound.AddMonitoringNgo(ngo);
+        var monitoringNgo = electionRound.AddMonitoringNgo(ngo, req.AllowMultipleFormSubmission);
         await monitoringNgoRepository.AddAsync(monitoringNgo, ct);
 
         return TypedResults.Ok(new Response { Id = monitoringNgo.Id });

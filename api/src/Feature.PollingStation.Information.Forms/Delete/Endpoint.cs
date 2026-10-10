@@ -1,6 +1,4 @@
-﻿using Feature.PollingStation.Information.Forms.Specifications;
-
-namespace Feature.PollingStation.Information.Forms.Delete;
+﻿namespace Feature.PollingStation.Information.Forms.Delete;
 
 public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {

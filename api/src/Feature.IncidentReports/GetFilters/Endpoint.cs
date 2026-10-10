@@ -14,7 +14,7 @@ public class Endpoint(
         Options(x => x.WithTags("incident-reports"));
         Summary(s => { s.Summary = "Filter options for incident reports."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

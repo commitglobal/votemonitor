@@ -6,4 +6,5 @@ public interface ICurrentUserRoleProvider
     bool IsPlatformAdmin();
     bool IsNgoAdmin();
     bool IsObserver();
+    bool IsNgoStaff();
 }

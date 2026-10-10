@@ -13,7 +13,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         Get("/api/election-rounds/{electionRoundId}/citizen-reports:byEntry");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
         Summary(x => { x.Summary = "Lists citizen report submissions by entry in our system"; });
     }
 
@@ -58,10 +58,13 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   	AND (@hasAttachments is NULL
                        OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false) 
                        OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
-                  	AND (@hasNotes is NULL 
-                       OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false) 
-                       OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
-                  	;
+                   	AND (@hasNotes is NULL 
+                        OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false) 
+                        OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
+                   	AND (@hasComments is NULL 
+                        OR ((SELECT COUNT(1) FROM "CitizenReportComments" CRC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = CRC."CreatedBy" AND NA."NgoId" = @ngoId WHERE CRC."CitizenReportId" = CR."Id") = 0 AND @hasComments = false) 
+                        OR ((SELECT COUNT(1) FROM "CitizenReportComments" CRC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = CRC."CreatedBy" AND NA."NgoId" = @ngoId WHERE CRC."CitizenReportId" = CR."Id") > 0 AND @hasComments = true))
+                   	;
 
                   WITH
                   	CITIZENREPORTS AS (
@@ -90,8 +93,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   					CRA."CitizenReportId" = CR."Id"
                   					AND CRA."IsCompleted" = TRUE
                   					AND CRA."IsDeleted" = FALSE
-                  			) AS "MediaFilesCount",
-                  			CR."FollowUpStatus",
+                   			) AS "MediaFilesCount",
+                   			(
+                   				SELECT
+                   					COUNT(1)
+                   				FROM
+                   					"CitizenReportComments" CRC
+                   					INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = CRC."CreatedBy"
+                   						AND NA."NgoId" = @ngoId
+                   				WHERE
+                   					CRC."CitizenReportId" = CR."Id"
+                   			) AS "CommentsCount",
+                   			CR."FollowUpStatus",
                   			L."Level1",
                      		L."Level2",
                      		L."Level3",
@@ -139,6 +152,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                             AND (@hasNotes is NULL 
                                 OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false) 
                                 OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
+                            AND (@hasComments is NULL 
+                                OR ((SELECT COUNT(1) FROM "CitizenReportComments" CRC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = CRC."CreatedBy" AND NA."NgoId" = @ngoId WHERE CRC."CitizenReportId" = CR."Id") = 0 AND @hasComments = false) 
+                                OR ((SELECT COUNT(1) FROM "CitizenReportComments" CRC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = CRC."CreatedBy" AND NA."NgoId" = @ngoId WHERE CRC."CitizenReportId" = CR."Id") > 0 AND @hasComments = true))
                             )
                   SELECT
                   	"CitizenReportId",
@@ -150,6 +166,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   	"NumberOfFlaggedAnswers",
                   	"NotesCount",
                   	"MediaFilesCount",
+                  	"CommentsCount",
                   	"FollowUpStatus",
                   	"Level1",
                   	"Level2",
@@ -231,6 +248,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             formId = req.FormId,
             hasAttachments = req.HasAttachments,
             hasNotes = req.HasNotes,
+            hasComments = req.HasComments,
             questionsAnswered = req.QuestionsAnswered?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };

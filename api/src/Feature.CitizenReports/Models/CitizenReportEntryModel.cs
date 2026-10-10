@@ -17,6 +17,7 @@ public record CitizenReportEntryModel
     public int NumberOfFlaggedAnswers { get; set; }
     public int NotesCount { get; set; }
     public int MediaFilesCount { get; set; }
+    public int CommentsCount { get; set; }
 
     public string Level1 { get; set; }
     public string Level2 { get; set; }

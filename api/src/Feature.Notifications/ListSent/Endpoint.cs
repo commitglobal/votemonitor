@@ -14,7 +14,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Get("/api/election-rounds/{electionRoundId}/notifications:listSent");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<PagedResponse<NotificationModel>> ExecuteAsync(Request req, CancellationToken ct)

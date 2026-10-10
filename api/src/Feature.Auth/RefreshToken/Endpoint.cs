@@ -1,6 +1,5 @@
 ﻿using Feature.Auth.Services;
 using Services_TokenResponse = Feature.Auth.Services.TokenResponse;
-using TokenResponse = Feature.Auth.Services.TokenResponse;
 
 namespace Feature.Auth.RefreshToken;
 

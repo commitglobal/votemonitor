@@ -14,7 +14,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         Get("/api/election-rounds/{electionRoundId}/notifications/{id}");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<NotificationDetailedModel>, NotFound>> ExecuteAsync(Request req,

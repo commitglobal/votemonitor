@@ -14,7 +14,7 @@ public class Endpoint(
         Options(x => x.WithTags("citizen-report-comments"));
         Summary(s => { s.Summary = "Deletes a citizen report comment. Only the author can delete it."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
