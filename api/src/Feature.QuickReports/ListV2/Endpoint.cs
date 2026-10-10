@@ -2,7 +2,9 @@ using Authorization.Policies;
 using Dapper;
 using Feature.QuickReports.List;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.QuickReports.ListV2;
@@ -24,14 +26,31 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
     public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = """
+        var compiler = new FilterSqlCompiler(V2ReportFilterFields.QuickReports);
+        var filter = compiler.Build(req.FilterConditions);
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("dataSource", req.DataSource.ToString());
+        parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        parameters.Add("pageSize", req.PageSize);
+        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+        filter.AddTo(parameters);
+
+        var sql = $"""
         SELECT
             COUNT(QR."Id") as "TotalNumberOfRows"
         FROM
             "QuickReports" QR
             INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
         WHERE
-            QR."ElectionRoundId" = @electionRoundId;
+            QR."ElectionRoundId" = @electionRoundId
+            AND QR."Id" IN (
+                SELECT s."Id"
+                FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                WHERE s."ElectionRoundId" = @electionRoundId
+                  AND {filter.Sql}
+            );
 
         SELECT
             QR."Id",
@@ -68,6 +87,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
             QR."ElectionRoundId" = @electionRoundId
+            AND QR."Id" IN (
+                SELECT s."Id"
+                FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                WHERE s."ElectionRoundId" = @electionRoundId
+                  AND {filter.Sql}
+            )
         ORDER BY
             CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
             CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
@@ -93,21 +118,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             @pageSize ROWS ONLY;
         """;
 
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            dataSource = req.DataSource.ToString(),
-            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
-        };
-
         int totalRowCount;
         List<QuickReportOverviewModel> entries;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<QuickReportOverviewModel>().ToList();
         }

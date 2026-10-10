@@ -11,4 +11,5 @@ public class Request : BaseFilterConditionsSortPaginatedRequest
     public Guid NgoId { get; set; }
 
     public DataSource DataSource { get; set; } = DataSource.Ngo;
+    [QueryParam] public Guid? CoalitionMemberId { get; set; }
 }

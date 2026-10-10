@@ -1,5 +1,7 @@
 using Dapper;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.IncidentReports.ListEntriesV2;
@@ -28,17 +30,35 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var compiler = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports);
+        var filter = compiler.Build(req.FilterConditions);
+        var queryArgs = new DynamicParameters();
+        queryArgs.Add("electionRoundId", req.ElectionRoundId);
+        queryArgs.Add("ngoId", req.NgoId);
+        queryArgs.Add("dataSource", req.DataSource.ToString());
+        queryArgs.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        queryArgs.Add("pageSize", req.PageSize);
+        queryArgs.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+        filter.AddTo(queryArgs);
+
+        var sql = $"""
                   SELECT
                       COUNT(*) AS COUNT
                   FROM
                       "IncidentReports" IR
-                          INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                          INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                      INNER JOIN "Forms" F ON F."Id" = IR."FormId"
+                      INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
                   WHERE
                       MN."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId;
+                    AND MN."NgoId" = @ngoId
+                    AND IR."Id" IN (
+                        SELECT s."Id"
+                        FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                        WHERE s."ElectionRoundId" = @electionRoundId
+                          AND s."NgoId" = @ngoId
+                          AND {filter.Sql}
+                    );
 
                   WITH
                       INCIDENT_REPORTS AS (
@@ -75,6 +95,13 @@ public class Endpoint(
                           WHERE
                             MN."ElectionRoundId" = @electionRoundId
                             AND MN."NgoId" = @ngoId
+                            AND IR."Id" IN (
+                                SELECT s."Id"
+                                FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                WHERE s."ElectionRoundId" = @electionRoundId
+                                  AND s."NgoId" = @ngoId
+                                  AND {filter.Sql}
+                            )
                       )
                   SELECT
                       IR."IncidentReportId",
@@ -139,15 +166,6 @@ public class Endpoint(
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
-
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
-        };
 
         int totalRowCount;
         List<IncidentReportEntryModel> entries;

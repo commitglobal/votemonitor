@@ -1,5 +1,9 @@
+using Dapper;
 using Feature.CitizenReports.GetSubmissionsAggregated;
 using Module.Answers.Aggregators;
+using Vote.Monitor.Core.RulesEngine;
+using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
 using NoteModel = Feature.CitizenReports.Models.NoteModel;
@@ -9,7 +13,8 @@ namespace Feature.CitizenReports.GetSubmissionsAggregatedV2;
 public class Endpoint(
     VoteMonitorContext context,
     IAuthorizationService authorizationService,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -49,6 +54,29 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.CitizenReports).Build(req.Filter);
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("formId", req.FormId);
+        filter.AddTo(parameters);
+
+        var sql = $"""
+                   SELECT s."Id"
+                   FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                   WHERE s."ElectionRoundId" = @electionRoundId
+                     AND s."NgoId" = @ngoId
+                     AND s."CitizenReportingEnabled" = TRUE
+                     AND s."FormId" = @formId
+                     AND {filter.Sql}
+                   """;
+        Guid[] filteredIds;
+        using (var connection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            filteredIds = (await connection.QueryAsync<Guid>(
+                new CommandDefinition(sql, parameters, cancellationToken: ct))).ToArray();
+        }
+
         var citizenReports = await context.CitizenReports
             .Include(x => x.Notes)
             .Include(x => x.Attachments)
@@ -57,7 +85,8 @@ public class Endpoint(
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
                         && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.Form.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId)
+                        && x.FormId == req.FormId
+                        && filteredIds.Contains(x.Id))
             .AsSplitQuery()
             .AsNoTracking()
             .ToListAsync(ct);

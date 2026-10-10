@@ -36,10 +36,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
         parameters.Add("pageSize", req.PageSize);
 
-        foreach (var name in filter.Parameters.ParameterNames)
-        {
-            parameters.Add(name, filter.Parameters.Get<object>(name));
-        }
+        filter.AddTo(parameters);
 
         var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 

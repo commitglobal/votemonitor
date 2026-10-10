@@ -1,5 +1,6 @@
 using Feature.IncidentReports.GetSubmissionsAggregated;
 using Module.Answers.Aggregators;
+using Vote.Monitor.Domain.ConnectionFactory;
 using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
 using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
@@ -8,7 +9,8 @@ namespace Feature.IncidentReports.GetSubmissionsAggregatedV2;
 public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -46,6 +48,11 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var filteredIds = req.Filter is null
+            ? null
+            : await IncidentReportFilterQuery.GetMatchingIdsAsync(
+                dbConnectionFactory, req.ElectionRoundId, req.NgoId, req.Filter, ct);
+
         var incidentReports = await context.IncidentReports
             .Include(x => x.Notes)
             .Include(x => x.Attachments)
@@ -55,7 +62,8 @@ public class Endpoint(
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
                         && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.Form.ElectionRoundId == req.ElectionRoundId
-                        && x.FormId == req.FormId)
+                        && x.FormId == req.FormId
+                        && (filteredIds == null || filteredIds.Contains(x.Id)))
             .AsSplitQuery()
             .AsNoTracking()
             .ToListAsync(ct);

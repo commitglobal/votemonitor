@@ -3,6 +3,7 @@ using Authorization.Policies.Requirements;
 using Feature.DataExport.Start;
 using Job.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
@@ -126,7 +127,7 @@ public class Endpoint(
             return ExportedData.CreateForFormSubmissions(req.UserId,
                 timeProvider.UtcNow,
                 new ExportFormSubmissionsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                req.FilterConditions);
+                FilterRuleJson.Serialize(req.FilterConditions));
         }
 
         if (req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified)
@@ -134,7 +135,7 @@ public class Endpoint(
             return ExportedData.CreateForFormSubmissionsSimplified(req.UserId,
                 timeProvider.UtcNow,
                 new ExportFormSubmissionsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                req.FilterConditions);
+                FilterRuleJson.Serialize(req.FilterConditions));
         }
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
@@ -142,7 +143,7 @@ public class Endpoint(
             return ExportedData.CreateForQuickReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportQuickReportsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                req.FilterConditions);
+                FilterRuleJson.Serialize(req.FilterConditions));
         }
 
         if (req.ExportedDataType == ExportedDataType.CitizenReports)
@@ -150,7 +151,7 @@ public class Endpoint(
             return ExportedData.CreateForCitizenReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportCitizenReportsFilers { NgoId = ngoId!.Value },
-                req.FilterConditions);
+                FilterRuleJson.Serialize(req.FilterConditions));
         }
 
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
@@ -158,7 +159,7 @@ public class Endpoint(
             return ExportedData.CreateForIncidentReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportIncidentReportsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                req.FilterConditions);
+                FilterRuleJson.Serialize(req.FilterConditions));
         }
 
         return ExportedData.Create(req.UserId, req.ExportedDataType, timeProvider.UtcNow);

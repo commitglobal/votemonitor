@@ -2,6 +2,7 @@ using Dapper;
 using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
@@ -9,6 +10,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
 
@@ -58,7 +60,8 @@ public class ExportCitizenReportsJob(
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var citizenReports = await GetCitizenReports(electionRoundId, ngoId, exportedData.CitizenReportsFilers, ct);
+            var citizenReports = await GetCitizenReports(
+                electionRoundId, ngoId, exportedData.CitizenReportsFilers, exportedData.FilterConditions, ct);
 
             foreach (var attachment in citizenReports.SelectMany(citizenReport => citizenReport.Attachments))
             {
@@ -102,9 +105,29 @@ public class ExportCitizenReportsJob(
     }
 
     private async Task<CitizenReportModel[]> GetCitizenReports(Guid electionRoundId, Guid ngoId,
-        ExportCitizenReportsFilers? filters, CancellationToken ct)
+        ExportCitizenReportsFilers? filters, System.Text.Json.JsonDocument? filterConditions, CancellationToken ct)
     {
-        var sql = """
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.CitizenReports)
+            .Build(FilterRuleJson.Deserialize(filterConditions));
+        var queryParams = new DynamicParameters();
+        queryParams.Add("electionRoundId", electionRoundId);
+        queryParams.Add("ngoId", ngoId);
+        queryParams.Add("searchText", $"%{filters?.SearchText?.Trim() ?? string.Empty}%");
+        queryParams.Add("hasFlaggedAnswers", filters?.HasFlaggedAnswers);
+        queryParams.Add("followUpStatus", filters?.FollowUpStatus?.ToString());
+        queryParams.Add("level1", filters?.Level1Filter);
+        queryParams.Add("level2", filters?.Level2Filter);
+        queryParams.Add("level3", filters?.Level3Filter);
+        queryParams.Add("level4", filters?.Level4Filter);
+        queryParams.Add("level5", filters?.Level5Filter);
+        queryParams.Add("locationId", filters?.LocationId);
+        queryParams.Add("formId", filters?.FormId);
+        queryParams.Add("hasAttachments", filters?.HasAttachments);
+        queryParams.Add("hasNotes", filters?.HasNotes);
+        queryParams.Add("questionsAnswered", filters?.QuestionsAnswered?.ToString());
+        filter.AddTo(queryParams);
+
+        var sql = $"""
                   SELECT
                       CR."Id" AS "CitizenReportId",
                       CR."FormId",
@@ -197,28 +220,17 @@ public class ExportCitizenReportsJob(
                    AND (@hasNotes is NULL
                      OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false)
                      OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
+                   AND CR."Id" IN (
+                       SELECT s."Id"
+                       FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                       WHERE s."ElectionRoundId" = @electionRoundId
+                         AND s."NgoId" = @ngoId
+                         AND s."CitizenReportingEnabled" = TRUE
+                         AND {filter.Sql}
+                   )
                   ORDER BY
                       "TimeSubmitted" DESC
                   """;
-
-        var queryParams = new
-        {
-            electionRoundId,
-            ngoId,
-            searchText = $"%{filters?.SearchText?.Trim() ?? string.Empty}%",
-            hasFlaggedAnswers = filters?.HasFlaggedAnswers,
-            followUpStatus = filters?.FollowUpStatus?.ToString(),
-            level1 = filters?.Level1Filter,
-            level2 = filters?.Level2Filter,
-            level3 = filters?.Level3Filter,
-            level4 = filters?.Level4Filter,
-            level5 = filters?.Level5Filter,
-            locationId = filters?.LocationId,
-            formId = filters?.FormId,
-            hasAttachments = filters?.HasAttachments,
-            hasNotes = filters?.HasNotes,
-            questionsAnswered = filters?.QuestionsAnswered?.ToString(),
-        };
 
         IEnumerable<CitizenReportModel> citizenReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))

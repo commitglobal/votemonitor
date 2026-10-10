@@ -3,12 +3,14 @@ using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 
@@ -46,7 +48,8 @@ public class ExportQuickReportsJob(
 
             var utcNow = timeProvider.UtcNow;
 
-            var quickReports = await GetQuickReports(electionRoundId, ngoId, exportedData.QuickReportsFilters, ct);
+            var quickReports = await GetQuickReports(
+                electionRoundId, ngoId, exportedData.QuickReportsFilters, exportedData.FilterConditions, ct);
 
             foreach (var submission in quickReports)
             {
@@ -89,10 +92,32 @@ public class ExportQuickReportsJob(
     }
 
     private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId,
-        ExportQuickReportsFilters filters, CancellationToken ct)
+        ExportQuickReportsFilters filters, System.Text.Json.JsonDocument? filterConditions, CancellationToken ct)
     {
-        var sql =
-            """
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.QuickReports)
+            .Build(FilterRuleJson.Deserialize(filterConditions));
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", electionRoundId);
+        parameters.Add("ngoId", ngoId);
+        parameters.Add("dataSource", filters.DataSource.ToString());
+        parameters.Add("coalitionMemberId", filters.CoalitionMemberId);
+        parameters.Add("level1", filters.Level1Filter);
+        parameters.Add("level2", filters.Level2Filter);
+        parameters.Add("level3", filters.Level3Filter);
+        parameters.Add("level4", filters.Level4Filter);
+        parameters.Add("level5", filters.Level5Filter);
+        parameters.Add("followUpStatus", filters.QuickReportFollowUpStatus?.ToString());
+        parameters.Add("quickReportLocationType", filters.QuickReportLocationType?.ToString());
+        parameters.Add("incidentCategory", filters.IncidentCategory?.ToString());
+        parameters.Add("fromDate", filters.FromDateFilter?.ToString("O"));
+        parameters.Add("toDate", filters.ToDateFilter?.ToString("O"));
+        parameters.Add("hasAttachments", filters.HasAttachments);
+        parameters.Add("monitoringObserverId", filters.MonitoringObserverId);
+        parameters.Add("pollingStationId", filters.PollingStationId);
+        parameters.Add("tagsFilter", filters.TagsFilter ?? []);
+        filter.AddTo(parameters);
+
+        var sql = $"""
             SELECT
             	QR."Id",
             	QR."QuickReportLocationType",
@@ -228,36 +253,20 @@ public class ExportQuickReportsJob(
             		OR CARDINALITY(@TAGSFILTER) = 0
             		OR MO."Tags" && @TAGSFILTER
             	)
+                AND QR."Id" IN (
+                    SELECT s."Id"
+                    FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                    WHERE s."ElectionRoundId" = @electionRoundId
+                      AND {filter.Sql}
+                )
             ORDER BY
             	QR."LastUpdatedAt" DESC
             """;
 
-        var queryArgs = new
-        {
-            electionRoundId,
-            ngoId,
-            dataSource = filters.DataSource.ToString(),
-            coalitionMemberId = filters.CoalitionMemberId,
-            level1 = filters.Level1Filter,
-            level2 = filters.Level2Filter,
-            level3 = filters.Level3Filter,
-            level4 = filters.Level4Filter,
-            level5 = filters.Level5Filter,
-            followUpStatus = filters.QuickReportFollowUpStatus?.ToString(),
-            quickReportLocationType = filters.QuickReportLocationType?.ToString(),
-            incidentCategory = filters.IncidentCategory?.ToString(),
-            fromDate = filters.FromDateFilter?.ToString("O"),
-            toDate = filters.ToDateFilter?.ToString("O"),
-            hasAttachments = filters.HasAttachments,
-            monitoringObserverId = filters.MonitoringObserverId,
-            pollingStationId = filters.PollingStationId,
-            tagsFilter = filters.TagsFilter ?? [],
-        };
-
         IEnumerable<QuickReportModel> quickReports = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            quickReports = await dbConnection.QueryAsync<QuickReportModel>(sql, queryArgs);
+            quickReports = await dbConnection.QueryAsync<QuickReportModel>(sql, parameters);
         }
 
         var quickReportsData = quickReports.ToList();

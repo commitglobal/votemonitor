@@ -1,6 +1,8 @@
 using Dapper;
 using Feature.CitizenReports.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.CitizenReports.ListEntriesV2;
@@ -28,61 +30,33 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var compiler = new FilterSqlCompiler(V2ReportFilterFields.CitizenReports);
+        var filter = compiler.Build(req.FilterConditions);
+        var queryArgs = new DynamicParameters();
+        queryArgs.Add("electionRoundId", req.ElectionRoundId);
+        queryArgs.Add("ngoId", req.NgoId);
+        queryArgs.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        queryArgs.Add("pageSize", req.PageSize);
+        queryArgs.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+        filter.AddTo(queryArgs);
+
+        var sql = $"""
                   SELECT
                   	COUNT(*) AS COUNT
                   FROM
-                  	"CitizenReports" CR
-                  	INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                  	INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                  WHERE
-                  	MN."ElectionRoundId" = @electionRoundId
-                  	AND MN."NgoId" = @ngoId;
+                  	"GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                  WHERE {filter.Sql};
 
                   WITH
                   	CITIZENREPORTS AS (
                   		SELECT
-                  			CR."Id" "CitizenReportId",
-                  			COALESCE(CR."LastModifiedOn", CR."CreatedOn") "TimeSubmitted",
-                  			F."Code" "FormCode",
-                  			F."Name" "FormName",
-                  			F."DefaultLanguage" "FormDefaultLanguage",
-                  			CR."NumberOfQuestionsAnswered",
-                  			CR."NumberOfFlaggedAnswers",
-                  			(
-                  				SELECT
-                  					COUNT(1)
-                  				FROM
-                  					"CitizenReportNotes" CRN
-                  				WHERE
-                  					CRN."CitizenReportId" = CR."Id"
-                  			) AS "NotesCount",
-                  			(
-                  				SELECT
-                  					COUNT(1)
-                  				FROM
-                  					"CitizenReportAttachments" CRA
-                  				WHERE
-                  					CRA."CitizenReportId" = CR."Id"
-                  					AND CRA."IsCompleted" = TRUE
-                  					AND CRA."IsDeleted" = FALSE
-                  			) AS "MediaFilesCount",
-                  			CR."FollowUpStatus",
-                  			L."Level1",
-                     		L."Level2",
-                     		L."Level3",
-                     		L."Level4",
-                     		L."Level5"
+                  			s."Id" "CitizenReportId",
+                  			COALESCE(s."LastModifiedOn", s."CreatedOn") "TimeSubmitted",
+                  			*
                   		FROM
-                  			"CitizenReports" CR
-                  			INNER JOIN "Forms" F ON F."Id" = CR."FormId"
-                  			INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                  			INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                  			INNER JOIN "Locations" L on L."Id" = CR."LocationId"
-                  		WHERE
-                  			CR."ElectionRoundId" = @electionRoundId
-                  			AND MN."NgoId" = @ngoId
-                            )
+                  			"GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                  		WHERE {filter.Sql}
+                  	)
                   SELECT
                   	"CitizenReportId",
                   	"TimeSubmitted",
@@ -151,15 +125,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
-
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
-        };
 
         int totalRowCount;
         List<CitizenReportEntryModel> entries;

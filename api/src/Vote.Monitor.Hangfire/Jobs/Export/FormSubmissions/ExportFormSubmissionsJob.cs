@@ -3,6 +3,7 @@ using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Queries;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
@@ -10,6 +11,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
@@ -64,7 +66,7 @@ public class ExportFormSubmissionsJob(
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var submissions = await GetSubmissions(electionRoundId, ngoId, filters, ct);
+            var submissions = await GetSubmissions(electionRoundId, ngoId, filters, exportedData.FilterConditions, ct);
 
             foreach (var submission in submissions)
             {
@@ -121,7 +123,7 @@ public class ExportFormSubmissionsJob(
     }
 
     private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId,
-        ExportFormSubmissionsFilters filters, CancellationToken ct)
+        ExportFormSubmissionsFilters filters, System.Text.Json.JsonDocument? filterConditions, CancellationToken ct)
     {
         var builder = new SqlBuilder();
         builder.AddParameters(new
@@ -157,6 +159,9 @@ public class ExportFormSubmissionsJob(
             IsCompleted = filters.IsCompletedFilter
         });
 
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.FormSubmissions)
+            .Build(FilterRuleJson.Deserialize(filterConditions));
+        builder.Where(filter.Sql, filter.Parameters);
         builder.OrderBy(@"s.""TimeSubmitted"" DESC");
 
         var template = builder.AddTemplate(

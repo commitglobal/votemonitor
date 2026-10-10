@@ -1,9 +1,13 @@
 using Feature.IncidentReports.ListFormsOverview;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.IncidentReports.ListFormsOverviewV2;
 
-public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    VoteMonitorContext context,
+    INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, Results<Ok<PagedResponse<AggregatedFormOverview>>, NotFound>>
 {
     public override void Configure()
@@ -26,11 +30,17 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
+        var filteredIds = req.FilterConditions is null
+            ? null
+            : await IncidentReportFilterQuery.GetMatchingIdsAsync(
+                dbConnectionFactory, req.ElectionRoundId, req.NgoId, req.FilterConditions, ct);
+
         var query = context
             .IncidentReports
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
                         && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
+            .Where(x => filteredIds == null || filteredIds.Contains(x.Id))
             .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Name, cr.Form.DefaultLanguage })
             .Select(cr => new AggregatedFormOverview
             {

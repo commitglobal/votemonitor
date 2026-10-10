@@ -1,6 +1,8 @@
 using Dapper;
 using Feature.IncidentReports.ListByObserver;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.IncidentReports.ListByObserverV2;
@@ -29,7 +31,17 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var filter = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports).Build(req.FilterConditions);
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("dataSource", req.DataSource.ToString());
+        parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        parameters.Add("pageSize", req.PageSize);
+        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+        filter.AddTo(parameters);
+
+        var sql = $"""
                   SELECT COUNT(*) count
                   FROM
                       "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO;
@@ -49,21 +61,38 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                MO."Tags",
                                MO."NgoName",
                                COALESCE(
-                                       (SELECT SUM("NumberOfFlaggedAnswers")
+                                       (SELECT SUM(IR."NumberOfFlaggedAnswers")
                                         FROM "IncidentReports" IR
-                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"),
+                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"
+                                          AND IR."ElectionRoundId" = @electionRoundId
+                                          AND IR."Id" IN (
+                                              SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                              WHERE s."ElectionRoundId" = @electionRoundId
+                                                AND {filter.Sql}
+                                          )),
                                        0
                                ) AS "NumberOfFlaggedAnswers",
                                (SELECT COUNT(1)
                                 FROM "IncidentReports" IR
-                                WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
+                               WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"
+                                 AND IR."ElectionRoundId" = @electionRoundId
+                                 AND IR."Id" IN (
+                                     SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                     WHERE s."ElectionRoundId" = @electionRoundId
+                                       AND {filter.Sql}
+                                 )) AS "NumberOfIncidentsSubmitted",
                                (
                                    CASE
                                        WHEN EXISTS (SELECT 1
                                                     FROM "IncidentReports" IR
-                                                    WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
-                                                      AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
-                                                      AND IR."ElectionRoundId" = @electionRoundId)
+                                                     WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
+                                                       AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
+                                                       AND IR."ElectionRoundId" = @electionRoundId
+                                                       AND IR."Id" IN (
+                                                           SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                                           WHERE s."ElectionRoundId" = @electionRoundId
+                                                             AND {filter.Sql}
+                                                       ))
                                            THEN 'NeedsFollowUp'
                                        ELSE NULL
                                        END
@@ -86,22 +115,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            dataSource = req.DataSource.ToString(),
-            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
-        };
-
         int totalRowCount;
         List<ObserverIncidentReportsOverview> entries;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<ObserverIncidentReportsOverview>().ToList();
         }

@@ -79,10 +79,7 @@ public class Endpoint(
         parameters.Add("ngoId", req.NgoId);
         parameters.Add("dataSource", req.DataSource.ToString());
 
-        foreach (var name in filter.Parameters.ParameterNames)
-        {
-            parameters.Add(name, filter.Parameters.Get<object>(name));
-        }
+        filter.AddTo(parameters);
 
         var selectSql = $"""
                          SELECT s."SubmissionId",

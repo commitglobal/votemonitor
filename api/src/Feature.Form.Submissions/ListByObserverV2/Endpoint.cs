@@ -1,5 +1,6 @@
 using Feature.Form.Submissions.ListByObserver;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Form.Submissions.ListByObserverV2;
@@ -28,7 +29,17 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var filter = new FilterSqlCompiler(SubmissionFilterFields.All).Build(req.FilterConditions);
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("dataSource", req.DataSource.ToString());
+        parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        parameters.Add("pageSize", req.PageSize);
+        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+        filter.AddTo(parameters);
+
+        var sql = $"""
                   SELECT
                       COUNT(*) count
                   FROM
@@ -58,73 +69,32 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                               MO."IsOwnObserver",
                               COALESCE(
                                       (
-                                          SELECT
-                                              SUM("NumberOfFlaggedAnswers")
-                                          FROM
-                                              "FormSubmissions" FS
-                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
-                                          WHERE
-                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
+                                          SELECT SUM(s."NumberOfFlaggedAnswers")
+                                          FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                          WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
+                                            AND {filter.Sql}
                                       ),
                                       0
                               ) AS "NumberOfFlaggedAnswers",
                               (
-                                  SELECT
-                                      COUNT(*)
-                                  FROM
-                                      (
-                                          SELECT
-                                              PSI."PollingStationId"
-                                          FROM
-                                              "PollingStationInformation" PSI
-                                          WHERE
-                                              PSI."MonitoringObserverId" = MO."MonitoringObserverId"
-                                            AND PSI."ElectionRoundId" = @electionRoundId
-                                          UNION
-                                          SELECT
-                                              FS."PollingStationId"
-                                          FROM
-                                              "FormSubmissions" FS
-                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
-                                          WHERE
-                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
-                                            AND FS."ElectionRoundId" = @electionRoundId
-                                      ) TMP
+                                  SELECT COUNT(DISTINCT s."PollingStationId")
+                                  FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                  WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
+                                    AND {filter.Sql}
                               ) AS "NumberOfLocations",
                               (
-                                  SELECT
-                                      COUNT(*)
-                                  FROM
-                                      (
-                                          SELECT
-                                              PSI."Id"
-                                          FROM
-                                              "PollingStationInformation" PSI
-                                          WHERE
-                                              PSI."MonitoringObserverId" = MO."MonitoringObserverId"
-                                            AND PSI."ElectionRoundId" = @electionRoundId
-                                          UNION
-                                          SELECT
-                                              FS."Id"
-                                          FROM
-                                              "FormSubmissions" FS
-                                                  inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
-                                          WHERE
-                                              FS."MonitoringObserverId" = MO."MonitoringObserverId"
-                                            AND FS."ElectionRoundId" = @electionRoundId
-                                      ) TMP
+                                  SELECT COUNT(*)
+                                  FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                  WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
+                                    AND {filter.Sql}
                               ) AS "NumberOfFormsSubmitted",
                               (
                                   CASE WHEN EXISTS (
-                                      SELECT
-                                          1
-                                      FROM
-                                          "FormSubmissions" FS
-                                              inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) f on f."FormId" = fs."FormId"
-                                      WHERE
-                                          FS."FollowUpStatus" = 'NeedsFollowUp'
-                                        AND FS."MonitoringObserverId" = MO."MonitoringObserverId"
-                                        AND FS."ElectionRoundId" = @electionRoundId
+                                      SELECT 1
+                                      FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                                      WHERE s."FollowUpStatus" = 'NeedsFollowUp'
+                                        AND s."MonitoringObserverId" = MO."MonitoringObserverId"
+                                        AND {filter.Sql}
                                   ) THEN 'NeedsFollowUp' ELSE NULL END
                                   ) AS "FollowUpStatus"
                           FROM
@@ -148,22 +118,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                   OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            dataSource = req.DataSource.ToString(),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
-        };
-
         int totalRowCount;
         List<ObserverSubmissionOverview> entries;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<ObserverSubmissionOverview>().ToList();
         }
