@@ -61,13 +61,11 @@ public class Endpoint(
             }
         }
 
-        if (req.ExportedDataType == ExportedDataType.PollingStationInformation)
+        if (req.ExportedDataType == ExportedDataType.PollingStationInformation
+            && !userRoleProvider.IsPlatformAdmin())
         {
-            if (!userRoleProvider.IsPlatformAdmin())
-            {
-                AddError(x => x.ExportedDataType, "Only platform admins can export this type of data");
-                return new ProblemDetails(ValidationFailures);
-            }
+            AddError(x => x.ExportedDataType, "Only platform admins can export this type of data");
+            return new ProblemDetails(ValidationFailures);
         }
 
         var exportedData = CreateExportedData(req, userProvider.GetNgoId());

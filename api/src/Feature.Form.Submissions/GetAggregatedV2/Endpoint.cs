@@ -40,7 +40,7 @@ public class Endpoint(
         var form = await context
             .Forms
             .FromSqlInterpolated($"""
-                                  select f.* from "GetAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()}) af
+                                  select f.* from "GetAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource}) af
                                   inner join "Forms" f on f."Id" = af."FormId"
                                   """)
             .Where(x => x.Id == req.FormId)
