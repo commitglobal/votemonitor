@@ -13,7 +13,7 @@ public class InitiateUploadEndpointTests
     private readonly IAuthorizationService _authorizationService;
     private readonly IRepository<QuickReportAttachment> _repository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly InitiateUpload.Endpoint _endpoint;
 
     public InitiateUploadEndpointTests()
@@ -21,7 +21,7 @@ public class InitiateUploadEndpointTests
         _authorizationService = Substitute.For<IAuthorizationService>();
         _repository = Substitute.For<IRepository<QuickReportAttachment>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
-        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
+        _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
         _endpoint = Factory.Create<InitiateUpload.Endpoint>(_authorizationService,
             _repository,
             _fileStorageService,

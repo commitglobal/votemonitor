@@ -8,6 +8,8 @@ public sealed class GetObserverElectionV2Specification : Specification<ElectionR
 {
     public GetObserverElectionV2Specification(Guid observerId)
     {
+        Query.AsNoTracking();
+
         Query
             .Include(x => x.MonitoringNgos)
             .ThenInclude(x => x.MonitoringObservers)

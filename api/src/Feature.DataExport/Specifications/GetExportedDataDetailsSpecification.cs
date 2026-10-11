@@ -8,6 +8,8 @@ public sealed class GetExportedDataDetailsSpecification : SingleResultSpecificat
 {
     public GetExportedDataDetailsSpecification(Guid exportedDataId, Guid userId)
     {
+        Query.AsNoTracking();
+
         Query.Where(x => x.OwnerId == userId && x.Id == exportedDataId);
 
         Query.Select(x => new Response

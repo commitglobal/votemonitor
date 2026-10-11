@@ -14,7 +14,7 @@ namespace Feature.ObserverGuide.Create;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<ObserverGuideAggregate> repository,
-    IRepository<MonitoringNgo> monitoringNgoRepository,
+    IReadRepository<MonitoringNgo> monitoringNgoRepository,
     IFileStorageService fileStorageService,
     IHtmlStringSanitizer htmlStringSanitizer)
     : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>

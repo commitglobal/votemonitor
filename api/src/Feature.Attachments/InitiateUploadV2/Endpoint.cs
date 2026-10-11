@@ -11,7 +11,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<AttachmentAggregate> repository,
     IFileStorageService fileStorageService,
-    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
     ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound, Conflict>>
 {

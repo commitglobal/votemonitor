@@ -7,6 +7,8 @@ public sealed class ListAssignedFormTemplateSpecification : Specification<Electi
 {
     public ListAssignedFormTemplateSpecification(Request request)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.ElectionRoundId == request.ElectionRoundId)
             .Include(x => x.FormTemplate)

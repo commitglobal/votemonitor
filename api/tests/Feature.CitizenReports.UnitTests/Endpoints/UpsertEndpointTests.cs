@@ -9,16 +9,16 @@ namespace Feature.CitizenReports.UnitTests.Endpoints;
 public class UpsertEndpointTests
 {
     private readonly IRepository<CitizenReport> _repository;
-    private readonly IRepository<Location> _locationsRepository;
-    private readonly IRepository<FormAggregate> _formRepository;
+    private readonly IReadRepository<Location> _locationsRepository;
+    private readonly IReadRepository<FormAggregate> _formRepository;
 
     private readonly Endpoint _endpoint;
 
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<CitizenReport>>();
-        _formRepository = Substitute.For<IRepository<FormAggregate>>();
-        _locationsRepository = Substitute.For<IRepository<Location>>();
+        _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
+        _locationsRepository = Substitute.For<IReadRepository<Location>>();
 
         _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository);
     }

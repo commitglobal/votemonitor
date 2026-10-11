@@ -6,6 +6,8 @@ public sealed class ListNgoAdminsSpecification : Specification<NgoAdminAggregate
 {
     public ListNgoAdminsSpecification(List.Request request)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.NgoId == request.NgoId)
             .Include(x => x.ApplicationUser)

@@ -12,7 +12,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<QuickReportAttachment> repository,
     IFileStorageService fileStorageService,
-    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
     ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound, Conflict>>
 {

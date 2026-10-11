@@ -10,9 +10,9 @@ namespace Feature.Form.Submissions.UnitTests.Endpoints;
 public class UpsertEndpointTests
 {
     private readonly IRepository<FormSubmission> _repository;
-    private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
-    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
-    private readonly IRepository<FormAggregate> _formRepository;
+    private readonly IReadRepository<PollingStationAggregate> _pollingStationRepository;
+    private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly IReadRepository<FormAggregate> _formRepository;
     private readonly IAuthorizationService _authorizationService;
 
     private readonly Upsert.Endpoint _endpoint;
@@ -20,10 +20,10 @@ public class UpsertEndpointTests
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<FormSubmission>>();
-        _pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-        var coalitionRepository = Substitute.For<IRepository<Coalition>>();
-        _formRepository = Substitute.For<IRepository<FormAggregate>>();
+        _pollingStationRepository = Substitute.For<IReadRepository<PollingStationAggregate>>();
+        _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
+        var coalitionRepository = Substitute.For<IReadRepository<Coalition>>();
+        _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
         
         _endpoint = Factory.Create<Upsert.Endpoint>(_repository,

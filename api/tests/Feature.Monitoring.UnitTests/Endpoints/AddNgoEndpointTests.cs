@@ -10,7 +10,7 @@ public class AddNgoEndpointTests
     private readonly IRepository<ElectionRoundAggregate> _repository =
         Substitute.For<IRepository<ElectionRoundAggregate>>();
 
-    private readonly IRepository<NgoAggregate> _ngoRepository = Substitute.For<IRepository<NgoAggregate>>();
+    private readonly IReadRepository<NgoAggregate> _ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
     private readonly IRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
     private readonly Endpoint _endpoint;
 

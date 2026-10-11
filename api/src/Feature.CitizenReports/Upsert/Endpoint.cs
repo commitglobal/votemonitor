@@ -9,8 +9,8 @@ namespace Feature.CitizenReports.Upsert;
 
 public class Endpoint(
     IRepository<CitizenReportAggregate> repository,
-    IRepository<Location> locationRepository,
-    IRepository<FormAggregate> formRepository) : Endpoint<Request, Results<Ok<CitizenReportModel>, NotFound>>
+    IReadRepository<Location> locationRepository,
+    IReadRepository<FormAggregate> formRepository) : Endpoint<Request, Results<Ok<CitizenReportModel>, NotFound>>
 {
     public override void Configure()
     {

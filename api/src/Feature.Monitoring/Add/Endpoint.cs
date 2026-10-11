@@ -8,7 +8,7 @@ namespace Feature.Monitoring.Add;
 
 public class Endpoint(
     IRepository<ElectionRoundAggregate> repository,
-    IRepository<NgoAggregate> ngoRepository,
+    IReadRepository<NgoAggregate> ngoRepository,
     IRepository<MonitoringNgo> monitoringNgoRepository)
     : Endpoint<Request, Results<Ok<Response>, NotFound<string>, ValidationProblem>>
 {

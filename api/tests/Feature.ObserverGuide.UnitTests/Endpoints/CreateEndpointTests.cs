@@ -24,7 +24,7 @@ public class CreateEndpointTests
     private readonly IRepository<ObserverGuideAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IRepository<MonitoringNgo> _monitoringNgoRepository;
+    private readonly IReadRepository<MonitoringNgo> _monitoringNgoRepository;
     private readonly Create.Endpoint _endpoint;
     private readonly IHtmlStringSanitizer _htmlStringSanitizer;
 
@@ -33,7 +33,7 @@ public class CreateEndpointTests
         _repository = Substitute.For<IRepository<ObserverGuideAggregate>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
+        _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
         _htmlStringSanitizer = Substitute.For<IHtmlStringSanitizer>();
 
         _endpoint = Factory.Create<Create.Endpoint>(_authorizationService,

@@ -10,7 +10,7 @@ namespace Feature.Notifications.Send;
 
 public class Endpoint(
     IRepository<NotificationAggregate> repository,
-    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
     INpgsqlConnectionFactory dbConnectionFactory,
     IJobService jobService,
     IHtmlStringSanitizer htmlStringSanitizer) :

@@ -6,6 +6,8 @@ public sealed class ListIncidentReportAttachmentsSpecification : Specification<I
 {
     public ListIncidentReportAttachmentsSpecification(Guid electionRoundId, Guid incidentReportId, Guid formId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.Form.ElectionRoundId == electionRoundId

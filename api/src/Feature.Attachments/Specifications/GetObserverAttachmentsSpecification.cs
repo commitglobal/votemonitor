@@ -8,6 +8,8 @@ public sealed class GetObserverAttachmentsSpecification : Specification<Attachme
 
     public GetObserverAttachmentsSpecification(Guid electionRoundId, Guid pollingStationId, Guid observerId, Guid formId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.PollingStationId == pollingStationId
@@ -20,6 +22,8 @@ public sealed class GetObserverAttachmentsSpecification : Specification<Attachme
     
     public GetObserverAttachmentsSpecification(Guid electionRoundId, Guid submissionId, Guid observerId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => 
                            x.SubmissionId == submissionId

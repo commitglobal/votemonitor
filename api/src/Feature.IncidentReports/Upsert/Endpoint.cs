@@ -13,8 +13,8 @@ namespace Feature.IncidentReports.Upsert;
 public class Endpoint(
     IRepository<IncidentReport> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
-    IRepository<MonitoringObserver> monitoringObserverRepository,
-    IRepository<FormAggregate> formRepository,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService,
     ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound>>
 {

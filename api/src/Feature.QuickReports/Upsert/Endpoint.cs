@@ -12,9 +12,9 @@ namespace Feature.QuickReports.Upsert;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IRepository<QuickReport> repository,
-    IRepository<QuickReportAttachment> attachmentsRepository,
+    IReadRepository<QuickReportAttachment> attachmentsRepository,
     IFileStorageService fileStorageService,
     ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<QuickReportModel>, NotFound>>

@@ -6,6 +6,8 @@ public sealed class ListNotesSpecification : Specification<IncidentReportNoteAgg
 {
     public ListNotesSpecification(Guid electionRoundId, Guid incidentReportId)
     {
+        Query.AsNoTracking();
+
         Query.Where(x => x.ElectionRoundId == electionRoundId && x.IncidentReportId == incidentReportId);
         
         Query.Select(note => IncidentReportNoteModel.FromEntity(note));

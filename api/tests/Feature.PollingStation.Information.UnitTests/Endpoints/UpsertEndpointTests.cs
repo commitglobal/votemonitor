@@ -10,9 +10,9 @@ namespace Feature.PollingStation.Information.UnitTests.Endpoints;
 public class UpsertEndpointTests
 {
     private readonly IRepository<PollingStationInformation> _repository;
-    private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
-    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
-    private readonly IRepository<PollingStationInformationForm> _formRepository;
+    private readonly IReadRepository<PollingStationAggregate> _pollingStationRepository;
+    private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly IReadRepository<PollingStationInformationForm> _formRepository;
     private readonly IAuthorizationService _authorizationService;
 
     private readonly Endpoint _endpoint;
@@ -20,9 +20,9 @@ public class UpsertEndpointTests
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<PollingStationInformation>>();
-        _pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-        _formRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
+        _pollingStationRepository = Substitute.For<IReadRepository<PollingStationAggregate>>();
+        _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
+        _formRepository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
 
         _endpoint = Factory.Create<Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository,
