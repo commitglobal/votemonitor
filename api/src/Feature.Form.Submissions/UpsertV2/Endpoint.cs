@@ -10,10 +10,10 @@ namespace Feature.Form.Submissions.UpsertV2;
 
 public class Endpoint(
     IRepository<FormSubmission> repository,
-    IReadRepository<PollingStationAggregate> pollingStationRepository,
-    IReadRepository<MonitoringObserver> monitoringObserverRepository,
-    IReadRepository<Coalition> coalitionRepository,
-    IReadRepository<FormAggregate> formRepository,
+    IRepository<PollingStationAggregate> pollingStationRepository,
+    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IRepository<Coalition> coalitionRepository,
+    IRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService,
     ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
 {

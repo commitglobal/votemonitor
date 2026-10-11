@@ -16,9 +16,9 @@ namespace Feature.PollingStation.Information.Upsert;
 
 public class Endpoint(
     IRepository<PollingStationInformation> repository,
-    IReadRepository<PollingStationAggregate> pollingStationRepository,
-    IReadRepository<MonitoringObserver> monitoringObserverRepository,
-    IReadRepository<PollingStationInformationForm> formRepository,
+    IRepository<PollingStationAggregate> pollingStationRepository,
+    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IRepository<PollingStationInformationForm> formRepository,
     VoteMonitorContext context,
     IAuthorizationService authorizationService,
     ITimeProvider timeProvider)

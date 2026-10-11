@@ -22,7 +22,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
     public override async Task<Results<Ok<FormVersionResponseModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var monitoringNgo = await context.ElectionRounds
+        var monitoringNgo = await context.ElectionRounds.AsNoTracking()
             .Include(x => x.MonitoringNgoForCitizenReporting)
             .Where(x => x.Id == req.ElectionRoundId)
             .Where(x => x.MonitoringNgoForCitizenReporting != null)

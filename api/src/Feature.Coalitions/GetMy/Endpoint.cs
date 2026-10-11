@@ -28,7 +28,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
-        var coalition = await context.Coalitions
+        var coalition = await context.Coalitions.AsNoTracking()
             .Include(x => x.Memberships)
             .ThenInclude(x => x.MonitoringNgo)
             .ThenInclude(x => x.Ngo)

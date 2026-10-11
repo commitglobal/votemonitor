@@ -7,7 +7,7 @@ namespace Feature.NgoStaff.Activate;
 
 public class Endpoint(
     UserManager<ApplicationUser> userManager,
-    IReadRepository<NgoStaffAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
+    IRepository<NgoStaffAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {

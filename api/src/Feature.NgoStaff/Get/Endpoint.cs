@@ -3,7 +3,7 @@ using Feature.NgoStaff.Specifications;
 
 namespace Feature.NgoStaff.Get;
 
-public class Endpoint(IRepository<NgoStaffAggregate> repository)
+public class Endpoint(IReadRepository<NgoStaffAggregate> repository)
     : Endpoint<Request, Results<Ok<NgoStaffModel>, NotFound>>
 {
     public override void Configure()

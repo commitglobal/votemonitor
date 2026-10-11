@@ -56,6 +56,7 @@ public class Endpoint(
 
         var psiForm = await context
             .PollingStationInformationForms
+            .AsNoTracking()
             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
             .FirstOrDefaultAsync(ct);
 

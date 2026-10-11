@@ -19,7 +19,7 @@ public class Endpoint(
     IEmailTemplateFactory emailFactory,
     IRepository<ElectionRoundAggregate> repository,
     IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
-    IReadRepository<Observer> observerRepository,
+    IRepository<Observer> observerRepository,
     IRepository<MonitoringObserver> monitoringObserverRepository,
     IOptions<ApiConfiguration> options)
     : Endpoint<Request, Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>

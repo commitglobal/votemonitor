@@ -26,7 +26,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
-        var electionRound = await context.ElectionRounds
+        var electionRound = await context.ElectionRounds.AsNoTracking()
             .Where(x => x.Id == req.ElectionRoundId)
             .Select(x => new { x.PollingStationsVersion, x.Id })
             .FirstOrDefaultAsync(ct);

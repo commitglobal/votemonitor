@@ -30,6 +30,7 @@ public class Endpoint(
         
         var incidentReports = await context
             .IncidentReports
+            .AsNoTracking()
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
             .Include(x => x.PollingStation)

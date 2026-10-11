@@ -226,7 +226,7 @@ public class Endpoint(
             ThrowError("Observer id is empty");
         }
 
-        var ngo = await context.MonitoringNgos
+        var ngo = await context.MonitoringNgos.AsNoTracking()
             .Where(x => x.MonitoringObservers.Any(mo => mo.ObserverId == observerId))
             .Select(x => new { x.NgoId })
             .FirstOrDefaultAsync(ct);

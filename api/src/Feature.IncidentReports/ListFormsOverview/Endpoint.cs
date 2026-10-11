@@ -26,6 +26,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
         var aggregatedFormOverviews = await context
             .IncidentReports
+            .AsNoTracking()
             .Where(x => x.PollingStation != null && (string.IsNullOrWhiteSpace(req.Level1Filter) ||
                                                      EF.Functions.ILike(x.PollingStation.Level1, req.Level1Filter)))
             .Where(x => x.PollingStation != null && (string.IsNullOrWhiteSpace(req.Level2Filter) ||

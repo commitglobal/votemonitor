@@ -8,7 +8,7 @@ namespace Feature.Monitoring.EnableCitizenReportingNgo;
 
 public class Endpoint(
     IRepository<ElectionRoundAggregate> repository,
-    IReadRepository<NgoAggregate> ngoRepository,
+    IRepository<NgoAggregate> ngoRepository,
     IRepository<MonitoringNgoAggregate> monitoringNgoRepository)
     : Endpoint<Request, Results<NoContent, NotFound<string>, ValidationProblem>>
 {

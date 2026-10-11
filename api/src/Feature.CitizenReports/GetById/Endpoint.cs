@@ -32,6 +32,7 @@ public class Endpoint(
         
         var citizenReport = await context
             .CitizenReports
+            .AsNoTracking()
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
             .Include(x => x.Location)
@@ -50,6 +51,7 @@ public class Endpoint(
 
         var form = await context
             .Forms
+            .AsNoTracking()
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Id == citizenReport.FormId)

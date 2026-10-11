@@ -3,7 +3,7 @@ using Feature.NgoAdmins.Specifications;
 
 namespace Feature.NgoAdmins.Get;
 
-public class Endpoint(IRepository<NgoAdminAggregate> repository)
+public class Endpoint(IReadRepository<NgoAdminAggregate> repository)
     : Endpoint<Request, Results<Ok<NgoAdminModel>, NotFound>>
 {
     public override void Configure()

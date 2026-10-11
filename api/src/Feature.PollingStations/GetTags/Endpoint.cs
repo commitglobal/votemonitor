@@ -19,6 +19,7 @@ public class Endpoint : Endpoint<Request, List<string>>
     {
         var tags = await _context
               .PollingStations
+              .AsNoTracking()
               .Where(x=>x.ElectionRoundId == req.ElectionRoundId)
               .Select(x => Postgres.Functions.ObjectKeys(x.Tags))
               .Distinct()

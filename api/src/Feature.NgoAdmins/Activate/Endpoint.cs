@@ -7,7 +7,7 @@ namespace Feature.NgoAdmins.Activate;
 
 public class Endpoint(
     UserManager<ApplicationUser> userManager,
-    IReadRepository<NgoAdminAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
+    IRepository<NgoAdminAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {

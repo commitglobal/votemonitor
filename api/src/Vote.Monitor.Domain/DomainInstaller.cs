@@ -46,7 +46,7 @@ public static class DomainInstaller
         });
         services.AddSingleton<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-        services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
+        services.AddScoped(typeof(IReadRepository<>), typeof(EfReadRepository<>));
 
         services.AddHealthChecks().AddNpgSql(name: "domain-db", connectionString: connectionString);
 
