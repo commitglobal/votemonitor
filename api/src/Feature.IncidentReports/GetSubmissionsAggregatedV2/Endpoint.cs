@@ -28,7 +28,7 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();

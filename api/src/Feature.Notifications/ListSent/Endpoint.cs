@@ -1,4 +1,6 @@
-﻿using Authorization.Policies;
+using Microsoft.AspNetCore.Authorization;
+using Authorization.Policies.Requirements;
+using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -6,8 +8,10 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListSent;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, PagedResponse<NotificationModel>>
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, Results<Ok<PagedResponse<NotificationModel>>, NotFound>>
 {
     public override void Configure()
     {
@@ -17,8 +21,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Policies(PolicyNames.NgoAdminOrStaff);
     }
 
-    public override async Task<PagedResponse<NotificationModel>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<NotificationModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
                   SELECT
                       COUNT(DISTINCT N."Id") AS COUNT
@@ -74,6 +85,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             entries = multi.Read<NotificationModel>().ToList();
         }
 
-        return new PagedResponse<NotificationModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return TypedResults.Ok(new PagedResponse<NotificationModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 }

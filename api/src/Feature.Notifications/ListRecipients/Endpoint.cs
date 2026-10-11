@@ -1,4 +1,6 @@
-﻿using Authorization.Policies;
+using Microsoft.AspNetCore.Authorization;
+using Authorization.Policies.Requirements;
+using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -6,8 +8,10 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListRecipients;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
-    Endpoint<Request, PagedResponse<TargetedMonitoringObserverModel>>
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory) :
+    Endpoint<Request, Results<Ok<PagedResponse<TargetedMonitoringObserverModel>>, NotFound>>
 {
     public override void Configure()
     {
@@ -17,9 +21,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
         Policies(PolicyNames.NgoAdminOrStaff);
     }
 
-    public override async Task<PagedResponse<TargetedMonitoringObserverModel>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<PagedResponse<TargetedMonitoringObserverModel>>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = 
             """
             WITH
@@ -632,7 +643,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             entries = multi.Read<TargetedMonitoringObserverModel>().ToList();
         }
 
-        return new PagedResponse<TargetedMonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return TypedResults.Ok(new PagedResponse<TargetedMonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)

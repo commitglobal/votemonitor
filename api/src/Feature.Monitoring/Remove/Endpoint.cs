@@ -1,4 +1,5 @@
-﻿using Feature.Monitoring.Specifications;
+using Authorization.Policies;
+using Feature.Monitoring.Specifications;
 
 namespace Feature.Monitoring.Remove;
 
@@ -10,6 +11,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)

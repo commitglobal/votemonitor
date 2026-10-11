@@ -22,7 +22,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
     public override async Task<Results<Ok<CoalitionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var result =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!result.Succeeded)
         {
             return TypedResults.NotFound();

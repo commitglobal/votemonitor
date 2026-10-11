@@ -13,7 +13,7 @@ public class Endpoint(
         Options(x => x.WithTags("incident-report-comments"));
         Summary(s => { s.Summary = "Deletes an incident report comment. Only the author can delete it."; });
 
-        Policies(PolicyNames.NgoAdminOrStaff);
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

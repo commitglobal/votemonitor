@@ -208,7 +208,6 @@ public class ExportCitizenReportsJob(
                    AND (@level4 IS NULL OR L."Level4" = @level4)
                    AND (@level5 IS NULL OR L."Level5" = @level5)
                    AND (@locationId IS NULL OR CR."LocationId" = @locationId)
-                   AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
                    AND (@formId IS NULL OR CR."FormId" = @formId)
                    AND (@questionsAnswered IS NULL
                      OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")

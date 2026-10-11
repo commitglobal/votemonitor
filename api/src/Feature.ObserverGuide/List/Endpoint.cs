@@ -37,7 +37,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin();
+        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin() || currentUserRoleProvider.IsNgoStaff();
         var isObserver = currentUserRoleProvider.IsObserver();
 
         if (isObserver)

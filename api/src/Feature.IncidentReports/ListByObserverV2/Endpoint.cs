@@ -25,115 +25,85 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var filter = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports).Build(req.FilterConditions);
+        var compiler = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports);
+        var filter = compiler.Build(req.Filter);
+
         var parameters = new DynamicParameters();
         parameters.Add("electionRoundId", req.ElectionRoundId);
         parameters.Add("ngoId", req.NgoId);
         parameters.Add("dataSource", req.DataSource.ToString());
         parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
         parameters.Add("pageSize", req.PageSize);
-        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+
         filter.AddTo(parameters);
 
-        var sql = $"""
-                  SELECT COUNT(*) count
-                  FROM
-                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO;
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 
-                  SELECT "MonitoringObserverId",
-                         "ObserverName",
-                         "PhoneNumber",
-                         "Email",
-                         "Tags",
-                         "NumberOfFlaggedAnswers",
-                         "NumberOfIncidentsSubmitted",
-                         "FollowUpStatus"
-                  FROM (SELECT MO."MonitoringObserverId" AS "MonitoringObserverId",
-                               mo."DisplayName" AS "ObserverName",
-                               mo."PhoneNumber",
-                               mo."Email",
-                               MO."Tags",
-                               MO."NgoName",
-                               COALESCE(
-                                       (SELECT SUM(IR."NumberOfFlaggedAnswers")
-                                        FROM "IncidentReports" IR
-                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"
-                                          AND IR."ElectionRoundId" = @electionRoundId
-                                          AND IR."Id" IN (
-                                              SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                              WHERE s."ElectionRoundId" = @electionRoundId
-                                                AND {filter.Sql}
-                                          )),
-                                       0
-                               ) AS "NumberOfFlaggedAnswers",
-                               (SELECT COUNT(1)
-                                FROM "IncidentReports" IR
-                               WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"
-                                 AND IR."ElectionRoundId" = @electionRoundId
-                                 AND IR."Id" IN (
-                                     SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                     WHERE s."ElectionRoundId" = @electionRoundId
-                                       AND {filter.Sql}
-                                 )) AS "NumberOfIncidentsSubmitted",
-                               (
-                                   CASE
-                                       WHEN EXISTS (SELECT 1
-                                                    FROM "IncidentReports" IR
-                                                     WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
-                                                       AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
-                                                       AND IR."ElectionRoundId" = @electionRoundId
-                                                       AND IR."Id" IN (
-                                                           SELECT s."Id" FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                                           WHERE s."ElectionRoundId" = @electionRoundId
-                                                             AND {filter.Sql}
-                                                       ))
-                                           THEN 'NeedsFollowUp'
-                                       ELSE NULL
-                                       END
-                                   ) AS "FollowUpStatus"
-                        FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO) T
-                  ORDER BY
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
-                      CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
-                      CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
-                      CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
-                      CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
-                      CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
-                      CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted ASC' THEN "NumberOfIncidentsSubmitted" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted DESC' THEN "NumberOfIncidentsSubmitted" END DESC
-                  OFFSET @offset ROWS
-                  FETCH NEXT @pageSize ROWS ONLY;
-                  """;
+        // Without a filter every observer is listed (observers with no incident reports get zeros).
+        // With a filter only observers that have at least one matching incident report are listed.
+        var countSql = req.Filter is null
+            ? """
+              SELECT COUNT(*)
+              FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+              """
+            : $"""
+               SELECT COUNT(DISTINCT s."MonitoringObserverId")
+               FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+               WHERE {filter.Sql}
+               """;
 
-        int totalRowCount;
-        List<ObserverIncidentReportsOverview> entries;
+        var observersJoin = req.Filter is null ? "LEFT JOIN" : "INNER JOIN";
 
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
-        {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
-            totalRowCount = multi.Read<int>().Single();
-            entries = multi.Read<ObserverIncidentReportsOverview>().ToList();
-        }
+        var selectSql = $"""
+                         WITH
+                           INCIDENT_REPORTS AS (
+                             SELECT
+                               s."MonitoringObserverId",
+                               SUM(s."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                               COUNT(*) AS "NumberOfIncidentsSubmitted",
+                               BOOL_OR(s."FollowUpStatus" = 'NeedsFollowUp') AS "NeedsFollowUp"
+                             FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                             WHERE {filter.Sql}
+                             GROUP BY s."MonitoringObserverId"
+                           )
+                         SELECT
+                           MO."MonitoringObserverId",
+                           MO."DisplayName" AS "ObserverName",
+                           MO."PhoneNumber",
+                           MO."Email",
+                           MO."Tags",
+                           COALESCE(IR."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",
+                           COALESCE(IR."NumberOfIncidentsSubmitted", 0) AS "NumberOfIncidentsSubmitted",
+                           CASE WHEN IR."NeedsFollowUp" THEN 'NeedsFollowUp' END AS "FollowUpStatus"
+                         FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                         {observersJoin} INCIDENT_REPORTS IR ON IR."MonitoringObserverId" = MO."MonitoringObserverId"
+                         ORDER BY {orderBy}, MO."MonitoringObserverId"
+                         LIMIT @pageSize OFFSET @offset
+                         """;
+
+        var sql = $"{countSql};\n{selectSql}";
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
+
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<ObserverIncidentReportsOverview>().ToList();
 
         return TypedResults.Ok(
             new PagedResponse<ObserverIncidentReportsOverview>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
-    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.ObserverName)} ASC";
+            return @"""ObserverName"" ASC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
@@ -141,39 +111,39 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.ObserverName),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.ObserverName)} {sortOrder}";
+            return $@"""ObserverName"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.Email),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.Email)} {sortOrder}";
+            return $@"""Email"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.PhoneNumber),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.PhoneNumber)} {sortOrder}";
+            return $@"""PhoneNumber"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.Tags),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.Tags)} {sortOrder}";
+            return $@"""Tags"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.NumberOfFlaggedAnswers)} {sortOrder}";
+            return $@"""NumberOfFlaggedAnswers"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfIncidentsSubmitted),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverIncidentReportsOverview.NumberOfIncidentsSubmitted)} {sortOrder}";
+            return $@"""NumberOfIncidentsSubmitted"" {sortOrder}";
         }
 
-        return $"{nameof(ObserverIncidentReportsOverview.ObserverName)} ASC";
+        return @"""ObserverName"" ASC";
     }
 }

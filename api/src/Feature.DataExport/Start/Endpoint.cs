@@ -29,10 +29,10 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound, ProblemDetails>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        if (userRoleProvider.IsNgoAdmin())
+        if (userRoleProvider.IsNgoAdmin() || userRoleProvider.IsNgoStaff())
         {
             var result =
-                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
             if (!result.Succeeded)
             {
                 return TypedResults.NotFound();
@@ -45,9 +45,9 @@ public class Endpoint(
              || req.ExportedDataType == ExportedDataType.IncidentReports
              || req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified))
         {
-            if (!userRoleProvider.IsNgoAdmin())
+            if (!userRoleProvider.IsNgoAdmin() && !userRoleProvider.IsNgoStaff())
             {
-                AddError(x => x.ExportedDataType, "Only ngo admins can export this type of data");
+                AddError(x => x.ExportedDataType, "Only ngo admins or staff can export this type of data");
                 return new ProblemDetails(ValidationFailures);
             }
 

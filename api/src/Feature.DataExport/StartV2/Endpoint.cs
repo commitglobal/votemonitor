@@ -32,10 +32,10 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound, ProblemDetails>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        if (userRoleProvider.IsNgoAdmin())
+        if (userRoleProvider.IsNgoAdmin() || userRoleProvider.IsNgoStaff())
         {
             var result =
-                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
             if (!result.Succeeded)
             {
                 return TypedResults.NotFound();
@@ -48,9 +48,9 @@ public class Endpoint(
             || req.ExportedDataType == ExportedDataType.IncidentReports
             || req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified)
         {
-            if (!userRoleProvider.IsNgoAdmin())
+            if (!userRoleProvider.IsNgoAdmin() && !userRoleProvider.IsNgoStaff())
             {
-                AddError(x => x.ExportedDataType, "Only ngo admins can export this type of data");
+                AddError(x => x.ExportedDataType, "Only ngo admins or staff can export this type of data");
                 return new ProblemDetails(ValidationFailures);
             }
 
@@ -125,7 +125,7 @@ public class Endpoint(
             return ExportedData.CreateForFormSubmissions(req.UserId,
                 timeProvider.UtcNow,
                 new ExportFormSubmissionsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                FilterRuleJson.Serialize(req.FilterConditions));
+                FilterRuleJson.Serialize(req.Filter));
         }
 
         if (req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified)
@@ -133,7 +133,7 @@ public class Endpoint(
             return ExportedData.CreateForFormSubmissionsSimplified(req.UserId,
                 timeProvider.UtcNow,
                 new ExportFormSubmissionsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                FilterRuleJson.Serialize(req.FilterConditions));
+                FilterRuleJson.Serialize(req.Filter));
         }
 
         if (req.ExportedDataType == ExportedDataType.QuickReports)
@@ -141,7 +141,7 @@ public class Endpoint(
             return ExportedData.CreateForQuickReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportQuickReportsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                FilterRuleJson.Serialize(req.FilterConditions));
+                FilterRuleJson.Serialize(req.Filter));
         }
 
         if (req.ExportedDataType == ExportedDataType.CitizenReports)
@@ -149,7 +149,7 @@ public class Endpoint(
             return ExportedData.CreateForCitizenReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportCitizenReportsFilers { NgoId = ngoId!.Value },
-                FilterRuleJson.Serialize(req.FilterConditions));
+                FilterRuleJson.Serialize(req.Filter));
         }
 
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
@@ -157,7 +157,7 @@ public class Endpoint(
             return ExportedData.CreateForIncidentReports(req.UserId,
                 timeProvider.UtcNow,
                 new ExportIncidentReportsFilters { NgoId = ngoId!.Value, DataSource = req.DataSource },
-                FilterRuleJson.Serialize(req.FilterConditions));
+                FilterRuleJson.Serialize(req.Filter));
         }
 
         return ExportedData.Create(req.UserId, req.ExportedDataType, timeProvider.UtcNow);

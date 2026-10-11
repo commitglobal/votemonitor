@@ -23,15 +23,13 @@ internal static class IncidentReportFilterQuery
         parameters.Add("dataSource", DataSource.Ngo.ToString());
         filter.AddTo(parameters);
 
-        const string sql = """
-                           SELECT s."Id"
-                           FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                           WHERE s."ElectionRoundId" = @electionRoundId
-                             AND s."NgoId" = @ngoId
-                             AND
-                           """;
+        var sql = $"""
+                   SELECT s."Id"
+                   FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                   WHERE {filter.Sql}
+                   """;
         using var connection = await connectionFactory.GetOpenConnectionAsync(ct);
-        var ids = await connection.QueryAsync<Guid>($"{sql} ({filter.Sql})", parameters);
+        var ids = await connection.QueryAsync<Guid>(sql, parameters);
         return ids.ToArray();
     }
 }

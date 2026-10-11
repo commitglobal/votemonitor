@@ -17,6 +17,7 @@ public static class AuthorizationPoliciesInstaller
         services.AddScoped<IAuthorizationHandler, CitizenReportingNgoAdminAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, CoalitionLeaderAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, MonitoringNgoAdminOrStaffAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, CitizenReportingNgoAdminOrStaffAuthorizationHandler>();
 
         services.AddAuthorization(options =>
         {

@@ -1,12 +1,14 @@
+using Dapper;
 using Feature.IncidentReports.ListFormsOverview;
+using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.IncidentReports.ListFormsOverviewV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    VoteMonitorContext context,
     INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, Results<Ok<PagedResponse<AggregatedFormOverview>>, NotFound>>
 {
@@ -24,96 +26,100 @@ public class Endpoint(
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var filteredIds = req.FilterConditions is null
-            ? null
-            : await IncidentReportFilterQuery.GetMatchingIdsAsync(
-                dbConnectionFactory, req.ElectionRoundId, req.NgoId, req.FilterConditions, ct);
+        var compiler = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports);
+        var filter = compiler.Build(req.Filter);
 
-        var query = context
-            .IncidentReports
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId
-                        && x.Form.MonitoringNgo.NgoId == req.NgoId
-                        && x.Form.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
-            .Where(x => filteredIds == null || filteredIds.Contains(x.Id))
-            .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Name, cr.Form.DefaultLanguage })
-            .Select(cr => new AggregatedFormOverview
-            {
-                FormId = cr.Key.FormId,
-                FormCode = cr.Key.Code,
-                FormName = cr.Key.Name,
-                FormDefaultLanguage = cr.Key.DefaultLanguage,
-                NumberOfNotes = cr.Sum(x => x.Notes.Count),
-                NumberOfMediaFiles = cr.Sum(x => x.Attachments.Count),
-                NumberOfSubmissions = cr.Count(),
-                NumberOfFlaggedAnswers = cr.Sum(x => x.NumberOfFlaggedAnswers)
-            });
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("dataSource", req.DataSource.ToString());
+        parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        parameters.Add("pageSize", req.PageSize);
 
-        var totalRowCount = await query.CountAsync(ct);
+        filter.AddTo(parameters);
 
-        query = ApplySorting(query, req.SortColumnName, req.IsAscendingSorting);
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 
-        var aggregatedFormOverviews = await query
-            .Skip(PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber))
-            .Take(req.PageSize)
-            .ToListAsync(ct);
+        var countSql = $"""
+                        SELECT COUNT(DISTINCT s."FormId")
+                        FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                        WHERE {filter.Sql}
+                        """;
+
+        var selectSql = $"""
+                         SELECT s."FormId",
+                                s."FormCode",
+                                s."FormName",
+                                s."FormDefaultLanguage",
+                                COUNT(*) AS "NumberOfSubmissions",
+                                COALESCE(SUM(s."NumberOfFlaggedAnswers"), 0) AS "NumberOfFlaggedAnswers",
+                                COALESCE(SUM(s."NotesCount"), 0) AS "NumberOfNotes",
+                                COALESCE(SUM(s."MediaFilesCount"), 0) AS "NumberOfMediaFiles"
+                         FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         WHERE {filter.Sql}
+                         GROUP BY s."FormId", s."FormCode", s."FormName", s."FormDefaultLanguage"
+                         ORDER BY {orderBy}, s."FormId"
+                         LIMIT @pageSize OFFSET @offset
+                         """;
+
+        var sql = $"{countSql};\n{selectSql}";
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
+
+        var totalRowCount = multi.Read<int>().Single();
+        var aggregatedFormOverviews = multi.Read<AggregatedFormOverview>().ToList();
 
         return TypedResults.Ok(
             new PagedResponse<AggregatedFormOverview>(aggregatedFormOverviews, totalRowCount, req.PageNumber,
                 req.PageSize));
     }
 
-    private static IQueryable<AggregatedFormOverview> ApplySorting(IQueryable<AggregatedFormOverview> query,
-        string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return query.OrderBy(x => x.FormCode);
+            return @"""FormCode"" ASC";
         }
+
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
         if (string.Equals(sortColumnName, nameof(AggregatedFormOverview.FormCode),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscendingSorting ? query.OrderBy(x => x.FormCode) : query.OrderByDescending(x => x.FormCode);
+            return $@"""FormCode"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(AggregatedFormOverview.NumberOfSubmissions),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscendingSorting
-                ? query.OrderBy(x => x.NumberOfSubmissions)
-                : query.OrderByDescending(x => x.NumberOfSubmissions);
+            return $@"""NumberOfSubmissions"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(AggregatedFormOverview.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscendingSorting
-                ? query.OrderBy(x => x.NumberOfFlaggedAnswers)
-                : query.OrderByDescending(x => x.NumberOfFlaggedAnswers);
+            return $@"""NumberOfFlaggedAnswers"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(AggregatedFormOverview.NumberOfNotes),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscendingSorting
-                ? query.OrderBy(x => x.NumberOfNotes)
-                : query.OrderByDescending(x => x.NumberOfNotes);
+            return $@"""NumberOfNotes"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(AggregatedFormOverview.NumberOfMediaFiles),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscendingSorting
-                ? query.OrderBy(x => x.NumberOfMediaFiles)
-                : query.OrderByDescending(x => x.NumberOfMediaFiles);
+            return $@"""NumberOfMediaFiles"" {sortOrder}";
         }
 
-        return query.OrderBy(x => x.FormCode);
+        return @"""FormCode"" ASC";
     }
 }

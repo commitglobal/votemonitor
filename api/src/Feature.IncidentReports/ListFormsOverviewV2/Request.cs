@@ -1,3 +1,4 @@
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 
 namespace Feature.IncidentReports.ListFormsOverviewV2;
@@ -8,4 +9,6 @@ public class Request : BaseFilterConditionsSortPaginatedRequest
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
 }

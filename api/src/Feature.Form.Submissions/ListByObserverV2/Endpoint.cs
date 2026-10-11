@@ -23,120 +23,89 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var filter = new FilterSqlCompiler(SubmissionFilterFields.All).Build(req.FilterConditions);
+        var compiler = new FilterSqlCompiler(SubmissionFilterFields.All);
+        var filter = compiler.Build(req.Filter);
+
         var parameters = new DynamicParameters();
         parameters.Add("electionRoundId", req.ElectionRoundId);
         parameters.Add("ngoId", req.NgoId);
         parameters.Add("dataSource", req.DataSource.ToString());
         parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
         parameters.Add("pageSize", req.PageSize);
-        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+
         filter.AddTo(parameters);
 
-        var sql = $"""
-                  SELECT
-                      COUNT(*) count
-                  FROM
-                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO;
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 
-                  SELECT
-                      "MonitoringObserverId",
-                      "ObserverName",
-                      "PhoneNumber",
-                      "Email",
-                      "Tags",
-                      "NgoName",
-                      "NumberOfFlaggedAnswers",
-                      "NumberOfLocations",
-                      "NumberOfFormsSubmitted",
-                      "FollowUpStatus",
-                      "IsOwnObserver"
-                  FROM
-                      (
-                          SELECT
-                              MO."MonitoringObserverId" "MonitoringObserverId",
-                              Mo."DisplayName" "ObserverName",
-                              Mo."PhoneNumber",
-                              Mo."Email",
-                              MO."Tags",
-                              MO."NgoName",
-                              MO."IsOwnObserver",
-                              COALESCE(
-                                      (
-                                          SELECT SUM(s."NumberOfFlaggedAnswers")
-                                          FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                          WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
-                                            AND {filter.Sql}
-                                      ),
-                                      0
-                              ) AS "NumberOfFlaggedAnswers",
-                              (
-                                  SELECT COUNT(DISTINCT s."PollingStationId")
-                                  FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                  WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
-                                    AND {filter.Sql}
-                              ) AS "NumberOfLocations",
-                              (
-                                  SELECT COUNT(*)
-                                  FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                  WHERE s."MonitoringObserverId" = MO."MonitoringObserverId"
-                                    AND {filter.Sql}
-                              ) AS "NumberOfFormsSubmitted",
-                              (
-                                  CASE WHEN EXISTS (
-                                      SELECT 1
-                                      FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
-                                      WHERE s."FollowUpStatus" = 'NeedsFollowUp'
-                                        AND s."MonitoringObserverId" = MO."MonitoringObserverId"
-                                        AND {filter.Sql}
-                                  ) THEN 'NeedsFollowUp' ELSE NULL END
-                                  ) AS "FollowUpStatus"
-                          FROM
-                              "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                      ) T
-                  ORDER BY
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
-                      CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
-                      CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
-                      CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
-                      CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
-                      CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
-                      CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfLocations ASC' THEN "NumberOfLocations" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN "NumberOfLocations" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN "NumberOfFormsSubmitted" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC
-                  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
-                  """;
+        // Without a filter every observer is listed (observers with no submissions get zeros).
+        // With a filter only observers that have at least one matching submission are listed.
+        var countSql = req.Filter is null
+            ? """
+              SELECT COUNT(*)
+              FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+              """
+            : $"""
+               SELECT COUNT(DISTINCT s."MonitoringObserverId")
+               FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+               WHERE {filter.Sql}
+               """;
 
-        int totalRowCount;
-        List<ObserverSubmissionOverview> entries;
+        var observersJoin = req.Filter is null ? "LEFT JOIN" : "INNER JOIN";
 
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
-        {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
-            totalRowCount = multi.Read<int>().Single();
-            entries = multi.Read<ObserverSubmissionOverview>().ToList();
-        }
+        var selectSql = $"""
+                         WITH
+                           SUBMISSIONS AS (
+                             SELECT
+                               s."MonitoringObserverId",
+                               SUM(s."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
+                               COUNT(DISTINCT s."PollingStationId") AS "NumberOfLocations",
+                               COUNT(*) AS "NumberOfFormsSubmitted",
+                               BOOL_OR(s."FollowUpStatus" = 'NeedsFollowUp') AS "NeedsFollowUp"
+                             FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                             WHERE {filter.Sql}
+                             GROUP BY s."MonitoringObserverId"
+                           )
+                         SELECT
+                           MO."MonitoringObserverId",
+                           MO."DisplayName" AS "ObserverName",
+                           MO."PhoneNumber",
+                           MO."Email",
+                           MO."Tags",
+                           MO."NgoName",
+                           MO."IsOwnObserver",
+                           COALESCE(S."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",
+                           COALESCE(S."NumberOfLocations", 0) AS "NumberOfLocations",
+                           COALESCE(S."NumberOfFormsSubmitted", 0) AS "NumberOfFormsSubmitted",
+                           CASE WHEN S."NeedsFollowUp" THEN 'NeedsFollowUp' END AS "FollowUpStatus"
+                         FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
+                         {observersJoin} SUBMISSIONS S ON S."MonitoringObserverId" = MO."MonitoringObserverId"
+                         ORDER BY {orderBy}, MO."MonitoringObserverId"
+                         LIMIT @pageSize OFFSET @offset
+                         """;
+
+        var sql = $"{countSql};\n{selectSql}";
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
+
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<ObserverSubmissionOverview>().ToList();
 
         return TypedResults.Ok(
             new PagedResponse<ObserverSubmissionOverview>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
-    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";
+            return @"""ObserverName"" ASC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
@@ -144,45 +113,45 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.ObserverName),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.ObserverName)} {sortOrder}";
+            return $@"""ObserverName"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.Email),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.Email)} {sortOrder}";
+            return $@"""Email"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.PhoneNumber),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.PhoneNumber)} {sortOrder}";
+            return $@"""PhoneNumber"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.Tags),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.Tags)} {sortOrder}";
+            return $@"""Tags"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.NumberOfFlaggedAnswers)} {sortOrder}";
+            return $@"""NumberOfFlaggedAnswers"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfLocations),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.NumberOfLocations)} {sortOrder}";
+            return $@"""NumberOfLocations"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted)} {sortOrder}";
+            return $@"""NumberOfFormsSubmitted"" {sortOrder}";
         }
 
-        return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";
+        return @"""ObserverName"" ASC";
     }
 }

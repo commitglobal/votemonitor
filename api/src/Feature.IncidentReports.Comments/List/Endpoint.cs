@@ -3,7 +3,9 @@ using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.IncidentReports.Comments.List;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -18,6 +20,13 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
                   SELECT
                       c."Id",

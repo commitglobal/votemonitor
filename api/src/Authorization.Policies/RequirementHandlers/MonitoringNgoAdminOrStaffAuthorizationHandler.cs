@@ -16,7 +16,7 @@ internal class MonitoringNgoAdminOrStaffAuthorizationHandler(
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         MonitoringNgoAdminOrStaffRequirement requirement)
     {
-        if (!currentUserRoleProvider.IsNgoAdmin() || currentUserRoleProvider.IsNgoStaff())
+        if (!currentUserRoleProvider.IsNgoAdmin() && !currentUserRoleProvider.IsNgoStaff())
         {
             context.Fail();
             return;

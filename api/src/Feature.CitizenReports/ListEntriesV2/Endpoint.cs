@@ -24,127 +24,71 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,
-                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+                new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
         var compiler = new FilterSqlCompiler(V2ReportFilterFields.CitizenReports);
-        var filter = compiler.Build(req.FilterConditions);
-        var queryArgs = new DynamicParameters();
-        queryArgs.Add("electionRoundId", req.ElectionRoundId);
-        queryArgs.Add("ngoId", req.NgoId);
-        queryArgs.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
-        queryArgs.Add("pageSize", req.PageSize);
-        queryArgs.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
-        filter.AddTo(queryArgs);
+        var filter = compiler.Build(req.Filter);
 
-        var sql = $"""
-                  SELECT
-                  	COUNT(*) AS COUNT
-                  FROM
-                  	"GetCitizenReportEntries"(@electionRoundId, @ngoId) s
-                  WHERE {filter.Sql};
+        var parameters = new DynamicParameters();
+        parameters.Add("electionRoundId", req.ElectionRoundId);
+        parameters.Add("ngoId", req.NgoId);
+        parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
+        parameters.Add("pageSize", req.PageSize);
 
-                  WITH
-                  	CITIZENREPORTS AS (
-                  		SELECT
-                  			s."Id" "CitizenReportId",
-                  			COALESCE(s."LastModifiedOn", s."CreatedOn") "TimeSubmitted",
-                  			*
-                  		FROM
-                  			"GetCitizenReportEntries"(@electionRoundId, @ngoId) s
-                  		WHERE {filter.Sql}
-                  	)
-                  SELECT
-                  	"CitizenReportId",
-                  	"TimeSubmitted",
-                  	"FormCode",
-                  	"FormName",
-                  	"FormDefaultLanguage",
-                  	"NumberOfQuestionsAnswered",
-                  	"NumberOfFlaggedAnswers",
-                  	"NotesCount",
-                  	"MediaFilesCount",
-                  	"FollowUpStatus",
-                  	"Level1",
-                  	"Level2",
-                  	"Level3",
-                  	"Level4",
-                  	"Level5"
-                  FROM
-                  	CITIZENREPORTS
-                  ORDER BY
-                  	CASE
-                  		WHEN @sortExpression = 'TimeSubmitted ASC' THEN "TimeSubmitted"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'TimeSubmitted DESC' THEN "TimeSubmitted"
-                  	END DESC,
-                  	CASE
-                  		WHEN @sortExpression = 'FormCode ASC' THEN "FormCode"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'FormCode DESC' THEN "FormCode"
-                  	END DESC,
-                  	CASE
-                  		WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN "NumberOfQuestionsAnswered"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'NumberOfQuestionsAnswered DESC' THEN "NumberOfQuestionsAnswered"
-                  	END DESC,
-                  	CASE
-                  		WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers"
-                  	END DESC,
-                  	CASE
-                  		WHEN @sortExpression = 'MediaFilesCount ASC' THEN "MediaFilesCount"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'MediaFilesCount DESC' THEN "MediaFilesCount"
-                  	END DESC,
-                  	CASE
-                  		WHEN @sortExpression = 'NotesCount ASC' THEN "NotesCount"
-                  	END ASC,
-                  	CASE
-                  		WHEN @sortExpression = 'NotesCount DESC' THEN "NotesCount"
-                  	END DESC,
-                  	CASE WHEN @sortExpression = 'Level1 ASC' THEN "Level1" END ASC,
-                  	CASE WHEN @sortExpression = 'Level1 DESC' THEN "Level1" END DESC,
-                  	CASE WHEN @sortExpression = 'Level2 ASC' THEN "Level2" END ASC,
-                  	CASE WHEN @sortExpression = 'Level2 DESC' THEN "Level2" END DESC,
-                  	CASE WHEN @sortExpression = 'Level3 ASC' THEN "Level3" END ASC,
-                  	CASE WHEN @sortExpression = 'Level3 DESC' THEN "Level3" END DESC,
-                  	CASE WHEN @sortExpression = 'Level4 ASC' THEN "Level4" END ASC,
-                  	CASE WHEN @sortExpression = 'Level4 DESC' THEN "Level4" END DESC,
-                  	CASE WHEN @sortExpression = 'Level5 ASC' THEN "Level5" END ASC,
-                  	CASE WHEN @sortExpression = 'Level5 DESC' THEN "Level5" END DESC
-                  OFFSET @offset ROWS
-                  FETCH NEXT @pageSize ROWS ONLY;
-                  """;
+        filter.AddTo(parameters);
 
-        int totalRowCount;
-        List<CitizenReportEntryModel> entries;
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
-        {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
-            totalRowCount = multi.Read<int>().Single();
-            entries = multi.Read<CitizenReportEntryModel>().ToList();
-        }
+        var countSql = $"""
+                        SELECT COUNT(1)
+                        FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                        WHERE {filter.Sql}
+                        """;
+
+        var selectSql = $"""
+                         SELECT s."Id" AS "CitizenReportId",
+                                s."TimeSubmitted",
+                                s."FormCode",
+                                s."FormName",
+                                s."FormDefaultLanguage",
+                                s."NumberOfQuestionsAnswered",
+                                s."NumberOfFlaggedAnswers",
+                                s."NotesCount",
+                                s."MediaFilesCount",
+                                s."CommentsCount",
+                                s."FollowUpStatus",
+                                s."Level1",
+                                s."Level2",
+                                s."Level3",
+                                s."Level4",
+                                s."Level5"
+                         FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                         WHERE {filter.Sql}
+                         ORDER BY {orderBy}, s."Id"
+                         LIMIT @pageSize OFFSET @offset
+                         """;
+
+        var sql = $"{countSql};\n{selectSql}";
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
+
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<CitizenReportEntryModel>().ToList();
 
         return TypedResults.Ok(
             new PagedResponse<CitizenReportEntryModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
-    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(CitizenReportEntryModel.TimeSubmitted)} DESC";
+            return @"s.""TimeSubmitted"" DESC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
@@ -152,69 +96,69 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.FormCode),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.FormCode)} {sortOrder}";
+            return $@"s.""FormCode"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.NumberOfQuestionsAnswered),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.NumberOfQuestionsAnswered)} {sortOrder}";
+            return $@"s.""NumberOfQuestionsAnswered"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.NumberOfFlaggedAnswers)} {sortOrder}";
+            return $@"s.""NumberOfFlaggedAnswers"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.MediaFilesCount),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.MediaFilesCount)} {sortOrder}";
+            return $@"s.""MediaFilesCount"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.NotesCount),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.NotesCount)} {sortOrder}";
+            return $@"s.""NotesCount"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.TimeSubmitted),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.TimeSubmitted)} {sortOrder}";
+            return $@"s.""TimeSubmitted"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level1),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.Level1)} {sortOrder}";
+            return $@"s.""Level1"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level2),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.Level2)} {sortOrder}";
+            return $@"s.""Level2"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level3),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.Level3)} {sortOrder}";
+            return $@"s.""Level3"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level4),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.Level4)} {sortOrder}";
+            return $@"s.""Level4"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level5),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(CitizenReportEntryModel.Level5)} {sortOrder}";
+            return $@"s.""Level5"" {sortOrder}";
         }
 
-        return $"{nameof(CitizenReportEntryModel.TimeSubmitted)} DESC";
+        return @"s.""TimeSubmitted"" DESC";
     }
 }

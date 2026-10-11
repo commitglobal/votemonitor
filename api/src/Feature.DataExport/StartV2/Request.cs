@@ -15,5 +15,5 @@ public class Request
 
     public DataSource DataSource { get; set; } = DataSource.Ngo;
 
-    public FilterRule? FilterConditions { get; set; }
+    public FilterRule? Filter { get; set; }
 }

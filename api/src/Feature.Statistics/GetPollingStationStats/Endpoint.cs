@@ -36,7 +36,7 @@ public class Endpoint(
         if (!isPlatformAdmin)
         {
             var authorizationResult =
-                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
             if (!authorizationResult.Succeeded || !req.NgoId.HasValue || req.NgoId == Guid.Empty)
             {
                 return TypedResults.NotFound();

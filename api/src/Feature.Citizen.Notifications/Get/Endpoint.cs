@@ -20,7 +20,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
     public override async Task<Results<Ok<CitizenNotificationModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var requirement = new CitizenReportingNgoAdminRequirement(req.ElectionRoundId);
+        var requirement = new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {

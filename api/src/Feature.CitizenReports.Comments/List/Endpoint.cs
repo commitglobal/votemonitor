@@ -20,7 +20,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,
-                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+                new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();

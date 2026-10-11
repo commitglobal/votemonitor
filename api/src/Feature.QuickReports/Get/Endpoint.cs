@@ -44,7 +44,7 @@ public class Endpoint(
                 ct);
         }
 
-        if (userRoleProvider.IsNgoAdmin())
+        if (userRoleProvider.IsNgoAdmin() || userRoleProvider.IsNgoStaff())
         {
             return await GetQuickReportAsNgoAdminAsync(req.ElectionRoundId, userProvider.GetNgoId()!.Value, req.Id, ct);
         }

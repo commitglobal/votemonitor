@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Authorization.Policies.Requirements;
 using Authorization.Policies;
 using Dapper;
 using Feature.QuickReports.List;
@@ -9,8 +11,10 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.QuickReports.ListV2;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, PagedResponse<QuickReportOverviewModel>>
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, Results<Ok<PagedResponse<QuickReportOverviewModel>>, NotFound>>
 {
     public override void Configure()
     {
@@ -24,117 +28,82 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Policies(PolicyNames.NgoAdminOrStaff);
     }
 
-    public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<QuickReportOverviewModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var compiler = new FilterSqlCompiler(V2ReportFilterFields.QuickReports);
-        var filter = compiler.Build(req.FilterConditions);
+        var filter = compiler.Build(req.Filter);
+
         var parameters = new DynamicParameters();
         parameters.Add("electionRoundId", req.ElectionRoundId);
         parameters.Add("ngoId", req.NgoId);
         parameters.Add("dataSource", req.DataSource.ToString());
         parameters.Add("offset", PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber));
         parameters.Add("pageSize", req.PageSize);
-        parameters.Add("sortExpression", GetSortExpression(req.SortColumnName, req.IsAscendingSorting));
+
         filter.AddTo(parameters);
 
-        var sql = $"""
-        SELECT
-            COUNT(QR."Id") as "TotalNumberOfRows"
-        FROM
-            "QuickReports" QR
-            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
-        WHERE
-            QR."ElectionRoundId" = @electionRoundId
-            AND QR."Id" IN (
-                SELECT s."Id"
-                FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                WHERE s."ElectionRoundId" = @electionRoundId
-                  AND {filter.Sql}
-            );
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
 
-        SELECT
-            QR."Id",
-            QR."QuickReportLocationType",
-            QR."LastUpdatedAt" AS  "Timestamp",
-            QR."Title",
-            QR."Description",
-            QR."IncidentCategory",
-            QR."FollowUpStatus",
-            (SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND Qr."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND qra."IsDeleted" = FALSE
-                  AND qra."IsCompleted" = TRUE) AS "NumberOfAttachments",
-            AMO."MonitoringObserverId",
-            AMO."DisplayName" "ObserverName",
-            AMO."PhoneNumber",
-            AMO."Email",
-            AMO."Tags",
-            AMO."NgoName",
-            QR."PollingStationDetails",
-            PS."Id" AS "PollingStationId",
-            PS."Level1",
-            PS."Level2",
-            PS."Level3",
-            PS."Level4",
-            PS."Level5",
-            PS."Number",
-            PS."Address"
-        FROM
-            "QuickReports" QR
-            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
-            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-        WHERE
-            QR."ElectionRoundId" = @electionRoundId
-            AND QR."Id" IN (
-                SELECT s."Id"
-                FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                WHERE s."ElectionRoundId" = @electionRoundId
-                  AND {filter.Sql}
-            )
-        ORDER BY
-            CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
-            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
-            CASE WHEN @sortExpression = 'NumberOfAttachments ASC' THEN (
-                SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND QRA."IsDeleted" = FALSE
-                  AND QRA."IsCompleted" = TRUE
-            ) END ASC,
-            CASE WHEN @sortExpression = 'NumberOfAttachments DESC' THEN (
-                SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND QRA."IsDeleted" = FALSE
-                  AND QRA."IsCompleted" = TRUE
-            ) END DESC
-        OFFSET
-            @offset ROWS
-        FETCH NEXT
-            @pageSize ROWS ONLY;
-        """;
+        var countSql = $"""
+                        SELECT COUNT(1)
+                        FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                        WHERE {filter.Sql}
+                        """;
 
-        int totalRowCount;
-        List<QuickReportOverviewModel> entries;
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
-        {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
-            totalRowCount = multi.Read<int>().Single();
-            entries = multi.Read<QuickReportOverviewModel>().ToList();
-        }
+        var selectSql = $"""
+                         SELECT s."Id",
+                                s."LocationType" AS "QuickReportLocationType",
+                                s."TimeSubmitted" AS "Timestamp",
+                                s."Title",
+                                s."Description",
+                                s."IncidentCategory",
+                                s."FollowUpStatus",
+                                s."NumberOfAttachments",
+                                s."CommentsCount",
+                                s."MonitoringObserverId",
+                                s."DisplayName" AS "ObserverName",
+                                s."PhoneNumber",
+                                s."Email",
+                                s."Tags",
+                                s."NgoName",
+                                s."PollingStationDetails",
+                                s."PollingStationId",
+                                s."Level1",
+                                s."Level2",
+                                s."Level3",
+                                s."Level4",
+                                s."Level5",
+                                s."Number",
+                                s."Address"
+                         FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         WHERE {filter.Sql}
+                         ORDER BY {orderBy}, s."Id"
+                         LIMIT @pageSize OFFSET @offset
+                         """;
 
-        return new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        var sql = $"{countSql};\n{selectSql}";
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
+
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<QuickReportOverviewModel>().ToList();
+
+        return TypedResults.Ok(new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
-    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(QuickReportOverviewModel.Timestamp)} DESC";
+            return @"s.""TimeSubmitted"" DESC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
@@ -142,15 +111,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         if (string.Equals(sortColumnName, nameof(QuickReportOverviewModel.Timestamp),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(QuickReportOverviewModel.Timestamp)} {sortOrder}";
+            return $@"s.""TimeSubmitted"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(QuickReportOverviewModel.NumberOfAttachments),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(QuickReportOverviewModel.NumberOfAttachments)} {sortOrder}";
+            return $@"s.""NumberOfAttachments"" {sortOrder}";
         }
 
-        return $"{nameof(QuickReportOverviewModel.Timestamp)} ASC";
+        return @"s.""TimeSubmitted"" DESC";
     }
 }

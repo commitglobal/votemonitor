@@ -15,7 +15,7 @@ public class Endpoint(
         Options(x => x.WithTags("quick-report-comments"));
         Summary(s => { s.Summary = "Creates a comment for a quick report."; });
 
-        Policies(PolicyNames.NgoAdminOrStaff);
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<Ok<QuickReportCommentModel>, NotFound>> ExecuteAsync(Request req,
