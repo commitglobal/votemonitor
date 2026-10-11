@@ -39,7 +39,7 @@ public class GetEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdReadOnlySpecification>())
             .Returns(fakeNote);
 
         // Act

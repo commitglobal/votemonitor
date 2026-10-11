@@ -32,7 +32,7 @@ public class Endpoint(
         }
 
         var formTemplate =
-            await repository.SingleOrDefaultAsync(new GetFormTemplateSpecification(req.Id, isNgoAdmin), ct);
+            await repository.SingleOrDefaultAsync(new GetFormTemplateReadOnlySpecification(req.Id, isNgoAdmin), ct);
 
         if (formTemplate is null)
         {

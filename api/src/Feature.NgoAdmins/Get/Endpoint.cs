@@ -16,7 +16,7 @@ public class Endpoint(IReadRepository<NgoAdminAggregate> repository)
 
     public override async Task<Results<Ok<NgoAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetNgoAdminByIdSpecification(req.NgoId, req.Id);
+        var specification = new GetNgoAdminByIdReadOnlySpecification(req.NgoId, req.Id);
         var ngoAdmin = await repository.SingleOrDefaultAsync(specification, ct);
 
         if (ngoAdmin is null)

@@ -16,7 +16,7 @@ public class Endpoint(IReadRepository<IncidentReportNoteAggregate> repository)
     public override async Task<Results<Ok<IncidentReportNoteModel>, NotFound>> ExecuteAsync(
         Request req, CancellationToken ct)
     {
-        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdReadOnlySpecification(req.ElectionRoundId, req.Id), ct);
         if (note is null)
         {
             return TypedResults.NotFound();

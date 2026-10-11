@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<LocationModel>, NotFound>>
 
     public override async Task<Results<Ok<LocationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var location = await _repository.FirstOrDefaultAsync(new GetLocationByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        var location = await _repository.FirstOrDefaultAsync(new GetLocationByIdReadOnlySpecification(req.ElectionRoundId, req.Id), ct);
 
         if (location is null)
         {

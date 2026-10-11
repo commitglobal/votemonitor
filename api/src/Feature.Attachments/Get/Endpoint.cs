@@ -30,7 +30,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetAttachmentByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id);
+        var specification = new GetAttachmentByIdReadOnlySpecification(req.ElectionRoundId, req.ObserverId, req.Id);
         var attachment = await repository.FirstOrDefaultAsync(specification, ct);
         
         if (attachment is null)

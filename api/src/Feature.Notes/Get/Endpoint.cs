@@ -28,7 +28,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
+        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdReadOnlySpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
         if (note is null)
         {
             return TypedResults.NotFound();

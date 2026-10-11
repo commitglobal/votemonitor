@@ -34,7 +34,7 @@ public class Endpoint(
     public override async Task<NoContent> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var formSpecification = new GetFormSpecification(req.ElectionRoundId, req.FormId);
+        var formSpecification = new GetFormReadOnlySpecification(req.ElectionRoundId, req.FormId);
         var form = await formRepository.FirstOrDefaultAsync(formSpecification, ct);
 
         if (form == null)
@@ -45,7 +45,7 @@ public class Endpoint(
         }
 
         var citizenReportByIdSpecification =
-            new GetCitizenReportByIdSpecification(req.ElectionRoundId, req.FormId, req.CitizenReportId, true);
+            new GetCitizenReportByIdReadOnlySpecification(req.ElectionRoundId, req.FormId, req.CitizenReportId, true);
         var citizenReport = await repository.FirstOrDefaultAsync(
             citizenReportByIdSpecification, ct);
 

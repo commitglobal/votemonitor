@@ -28,7 +28,7 @@ public class GetEndpointTests
         // Arrange
         var citizenReportAttachment = new CitizenReportAttachmentFaker().Generate();
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdReadOnlySpecification>())
             .Returns(citizenReportAttachment);
 
         // Act
@@ -50,7 +50,7 @@ public class GetEndpointTests
     public async Task ShouldReturnNotFound_WhenAttachmentDoesNotExist()
     {
         // Arrange
-        _repository.FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdReadOnlySpecification>())
             .ReturnsNull();
 
         // Act
