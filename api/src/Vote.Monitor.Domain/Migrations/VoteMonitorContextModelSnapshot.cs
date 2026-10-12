@@ -6084,6 +6084,45 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("PollingStations");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate.PollingStationCorrection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CorrectedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CorrectedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FromPollingStationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ToPollingStationId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromPollingStationId");
+
+                    b.HasIndex("ToPollingStationId");
+
+                    b.HasIndex("ElectionRoundId", "RecordType", "RecordId");
+
+                    b.ToTable("PollingStationCorrections", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -7093,6 +7132,33 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("ElectionRound");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate.PollingStationCorrection", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "FromPollingStation")
+                        .WithMany()
+                        .HasForeignKey("FromPollingStationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "ToPollingStation")
+                        .WithMany()
+                        .HasForeignKey("ToPollingStationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("FromPollingStation");
+
+                    b.Navigation("ToPollingStation");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>

@@ -10,6 +10,8 @@ internal static class PsiDataQuery
             INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
             INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
             INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
+            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         WHERE PSI."ElectionRoundId" = @electionRoundId
             AND (@level1 IS NULL OR PS."Level1" = @level1)
             AND (@level2 IS NULL OR PS."Level2" = @level2)
@@ -36,6 +38,10 @@ internal static class PsiDataQuery
             PS."Address",
             MN."Id" AS "MonitoringNgoId",
             N."Name" AS "NgoName",
+            MO."Id" AS "MonitoringObserverId",
+            U."DisplayName" AS "ObserverName",
+            U."Email" AS "ObserverEmail",
+            U."PhoneNumber" AS "ObserverPhoneNumber",
             PSI."ArrivalTime",
             PSI."DepartureTime",
             COALESCE("ComputeMinutesMonitoring"(PSI."ArrivalTime", PSI."DepartureTime", PSI."Breaks"), 0) AS "MinutesMonitoring",

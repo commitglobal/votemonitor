@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.Form.Submissions.Delete;
 
@@ -25,13 +26,22 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
-        await context.FormSubmissions
+        var deleted = await context.FormSubmissions
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.SubmissionId
                         && x.Form.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.ObserverId == req.ObserverId
                         && x.MonitoringObserver.ElectionRoundId == req.ElectionRoundId)
             .ExecuteDeleteAsync(ct);
+
+        if (deleted > 0)
+        {
+            await context.PollingStationCorrections
+                .Where(x => x.ElectionRoundId == req.ElectionRoundId
+                            && x.RecordType == CorrectableRecordType.FormSubmission
+                            && x.RecordId == req.SubmissionId)
+                .ExecuteDeleteAsync(ct);
+        }
 
         await context.Notes
             .Where(x => x.SubmissionId == req.SubmissionId

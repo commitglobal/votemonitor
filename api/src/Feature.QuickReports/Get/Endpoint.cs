@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.QuickReports.Get;
 
@@ -55,7 +56,7 @@ public class Endpoint(
     private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsNgoAdminAsync(
         Guid electionRoundId, Guid ngoId, Guid quickReportId, CancellationToken ct)
     {
-        var sql = """
+        var sql = $"""
                   SELECT qr."Id",
                          qr."ElectionRoundId",
                          qr."QuickReportLocationType",
@@ -86,8 +87,9 @@ public class Endpoint(
                                        qra."ElectionRoundId" = @electionRoundId
                                      AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
                                      and qra."QuickReportId" = @quickReportId
-                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
-                         
+                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
+                         {PollingStationCorrectionsSql.ForRecord(CorrectableRecordType.QuickReport, "qr.\"Id\"")} AS "PollingStationCorrections"
+
                   FROM "QuickReports" QR
                            INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
                            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"

@@ -1,4 +1,5 @@
-﻿using Feature.PollingStation.Information.Specifications;
+﻿using Authorization.Policies;
+using Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.ListMy;
@@ -15,6 +16,8 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
             s.Summary = "Gets all polling station information by an observer";
             s.Description = "Allows filtering by polling station";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)

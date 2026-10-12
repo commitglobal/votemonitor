@@ -177,4 +177,14 @@ public class FormSubmissionsAggregate
 
         return this;
     }
+
+    public void WithNotes(List<NoteModel> notes)
+    {
+        Notes = notes.ToArray();
+    }
+
+    public void WithAttachments(List<AggregatedSubmissionsAttachmentModel> attachments)
+    {
+        Attachments = attachments.ToArray();
+    }
 }

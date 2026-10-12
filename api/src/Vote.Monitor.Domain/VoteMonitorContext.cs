@@ -35,6 +35,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportCommentAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -89,6 +90,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CoalitionFormAccess> CoalitionFormAccess { get; set; }
     public DbSet<CoalitionGuideAccess> CoalitionGuideAccess { get; set; }
     public DbSet<ElectionRoundFormTemplate> ElectionRoundFormTemplates { get; set; }
+    public DbSet<PollingStationCorrection> PollingStationCorrections { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -179,6 +181,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CoalitionFormAccessConfiguration());
         builder.ApplyConfiguration(new CoalitionGuideAccessConfiguration());
         builder.ApplyConfiguration(new ElectionRoundFormTemplateConfiguration());
+        builder.ApplyConfiguration(new PollingStationCorrectionConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

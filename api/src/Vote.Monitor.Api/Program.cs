@@ -39,6 +39,7 @@ using Feature.Citizen.Notifications;
 using Feature.CitizenReports.Comments;
 using Feature.CitizenReports.Notes;
 using Feature.DataCleanup;
+using Feature.PollingStationCorrections;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.IncidentReports;
@@ -190,6 +191,7 @@ builder.Services.AddIncidentReportsCommentsFeature();
 builder.Services.AddCitizenNotificationsFeature();
 builder.Services.AddCoalitionsFeature();
 builder.Services.AddDataCleanupFeature();
+builder.Services.AddPollingStationCorrectionsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -277,6 +279,7 @@ SqlMapper.AddTypeHandler(typeof(IReadOnlyList<Responder>), new JsonToObjectConve
 SqlMapper.AddTypeHandler(typeof(Vote.Monitor.Core.Models.NoteModel[]), new JsonToObjectConverter<Vote.Monitor.Core.Models.NoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(AggregatedSubmissionsAttachmentModel[]), new JsonToObjectConverter<AggregatedSubmissionsAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(LanguagesTranslationStatus), new JsonToObjectConverter<LanguagesTranslationStatus>());
+SqlMapper.AddTypeHandler(typeof(PollingStationCorrectionModel[]), new JsonToObjectConverter<PollingStationCorrectionModel[]>());
 
 SqlMapper.AddTypeHandler(typeof(DateOnly), new DapperSqlDateOnlyTypeHandler());
 

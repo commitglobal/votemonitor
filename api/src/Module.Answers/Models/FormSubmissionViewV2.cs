@@ -44,4 +44,7 @@ public record FormSubmissionViewV2
     public DateTime? DepartureTime { get; init; }
     public ObservationBreakModel[] Breaks { get; init; } = [];
     public bool IsCompleted { get; init; }
+
+    /// <summary>Moves of this submission to another polling station by a platform admin, oldest first.</summary>
+    public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
 }

@@ -13,4 +13,5 @@ public static class Tables
     public const string CitizenReportComments = "CitizenReportComments";
     public const string IncidentReportComments = "IncidentReportComments";
     public const string ExportedData = "ExportedData";
+    public const string PollingStationCorrections = "PollingStationCorrections";
 }

@@ -179,12 +179,13 @@ public class Endpoint(
                     : attachment;
             })
         );
-
+        
+        formSubmissionsAggregate.WithNotes(notes);
+        formSubmissionsAggregate.WithAttachments(attachments.ToList());
+        
         return TypedResults.Ok(new Response
         {
             SubmissionsAggregate = formSubmissionsAggregate,
-            Notes = notes,
-            Attachments = attachments.ToList(),
             SubmissionsFilter = new SubmissionsFilterModel
             {
                 HasAttachments = req.HasAttachments,
@@ -261,7 +262,7 @@ public class Endpoint(
 
         return TypedResults.Ok(new Response
         {
-            SubmissionsAggregate = formSubmissionsAggregate, Notes = [], Attachments = []
+            SubmissionsAggregate = formSubmissionsAggregate
         });
     }
 }
