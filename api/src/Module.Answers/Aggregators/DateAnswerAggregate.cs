@@ -1,14 +1,30 @@
-﻿using Module.Answers.Models;
+﻿using System.Text.Json.Serialization;
+using Module.Answers.Models;
 using Module.Answers.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Module.Answers.Aggregators;
 
-public class DateAnswerAggregate(DateQuestion question, int displayOrder) : BaseAnswerAggregate(question, displayOrder)
+public class DateAnswerAggregate : BaseAnswerAggregate
 {
-    private readonly Dictionary<string, int> _answersHistogram = new();
-    public IReadOnlyDictionary<string, int> AnswersHistogram => _answersHistogram.AsReadOnly();
+    public DateAnswerAggregate(DateQuestion question, int displayOrder) : base(question, displayOrder)
+    {
+    }
+
+    [JsonConstructor]
+    private DateAnswerAggregate()
+    {
+    }
+
+    private Dictionary<string, int> _answersHistogram = new();
+
+    [JsonInclude]
+    public IReadOnlyDictionary<string, int> AnswersHistogram
+    {
+        get => _answersHistogram.AsReadOnly();
+        private set => _answersHistogram = new Dictionary<string, int>(value);
+    }
 
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {

@@ -1,4 +1,5 @@
-﻿using Module.Answers.Models;
+﻿using System.Text.Json.Serialization;
+using Module.Answers.Models;
 using Module.Answers.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -8,13 +9,24 @@ namespace Module.Answers.Aggregators;
 public class RatingAnswerAggregate : BaseAnswerAggregate
 {
     private int _numberOfAnswersAggregated = 0;
-    private readonly Dictionary<int, int> _answersHistogram;
-    public IReadOnlyDictionary<int, int> AnswersHistogram => _answersHistogram.AsReadOnly();
+    private Dictionary<int, int> _answersHistogram = new();
 
-    public int Min { get; private set; } = int.MaxValue;
-    public int Max { get; private set; } = int.MinValue;
-    public decimal Average { get; private set; }
+    [JsonInclude]
+    public IReadOnlyDictionary<int, int> AnswersHistogram
+    {
+        get => _answersHistogram.AsReadOnly();
+        private set => _answersHistogram = new Dictionary<int, int>(value);
+    }
 
+    [JsonInclude] public int Min { get; private set; } = int.MaxValue;
+    [JsonInclude] public int Max { get; private set; } = int.MinValue;
+    [JsonInclude] public decimal Average { get; private set; }
+
+
+    [JsonConstructor]
+    private RatingAnswerAggregate()
+    {
+    }
 
     public RatingAnswerAggregate(RatingQuestion question, int displayOrder) : base(question, displayOrder)
     {

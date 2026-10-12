@@ -1,4 +1,5 @@
-﻿using Module.Answers.Models;
+﻿using System.Text.Json.Serialization;
+using Module.Answers.Models;
 using Module.Answers.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -7,12 +8,27 @@ namespace Module.Answers.Aggregators;
 
 public class MultiSelectAnswerAggregate : BaseAnswerAggregate
 {
-    private readonly List<TextResponse> _freeTexts = [];
+    private List<TextResponse> _freeTexts = [];
 
-    private readonly Dictionary<Guid, int> _answersHistogram;
+    private Dictionary<Guid, int> _answersHistogram = new();
     private readonly bool _hasFreeTextOption;
-    public IReadOnlyDictionary<Guid, int> AnswersHistogram => _answersHistogram.AsReadOnly();
-    public IReadOnlyCollection<TextResponse> FreeTexts => _freeTexts.ToList().AsReadOnly();
+    [JsonInclude]
+    public IReadOnlyDictionary<Guid, int> AnswersHistogram
+    {
+        get => _answersHistogram.AsReadOnly();
+        private set => _answersHistogram = new Dictionary<Guid, int>(value);
+    }
+    [JsonInclude]
+    public IReadOnlyCollection<TextResponse> FreeTexts
+    {
+        get => _freeTexts.ToList().AsReadOnly();
+        private set => _freeTexts = value.ToList();
+    }
+
+    [JsonConstructor]
+    private MultiSelectAnswerAggregate()
+    {
+    }
 
     public MultiSelectAnswerAggregate(MultiSelectQuestion question, int displayOrder) : base(question, displayOrder)
     {

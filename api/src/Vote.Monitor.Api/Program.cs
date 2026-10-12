@@ -53,6 +53,7 @@ using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
 using Vote.Monitor.Api.Hangfire;
+using Module.Answers.Aggregators;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
@@ -270,6 +271,11 @@ SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValu
 SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandler<IncidentCategory, string>());
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
+// jsonb columns of the submissions aggregates ("GetFormSubmissionsAggregate", "GetIncidentReportsAggregate", "GetCitizenReportsAggregate")
+SqlMapper.AddTypeHandler(typeof(IReadOnlyDictionary<Guid, BaseAnswerAggregate>), new JsonToObjectConverter<IReadOnlyDictionary<Guid, BaseAnswerAggregate>>());
+SqlMapper.AddTypeHandler(typeof(IReadOnlyList<Responder>), new JsonToObjectConverter<IReadOnlyList<Responder>>());
+SqlMapper.AddTypeHandler(typeof(Vote.Monitor.Core.Models.NoteModel[]), new JsonToObjectConverter<Vote.Monitor.Core.Models.NoteModel[]>());
+SqlMapper.AddTypeHandler(typeof(AggregatedSubmissionsAttachmentModel[]), new JsonToObjectConverter<AggregatedSubmissionsAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(LanguagesTranslationStatus), new JsonToObjectConverter<LanguagesTranslationStatus>());
 
 SqlMapper.AddTypeHandler(typeof(DateOnly), new DapperSqlDateOnlyTypeHandler());

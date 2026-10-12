@@ -6,15 +6,15 @@ using Vote.Monitor.Domain.Entities.FormBase;
 namespace Module.Answers.Aggregators;
 public class CitizenReportFormSubmissionsAggregate
 {
-    public Guid ElectionRoundId { get; }
-    public Guid MonitoringNgoId { get; }
-    public Guid FormId { get; }
-    public string FormCode { get; }
-    public FormType FormType { get; }
-    public TranslatedString Name { get; }
-    public TranslatedString Description { get; }
-    public string DefaultLanguage { get; }
-    public string[] Languages { get; } = [];
+    public Guid ElectionRoundId { get; private set; }
+    public Guid MonitoringNgoId { get; private set; }
+    public Guid FormId { get; private set; }
+    public string FormCode { get; private set; } = null!;
+    public FormType FormType { get; private set; } = null!;
+    public TranslatedString Name { get; private set; } = null!;
+    public TranslatedString Description { get; private set; } = null!;
+    public string DefaultLanguage { get; private set; } = null!;
+    public string[] Languages { get; private set; } = [];
     public int SubmissionCount { get; private set; }
     public int TotalNumberOfQuestionsAnswered { get; private set; }
     public int TotalNumberOfFlaggedAnswers { get; private set; }
@@ -22,7 +22,17 @@ public class CitizenReportFormSubmissionsAggregate
     /// <summary>
     /// Aggregated answers per question id
     /// </summary>
-    public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
+    public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; private set; } = null!;
+
+    public NoteModel[] Notes { get; set; } = [];
+    public AggregatedSubmissionsAttachmentModel[] Attachments { get; set; } = [];
+
+    /// <summary>
+    /// Used by Dapper when reading an aggregate computed by the database.
+    /// </summary>
+    private CitizenReportFormSubmissionsAggregate()
+    {
+    }
 
     public CitizenReportFormSubmissionsAggregate(Form form)
     {

@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 namespace Module.Answers.Aggregators;
 
 
-[PolyJsonConverter(distriminatorPropertyName: "$aggregateType")]
+[PolyJsonConverter(distriminatorPropertyName: "$questionType")]
 
 [PolyJsonConverter.SubType(typeof(TextAnswerAggregate), AnswerAggregateTypes.TextAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(NumberAnswerAggregate), AnswerAggregateTypes.NumberAnswerAggregate)]
@@ -21,10 +21,17 @@ public abstract class BaseAnswerAggregate
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Discriminator => DiscriminatorValue.Get(GetType());
 
-    public Guid QuestionId { get; }
+    [JsonInclude] public Guid QuestionId { get; private set; }
     public int DisplayOrder { get; set; }
-    public BaseQuestion Question { get; }
-    public int AnswersAggregated { get; private set; }
+    [JsonInclude] public BaseQuestion Question { get; private set; } = null!;
+    [JsonInclude] public int AnswersAggregated { get; private set; }
+
+    /// <summary>
+    /// Used when deserializing an aggregate computed by the database.
+    /// </summary>
+    protected BaseAnswerAggregate()
+    {
+    }
 
     internal BaseAnswerAggregate(BaseQuestion question, int displayOrder)
     {

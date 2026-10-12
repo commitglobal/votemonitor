@@ -15,28 +15,44 @@ public record Responder(Guid ResponderId, string DisplayName, string Email, stri
 
 public class FormSubmissionsAggregate
 {
-    public Guid FormId { get; }
-    public string FormCode { get; }
+    public Guid FormId { get; private set; }
+    public string FormCode { get; private set; } = null!;
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
-    public FormType FormType { get; }
+    public FormType FormType { get; private set; } = null!;
 
-    public TranslatedString Name { get; }
-    public TranslatedString Description { get; }
-    public string DefaultLanguage { get; }
-    public string[] Languages { get; } = [];
+    public TranslatedString Name { get; private set; } = null!;
+    public TranslatedString Description { get; private set; } = null!;
+    public string DefaultLanguage { get; private set; } = null!;
+    public string[] Languages { get; private set; } = [];
 
-    private readonly HashSet<Responder> _responders = new();
-    public IReadOnlyList<Responder> Responders => _responders.ToList().AsReadOnly();
+    private HashSet<Responder> _responders = new();
+
+    public IReadOnlyList<Responder> Responders
+    {
+        get => _responders.ToList().AsReadOnly();
+        private set => _responders = value.ToHashSet();
+    }
 
     public int SubmissionCount { get; private set; }
     public int TotalNumberOfQuestionsAnswered { get; private set; }
     public int TotalNumberOfFlaggedAnswers { get; private set; }
+    public int PollingStationsCount { get; private set; }
 
     /// <summary>
     /// Aggregated answers per question id
     /// </summary>
-    public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
+    public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; private set; } = null!;
+
+    public NoteModel[] Notes { get; set; } = [];
+    public AggregatedSubmissionsAttachmentModel[] Attachments { get; set; } = [];
+
+    /// <summary>
+    /// Used by Dapper when reading an aggregate computed by the database.
+    /// </summary>
+    private FormSubmissionsAggregate()
+    {
+    }
 
     public FormSubmissionsAggregate(Form form)
     {
