@@ -22,7 +22,7 @@ public class Endpoint(VoteMonitorContext context)
 
     public override async Task<Ok<Result>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRounds = await context.MonitoringNgos
+        var electionRounds = await context.MonitoringNgos.AsNoTracking()
             .Include(x => x.ElectionRound)
             .ThenInclude(x => x.MonitoringNgoForCitizenReporting)
             .Include(x=>x.ElectionRound.Country)

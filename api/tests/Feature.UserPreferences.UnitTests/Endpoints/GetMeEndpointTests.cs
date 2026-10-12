@@ -1,3 +1,5 @@
+using Feature.UserPreferences.Specifications;
+
 namespace Feature.UserPreferences.UnitTests.Endpoints;
 
 public class GetMeEndpointTests
@@ -9,7 +11,8 @@ public class GetMeEndpointTests
         var repository = Substitute.For<IReadRepository<ApplicationUser>>();
         var endpoint = Factory.Create<GetMe.Endpoint>(repository);
         var appUser = ApplicationUser.CreateObserver("Jane", "Doe", "jane@example.com", "555-0100", "Password1!");
-        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
+        repository.FirstOrDefaultAsync(Arg.Any<GetUserByIdReadOnlySpecification>(), Arg.Any<CancellationToken>())
+            .Returns(appUser);
 
         var request = new GetMe.Request { Id = appUser.Id };
 
@@ -40,7 +43,8 @@ public class GetMeEndpointTests
         var repository = Substitute.For<IReadRepository<ApplicationUser>>();
         var endpoint = Factory.Create<GetMe.Endpoint>(repository);
         ApplicationUser appUser = null;
-        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
+        repository.FirstOrDefaultAsync(Arg.Any<GetUserByIdReadOnlySpecification>(), Arg.Any<CancellationToken>())
+            .Returns(appUser);
 
         var request = new GetMe.Request { Id = Guid.NewGuid() };
 

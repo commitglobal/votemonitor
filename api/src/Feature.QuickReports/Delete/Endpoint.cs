@@ -3,6 +3,7 @@ using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.QuickReports.Delete;
@@ -47,6 +48,12 @@ public class Endpoint(
         }
 
         await repository.DeleteAsync(quickReport, ct);
+
+        await context.PollingStationCorrections
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId
+                        && x.RecordType == CorrectableRecordType.QuickReport
+                        && x.RecordId == quickReport.Id)
+            .ExecuteDeleteAsync(ct);
     }
 
     private async Task DeleteAttachmentsAsync(Request req, CancellationToken ct)

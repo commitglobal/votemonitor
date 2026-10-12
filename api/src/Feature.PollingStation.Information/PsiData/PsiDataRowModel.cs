@@ -1,3 +1,5 @@
+using Vote.Monitor.Core.Helpers;
+
 namespace Feature.PollingStation.Information.PsiData;
 
 public record PsiDataRowModel
@@ -13,6 +15,10 @@ public record PsiDataRowModel
     public string Address { get; init; } = string.Empty;
     public Guid MonitoringNgoId { get; init; }
     public string NgoName { get; init; } = string.Empty;
+    public Guid MonitoringObserverId { get; init; }
+    public string ObserverName { get; init; } = string.Empty;
+    public string ObserverEmail { get; init; } = string.Empty;
+    public string ObserverPhoneNumber { get; init; } = string.Empty;
     public DateTime? ArrivalTime { get; init; }
     public DateTime? DepartureTime { get; init; }
     public double MinutesMonitoring { get; init; }
@@ -20,4 +26,11 @@ public record PsiDataRowModel
     public int NumberOfFlaggedAnswers { get; init; }
     public bool IsCompleted { get; init; }
     public DateTime LastUpdatedAt { get; init; }
+
+    public PsiDataRowModel WithMaskedObserverData() => this with
+    {
+        ObserverName = PersonalDataMasker.MaskName(ObserverName),
+        ObserverEmail = PersonalDataMasker.MaskEmail(ObserverEmail),
+        ObserverPhoneNumber = PersonalDataMasker.MaskPhoneNumber(ObserverPhoneNumber)
+    };
 }

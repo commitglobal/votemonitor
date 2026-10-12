@@ -4,5 +4,5 @@ namespace Vote.Monitor.Core.Models;
 
 public class BaseFilterConditionsSortPaginatedRequest : BaseSortPaginatedBodyRequest
 {
-    public FilterRule? FilterConditions { get; set; }
+    public FilterRule? Filter { get; set; }
 }

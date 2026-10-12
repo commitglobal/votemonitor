@@ -6,6 +6,8 @@ public sealed class ListMonitoringNgosSpecification : SingleResultSpecification<
 {
     public ListMonitoringNgosSpecification(Guid electionRoundId)
     {
+        Query.AsNoTracking();
+
         Query.Where(x => x.ElectionRoundId == electionRoundId);
 
         Query.Select(x => new MonitoringNgoModel

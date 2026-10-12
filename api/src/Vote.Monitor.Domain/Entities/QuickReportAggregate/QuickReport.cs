@@ -56,6 +56,14 @@ public class QuickReport :  IAggregateRoot
         FollowUpStatus = followUpStatus;
     }
 
+    public void MoveToPollingStation(PollingStation pollingStation)
+    {
+        QuickReportLocationType = QuickReportLocationType.VisitedPollingStation;
+        PollingStationDetails = null;
+        PollingStation = pollingStation;
+        PollingStationId = pollingStation.Id;
+    }
+
     private QuickReport(Guid id,
         Guid electionRoundId,
         Guid monitoringObserverId,

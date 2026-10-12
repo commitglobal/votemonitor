@@ -24,7 +24,7 @@ public class Endpoint(IAuthorizationService authorizationService, IReadRepositor
         }
         
         var specification =
-            new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
+            new GetFormSubmissionReadOnlySpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (formSubmission is null)

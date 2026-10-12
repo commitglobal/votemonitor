@@ -40,7 +40,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin();
+        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin() || currentUserRoleProvider.IsNgoStaff();
         var isObserver = currentUserRoleProvider.IsObserver();
 
         if (isObserver)
@@ -226,7 +226,7 @@ public class Endpoint(
             ThrowError("Observer id is empty");
         }
 
-        var ngo = await context.MonitoringNgos
+        var ngo = await context.MonitoringNgos.AsNoTracking()
             .Where(x => x.MonitoringObservers.Any(mo => mo.ObserverId == observerId))
             .Select(x => new { x.NgoId })
             .FirstOrDefaultAsync(ct);

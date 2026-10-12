@@ -30,7 +30,7 @@ public class Endpoint(
     private async Task<Results<Ok<ElectionRoundModel>, NotFound>> GetElectionRoundAsPlatformAdmin(Request req,
         CancellationToken ct)
     {
-        var electionRound = await context.ElectionRounds.Where(x => x.Id == req.Id)
+        var electionRound = await context.ElectionRounds.AsNoTracking().Where(x => x.Id == req.Id)
             .Include(x => x.Country)
             .Include(x=>x.MonitoringNgos)
             .ThenInclude(x=>x.Ngo)
@@ -73,7 +73,7 @@ public class Endpoint(
     {
         var ngoId = userProvider.GetNgoId()!.Value;
 
-        var electionRound = await context.MonitoringNgos
+        var electionRound = await context.MonitoringNgos.AsNoTracking()
             .Include(x => x.ElectionRound)
             .ThenInclude(x => x.MonitoringNgoForCitizenReporting)
             .Where(x => x.NgoId == ngoId)

@@ -20,7 +20,7 @@ public class Endpoint(VoteMonitorContext context) : EndpointWithoutRequest<Respo
 
     public override async Task<Response> ExecuteAsync(CancellationToken ct)
     {
-        var electionRounds = await context.ElectionRounds
+        var electionRounds = await context.ElectionRounds.AsNoTracking()
             .Include(x => x.Country)
             .Where(x => x.CitizenReportingEnabled && x.Status == ElectionRoundStatus.Started)
             .Select(x => new ElectionRoundModel

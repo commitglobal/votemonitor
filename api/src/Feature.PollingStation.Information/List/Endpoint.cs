@@ -1,4 +1,5 @@
-﻿using Feature.PollingStation.Information.Specifications;
+﻿using Authorization.Policies;
+using Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.List;
@@ -10,6 +11,8 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
         Get("/api/election-rounds/{electionRoundId}/information/");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information"));
+
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)

@@ -1,4 +1,5 @@
 ﻿using Module.Answers.Models;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Feature.Form.Submissions.GetByIdV2;
@@ -22,13 +23,13 @@ public class Endpoint(
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var sql = $"""
                   WITH submissions AS
                            (SELECT psi."Id" AS "SubmissionId",
                                    'PSI' AS "FormType",
@@ -48,7 +49,8 @@ public class Endpoint(
                                    psi."ArrivalTime",
                                    psi."DepartureTime",
                                    psi."Breaks",
-                                   psi."IsCompleted"
+                                   psi."IsCompleted",
+                                   '[]'::jsonb AS "PollingStationCorrections"
                             FROM "PollingStationInformation" psi
                                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
                                      INNER JOIN "PollingStationInformationForms" psif on psi."ElectionRoundId" = psif."ElectionRoundId"
@@ -91,7 +93,8 @@ public class Endpoint(
                                 NULL AS "ArrivalTime",
                                 NULL AS "DepartureTime",
                                 '[]'::jsonb AS "Breaks",
-                                fs."IsCompleted"
+                                fs."IsCompleted",
+                                {PollingStationCorrectionsSql.ForRecord(CorrectableRecordType.FormSubmission, "fs.\"Id\"")} AS "PollingStationCorrections"
                             FROM "FormSubmissions" fs
                                      INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = FS."MonitoringObserverId"
                                      INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -126,7 +129,8 @@ public class Endpoint(
                          s."ArrivalTime",
                          s."DepartureTime",
                          s."Breaks",
-                         s."IsCompleted"
+                         s."IsCompleted",
+                         s."PollingStationCorrections"
                   FROM submissions s
                            INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
                            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = s."MonitoringObserverId"

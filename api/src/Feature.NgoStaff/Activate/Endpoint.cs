@@ -1,4 +1,5 @@
-﻿using Feature.NgoStaff.Specifications;
+using Authorization.Policies;
+using Feature.NgoStaff.Specifications;
 using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Core.Extensions;
 
@@ -15,6 +16,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("ngo-staff"));
         Summary(x => { x.Description = "Activates account of a ngo staff"; });
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(Request req,

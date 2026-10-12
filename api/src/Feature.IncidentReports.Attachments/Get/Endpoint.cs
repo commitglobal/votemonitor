@@ -25,7 +25,7 @@ public class Endpoint(
     {
         var attachment =
             await repository.FirstOrDefaultAsync(
-                new GetAttachmentByIdSpecification(req.ElectionRoundId, req.IncidentReportId, req.Id), ct);
+                new GetAttachmentByIdReadOnlySpecification(req.ElectionRoundId, req.IncidentReportId, req.Id), ct);
         if (attachment is null)
         {
             return TypedResults.NotFound();

@@ -170,6 +170,14 @@ public class IncidentReport :  IAggregateRoot
         FollowUpStatus = followUpStatus;
     }
 
+    public void MoveToPollingStation(PollingStation pollingStation)
+    {
+        LocationType = IncidentReportLocationType.PollingStation;
+        LocationDescription = null;
+        PollingStation = pollingStation;
+        PollingStationId = pollingStation.Id;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
     private IncidentReport()
     {

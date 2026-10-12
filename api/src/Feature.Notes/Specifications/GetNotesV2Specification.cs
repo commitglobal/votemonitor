@@ -6,6 +6,8 @@ public sealed class GetNotesV2Specification : Specification<NoteAggregate>
 {
     public GetNotesV2Specification(Guid electionRoundId, Guid observerId, Guid submissionId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x =>        
                         x.MonitoringObserver.ObserverId == observerId

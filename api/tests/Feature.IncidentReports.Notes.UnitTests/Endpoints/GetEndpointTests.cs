@@ -21,7 +21,7 @@ public class GetEndpointTests
         // Arrange
         var fakeNote = new IncidentReportNoteFaker().Generate();
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdReadOnlySpecification>())
             .Returns(fakeNote);
 
         // Act
@@ -42,7 +42,7 @@ public class GetEndpointTests
     public async Task ShouldReturnNotFound_WhenNotExists()
     {
         // Arrange
-        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdReadOnlySpecification>())
             .ReturnsNull();
 
         // Act

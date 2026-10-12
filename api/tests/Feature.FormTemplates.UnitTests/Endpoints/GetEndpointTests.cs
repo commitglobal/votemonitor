@@ -56,8 +56,8 @@ public class GetEndpointTests
             .BeOfType<Results<Ok<FormTemplateFullModel>, NotFound>>()
             .Which.Result.Should().BeOfType<NotFound>();
 
-        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<GetFormTemplateSpecification>());
-        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<GetFormTemplateSpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().ListAsync(Arg.Any<GetFormTemplateReadOnlySpecification>());
+        await _repository.DidNotReceiveWithAnyArgs().CountAsync(Arg.Any<GetFormTemplateReadOnlySpecification>());
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class GetEndpointTests
         _userRoleProvider.IsPlatformAdmin().Returns(true);
 
         _repository
-            .SingleOrDefaultAsync(Arg.Any<GetFormTemplateSpecification>())
+            .SingleOrDefaultAsync(Arg.Any<GetFormTemplateReadOnlySpecification>())
             .Returns(formTemplate);
 
         // Act

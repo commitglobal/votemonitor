@@ -1,4 +1,5 @@
-﻿using Module.Answers.Models;
+﻿using System.Text.Json.Serialization;
+using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -6,10 +7,25 @@ namespace Module.Answers.Aggregators;
 
 public record TextResponse(Guid SubmissionId, Guid ResponderId, string Value);
 
-public class TextAnswerAggregate(TextQuestion question, int displayOrder) : BaseAnswerAggregate(question, displayOrder)
+public class TextAnswerAggregate : BaseAnswerAggregate
 {
-    private readonly List<TextResponse> _answers = new();
-    public IReadOnlyList<TextResponse> Answers => _answers.AsReadOnly();
+    public TextAnswerAggregate(TextQuestion question, int displayOrder) : base(question, displayOrder)
+    {
+    }
+
+    [JsonConstructor]
+    private TextAnswerAggregate()
+    {
+    }
+
+    private List<TextResponse> _answers = new();
+
+    [JsonInclude]
+    public IReadOnlyList<TextResponse> Answers
+    {
+        get => _answers.AsReadOnly();
+        private set => _answers = value.ToList();
+    }
 
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {

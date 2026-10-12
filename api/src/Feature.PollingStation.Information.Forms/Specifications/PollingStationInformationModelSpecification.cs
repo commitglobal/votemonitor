@@ -6,6 +6,8 @@ public sealed class PollingStationInformationModelSpecification : SingleResultSp
 {
     public PollingStationInformationModelSpecification(Guid electionRoundId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.ElectionRoundId == electionRoundId);
 

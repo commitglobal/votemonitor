@@ -17,7 +17,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await context.ElectionRounds
+        var electionRound = await context.ElectionRounds.AsNoTracking()
             .Where(x => x.Id == req.ElectionRoundId)
             .Select(x => new { x.LocationsVersion, x.Id })
             .FirstOrDefaultAsync(ct);

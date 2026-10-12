@@ -1,3 +1,4 @@
+using Feature.UserPreferences.Specifications;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Repository;
 
@@ -13,7 +14,7 @@ public class Endpoint(IReadRepository<ApplicationUser> repository)
 
     public override async Task<Results<Ok<UserModel>, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var user = await repository.GetByIdAsync(req.Id, ct);
+        var user = await repository.FirstOrDefaultAsync(new GetUserByIdReadOnlySpecification(req.Id), ct);
         if (user is null)
         {
             return TypedResults.NotFound("User not found");

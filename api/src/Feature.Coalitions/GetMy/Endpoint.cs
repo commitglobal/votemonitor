@@ -22,13 +22,13 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
     public override async Task<Results<Ok<CoalitionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var result =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!result.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var coalition = await context.Coalitions
+        var coalition = await context.Coalitions.AsNoTracking()
             .Include(x => x.Memberships)
             .ThenInclude(x => x.MonitoringNgo)
             .ThenInclude(x => x.Ngo)

@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
 
     public override async Task<Results<Ok<PollingStationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var pollingStation = await _repository.FirstOrDefaultAsync(new GetPollingStationByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        var pollingStation = await _repository.FirstOrDefaultAsync(new GetPollingStationByIdReadOnlySpecification(req.ElectionRoundId, req.Id), ct);
 
         if (pollingStation is null)
         {

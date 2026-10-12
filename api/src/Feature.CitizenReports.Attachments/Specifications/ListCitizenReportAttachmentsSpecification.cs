@@ -6,6 +6,8 @@ public sealed class ListCitizenReportAttachmentsSpecification : Specification<Ci
 {
     public ListCitizenReportAttachmentsSpecification(Guid electionRoundId, Guid citizenReportId, Guid formId)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.FormId == formId

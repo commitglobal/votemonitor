@@ -40,7 +40,7 @@ public class Endpoint(
         var quickReports = await quickReportRepository.ListAsync(new ListObserverQuickReportsSpecification(req.ElectionRoundId, req.ObserverId), ct);
         var quickReportIds = quickReports.Select(x => x.Id).ToArray();
 
-        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsSpecification(req.ElectionRoundId, quickReportIds), ct);
+        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsReadOnlySpecification(req.ElectionRoundId, quickReportIds), ct);
 
         var tasks = quickReportAttachments
             .Select(async attachment =>

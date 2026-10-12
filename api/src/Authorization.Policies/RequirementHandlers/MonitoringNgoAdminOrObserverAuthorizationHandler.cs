@@ -13,7 +13,8 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         MonitoringNgoAdminOrObserverRequirement requirement)
     {
-        if (!currentUserRoleProvider.IsObserver() && !currentUserRoleProvider.IsNgoAdmin())
+        if (!currentUserRoleProvider.IsObserver() && !currentUserRoleProvider.IsNgoAdmin()
+            && !currentUserRoleProvider.IsNgoStaff())
         {
             context.Fail();
             return;
@@ -41,7 +42,7 @@ internal class MonitoringNgoAdminOrObserverAuthorizationHandler(
             }
         }
 
-        if (currentUserRoleProvider.IsNgoAdmin())
+        if (currentUserRoleProvider.IsNgoAdmin() || currentUserRoleProvider.IsNgoStaff())
         {
             var ngoId = currentUserProvider.GetNgoId();
             var getMonitoringNgoSpecification =

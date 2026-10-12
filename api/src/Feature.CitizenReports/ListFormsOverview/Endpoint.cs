@@ -19,7 +19,7 @@ public class Endpoint(VoteMonitorContext context, IAuthorizationService authoriz
     {
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,
-                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+                new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -27,6 +27,7 @@ public class Endpoint(VoteMonitorContext context, IAuthorizationService authoriz
 
         var aggregatedFormOverviews = await context
             .CitizenReports
+            .AsNoTracking()
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRound.CitizenReportingEnabled
                         && x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == req.NgoId)

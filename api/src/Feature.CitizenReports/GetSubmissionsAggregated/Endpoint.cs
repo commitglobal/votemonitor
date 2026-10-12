@@ -28,7 +28,7 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(CitizenReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();

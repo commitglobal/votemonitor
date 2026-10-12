@@ -24,7 +24,7 @@ public class Endpoint(
 
     public override async Task<Results<Ok<CitizenGuideModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var requirement = new CitizenReportingNgoAdminRequirement(req.ElectionRoundId);
+        var requirement = new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {

@@ -8,6 +8,8 @@ public sealed class GetPollingStationInformationForNgoSpecification : Specificat
 {
     public GetPollingStationInformationForNgoSpecification(List.Request request)
     {
+        Query.AsNoTracking();
+
         Query.Where(x => x.ElectionRoundId == request.ElectionRoundId 
                          && x.MonitoringObserver.MonitoringNgoId == request.NgoId)
             .ApplyOrdering(request)

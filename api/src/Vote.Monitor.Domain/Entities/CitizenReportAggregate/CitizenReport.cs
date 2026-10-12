@@ -80,6 +80,12 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         FollowUpStatus = followUpStatus;
     }
 
+    public void MoveToLocation(Location location)
+    {
+        Location = location;
+        LocationId = location.Id;
+    }
+
     public void ClearAnswers()
     {
         Answers = [];

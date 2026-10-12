@@ -18,7 +18,7 @@ public class Endpoint(IReadRepository<CitizenReportNoteAggregate> repository)
         Request req, CancellationToken ct)
     {
         var note = await repository.FirstOrDefaultAsync(
-            new GetNoteByIdSpecification(req.ElectionRoundId, req.CitizenReportId, req.Id), ct);
+            new GetNoteByIdReadOnlySpecification(req.ElectionRoundId, req.CitizenReportId, req.Id), ct);
         if (note is null)
         {
             return TypedResults.NotFound();

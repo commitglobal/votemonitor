@@ -20,14 +20,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
         var compiler = new FilterSqlCompiler(SubmissionFilterFields.All);
-        var filter = compiler.Build(req.FilterConditions);
+        var filter = compiler.Build(req.Filter);
 
         var parameters = new DynamicParameters();
         parameters.Add("electionRoundId", req.ElectionRoundId);
@@ -145,6 +145,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return $@"""NumberOfMediaFiles"" {sortOrder}";
         }
 
-        return "FormCode ASC";
+        return @"""FormCode"" ASC";
     }
 }

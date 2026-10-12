@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.QuickReports.Get;
@@ -36,6 +37,9 @@ public record QuickReportDetailedModel
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; init; }
     public QuickReportAttachmentModel[] Attachments { get; init; }
+
+    /// <summary>Moves of this report to another polling station by a platform admin, oldest first. NGO-side only.</summary>
+    public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
 
     public static QuickReportDetailedModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
     {

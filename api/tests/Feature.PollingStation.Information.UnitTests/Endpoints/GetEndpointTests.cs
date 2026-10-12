@@ -21,7 +21,7 @@ public class GetEndpointTests
         var pollingStationInformation = new PollingStationInformationFaker().Generate();
 
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationReadOnlySpecification>())
             .Returns(pollingStationInformation);
 
         // Act
@@ -47,7 +47,7 @@ public class GetEndpointTests
     {
         // Arrange
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationReadOnlySpecification>())
             .ReturnsNull();
 
         // Act

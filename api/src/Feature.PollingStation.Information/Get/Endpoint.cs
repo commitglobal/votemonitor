@@ -1,4 +1,5 @@
-﻿using Feature.PollingStation.Information.Specifications;
+﻿using Authorization.Policies;
+using Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.Get;
@@ -13,11 +14,13 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
         Summary(s => {
             s.Summary = "Gets polling station information submitted for a polling station";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification = new GetPollingStationInformationReadOnlySpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (pollingStationInformation is null)

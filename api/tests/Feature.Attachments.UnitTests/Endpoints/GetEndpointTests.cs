@@ -49,7 +49,7 @@ public class GetEndpointTests
             .Returns(AuthorizationResult.Success());
 
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdReadOnlySpecification>())
             .Returns(fakePollingStationAttachment);
 
         // Act
@@ -113,7 +113,7 @@ public class GetEndpointTests
             .Returns(fakeMonitoringObserverId);
 
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetAttachmentByIdReadOnlySpecification>())
             .ReturnsNull();
 
         // Act

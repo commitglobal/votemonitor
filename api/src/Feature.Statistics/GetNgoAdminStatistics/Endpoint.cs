@@ -1,4 +1,6 @@
-﻿using Authorization.Policies;
+using Microsoft.AspNetCore.Authorization;
+using Authorization.Policies.Requirements;
+using Authorization.Policies;
 using Dapper;
 using Feature.Statistics.GetNgoAdminStatistics.Models;
 using Feature.Statistics.Options;
@@ -9,9 +11,10 @@ using ZiggyCreatures.Caching.Fusion;
 namespace Feature.Statistics.GetNgoAdminStatistics;
 
 public class Endpoint(
+    IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFusionCache cache,
-    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Response>
+    IOptions<StatisticsFeatureOptions> options) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     private readonly StatisticsFeatureOptions _options = options.Value;
 
@@ -24,15 +27,24 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminOrStaff);
     }
 
-    public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var cacheKey = $"statistics-{req.ElectionRoundId}-{req.NgoId}-{req.DataSource}";
 
-        return await cache.GetOrSetAsync(
+        var statistics = await cache.GetOrSetAsync(
             cacheKey,
             async _ => await GetNgoStatistics(req, ct),
             cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
             token: ct);
+
+        return TypedResults.Ok(statistics);
     }
 
     private async Task<Response> GetNgoStatistics(Request req, CancellationToken ct)

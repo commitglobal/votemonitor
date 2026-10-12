@@ -10,11 +10,13 @@ using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
+using Vote.Monitor.Domain.Entities.NgoStaffAggregate;
 
 namespace Feature.Auth.Services;
 
 internal class TokenService(UserManager<ApplicationUser> userManager,
     IReadRepository<NgoAdmin> ngoAdminRepository,
+    IReadRepository<NgoStaff> ngoStaffRepository,
     IOptions<JWTConfig> jwtOptions,
     ITimeProvider timeProvider,
     ILogger<TokenService> logger) : ITokenService
@@ -89,6 +91,12 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
         {
             var ngoAdmin = await ngoAdminRepository.GetByIdAsync(user.Id);
             claims.Add(new Claim(ApplicationClaimTypes.NgoId, ngoAdmin?.NgoId.ToString() ?? string.Empty));
+        }
+
+        if (user.Role == UserRole.NgoStaff)
+        {
+            var ngoStaff = await ngoStaffRepository.GetByIdAsync(user.Id);
+            claims.Add(new Claim(ApplicationClaimTypes.NgoId, ngoStaff?.NgoId.ToString() ?? string.Empty));
         }
         return claims;
     }

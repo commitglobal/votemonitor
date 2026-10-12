@@ -3,7 +3,7 @@ using Feature.NgoStaff.Specifications;
 
 namespace Feature.NgoStaff.Get;
 
-public class Endpoint(IRepository<NgoStaffAggregate> repository)
+public class Endpoint(IReadRepository<NgoStaffAggregate> repository)
     : Endpoint<Request, Results<Ok<NgoStaffModel>, NotFound>>
 {
     public override void Configure()
@@ -16,7 +16,7 @@ public class Endpoint(IRepository<NgoStaffAggregate> repository)
 
     public override async Task<Results<Ok<NgoStaffModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetNgoStaffByIdSpecification(req.NgoId, req.Id);
+        var specification = new GetNgoStaffByIdReadOnlySpecification(req.NgoId, req.Id);
         var ngoAdmin = await repository.SingleOrDefaultAsync(specification, ct);
 
         if (ngoAdmin is null)

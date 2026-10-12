@@ -1,4 +1,6 @@
-﻿using Authorization.Policies;
+using Microsoft.AspNetCore.Authorization;
+using Authorization.Policies.Requirements;
+using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -6,8 +8,10 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.QuickReports.List;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, PagedResponse<QuickReportOverviewModel>>
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, Results<Ok<PagedResponse<QuickReportOverviewModel>>, NotFound>>
 {
     public override void Configure()
     {
@@ -21,8 +25,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Policies(PolicyNames.NgoAdminOrStaff);
     }
 
-    public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<QuickReportOverviewModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
         SELECT
             COUNT(QR."Id") as "TotalNumberOfRows"
@@ -248,7 +259,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             entries = multi.Read<QuickReportOverviewModel>().ToList();
         }
 
-        return new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return TypedResults.Ok(new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)

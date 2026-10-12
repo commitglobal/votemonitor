@@ -1,4 +1,5 @@
-﻿using Feature.PollingStation.Information.Services;
+﻿using Authorization.Policies;
+using Feature.PollingStation.Information.Services;
 using Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
@@ -15,6 +16,8 @@ public class Endpoint(IRepository<PollingStationInformation> repository, IRelate
         {
             s.Summary = "Deletes polling station information submitted for a polling station";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<NoContent, BadRequest, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

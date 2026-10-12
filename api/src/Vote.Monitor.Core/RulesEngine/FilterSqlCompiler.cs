@@ -8,16 +8,32 @@ public sealed class FilterSqlCompiler
 {
     private readonly IReadOnlyDictionary<string, FilterField> _fields;
     private readonly Func<AnswerRule, FilterSqlCompiler, string>? _compileAnswer;
+    private readonly Func<string, string>? _parameterPrefixer;
     private DynamicParameters _parameters = new();
     private int _parameterIndex;
 
+    /// <param name="parameterPrefixer">
+    /// Writes the reference to a parameter by name. Defaults to <c>@name</c> for Dapper;
+    /// use <see cref="FunctionParameter"/> for a filter run inside a PL/pgSQL function.
+    /// </param>
     public FilterSqlCompiler(
         IReadOnlyDictionary<string, FilterField> fields,
-        Func<AnswerRule, FilterSqlCompiler, string>? compileAnswer = null)
+        Func<AnswerRule, FilterSqlCompiler, string>? compileAnswer = null,
+        Func<string, string>? parameterPrefixer = null)
     {
         _fields = fields;
         _compileAnswer = compileAnswer;
+        _parameterPrefixer = parameterPrefixer;
     }
+
+    /// <summary>
+    /// References a parameter as a value of the jsonb passed as $1 to a PL/pgSQL function that runs the filter with
+    /// <c>EXECUTE ... USING filterParameters</c>, e.g. <c>($1 ->> 'filter_0')::timestamptz</c>.
+    /// The values are passed with <see cref="CompiledFilterExtensions.ToJsonParameters"/>.
+    /// </summary>
+    public static string FunctionParameter(string name) => $"($1 ->> '{name}')";
+
+    private string Reference(string name) => _parameterPrefixer?.Invoke(name) ?? $"@{name}";
 
     public CompiledFilter Build(FilterRule? rule)
     {
@@ -222,7 +238,7 @@ public sealed class FilterSqlCompiler
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, $"%{escaped}%");
 
-        return $"{column} {(negate ? "NOT LIKE" : "LIKE")} @{name} ESCAPE '\\'";
+        return $"{column} {(negate ? "NOT LIKE" : "LIKE")} {Reference(name)} ESCAPE '\\'";
     }
 
     private static string CompileEmpty(FilterField field, bool isEmpty)
@@ -251,21 +267,21 @@ public sealed class FilterSqlCompiler
         _parameters.Add(name, converted);
 
         // SqlType comes only from server-side field configuration.
-        return $"@{name}::{field.SqlType}";
+        return $"{Reference(name)}::{field.SqlType}";
     }
     
     private string AddParameter(Guid value)
     {
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, value);
-        return $"@{name}::uuid";
+        return $"{Reference(name)}::uuid";
     }
     
     private string AddParameter(string value)
     {
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, value);
-        return $"@{name}::text";
+        return $"{Reference(name)}::text";
     }
     
     private string AddParameter(JsonElement? value)
@@ -280,7 +296,7 @@ public sealed class FilterSqlCompiler
             _parameters.Add(name, JsonSerializer.Serialize(value));
         }
         
-        return $"@{name}::jsonb";
+        return $"{Reference(name)}::jsonb";
     }
     
     private string AddParameter(List<JsonElement>? values)
@@ -295,7 +311,7 @@ public sealed class FilterSqlCompiler
             _parameters.Add(name, JsonSerializer.Serialize(values));
         }
         
-        return $"@{name}::jsonb";
+        return $"{Reference(name)}::jsonb";
     }
 
     private static JsonElement RequireValue(JsonElement? value)
@@ -312,13 +328,13 @@ public sealed class FilterSqlCompiler
     {
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, convert(value));
-        return $"@{name}::{postgresType}";
+        return $"{Reference(name)}::{postgresType}";
     }
 
     public string Parameter(Guid value)
     {
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, value);
-        return $"@{name}::uuid";
+        return $"{Reference(name)}::uuid";
     }
 }

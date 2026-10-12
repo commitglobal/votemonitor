@@ -28,7 +28,7 @@ public class Endpoint(
     public override async Task<Results<Ok<List<FormSlimModel>>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
+        var requirement = new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {

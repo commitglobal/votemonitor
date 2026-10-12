@@ -6,6 +6,8 @@ public sealed class ListNgoStaffSpecification : Specification<NgoStaffAggregate>
 {
     public ListNgoStaffSpecification(List.Request request)
     {
+        Query.AsNoTracking();
+
         Query
             .Where(x => x.NgoId == request.NgoId)
             .Include(x => x.ApplicationUser)

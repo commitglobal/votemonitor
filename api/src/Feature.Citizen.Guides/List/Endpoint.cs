@@ -24,10 +24,10 @@ public class Endpoint(IAuthorizationService authorizationService,
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin();
+        var isNgoAdmin = currentUserRoleProvider.IsNgoAdmin() || currentUserRoleProvider.IsNgoStaff();
         if (isNgoAdmin)
         {
-            var requirement = new CitizenReportingNgoAdminRequirement(req.ElectionRoundId);
+            var requirement = new CitizenReportingNgoAdminOrStaffRequirement(req.ElectionRoundId);
             var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
             if (!authorizationResult.Succeeded)
             {

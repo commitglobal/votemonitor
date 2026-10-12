@@ -40,4 +40,7 @@ public class Response
     public BaseAnswerModel[] Answers { get; init; } = [];
     public NoteModel[] Notes { get; init; } = [];
     public AttachmentModel[] Attachments { get; init; } = [];
+
+    /// <summary>Moves of this report to another polling station by a platform admin, oldest first.</summary>
+    public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
 }

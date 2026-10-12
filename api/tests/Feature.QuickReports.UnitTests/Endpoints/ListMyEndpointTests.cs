@@ -60,7 +60,7 @@ public class ListMyEndpointTests
         List<QuickReportAttachment> attachments = [.. quickReport1Attachments, .. quickReport2Attachments];
 
         _quickReportAttachmentRepository
-            .ListAsync(Arg.Any<ListQuickReportAttachmentsSpecification>())
+            .ListAsync(Arg.Any<ListQuickReportAttachmentsReadOnlySpecification>())
             .Returns(attachments);
 
         // Act
@@ -152,7 +152,7 @@ public class ListMyEndpointTests
         List<QuickReportAttachment> quickReportAttachments = [quickReportAttachment1, quickReportAttachment2];
 
         _quickReportAttachmentRepository
-            .ListAsync(Arg.Any<ListQuickReportAttachmentsSpecification>())
+            .ListAsync(Arg.Any<ListQuickReportAttachmentsReadOnlySpecification>())
             .Returns(quickReportAttachments);
 
         // Act
@@ -188,7 +188,7 @@ public class ListMyEndpointTests
             .Returns([]);
 
         _quickReportAttachmentRepository
-            .ListAsync(Arg.Any<ListQuickReportAttachmentsSpecification>(), CancellationToken.None)
+            .ListAsync(Arg.Any<ListQuickReportAttachmentsReadOnlySpecification>(), CancellationToken.None)
             .Returns([]);
 
         // Act

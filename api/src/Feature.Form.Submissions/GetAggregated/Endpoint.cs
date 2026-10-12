@@ -31,7 +31,7 @@ public class Endpoint(
         CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -56,6 +56,7 @@ public class Endpoint(
 
         var psiForm = await context
             .PollingStationInformationForms
+            .AsNoTracking()
             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
             .FirstOrDefaultAsync(ct);
 
@@ -178,12 +179,13 @@ public class Endpoint(
                     : attachment;
             })
         );
-
+        
+        formSubmissionsAggregate.WithNotes(notes);
+        formSubmissionsAggregate.WithAttachments(attachments.ToList());
+        
         return TypedResults.Ok(new Response
         {
             SubmissionsAggregate = formSubmissionsAggregate,
-            Notes = notes,
-            Attachments = attachments.ToList(),
             SubmissionsFilter = new SubmissionsFilterModel
             {
                 HasAttachments = req.HasAttachments,
@@ -260,7 +262,7 @@ public class Endpoint(
 
         return TypedResults.Ok(new Response
         {
-            SubmissionsAggregate = formSubmissionsAggregate, Notes = [], Attachments = []
+            SubmissionsAggregate = formSubmissionsAggregate
         });
     }
 }

@@ -38,7 +38,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         using var multi = await dbConnection.QueryMultipleAsync(sql, PsiDataQuery.BuildArgs(req, paged: true));
 
         var totalCount = multi.Read<int>().Single();
-        var items = multi.Read<PsiDataRowModel>().ToList();
+        var items = multi.Read<PsiDataRowModel>().Select(x => x.WithMaskedObserverData()).ToList();
 
         return new PagedResponse<PsiDataRowModel>(items, totalCount, req.PageNumber, req.PageSize);
     }

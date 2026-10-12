@@ -55,7 +55,7 @@ public class GetEndpointTests
         var formSubmission = new FormSubmissionFaker().Generate();
 
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionReadOnlySpecification>())
             .Returns(formSubmission);
 
         // Act
@@ -80,7 +80,7 @@ public class GetEndpointTests
     {
         // Arrange
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionReadOnlySpecification>())
             .ReturnsNull();
 
         // Act

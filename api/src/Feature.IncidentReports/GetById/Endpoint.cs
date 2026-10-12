@@ -1,5 +1,6 @@
 ﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
 using NoteModel = Feature.IncidentReports.Models.NoteModel;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.IncidentReports.GetById;
 
@@ -21,7 +22,7 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -29,6 +30,7 @@ public class Endpoint(
 
         var incidentReport = await context
             .IncidentReports
+            .AsNoTracking()
             .Include(x => x.Form)
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
@@ -87,6 +89,9 @@ public class Endpoint(
             }).ToArray();
 
         var attachments = await Task.WhenAll(tasks);
+        var pollingStationCorrections = await context.GetPollingStationCorrectionsAsync(req.ElectionRoundId,
+            CorrectableRecordType.IncidentReport, incidentReport.Id, ct);
+
         var response = new Response
         {
             IncidentReportId = incidentReport.Id,
@@ -111,7 +116,8 @@ public class Endpoint(
             PollingStationLevel4 = incidentReport.PollingStation?.Level4,
             PollingStationLevel5 = incidentReport.PollingStation?.Level5,
             PollingStationNumber = incidentReport.PollingStation?.Number,
-            IsCompleted = incidentReport.IsCompleted
+            IsCompleted = incidentReport.IsCompleted,
+            PollingStationCorrections = pollingStationCorrections
         };
 
         return TypedResults.Ok(response);

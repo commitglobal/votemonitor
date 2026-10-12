@@ -18,7 +18,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(IncidentReportsAggregateFilter req, CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -26,6 +26,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
         var aggregatedFormOverviews = await context
             .IncidentReports
+            .AsNoTracking()
             .Where(x => x.PollingStation != null && (string.IsNullOrWhiteSpace(req.Level1Filter) ||
                                                      EF.Functions.ILike(x.PollingStation.Level1, req.Level1Filter)))
             .Where(x => x.PollingStation != null && (string.IsNullOrWhiteSpace(req.Level2Filter) ||

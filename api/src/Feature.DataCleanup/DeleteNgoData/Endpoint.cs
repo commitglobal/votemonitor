@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.DataCleanup.DeleteNgoData;
 
@@ -67,6 +68,18 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request>
                                             AND m0."NgoId" = {req.NgoId} 
                                             AND m0."ElectionRoundId" = {req.ElectionRoundId}
                                           """, ct);
+
+        await context
+            .PollingStationCorrections
+            .Where(psc =>
+                psc.ElectionRoundId == req.ElectionRoundId
+                && psc.RecordType == CorrectableRecordType.QuickReport
+                && context.QuickReports.Any(qr =>
+                    qr.Id == psc.RecordId
+                    && qr.ElectionRoundId == req.ElectionRoundId
+                    && qr.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                    && qr.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId))
+            .ExecuteDeleteAsync(cancellationToken: ct);
 
         await context
             .QuickReports
