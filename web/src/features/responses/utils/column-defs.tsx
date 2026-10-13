@@ -471,12 +471,8 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
     enableGlobalFilter: true,
     cell: ({ row }) => {
       const { formName, defaultLanguage } = row.original;
-      const translatedName =
-        (formName[defaultLanguage] ??
-          Object.entries(formName).find(([code]) => code.toLowerCase() === defaultLanguage.toLowerCase())?.[1]) ??
-        Object.values(formName)[0];
 
-      return <div className='break-words'>{translatedName ?? '-'}</div>;
+      return <div className='break-words'>{formName[defaultLanguage] ?? '-'}</div>;
     },
   },
   {
