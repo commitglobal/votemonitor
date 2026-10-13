@@ -24,9 +24,16 @@ export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
 
   const {
     data: {
-      submissionsAggregate: { defaultLanguage, formCode, formType, aggregates, responders, languages },
-      attachments,
-      notes,
+      submissionsAggregate: {
+        defaultLanguage,
+        formCode,
+        formType,
+        aggregates,
+        responders,
+        languages,
+        attachments,
+        notes,
+      },
     },
   } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId, params));
 

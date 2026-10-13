@@ -118,7 +118,13 @@ export const NgoAdminActiveFilters: FC<NgoAdminActiveFiltersProps> = ({ queryPar
             const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);
 
             if (form) {
-              return <ActiveFilter key={key} filterId={filterId} value={`${form.formCode} - ${form.formName}`} />;
+              return (
+                <ActiveFilter
+                  key={key}
+                  filterId={filterId}
+                  value={`${form.formCode} - ${form.formName[form.defaultLanguage] ?? ''}`}
+                />
+              );
             }
           }
 

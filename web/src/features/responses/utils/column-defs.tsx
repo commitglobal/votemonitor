@@ -469,7 +469,11 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
+    cell: ({ row }) => {
+      const { formName, defaultLanguage } = row.original;
+
+      return <div className='break-words'>{formName[defaultLanguage] ?? '-'}</div>;
+    },
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,

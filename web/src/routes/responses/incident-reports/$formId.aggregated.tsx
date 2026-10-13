@@ -17,10 +17,17 @@ export function incidentReportsAggregatedDetailsQueryOptions(electionRoundId: st
 
       return {
         ...response.data,
-        attachments: [
-          ...response.data.attachments.map((a) => ({ ...a, submissionType: SubmissionType.IncidentReport })),
-        ],
-        notes: [...response.data.notes.map((n) => ({ ...n, submissionType: SubmissionType.IncidentReport }))],
+        submissionsAggregate: {
+          ...response.data.submissionsAggregate,
+          attachments: response.data.submissionsAggregate.attachments.map((attachment) => ({
+            ...attachment,
+            submissionType: SubmissionType.IncidentReport,
+          })),
+          notes: response.data.submissionsAggregate.notes.map((note) => ({
+            ...note,
+            submissionType: SubmissionType.IncidentReport,
+          })),
+        },
       };
     },
     enabled: !!electionRoundId,

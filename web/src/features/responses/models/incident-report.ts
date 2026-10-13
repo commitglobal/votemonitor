@@ -87,7 +87,8 @@ export interface TimestampsFilterOptions {
 export interface FormFilterOption {
   formId: string;
   formCode: string;
-  formName: string;
+  formName: TranslatedString;
+  defaultLanguage: string;
 }
 
 export interface ObserverFilterOption {

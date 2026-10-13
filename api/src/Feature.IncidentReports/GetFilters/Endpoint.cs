@@ -37,8 +37,9 @@ public class Endpoint(
                   -- =====================================================================================
                   SELECT DISTINCT
                     F."Id" AS "FormId",
-                    F."Name" ->> F."DefaultLanguage" AS "FormName",
-                    F."Code" AS "FormCode"
+                    F."Name" AS "FormName",
+                    F."Code" AS "FormCode",
+                    F."DefaultLanguage"
                   FROM "IncidentReports" IR
                   INNER JOIN "Forms" F ON F."Id" = IR."FormId"
                   INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO

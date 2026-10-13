@@ -92,7 +92,7 @@ export function AggregateCard({
             <TextAggregateContent aggregate={aggregate} responders={responders} submissionType={submissionType} />
           )}
 
-          {(notes.length > 0 || attachments.length > 0) && (
+          {(questionNotes.length > 0 || questionAttachments.length > 0) && (
             <ResponseExtraDataSection
               attachments={questionAttachments}
               notes={questionNotes}
