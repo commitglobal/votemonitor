@@ -46,6 +46,7 @@ export const SubmissionsAggregatedByFormSchema = z.object({
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
   pollingStationNumberFilter: z.string().catch('').optional(),
+  pollingStationId: z.string().catch('').optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   tagsFilter: z.array(z.string()).optional().catch([]).optional(),
   followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),

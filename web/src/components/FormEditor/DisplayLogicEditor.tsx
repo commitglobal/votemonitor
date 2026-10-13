@@ -295,6 +295,11 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
                   defaultValue={question?.optionIds ?? []}
                   onValueChange={handleOptionIdsChanged}
                   placeholder='Select options'
+                  selectionDisplay={
+                    <span className='mx-3'>
+                      {question?.optionIds?.length ?? 0} options selected
+                    </span>
+                  }
                 />
               </div>
             )}

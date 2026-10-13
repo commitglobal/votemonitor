@@ -39,9 +39,11 @@ export function MonitoringObserverQuickReportsTable({
       incidentCategory: debouncedSearch.incidentCategory,
       dataSource: DataSources.Ngo,
       monitoringObserverId: monitoringObserverId,
+      pollingStationId: debouncedSearch.pollingStationId || undefined,
       coalitionMemberId: undefined,
       searchText: searchText,
       hasAttachments: undefined,
+      tagsFilter: debouncedSearch.tagsFilter,
     };
 
     return params;
