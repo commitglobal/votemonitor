@@ -1,6 +1,9 @@
 {
 	"name": "vote-monitor-dashboard",
 	"type": "module",
+	"engines": {
+		"node": "24.x"
+	},
 	"scripts": {
 		"setup": "npx playwright install",
 		"format": "prettier src/**/*.{ts,tsx} --write",
