@@ -10,9 +10,10 @@ import { useCallback, useMemo } from 'react';
 import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
 import { useFormSubmissionsByFormColumns } from '../../store/column-visibility';
 import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
-import { FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
+import type { FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
 const routeApi = getRouteApi('/responses/');
+type FormSubmissionsByFormSearchRequest = Omit<FormSubmissionsSearchRequest, 'monitoringObserverId'>;
 
 type FormSubmissionsByFormTableProps = {
   searchText: string;
@@ -60,7 +61,7 @@ export function FormSubmissionsAggregatedByFormTable({
   );
 
   const queryParams = useMemo(() => {
-    const params: FormSubmissionsSearchRequest = {
+    const params: FormSubmissionsByFormSearchRequest = {
       dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
       searchText: searchText,
       hasFlaggedAnswers: toBoolean(search.hasFlaggedAnswers),
