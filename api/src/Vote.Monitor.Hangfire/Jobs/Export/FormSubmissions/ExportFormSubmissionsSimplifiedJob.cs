@@ -70,16 +70,8 @@ public class ExportFormSubmissionsSimplifiedJob(
 
 			foreach (var submission in submissions)
 			{
-				foreach (var attachment in submission.Attachments)
-				{
-					var result =
-						await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-
-					if (result is GetPresignedUrlResult.Ok okResult)
-					{
-						attachment.PresignedUrl = okResult.Url;
-					}
-				}
+				var presignedAttachments = await fileStorageService.PresignAsync(submission.Attachments);
+				Array.Copy(presignedAttachments, submission.Attachments, presignedAttachments.Length);
 			}
 
 			var excelFileGenerator = ExcelFileGenerator.New();

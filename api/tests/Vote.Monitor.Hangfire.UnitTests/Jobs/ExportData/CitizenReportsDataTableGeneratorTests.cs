@@ -4,7 +4,6 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
-using Vote.Monitor.Hangfire.Models;
 using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
@@ -862,12 +861,12 @@ public class CitizenReportsDataTableGeneratorTests
         ];
     }
 
-    private SubmissionNoteModel[] FakeNotesFor(Guid questionId)
+    private NoteModel[] FakeNotesFor(Guid questionId)
     {
         return
         [
-            new SubmissionNoteModel { QuestionId = questionId, Text = Note1 },
-            new SubmissionNoteModel { QuestionId = questionId, Text = Note2 },
+            new NoteModel { QuestionId = questionId, Text = Note1 },
+            new NoteModel { QuestionId = questionId, Text = Note2 },
         ];
     }
 
