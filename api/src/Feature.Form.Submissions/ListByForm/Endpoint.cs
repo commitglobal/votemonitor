@@ -276,7 +276,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             	AF."FormCode",
             	AF."FormType",
             	AF."FormName",
-            	AF."FormDefaultLanguage",
+                AF."FormDefaultLanguage" AS "DefaultLanguage",
             	COUNT(FS."SubmissionId") AS "NumberOfSubmissions",
             	COALESCE(SUM(FS."NumberOfFlaggedAnswers"), 0) AS "NumberOfFlaggedAnswers",
             	COALESCE(SUM(JSONB_ARRAY_LENGTH(FS."Attachments")), 0) AS "NumberOfMediaFiles",

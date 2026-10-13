@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Feature.IncidentReports.GetFilters;
@@ -15,7 +16,8 @@ public record SubmissionsFormFilterOption
 {
     public Guid FormId { get; init; } = Guid.Empty!;
     public string FormCode { get; init; } = null!;
-    public string FormName { get; init; } = null!;
+    public TranslatedString FormName { get; init; } = null!;
+    public string DefaultLanguage { get; init; } = null!;
 }
 
 public record SubmissionsObserverFilterOption

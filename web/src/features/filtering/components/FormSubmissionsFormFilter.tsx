@@ -15,7 +15,7 @@ export const FormSubmissionsFormFilter: FC = () => {
   const options = useMemo(() => {
     return data?.formFilterOptions.map((f) => ({
       value: f.formId,
-      label: `${f.formCode} - ${f.formName}`,
+      label: `${f.formCode} - ${f.formName[f.defaultLanguage] ?? ''}`,
     })) ??[];
   }, [data]);
 

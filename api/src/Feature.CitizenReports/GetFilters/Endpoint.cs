@@ -37,8 +37,9 @@ public class Endpoint(
                   
                   -- =====================================================================================
                   SELECT DISTINCT F."Id" AS                       "FormId",
-                                  F."Name" ->> F."DefaultLanguage" "FormName",
-                                  F."Code"                        "FormCode"
+                                  F."Name" "FormName",
+                                  F."Code" "FormCode",
+                                  F."DefaultLanguage"
                   FROM "CitizenReports" CR
                            INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
                            INNER JOIN "MonitoringNgos" MN ON ER."MonitoringNgoForCitizenReportingId" = MN."Id"

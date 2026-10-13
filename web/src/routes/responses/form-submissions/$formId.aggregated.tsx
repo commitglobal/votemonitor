@@ -29,10 +29,17 @@ export function formAggregatedDetailsQueryOptions(
 
       return {
         ...response.data,
-        attachments: [
-          ...response.data.attachments.map((a) => ({ ...a, submissionType: SubmissionType.FormSubmission })),
-        ],
-        notes: [...response.data.notes.map((n) => ({ ...n, submissionType: SubmissionType.FormSubmission }))],
+        submissionsAggregate: {
+          ...response.data.submissionsAggregate,
+          attachments: response.data.submissionsAggregate.attachments.map((attachment) => ({
+            ...attachment,
+            submissionType: SubmissionType.FormSubmission,
+          })),
+          notes: response.data.submissionsAggregate.notes.map((note) => ({
+            ...note,
+            submissionType: SubmissionType.FormSubmission,
+          })),
+        },
       };
     },
     enabled: !!electionRoundId,

@@ -32,6 +32,8 @@ export interface FormSubmissionsAggregated {
     submissionCount: number;
     totalNumberOfQuestionsAnswered: number;
     totalNumberOfFlaggedAnswers: number;
+    attachments: Attachment[];
+    notes: Note[];
     aggregates: Record<
       string,
       | NumberQuestionAggregate
@@ -42,6 +44,4 @@ export interface FormSubmissionsAggregated {
       | MultiSelectQuestionAggregate
     >;
   };
-  attachments: Attachment[];
-  notes: Note[];
 }

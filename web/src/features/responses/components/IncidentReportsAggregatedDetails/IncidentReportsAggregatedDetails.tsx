@@ -22,9 +22,7 @@ export default function IncidentReportsAggregatedDetails(): FunctionComponent {
 
   const {
     data: {
-      submissionsAggregate: { defaultLanguage, formCode, formType, aggregates, responders },
-      attachments,
-      notes,
+      submissionsAggregate: { defaultLanguage, formCode, formType, aggregates, responders, attachments, notes },
     },
   } = useSuspenseQuery(incidentReportsAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
 
