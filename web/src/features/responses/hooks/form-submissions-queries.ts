@@ -162,7 +162,14 @@ export function useFormSubmissionsByForm(
       };
       const searchParams = buildURLSearchParams(params);
 
-      const response = await authApi.get<{ aggregatedForms: FormSubmissionByForm[] }>(
+      const response = await authApi.get<{
+        aggregatedForms: Array<
+          Omit<FormSubmissionByForm, 'defaultLanguage'> & {
+            defaultLanguage?: string;
+            formDefaultLanguage?: string;
+          }
+        >;
+      }>(
         `/election-rounds/${electionRoundId}/form-submissions:byForm`,
         {
           params: searchParams,
@@ -175,6 +182,7 @@ export function useFormSubmissionsByForm(
         totalCount: response.data.aggregatedForms.length,
         items: response.data.aggregatedForms.map((submission) => ({
           ...submission,
+          defaultLanguage: submission.defaultLanguage ?? submission.formDefaultLanguage ?? '',
           id: submission.formId,
         })),
       };

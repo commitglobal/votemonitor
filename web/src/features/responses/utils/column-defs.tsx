@@ -469,7 +469,15 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
     id: 'formName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.defaultLanguage] ?? '-'}</div>,
+    cell: ({ row }) => {
+      const { formName, defaultLanguage } = row.original;
+      const translatedName =
+        (formName[defaultLanguage] ??
+          Object.entries(formName).find(([code]) => code.toLowerCase() === defaultLanguage.toLowerCase())?.[1]) ??
+        Object.values(formName)[0];
+
+      return <div className='break-words'>{translatedName ?? '-'}</div>;
+    },
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
