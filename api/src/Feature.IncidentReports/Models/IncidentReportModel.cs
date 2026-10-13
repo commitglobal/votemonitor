@@ -22,7 +22,7 @@ public class IncidentReportModel
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
 
     public NoteModel[] Notes { get; init; } = [];
-    public AttachmentModel[] Attachments { get; init; } = [];
+    public SubmissionAttachmentModel[] Attachments { get; init; } = [];
     public DateTime Timestamp { get; init; }
     public bool IsCompleted { get; init; }
 

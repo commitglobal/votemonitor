@@ -1,14 +1,12 @@
 ﻿using Module.Answers.Aggregators;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
-using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
-using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetSubmissionsAggregated;
 
 public class Response
 {
     public CitizenReportFormSubmissionsAggregate SubmissionsAggregate { get; set; }
-    public AttachmentModel[] Attachments { get; set; } = [];
+    public SubmissionAttachmentModel[] Attachments { get; set; } = [];
     public NoteModel[] Notes { get; set; } = [];
 
     public SubmissionsFilterModel SubmissionsFilter { get; set; }

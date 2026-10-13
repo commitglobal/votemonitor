@@ -1,7 +1,5 @@
 ﻿using Module.Answers.Aggregators;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
-using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
-using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 
@@ -9,8 +7,6 @@ public class Response
 {
     public SubmissionsFilterModel SubmissionsFilter { get; set; }
     public FormSubmissionsAggregate SubmissionsAggregate { get; set; }
-    public AttachmentModel[] Attachments { get; set; } = [];
-    public NoteModel[] Notes { get; set; } = [];
 
 }
 

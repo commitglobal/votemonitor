@@ -1,6 +1,3 @@
-﻿using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
-using NoteModel = Feature.IncidentReports.Models.NoteModel;
-
 namespace Feature.IncidentReports.ListMy;
 
 public class Endpoint(
@@ -69,22 +66,8 @@ public class Endpoint(
 
         foreach (var incidentReport in incidentReports)
         {
-            var tasks = incidentReport.Attachments
-                .Select(AttachmentModel.FromEntity)
-                .Select(async attachment =>
-                {
-                    var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
-                        attachment.FilePath,
-                        attachment.UploadedFileName);
-
-                    return attachment with
-                    {
-                        PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                        UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
-                    };
-                }).ToArray();
-
-            var attachments = await Task.WhenAll(tasks);
+            var attachments = await fileStorageService.PresignAsync(
+                incidentReport.Attachments.Select(AttachmentMapper.ToModel));
 
             incidentReportsModels.Add(new IncidentReportModel
             {

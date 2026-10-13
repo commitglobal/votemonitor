@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" />
-    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp">

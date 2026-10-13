@@ -1,8 +1,7 @@
 ﻿using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Module.Forms.Mappers;
-using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
-using NoteModel = Feature.CitizenReports.Models.NoteModel;
+using Feature.CitizenReports.Models;
 
 namespace Feature.CitizenReports.GetById;
 
@@ -57,22 +56,8 @@ public class Endpoint(
                 && x.Id == citizenReport.FormId)
             .FirstAsync(ct);
 
-        var tasks = citizenReport.Attachments
-            .Select(AttachmentModel.FromEntity)
-            .Select(async attachment =>
-            {
-                var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
-                    attachment.FilePath,
-                    attachment.UploadedFileName);
-
-                return attachment with
-                {
-                    PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0
-                };
-            }).ToArray();
-
-        var attachments = await Task.WhenAll(tasks);
+        var attachments = await fileStorageService.PresignAsync(
+            citizenReport.Attachments.Select(AttachmentMapper.ToModel));
         var response = new Response
         {
             CitizenReportId = citizenReport.Id,
