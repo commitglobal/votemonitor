@@ -170,15 +170,7 @@ public class Endpoint(
                 FileName = attachment.FileName,
             } ));
 
-        attachments = await Task.WhenAll(
-            attachments.Select(async attachment =>
-            {
-                var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-                return result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds)
-                    ? attachment with { PresignedUrl = url, UrlValidityInSeconds = urlValidityInSeconds }
-                    : attachment;
-            })
-        );
+        attachments = await fileStorageService.PresignAsync(attachments);
         
         formSubmissionsAggregate.WithNotes(notes);
         formSubmissionsAggregate.WithAttachments(attachments.ToList());

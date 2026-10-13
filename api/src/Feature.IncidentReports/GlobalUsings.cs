@@ -20,4 +20,5 @@ global using Vote.Monitor.Domain.Repository;
 global using Module.Forms.Mappers;
 global using IncidentReportAggregate = Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport;
 global using FormAggregate = Vote.Monitor.Domain.Entities.FormAggregate.Form;
+global using NoteModel = Feature.IncidentReports.Models.NoteModel;
 global using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;

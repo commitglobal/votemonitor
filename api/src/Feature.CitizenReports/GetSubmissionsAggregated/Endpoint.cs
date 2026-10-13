@@ -1,8 +1,7 @@
 ﻿using Feature.CitizenReports.Requests;
 using Module.Answers.Aggregators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
-using NoteModel = Feature.CitizenReports.Models.NoteModel;
+using Feature.CitizenReports.Models;
 
 namespace Feature.CitizenReports.GetSubmissionsAggregated;
 
@@ -101,24 +100,8 @@ public class Endpoint(
             formSubmissionsAggregate.AggregateAnswers(citizenReport);
         }
 
-        var tasks = citizenReports.SelectMany(x => x.Attachments).Select(AttachmentModel.FromEntity)
-            .Select(async attachment =>
-            {
-                var result =
-                    await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-                if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
-                {
-                    return attachment with
-                    {
-                        PresignedUrl = url,
-                        UrlValidityInSeconds = urlValidityInSeconds
-                    };
-                }
-
-                return attachment;
-            });
-
-        var attachments = await Task.WhenAll(tasks);
+        var attachments = await fileStorageService.PresignAsync(
+            citizenReports.SelectMany(x => x.Attachments).Select(AttachmentMapper.ToModel));
 
         return TypedResults.Ok(new Response
         {

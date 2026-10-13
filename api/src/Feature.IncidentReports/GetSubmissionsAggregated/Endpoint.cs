@@ -1,7 +1,6 @@
 ﻿using Feature.IncidentReports.Requests;
 using Module.Answers.Aggregators;
-using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
-using NoteModel = Feature.IncidentReports.Models.NoteModel;
+using CoreNoteModel = Vote.Monitor.Core.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 
@@ -110,30 +109,37 @@ public class Endpoint(
             formSubmissionsAggregate.AggregateAnswers(incidentReport);
         }
 
-        var tasks = incidentReports.SelectMany(x => x.Attachments).Select(AttachmentModel.FromEntity)
-            .Select(async attachment =>
+        var notes = incidentReports
+            .SelectMany(incidentReport => incidentReport.Notes.Select(note => new CoreNoteModel
             {
-                var result =
-                    await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-                if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
+                SubmissionId = incidentReport.Id,
+                QuestionId = note.QuestionId,
+                Text = note.Text,
+                TimeSubmitted = note.LastModifiedOn ?? note.CreatedOn,
+                MonitoringObserverId = incidentReport.MonitoringObserverId
+            }))
+            .ToList();
+
+        var attachments = await fileStorageService.PresignAsync(incidentReports
+            .SelectMany(incidentReport => incidentReport.Attachments.Select(attachment =>
+                new AggregatedSubmissionsAttachmentModel
                 {
-                    return attachment with
-                    {
-                        PresignedUrl = url,
-                        UrlValidityInSeconds = urlValidityInSeconds
-                    };
-                }
+                    SubmissionId = incidentReport.Id,
+                    QuestionId = attachment.QuestionId,
+                    TimeSubmitted = attachment.CreatedOn,
+                    MimeType = attachment.MimeType,
+                    MonitoringObserverId = incidentReport.MonitoringObserverId,
+                    FilePath = attachment.FilePath,
+                    UploadedFileName = attachment.UploadedFileName,
+                    FileName = attachment.FileName,
+                })));
 
-                return attachment;
-            });
-
-        var attachments = await Task.WhenAll(tasks);
+        formSubmissionsAggregate.WithNotes(notes);
+        formSubmissionsAggregate.WithAttachments(attachments.ToList());
 
         return TypedResults.Ok(new Response
         {
             SubmissionsAggregate = formSubmissionsAggregate,
-            Notes = incidentReports.SelectMany(x => x.Notes).Select(NoteModel.FromEntity).ToArray(),
-            Attachments = attachments,
             SubmissionsFilter = new SubmissionsFilterModel
             {
                 HasAttachments = req.HasAttachments,

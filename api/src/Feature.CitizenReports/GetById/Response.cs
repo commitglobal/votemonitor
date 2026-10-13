@@ -3,8 +3,6 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Module.Forms.Models;
-using AttachmentModel = Feature.CitizenReports.Models.AttachmentModel;
-using NoteModel = Feature.CitizenReports.Models.NoteModel;
 
 namespace Feature.CitizenReports.GetById;
 
@@ -30,5 +28,5 @@ public class Response
     public BaseQuestionModel[] Questions { get; init; } = [];
     public BaseAnswerModel[] Answers { get; init; } = [];
     public NoteModel[] Notes { get; init; } = [];
-    public AttachmentModel[] Attachments { get; init; } = [];
+    public SubmissionAttachmentModel[] Attachments { get; init; } = [];
 }

@@ -3,8 +3,6 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Module.Forms.Models;
-using AttachmentModel = Feature.IncidentReports.Models.AttachmentModel;
-using NoteModel = Feature.IncidentReports.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetById;
 
@@ -39,7 +37,7 @@ public class Response
     public BaseQuestionModel[] Questions { get; init; } = [];
     public BaseAnswerModel[] Answers { get; init; } = [];
     public NoteModel[] Notes { get; init; } = [];
-    public AttachmentModel[] Attachments { get; init; } = [];
+    public SubmissionAttachmentModel[] Attachments { get; init; } = [];
 
     /// <summary>Moves of this report to another polling station by a platform admin, oldest first.</summary>
     public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];

@@ -16,3 +16,4 @@ global using Vote.Monitor.Domain;
 global using Vote.Monitor.Domain.Repository;
 global using CitizenReportAggregate = Vote.Monitor.Domain.Entities.CitizenReportAggregate.CitizenReport;
 global using FormAggregate = Vote.Monitor.Domain.Entities.FormAggregate.Form;
+global using NoteModel = Feature.CitizenReports.Models.NoteModel;
