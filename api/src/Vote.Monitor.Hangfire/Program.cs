@@ -43,7 +43,6 @@ using Vote.Monitor.Hangfire.Jobs.Export.PollingStationInformation;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
-using Vote.Monitor.Hangfire.Models;
 using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,7 +68,7 @@ builder.Services.AddLogging(logging =>
 
 SqlMapper.AddTypeHandler(typeof(BaseQuestion[]), new JsonToObjectConverter<BaseQuestion[]>());
 SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAnswer[]>());
-SqlMapper.AddTypeHandler(typeof(SubmissionNoteModel[]), new JsonToObjectConverter<SubmissionNoteModel[]>());
+SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(SubmissionAttachmentModel[]), new JsonToObjectConverter<SubmissionAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(QuickReportAttachmentModel[]), new JsonToObjectConverter<QuickReportAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(JsonDocument), new JsonToObjectConverter<JsonDocument>());

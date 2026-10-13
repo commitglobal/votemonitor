@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Hangfire.Models;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
 
@@ -21,6 +21,6 @@ public class CitizenReportModel
     public string Level4 { get; init; } = default!;
     public string Level5 { get; init; } = default!;
     public BaseAnswer[] Answers { get; init; } = [];
-    public SubmissionNoteModel[] Notes { get; init; } = [];
+    public NoteModel[] Notes { get; init; } = [];
     public SubmissionAttachmentModel[] Attachments { get; init; } = [];
 }

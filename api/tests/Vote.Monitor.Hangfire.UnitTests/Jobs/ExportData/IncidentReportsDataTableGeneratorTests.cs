@@ -5,7 +5,6 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
 using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
-using Vote.Monitor.Hangfire.Models;
 using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
@@ -897,12 +896,12 @@ public class IncidentReportsDataTableGeneratorTests
         ];
     }
 
-    private SubmissionNoteModel[] FakeNotesFor(Guid questionId)
+    private NoteModel[] FakeNotesFor(Guid questionId)
     {
         return
         [
-            new SubmissionNoteModel { QuestionId = questionId, Text = Note1 },
-            new SubmissionNoteModel { QuestionId = questionId, Text = Note2 },
+            new NoteModel { QuestionId = questionId, Text = Note1 },
+            new NoteModel { QuestionId = questionId, Text = Note2 },
         ];
     }
 

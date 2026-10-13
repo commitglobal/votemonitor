@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Hangfire.Models;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 
@@ -34,6 +34,6 @@ public class IncidentReportModel
     public string[] Tags { get; set; } = [];
     public bool IsCompleted { get; set; } = default!;
     public BaseAnswer[] Answers { get; set; } = [];
-    public SubmissionNoteModel[] Notes { get; set; } = [];
+    public NoteModel[] Notes { get; set; } = [];
     public SubmissionAttachmentModel[] Attachments { get; set; } = [];
 }

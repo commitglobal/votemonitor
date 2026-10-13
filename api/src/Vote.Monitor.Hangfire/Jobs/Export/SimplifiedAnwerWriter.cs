@@ -1,7 +1,7 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Extensions;
-using Vote.Monitor.Hangfire.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export;
 
@@ -53,7 +53,7 @@ public class SimplifiedAnswerWriter
 
 
     public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments,
-        List<SubmissionNoteModel> notes)
+        List<NoteModel> notes)
     {
         List<object> data = [];
 

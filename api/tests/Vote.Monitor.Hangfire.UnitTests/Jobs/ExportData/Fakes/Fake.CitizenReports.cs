@@ -2,7 +2,7 @@
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
-using Vote.Monitor.Hangfire.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
@@ -16,7 +16,7 @@ public sealed partial class Fake
     ];
 
     private static CitizenReportModel GenerateCitizenReport(Guid formId, BaseAnswer[]? answers = null,
-        SubmissionNoteModel[]? notes = null, SubmissionAttachmentModel[]? attachments = null)
+        NoteModel[]? notes = null, SubmissionAttachmentModel[]? attachments = null)
     {
         var fakeCitizenReport = new Faker<CitizenReportModel>()
             .RuleFor(x => x.FormId, formId)
@@ -35,7 +35,7 @@ public sealed partial class Fake
         return fakeCitizenReport.Generate();
     }
 
-    public static CitizenReportModel CitizenReport(Guid formId, BaseAnswer answer, SubmissionNoteModel[] notes,
+    public static CitizenReportModel CitizenReport(Guid formId, BaseAnswer answer, NoteModel[] notes,
         SubmissionAttachmentModel[] attachments)
     {
         return GenerateCitizenReport(formId, [answer], notes, attachments);
@@ -47,15 +47,15 @@ public sealed partial class Fake
     }
 
     public static CitizenReportModel CitizenReport(Guid formId,
-        TextAnswer textAnswer, SubmissionNoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
-        DateAnswer dateAnswer, SubmissionNoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
-        NumberAnswer numberAnswer, SubmissionNoteModel[] numberAnswerNotes,
+        TextAnswer textAnswer, NoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
+        DateAnswer dateAnswer, NoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
+        NumberAnswer numberAnswer, NoteModel[] numberAnswerNotes,
         SubmissionAttachmentModel[] numberAnswerAttachments,
-        RatingAnswer ratingAnswer, SubmissionNoteModel[] ratingAnswerNotes,
+        RatingAnswer ratingAnswer, NoteModel[] ratingAnswerNotes,
         SubmissionAttachmentModel[] ratingAnswerAttachments,
-        SingleSelectAnswer singleSelectAnswer, SubmissionNoteModel[] singleSelectAnswerNotes,
+        SingleSelectAnswer singleSelectAnswer, NoteModel[] singleSelectAnswerNotes,
         SubmissionAttachmentModel[] singleSelectAnswerAttachments,
-        MultiSelectAnswer multiSelectAnswer, SubmissionNoteModel[] multiSelectAnswerNotes,
+        MultiSelectAnswer multiSelectAnswer, NoteModel[] multiSelectAnswerNotes,
         SubmissionAttachmentModel[] multiSelectAnswerAttachments)
     {
         BaseAnswer[] answers =
@@ -68,7 +68,7 @@ public sealed partial class Fake
             multiSelectAnswer
         ];
 
-        SubmissionNoteModel[] notes =
+        NoteModel[] notes =
         [
             .. textAnswerNotes,
             .. dateAnswerNotes,
@@ -92,19 +92,19 @@ public sealed partial class Fake
     }
 
     public static CitizenReportModel PartialCitizenReport(Guid formId,
-        (TextAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
-        (DateAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
-        (NumberAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer =
+        (TextAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
+        (DateAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
+        (NumberAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer =
             null,
-        (RatingAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? ratingAnswer =
+        (RatingAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? ratingAnswer =
             null,
-        (SingleSelectAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)?
+        (SingleSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)?
             singleSelectAnswer = null,
-        (MultiSelectAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)?
+        (MultiSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)?
             multiSelectAnswer = null)
     {
         List<BaseAnswer> answers = [];
-        List<SubmissionNoteModel> notes = [];
+        List<NoteModel> notes = [];
         List<SubmissionAttachmentModel> attachments = [];
 
         if (textAnswer != null)

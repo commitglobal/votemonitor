@@ -63,16 +63,10 @@ public class ExportIncidentReportsJob(
             var incidentReports = await GetIncidentReports(
                 electionRoundId, ngoId, filters, exportedData.FilterConditions, ct);
 
-            foreach (var attachment in incidentReports.SelectMany(
-                         incidentReportModel => incidentReportModel.Attachments))
+            foreach (var incidentReport in incidentReports)
             {
-                var result =
-                    await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
-
-                if (result is GetPresignedUrlResult.Ok okResult)
-                {
-                    attachment.PresignedUrl = okResult.Url;
-                }
+                var presignedAttachments = await fileStorageService.PresignAsync(incidentReport.Attachments);
+                Array.Copy(presignedAttachments, incidentReport.Attachments, presignedAttachments.Length);
             }
 
             var excelFileGenerator = ExcelFileGenerator.New();
