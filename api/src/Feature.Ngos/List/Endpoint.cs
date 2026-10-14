@@ -20,100 +20,72 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     public override async Task<Results<Ok<PagedResponse<NgoModel>>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var sql = """
-                  SELECT
-                    COUNT(*) AS COUNT
-                  FROM
-                    "Ngos" N
-                  WHERE
-                    (
-                        @searchText IS NULL
-                        OR N."Name" ILIKE @searchText
-                        OR N."Id"::TEXT ILIKE @searchText
-                    )
-                    AND (@status IS NULL OR N."Status" = @status);
-
-                  WITH CTE_Ngos AS (
-                      SELECT
-                          N."Id",
-                          N."Name",
-                          N."Status",
-                          (SELECT COUNT(1) 
-                           FROM "NgoAdmins" NA 
-                           WHERE NA."NgoId" = N."Id") AS "NumberOfNgoAdmins",
-                          (SELECT COUNT(1)
-                           FROM "NgoStaff" NS
-                           WHERE NS."NgoId" = N."Id") AS "NumberOfStaff",
-                          (SELECT COUNT(1) 
-                           FROM "MonitoringNgos" MN 
-                           WHERE MN."NgoId" = N."Id") AS "NumberOfMonitoredElections",
-                          (
-                            SELECT MAX(ER."StartDate") 
-                            FROM "MonitoringNgos" MN
-                            INNER JOIN "ElectionRounds" ER ON ER."Id" = MN."ElectionRoundId"
-                            WHERE MN."NgoId" = N."Id"
-                          ) AS "DateOfLastElection"
-                      FROM
-                          "Ngos" N
-                      WHERE
-                          (
-                              @searchText IS NULL
-                              OR N."Name" ILIKE @searchText
-                              OR N."Id"::TEXT ILIKE @searchText
-                          )
-                          AND (@status IS NULL OR N."Status" = @status)
-                  )
-                  SELECT * FROM CTE_Ngos
-                  ORDER BY
-                      CASE
-                          WHEN @sortExpression = 'Name ASC' THEN "Name"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'Name DESC' THEN "Name"
-                          END DESC,
-                      CASE
-                          WHEN @sortExpression = 'Status ASC' THEN "Status"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'Status DESC' THEN "Status"
-                          END DESC,
-                      CASE
-                          WHEN @sortExpression = 'NumberOfNgoAdmins ASC' THEN "NumberOfNgoAdmins"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'NumberOfNgoAdmins DESC' THEN "NumberOfNgoAdmins"
-                          END DESC,  
-                      CASE
-                          WHEN @sortExpression = 'NumberOfMonitoredElections ASC' THEN "NumberOfMonitoredElections"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'NumberOfMonitoredElections DESC' THEN "NumberOfMonitoredElections"
-                          END DESC,
-                      CASE
-                          WHEN @sortExpression = 'DateOfLastElection ASC' THEN "DateOfLastElection"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'DateOfLastElection DESC' THEN "DateOfLastElection"
-                          END DESC
-                  OFFSET @offset ROWS
-                  FETCH NEXT @pageSize ROWS ONLY;
-                  """;
-
-        var queryArgs = new
+        var builder = new SqlBuilder();
+        builder.AddParameters(new
         {
-            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
-            status = req.Status?.ToString(),
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
-            pageSize = req.PageSize,
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
-        };
+            pageSize = req.PageSize
+        });
+
+        if (!string.IsNullOrWhiteSpace(req.SearchText))
+        {
+            builder.Where(@"(N.""Name"" ILIKE @searchText OR N.""Id""::TEXT ILIKE @searchText)",
+                new { searchText = $"%{req.SearchText.Trim()}%" });
+        }
+
+        if (req.Status is not null)
+        {
+            builder.Where(@"N.""Status"" = @status", new { status = req.Status.ToString() });
+        }
+
+        builder.OrderBy(GetOrderByClause(req.SortColumnName, req.IsAscendingSorting));
+
+        var countTemplate = builder.AddTemplate(
+            """
+            SELECT COUNT(*) AS COUNT
+            FROM "Ngos" N
+            /**where**/
+            """);
+
+        var selectTemplate = builder.AddTemplate(
+            """
+            WITH CTE_Ngos AS (
+                SELECT
+                    N."Id",
+                    N."Name",
+                    N."Status",
+                    (SELECT COUNT(1)
+                     FROM "NgoAdmins" NA
+                     WHERE NA."NgoId" = N."Id") AS "NumberOfNgoAdmins",
+                    (SELECT COUNT(1)
+                     FROM "NgoStaff" NS
+                     WHERE NS."NgoId" = N."Id") AS "NumberOfStaff",
+                    (SELECT COUNT(1)
+                     FROM "MonitoringNgos" MN
+                     WHERE MN."NgoId" = N."Id") AS "NumberOfMonitoredElections",
+                    (
+                      SELECT MAX(ER."StartDate")
+                      FROM "MonitoringNgos" MN
+                      INNER JOIN "ElectionRounds" ER ON ER."Id" = MN."ElectionRoundId"
+                      WHERE MN."NgoId" = N."Id"
+                    ) AS "DateOfLastElection"
+                FROM "Ngos" N
+                /**where**/
+            )
+            SELECT * FROM CTE_Ngos
+            /**orderby**/
+            OFFSET @offset ROWS
+            FETCH NEXT @pageSize ROWS ONLY
+            """);
+
+        var sql = $"{countTemplate.RawSql};\n{selectTemplate.RawSql}";
 
         int totalRowCount;
         List<NgoModel> entries;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            using var multi = await dbConnection.QueryMultipleAsync(sql, countTemplate.Parameters);
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<NgoModel>().ToList();
         }
@@ -122,39 +94,51 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             new PagedResponse<NgoModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
-    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(NgoModel.Name)} ASC";
+            return @"""Name"" ASC";
         }
 
-        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+        if (string.Equals(sortColumnName, nameof(NgoModel.Name),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $@"""Name"" {sortOrder}";
+        }
 
         if (string.Equals(sortColumnName, nameof(NgoModel.Status),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(NgoModel.Status)} {sortOrder}";
+            return $@"""Status"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(NgoModel.NumberOfNgoAdmins),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(NgoModel.NumberOfNgoAdmins)} {sortOrder}";
+            return $@"""NumberOfNgoAdmins"" {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(NgoModel.NumberOfStaff),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $@"""NumberOfStaff"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(NgoModel.NumberOfMonitoredElections),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(NgoModel.NumberOfMonitoredElections)} {sortOrder}";
+            return $@"""NumberOfMonitoredElections"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(NgoModel.DateOfLastElection),
                 StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(NgoModel.DateOfLastElection)} {sortOrder}";
+            return $@"""DateOfLastElection"" {sortOrder}";
         }
 
-        return $"{nameof(NgoModel.Name)} DESC";
+        return @"""Name"" ASC";
     }
 }
