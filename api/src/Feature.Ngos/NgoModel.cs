@@ -9,6 +9,7 @@ public record NgoModel
     public string Name { get; init; }
     public NgoStatus Status { get; init; }
     public int NumberOfNgoAdmins { get; init; }
+    public int NumberOfStaff { get; init; }
     public int NumberOfMonitoredElections { get; init; }
 
     public MonitoredElectionsModel[] MonitoredElections { get; init; } = [];
