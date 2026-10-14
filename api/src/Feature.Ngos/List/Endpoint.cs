@@ -41,6 +41,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                           (SELECT COUNT(1) 
                            FROM "NgoAdmins" NA 
                            WHERE NA."NgoId" = N."Id") AS "NumberOfNgoAdmins",
+                          (SELECT COUNT(1)
+                           FROM "NgoStaff" NS
+                           WHERE NS."NgoId" = N."Id") AS "NumberOfStaff",
                           (SELECT COUNT(1) 
                            FROM "MonitoringNgos" MN 
                            WHERE MN."NgoId" = N."Id") AS "NumberOfMonitoredElections",

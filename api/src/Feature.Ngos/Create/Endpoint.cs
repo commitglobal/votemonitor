@@ -36,6 +36,7 @@ public class Endpoint(IRepository<NgoAggregate> repository) :
             Status = ngo.Status,
             NumberOfMonitoredElections = 0,
             NumberOfNgoAdmins = 0,
+            NumberOfStaff = 0,
             DateOfLastElection = null
         });
     }
