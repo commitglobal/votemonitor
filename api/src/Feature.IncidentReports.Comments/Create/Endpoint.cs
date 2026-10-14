@@ -15,7 +15,7 @@ public class Endpoint(
         Options(x => x.WithTags("incident-report-comments"));
         Summary(s => { s.Summary = "Creates a comment for an incident report."; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<Ok<IncidentReportCommentModel>, NotFound>> ExecuteAsync(Request req,
