@@ -660,6 +660,55 @@ public class Endpoint(
             FROM "IncidentReports" IR
                 INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
             GROUP BY 1;
+
+            ------------------------------Citizen reports answers histogram-------------------------------
+            WITH "CitizenReportSubmissions" AS (
+                SELECT CR."Answers", F."Questions", CR."LastModifiedOn" AS "LastUpdatedAt", CR."CreatedOn" AS "CreatedAt"
+                FROM "CitizenReports" CR
+                    INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
+                    INNER JOIN "Forms" F ON F."Id" = CR."FormId"
+                WHERE CR."ElectionRoundId" = @electionRoundId
+                  AND ER."MonitoringNgoForCitizenReportingId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
+            ),
+            -- answers to the form's questions, timed by the answer's own timestamps when the client sent them
+            "SubmissionAnswers" AS (
+                SELECT
+                    COALESCE(
+                        (A ->> 'LastUpdatedAt')::timestamptz,
+                        (A ->> 'CreatedAt')::timestamptz,
+                        S."LastUpdatedAt",
+                        S."CreatedAt"
+                    ) AS answered_at,
+                    -- flagged options selected in a single or multi select answer
+                    CASE
+                        WHEN A ->> '$answerType' = 'singleSelectAnswer' AND Q ->> '$questionType' = 'singleSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND O ->> 'Id' = A -> 'Selection' ->> 'OptionId')
+                        WHEN A ->> '$answerType' = 'multiSelectAnswer' AND Q ->> '$questionType' = 'multiSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND EXISTS (SELECT 1
+                                                FROM JSONB_ARRAY_ELEMENTS(A -> 'Selection') SEL
+                                                WHERE SEL ->> 'OptionId' = O ->> 'Id'))
+                        ELSE 0
+                    END AS number_of_flagged_answers
+                FROM "CitizenReportSubmissions" S
+                    CROSS JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Answers") A
+                    INNER JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Questions") Q ON Q ->> 'Id' = A ->> 'QuestionId'
+            )
+            SELECT
+                DATE_TRUNC(
+                        'hour',
+                        TIMEZONE('utc', answered_at)
+                )::timestamptz AS "Bucket",
+                COUNT(*) AS "NumberOfAnswers",
+                SUM(number_of_flagged_answers) AS "NumberOfFlaggedAnswers"
+            FROM "SubmissionAnswers"
+            GROUP BY 1
+            ORDER BY 1;
             """;
 
         var queryArgs = new
@@ -685,6 +734,7 @@ public class Endpoint(
         var quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
+        var citizenReportsAnswersHistogram = multi.Read<AnswersHistogramPoint>().ToList();
 
         return new Response
         {
@@ -730,7 +780,17 @@ public class Endpoint(
             }).ToArray(),
             QuickReportsHistogram = quickReportsHistogram.ToArray(),
             IncidentReportsHistogram = incidentReportsHistogram.ToArray(),
-            CitizenReportsHistogram = citizenReportsHistogram.ToArray()
+            CitizenReportsHistogram = citizenReportsHistogram.ToArray(),
+            CitizenReportsAnswersPerHourHistogram = citizenReportsAnswersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfAnswers
+            }).ToArray(),
+            CitizenReportsFlaggedAnswersPerHourHistogram = citizenReportsAnswersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfFlaggedAnswers
+            }).ToArray()
         };
     }
 }

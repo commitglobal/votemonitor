@@ -31,4 +31,6 @@ public class Response : CachedResponse
     public HistogramPoint[] QuickReportsHistogram { get; set; } = [];
     public HistogramPoint[] IncidentReportsHistogram { get; set; } = [];
     public HistogramPoint[] CitizenReportsHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsAnswersPerHourHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsFlaggedAnswersPerHourHistogram { get; set; } = [];
 }
