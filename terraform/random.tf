@@ -36,7 +36,6 @@ resource "aws_secretsmanager_secret_version" "jwt_signing_key" {
   secret_string = random_password.jwt_signing_key.result
 }
 
-
 # Seed admin
 resource "random_password" "seed_admin_password" {
   length  = 20
