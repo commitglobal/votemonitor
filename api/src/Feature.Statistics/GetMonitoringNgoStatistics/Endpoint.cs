@@ -662,7 +662,7 @@ public class Endpoint(
                 INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
             GROUP BY 1;
 
-            ------------------------------Citizen reports answers histogram-------------------------------
+            ------------------------------Citizen reports histogram-------------------------------
             WITH "CitizenReportSubmissions" AS (
                 SELECT CR."Answers", F."Questions", CR."CreatedOn" AS "CreatedAt"
                 FROM "CitizenReports" CR
@@ -695,15 +695,25 @@ public class Endpoint(
                 FROM "CitizenReportSubmissions" S
                     CROSS JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Answers") A
                     INNER JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Questions") Q ON Q ->> 'Id' = A ->> 'QuestionId'
+            ),
+            "CitizenReportsHistogram" AS (
+                SELECT S."CreatedAt" AS received_at, 1 AS submissions, 0 AS answers, 0 AS flagged_answers
+                FROM "CitizenReportSubmissions" S
+
+                UNION ALL
+
+                SELECT answered_at, 0, 1, number_of_flagged_answers
+                FROM "SubmissionAnswers"
             )
             SELECT
                 DATE_TRUNC(
                         'hour',
-                        TIMEZONE('utc', answered_at)
+                        TIMEZONE('utc', received_at)
                 )::timestamptz AS "Bucket",
-                COUNT(*) AS "NumberOfAnswers",
-                SUM(number_of_flagged_answers) AS "NumberOfFlaggedAnswers"
-            FROM "SubmissionAnswers"
+                SUM(submissions) AS "NumberOfSubmissions",
+                SUM(answers) AS "NumberOfAnswers",
+                SUM(flagged_answers) AS "NumberOfFlaggedAnswers"
+            FROM "CitizenReportsHistogram"
             GROUP BY 1
             ORDER BY 1;
             """;
@@ -731,7 +741,7 @@ public class Endpoint(
         var quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
-        var citizenReportsAnswersHistogram = multi.Read<AnswersHistogramPoint>().ToList();
+        var citizenReportsAnswersHistogram = multi.Read<CitizenReportsHistogramPoint>().ToList();
 
         return new Response
         {
@@ -777,6 +787,11 @@ public class Endpoint(
             QuickReportsHistogram = quickReportsHistogram.ToArray(),
             IncidentReportsHistogram = incidentReportsHistogram.ToArray(),
             CitizenReportsHistogram = citizenReportsHistogram.ToArray(),
+            CitizenReportsSubmissionsPerHourHistogram = citizenReportsAnswersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfSubmissions
+            }).ToArray(),
             CitizenReportsAnswersPerHourHistogram = citizenReportsAnswersHistogram.Select(x => new HistogramPoint
             {
                 Bucket = x.Bucket,
