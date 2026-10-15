@@ -663,22 +663,18 @@ public class Endpoint(
 
             ------------------------------Citizen reports answers histogram-------------------------------
             WITH "CitizenReportSubmissions" AS (
-                SELECT CR."Answers", F."Questions", CR."LastModifiedOn" AS "LastUpdatedAt", CR."CreatedOn" AS "CreatedAt"
+                SELECT CR."Answers", F."Questions", CR."CreatedOn" AS "CreatedAt"
                 FROM "CitizenReports" CR
                     INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
                     INNER JOIN "Forms" F ON F."Id" = CR."FormId"
                 WHERE CR."ElectionRoundId" = @electionRoundId
                   AND ER."MonitoringNgoForCitizenReportingId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             ),
-            -- answers to the form's questions, timed by the answer's own timestamps when the client sent them
+            -- answers to the form's questions
             "SubmissionAnswers" AS (
                 SELECT
-                    COALESCE(
-                        (A ->> 'LastUpdatedAt')::timestamptz,
-                        (A ->> 'CreatedAt')::timestamptz,
-                        S."LastUpdatedAt",
-                        S."CreatedAt"
-                    ) AS answered_at,
+                    -- citizens' devices are not trusted: use the time the report was received
+                    S."CreatedAt" AS answered_at,
                     -- flagged options selected in a single or multi select answer
                     CASE
                         WHEN A ->> '$answerType' = 'singleSelectAnswer' AND Q ->> '$questionType' = 'singleSelectQuestion'
