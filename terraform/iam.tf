@@ -62,7 +62,6 @@ resource "aws_iam_role" "ecs_task_role" {
   name               = "${local.namespace}-ecs-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 
-
   inline_policy {
     name   = "EcsTaskPolicy"
     policy = data.aws_iam_policy_document.ecs_task.json
