@@ -1,11 +1,12 @@
 ﻿using Authorization.Policies;
 using Feature.Auth.Specifications;
+using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Auth.SetUserPassword;
 
 public class Endpoint(
-    IRepository<ApplicationUser> repository,
+    IUserStore<ApplicationUser> userStore,
     IRepository<MonitoringObserver> monitoringObserverRepository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
@@ -16,7 +17,7 @@ public class Endpoint(
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var user = await repository.GetByIdAsync(request.AspNetUserId, ct);
+        var user = await userStore.FindByIdAsync(request.AspNetUserId.ToString(), ct);
         if (user is null)
         {
             return TypedResults.NotFound();
@@ -33,7 +34,7 @@ public class Endpoint(
             monitoringObserver.Activate();
         }
 
-        await repository.UpdateAsync(user, ct);
+        await userStore.UpdateAsync(user, ct);
         await monitoringObserverRepository.SaveChangesAsync(ct);
 
         return TypedResults.NoContent();
