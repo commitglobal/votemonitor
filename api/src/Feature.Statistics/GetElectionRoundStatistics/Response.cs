@@ -1,8 +1,9 @@
 using Feature.Statistics.GetNgoAdminStatistics.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetElectionRoundStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     public NgosStats NgosStats { get; set; } = new();
     public int NumberOfCoalitions { get; set; }

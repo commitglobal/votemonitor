@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Extensions;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Locations.FetchAll;
 
@@ -35,9 +36,11 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceSc
 
         var cacheKey = $"election-rounds/{request.ElectionRoundId}/locations/{electionRound.LocationsVersion}";
 
+        var cacheDuration = TimeSpan.FromMinutes(30);
+
         var cachedResponse = await cache.GetOrSetAsync(
             cacheKey,
-            async factoryCt =>
+            CachedResponse.Track(async factoryCt =>
             {
                 // Fresh scope: FusionCache eager refresh may outlive the request DbContext.
                 await using var scope = scopeFactory.CreateAsyncScope();
@@ -66,8 +69,10 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceSc
                     Version = electionRound.LocationsVersion.ToString(),
                     Nodes = nodes
                 };
-            },
-            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            }, cacheDuration),
+            options => options.SetDuration(cacheDuration),
+            tags: [CacheTags.Locations, CacheTags.ElectionRound(request.ElectionRoundId),
+                CacheTags.LocationsVersion(request.ElectionRoundId, electionRound.LocationsVersion)],
             token: ct);
 
         return TypedResults.Ok(cachedResponse);

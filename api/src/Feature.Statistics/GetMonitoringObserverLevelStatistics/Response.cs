@@ -1,8 +1,9 @@
 using Feature.Statistics.GetNgoAdminStatistics.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetMonitoringObserverLevelStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     public List<LevelStatistics> Levels { get; set; } = [];
 }

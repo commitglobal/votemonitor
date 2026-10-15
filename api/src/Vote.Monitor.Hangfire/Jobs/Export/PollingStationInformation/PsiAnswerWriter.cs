@@ -1,3 +1,4 @@
+using System.Globalization;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -43,6 +44,12 @@ public class PsiAnswerWriter
         {
             case DateAnswer dateAnswer:
                 data.Add(dateAnswer.Date.ToString("s"));
+                break;
+            case TimeAnswer timeAnswer:
+                data.Add(timeAnswer.Time.ToString("HH:mm", CultureInfo.InvariantCulture));
+                break;
+            case DateTimeAnswer dateTimeAnswer:
+                data.Add(dateTimeAnswer.DateTime.ToString("s"));
                 break;
             case NumberAnswer numberAnswer:
                 data.Add(numberAnswer.Value);

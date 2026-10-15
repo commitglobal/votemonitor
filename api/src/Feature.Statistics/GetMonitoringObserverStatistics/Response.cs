@@ -1,8 +1,9 @@
 using Feature.Statistics.GetNgoAdminStatistics.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetMonitoringObserverStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     public VisitedPollingStationLevelStats? TotalStats { get; set; }
     public List<VisitedPollingStationLevelStats> Level1Stats { get; set; } = [];
@@ -20,4 +21,7 @@ public class Response
     public int NumberOfAttachments { get; set; }
     public int NumberOfPollingStationsVisited { get; set; }
     public double MinutesMonitoring { get; set; }
+
+    public HistogramPoint[] AnswersPerHourHistogram { get; set; } = [];
+    public HistogramPoint[] FlaggedAnswersPerHourHistogram { get; set; } = [];
 }

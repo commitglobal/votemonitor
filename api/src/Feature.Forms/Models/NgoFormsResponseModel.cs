@@ -1,6 +1,8 @@
-﻿namespace Feature.Forms.Models;
+﻿using Vote.Monitor.Core.Models;
 
-public class NgoFormsResponseModel
+namespace Feature.Forms.Models;
+
+public class NgoFormsResponseModel : CachedResponse
 {
     public Guid ElectionRoundId { get; set; }
     public string Version { get; set; }

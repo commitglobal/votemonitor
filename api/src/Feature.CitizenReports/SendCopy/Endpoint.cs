@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using Feature.CitizenReports.Specifications;
 using Job.Contracts;
 using Microsoft.Extensions.Logging;
@@ -102,6 +103,24 @@ public class Endpoint(
                         attachmentListTitle,
                         attachments,
                         dateAnswer.Date.ToString("yyyy-MM-dd HH:mm")));
+                    break;
+
+                case TimeAnswer timeAnswer:
+                    result.Add(new InputAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
+                        timeAnswer.Time.ToString("HH:mm", CultureInfo.InvariantCulture)));
+                    break;
+
+                case DateTimeAnswer dateTimeAnswer:
+                    result.Add(new InputAnswerFragmentProps(questionText,
+                        notesListTitle,
+                        notes,
+                        attachmentListTitle,
+                        attachments,
+                        dateTimeAnswer.DateTime.ToString("yyyy-MM-dd HH:mm")));
                     break;
 
                 case NumberAnswer numberAnswer:

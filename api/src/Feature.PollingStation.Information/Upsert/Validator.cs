@@ -17,6 +17,8 @@ public class Validator : Validator<Request>
                 v.Add(new MultiSelectAnswerRequestValidator());
                 v.Add(new SingleSelectAnswerRequestValidator());
                 v.Add(new DateAnswerRequestValidator());
+                v.Add(new TimeAnswerRequestValidator());
+                v.Add(new DateTimeAnswerRequestValidator());
                 v.Add(new NumberAnswerRequestValidator());
                 v.Add(new TextAnswerRequestValidator());
             });

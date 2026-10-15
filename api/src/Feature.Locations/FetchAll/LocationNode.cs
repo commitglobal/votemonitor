@@ -17,6 +17,12 @@ public record LocationNode
 
     [JsonIgnore] public List<LocationNode> Children { get; set; } = new(); // List of child nodes
 
+    // Used by System.Text.Json when the node is read back from the distributed cache.
+    [JsonConstructor]
+    private LocationNode()
+    {
+    }
+
     public LocationNode(int id, Guid locationId, string name, int depth, int parentId, int displayOrder)
     {
         Id = id;

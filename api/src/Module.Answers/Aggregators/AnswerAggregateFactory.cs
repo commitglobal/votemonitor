@@ -14,6 +14,10 @@ public static class AnswerAggregateFactory
                 return new NumberAnswerAggregate(numberQuestion, displayOrder);
             case DateQuestion dateQuestion:
                 return new DateAnswerAggregate(dateQuestion, displayOrder);
+            case TimeQuestion timeQuestion:
+                return new TimeAnswerAggregate(timeQuestion, displayOrder);
+            case DateTimeQuestion dateTimeQuestion:
+                return new DateTimeAnswerAggregate(dateTimeQuestion, displayOrder);
             case RatingQuestion ratingQuestion:
                 return new RatingAnswerAggregate(ratingQuestion, displayOrder);
             case SingleSelectQuestion singleSelectQuestion:

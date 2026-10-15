@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Services.Caching;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.Domain.Seeders;
@@ -29,6 +32,12 @@ public static class DomainInstaller
             new AuditTrailInterceptor(sp.GetRequiredService<ISerializerService>(),
                 sp.GetRequiredService<ICurrentUserProvider>(), sp.GetRequiredService<ITimeProvider>()));
 
+        // The API registers a real cache invalidator; elsewhere (e.g. background jobs) there is no cache to clean up.
+        services.TryAddSingleton<ICacheTagInvalidator, NoopCacheTagInvalidator>();
+        services.AddScoped<CacheVersionInterceptor>(sp =>
+            new CacheVersionInterceptor(sp.GetRequiredService<ICacheTagInvalidator>(),
+                sp.GetRequiredService<ILogger<CacheVersionInterceptor>>()));
+
         services.AddDbContext<VoteMonitorContext>((sp, options) =>
         {
             options.UseNpgsql(connectionString, sqlOptions =>
@@ -40,7 +49,8 @@ public static class DomainInstaller
                     )
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             }).AddInterceptors(sp.GetRequiredService<AuditTrailInterceptor>(),
-                sp.GetRequiredService<AuditingInterceptor>());
+                sp.GetRequiredService<AuditingInterceptor>(),
+                sp.GetRequiredService<CacheVersionInterceptor>());
 
             options.EnableSensitiveDataLogging(!isProductionEnvironment);
         });

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+using FluentAssertions;
 using Module.Answers.Mappers;
 using Module.Answers.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -237,5 +238,81 @@ public class AnswerMapperTests
         // Assert
         act.Should().Throw<ApplicationException>().WithMessage("Unknown question type");
     }
-}
 
+    [Fact]
+    public void ToEntity_ShouldMapTimestamps_WhenGivenAnswerRequestWithTimestamps()
+    {
+        // Arrange
+        var createdAt = new DateTime(2026, 10, 14, 9, 15, 0, DateTimeKind.Utc);
+        var lastUpdatedAt = new DateTime(2026, 10, 14, 11, 40, 0, DateTimeKind.Utc);
+        var request = new TimeAnswerRequest
+        {
+            QuestionId = Guid.NewGuid(),
+            Time = new TimeOnly(14, 30),
+            CreatedAt = createdAt,
+            LastUpdatedAt = lastUpdatedAt
+        };
+
+        // Act
+        var result = AnswerMapper.ToEntity(request);
+
+        // Assert
+        result.Should().BeOfType<TimeAnswer>();
+        result.CreatedAt.Should().Be(createdAt);
+        result.LastUpdatedAt.Should().Be(lastUpdatedAt);
+    }
+
+    [Fact]
+    public void ToEntity_ShouldLeaveTimestampsNull_WhenAnswerRequestHasNoTimestamps()
+    {
+        // Arrange
+        var request = new TextAnswerRequest { QuestionId = Guid.NewGuid(), Text = "some text" };
+
+        // Act
+        var result = AnswerMapper.ToEntity(request);
+
+        // Assert
+        result.CreatedAt.Should().BeNull();
+        result.LastUpdatedAt.Should().BeNull();
+    }
+
+    [Fact]
+    public void ToModel_ShouldMapTimestamps_WhenGivenAnswerWithTimestamps()
+    {
+        // Arrange
+        var createdAt = new DateTime(2026, 10, 14, 9, 15, 0, DateTimeKind.Utc);
+        var lastUpdatedAt = new DateTime(2026, 10, 14, 11, 40, 0, DateTimeKind.Utc);
+        var answer = RatingAnswer.Create(Guid.NewGuid(), 3).WithTimestamps(createdAt, lastUpdatedAt);
+
+        // Act
+        var result = AnswerMapper.ToModel(answer);
+
+        // Assert
+        result.Should().BeOfType<RatingAnswerModel>();
+        result.CreatedAt.Should().Be(createdAt);
+        result.LastUpdatedAt.Should().Be(lastUpdatedAt);
+    }
+
+    [Fact]
+    public void Answer_ShouldKeepTimestamps_WhenSerializedAndDeserialized()
+    {
+        // Arrange
+        var createdAt = new DateTime(2026, 10, 14, 9, 15, 0, DateTimeKind.Utc);
+        var lastUpdatedAt = new DateTime(2026, 10, 14, 11, 40, 0, DateTimeKind.Utc);
+        List<BaseAnswer> answers =
+        [
+            DateTimeAnswer.Create(Guid.NewGuid(), new DateTime(2026, 10, 14, 8, 0, 0, DateTimeKind.Utc))
+                .WithTimestamps(createdAt, lastUpdatedAt),
+            TextAnswer.Create(Guid.NewGuid(), "some text")
+        ];
+
+        // Act
+        var result = JsonSerializer.Deserialize<List<BaseAnswer>>(JsonSerializer.Serialize(answers));
+
+        // Assert
+        result.Should().BeEquivalentTo(answers, options => options.RespectingRuntimeTypes());
+        result![0].CreatedAt.Should().Be(createdAt);
+        result[0].LastUpdatedAt.Should().Be(lastUpdatedAt);
+        result[1].CreatedAt.Should().BeNull();
+    }
+}

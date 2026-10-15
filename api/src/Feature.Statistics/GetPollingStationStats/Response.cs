@@ -1,6 +1,8 @@
+using Vote.Monitor.Core.Models;
+
 namespace Feature.Statistics.GetPollingStationStats;
 
-public class Response
+public class Response : CachedResponse
 {
     public int TotalAnswers { get; set; }
     public int FlaggedAnswers { get; set; }

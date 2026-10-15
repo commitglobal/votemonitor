@@ -6,7 +6,16 @@ namespace Module.Answers.Mappers;
 
 public static class AnswerMapper
 {
-    public static BaseAnswerModel ToModel(BaseAnswer question)
+    public static BaseAnswerModel ToModel(BaseAnswer answer)
+    {
+        var model = MapToModel(answer);
+        model.CreatedAt = answer.CreatedAt;
+        model.LastUpdatedAt = answer.LastUpdatedAt;
+
+        return model;
+    }
+
+    private static BaseAnswerModel MapToModel(BaseAnswer question)
     {
         switch (question)
         {
@@ -18,6 +27,12 @@ public static class AnswerMapper
 
             case DateAnswer dateInputAnswerRequest:
                 return DateAnswerModel.FromEntity(dateInputAnswerRequest);
+
+            case TimeAnswer timeInputAnswerRequest:
+                return TimeAnswerModel.FromEntity(timeInputAnswerRequest);
+
+            case DateTimeAnswer dateTimeInputAnswerRequest:
+                return DateTimeAnswerModel.FromEntity(dateTimeInputAnswerRequest);
 
             case SingleSelectAnswer singleSelectAnswerRequest:
                 return SingleSelectAnswerModel.FromEntity(singleSelectAnswerRequest);
@@ -34,6 +49,11 @@ public static class AnswerMapper
 
     public static BaseAnswer ToEntity(BaseAnswerRequest answer)
     {
+        return MapToEntity(answer).WithTimestamps(answer.CreatedAt, answer.LastUpdatedAt);
+    }
+
+    private static BaseAnswer MapToEntity(BaseAnswerRequest answer)
+    {
         switch (answer)
         {
             case TextAnswerRequest textAnswer:
@@ -44,6 +64,12 @@ public static class AnswerMapper
 
             case DateAnswerRequest dateAnswer:
                 return DateAnswer.Create(dateAnswer.QuestionId, dateAnswer.Date);
+
+            case TimeAnswerRequest timeAnswer:
+                return TimeAnswer.Create(timeAnswer.QuestionId, timeAnswer.Time);
+
+            case DateTimeAnswerRequest dateTimeAnswer:
+                return DateTimeAnswer.Create(dateTimeAnswer.QuestionId, dateTimeAnswer.DateTime);
 
             case SingleSelectAnswerRequest singleSelectAnswer:
                 var selectedOption = ToEntity(singleSelectAnswer.Selection);

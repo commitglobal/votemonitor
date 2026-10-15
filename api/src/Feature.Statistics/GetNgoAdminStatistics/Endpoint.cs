@@ -7,6 +7,7 @@ using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetNgoAdminStatistics;
 
@@ -38,10 +39,13 @@ public class Endpoint(
 
         var cacheKey = $"statistics-{req.ElectionRoundId}-{req.NgoId}-{req.DataSource}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         var statistics = await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetNgoStatistics(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetNgoStatistics(req, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.Ngo(req.NgoId)],
             token: ct);
 
         return TypedResults.Ok(statistics);

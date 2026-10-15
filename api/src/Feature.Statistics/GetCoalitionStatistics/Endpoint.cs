@@ -5,6 +5,7 @@ using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetCoalitionStatistics;
 
@@ -40,10 +41,14 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+        result.MarkCached(cacheDuration);
+
         await cache.SetAsync(
             cacheKey,
             result,
-            options => options.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            options => options.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.Coalition(req.CoalitionId)],
             token: ct);
 
         return TypedResults.Ok(result);
@@ -555,6 +560,65 @@ public class Endpoint(
                 FROM "MonitoringObservers" MO
                 WHERE MO."ElectionRoundId" = @electionRoundId
                   AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
+            ),
+            "Submissions" AS (
+                SELECT FS."Answers", F."Questions", FS."LastUpdatedAt", FS."CreatedAt"
+                FROM "FormSubmissions" FS
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                    INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+
+                UNION ALL
+
+                SELECT PSI."Answers", PSIF."Questions", PSI."LastUpdatedAt", NULL::timestamptz AS "CreatedAt"
+                FROM "PollingStationInformation" PSI
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
+                    INNER JOIN "PollingStationInformationForms" PSIF ON PSIF."Id" = PSI."PollingStationInformationFormId"
+            ),
+            -- answers to the form's questions, timed by the answer's own timestamps when the client sent them
+            "SubmissionAnswers" AS (
+                SELECT
+                    COALESCE(
+                        (A ->> 'LastUpdatedAt')::timestamptz,
+                        (A ->> 'CreatedAt')::timestamptz,
+                        S."LastUpdatedAt",
+                        S."CreatedAt"
+                    ) AS answered_at,
+                    -- flagged options selected in a single or multi select answer
+                    CASE
+                        WHEN A ->> '$answerType' = 'singleSelectAnswer' AND Q ->> '$questionType' = 'singleSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND O ->> 'Id' = A -> 'Selection' ->> 'OptionId')
+                        WHEN A ->> '$answerType' = 'multiSelectAnswer' AND Q ->> '$questionType' = 'multiSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND EXISTS (SELECT 1
+                                                FROM JSONB_ARRAY_ELEMENTS(A -> 'Selection') SEL
+                                                WHERE SEL ->> 'OptionId' = O ->> 'Id'))
+                        ELSE 0
+                    END AS number_of_flagged_answers
+                FROM "Submissions" S
+                    CROSS JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Answers") A
+                    INNER JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Questions") Q ON Q ->> 'Id' = A ->> 'QuestionId'
+            )
+            SELECT
+                DATE_TRUNC(
+                        'hour',
+                        TIMEZONE('utc', answered_at)
+                )::timestamptz AS "Bucket",
+                COUNT(*) AS "NumberOfAnswers",
+                SUM(number_of_flagged_answers) AS "NumberOfFlaggedAnswers"
+            FROM "SubmissionAnswers"
+            GROUP BY 1
+            ORDER BY 1;
+
+            WITH "AvailableObservers" AS (
+                SELECT MO."Id" AS "MonitoringObserverId"
+                FROM "MonitoringObservers" MO
+                WHERE MO."ElectionRoundId" = @electionRoundId
+                  AND MO."MonitoringNgoId" IN (SELECT CM."MonitoringNgoId" FROM "CoalitionMemberships" CM WHERE CM."CoalitionId" = @coalitionId AND CM."ElectionRoundId" = @electionRoundId)
             )
             SELECT
                 DATE_TRUNC(
@@ -617,6 +681,7 @@ public class Endpoint(
         var visitedPollingStationsStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
         var visitedLocationStats = multi.Read<VisitedLocationLevelStats>().ToList();
         var formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
+        var answersHistogram = multi.Read<AnswersHistogramPoint>().ToList();
         var quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
         var incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
@@ -649,6 +714,16 @@ public class Endpoint(
                 Value = x.NumberOfQuestionsAnswered
             }).ToArray(),
             FlaggedAnswersHistogram = formSubmissionsHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfFlaggedAnswers
+            }).ToArray(),
+            AnswersPerHourHistogram = answersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfAnswers
+            }).ToArray(),
+            FlaggedAnswersPerHourHistogram = answersHistogram.Select(x => new HistogramPoint
             {
                 Bucket = x.Bucket,
                 Value = x.NumberOfFlaggedAnswers

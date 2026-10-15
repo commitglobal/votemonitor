@@ -1,6 +1,8 @@
-﻿namespace Feature.PollingStations.FetchLevels;
+﻿using Vote.Monitor.Core.Models;
 
-public class Response
+namespace Feature.PollingStations.FetchLevels;
+
+public class Response : CachedResponse
 {
     public Guid ElectionRoundId { get; set; }
     public string Version { get; set; }

@@ -49,10 +49,20 @@ public class Endpoint(
             ? $"polling-station-stats-{req.ElectionRoundId}-all-{req.PollingStationId}"
             : $"polling-station-stats-{req.ElectionRoundId}-{req.NgoId}-{req.PollingStationId}-{dataSource}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
+        List<string> cacheTags =
+            [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.PollingStation(req.PollingStationId)];
+        if (!isPlatformAdmin)
+        {
+            cacheTags.Add(CacheTags.Ngo(req.NgoId!.Value));
+        }
+
         var response = await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetStatisticsAsync(req, isPlatformAdmin, dataSource, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetStatisticsAsync(req, isPlatformAdmin, dataSource, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: cacheTags,
             token: ct);
 
         return TypedResults.Ok(response);
