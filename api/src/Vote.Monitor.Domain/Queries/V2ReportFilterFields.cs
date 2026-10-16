@@ -49,6 +49,7 @@ public static class V2ReportFilterFields
         {
             ["id"] = new("s.\"Id\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["formId"] = new("s.\"FormId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["formStatus"] = new("s.\"FormStatus\"", "text", FilterOperators.Set, FilterValue.Enum<FormStatus>()),
             ["locationId"] = new("s.\"LocationId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["level1"] = new("s.\"Level1\"", "text", FilterOperators.Set, FilterValue.String),
             ["level2"] = new("s.\"Level2\"", "text", FilterOperators.Set, FilterValue.String),
@@ -73,6 +74,7 @@ public static class V2ReportFilterFields
         {
             ["id"] = new("s.\"Id\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["formId"] = new("s.\"FormId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["formStatus"] = new("s.\"FormStatus\"", "text", FilterOperators.Set, FilterValue.Enum<FormStatus>()),
             ["monitoringObserverId"] = new("s.\"MonitoringObserverId\"", "uuid", FilterOperators.Set,
                 FilterValue.Guid),
             ["coalitionMemberId"] = new("s.\"NgoId\"", "uuid", FilterOperators.Set, FilterValue.Guid),

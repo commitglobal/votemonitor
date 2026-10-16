@@ -55,6 +55,7 @@ public class Endpoint(
         var selectSql = $"""
                          SELECT s."FormId",
                                 s."FormCode",
+                                s."FormStatus",
                                 s."FormName",
                                 s."FormDefaultLanguage",
                                 COUNT(*) AS "NumberOfSubmissions",
@@ -63,7 +64,7 @@ public class Endpoint(
                                 COALESCE(SUM(s."MediaFilesCount"), 0) AS "NumberOfMediaFiles"
                          FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
                          WHERE {filter.Sql}
-                         GROUP BY s."FormId", s."FormCode", s."FormName", s."FormDefaultLanguage"
+                         GROUP BY s."FormId", s."FormCode", s."FormStatus", s."FormName", s."FormDefaultLanguage"
                          ORDER BY {orderBy}, s."FormId"
                          LIMIT @pageSize OFFSET @offset
                          """;

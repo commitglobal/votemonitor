@@ -65,6 +65,7 @@ public class Endpoint(
                     AND (@tagsFilter IS NULL OR CARDINALITY(@tagsFilter) = 0 OR MO."Tags" && @tagsFilter)
                     AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
                     AND (@formId IS NULL OR IR."FormId" = @formId)
+                    AND (@formStatus IS NULL OR F."Status" = @formStatus)
                     AND (@questionsAnswered IS NULL
                           OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
                           OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
@@ -113,6 +114,7 @@ public class Endpoint(
                           SELECT
                               IR."Id" AS "IncidentReportId",
                               F."Code" AS "FormCode",
+                              F."Status" AS "FormStatus",
                               F."Name" AS "FormName",
                               F."DefaultLanguage" "FormDefaultLanguage",
                               IR."LocationType",
@@ -151,6 +153,7 @@ public class Endpoint(
                             AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
                             AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
                             AND (@formId IS NULL OR IR."FormId" = @formId)
+                            AND (@formStatus IS NULL OR F."Status" = @formStatus)
                             AND (@locationType IS NULL OR IR."LocationType" = @locationType)
                             AND (@questionsAnswered IS NULL
                                 OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
@@ -164,6 +167,7 @@ public class Endpoint(
                       IR."IncidentReportId",
                       IR."TimeSubmitted",
                       IR."FormCode",
+                      IR."FormStatus",
                       IR."FormName",
                       IR."FormDefaultLanguage",
                       IR."LocationType",
@@ -284,6 +288,7 @@ public class Endpoint(
             tagsFilter = req.TagsFilter ?? [],
             monitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
             formId = req.FormId,
+            formStatus = req.FormStatusFilter?.ToString(),
             hasNotes = req.HasNotes,
             hasAttachments = req.HasAttachments,
             hasComments = req.HasComments,

@@ -57,11 +57,12 @@ public class Endpoint(VoteMonitorContext context, IAuthorizationService authoriz
                 ? x.Attachments.Any()
                 : !x.Attachments.Any()))
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
-            .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Name, cr.Form.DefaultLanguage })
+            .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Status, cr.Form.Name, cr.Form.DefaultLanguage })
             .Select(cr => new AggregatedFormOverview
             {
                 FormId = cr.Key.FormId,
                 FormCode = cr.Key.Code,
+                FormStatus = cr.Key.Status,
                 FormName = cr.Key.Name,
                 FormDefaultLanguage = cr.Key.DefaultLanguage,
                 NumberOfNotes = cr.Sum(x => x.Notes.Count),

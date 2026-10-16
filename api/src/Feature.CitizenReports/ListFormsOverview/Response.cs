@@ -1,4 +1,5 @@
-﻿namespace Feature.CitizenReports.ListFormsOverview;
+﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+namespace Feature.CitizenReports.ListFormsOverview;
 
 public record Response
 {
@@ -9,6 +10,7 @@ public class AggregatedFormOverview
 {
     public Guid FormId { get; set; }
     public string FormCode { get; set; }
+    public FormStatus FormStatus { get; set; } = null!;
     public int NumberOfSubmissions { get; set; }
     public int NumberOfFlaggedAnswers { get; set; }
     public int NumberOfNotes { get; set; }

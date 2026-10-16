@@ -123,6 +123,7 @@ public class ExportIncidentReportsJob(
         queryParams.Add("tagsFilter", filters.TagsFilter ?? []);
         queryParams.Add("monitoringObserverStatus", filters.MonitoringObserverStatus?.ToString());
         queryParams.Add("formId", filters.FormId);
+        queryParams.Add("formStatus", filters.FormStatusFilter?.ToString());
         queryParams.Add("hasNotes", filters.HasNotes);
         queryParams.Add("hasAttachments", filters.HasAttachments);
         queryParams.Add("questionsAnswered", filters.QuestionsAnswered?.ToString());
@@ -203,6 +204,7 @@ public class ExportIncidentReportsJob(
                        (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
                       AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
                       AND (@formId IS NULL OR IR."FormId" = @formId)
+                      AND (@formStatus IS NULL OR F."Status" = @formStatus)
                       AND (@locationType IS NULL OR IR."LocationType" = @locationType)
                       AND (@questionsAnswered IS NULL
                         OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")

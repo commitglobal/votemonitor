@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
@@ -18,6 +19,7 @@ public record ExportCitizenReportsFilers
     public CitizenReportFollowUpStatus? FollowUpStatus { get; init; }
 
     public Guid? FormId { get; init; }
+    public FormStatus? FormStatusFilter { get; init; }
     public bool? HasNotes { get; init; }
     public bool? HasAttachments { get; init; }
 

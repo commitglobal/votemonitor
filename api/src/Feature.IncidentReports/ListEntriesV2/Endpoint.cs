@@ -54,6 +54,7 @@ public class Endpoint(
                          SELECT s."Id" AS "IncidentReportId",
                                 s."TimeSubmitted",
                                 s."FormCode",
+                                s."FormStatus",
                                 s."FormName",
                                 s."FormDefaultLanguage",
                                 s."LocationType",

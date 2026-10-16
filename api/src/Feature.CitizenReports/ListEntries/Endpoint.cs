@@ -51,6 +51,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                     AND (@level5 IS NULL OR L."Level5" = @level5)
                     AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                   	AND (@formId IS NULL OR CR."FormId" = @formId)
+                  	AND (@formStatus IS NULL OR F."Status" = @formStatus)
                   	AND (@questionsAnswered IS NULL 
                   	  OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
                   	  OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")
@@ -72,6 +73,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   			CR."Id" "CitizenReportId",
                   			COALESCE(CR."LastModifiedOn", CR."CreatedOn") "TimeSubmitted",
                   			F."Code" "FormCode",
+                  			F."Status" "FormStatus",
                   			F."Name" "FormName",
                   			F."DefaultLanguage" "FormDefaultLanguage",
                   			CR."NumberOfQuestionsAnswered",
@@ -142,6 +144,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                             AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                             AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
                             AND (@formId IS NULL OR CR."FormId" = @formId)
+                            AND (@formStatus IS NULL OR F."Status" = @formStatus)
                             AND (@questionsAnswered IS NULL 
                               OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
                               OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")
@@ -160,6 +163,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                   	"CitizenReportId",
                   	"TimeSubmitted",
                   	"FormCode",
+                  	"FormStatus",
                   	"FormName",
                   	"FormDefaultLanguage",
                   	"NumberOfQuestionsAnswered",
@@ -246,6 +250,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             level5 = req.Level5Filter,
             locationId = req.LocationId,
             formId = req.FormId,
+            formStatus = req.FormStatusFilter?.ToString(),
             hasAttachments = req.HasAttachments,
             hasNotes = req.HasNotes,
             hasComments = req.HasComments,
