@@ -12,6 +12,7 @@ public class AggregatedFormOverview
     public Guid FormId { get; set; }
     public string FormCode { get; set; }
     public string FormType { get; set; }
+    public string FormStatus { get; set; }
     public string DefaultLanguage { get; set; }
     public TranslatedString FormName { get; set; }
 

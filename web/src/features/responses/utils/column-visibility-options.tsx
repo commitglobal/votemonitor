@@ -14,6 +14,8 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
+  // Shown inside the form code cell, not as a column.
+  formStatus: false,
   formName: true,
   formType: true,
   level1: false,
@@ -71,6 +73,8 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
+  // Shown inside the form code cell, not as a column.
+  formStatus: false,
   formType: true,
   formName: true,
   level1: false,

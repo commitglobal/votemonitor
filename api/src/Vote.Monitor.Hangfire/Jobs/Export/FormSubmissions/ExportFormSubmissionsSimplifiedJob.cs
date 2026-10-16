@@ -131,6 +131,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 			MonitoringObserverId = filters.MonitoringObserverId,
 			SearchText = filters.SearchText,
 			FormType = filters.FormTypeFilter?.ToString(),
+			FormStatus = filters.FormStatusFilter?.ToString(),
 			Level1 = filters.Level1Filter,
 			Level2 = filters.Level2Filter,
 			Level3 = filters.Level3Filter,

@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.ListEntries;
@@ -17,6 +18,8 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public string? SearchText { get; set; }
 
     [QueryParam] public FormType? FormTypeFilter { get; set; }
+
+    [QueryParam] public FormStatus? FormStatusFilter { get; set; }
 
     [QueryParam] public string? Level1Filter { get; set; }
 

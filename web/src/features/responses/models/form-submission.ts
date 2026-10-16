@@ -21,6 +21,7 @@ export interface FormSubmissionByEntry {
   phoneNumber: string;
   formCode: string;
   formType: FormType;
+  formStatus: FormStatus;
   formName: TranslatedString;
   defaultLanguage: string;
   languages: string[];

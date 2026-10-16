@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
@@ -11,6 +12,7 @@ public record ExportFormSubmissionsFilters
     public DataSource DataSource { get; init; } = DataSource.Ngo;
     public Guid? CoalitionMemberId { get; init; }
     public FormType? FormTypeFilter { get; init; }
+    public FormStatus? FormStatusFilter { get; init; }
     public string? Level1Filter { get; init; }
     public string? Level2Filter { get; init; }
     public string? Level3Filter { get; init; }

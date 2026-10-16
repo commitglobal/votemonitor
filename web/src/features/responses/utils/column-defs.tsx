@@ -5,6 +5,7 @@ import {
   IncidentReportFollowUpStatus,
   QuickReportFollowUpStatus,
 } from '@/common/types';
+import FormStatusBadge from '@/components/FormStatusBadge/FormStatusBadge';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -51,6 +52,12 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div className='flex items-center gap-2'>
+        <span>{row.original.formCode}</span>
+        <FormStatusBadge status={row.original.formStatus} />
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
@@ -223,6 +230,12 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div className='flex items-center gap-2'>
+        <span>{row.original.formCode}</span>
+        <FormStatusBadge status={row.original.formStatus} />
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,

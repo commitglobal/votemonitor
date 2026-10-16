@@ -133,6 +133,7 @@ public class Endpoint(
         MonitoringObserverId = req.MonitoringObserverId,
         SearchText = req.SearchText,
         FormType = req.FormTypeFilter?.ToString(),
+        FormStatus = req.FormStatusFilter?.ToString(),
         Level1 = req.Level1Filter,
         Level2 = req.Level2Filter,
         Level3 = req.Level3Filter,
