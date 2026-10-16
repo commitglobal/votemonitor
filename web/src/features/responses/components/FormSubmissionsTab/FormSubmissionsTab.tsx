@@ -63,6 +63,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
       dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
       searchText: searchText,
       formTypeFilter: search.formTypeFilter,
+      formStatusFilter: search.formStatusFilter,
       hasFlaggedAnswers: toBoolean(search.hasFlaggedAnswers),
       level1Filter: search.level1Filter,
       level2Filter: search.level2Filter,

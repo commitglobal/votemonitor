@@ -52,12 +52,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div className='flex items-center gap-2'>
-        <span>{row.original.formCode}</span>
-        <FormStatusBadge status={row.original.formStatus} />
-      </div>
-    ),
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form status' column={column} />,
+    accessorFn: (row) => row.formStatus,
+    id: 'formStatus',
+    enableSorting: false,
+    enableGlobalFilter: false,
+    cell: ({ row }) => <FormStatusBadge status={row.original.formStatus} />,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
@@ -230,12 +232,14 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
     id: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div className='flex items-center gap-2'>
-        <span>{row.original.formCode}</span>
-        <FormStatusBadge status={row.original.formStatus} />
-      </div>
-    ),
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form status' column={column} />,
+    accessorFn: (row) => row.formStatus,
+    id: 'formStatus',
+    enableSorting: false,
+    enableGlobalFilter: false,
+    cell: ({ row }) => <FormStatusBadge status={row.original.formStatus} />,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,

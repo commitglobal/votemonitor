@@ -10,7 +10,7 @@ import {
   mapIncidentCategory,
   mapQuickReportFollowUpStatus,
 } from '@/features/responses/utils/helpers';
-import { isNotNilOrWhitespace, mapFormType, toBoolean } from '@/lib/utils';
+import { isNotNilOrWhitespace, mapFormStatus, mapFormType, toBoolean } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns/format';
 import { FC, useCallback } from 'react';
@@ -58,6 +58,7 @@ const FILTER_VALUE_LOCALIZATORS = new Map<string, (value: any) => string>([
   [FILTER_KEY.FormSubmissionFollowUpStatus, mapFormSubmissionFollowUpStatus],
   [FILTER_KEY.QuickReportIncidentCategory, mapIncidentCategory],
   [FILTER_KEY.FormTypeFilter, mapFormType],
+  [FILTER_KEY.FormStatusFilter, mapFormStatus],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
