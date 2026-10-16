@@ -54,20 +54,24 @@ public static class CacheExtensions
                     throw new ArgumentException("Cache:Redis:ConnectionString is required when CacheType is Redis",
                         nameof(configuration));
                 }
+                
+                var muxer = ConnectionMultiplexer.Connect("localhost:6379");
 
                 fusionCache
                     // IncludeFields lets FusionCache serialize the value tuples it uses internally.
                     .WithSerializer(new FusionCacheSystemTextJsonSerializer(new JsonSerializerOptions { IncludeFields = true }))
-                    .WithDistributedCache(new RedisCache(new RedisCacheOptions
-                    {
-                        Configuration = connectionString,
-                        InstanceName = configuration.GetValue<string>("Redis:InstanceName")
-                    }))
-                    .WithBackplane(new RedisBackplane(new RedisBackplaneOptions
-                    {
-                        Configuration = connectionString
-                    }));
-
+                    .WithDistributedCache(
+                        new RedisCache(new RedisCacheOptions
+                        {
+                            ConnectionMultiplexerFactory = async () => muxer,
+                        })
+                    )
+                    .WithBackplane(
+                            new RedisBackplane(new RedisBackplaneOptions
+                            {
+                                ConnectionMultiplexerFactory = async () => muxer,
+                            })
+                    );
                 return services;
 
             default:
