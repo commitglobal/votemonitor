@@ -53,6 +53,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."FormId",
                                 s."FormCode",
                                 s."FormType",
+                                s."FormStatus",
                                 s."DefaultLanguage",
                                 s."FormName",
                                 s."PollingStationId",

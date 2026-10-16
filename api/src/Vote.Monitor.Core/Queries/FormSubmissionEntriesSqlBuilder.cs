@@ -8,6 +8,7 @@ public sealed class FormSubmissionEntriesFilterCriteria
     public Guid? MonitoringObserverId { get; init; }
     public string? SearchText { get; init; }
     public string? FormType { get; init; }
+    public string? FormStatus { get; init; }
     public string? Level1 { get; init; }
     public string? Level2 { get; init; }
     public string? Level3 { get; init; }
@@ -60,6 +61,11 @@ public static class FormSubmissionEntriesSqlBuilder
         if (!string.IsNullOrWhiteSpace(filters.FormType))
         {
             builder.Where(@"s.""FormType"" = @formType", new { formType = filters.FormType });
+        }
+
+        if (!string.IsNullOrWhiteSpace(filters.FormStatus))
+        {
+            builder.Where(@"s.""FormStatus"" = @formStatus", new { formStatus = filters.FormStatus });
         }
 
         if (!string.IsNullOrWhiteSpace(filters.Level1))

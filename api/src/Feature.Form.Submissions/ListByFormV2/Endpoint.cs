@@ -68,6 +68,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                      FS."FormId",
                      FS."FormCode",
                      FS."FormType",
+                     FS."FormStatus",
                      FS."FormName",
                      FS."FormDefaultLanguage",
                      COUNT(FS."SubmissionId") AS "NumberOfSubmissions",
@@ -85,6 +86,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                      FS."FormId",
                      FS."FormCode",
                      FS."FormType",
+                     FS."FormStatus",
                      FS."FormName",
                      FS."FormDefaultLanguage"
                    ORDER BY {orderBy};

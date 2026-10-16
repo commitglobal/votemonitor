@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormBase;
@@ -13,6 +14,8 @@ public record FormSubmissionsFilters
     public string? SearchText { get; init; }
     public Guid? CoalitionMemberId { get; init; }
     public FormType? FormTypeFilter { get; init; }
+
+    public FormStatus? FormStatusFilter { get; init; }
 
     public string? Level1Filter { get; init; }
 
@@ -53,6 +56,7 @@ public record FormSubmissionsFilters
             NgoId = NgoId,
             SearchText = SearchText,
             FormTypeFilter = FormTypeFilter,
+            FormStatusFilter = FormStatusFilter,
             Level1Filter = Level1Filter,
             Level2Filter = Level2Filter,
             Level3Filter = Level3Filter,

@@ -275,6 +275,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             	AF."FormId",
             	AF."FormCode",
             	AF."FormType",
+            	AF."FormStatus",
             	AF."FormName",
                 AF."FormDefaultLanguage" AS "DefaultLanguage",
             	COUNT(FS."SubmissionId") AS "NumberOfSubmissions",
@@ -291,6 +292,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             	AF."FormId",
             	AF."FormCode",
             	AF."FormType",
+            	AF."FormStatus",
             	AF."FormName",
             	AF."FormDefaultLanguage";
             """;

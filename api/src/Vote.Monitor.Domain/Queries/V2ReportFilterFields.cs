@@ -2,6 +2,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.RulesEngine.Rules;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
@@ -20,6 +21,7 @@ public static class V2ReportFilterFields
             ["monitoringObserverId"] = new("s.\"MonitoringObserverId\"", "uuid", FilterOperators.Set,
                 FilterValue.Guid),
             ["coalitionMemberId"] = new("s.\"NgoId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["pollingStationId"] = new("s.\"PollingStationId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["level1"] = new("s.\"Level1\"", "text", FilterOperators.Set, FilterValue.String),
             ["level2"] = new("s.\"Level2\"", "text", FilterOperators.Set, FilterValue.String),
             ["level3"] = new("s.\"Level3\"", "text", FilterOperators.Set, FilterValue.String),
@@ -37,6 +39,7 @@ public static class V2ReportFilterFields
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<SubmissionFollowUpStatus>()),
             ["formType"] = new("s.\"FormType\"", "text", FilterOperators.Set, FilterValue.Enum<FormType>()),
+            ["formStatus"] = new("s.\"FormStatus\"", "text", FilterOperators.Set, FilterValue.Enum<FormStatus>()),
             ["questionsAnswered"] = new("s.\"QuestionsAnswered\"", "text", FilterOperators.Set,
                 FilterValue.Enum<QuestionsAnsweredFilter>())
         };
