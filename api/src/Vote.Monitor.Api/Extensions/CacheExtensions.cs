@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using Vote.Monitor.Core.Services.Caching;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
