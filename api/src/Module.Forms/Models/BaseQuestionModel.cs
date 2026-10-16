@@ -11,6 +11,8 @@ namespace Module.Forms.Models;
 [PolyJsonConverter.SubType(typeof(TextQuestionModel), QuestionTypes.TextQuestionType)]
 [PolyJsonConverter.SubType(typeof(NumberQuestionModel), QuestionTypes.NumberQuestionType)]
 [PolyJsonConverter.SubType(typeof(DateQuestionModel), QuestionTypes.DateQuestionType)]
+[PolyJsonConverter.SubType(typeof(TimeQuestionModel), QuestionTypes.TimeQuestionType)]
+[PolyJsonConverter.SubType(typeof(DateTimeQuestionModel), QuestionTypes.DateTimeQuestionType)]
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestionModel), QuestionTypes.SingleSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestionModel), QuestionTypes.MultiSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(RatingQuestionModel), QuestionTypes.RatingQuestionType)]

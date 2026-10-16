@@ -24,6 +24,8 @@ public class Validator : Validator<Request>
                 v.Add(r => new TextQuestionRequestValidator(r.Languages));
                 v.Add(r => new NumberQuestionRequestValidator(r.Languages));
                 v.Add(r => new DateQuestionRequestValidator(r.Languages));
+                v.Add(r => new TimeQuestionRequestValidator(r.Languages));
+                v.Add(r => new DateTimeQuestionRequestValidator(r.Languages));
                 v.Add(r => new SingleSelectQuestionRequestValidator(r.Languages));
                 v.Add(r => new MultiSelectQuestionRequestValidator(r.Languages));
                 v.Add(r => new RatingQuestionRequestValidator(r.Languages));

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetMonitoringObserverStatistics;
 
@@ -39,10 +40,13 @@ public class Endpoint(
         var cacheKey =
             $"statistics-observer-{req.ElectionRoundId}-{req.NgoId}-{req.MonitoringObserverId}-{req.DataSource}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         var response = await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetStatisticsAsync(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetStatisticsAsync(req, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.Ngo(req.NgoId), CacheTags.MonitoringObserver(req.MonitoringObserverId)],
             token: ct);
 
         return TypedResults.Ok(response);
@@ -286,6 +290,65 @@ public class Endpoint(
                 ) AS "NumberOfAttachments",
                 (SELECT COUNT(*) FROM "QuickReports" QR WHERE QR."ElectionRoundId" = @electionRoundId AND QR."MonitoringObserverId" = @monitoringObserverId AND EXISTS (SELECT 1 FROM "AvailableObservers")) AS "NumberOfQuickReports",
                 (SELECT COUNT(*) FROM "IncidentReports" IR WHERE IR."ElectionRoundId" = @electionRoundId AND IR."MonitoringObserverId" = @monitoringObserverId AND EXISTS (SELECT 1 FROM "AvailableObservers")) AS "NumberOfIncidentReports";
+
+            ------------------------------Answers histogram-------------------------------
+            WITH "AvailableObservers" AS (
+                SELECT "MonitoringObserverId"
+                FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)
+                WHERE "MonitoringObserverId" = @monitoringObserverId
+            ),
+            "Submissions" AS (
+                SELECT FS."Answers", F."Questions", FS."LastUpdatedAt", FS."CreatedAt"
+                FROM "FormSubmissions" FS
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = FS."MonitoringObserverId"
+                    INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+
+                UNION ALL
+
+                SELECT PSI."Answers", PSIF."Questions", PSI."LastUpdatedAt", NULL::timestamptz AS "CreatedAt"
+                FROM "PollingStationInformation" PSI
+                    INNER JOIN "AvailableObservers" MO ON MO."MonitoringObserverId" = PSI."MonitoringObserverId"
+                    INNER JOIN "PollingStationInformationForms" PSIF ON PSIF."Id" = PSI."PollingStationInformationFormId"
+            ),
+            -- answers to the form's questions, timed by the answer's own timestamps when the client sent them
+            "SubmissionAnswers" AS (
+                SELECT
+                    COALESCE(
+                        (A ->> 'LastUpdatedAt')::timestamptz,
+                        (A ->> 'CreatedAt')::timestamptz,
+                        S."LastUpdatedAt",
+                        S."CreatedAt"
+                    ) AS answered_at,
+                    -- flagged options selected in a single or multi select answer
+                    CASE
+                        WHEN A ->> '$answerType' = 'singleSelectAnswer' AND Q ->> '$questionType' = 'singleSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND O ->> 'Id' = A -> 'Selection' ->> 'OptionId')
+                        WHEN A ->> '$answerType' = 'multiSelectAnswer' AND Q ->> '$questionType' = 'multiSelectQuestion'
+                            THEN (SELECT COUNT(*)
+                                  FROM JSONB_ARRAY_ELEMENTS(Q -> 'Options') O
+                                  WHERE (O ->> 'IsFlagged')::boolean
+                                    AND EXISTS (SELECT 1
+                                                FROM JSONB_ARRAY_ELEMENTS(A -> 'Selection') SEL
+                                                WHERE SEL ->> 'OptionId' = O ->> 'Id'))
+                        ELSE 0
+                    END AS number_of_flagged_answers
+                FROM "Submissions" S
+                    CROSS JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Answers") A
+                    INNER JOIN LATERAL JSONB_ARRAY_ELEMENTS(S."Questions") Q ON Q ->> 'Id' = A ->> 'QuestionId'
+            )
+            SELECT
+                DATE_TRUNC(
+                        'hour',
+                        TIMEZONE('utc', answered_at)
+                )::timestamptz AS "Bucket",
+                COUNT(*) AS "NumberOfAnswers",
+                SUM(number_of_flagged_answers) AS "NumberOfFlaggedAnswers"
+            FROM "SubmissionAnswers"
+            GROUP BY 1
+            ORDER BY 1;
             """;
 
         var queryArgs = new
@@ -298,12 +361,14 @@ public class Endpoint(
 
         List<VisitedPollingStationLevelStats> levelStats;
         ObserverExtras extras;
+        List<AnswersHistogramPoint> answersHistogram;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         using (var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs))
         {
             levelStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
             extras = multi.ReadSingle<ObserverExtras>();
+            answersHistogram = multi.Read<AnswersHistogramPoint>().ToList();
         }
 
         var totalStats = levelStats.FirstOrDefault(x => x.Level == 0);
@@ -324,7 +389,17 @@ public class Endpoint(
             NumberOfPollingStationsVisited = totalStats?.NumberOfVisitedPollingStations ?? 0,
             MinutesMonitoring = totalStats?.MinutesMonitoring ?? 0,
             NumberOfNotes = extras.NumberOfNotes,
-            NumberOfAttachments = extras.NumberOfAttachments
+            NumberOfAttachments = extras.NumberOfAttachments,
+            AnswersPerHourHistogram = answersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfAnswers
+            }).ToArray(),
+            FlaggedAnswersPerHourHistogram = answersHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket,
+                Value = x.NumberOfFlaggedAnswers
+            }).ToArray()
         };
     }
 

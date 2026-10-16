@@ -5,6 +5,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Forms.FetchCitizenReportingForms;
 
@@ -45,9 +46,11 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceSc
         var cacheKey =
             $"election-rounds/{req.ElectionRoundId}/monitoring-ngo/{monitoringNgo.MonitoringNgoForCitizenReportingId}/citizen-reports-forms/{monitoringNgo.FormsVersion}";
 
+        var cacheDuration = TimeSpan.FromMinutes(30);
+
         var cachedResponse = await cache.GetOrSetAsync(
             cacheKey,
-            async factoryCt =>
+            CachedResponse.Track(async factoryCt =>
             {
                 // Fresh scope: FusionCache eager refresh may outlive the request DbContext.
                 await using var scope = scopeFactory.CreateAsyncScope();
@@ -67,8 +70,10 @@ public class Endpoint(VoteMonitorContext context, IFusionCache cache, IServiceSc
                     Version = monitoringNgo.FormsVersion.ToString(),
                     Forms = forms.Select(FormFullModel.FromEntity).OrderBy(x => x.DisplayOrder).ToList()
                 };
-            },
-            options => options.SetDuration(TimeSpan.FromMinutes(30)),
+            }, cacheDuration),
+            options => options.SetDuration(cacheDuration),
+            tags: [CacheTags.Forms, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.MonitoringNgo(monitoringNgo.MonitoringNgoForCitizenReportingId!.Value),
+                CacheTags.FormsVersion(monitoringNgo.MonitoringNgoForCitizenReportingId!.Value, monitoringNgo.FormsVersion)],
             token: ct);
 
         return TypedResults.Ok(cachedResponse);

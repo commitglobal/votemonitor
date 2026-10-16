@@ -1,8 +1,9 @@
 using Feature.Statistics.GetNgoAdminStatistics.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetMonitoringNgoStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     public string Status { get; set; } = string.Empty;
     public ObserversStats ObserversStats { get; set; } = new();
@@ -24,7 +25,12 @@ public class Response
     public HistogramPoint[] FormsHistogram { get; set; } = [];
     public HistogramPoint[] QuestionsHistogram { get; set; } = [];
     public HistogramPoint[] FlaggedAnswersHistogram { get; set; } = [];
+    public HistogramPoint[] AnswersPerHourHistogram { get; set; } = [];
+    public HistogramPoint[] FlaggedAnswersPerHourHistogram { get; set; } = [];
     public HistogramPoint[] QuickReportsHistogram { get; set; } = [];
     public HistogramPoint[] IncidentReportsHistogram { get; set; } = [];
     public HistogramPoint[] CitizenReportsHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsSubmissionsPerHourHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsAnswersPerHourHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsFlaggedAnswersPerHourHistogram { get; set; } = [];
 }

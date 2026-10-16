@@ -4,6 +4,7 @@ using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetPlatformAdminStatistics;
 
@@ -29,10 +30,13 @@ public class Endpoint(
 
     public override async Task<Response> ExecuteAsync(CancellationToken ct)
     {
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         return await cache.GetOrSetAsync(
             CacheKey,
-            async _ => await GetPlatformStatisticsAsync(ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetPlatformStatisticsAsync(ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics],
             token: ct);
     }
 

@@ -97,17 +97,7 @@ builder.Services.SwaggerDocument(o =>
     };
 });
 
-builder.Services.AddMemoryCache();
-builder.Services.AddFusionCache()
-    .WithDefaultEntryOptions(options =>
-    {
-        options.Duration = TimeSpan.FromMinutes(30);
-        // Soft refresh near expiry + fail-safe reduce stampedes and keep serving data under load.
-        options.EagerRefreshThreshold = 0.8f;
-        options.IsFailSafeEnabled = true;
-        options.FailSafeMaxDuration = TimeSpan.FromHours(2);
-        options.FailSafeThrottleDuration = TimeSpan.FromSeconds(30);
-    });
+builder.Services.AddCache(builder.Configuration.GetSection(CacheExtensions.SectionKey));
 builder.Services.AddOptions();
 
 builder.Services.AddLogging(logging =>

@@ -39,7 +39,10 @@
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="Hangfire.Core" />
         <PackageReference Include="Hangfire.PostgreSql" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="ZiggyCreatures.FusionCache" />
+        <PackageReference Include="ZiggyCreatures.FusionCache.Backplane.StackExchangeRedis" />
+        <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" />
     </ItemGroup>
 
     <ItemGroup>

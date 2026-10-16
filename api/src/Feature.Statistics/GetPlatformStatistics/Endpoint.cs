@@ -3,6 +3,7 @@ using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetPlatformStatistics;
 
@@ -30,10 +31,13 @@ public class Endpoint(
         var electionRoundKey = string.Join(",", (req.ElectionRoundIds ?? []).OrderBy(x => x));
         var cacheKey = $"statistics-overview-{electionRoundKey}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         return await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetOverviewStatisticsAsync(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetOverviewStatisticsAsync(req, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, ..(req.ElectionRoundIds ?? []).Select(CacheTags.ElectionRound)],
             token: ct);
     }
 

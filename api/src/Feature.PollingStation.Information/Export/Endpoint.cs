@@ -157,6 +157,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, VoteMonitorC
                 return (rating.Value.ToString(CultureInfo.InvariantCulture), string.Empty);
             case DateAnswer date:
                 return (date.Date.ToString("s"), string.Empty);
+            case TimeAnswer time:
+                return (time.Time.ToString("HH:mm", CultureInfo.InvariantCulture), string.Empty);
+            case DateTimeAnswer dateTime:
+                return (dateTime.DateTime.ToString("s"), string.Empty);
             case SingleSelectAnswer single:
             {
                 var option = (question as SingleSelectQuestion)?.Options

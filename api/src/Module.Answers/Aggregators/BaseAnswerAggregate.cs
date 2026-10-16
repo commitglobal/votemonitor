@@ -12,6 +12,8 @@ namespace Module.Answers.Aggregators;
 [PolyJsonConverter.SubType(typeof(TextAnswerAggregate), AnswerAggregateTypes.TextAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(NumberAnswerAggregate), AnswerAggregateTypes.NumberAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(DateAnswerAggregate), AnswerAggregateTypes.DateAnswerAggregate)]
+[PolyJsonConverter.SubType(typeof(TimeAnswerAggregate), AnswerAggregateTypes.TimeAnswerAggregate)]
+[PolyJsonConverter.SubType(typeof(DateTimeAnswerAggregate), AnswerAggregateTypes.DateTimeAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(SingleSelectAnswerAggregate), AnswerAggregateTypes.SingleSelectAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(MultiSelectAnswerAggregate), AnswerAggregateTypes.MultiSelectAnswerAggregate)]
 [PolyJsonConverter.SubType(typeof(RatingAnswerAggregate), AnswerAggregateTypes.RatingAnswerAggregate)]

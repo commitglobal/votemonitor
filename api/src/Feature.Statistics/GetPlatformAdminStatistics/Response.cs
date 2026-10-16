@@ -1,6 +1,8 @@
+using Vote.Monitor.Core.Models;
+
 namespace Feature.Statistics.GetPlatformAdminStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     public List<CountryHistogramPoint> CountriesHistogram { get; set; } = [];
     public ObserversStats Observers { get; set; } = new();

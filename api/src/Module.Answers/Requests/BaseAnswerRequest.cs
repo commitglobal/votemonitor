@@ -9,6 +9,8 @@ namespace Module.Answers.Requests;
 [PolyJsonConverter.SubType(typeof(TextAnswerRequest), AnswerTypes.TextAnswerType)]
 [PolyJsonConverter.SubType(typeof(NumberAnswerRequest), AnswerTypes.NumberAnswerType)]
 [PolyJsonConverter.SubType(typeof(DateAnswerRequest), AnswerTypes.DateAnswerType)]
+[PolyJsonConverter.SubType(typeof(TimeAnswerRequest), AnswerTypes.TimeAnswerType)]
+[PolyJsonConverter.SubType(typeof(DateTimeAnswerRequest), AnswerTypes.DateTimeAnswerType)]
 [PolyJsonConverter.SubType(typeof(SingleSelectAnswerRequest), AnswerTypes.SingleSelectAnswerType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectAnswerRequest), AnswerTypes.MultiSelectAnswerType)]
 [PolyJsonConverter.SubType(typeof(RatingAnswerRequest), AnswerTypes.RatingAnswerType)]
@@ -19,4 +21,7 @@ public abstract class BaseAnswerRequest
     public string Discriminator => DiscriminatorValue.Get(GetType());
 
     public Guid QuestionId { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+    public DateTime? LastUpdatedAt { get; set; }
 }

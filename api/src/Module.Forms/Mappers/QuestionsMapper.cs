@@ -19,6 +19,12 @@ public static class QuestionsMapper
             case DateQuestion dateInputQuestionRequest:
                 return DateQuestionModel.FromEntity(dateInputQuestionRequest);
 
+            case TimeQuestion timeInputQuestionRequest:
+                return TimeQuestionModel.FromEntity(timeInputQuestionRequest);
+
+            case DateTimeQuestion dateTimeInputQuestionRequest:
+                return DateTimeQuestionModel.FromEntity(dateTimeInputQuestionRequest);
+
             case SingleSelectQuestion singleSelectQuestionRequest:
                 return SingleSelectQuestionModel.FromEntity(singleSelectQuestionRequest);
 
@@ -58,6 +64,20 @@ public static class QuestionsMapper
                     dateInputQuestion.Text,
                     dateInputQuestion.Helptext,
                     ToEntity(dateInputQuestion.DisplayLogic));
+
+            case TimeQuestionRequest timeInputQuestion:
+                return TimeQuestion.Create(timeInputQuestion.Id,
+                    timeInputQuestion.Code,
+                    timeInputQuestion.Text,
+                    timeInputQuestion.Helptext,
+                    ToEntity(timeInputQuestion.DisplayLogic));
+
+            case DateTimeQuestionRequest dateTimeInputQuestion:
+                return DateTimeQuestion.Create(dateTimeInputQuestion.Id,
+                    dateTimeInputQuestion.Code,
+                    dateTimeInputQuestion.Text,
+                    dateTimeInputQuestion.Helptext,
+                    ToEntity(dateTimeInputQuestion.DisplayLogic));
 
             case SingleSelectQuestionRequest singleSelectQuestion:
                 var singleSelectQuestionOptions = ToEntities(singleSelectQuestion.Options);

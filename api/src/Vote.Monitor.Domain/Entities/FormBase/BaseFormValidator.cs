@@ -18,6 +18,8 @@ public class BaseFormValidator : Validator<BaseForm>
                 v.Add(new TextQuestionValidator());
                 v.Add(new NumberQuestionValidator());
                 v.Add(new DateQuestionValidator());
+                v.Add(new TimeQuestionValidator());
+                v.Add(new DateTimeQuestionValidator());
                 v.Add(new SingleSelectQuestionValidator());
                 v.Add(new MultiSelectQuestionValidator());
                 v.Add(new RatingQuestionValidator());

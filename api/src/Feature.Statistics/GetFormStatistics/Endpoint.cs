@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetFormStatistics;
 
@@ -37,10 +38,13 @@ public class Endpoint(
 
         var cacheKey = $"statistics-form-{req.ElectionRoundId}-{req.NgoId}-{req.FormId}-{req.DataSource}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         var response = await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetStatisticsAsync(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetStatisticsAsync(req, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.Ngo(req.NgoId), CacheTags.Form(req.FormId)],
             token: ct);
 
         return TypedResults.Ok(response);

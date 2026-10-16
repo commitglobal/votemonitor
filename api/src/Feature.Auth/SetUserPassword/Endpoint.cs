@@ -1,9 +1,13 @@
 ﻿using Authorization.Policies;
+using Feature.Auth.Specifications;
 using Microsoft.AspNetCore.Identity;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Auth.SetUserPassword;
 
-public class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(
+    IUserStore<ApplicationUser> userStore,
+    IRepository<MonitoringObserver> monitoringObserverRepository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -13,19 +17,25 @@ public class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Reque
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var user = await userManager.FindByIdAsync(request.AspNetUserId.ToString());
+        var user = await userStore.FindByIdAsync(request.AspNetUserId.ToString(), ct);
         if (user is null)
         {
             return TypedResults.NotFound();
         }
-        user.PasswordHash = userManager.PasswordHasher.HashPassword(user, request.NewPassword);
 
-        var res = await userManager.UpdateAsync(user);
-        if (!res.Succeeded)
+        // setting a password activates the account (ngo admin, ngo staff or observer)
+        user.AcceptInvite(request.NewPassword);
+
+        var monitoringObservers =
+            await monitoringObserverRepository.ListAsync(new ListMonitoringObserverSpecification(user.Id), ct);
+
+        foreach (var monitoringObserver in monitoringObservers)
         {
-            AddError(x => x.NewPassword, string.Join(";", res.Errors.Select(x => x.Description)));
-            ThrowIfAnyErrors(500);
+            monitoringObserver.Activate();
         }
+
+        await userStore.UpdateAsync(user, ct);
+        await monitoringObserverRepository.SaveChangesAsync(ct);
 
         return TypedResults.NoContent();
     }

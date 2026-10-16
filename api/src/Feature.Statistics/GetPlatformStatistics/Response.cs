@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetPlatformStatistics;
 
-public class Response
+public class Response : CachedResponse
 {
     [JsonPropertyName("observers")]
     public int Observers { get; set; }

@@ -1,6 +1,8 @@
-﻿namespace Feature.Statistics.GetObserverStatistics;
+﻿using Vote.Monitor.Core.Models;
 
-public class Response
+namespace Feature.Statistics.GetObserverStatistics;
+
+public class Response : CachedResponse
 {
     public int NumberOfFormsSubmitted { get; set; }
     public int NumberOfQuestionsAnswered { get; set; }

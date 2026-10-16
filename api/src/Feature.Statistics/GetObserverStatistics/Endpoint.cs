@@ -4,6 +4,7 @@ using Feature.Statistics.Options;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Domain.ConnectionFactory;
 using ZiggyCreatures.Caching.Fusion;
+using Vote.Monitor.Core.Models;
 
 namespace Feature.Statistics.GetObserverStatistics;
 
@@ -27,10 +28,13 @@ public class Endpoint(
     {
         var cacheKey = $"statistics-{req.ElectionRoundId}-{req.ObserverId}";
 
+        var cacheDuration = TimeSpan.FromMinutes(_options.CacheDurationInMinutes);
+
         return await cache.GetOrSetAsync(
             cacheKey,
-            async _ => await GetObserverStatisticsAsync(req, ct),
-            cacheOptions => cacheOptions.SetDuration(TimeSpan.FromMinutes(_options.CacheDurationInMinutes)),
+            CachedResponse.Track(async _ => await GetObserverStatisticsAsync(req, ct), cacheDuration),
+            cacheOptions => cacheOptions.SetDuration(cacheDuration),
+            tags: [CacheTags.Statistics, CacheTags.ElectionRound(req.ElectionRoundId), CacheTags.Observer(req.ObserverId)],
             token: ct);
     }
 

@@ -9,6 +9,8 @@ namespace Module.Forms.Requests;
 [PolyJsonConverter.SubType(typeof(TextQuestionRequest), QuestionTypes.TextQuestionType)]
 [PolyJsonConverter.SubType(typeof(NumberQuestionRequest), QuestionTypes.NumberQuestionType)]
 [PolyJsonConverter.SubType(typeof(DateQuestionRequest), QuestionTypes.DateQuestionType)]
+[PolyJsonConverter.SubType(typeof(TimeQuestionRequest), QuestionTypes.TimeQuestionType)]
+[PolyJsonConverter.SubType(typeof(DateTimeQuestionRequest), QuestionTypes.DateTimeQuestionType)]
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestionRequest), QuestionTypes.SingleSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestionRequest), QuestionTypes.MultiSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(RatingQuestionRequest), QuestionTypes.RatingQuestionType)]
