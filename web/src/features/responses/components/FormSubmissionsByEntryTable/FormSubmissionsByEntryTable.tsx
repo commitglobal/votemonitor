@@ -1,4 +1,4 @@
-import { DataSources, FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
+import { DataSources, FormStatus, FormSubmissionFollowUpStatus, FunctionComponent, QuestionsAnswered } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
@@ -20,6 +20,7 @@ export interface FormSubmissionsSearchRequest{
   dataSource: DataSources;
   searchText: string | undefined;
   formTypeFilter: string | undefined;
+  formStatusFilter: FormStatus | undefined;
   hasFlaggedAnswers: boolean | undefined;
   level1Filter: string | undefined;
   level2Filter: string | undefined;
@@ -55,6 +56,7 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       dataSource: getValueOrDefault(search.dataSource, DataSources.Ngo),
       searchText: searchText,
       formTypeFilter: debouncedSearch.formTypeFilter,
+      formStatusFilter: debouncedSearch.formStatusFilter,
       hasFlaggedAnswers: toBoolean(debouncedSearch.hasFlaggedAnswers),
       level1Filter: debouncedSearch.level1Filter,
       level2Filter: debouncedSearch.level2Filter,

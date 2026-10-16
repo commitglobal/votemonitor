@@ -13,7 +13,7 @@ import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
 import type { FormSubmissionsSearchRequest } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
 const routeApi = getRouteApi('/responses/');
-type FormSubmissionsByFormSearchRequest = Omit<FormSubmissionsSearchRequest, 'monitoringObserverId'>;
+type FormSubmissionsByFormSearchRequest = Omit<FormSubmissionsSearchRequest, 'monitoringObserverId' | 'formStatusFilter'>;
 
 type FormSubmissionsByFormTableProps = {
   searchText: string;

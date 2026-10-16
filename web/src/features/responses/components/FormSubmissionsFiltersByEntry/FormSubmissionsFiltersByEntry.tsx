@@ -3,6 +3,7 @@ import { DataSources } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { CoalitionMemberFilter } from '@/features/filtering/components/CoalitionMemberFilter';
 import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
+import { FormStatusFilter } from '@/features/filtering/components/FormStatusFilter';
 import { FormTypeFilter } from '@/features/filtering/components/FormTypeFilter';
 import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { FC } from 'react';
@@ -21,6 +22,7 @@ export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
     <FilteringContainer>
       <FormTypeFilter />
+      <FormStatusFilter />
       <FormSubmissionsFormFilter />
       {dataSource === DataSources.Coalition ? <CoalitionMemberFilter /> : null}
       <FormSubmissionsFlaggedAnswersFilter />

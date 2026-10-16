@@ -14,8 +14,7 @@ export const formSubmissionsByEntryDefaultColumns: TableColumnVisibilityState<Fo
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
-  // Shown inside the form code cell, not as a column.
-  formStatus: false,
+  formStatus: true,
   formName: true,
   formType: true,
   level1: false,
@@ -73,8 +72,7 @@ export const observerFormSubmissionsDefaultColumns: TableColumnVisibilityState<F
   submissionId: false,
   timeSubmitted: true,
   formCode: true,
-  // Shown inside the form code cell, not as a column.
-  formStatus: false,
+  formStatus: true,
   formType: true,
   formName: true,
   level1: false,
@@ -113,6 +111,7 @@ const formSubmissionsByEntryColumnVisibilityOptions: ColumnOption<FormSubmission
   { id: 'submissionId', label: 'Entry ID', enableHiding: true },
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formStatus', label: 'Form status', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
@@ -321,6 +320,7 @@ export const incidentReportsColumnVisibilityOptions: Record<
 export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormSubmissionByEntry>[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formStatus', label: 'Form status', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'formName', label: 'Form name', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },

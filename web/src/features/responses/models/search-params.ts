@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import {
   CitizenReportFollowUpStatus,
+  FormStatus,
   FormSubmissionFollowUpStatus,
   IncidentReportFollowUpStatus,
   QuestionsAnswered,
@@ -23,6 +24,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
   z.object({
     searchText: z.string().catch('').optional(),
     formTypeFilter: z.string().catch('').optional(),
+    formStatusFilter: z.nativeEnum(FormStatus).optional(),
     level1Filter: z.string().catch('').optional(),
     level2Filter: z.string().catch('').optional(),
     level3Filter: z.string().catch('').optional(),
