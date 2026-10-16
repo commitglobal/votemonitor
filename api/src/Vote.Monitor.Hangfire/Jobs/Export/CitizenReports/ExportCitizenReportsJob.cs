@@ -117,6 +117,7 @@ public class ExportCitizenReportsJob(
         queryParams.Add("level5", filters?.Level5Filter);
         queryParams.Add("locationId", filters?.LocationId);
         queryParams.Add("formId", filters?.FormId);
+        queryParams.Add("formStatus", filters?.FormStatusFilter?.ToString());
         queryParams.Add("hasAttachments", filters?.HasAttachments);
         queryParams.Add("hasNotes", filters?.HasNotes);
         queryParams.Add("questionsAnswered", filters?.QuestionsAnswered?.ToString());
@@ -204,6 +205,7 @@ public class ExportCitizenReportsJob(
                    AND (@level5 IS NULL OR L."Level5" = @level5)
                    AND (@locationId IS NULL OR CR."LocationId" = @locationId)
                    AND (@formId IS NULL OR CR."FormId" = @formId)
+                   AND (@formStatus IS NULL OR F."Status" = @formStatus)
                    AND (@questionsAnswered IS NULL
                      OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
                      OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")

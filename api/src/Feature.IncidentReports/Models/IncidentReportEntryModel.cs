@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
@@ -9,6 +10,7 @@ public record IncidentReportEntryModel
     public Guid IncidentReportId { get; set; }
     public DateTime TimeSubmitted { get; set; }
     public string FormCode { get; set; }
+    public FormStatus FormStatus { get; set; } = null!;
 
     public TranslatedString FormName { get; set; }
 

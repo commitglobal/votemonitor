@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
 namespace Feature.CitizenReports.ListEntries;
@@ -20,6 +21,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
     [QueryParam] public CitizenReportFollowUpStatus? FollowUpStatus { get; set; }
     [QueryParam] public Guid? FormId { get; set; }
+    [QueryParam] public FormStatus? FormStatusFilter { get; set; }
     [QueryParam] public bool? HasNotes { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public bool? HasComments { get; set; }

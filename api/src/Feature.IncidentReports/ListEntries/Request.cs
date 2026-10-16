@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
@@ -35,6 +36,7 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] public MonitoringObserverStatus? MonitoringObserverStatus { get; set; }
     [QueryParam] public Guid? FormId { get; set; }
+    [QueryParam] public FormStatus? FormStatusFilter { get; set; }
     [QueryParam] public bool? HasNotes { get; set; }
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public bool? HasComments { get; set; }

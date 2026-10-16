@@ -55,11 +55,12 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             .Where(x => req.FollowUpStatusFilter == null || x.FollowUpStatus == req.FollowUpStatusFilter)
             .Where(x => req.LocationTypeFilter == null || x.LocationType == req.LocationTypeFilter)
             .Where(x => req.IsCompletedFilter == null || x.IsCompleted == req.IsCompletedFilter)
-            .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Name, cr.Form.DefaultLanguage })
+            .GroupBy(cr => new { cr.FormId, cr.Form.Code, cr.Form.Status, cr.Form.Name, cr.Form.DefaultLanguage })
             .Select(cr => new AggregatedFormOverview
             {
                 FormId = cr.Key.FormId,
                 FormCode = cr.Key.Code,
+                FormStatus = cr.Key.Status,
                 FormName = cr.Key.Name,
                 FormDefaultLanguage = cr.Key.DefaultLanguage,
                 NumberOfNotes = cr.Sum(x => x.Notes.Count),

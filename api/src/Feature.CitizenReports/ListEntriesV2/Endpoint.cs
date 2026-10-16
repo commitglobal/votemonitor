@@ -53,6 +53,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                          SELECT s."Id" AS "CitizenReportId",
                                 s."TimeSubmitted",
                                 s."FormCode",
+                                s."FormStatus",
                                 s."FormName",
                                 s."FormDefaultLanguage",
                                 s."NumberOfQuestionsAnswered",

@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -22,6 +23,7 @@ public record ExportIncidentReportsFilters
     public MonitoringObserverStatus? MonitoringObserverStatus { get; init; }
 
     public Guid? FormId { get; init; }
+    public FormStatus? FormStatusFilter { get; init; }
     public bool? HasNotes { get; init; }
     public bool? HasAttachments { get; init; }
 
