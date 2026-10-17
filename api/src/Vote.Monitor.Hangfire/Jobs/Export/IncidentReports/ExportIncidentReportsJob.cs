@@ -186,6 +186,7 @@ public class ExportIncidentReportsJob(
                                 ),
                                 '[]'::JSONB
                         ) AS "Notes",
+                        {CommentsSql.JsonAgg("IncidentReportComments", "IncidentReportId", "IR.\"Id\"")} AS "Comments",
                         COALESCE(IR."LastModifiedOn", IR."CreatedOn") AS "TimeSubmitted",
                         IR."FollowUpStatus",
                         mo."DisplayName",
@@ -246,6 +247,7 @@ public class ExportIncidentReportsJob(
                 IR."Answers",
                 IR."Attachments",
                 IR."Notes",
+                IR."Comments",
                 IR."FollowUpStatus",
                 IR."NumberOfFlaggedAnswers",
                 IR."IsCompleted"

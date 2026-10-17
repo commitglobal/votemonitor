@@ -143,8 +143,9 @@ public class IncidentReportsDataTableGeneratorTests
 
         // Assert
         result.Should().NotBeNull();
-        result.header.Should().ContainInOrder(_submissionColumns);
-        result.header.Should().HaveSameCount(_submissionColumns);
+        string[] expectedColumns = [.. _submissionColumns, "Comments"];
+        result.header.Should().ContainInOrder(expectedColumns);
+        result.header.Should().HaveSameCount(expectedColumns);
     }
 
     [Fact]
@@ -168,15 +169,16 @@ public class IncidentReportsDataTableGeneratorTests
         var incidentReport4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             TextAnswer.Create(_textQuestionId, "answer 4"),
             FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
+        incidentReport4.Comments = Fake.Comments();
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(incidentReport1), "answer 1", 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(incidentReport2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(incidentReport3), "answer 3", 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(incidentReport1), "answer 1", 0, "", "", 0, "", "", ""],
+            [.. GetDefaultExpectedColumns(incidentReport2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url, ""],
+            [.. GetDefaultExpectedColumns(incidentReport3), "answer 3", 2, Note1, Note2, 0, "", "", ""],
             [
                 .. GetDefaultExpectedColumns(incidentReport4), "answer 4", 2, Note1, Note2, 2, Attachment1Url,
-                Attachment2Url
+                Attachment2Url, Fake.FormattedComments
             ],
         ];
 
@@ -201,6 +203,7 @@ public class IncidentReportsDataTableGeneratorTests
             "Attachments",
             "Attachment 1",
             "Attachment 2",
+            "Comments",
         ];
 
         result.Should().NotBeNull();

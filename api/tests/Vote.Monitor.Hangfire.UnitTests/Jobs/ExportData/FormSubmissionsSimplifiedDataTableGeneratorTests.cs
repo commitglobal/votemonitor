@@ -144,8 +144,9 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
 
         // Assert
         result.Should().NotBeNull();
-        result.header.Should().ContainInOrder(_submissionColumns);
-        result.header.Should().HaveSameCount(_submissionColumns);
+        string[] expectedColumns = [.. _submissionColumns, "Comments"];
+        result.header.Should().ContainInOrder(expectedColumns);
+        result.header.Should().HaveSameCount(expectedColumns);
     }
 
     [Fact]
@@ -166,12 +167,14 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
         var submission4 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 4"),
             FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
 
+        submission4.Comments = Fake.Comments();
+
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "answer 1", "", ""],
-            [.. GetDefaultExpectedColumns(submission2), "answer 2", "", JoinedAttachments],
-            [.. GetDefaultExpectedColumns(submission3), "answer 3", JoinedNotes, ""],
-            [.. GetDefaultExpectedColumns(submission4), "answer 4", JoinedNotes, JoinedAttachments],
+            [.. GetDefaultExpectedColumns(submission1), "answer 1", "", "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "answer 2", "", JoinedAttachments, ""],
+            [.. GetDefaultExpectedColumns(submission3), "answer 3", JoinedNotes, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), "answer 4", JoinedNotes, JoinedAttachments, Fake.FormattedComments],
         ];
 
         // Act
@@ -191,6 +194,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
             "TQ - Question text",
             "Notes",
             "Attachments",
+            "Comments",
         ];
 
         result.Should().NotBeNull();

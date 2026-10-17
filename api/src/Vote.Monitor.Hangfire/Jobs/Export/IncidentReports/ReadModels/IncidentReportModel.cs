@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Hangfire.Jobs.Export.ReadModels;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -36,4 +37,5 @@ public class IncidentReportModel
     public BaseAnswer[] Answers { get; set; } = [];
     public NoteModel[] Notes { get; set; } = [];
     public SubmissionAttachmentModel[] Attachments { get; set; } = [];
+    public CommentModel[] Comments { get; set; } = [];
 }

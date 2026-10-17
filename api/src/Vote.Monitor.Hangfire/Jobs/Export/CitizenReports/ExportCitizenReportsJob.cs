@@ -172,6 +172,7 @@ public class ExportCitizenReportsJob(
                               ),
                               '[]'::JSONB
                       ) AS "Notes",
+                      {CommentsSql.JsonAgg("CitizenReportComments", "CitizenReportId", "CR.\"Id\"")} AS "Comments",
                       COALESCE(CR."LastModifiedOn", CR."CreatedOn") "TimeSubmitted"
                   FROM
                       "CitizenReports" CR

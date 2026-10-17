@@ -105,6 +105,8 @@ public class FormSubmissionsDataTableGenerator
             _header.AddRange(writer.Header);
         }
 
+        _header.Add(CommentsFormatter.ColumnHeader);
+
         for (var index = 0; index < _submissions.Count; index++)
         {
             var submission = _submissions[index];
@@ -112,6 +114,8 @@ public class FormSubmissionsDataTableGenerator
             {
                 _dataTable[index].AddRange(writer.Write(submission.SubmissionId));
             }
+
+            _dataTable[index].Add(CommentsFormatter.Format(submission.Comments));
         }
 
         return (_header, _dataTable);

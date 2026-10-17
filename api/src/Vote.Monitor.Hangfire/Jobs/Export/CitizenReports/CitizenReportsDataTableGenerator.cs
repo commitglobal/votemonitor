@@ -91,6 +91,8 @@ public class CitizenReportsDataTableGenerator
             _header.AddRange(writer.Header);
         }
 
+        _header.Add(CommentsFormatter.ColumnHeader);
+
         for (var index = 0; index < _citizenReports.Count; index++)
         {
             var submission = _citizenReports[index];
@@ -98,6 +100,8 @@ public class CitizenReportsDataTableGenerator
             {
                 _dataTable[index].AddRange(writer.Write(submission.CitizenReportId));
             }
+
+            _dataTable[index].Add(CommentsFormatter.Format(submission.Comments));
         }
 
         return (_header, _dataTable);
