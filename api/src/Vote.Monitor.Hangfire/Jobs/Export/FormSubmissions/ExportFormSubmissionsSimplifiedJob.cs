@@ -158,7 +158,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 		builder.OrderBy(@"s.""TimeSubmitted"" DESC");
 
 		var template = builder.AddTemplate(
-			"""
+			$"""
             SELECT
             	s."SubmissionId",
             	CASE
@@ -187,7 +187,8 @@ public class ExportFormSubmissionsSimplifiedJob(
             	s."Notes",
             	s."Answers",
             	s."FollowUpStatus",
-            	s."IsCompleted"
+            	s."IsCompleted",
+            	{CommentsSql.JsonAgg("FormSubmissionComments", "SubmissionId", "s.\"SubmissionId\"")} AS "Comments"
             FROM
             	"GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
             /**where**/

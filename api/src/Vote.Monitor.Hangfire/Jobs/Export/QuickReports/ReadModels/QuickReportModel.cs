@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Hangfire.Jobs.Export.ReadModels;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
@@ -36,4 +37,5 @@ public class QuickReportModel
     public IncidentCategory IncidentCategory { get; set; }
 
     public QuickReportAttachmentModel[] Attachments { get; init; }
+    public CommentModel[] Comments { get; set; } = [];
 }

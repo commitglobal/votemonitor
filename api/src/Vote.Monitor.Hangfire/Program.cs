@@ -43,6 +43,7 @@ using Vote.Monitor.Hangfire.Jobs.Export.PollingStationInformation;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.ReadModels;
 using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,6 +72,7 @@ SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAns
 SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(SubmissionAttachmentModel[]), new JsonToObjectConverter<SubmissionAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(QuickReportAttachmentModel[]), new JsonToObjectConverter<QuickReportAttachmentModel[]>());
+SqlMapper.AddTypeHandler(typeof(CommentModel[]), new JsonToObjectConverter<CommentModel[]>());
 SqlMapper.AddTypeHandler(typeof(JsonDocument), new JsonToObjectConverter<JsonDocument>());
 
 SqlMapper.AddTypeHandler(typeof(UserStatus), new SmartEnumByValueTypeHandler<UserStatus, string>());

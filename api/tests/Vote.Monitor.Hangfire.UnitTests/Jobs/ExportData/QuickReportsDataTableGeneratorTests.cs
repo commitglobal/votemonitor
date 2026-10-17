@@ -51,8 +51,9 @@ public class QuickReportsDataTableGeneratorTests
 
         // Assert
         result.Should().NotBeNull();
-        result.header.Should().ContainInOrder(_quickReportColumns);
-        result.header.Should().HaveSameCount(_quickReportColumns);
+        string[] expectedColumns = [.. _quickReportColumns, "Comments"];
+        result.header.Should().ContainInOrder(expectedColumns);
+        result.header.Should().HaveSameCount(expectedColumns);
     }
 
     [Fact]
@@ -62,6 +63,7 @@ public class QuickReportsDataTableGeneratorTests
         var quickReport1 = Fake.QuickReport(_quickReportId1, QuickReportLocationType.VisitedPollingStation, []);
         var quickReport2 = Fake.QuickReport(_quickReportId2, QuickReportLocationType.OtherPollingStation, GetOneAttachmentFor(_quickReportId2));
         var quickReport3 = Fake.QuickReport(_quickReportId3, QuickReportLocationType.NotRelatedToAPollingStation, GetTwoAttachmentsFor(_quickReportId3));
+        quickReport3.Comments = Fake.Comments();
 
         List<object[]> expectedData =
         [
@@ -77,6 +79,7 @@ public class QuickReportsDataTableGeneratorTests
                 quickReport1.Title,
                 quickReport1.Description,
                 "",
+                "",
                 ""
             ],
             [
@@ -91,6 +94,7 @@ public class QuickReportsDataTableGeneratorTests
                 quickReport2.Title,
                 quickReport2.Description,
                 Attachment1Url,
+                "",
                 ""
             ],
             [
@@ -105,7 +109,8 @@ public class QuickReportsDataTableGeneratorTests
                 quickReport3.Title,
                 quickReport3.Description,
                 Attachment1Url,
-                Attachment2Url
+                Attachment2Url,
+                Fake.FormattedComments
             ],
 
         ];
@@ -124,6 +129,7 @@ public class QuickReportsDataTableGeneratorTests
             .. _quickReportColumns,
             "Attachment 1",
             "Attachment 2",
+            "Comments",
         ];
 
         result.Should().NotBeNull();
@@ -153,7 +159,8 @@ public class QuickReportsDataTableGeneratorTests
                 quickReport.Number,
                 "",
                 quickReport.Title,
-                quickReport.Description
+                quickReport.Description,
+                ""
             ],
 
         ];
@@ -168,6 +175,7 @@ public class QuickReportsDataTableGeneratorTests
         // Assert
         string[] expectedColumns = [
             .. _quickReportColumns,
+            "Comments",
         ];
 
         result.Should().NotBeNull();

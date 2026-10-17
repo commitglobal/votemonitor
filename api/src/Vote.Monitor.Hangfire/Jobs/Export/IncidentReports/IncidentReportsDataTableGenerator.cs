@@ -102,6 +102,8 @@ public class IncidentReportsDataTableGenerator
             _header.AddRange(writer.Header);
         }
 
+        _header.Add(CommentsFormatter.ColumnHeader);
+
         for (var index = 0; index < _incidentReports.Count; index++)
         {
             var submission = _incidentReports[index];
@@ -109,6 +111,8 @@ public class IncidentReportsDataTableGenerator
             {
                 _dataTable[index].AddRange(writer.Write(submission.IncidentReportId));
             }
+
+            _dataTable[index].Add(CommentsFormatter.Format(submission.Comments));
         }
 
         return (_header, _dataTable);

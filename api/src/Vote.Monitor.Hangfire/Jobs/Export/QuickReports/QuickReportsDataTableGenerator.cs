@@ -76,6 +76,7 @@ public class QuickReportsDataTableGenerator
             ?.AttachmentUrlsColumnHeaders ?? [];
 
         _header.AddRange(longestAttachmentUrlsColumnHeader);
+        _header.Add(CommentsFormatter.ColumnHeader);
 
         for (var i = 0; i < _quickReports.Count; i++)
         {
@@ -86,6 +87,7 @@ public class QuickReportsDataTableGenerator
                 string.Empty);
 
             row.AddRange(attachmentsUrls);
+            row.Add(quickReport.Comments);
         }
 
         return (_header, _dataTable);
@@ -110,10 +112,12 @@ public class QuickReportsDataTableGenerator
         public Guid QuickReportId { get; }
         public List<string> AttachmentUrls { get; } = [];
         public List<string> AttachmentUrlsColumnHeaders { get; } = [];
+        public string Comments { get; }
 
         private QuickReportData(QuickReportModel quickReport)
         {
             QuickReportId = quickReport.Id;
+            Comments = CommentsFormatter.Format(quickReport.Comments);
             AttachmentUrls = [];
             AttachmentUrlsColumnHeaders = [];
         }

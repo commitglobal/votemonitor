@@ -154,6 +154,7 @@ public class ExportQuickReportsJob(
             		),
             		'[]'::JSONB
             	) AS "Attachments",
+            	{CommentsSql.JsonAgg("QuickReportComments", "QuickReportId", "QR.\"Id\"")} AS "Comments",
             	MO."NgoName",
             	MO."DisplayName",
             	MO."Email",
