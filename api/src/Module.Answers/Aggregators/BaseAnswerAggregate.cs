@@ -25,8 +25,35 @@ public abstract class BaseAnswerAggregate
 
     [JsonInclude] public Guid QuestionId { get; private set; }
     public int DisplayOrder { get; set; }
-    [JsonInclude] public BaseQuestion Question { get; private set; } = null!;
+    /// <summary>
+    /// Not set on the aggregates of a location breakdown (see <see cref="LocationAggregates"/>).
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public BaseQuestion Question { get; private set; } = null!;
     [JsonInclude] public int AnswersAggregated { get; private set; }
+
+    /// <summary>
+    /// Ids of the question's notes in the aggregate's Notes. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<int>? NoteIds { get; private set; }
+
+    /// <summary>
+    /// Ids of the question's attachments in the aggregate's Attachments. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<int>? AttachmentIds { get; private set; }
+
+    /// <summary>
+    /// The question's aggregate per location id (see <see cref="AggregateLocation"/>), without the question itself and
+    /// referencing only the texts, notes and attachments of the location's submissions. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<int, BaseAnswerAggregate>? LocationAggregates { get; private set; }
 
     /// <summary>
     /// Used when deserializing an aggregate computed by the database.

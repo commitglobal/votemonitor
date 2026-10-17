@@ -4,5 +4,5 @@ namespace Feature.CitizenReports.GetSubmissionsAggregatedV2;
 
 public class Response
 {
-    public CitizenReportFormSubmissionsAggregate SubmissionsAggregate { get; set; } = null!;
+    public CitizenReportFormSubmissionsAggregateV2 SubmissionsAggregate { get; set; } = null!;
 }

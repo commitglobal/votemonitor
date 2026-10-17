@@ -265,6 +265,10 @@ SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandl
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 // jsonb columns of the submissions aggregates ("GetFormSubmissionsAggregate", "GetIncidentReportsAggregate", "GetCitizenReportsAggregate")
 SqlMapper.AddTypeHandler(typeof(IReadOnlyDictionary<Guid, BaseAnswerAggregate>), new JsonToObjectConverter<IReadOnlyDictionary<Guid, BaseAnswerAggregate>>());
+SqlMapper.AddTypeHandler(typeof(AggregateLocation[]), new JsonToObjectConverter<AggregateLocation[]>());
+SqlMapper.AddTypeHandler(typeof(AggregateText[]), new JsonToObjectConverter<AggregateText[]>());
+SqlMapper.AddTypeHandler(typeof(AggregateNote[]), new JsonToObjectConverter<AggregateNote[]>());
+SqlMapper.AddTypeHandler(typeof(AggregateAttachment[]), new JsonToObjectConverter<AggregateAttachment[]>());
 SqlMapper.AddTypeHandler(typeof(IReadOnlyList<Responder>), new JsonToObjectConverter<IReadOnlyList<Responder>>());
 SqlMapper.AddTypeHandler(typeof(Vote.Monitor.Core.Models.NoteModel[]), new JsonToObjectConverter<Vote.Monitor.Core.Models.NoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(AggregatedSubmissionsAttachmentModel[]), new JsonToObjectConverter<AggregatedSubmissionsAttachmentModel[]>());
