@@ -20,12 +20,23 @@ public class TextAnswerAggregate : BaseAnswerAggregate
 
     private List<TextResponse> _answers = new();
 
+    /// <summary>
+    /// Not set when the texts are referenced by id (<see cref="AnswerIds"/>).
+    /// </summary>
     [JsonInclude]
-    public IReadOnlyList<TextResponse> Answers
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<TextResponse>? Answers
     {
-        get => _answers.AsReadOnly();
-        private set => _answers = value.ToList();
+        get => AnswerIds is null ? _answers.AsReadOnly() : null;
+        private set => _answers = value?.ToList() ?? [];
     }
+
+    /// <summary>
+    /// Ids of the texts in the aggregate's Texts. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<int>? AnswerIds { get; private set; }
 
     protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {

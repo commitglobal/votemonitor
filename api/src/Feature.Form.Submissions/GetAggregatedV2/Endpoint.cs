@@ -34,10 +34,10 @@ public class Endpoint(
                            SELECT * FROM "GetFormSubmissionsAggregate"(@electionRoundId, @ngoId, @dataSource, @formId, @filter, @filterParameters::jsonb)
                            """;
 
-        FormSubmissionsAggregate? aggregate;
+        FormSubmissionsAggregateV2? aggregate;
         using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
         {
-            aggregate = await dbConnection.QuerySingleOrDefaultAsync<FormSubmissionsAggregate>(new CommandDefinition(sql, new
+            aggregate = await dbConnection.QuerySingleOrDefaultAsync<FormSubmissionsAggregateV2>(new CommandDefinition(sql, new
             {
                 electionRoundId = req.ElectionRoundId,
                 ngoId = req.NgoId,

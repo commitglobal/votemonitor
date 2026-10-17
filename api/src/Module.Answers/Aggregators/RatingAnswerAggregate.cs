@@ -18,6 +18,21 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         private set => _answersHistogram = new Dictionary<int, int>(value);
     }
 
+    /// <summary>
+    /// Number of distinct submissions that picked each rating value. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<int, int>? SubmissionsHistogram { get; private set; }
+
+    /// <summary>
+    /// Number of distinct polling stations where each rating value was picked. Only set when computed by the database,
+    /// and not for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<int, int>? PollingStationsHistogram { get; private set; }
+
     [JsonInclude] public int Min { get; private set; } = int.MaxValue;
     [JsonInclude] public int Max { get; private set; } = int.MinValue;
     [JsonInclude] public decimal Average { get; private set; }

@@ -4,6 +4,7 @@ using CoreNoteModel = Vote.Monitor.Core.Models.NoteModel;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 
+[Obsolete("Use :aggregated-submissionsV2 instead.")]
 public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
@@ -19,6 +20,7 @@ public class Endpoint(
         Summary(s =>
         {
             s.Summary = "Gets aggregated incident report form submissions with all the notes and attachments";
+            s.Description = "Obsolete: use :aggregated-submissionsV2 instead.";
         });
     }
 
