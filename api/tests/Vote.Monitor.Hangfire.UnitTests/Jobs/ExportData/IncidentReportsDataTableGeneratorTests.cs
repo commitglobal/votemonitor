@@ -155,18 +155,18 @@ public class IncidentReportsDataTableGeneratorTests
         var form = Fake.Form(DefaultLanguageCode, _textQuestion);
 
         // No notes, no attachments
-        var incidentReport1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var incidentReport1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             TextAnswer.Create(_textQuestionId, "answer 1"), [], []);
         // No notes, 2 attachments
-        var incidentReport2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var incidentReport2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             TextAnswer.Create(_textQuestionId, "answer 2"), [],
             FakeAttachmentsFor(_textQuestionId));
         // 2 notes, no attachments
-        var incidentReport3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var incidentReport3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             TextAnswer.Create(_textQuestionId, "answer 3"),
             FakeNotesFor(_textQuestionId), []);
         // 2 notes, 2 attachments
-        var incidentReport4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var incidentReport4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             TextAnswer.Create(_textQuestionId, "answer 4"),
             FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
         incidentReport4.Comments = Fake.Comments();
@@ -222,18 +222,18 @@ public class IncidentReportsDataTableGeneratorTests
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _numberQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             NumberAnswer.Create(_numberQuestionId, 42), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             NumberAnswer.Create(_numberQuestionId, 43), [],
             FakeAttachmentsFor(_numberQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             NumberAnswer.Create(_numberQuestionId, 44),
             FakeNotesFor(_numberQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             NumberAnswer.Create(_numberQuestionId, 45),
             FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId));
 
@@ -284,18 +284,18 @@ public class IncidentReportsDataTableGeneratorTests
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _ratingQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             RatingAnswer.Create(_ratingQuestionId, 4), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             RatingAnswer.Create(_ratingQuestionId, 5), [],
             FakeAttachmentsFor(_ratingQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             RatingAnswer.Create(_ratingQuestionId, 9),
             FakeNotesFor(_ratingQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             RatingAnswer.Create(_ratingQuestionId, 10),
             FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId));
 
@@ -351,18 +351,18 @@ public class IncidentReportsDataTableGeneratorTests
         var date4 = _utcNow.AddDays(-1);
 
         // No notes, no attachments
-        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             DateAnswer.Create(_dateQuestionId, date1), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             DateAnswer.Create(_dateQuestionId, date2), [],
             FakeAttachmentsFor(_dateQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             DateAnswer.Create(_dateQuestionId, date3),
             FakeNotesFor(_dateQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             DateAnswer.Create(_dateQuestionId, date4),
             FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId));
 
@@ -419,18 +419,18 @@ public class IncidentReportsDataTableGeneratorTests
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _singleSelectQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option1Id, null)), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option2Id, null)), [],
             FakeAttachmentsFor(_singleSelectQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option3Id, null)),
             FakeNotesFor(_singleSelectQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "some free text")),
             FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId));
 
@@ -506,26 +506,26 @@ public class IncidentReportsDataTableGeneratorTests
             SelectedOption.Create(_option3Id, ""),
             SelectedOption.Create(_option1Id, ""),
         ];
-        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission1Selection), [], []);
 
         // No notes, 2 attachments
         SelectedOption[] submission2Selection = [SelectedOption.Create(_option4Id, "some written text")];
-        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission2Selection), [],
             FakeAttachmentsFor(_multiSelectQuestionId));
 
         // 2 notes, no attachments
         SelectedOption[] submission3Selection =
             [SelectedOption.Create(_option3Id, ""), SelectedOption.Create(_option2Id, "")];
-        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission3Selection),
             FakeNotesFor(_multiSelectQuestionId), []);
 
         // 2 notes, 2 attachments
         SelectedOption[] submission4Selection =
             [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, "")];
-        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission4Selection),
             FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId));
 
@@ -611,7 +611,7 @@ public class IncidentReportsDataTableGeneratorTests
             SelectedOption.Create(_option1Id, ""),
         ];
 
-        var submission1 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission1 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
                 FakeAttachmentsFor(_dateQuestionId)),
             numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId),
@@ -626,7 +626,7 @@ public class IncidentReportsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        var submission2 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission2 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
                 FakeAttachmentsFor(_textQuestionId)),
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
@@ -641,7 +641,7 @@ public class IncidentReportsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        var submission3 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
+        var submission3 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.NotRelatedToAPollingStation,
             textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
                 FakeAttachmentsFor(_textQuestionId)),
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),

@@ -231,7 +231,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ObserverGuideType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenGuideType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataType, string>());
-        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
+        x.Serializer.Options.Converters.Add(new IncidentReportLocationTypeConverter());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DataSource, string>());

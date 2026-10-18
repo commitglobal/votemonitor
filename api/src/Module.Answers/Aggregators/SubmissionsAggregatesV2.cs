@@ -86,6 +86,11 @@ public class CitizenReportFormSubmissionsAggregateV2
     public int TotalNumberOfFlaggedAnswers { get; init; }
 
     /// <summary>
+    /// Number of distinct citizen report locations of the submissions.
+    /// </summary>
+    public int LocationsCount { get; init; }
+
+    /// <summary>
     /// Aggregated answers per question id
     /// </summary>
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; init; } = null!;

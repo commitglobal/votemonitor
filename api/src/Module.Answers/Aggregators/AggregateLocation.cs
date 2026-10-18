@@ -32,4 +32,9 @@ public class AggregateLocation
     /// Number of distinct polling stations of the location's submissions. Not set for citizen reports.
     /// </summary>
     public int? PollingStationsCount { get; init; }
+
+    /// <summary>
+    /// Number of distinct citizen report locations of the location's submissions. Only set for citizen reports.
+    /// </summary>
+    public int? LocationsCount { get; init; }
 }

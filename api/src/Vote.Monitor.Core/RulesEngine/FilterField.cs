@@ -7,4 +7,5 @@ public sealed record FilterField(
     string SqlType,
     IReadOnlySet<string> Operators,
     Func<JsonElement, object?> ConvertValue,
-    string? EmptySql = null);
+    string? EmptySql = null,
+    bool IsArray = false);

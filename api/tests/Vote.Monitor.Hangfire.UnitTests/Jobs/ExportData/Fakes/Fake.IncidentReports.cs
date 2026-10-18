@@ -18,7 +18,7 @@ public sealed partial class Fake
     private static readonly IncidentReportLocationType[] _incidentReportLocationTypes =
     [
         IncidentReportLocationType.PollingStation,
-        IncidentReportLocationType.OtherLocation,
+        IncidentReportLocationType.NotRelatedToAPollingStation,
     ];
 
     private static IncidentReportModel GenerateIncidentReport(
@@ -47,7 +47,7 @@ public sealed partial class Fake
                     x.Number = f.Lorem.Word();
                 }
 
-                if (locationType == IncidentReportLocationType.OtherLocation)
+                if (locationType == IncidentReportLocationType.NotRelatedToAPollingStation)
                 {
                     x.LocationDescription = f.Lorem.Sentence(10);
                 }

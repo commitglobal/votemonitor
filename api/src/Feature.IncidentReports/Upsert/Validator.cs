@@ -15,7 +15,8 @@ public class Validator : Validator<Request>
         RuleFor(x => x.LocationDescription)
             .NotEmpty()
             .MaximumLength(1024)
-            .When(x => x.LocationType == IncidentReportLocationType.OtherLocation);
+            .When(x => x.LocationType == IncidentReportLocationType.OtherPollingStation ||
+                      x.LocationType == IncidentReportLocationType.NotRelatedToAPollingStation);
 
         RuleFor(x => x.PollingStationId)
             .NotNull()

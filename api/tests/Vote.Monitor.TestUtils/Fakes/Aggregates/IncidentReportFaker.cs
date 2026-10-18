@@ -23,7 +23,7 @@ public sealed class IncidentReportFaker : PrivateFaker<IncidentReport>
         RuleFor(fake => fake.MonitoringObserver, monitoringObserver);
         RuleFor(fake => fake.MonitoringObserverId, monitoringObserver.Id);
 
-        RuleFor(fake => fake.LocationType, IncidentReportLocationType.OtherLocation);
+        RuleFor(fake => fake.LocationType, IncidentReportLocationType.NotRelatedToAPollingStation);
         RuleFor(fake => fake.LocationDescription, fake => fake.Address.FullAddress());
 
         RuleFor(fake => fake.Form, form);
