@@ -1,4 +1,4 @@
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.RulesEngine.Rules;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
@@ -21,6 +21,8 @@ public static class V2ReportFilterFields
             ["monitoringObserverId"] = new("s.\"MonitoringObserverId\"", "uuid", FilterOperators.Set,
                 FilterValue.Guid),
             ["coalitionMemberId"] = new("s.\"NgoId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["tags"] = new("COALESCE(s.\"Tags\", '{}')", "text", FilterOperators.Array, FilterValue.String,
+                IsArray: true),
             ["pollingStationId"] = new("s.\"PollingStationId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["level1"] = new("s.\"Level1\"", "text", FilterOperators.Set, FilterValue.String),
             ["level2"] = new("s.\"Level2\"", "text", FilterOperators.Set, FilterValue.String),
@@ -78,6 +80,8 @@ public static class V2ReportFilterFields
             ["monitoringObserverId"] = new("s.\"MonitoringObserverId\"", "uuid", FilterOperators.Set,
                 FilterValue.Guid),
             ["coalitionMemberId"] = new("s.\"NgoId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["tags"] = new("COALESCE(s.\"Tags\", '{}')", "text", FilterOperators.Array, FilterValue.String,
+                IsArray: true),
             ["pollingStationId"] = new("s.\"PollingStationId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
             ["level1"] = new("s.\"Level1\"", "text", FilterOperators.Set, FilterValue.String),
             ["level2"] = new("s.\"Level2\"", "text", FilterOperators.Set, FilterValue.String),
@@ -92,7 +96,7 @@ public static class V2ReportFilterFields
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<IncidentReportFollowUpStatus>()),
             ["locationType"] = new("s.\"LocationType\"", "text", FilterOperators.Set,
-                FilterValue.Enum<IncidentReportLocationType>()),
+                IncidentReportLocationTypeValue),
             ["isCompleted"] = new("s.\"IsCompleted\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasNotes"] = new("s.\"HasNotes\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasComments"] = new("s.\"HasComments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
@@ -126,4 +130,10 @@ public static class V2ReportFilterFields
             ["hasComments"] = new("s.\"HasComments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasAttachments"] = new("s.\"HasAttachments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean)
         };
+
+    // Also accepts the legacy "OtherLocation", which was renamed to NotRelatedToAPollingStation.
+    private static object? IncidentReportLocationTypeValue(JsonElement value) =>
+        value.ValueKind == JsonValueKind.String && value.GetString() == IncidentReportLocationType.LegacyOtherLocation
+            ? IncidentReportLocationType.NotRelatedToAPollingStation.Value
+            : FilterValue.Enum<IncidentReportLocationType>()(value);
 }

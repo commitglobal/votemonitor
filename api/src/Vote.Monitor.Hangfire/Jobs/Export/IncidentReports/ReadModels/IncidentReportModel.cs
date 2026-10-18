@@ -18,7 +18,7 @@ public class IncidentReportModel
     public DateTime TimeSubmitted { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
-    public IncidentReportLocationType LocationType { get; set; } = IncidentReportLocationType.OtherLocation;
+    public IncidentReportLocationType LocationType { get; set; } = IncidentReportLocationType.NotRelatedToAPollingStation;
 
     public string? LocationDescription { get; set; } = string.Empty;
     public string? Level1 { get; set; } = string.Empty;

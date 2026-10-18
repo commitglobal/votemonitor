@@ -33,6 +33,14 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyDictionary<int, int>? PollingStationsHistogram { get; private set; }
 
+    /// <summary>
+    /// Number of distinct citizen report locations where each rating value was picked. Only set when computed by the database,
+    /// and only for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<int, int>? LocationsHistogram { get; private set; }
+
     [JsonInclude] public int Min { get; private set; } = int.MaxValue;
     [JsonInclude] public int Max { get; private set; } = int.MinValue;
     [JsonInclude] public decimal Average { get; private set; }

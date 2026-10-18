@@ -59,14 +59,14 @@ public class UpsertValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_LocationDescription_Empty_And_LocationType_OtherLocation(
+    public void Validation_ShouldFail_When_LocationDescription_Empty_And_LocationType_NotRelatedToAPollingStation(
         string? locationDescription)
     {
         // Arrange
         var request = new Request
         {
             LocationDescription = locationDescription,
-            LocationType = IncidentReportLocationType.OtherLocation
+            LocationType = IncidentReportLocationType.NotRelatedToAPollingStation
         };
 
         // Act
@@ -77,13 +77,13 @@ public class UpsertValidatorTests
     }
     
     [Fact]
-    public void Validation_ShouldFail_When_LocationDescription_ExceedsLimit_And_LocationType_OtherLocation()
+    public void Validation_ShouldFail_When_LocationDescription_ExceedsLimit_And_LocationType_NotRelatedToAPollingStation()
     {
         // Arrange
         var request = new Request
         {
             LocationDescription = "a".Repeat(1025),
-            LocationType = IncidentReportLocationType.OtherLocation
+            LocationType = IncidentReportLocationType.NotRelatedToAPollingStation
         };
 
         // Act
@@ -93,6 +93,26 @@ public class UpsertValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.LocationDescription);
     }
     
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_LocationDescription_Empty_And_LocationType_OtherPollingStation(
+        string? locationDescription)
+    {
+        // Arrange
+        var request = new Request
+        {
+            LocationDescription = locationDescription,
+            LocationType = IncidentReportLocationType.OtherPollingStation
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.LocationDescription);
+        result.ShouldNotHaveValidationErrorFor(x => x.PollingStationId);
+    }
+
     [Fact]
     public void Validation_ShouldFail_When_FormId_Empty()
     {

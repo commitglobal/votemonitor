@@ -33,6 +33,14 @@ public class MultiSelectAnswerAggregate : BaseAnswerAggregate
     [JsonInclude]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyDictionary<Guid, int>? PollingStationsHistogram { get; private set; }
+
+    /// <summary>
+    /// Number of distinct citizen report locations where each option was picked. Only set when computed by the database,
+    /// and only for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<Guid, int>? LocationsHistogram { get; private set; }
     /// <summary>
     /// Not set when the free texts are referenced by id (<see cref="FreeTextIds"/>).
     /// </summary>

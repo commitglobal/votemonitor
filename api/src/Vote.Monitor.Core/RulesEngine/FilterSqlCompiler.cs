@@ -212,6 +212,13 @@ public sealed class FilterSqlCompiler
             .Select(value => AddParameter(value, field))
             .ToArray();
 
+        // For an array column, "in" means it shares at least one element with the values (SqlType is the element type).
+        if (field.IsArray)
+        {
+            var overlaps = $"{column} && ARRAY[{string.Join(", ", parameters)}]::{field.SqlType}[]";
+            return negate ? $"(NOT ({overlaps}))" : $"({overlaps})";
+        }
+
         return $"{column} {(negate ? "NOT IN" : "IN")} ({string.Join(", ", parameters)})";
     }
 

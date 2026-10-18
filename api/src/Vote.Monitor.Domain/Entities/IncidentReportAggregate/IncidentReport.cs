@@ -102,18 +102,19 @@ public class IncidentReport :  IAggregateRoot
                 lastUpdatedAt);
         }
 
-        if (locationType == IncidentReportLocationType.OtherLocation)
+        if (locationType == IncidentReportLocationType.OtherPollingStation ||
+            locationType == IncidentReportLocationType.NotRelatedToAPollingStation)
         {
             if (string.IsNullOrWhiteSpace(locationDescription))
             {
                 throw new ArgumentNullException(nameof(locationDescription),
-                    "LocationDescription is mandatory when location type is OtherLocation");
+                    $"LocationDescription is mandatory when location type is {locationType}");
             }
 
             return new(incidentReportId,
                 electionRoundId,
                 monitoringObserver.Id,
-                IncidentReportLocationType.OtherLocation,
+                locationType,
                 null,
                 locationDescription,
                 formId,

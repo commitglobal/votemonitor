@@ -23,7 +23,7 @@
 //               citizen only citizen-reporting forms)
 //     submissions, incidents: monitoringObserverId, tags, level1..level5, pollingStationNumber
 //     submissions only: formType (Opening | Voting | ClosingAndCounting | PSI | IncidentReporting | Other)
-//     incidents only: locationType (PollingStation | OtherLocation)
+//     incidents only: locationType (PollingStation | OtherPollingStation | NotRelatedToAPollingStation)
 //     citizen only: level1..level5 (from the locations tree)
 //
 // Uses the backend's PolyJson package (as BaseQuestion does).
