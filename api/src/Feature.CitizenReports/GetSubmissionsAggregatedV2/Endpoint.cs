@@ -36,16 +36,16 @@ public class Endpoint(
         }
 
         var filter = new FilterSqlCompiler(V2ReportFilterFields.CitizenReports, parameterPrefixer: FilterSqlCompiler.FunctionParameter)
-            .Build(req.Filter);
+            .Build(req.ToFilterRule());
 
         const string sql = """
                            SELECT * FROM "GetCitizenReportsAggregate"(@electionRoundId, @ngoId, @formId, @filter, @filterParameters::jsonb)
                            """;
 
-        CitizenReportFormSubmissionsAggregate? aggregate;
+        CitizenReportFormSubmissionsAggregateV2? aggregate;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            aggregate = await dbConnection.QuerySingleOrDefaultAsync<CitizenReportFormSubmissionsAggregate>(new CommandDefinition(sql, new
+            aggregate = await dbConnection.QuerySingleOrDefaultAsync<CitizenReportFormSubmissionsAggregateV2>(new CommandDefinition(sql, new
             {
                 electionRoundId = req.ElectionRoundId,
                 ngoId = req.NgoId,

@@ -5,6 +5,7 @@ using Feature.CitizenReports.Models;
 
 namespace Feature.CitizenReports.GetSubmissionsAggregated;
 
+[Obsolete("Use :aggregated-submissionsV2 instead.")]
 public class Endpoint(
     VoteMonitorContext context,
     IAuthorizationService authorizationService,
@@ -21,6 +22,7 @@ public class Endpoint(
         {
             s.Summary =
                 "Gets aggregated citizen report form submissions aggregated with all the notes and attachments";
+            s.Description = "Obsolete: use :aggregated-submissionsV2 instead.";
         });
     }
 

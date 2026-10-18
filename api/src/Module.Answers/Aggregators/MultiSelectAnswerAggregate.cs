@@ -18,12 +18,38 @@ public class MultiSelectAnswerAggregate : BaseAnswerAggregate
         get => _answersHistogram.AsReadOnly();
         private set => _answersHistogram = new Dictionary<Guid, int>(value);
     }
+
+    /// <summary>
+    /// Number of distinct submissions that picked each option. Only set when computed by the database.
+    /// </summary>
     [JsonInclude]
-    public IReadOnlyCollection<TextResponse> FreeTexts
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<Guid, int>? SubmissionsHistogram { get; private set; }
+
+    /// <summary>
+    /// Number of distinct polling stations where each option was picked. Only set when computed by the database,
+    /// and not for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyDictionary<Guid, int>? PollingStationsHistogram { get; private set; }
+    /// <summary>
+    /// Not set when the free texts are referenced by id (<see cref="FreeTextIds"/>).
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyCollection<TextResponse>? FreeTexts
     {
-        get => _freeTexts.ToList().AsReadOnly();
-        private set => _freeTexts = value.ToList();
+        get => FreeTextIds is null ? _freeTexts.ToList().AsReadOnly() : null;
+        private set => _freeTexts = value?.ToList() ?? [];
     }
+
+    /// <summary>
+    /// Ids of the texts in the aggregate's Texts. Only set when computed by the database.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<int>? FreeTextIds { get; private set; }
 
     [JsonConstructor]
     private MultiSelectAnswerAggregate()
