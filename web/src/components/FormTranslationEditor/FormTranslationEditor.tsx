@@ -29,6 +29,7 @@ import { LanguageBadge } from '@/components/ui/language-badge';
 import { FormTemplateFull } from '@/features/form-templates/models';
 import { FormFull } from '@/features/forms/models';
 import { cn, ensureTranslatedStringCorrectness } from '@/lib/utils';
+import { toastFormValidationErrors } from '@/lib/form-validation-toast';
 import { useBlocker } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { EditFormType, ZEditFormType } from '../FormEditor/FormEditor';
@@ -73,7 +74,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         defaultLanguage: formData.defaultLanguage,
@@ -95,7 +97,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         defaultLanguage: formData.defaultLanguage,
@@ -116,7 +119,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         defaultLanguage: formData.defaultLanguage,
@@ -137,7 +141,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         lowerLabel: ensureTranslatedStringCorrectness(question.lowerLabel, formData.languages),
@@ -167,7 +172,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         defaultLanguage: formData.defaultLanguage,
@@ -195,7 +201,8 @@ export default function FormTranslationEditor({
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         defaultLanguage: formData.defaultLanguage,
@@ -246,7 +253,10 @@ export default function FormTranslationEditor({
     <Form {...form}>
       <form
         className='flex flex-col flex-1'
-        onSubmit={form.handleSubmit((data) => onSaveForm(data, navigateAwayAfterSave))}>
+        onSubmit={form.handleSubmit(
+          (data) => onSaveForm(data, navigateAwayAfterSave),
+          (errors) => toastFormValidationErrors(errors, form.getValues())
+        )}>
         <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
           <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
             <TabsTrigger

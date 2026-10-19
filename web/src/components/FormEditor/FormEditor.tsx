@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { FormTemplateFull } from '@/features/form-templates/models';
 import EditFormDetails from './FormDetailEditor';
+import { toastFormValidationErrors } from '@/lib/form-validation-toast';
 export const ZEditFormType = z
   .object({
     languageCode: z.string().trim().min(1, 'Language code is required.'),
@@ -237,8 +238,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -259,8 +260,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -281,8 +282,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -303,8 +304,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -334,8 +335,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -363,8 +364,8 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
         parentQuestionId: question.displayLogic?.parentQuestionId,
         condition: question.displayLogic?.condition,
-        value: question.displayLogic?.value,
-        optionIds: question.displayLogic?.optionIds,
+        value: question.displayLogic?.value ?? undefined,
+        optionIds: question.displayLogic?.optionIds ?? undefined,
 
         code: question.code,
         languageCode: formData.defaultLanguage,
@@ -428,7 +429,10 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
       <Form {...form}>
         <form
           className='flex flex-col flex-1'
-          onSubmit={form.handleSubmit((values) => save(values))}>
+          onSubmit={form.handleSubmit(
+            (values) => save(values),
+            (errors) => toastFormValidationErrors(errors, form.getValues())
+          )}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger
