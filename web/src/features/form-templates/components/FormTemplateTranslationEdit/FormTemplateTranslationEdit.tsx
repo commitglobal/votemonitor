@@ -16,6 +16,7 @@ import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { UpdateFormTemplateRequest } from '../../models';
 import { formTemlatesKeys, formTemplateDetailsQueryOptions } from '../../queries';
+import { toastErrorWithDebugInfo } from '@/lib/debug-log';
 
 function FormTemplateTranslationEdit() {
   const { formTemplateId, languageCode } = Route.useParams();
@@ -56,10 +57,8 @@ function FormTemplateTranslationEdit() {
       }
     },
 
-    onError: () => {
-      toast.error('Error saving form template',{
-        description: 'Please contact tech support',
-      });
+    onError: (error) => {
+      toastErrorWithDebugInfo('Error saving form template', error);
     },
   });
 

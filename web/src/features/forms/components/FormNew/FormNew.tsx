@@ -13,6 +13,7 @@ import { useCallback } from 'react';
 import { toast } from "sonner";
 import { FormFull, NewFormRequest } from '../../models';
 import { formsKeys } from '../../queries';
+import { toastErrorWithDebugInfo } from '@/lib/debug-log';
 
 function FormNew() {
   const navigate = useNavigate();
@@ -41,13 +42,11 @@ function FormNew() {
       queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
       router.invalidate();
 
-      navigate({ to: `/election-rounds/${electionRoundId}/forms/$formId/edit`, params: { formId: id } });
+      navigate({ to: '/forms/$formId/edit', params: { formId: id } });
     },
 
-    onError: () => {
-      toast.error('Error creating form',{
-        description: 'Please contact tech support',
-      });
+    onError: (error) => {
+      toastErrorWithDebugInfo('Error creating form', error);
     },
   });
 

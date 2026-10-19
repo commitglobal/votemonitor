@@ -11,6 +11,7 @@ import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { FormTemplateFull, NewFormTemplateRequest } from '../../models';
 import { formTemlatesKeys } from '../../queries';
+import { toastErrorWithDebugInfo } from '@/lib/debug-log';
 
 function FormTemplateNew() {
   const navigate = useNavigate();
@@ -33,10 +34,8 @@ function FormTemplateNew() {
       return navigate({ to: `/form-templates/$formTemplateId/edit`, params: { formTemplateId: id } });
     },
 
-    onError: () => {
-      toast.error('Error creating form template',{
-        description: 'Please contact tech support',
-      });
+    onError: (error) => {
+      toastErrorWithDebugInfo('Error creating form template', error);
     },
   });
 
