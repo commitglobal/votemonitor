@@ -37,7 +37,23 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
   const [parentQuestion, setParentQuestion] = useState<EditQuestionType | undefined>(undefined);
   const [availableParentQuestions, setAvailableParentQuestions] = useState<EditQuestionType[]>([]);
 
-  const { control, setValue, register, trigger } = useFormContext<EditFormType>();
+  const {
+    control,
+    setValue,
+    register,
+    trigger,
+    formState: { errors },
+  } = useFormContext<EditFormType>();
+
+  const questionErrors = errors.questions?.[questionIndex];
+  const displayLogicErrors = [
+    questionErrors?.parentQuestionId,
+    questionErrors?.condition,
+    questionErrors?.value,
+    questionErrors?.optionIds,
+  ]
+    .map((error) => error?.message)
+    .filter((message): message is string => !!message);
 
   const languageCode = useWatch({
     control,
@@ -303,6 +319,11 @@ export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditor
                 />
               </div>
             )}
+          {displayLogicErrors.map((message) => (
+            <p key={message} className='mt-2 text-sm font-medium text-destructive'>
+              {message}
+            </p>
+          ))}
         </CollapsibleContent>
       </Collapsible>
     </div>

@@ -17,6 +17,7 @@ import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { UpdateFormRequest } from '../../models';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
+import { toastErrorWithDebugInfo } from '@/lib/debug-log';
 
 function FormTranslationEdit() {
   const { formId, languageCode } = Route.useParams();
@@ -48,10 +49,8 @@ function FormTranslationEdit() {
       router.invalidate();
     },
 
-    onError: () => {
-      toast.error('Error saving form ',{
-        description: 'Please contact tech support',
-      });
+    onError: (error) => {
+      toastErrorWithDebugInfo('Error saving form', error);
     },
   });
 

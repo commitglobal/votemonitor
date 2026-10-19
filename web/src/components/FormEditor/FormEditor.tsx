@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, ensureTranslatedStringCorrectness, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useRef, useState } from 'react';
 import { FormFull } from '../../features/forms/models';
 
 import {
@@ -200,7 +200,7 @@ export const ZEditFormType = z
               path: ['questions', index, 'optionIds'],
             });
           }
-        } else if (question.value === undefined) {
+        } else if (isNilOrWhitespace(question.value)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question value is required',
@@ -222,6 +222,8 @@ interface FormEditorProps {
 
 const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, onSaveForm, onNavigateAway }) => {
   const [navigateAwayAfterSave, setNavigateAwayAfterSave] = useState(false);
+  // onSaveForm may navigate (e.g. to the edit page after creating), which must not be blocked as "unsaved changes"
+  const isSavingRef = useRef(false);
   const editQuestions = useMemo(() => formData?.questions.map((question) => {
     if (isNumberQuestion(question)) {
       const numberQuestion: EditNumberQuestionType = {
@@ -394,8 +396,13 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
 
   const save = async (values: EditFormType) => {
     if (form.formState.isDirty) {
-      await onSaveForm(values);
-      form.reset(form.getValues(), { keepValues: true, keepDirty: false, keepIsSubmitSuccessful: false });
+      isSavingRef.current = true;
+      try {
+        await onSaveForm(values);
+        form.reset(form.getValues(), { keepValues: true, keepDirty: false, keepIsSubmitSuccessful: false });
+      } finally {
+        isSavingRef.current = false;
+      }
     }
 
     if (navigateAwayAfterSave) {
@@ -406,7 +413,7 @@ const FormEditor: FC<FormEditorProps> = ({ hasCitizenReportingOption, formData, 
   const isDirty = form.formState.isDirty;
 
   const { proceed, reset, status } = useBlocker({
-    shouldBlockFn: () => isDirty && !navigateAwayAfterSave,
+    shouldBlockFn: () => isDirty && !navigateAwayAfterSave && !isSavingRef.current,
     withResolver: true,
   });
 
