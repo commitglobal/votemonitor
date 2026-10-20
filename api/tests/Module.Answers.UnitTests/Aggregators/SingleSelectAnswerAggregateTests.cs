@@ -111,4 +111,40 @@ public class SingleSelectAnswerAggregateTests
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
+
+    [Fact]
+    public void Aggregate_ShouldCountDistinctPollingStationsPerOption()
+    {
+        // Arrange
+        var option1 = _options[1];
+        var option3 = _options[3];
+        var pollingStation1 = Guid.NewGuid();
+        var pollingStation2 = Guid.NewGuid();
+
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), SingleSelectAnswer.Create(_question.Id, option1.Select()), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), SingleSelectAnswer.Create(_question.Id, option1.Select()), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), SingleSelectAnswer.Create(_question.Id, option1.Select()), pollingStation2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), SingleSelectAnswer.Create(_question.Id, option3.Select()), pollingStation2);
+
+        // Assert
+        _aggregate.AnswersHistogram[option1.Id].Should().Be(3);
+        _aggregate.PollingStationsHistogram.Should().NotBeNull();
+        _aggregate.PollingStationsHistogram!.Keys.Should().BeEquivalentTo(_options.Select(x => x.Id));
+        _aggregate.PollingStationsHistogram[option1.Id].Should().Be(2);
+        _aggregate.PollingStationsHistogram[option3.Id].Should().Be(1);
+        _aggregate.PollingStationsHistogram.Values.Where(x => x == 0).Should().HaveCount(_optionsCount - 1);
+        _aggregate.PollingStationsCount.Should().Be(2);
+    }
+
+    [Fact]
+    public void Aggregate_ShouldNotSetPollingStationsHistogram_WhenThereAreNoPollingStations()
+    {
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), SingleSelectAnswer.Create(_question.Id, _options[1].Select()));
+
+        // Assert
+        _aggregate.PollingStationsHistogram.Should().BeNull();
+        _aggregate.PollingStationsCount.Should().BeNull();
+    }
 }

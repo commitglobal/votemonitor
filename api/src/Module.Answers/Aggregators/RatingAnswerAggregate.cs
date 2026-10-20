@@ -11,6 +11,10 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
     private int _numberOfAnswersAggregated = 0;
     private Dictionary<int, int> _answersHistogram = new();
 
+    // the polling stations seen while aggregating in memory; the histogram computed by the database is kept as is
+    private DistinctPollingStations<int>? _pollingStations;
+    private IReadOnlyDictionary<int, int>? _pollingStationsHistogram;
+
     [JsonInclude]
     public IReadOnlyDictionary<int, int> AnswersHistogram
     {
@@ -26,12 +30,15 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
     public IReadOnlyDictionary<int, int>? SubmissionsHistogram { get; private set; }
 
     /// <summary>
-    /// Number of distinct polling stations where each rating value was picked. Only set when computed by the database,
-    /// and not for citizen reports.
+    /// Number of distinct polling stations where each rating value was picked. Not set for citizen reports.
     /// </summary>
     [JsonInclude]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IReadOnlyDictionary<int, int>? PollingStationsHistogram { get; private set; }
+    public IReadOnlyDictionary<int, int>? PollingStationsHistogram
+    {
+        get => _pollingStations?.ToHistogram() ?? _pollingStationsHistogram;
+        private set => _pollingStationsHistogram = value;
+    }
 
     /// <summary>
     /// Number of distinct citizen report locations where each rating value was picked. Only set when computed by the database,
@@ -56,7 +63,7 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         _answersHistogram = question.Scale.ToRange().ToDictionary(x => x, _ => 0);
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId)
     {
         if (answer is not RatingAnswer ratingAnswer)
         {
@@ -65,6 +72,7 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         _numberOfAnswersAggregated++;
 
         _answersHistogram.IncrementFor(ratingAnswer.Value);
+        AddPollingStation(ratingAnswer.Value, pollingStationId);
 
         Min = Math.Min(ratingAnswer.Value, Min);
         Max = Math.Max(ratingAnswer.Value, Max);
@@ -72,7 +80,7 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         Average = Average.RecomputeAverage(ratingAnswer.Value, _numberOfAnswersAggregated);
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId)
     {
         if (answer is not RatingAnswerModel ratingAnswer)
         {
@@ -81,10 +89,22 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         _numberOfAnswersAggregated++;
 
         _answersHistogram.IncrementFor(ratingAnswer.Value);
+        AddPollingStation(ratingAnswer.Value, pollingStationId);
 
         Min = Math.Min(ratingAnswer.Value, Min);
         Max = Math.Max(ratingAnswer.Value, Max);
 
         Average = Average.RecomputeAverage(ratingAnswer.Value, _numberOfAnswersAggregated);
+    }
+
+    private void AddPollingStation(int key, Guid? pollingStationId)
+    {
+        if (pollingStationId is null)
+        {
+            return;
+        }
+
+        _pollingStations ??= new DistinctPollingStations<int>(((RatingQuestion)Question).Scale.ToRange());
+        _pollingStations.Add(key, pollingStationId.Value);
     }
 }

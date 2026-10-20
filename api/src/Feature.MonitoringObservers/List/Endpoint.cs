@@ -168,8 +168,15 @@ public class Endpoint(
             CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
 
             CASE WHEN @sortExpression = 'LatestActivityAt ASC' THEN "LatestActivityAt" END ASC,
-            CASE WHEN @sortExpression = 'LatestActivityAt DESC' THEN "LatestActivityAt" END DESC
-         
+            CASE WHEN @sortExpression = 'LatestActivityAt DESC' THEN "LatestActivityAt" END DESC,
+
+            CASE WHEN @sortExpression = 'Status ASC' THEN "Status" END ASC,
+            CASE WHEN @sortExpression = 'Status DESC' THEN "Status" END DESC,
+
+            -- a stable order for the rows with the same sort value, so pages do not overlap
+            "DisplayName" ASC,
+            "Id" ASC
+
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;
         """;
@@ -206,7 +213,9 @@ public class Endpoint(
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.DisplayName), StringComparison.InvariantCultureIgnoreCase))
+        // the web app's observer name column sorts by display name
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.DisplayName), StringComparison.InvariantCultureIgnoreCase) ||
+            string.Equals(sortColumnName, "ObserverName", StringComparison.InvariantCultureIgnoreCase))
         {
             return $"DisplayName {sortOrder}";
         }
@@ -231,6 +240,11 @@ public class Endpoint(
             return $"{nameof(MonitoringObserverModel.LatestActivityAt)} {sortOrder}";
         }
 
-        return "ObserverName ASC";
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Status), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.Status)} {sortOrder}";
+        }
+
+        return "DisplayName ASC";
     }
 }

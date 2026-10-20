@@ -22,7 +22,7 @@ public class NumberAnswerAggregate : BaseAnswerAggregate
     [JsonInclude] public int Max { get; private set; } = int.MinValue;
     [JsonInclude] public decimal Average { get; private set; }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId)
     {
         if (answer is not NumberAnswer numberAnswer)
         {
@@ -37,7 +37,7 @@ public class NumberAnswerAggregate : BaseAnswerAggregate
         Average = Average.RecomputeAverage(numberAnswer.Value, _numberOfAnswersAggregated);
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId)
     {
         if (answer is not NumberAnswerModel numberAnswer)
         {

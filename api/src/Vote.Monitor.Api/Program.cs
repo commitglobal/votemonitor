@@ -235,6 +235,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentCategory, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DataSource, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<LocationLevel, string>());
         x.Serializer.Options.Converters.Add(new JsonBooleanStringConverter());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -261,11 +262,15 @@ SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByVal
 SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
 SqlMapper.AddTypeHandler(typeof(IncidentCategory), new SmartEnumByValueTypeHandler<IncidentCategory, string>());
+SqlMapper.AddTypeHandler(typeof(LocationLevel), new SmartEnumByValueTypeHandler<LocationLevel, string>());
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 // jsonb columns of the submissions aggregates ("GetFormSubmissionsAggregate", "GetIncidentReportsAggregate", "GetCitizenReportsAggregate")
 SqlMapper.AddTypeHandler(typeof(IReadOnlyDictionary<Guid, BaseAnswerAggregate>), new JsonToObjectConverter<IReadOnlyDictionary<Guid, BaseAnswerAggregate>>());
 SqlMapper.AddTypeHandler(typeof(AggregateLocation[]), new JsonToObjectConverter<AggregateLocation[]>());
+// jsonb columns of the question aggregates by level ("GetFormSubmissionsQuestionAggregateByLevel", "GetIncidentReportsQuestionAggregateByLevel", "GetCitizenReportsQuestionAggregateByLevel")
+SqlMapper.AddTypeHandler(typeof(BaseAnswerAggregate), new JsonToObjectConverter<BaseAnswerAggregate>());
+SqlMapper.AddTypeHandler(typeof(QuestionLocationAggregate[]), new JsonToObjectConverter<QuestionLocationAggregate[]>());
 SqlMapper.AddTypeHandler(typeof(AggregateText[]), new JsonToObjectConverter<AggregateText[]>());
 SqlMapper.AddTypeHandler(typeof(AggregateNote[]), new JsonToObjectConverter<AggregateNote[]>());
 SqlMapper.AddTypeHandler(typeof(AggregateAttachment[]), new JsonToObjectConverter<AggregateAttachment[]>());

@@ -104,7 +104,7 @@ public class FormSubmissionsAggregate
                 continue;
             }
 
-            aggregate.Aggregate(formSubmission.SubmissionId, formSubmission.MonitoringObserverId, answer);
+            aggregate.Aggregate(formSubmission.SubmissionId, formSubmission.MonitoringObserverId, answer, formSubmission.PollingStationId);
         }
 
         return this;
@@ -126,7 +126,7 @@ public class FormSubmissionsAggregate
                 continue;
             }
 
-            aggregate.Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
+            aggregate.Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer, formSubmission.PollingStationId);
         }
 
         return this;
@@ -149,7 +149,7 @@ public class FormSubmissionsAggregate
                 continue;
             }
 
-            aggregate.Aggregate(incidentReport.Id, incidentReport.MonitoringObserverId, answer);
+            aggregate.Aggregate(incidentReport.Id, incidentReport.MonitoringObserverId, answer, incidentReport.PollingStationId);
         }
 
         return this;
@@ -172,7 +172,7 @@ public class FormSubmissionsAggregate
                 continue;
             }
 
-            Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
+            Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer, formSubmission.PollingStationId);
         }
 
         return this;

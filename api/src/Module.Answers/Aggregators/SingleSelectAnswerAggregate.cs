@@ -10,6 +10,10 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
 {
     private List<TextResponse> _freeTexts = [];
     private Dictionary<Guid, int> _answersHistogram = new();
+
+    // the polling stations seen while aggregating in memory; the histogram computed by the database is kept as is
+    private DistinctPollingStations<Guid>? _pollingStations;
+    private IReadOnlyDictionary<Guid, int>? _pollingStationsHistogram;
     [JsonInclude]
     public IReadOnlyDictionary<Guid, int> AnswersHistogram
     {
@@ -25,12 +29,15 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
     public IReadOnlyDictionary<Guid, int>? SubmissionsHistogram { get; private set; }
 
     /// <summary>
-    /// Number of distinct polling stations where each option was picked. Only set when computed by the database,
-    /// and not for citizen reports.
+    /// Number of distinct polling stations where each option was picked. Not set for citizen reports.
     /// </summary>
     [JsonInclude]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IReadOnlyDictionary<Guid, int>? PollingStationsHistogram { get; private set; }
+    public IReadOnlyDictionary<Guid, int>? PollingStationsHistogram
+    {
+        get => _pollingStations?.ToHistogram() ?? _pollingStationsHistogram;
+        private set => _pollingStationsHistogram = value;
+    }
 
     /// <summary>
     /// Number of distinct citizen report locations where each option was picked. Only set when computed by the database,
@@ -67,7 +74,7 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         _answersHistogram = question.Options.ToDictionary(o => o.Id, _ => 0);
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId)
     {
         if (answer is not SingleSelectAnswer singleSelectAnswer)
         {
@@ -75,6 +82,7 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         }
 
         _answersHistogram.IncrementFor(singleSelectAnswer.Selection.OptionId);
+        AddPollingStation(singleSelectAnswer.Selection.OptionId, pollingStationId);
         
         var selection = singleSelectAnswer.Selection;
         var questionOption = ((SingleSelectQuestion)Question).Options.FirstOrDefault(o => o.Id == selection.OptionId);
@@ -84,7 +92,7 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         }
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId)
     {
         if (answer is not SingleSelectAnswerModel singleSelectAnswer)
         {
@@ -92,6 +100,7 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         }
 
         _answersHistogram.IncrementFor(singleSelectAnswer.Selection.OptionId);
+        AddPollingStation(singleSelectAnswer.Selection.OptionId, pollingStationId);
         
         var selection = singleSelectAnswer.Selection;
         var questionOption = ((SingleSelectQuestion)Question).Options.FirstOrDefault(o => o.Id == selection.OptionId);
@@ -99,5 +108,16 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
         {
             _freeTexts.Add(new TextResponse(submissionId, monitoringObserverId, selection.Text));
         }
+    }
+
+    private void AddPollingStation(Guid key, Guid? pollingStationId)
+    {
+        if (pollingStationId is null)
+        {
+            return;
+        }
+
+        _pollingStations ??= new DistinctPollingStations<Guid>(((SingleSelectQuestion)Question).Options.Select(o => o.Id));
+        _pollingStations.Add(key, pollingStationId.Value);
     }
 }

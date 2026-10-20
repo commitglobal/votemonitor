@@ -33,6 +33,34 @@ public abstract class BaseAnswerAggregate
     public BaseQuestion Question { get; private set; } = null!;
     [JsonInclude] public int AnswersAggregated { get; private set; }
 
+    // the polling stations / citizen report locations seen while aggregating in memory; the counts computed by the database are kept as is
+    private HashSet<Guid>? _pollingStations;
+    private HashSet<Guid>? _locations;
+    private int? _pollingStationsCount;
+    private int? _locationsCount;
+
+    /// <summary>
+    /// Number of distinct polling stations of the answers aggregated. Not set for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? PollingStationsCount
+    {
+        get => _pollingStations?.Count ?? _pollingStationsCount;
+        private set => _pollingStationsCount = value;
+    }
+
+    /// <summary>
+    /// Number of distinct citizen report locations of the answers aggregated. Only set for citizen reports.
+    /// </summary>
+    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? LocationsCount
+    {
+        get => _locations?.Count ?? _locationsCount;
+        private set => _locationsCount = value;
+    }
+
     /// <summary>
     /// Ids of the question's notes in the aggregate's Notes. Only set when computed by the database.
     /// </summary>
@@ -69,21 +97,42 @@ public abstract class BaseAnswerAggregate
         DisplayOrder = displayOrder;
     }
 
-    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    /// <param name="pollingStationId">The polling station of the submission; not set for citizen reports.</param>
+    /// <param name="locationId">The location of the citizen report; only set for citizen reports.</param>
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId = null, Guid? locationId = null)
     {
         AnswersAggregated += 1;
-        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
+        AddPlaces(pollingStationId, locationId);
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer, pollingStationId);
     }
 
 
-    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer);
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId);
     
-    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    /// <param name="pollingStationId">The polling station of the submission; not set for citizen reports.</param>
+    /// <param name="locationId">The location of the citizen report; only set for citizen reports.</param>
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId = null, Guid? locationId = null)
     {
         AnswersAggregated += 1;
-        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
+        AddPlaces(pollingStationId, locationId);
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer, pollingStationId);
+    }
+
+    private void AddPlaces(Guid? pollingStationId, Guid? locationId)
+    {
+        if (pollingStationId is not null)
+        {
+            _pollingStations ??= [];
+            _pollingStations.Add(pollingStationId.Value);
+        }
+
+        if (locationId is not null)
+        {
+            _locations ??= [];
+            _locations.Add(locationId.Value);
+        }
     }
 
 
-    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer);
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId);
 }

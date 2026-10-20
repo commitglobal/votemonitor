@@ -66,7 +66,7 @@ public class CitizenReportFormSubmissionsAggregate
                 continue;
             }
 
-            aggregate.Aggregate(citizenReport.Id, Guid.Empty, answer);
+            aggregate.Aggregate(citizenReport.Id, Guid.Empty, answer, locationId: citizenReport.LocationId);
         }
 
         return this;

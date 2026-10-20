@@ -39,6 +39,32 @@ public class TextAnswerAggregateTests
     }
 
     [Fact]
+    public void Aggregate_ShouldCountDistinctPollingStations()
+    {
+        // Arrange
+        var pollingStation1 = Guid.NewGuid();
+        var pollingStation2 = Guid.NewGuid();
+
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), TextAnswer.Create(_question.Id, "a"), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), TextAnswer.Create(_question.Id, "b"), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), TextAnswer.Create(_question.Id, "c"), pollingStation2);
+
+        // Assert
+        _aggregate.PollingStationsCount.Should().Be(2);
+    }
+
+    [Fact]
+    public void Aggregate_ShouldNotSetPollingStationsCount_WhenThereAreNoPollingStations()
+    {
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), TextAnswer.Create(_question.Id, "a"));
+
+        // Assert
+        _aggregate.PollingStationsCount.Should().BeNull();
+    }
+
+    [Fact]
     public void Aggregate_ShouldThrowException_WhenInvalidAnswerReceived()
     {
         // Arrange
