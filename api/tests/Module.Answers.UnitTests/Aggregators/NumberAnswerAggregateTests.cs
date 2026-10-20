@@ -18,6 +18,22 @@ public class NumberAnswerAggregateTests
     }
 
     [Fact]
+    public void Aggregate_ShouldCountDistinctPollingStations()
+    {
+        // Arrange
+        var pollingStation1 = Guid.NewGuid();
+        var pollingStation2 = Guid.NewGuid();
+
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), NumberAnswer.Create(_question.Id, 1), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), NumberAnswer.Create(_question.Id, 2), pollingStation2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), NumberAnswer.Create(_question.Id, 3), pollingStation2);
+
+        // Assert
+        _aggregate.PollingStationsCount.Should().Be(2);
+    }
+
+    [Fact]
     public void Aggregate_ShouldUpdateMin()
     {
         // Arrange

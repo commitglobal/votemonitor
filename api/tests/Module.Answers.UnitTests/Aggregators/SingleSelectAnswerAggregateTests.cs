@@ -134,6 +134,7 @@ public class SingleSelectAnswerAggregateTests
         _aggregate.PollingStationsHistogram[option1.Id].Should().Be(2);
         _aggregate.PollingStationsHistogram[option3.Id].Should().Be(1);
         _aggregate.PollingStationsHistogram.Values.Where(x => x == 0).Should().HaveCount(_optionsCount - 1);
+        _aggregate.PollingStationsCount.Should().Be(2);
     }
 
     [Fact]
@@ -144,5 +145,6 @@ public class SingleSelectAnswerAggregateTests
 
         // Assert
         _aggregate.PollingStationsHistogram.Should().BeNull();
+        _aggregate.PollingStationsCount.Should().BeNull();
     }
 }
