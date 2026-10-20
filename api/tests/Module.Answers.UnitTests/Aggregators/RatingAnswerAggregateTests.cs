@@ -130,4 +130,36 @@ public class RatingAnswerAggregateTests
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
+
+    [Fact]
+    public void Aggregate_ShouldCountDistinctPollingStationsPerValue()
+    {
+        // Arrange
+        var pollingStation1 = Guid.NewGuid();
+        var pollingStation2 = Guid.NewGuid();
+
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), RatingAnswer.Create(_question.Id, 4), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), RatingAnswer.Create(_question.Id, 4), pollingStation1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), RatingAnswer.Create(_question.Id, 4), pollingStation2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), RatingAnswer.Create(_question.Id, 7), pollingStation2);
+
+        // Assert
+        _aggregate.AnswersHistogram[4].Should().Be(3);
+        _aggregate.PollingStationsHistogram.Should().NotBeNull();
+        _aggregate.PollingStationsHistogram!.Keys.Should().BeEquivalentTo(Enumerable.Range(1, 10));
+        _aggregate.PollingStationsHistogram[4].Should().Be(2);
+        _aggregate.PollingStationsHistogram[7].Should().Be(1);
+        _aggregate.PollingStationsHistogram.Values.Where(x => x == 0).Should().HaveCount(8);
+    }
+
+    [Fact]
+    public void Aggregate_ShouldNotSetPollingStationsHistogram_WhenThereAreNoPollingStations()
+    {
+        // Act
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), RatingAnswer.Create(_question.Id, 4));
+
+        // Assert
+        _aggregate.PollingStationsHistogram.Should().BeNull();
+    }
 }

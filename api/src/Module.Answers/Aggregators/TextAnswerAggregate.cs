@@ -38,7 +38,7 @@ public class TextAnswerAggregate : BaseAnswerAggregate
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyList<int>? AnswerIds { get; private set; }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId)
     {
         if (answer is not TextAnswer textAnswer)
         {
@@ -48,7 +48,7 @@ public class TextAnswerAggregate : BaseAnswerAggregate
         _answers.Add(new TextResponse(submissionId, monitoringObserverId, textAnswer.Text));
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId)
     {
         if (answer is not TextAnswerModel textAnswer)
         {

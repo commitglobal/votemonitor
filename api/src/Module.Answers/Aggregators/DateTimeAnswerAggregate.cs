@@ -26,7 +26,7 @@ public class DateTimeAnswerAggregate : BaseAnswerAggregate
         private set => _answersHistogram = new Dictionary<string, int>(value);
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId)
     {
         if (answer is not DateTimeAnswer dateTimeAnswer)
         {
@@ -36,7 +36,7 @@ public class DateTimeAnswerAggregate : BaseAnswerAggregate
         _answersHistogram.IncrementFor(GetBucketName(dateTimeAnswer.DateTime));
     }
 
-    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId)
     {
         if (answer is not DateTimeAnswerModel dateTimeAnswer)
         {

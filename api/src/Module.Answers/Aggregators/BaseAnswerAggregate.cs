@@ -69,21 +69,23 @@ public abstract class BaseAnswerAggregate
         DisplayOrder = displayOrder;
     }
 
-    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
+    /// <param name="pollingStationId">The polling station of the submission; not set for citizen reports.</param>
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId = null)
     {
         AnswersAggregated += 1;
-        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer, pollingStationId);
     }
 
 
-    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer);
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer, Guid? pollingStationId);
     
-    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer)
+    /// <param name="pollingStationId">The polling station of the submission; not set for citizen reports.</param>
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId = null)
     {
         AnswersAggregated += 1;
-        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer, pollingStationId);
     }
 
 
-    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer);
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswerModel answer, Guid? pollingStationId);
 }
