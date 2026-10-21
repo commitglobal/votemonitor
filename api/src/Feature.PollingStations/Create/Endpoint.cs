@@ -95,6 +95,8 @@ public class Endpoint(
                 Address = x.Address,
                 DisplayOrder = x.DisplayOrder,
                 Tags = x.Tags.ToDictionary(),
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
             }).ToArray()
         });
     }
