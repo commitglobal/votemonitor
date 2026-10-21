@@ -38,7 +38,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
             Number = pollingStation.Number,
             Address = pollingStation.Address,
             DisplayOrder = pollingStation.DisplayOrder,
-            Tags = pollingStation.Tags.ToDictionary()
+            Tags = pollingStation.Tags.ToDictionary(),
+            Latitude = pollingStation.Latitude,
+            Longitude = pollingStation.Longitude
         });
     }
 }
