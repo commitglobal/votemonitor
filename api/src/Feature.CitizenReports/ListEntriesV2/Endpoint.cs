@@ -1,3 +1,4 @@
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Dapper;
 using Feature.CitizenReports.Models;
 using Vote.Monitor.Core.RulesEngine;
@@ -62,6 +63,13 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                                 s."MediaFilesCount",
                                 s."CommentsCount",
                                 s."FollowUpStatus",
+                                s."StageId",
+                                s."StageName",
+                                s."ReviewStatus",
+                                s."StageChangedAt",
+                                s."ReviewedAt",
+                                s."ReviewerIds",
+                                s."Severity",
                                 s."Level1",
                                 s."Level2",
                                 s."Level3",
@@ -87,6 +95,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
 
     private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $@"""SeverityRank""(s.""Severity"") {(isAscendingSorting ? "ASC" : "DESC")}, s.""TimeSubmitted"" DESC";
+        }
+
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
             return @"s.""TimeSubmitted"" DESC";

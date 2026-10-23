@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Queries;
 using Vote.Monitor.Domain.Specifications;
 
@@ -79,6 +80,13 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                    s."HasNotes",
                    s."HasAttachments",
                    s."FollowUpStatus",
+                   s."StageId",
+                   s."StageName",
+                   s."ReviewStatus",
+                   s."StageChangedAt",
+                   s."ReviewedAt",
+                   s."ReviewerIds",
+                   s."Severity",
                    s."IsCompleted",
                    s."MonitoringObserverStatus"
             FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
@@ -119,6 +127,11 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         PollingStationId = req.PollingStationId,
         HasFlaggedAnswers = req.HasFlaggedAnswers,
         FollowUpStatus = req.FollowUpStatus?.ToString(),
+        StageId = req.StageId,
+        ReviewStatus = req.ReviewStatus?.Value,
+        ReviewerId = req.ReviewerId,
+        HasReviewer = req.HasReviewer,
+        Severities = req.Severity?.Select(x => x.Value).ToArray(),
         Tags = req.TagsFilter,
         MonitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
         FormId = req.FormId,
@@ -133,6 +146,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
     private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $@"""SeverityRank""(s.""Severity"") {sortOrder}, s.""TimeSubmitted"" DESC";
+        }
 
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {

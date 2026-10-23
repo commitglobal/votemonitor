@@ -4,13 +4,15 @@ using Module.Answers.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.CitizenReports.Upsert;
 
 public class Endpoint(
     IRepository<CitizenReportAggregate> repository,
     IReadRepository<Location> locationRepository,
-    IReadRepository<FormAggregate> formRepository) : Endpoint<Request, Results<Ok<CitizenReportModel>, NotFound>>
+    IReadRepository<FormAggregate> formRepository,
+    IRecordAutomation recordAutomation) : Endpoint<Request, Results<Ok<CitizenReportModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -63,6 +65,8 @@ public class Endpoint(
     {
         citizenReport = form.FillIn(citizenReport, answers);
         await repository.UpdateAsync(citizenReport, ct);
+        await recordAutomation.RecordEditedAsync(citizenReport.ElectionRoundId, ReportRecordType.CitizenReport,
+            citizenReport.Id, ct);
 
         return TypedResults.Ok(CitizenReportModel.FromEntity(citizenReport));
     }
@@ -75,6 +79,8 @@ public class Endpoint(
     {
         var submission = form.CreateCitizenReport(req.CitizenReportId, location, answers);
         await repository.AddAsync(submission, ct);
+        await recordAutomation.RecordCreatedAsync(submission.ElectionRoundId, ReportRecordType.CitizenReport,
+            submission.Id, ct);
 
         return TypedResults.Ok(CitizenReportModel.FromEntity(submission));
     }

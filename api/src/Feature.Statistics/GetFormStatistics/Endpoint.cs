@@ -54,17 +54,7 @@ public class Endpoint(
     {
         const string sql =
             """
-            SELECT
-                COUNT(*) AS "NumberOfSubmissions",
-                COALESCE(SUM(FS."NumberOfQuestionsAnswered"), 0) AS "NumberOfQuestionsAnswered",
-                COALESCE(SUM(FS."NumberOfFlaggedAnswers"), 0) AS "NumberOfFlaggedAnswers",
-                COUNT(DISTINCT FS."MonitoringObserverId") AS "NumberOfObservers",
-                COUNT(DISTINCT FS."PollingStationId") AS "NumberOfPollingStations"
-            FROM "FormSubmissions" FS
-            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO
-                ON AMO."MonitoringObserverId" = FS."MonitoringObserverId"
-            WHERE FS."ElectionRoundId" = @electionRoundId
-              AND FS."FormId" = @formId;
+            SELECT * FROM "GetFormStatisticsTotals"(@electionRoundId, @ngoId, @formId, @dataSource);
             """;
 
         var queryArgs = new

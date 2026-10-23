@@ -7,6 +7,8 @@ using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Vote.Monitor.Domain.Queries;
 
@@ -40,6 +42,14 @@ public static class V2ReportFilterFields
                 FilterValue.Boolean),
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<SubmissionFollowUpStatus>()),
+            ["stageId"] = new("s.\"StageId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["reviewStatus"] = new("s.\"ReviewStatus\"", "text", FilterOperators.Set,
+                FilterValue.Enum<ReviewStatus>()),
+            ["reviewerId"] = new("s.\"ReviewerIds\"", "uuid", FilterOperators.Array, FilterValue.Guid, IsArray: true),
+            ["hasReviewer"] = new("(cardinality(s.\"ReviewerIds\") > 0)", "boolean", FilterOperators.Boolean,
+                FilterValue.Boolean),
+            ["severity"] = new("s.\"Severity\"", "text", FilterOperators.Set,
+                FilterValue.Enum<SeverityLevel>()),
             ["formType"] = new("s.\"FormType\"", "text", FilterOperators.Set, FilterValue.Enum<FormType>()),
             ["formStatus"] = new("s.\"FormStatus\"", "text", FilterOperators.Set, FilterValue.Enum<FormStatus>()),
             ["questionsAnswered"] = new("s.\"QuestionsAnswered\"", "text", FilterOperators.Set,
@@ -64,6 +74,14 @@ public static class V2ReportFilterFields
                 FilterOperators.Boolean, FilterValue.Boolean),
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<CitizenReportFollowUpStatus>()),
+            ["stageId"] = new("s.\"StageId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["reviewStatus"] = new("s.\"ReviewStatus\"", "text", FilterOperators.Set,
+                FilterValue.Enum<ReviewStatus>()),
+            ["reviewerId"] = new("s.\"ReviewerIds\"", "uuid", FilterOperators.Array, FilterValue.Guid, IsArray: true),
+            ["hasReviewer"] = new("(cardinality(s.\"ReviewerIds\") > 0)", "boolean", FilterOperators.Boolean,
+                FilterValue.Boolean),
+            ["severity"] = new("s.\"Severity\"", "text", FilterOperators.Set,
+                FilterValue.Enum<SeverityLevel>()),
             ["hasNotes"] = new("s.\"HasNotes\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasComments"] = new("s.\"HasComments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasAttachments"] = new("s.\"HasAttachments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
@@ -95,6 +113,14 @@ public static class V2ReportFilterFields
                 FilterOperators.Boolean, FilterValue.Boolean),
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<IncidentReportFollowUpStatus>()),
+            ["stageId"] = new("s.\"StageId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["reviewStatus"] = new("s.\"ReviewStatus\"", "text", FilterOperators.Set,
+                FilterValue.Enum<ReviewStatus>()),
+            ["reviewerId"] = new("s.\"ReviewerIds\"", "uuid", FilterOperators.Array, FilterValue.Guid, IsArray: true),
+            ["hasReviewer"] = new("(cardinality(s.\"ReviewerIds\") > 0)", "boolean", FilterOperators.Boolean,
+                FilterValue.Boolean),
+            ["severity"] = new("s.\"Severity\"", "text", FilterOperators.Set,
+                FilterValue.Enum<SeverityLevel>()),
             ["locationType"] = new("s.\"LocationType\"", "text", FilterOperators.Set,
                 IncidentReportLocationTypeValue),
             ["isCompleted"] = new("s.\"IsCompleted\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
@@ -123,6 +149,14 @@ public static class V2ReportFilterFields
                 FilterValue.UtcDateTimeOffset),
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,
                 FilterValue.Enum<QuickReportFollowUpStatus>()),
+            ["stageId"] = new("s.\"StageId\"", "uuid", FilterOperators.Set, FilterValue.Guid),
+            ["reviewStatus"] = new("s.\"ReviewStatus\"", "text", FilterOperators.Set,
+                FilterValue.Enum<ReviewStatus>()),
+            ["reviewerId"] = new("s.\"ReviewerIds\"", "uuid", FilterOperators.Array, FilterValue.Guid, IsArray: true),
+            ["hasReviewer"] = new("(cardinality(s.\"ReviewerIds\") > 0)", "boolean", FilterOperators.Boolean,
+                FilterValue.Boolean),
+            ["severity"] = new("s.\"Severity\"", "text", FilterOperators.Set,
+                FilterValue.Enum<SeverityLevel>()),
             ["locationType"] = new("s.\"LocationType\"", "text", FilterOperators.Set,
                 FilterValue.Enum<QuickReportLocationType>()),
             ["incidentCategory"] = new("s.\"IncidentCategory\"", "text", FilterOperators.Set,

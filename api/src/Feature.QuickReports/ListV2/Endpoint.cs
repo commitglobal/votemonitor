@@ -1,3 +1,4 @@
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Authorization.Policies.Requirements;
 using Authorization.Policies;
@@ -65,6 +66,13 @@ public class Endpoint(
                                 s."Description",
                                 s."IncidentCategory",
                                 s."FollowUpStatus",
+                                s."StageId",
+                                s."StageName",
+                                s."ReviewStatus",
+                                s."StageChangedAt",
+                                s."ReviewedAt",
+                                s."ReviewerIds",
+                                s."Severity",
                                 s."NumberOfAttachments",
                                 s."CommentsCount",
                                 s."MonitoringObserverId",
@@ -101,6 +109,12 @@ public class Endpoint(
 
     private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $@"""SeverityRank""(s.""Severity"") {(isAscendingSorting ? "ASC" : "DESC")}, s.""TimeSubmitted"" DESC";
+        }
+
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
             return @"s.""TimeSubmitted"" DESC";

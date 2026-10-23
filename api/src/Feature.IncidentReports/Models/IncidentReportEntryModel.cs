@@ -39,5 +39,18 @@ public record IncidentReportEntryModel
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus FollowUpStatus { get; set; }
 
+    /// <summary>The record's review stage in the caller's NGO.</summary>
+    public Guid StageId { get; set; }
+    public string StageName { get; set; } = "";
+    public string ReviewStatus { get; set; } = "";
+    public DateTime? StageChangedAt { get; set; }
+    public DateTime? ReviewedAt { get; set; }
+
+    /// <summary>The record's reviewers in the caller's NGO.</summary>
+    public Guid[] ReviewerIds { get; set; } = [];
+
+    /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
+    public string Severity { get; set; } = "None";
+
     public bool IsCompleted { get; set; }
 }

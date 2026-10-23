@@ -24,5 +24,12 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
             .WithOne(e => e.MonitoringNgo)
             .HasForeignKey(e => e.MonitoringNgoId)
             .IsRequired();
+
+        builder
+            .HasMany(e => e.ReviewStages)
+            .WithOne(e => e.MonitoringNgo)
+            .HasForeignKey(e => e.MonitoringNgoId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

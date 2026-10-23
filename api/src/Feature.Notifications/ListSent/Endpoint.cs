@@ -31,39 +31,11 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT
-                      COUNT(DISTINCT N."Id") AS COUNT
-                  FROM
-                      "MonitoringNgos" MN
-                      INNER JOIN "NgoAdmins" NA ON NA."NgoId" = MN."NgoId"
-                      INNER JOIN "Notifications" N ON N."SenderId" = NA."Id"
-                  WHERE
-                      MN."NgoId" = @ngoId
-                      AND N."ElectionRoundId" = @electionRoundId;
+                  SELECT "CountNgoSentNotifications"(@electionRoundId, @ngoId);
 
-                  SELECT
-                      N."Id",
-                      N."Title",
-                      N."Body",
-                      N."CreatedOn" AS "SentAt",
-                      U."DisplayName" AS "Sender",
-                      COUNT(MON."NotificationId") AS "NumberOfTargetedObservers",
-                      SUM(CASE WHEN MON."IsRead" = TRUE THEN 1 ELSE 0 END) AS "NumberOfReadNotifications"
-                  FROM
-                      "Notifications" N
-                      INNER JOIN "NgoAdmins" NA ON N."SenderId" = NA."Id"
-                      INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
-                      LEFT JOIN "AspNetUsers" U ON U."Id" = NA."Id"
-                      LEFT JOIN "MonitoringObserverNotification" MON ON MON."NotificationId" = N."Id"
-
-                  WHERE
-                      MN."NgoId" = @ngoId
-                      AND N."ElectionRoundId" = @electionRoundId
-                      AND MN."ElectionRoundId" = @electionRoundId
-                      AND MN."NgoId" = @ngoId
-                  GROUP BY
-                    N."Id", N."Title", N."Body", N."CreatedOn", U."DisplayName"
-                  ORDER BY N."CreatedOn" DESC
+                  SELECT *
+                  FROM "GetNgoSentNotifications"(@electionRoundId, @ngoId)
+                  ORDER BY "SentAt" DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;

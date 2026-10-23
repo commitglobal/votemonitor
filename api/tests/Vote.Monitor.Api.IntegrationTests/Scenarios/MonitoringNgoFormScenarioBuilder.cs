@@ -9,6 +9,7 @@ public class MonitoringNgoFormScenarioBuilder
     public readonly MonitoringNgoScenarioBuilder ParentBuilder;
 
     private readonly CreateFormRequest _form;
+    private readonly Dictionary<string, Guid> _submissions = new();
     public Guid FormId => _form.Id;
     public CreateFormRequest Form => _form;
 
@@ -28,9 +29,14 @@ public class MonitoringNgoFormScenarioBuilder
 
         var observerClient = ParentBuilder.ParentBuilder.ParentBuilder.ClientFor(observer);
 
-        observerClient.PostWithResponse<ResponseWithId>(
+        var submissionId = observerClient.PostWithResponse<ResponseWithId>(
             $"/api/election-rounds/{ParentBuilder.ElectionRoundId}/form-submissions",
-            submission);
+            submission).Id;
+
+        _submissions.Add($"{observer}_{pollingStation}", submissionId);
         return this;
     }
+
+    public Guid GetSubmissionId(ScenarioObserver observer, ScenarioPollingStation pollingStation) =>
+        _submissions[$"{observer}_{pollingStation}"];
 }

@@ -14,4 +14,12 @@ public static class Tables
     public const string IncidentReportComments = "IncidentReportComments";
     public const string ExportedData = "ExportedData";
     public const string PollingStationCorrections = "PollingStationCorrections";
+    public const string ReviewStages = "ReviewStages";
+    public const string ReviewWorkflows = "ReviewWorkflows";
+    public const string Reviewers = "Reviewers";
+    public const string ReviewActivities = "ReviewActivities";
+    public const string UserNotifications = "UserNotifications";
+    public const string RecordSeverities = "RecordSeverities";
+    public const string ReviewerRules = "ReviewerRules";
+    public const string SeverityRules = "SeverityRules";
 }

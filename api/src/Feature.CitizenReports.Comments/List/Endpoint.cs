@@ -27,25 +27,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         }
 
         var sql = """
-                  SELECT
-                      c."Id",
-                      c."ElectionRoundId",
-                      c."CitizenReportId",
-                      c."Text",
-                      c."CreatedBy",
-                      COALESCE(u."DisplayName", '') AS "CreatedByName",
-                      c."CreatedOn" AS "CreatedAt",
-                      c."LastModifiedOn" AS "LastModifiedAt"
-                  FROM "CitizenReportComments" c
-                  INNER JOIN "CitizenReports" cr ON cr."Id" = c."CitizenReportId"
-                  INNER JOIN "ElectionRounds" er ON er."Id" = cr."ElectionRoundId"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = er."MonitoringNgoForCitizenReportingId"
-                  LEFT JOIN "AspNetUsers" u ON u."Id" = c."CreatedBy"
-                  WHERE c."ElectionRoundId" = @electionRoundId
-                    AND c."CitizenReportId" = @citizenReportId
-                    AND mn."NgoId" = @ngoId
-                    AND mn."ElectionRoundId" = @electionRoundId
-                  ORDER BY c."CreatedOn";
+                  SELECT *
+                  FROM "GetCitizenReportComments"(@electionRoundId, @ngoId, @citizenReportId)
+                  ORDER BY "CreatedAt";
                   """;
 
         var queryArgs = new

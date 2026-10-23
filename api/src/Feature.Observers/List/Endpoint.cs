@@ -17,70 +17,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   select count(*)
-                  from "Observers" o
-                           left join "AspNetUsers" u on u."Id" = o."ApplicationUserId"
-                  
-                  where (
-                      @searchText IS NULL
-                          OR @searchText = ''
-                          OR U."Id"::TEXT ILIKE @searchText
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
-                          OR U."Email" ILIKE @searchText
-                          OR U."PhoneNumber" ILIKE @searchText
-                      )
-                    AND (
-                      @status IS NULL
-                          OR U."Status" = @status
-                      )
-                    AND (
-                      @isEmailVerified IS NULL
-                          OR U."EmailConfirmed" = @isEmailVerified
-                      );
-                  WITH FilteredObservers as (
-                  select 
-                         u."Id",
-                         u."Email",
-                         u."FirstName",
-                         u."LastName",
-                         u."PhoneNumber",
-                         u."Status",
-                         u."EmailConfirmed"                                      as "IsAccountVerified",
-                         COALESCE((select jsonb_agg(jsonb_build_object('Id', er."Id",
-                                                                'Title', er."Title",
-                                                                'EnglishTitle', er."EnglishTitle",
-                                                                'StartDate', er."StartDate",
-                                                                'Status', er."Status",
-                                                                'NgoName', n."Name"
-                                             ))
-                                   FROM "MonitoringObservers" mo
-                                            left join "ElectionRounds" er on er."Id" = mo."ElectionRoundId"
-                                            left join "MonitoringNgos" mn on mo."MonitoringNgoId" = mn."Id"
-                                            left join "Ngos" n on n."Id" = mn."NgoId"
-                                   where mo."ObserverId" = o."Id"), '[]'::JSONB) AS "MonitoredElections"
-                  from "Observers" o
-                           left join "AspNetUsers" u on u."Id" = o."ApplicationUserId"
-                  
-                  where (
-                      @searchText IS NULL
-                          OR @searchText = ''
-                          OR U."Id"::TEXT ILIKE @searchText
-                          OR U."FirstName" ILIKE @searchText
-                          OR U."LastName" ILIKE @searchText
-                          OR U."Email" ILIKE @searchText
-                          OR U."PhoneNumber" ILIKE @searchText
-                      )
-                    AND (
-                      @status IS NULL
-                          OR U."Status" = @status
-                      )
-                    AND (
-                      @isEmailVerified IS NULL
-                          OR U."EmailConfirmed" = @isEmailVerified
-                      )
-                  )
-                  
-                  select * from FilteredObservers
+                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified);
+
+                  select *
+                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified)
                   ORDER BY CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
                            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
                            CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,

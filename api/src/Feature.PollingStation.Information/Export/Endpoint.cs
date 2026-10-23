@@ -30,8 +30,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, VoteMonitorC
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var sql = $"""
-                   {PsiDataQuery.SelectColumns}
-                   {PsiDataQuery.FromWhere}
+                   SELECT *
+                   FROM {PsiDataQuery.Source}
                    {PsiDataQuery.OrderBy};
                    """;
 

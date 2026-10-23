@@ -27,21 +27,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
         {
             var sql = """
-                      SELECT
-                      EXISTS (
-                        SELECT
-                            1
-                        FROM
-                            "FormSubmissions" FS
-                            INNER JOIN "MonitoringObservers" MO ON FS."MonitoringObserverId" = MO."Id"
-                            INNER JOIN "Forms" f ON FS."FormId" = f."Id"
-                        WHERE
-                            FS."ElectionRoundId" = @electionRoundId
-                            AND MO."ObserverId" = @observerId
-                            AND FS."PollingStationId" = @pollingStationId
-                            AND F."Status" = 'Published'
-                            AND JSONB_ARRAY_LENGTH(FS."Answers") > 0
-                      )
+                      SELECT "HasObserverFormSubmissionsAtPollingStation"(@electionRoundId, @observerId, @pollingStationId)
                       """;
 
             var queryParams = new

@@ -18,36 +18,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = """
-        SELECT
-            NGO."Name" AS "NgoName"
-        FROM
-            "MonitoringObservers" MO
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "Ngos" NGO ON NGO."Id" = MN."NgoId"
-        WHERE
-            MO."ObserverId" = @observerId
-            AND MO."ElectionRoundId" = @electionRoundId
-        FETCH FIRST
-            1 ROWS ONLY;
+        SELECT * FROM "GetObserverNotificationsNgoName"(@electionRoundId, @observerId);
 
-        SELECT
-            N."Id",
-            N."Title",
-            N."Body",
-            U."DisplayName" "Sender",
-            N."CreatedOn" "SentAt",
-            MON."IsRead"
-        FROM
-            "Observers" O
-            INNER JOIN "MonitoringObservers" MO ON MO."ObserverId" = O."Id"
-            INNER JOIN "MonitoringObserverNotification" MON ON MON."MonitoringObserverId" = MO."Id"
-            INNER JOIN "Notifications" N ON MON."NotificationId" = N."Id"
-            LEFT JOIN "AspNetUsers" U on U."Id" =  N."SenderId"
-        WHERE
-            O."Id" = @observerId
-            AND N."ElectionRoundId" = @electionRoundId
-        ORDER BY
-            N."CreatedOn" DESC;
+        SELECT *
+        FROM "GetObserverReceivedNotifications"(@electionRoundId, @observerId)
+        ORDER BY "SentAt" DESC;
         """;
 
         var queryArgs = new

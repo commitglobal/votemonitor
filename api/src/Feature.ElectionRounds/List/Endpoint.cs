@@ -19,42 +19,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   SELECT COUNT(*)
-                  FROM "ElectionRounds" ER
-                  WHERE (@searchText IS NULL
-                      OR ER."Title" ILIKE @searchText
-                      OR ER."EnglishTitle" ILIKE @searchText
-                      OR ER."Id"::TEXT ILIKE @searchText)
-                    AND (@electionRoundStatus IS NULL OR ER."Status" = @electionRoundStatus)
-                    AND (@countryId IS NULL OR ER."CountryId" = @countryId);
+                  FROM "GetElectionRoundOverviews"(@searchText, @electionRoundStatus, @countryId);
 
-                  WITH FilteredElections as (SELECT ER."Id",
-                                                    ER."Title",
-                                                    ER."EnglishTitle",
-                                                    ER."StartDate",
-                                                    ER."Status",
-                                                    ER."CreatedOn",
-                                                    ER."LastModifiedOn",
-                                                    ER."CountryId",
-                                                    "C"."Iso2"                                                    AS "CountryIso2",
-                                                    "C"."Iso3"                                                    AS "CountryIso3",
-                                                    "C"."Name"                                                    AS "CountryName",
-                                                    "C"."FullName"                                                AS "CountryFullName",
-                                                    "C"."NumericCode"                                             AS "CountryNumericCode",
-                                                    COALESCE((select jsonb_agg(jsonb_build_object('Id', MN."Id", 'Name', n."Name", 'Status', n."Status"))
-                                                              FROM "MonitoringNgos" MN
-                                                                       INNER join "Ngos" n on n."Id" = mn."NgoId"
-                                                              where MN."ElectionRoundId" = ER."Id"), '[]'::JSONB) AS "MonitoringNgos"
-                                             FROM "ElectionRounds" ER
-                                                      INNER JOIN "Countries" "C" ON ER."CountryId" = "C"."Id"
-                                             WHERE (@searchText IS NULL
-                                                 OR ER."Title" ILIKE @searchText
-                                                 OR ER."EnglishTitle" ILIKE @searchText
-                                                 OR ER."Id"::TEXT ILIKE @searchText)
-                                               AND (@electionRoundStatus IS NULL OR ER."Status" = @electionRoundStatus)
-                                               AND (@countryId IS NULL OR ER."CountryId" = @countryId))
-
-                  select *
-                  from FilteredElections
+                  SELECT *
+                  FROM "GetElectionRoundOverviews"(@searchText, @electionRoundStatus, @countryId)
                   ORDER BY CASE WHEN @sortExpression = 'Title ASC' THEN "Title" END ASC,
                            CASE WHEN @sortExpression = 'Title DESC' THEN "Title" END DESC,
                            CASE WHEN @sortExpression = 'EnglishTitle ASC' THEN "EnglishTitle" END ASC,

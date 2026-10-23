@@ -35,22 +35,7 @@ public class Endpoint(
 
         var sql = """
         SELECT COUNT(*) count
-        FROM
-            "MonitoringObservers" MO
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-        WHERE
-            MN."ElectionRoundId" = @electionRoundId
-            AND MN."NgoId" = @ngoId
-            AND (@searchText IS NULL 
-                     OR @searchText = '' 
-                     OR U."DisplayName" ILIKE @searchText 
-                     OR U."Email" ILIKE @searchText 
-                     OR U."PhoneNumber" ILIKE @searchText
-                     OR MO."Id"::TEXT ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
-            AND (@status IS NULL OR  mo."Status" = @status);
+        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, @status);
 
         SELECT
             "Id",
@@ -63,96 +48,7 @@ public class Endpoint(
             "Status",
             "LatestActivityAt",
             "InvitationToken"
-        FROM (
-            SELECT
-                MO."Id",
-                U."DisplayName",
-                U."FirstName",
-                U."LastName",
-                U."PhoneNumber",
-                U."Email",
-                MO."Tags",
-                MO."Status",
-                MAX(LATESTACTIVITY."LatestActivityAt") AS "LatestActivityAt",
-                CASE WHEN MO."Status" = 'Pending' THEN U."InvitationToken" ELSE NULL END AS "InvitationToken"
-            FROM
-                "MonitoringObservers" MO
-                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                LEFT JOIN (
-                    SELECT
-                        "MonitoringObserverId",
-                        MAX("LatestActivityAt") AS "LatestActivityAt"
-                    FROM
-                        (
-                            SELECT
-                                PSI."MonitoringObserverId",
-                                MAX(PSI."LastUpdatedAt") AS "LatestActivityAt"
-                            FROM
-                                "PollingStationInformation" PSI
-                            WHERE
-                                PSI."ElectionRoundId" = @electionRoundId
-                            GROUP BY
-                                PSI."MonitoringObserverId"
-                            UNION ALL
-                            SELECT
-                                N."MonitoringObserverId",
-                                MAX(N."LastUpdatedAt") AS "LatestActivityAt"
-                            FROM
-                                "Notes" N
-                            INNER JOIN "MonitoringObservers" MO ON N."MonitoringObserverId" = MO."Id"
-                            WHERE
-                                MO."ElectionRoundId" = @electionRoundId
-                            GROUP BY
-                                N."MonitoringObserverId"
-                            UNION ALL
-                            SELECT
-                                A."MonitoringObserverId",
-                                MAX(A."LastUpdatedAt") AS "LatestActivityAt"
-                            FROM
-                                "Attachments" A
-                            INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
-                            WHERE
-                                MO."ElectionRoundId" = @electionRoundId
-                            GROUP BY
-                                A."MonitoringObserverId"
-                            UNION ALL
-                            SELECT
-                                QR."MonitoringObserverId",
-                                MAX(QR."LastUpdatedAt") AS "LatestActivityAt"
-                            FROM
-                                "QuickReports" QR
-                            WHERE
-                                QR."ElectionRoundId" = @electionRoundId
-                            GROUP BY
-                                QR."MonitoringObserverId"
-                        ) AS LATESTACTIVITYSUBQUERY
-                    GROUP BY
-                        "MonitoringObserverId"
-                ) AS LATESTACTIVITY ON LATESTACTIVITY."MonitoringObserverId" = MO."Id"
-            WHERE
-                MN."ElectionRoundId" = @electionRoundId
-                AND MN."NgoId" = @ngoId
-                AND (@searchText IS NULL 
-                         OR @searchText = '' 
-                         OR U."DisplayName" ILIKE @searchText 
-                         OR U."Email" ILIKE @searchText 
-                         OR u."PhoneNumber" ILIKE @searchText
-                         OR MO."Id"::TEXT ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
-                AND (@status IS NULL OR  mo."Status" = @status)
-            GROUP BY
-                MO."Id",
-                U."DisplayName",
-                U."FirstName",
-                U."LastName",
-                U."PhoneNumber",
-                U."Email",
-                MO."Tags",
-                MO."Status",
-                U."InvitationToken"
-            ) T
+        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, @status)
 
         ORDER BY
             CASE WHEN @sortExpression = 'DisplayName ASC' THEN "DisplayName" END ASC,

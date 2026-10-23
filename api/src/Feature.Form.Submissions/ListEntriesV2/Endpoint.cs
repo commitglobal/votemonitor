@@ -1,3 +1,4 @@
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Feature.Form.Submissions.ListEntries;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.RulesEngine;
@@ -79,6 +80,13 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."HasNotes",
                                 s."HasAttachments",
                                 s."FollowUpStatus",
+                                s."StageId",
+                                s."StageName",
+                                s."ReviewStatus",
+                                s."StageChangedAt",
+                                s."ReviewedAt",
+                                s."ReviewerIds",
+                                s."Severity",
                                 s."IsCompleted",
                                 s."MonitoringObserverStatus"
                          FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
@@ -102,6 +110,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
 
     private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
     {
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $@"""SeverityRank""(s.""Severity"") {(isAscendingSorting ? "ASC" : "DESC")}, s.""TimeSubmitted"" DESC";
+        }
+
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
         if (string.IsNullOrWhiteSpace(sortColumnName))

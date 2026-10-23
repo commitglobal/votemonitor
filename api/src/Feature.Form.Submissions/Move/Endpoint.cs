@@ -5,10 +5,15 @@ using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Form.Submissions.Move;
 
-public class Endpoint(VoteMonitorContext context, ICurrentUserProvider userProvider, ITimeProvider timeProvider)
+public class Endpoint(
+    VoteMonitorContext context,
+    ICurrentUserProvider userProvider,
+    IRecordAutomation recordAutomation,
+    ITimeProvider timeProvider)
     : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -101,6 +106,9 @@ public class Endpoint(VoteMonitorContext context, ICurrentUserProvider userProvi
 
             await transaction.CommitAsync(ct);
         });
+
+        await recordAutomation.RecordEditedAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
+            submission.Id, ct);
 
         return TypedResults.NoContent();
     }

@@ -28,21 +28,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         }
 
         var sql = """
-                  SELECT
-                    CN."Id",
-                    CN."Title",
-                    CN."Body",
-                    CN."CreatedOn" "SentAt",
-                    U."DisplayName" "Sender"
-                  FROM
-                    "CitizenNotifications" CN
-                    INNER JOIN "NgoAdmins" NA ON CN."SenderId" = NA."Id"
-                    INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
-                    LEFT JOIN "AspNetUsers" U ON U."Id" = NA."Id"
-                  WHERE
-                    MN."NgoId" = @ngoId
-                    AND CN."ElectionRoundId" = @electionRoundId
-                    AND CN."Id" = @id
+                  SELECT * FROM "GetNgoCitizenNotification"(@electionRoundId, @ngoId, @id)
                   """;
 
         var queryArgs = new

@@ -30,23 +30,8 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT MIN(QR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
-                         MAX(QR."LastUpdatedAt") AS "LastSubmissionTimestamp"
-                  FROM "QuickReports" QR
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                    ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
-                  WHERE QR."ElectionRoundId" = @electionRoundId;
-
-                  -- =====================================================================================
-                  SELECT DISTINCT
-                    MO."MonitoringObserverId",
-                    MO."DisplayName",
-                    MO."Email",
-                    MO."AccountStatus"
-                  FROM "QuickReports" QR
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                    ON QR."MonitoringObserverId" = MO."MonitoringObserverId"
-                  WHERE QR."ElectionRoundId" = @electionRoundId
+                  SELECT * FROM "GetQuickReportsTimestampFilterOptions"(@electionRoundId, @ngoId, @dataSource);
+                  SELECT * FROM "GetQuickReportsObserverFilterOptions"(@electionRoundId, @ngoId, @dataSource);
                   """;
 
         var queryArgs = new

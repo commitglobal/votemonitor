@@ -110,7 +110,7 @@ public class ExportIncidentReportsJob(
         queryParams.Add("dataSource", filters.DataSource.ToString());
         queryParams.Add("coalitionMemberId", filters.CoalitionMemberId);
         queryParams.Add("searchText", $"%{filters.SearchText?.Trim() ?? string.Empty}%");
-        queryParams.Add("LocationType", filters.LocationType?.ToString());
+        queryParams.Add("locationType", filters.LocationType?.ToString());
         queryParams.Add("level1", filters.Level1Filter);
         queryParams.Add("level2", filters.Level2Filter);
         queryParams.Add("level3", filters.Level3Filter);
@@ -133,158 +133,19 @@ public class ExportIncidentReportsJob(
         filter.AddTo(queryParams);
 
         var sql = $"""
-            WITH
-                INCIDENT_REPORTS AS (
-                    SELECT
-                        IR."Id" AS "IncidentReportId",
-                        F."Id" as "FormId",
-                        F."Code" AS "FormCode",
-                        F."Name" AS "FormName",
-                        F."DefaultLanguage" "FormDefaultLanguage",
-                        IR."LocationType",
-                        IR."LocationDescription",
-                        IR."PollingStationId",
-                        IR."MonitoringObserverId",
-                        IR."NumberOfQuestionsAnswered",
-                        IR."NumberOfFlaggedAnswers",
-                        IR."Answers",
-                        IR."IsCompleted",
-                        COALESCE(
-                                (
-                                    SELECT
-                                        JSONB_AGG(
-                                                JSONB_BUILD_OBJECT(
-                                                        'QuestionId',
-                                                        "QuestionId",
-                                                        'FilePath',
-                                                        "FilePath",
-                                                        'UploadedFileName',
-                                                        "UploadedFileName"
-                                                )
-                                        )
-                                    FROM
-                                        "IncidentReportAttachments" A
-                                    WHERE
-                                        A."ElectionRoundId" = @electionRoundId
-                                      AND A."FormId" = IR."FormId"
-                                      AND A."IncidentReportId" = IR."Id"
-                                ),
-                                '[]'::JSONB
-                        ) AS "Attachments",
-                        COALESCE(
-                                (
-                                    SELECT
-                                        JSONB_AGG(
-                                                JSONB_BUILD_OBJECT('QuestionId', "QuestionId", 'Text', "Text")
-                                        )
-                                    FROM
-                                        "IncidentReportNotes" N
-                                    WHERE
-                                        N."ElectionRoundId" = @electionRoundId
-                                      AND N."FormId" = IR."FormId"
-                                      AND N."IncidentReportId" = IR."Id"
-                                ),
-                                '[]'::JSONB
-                        ) AS "Notes",
-                        {CommentsSql.JsonAgg("IncidentReportComments", "IncidentReportId", "IR.\"Id\"")} AS "Comments",
-                        COALESCE(IR."LastModifiedOn", IR."CreatedOn") AS "TimeSubmitted",
-                        IR."FollowUpStatus",
-                        mo."DisplayName",
-                        mo."NgoName",
-                        mo."PhoneNumber",
-                        mo."Email",
-                        mo."Tags"
-                        
-                    FROM
-                        "IncidentReports" IR
-                                INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                        INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                        inner join "GetAvailableForms"(@electionRoundId, @ngoId, @dataSource) af on IR."FormId" = af."FormId"
-                        LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
-                    WHERE
-                       (@COALITIONMEMBERID IS NULL OR mo."NgoId" = @COALITIONMEMBERID)
-                      AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
-                      AND (@formId IS NULL OR IR."FormId" = @formId)
-                      AND (@formStatus IS NULL OR F."Status" = @formStatus)
-                      AND (@locationType IS NULL OR IR."LocationType" = @locationType)
-                      AND (@questionsAnswered IS NULL
-                        OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
-                        OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
-                        OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
-                        )
-                      AND (@fromDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") >= @fromDate::timestamp)
-                      AND (@toDate is NULL OR COALESCE(IR."LastModifiedOn", IR."CreatedOn") <= @toDate::timestamp)
-                      AND (@isCompleted is NULL OR IR."IsCompleted" = @isCompleted)
-                      AND IR."Id" IN (
-                          SELECT s."Id"
-                          FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                          WHERE s."ElectionRoundId" = @electionRoundId
-                            AND {filter.Sql}
-                      )
-                )
-            SELECT
-                IR."IncidentReportId",
-                IR."TimeSubmitted",
-                IR."FormId",
-                IR."FormCode",
-                IR."FormName",
-                IR."FormDefaultLanguage",
-                IR."LocationType",
-                IR."LocationDescription",
-                PS."Id" AS "PollingStationId",
-                PS."Level1",
-                PS."Level2",
-                PS."Level3",
-                PS."Level4",
-                PS."Level5",
-                PS."Number",
-                IR."NgoName",
-                IR."MonitoringObserverId",
-                IR."DisplayName",
-                IR."Email",
-                IR."PhoneNumber",
-                IR."Tags",
-                IR."Answers",
-                IR."Attachments",
-                IR."Notes",
-                IR."Comments",
-                IR."FollowUpStatus",
-                IR."NumberOfFlaggedAnswers",
-                IR."IsCompleted"
-            FROM
-                INCIDENT_REPORTS IR
-                    LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
-            WHERE
-                (
-                @searchText IS NULL
-                    OR @searchText = ''
-                    OR IR."DisplayName" ILIKE @searchText
-                    OR IR."MonitoringObserverId"::TEXT ILIKE @searchText
-                    OR IR."Email" ILIKE @searchText
-                    OR IR."PhoneNumber" ILIKE @searchText
-                )
-              AND (@level1 IS NULL OR PS."Level1" = @level1)
-              AND (@level2 IS NULL OR PS."Level2" = @level2)
-              AND (@level3 IS NULL OR PS."Level3" = @level3)
-              AND (@level4 IS NULL OR PS."Level4" = @level4)
-              AND (@level5 IS NULL OR PS."Level5" = @level5)
-              AND (@pollingStationNumber IS NULL OR PS."Number" = @pollingStationNumber)
-              AND (@pollingStationId IS NULL OR IR."PollingStationId" = @pollingStationId)
-              AND (@hasFlaggedAnswers IS NULL
-                OR (IR."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = FALSE)
-                OR (IR."NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = TRUE)
-                )
-              AND (@followUpStatus IS NULL OR IR."FollowUpStatus" = @followUpStatus)
-              AND (@tagsFilter IS NULL OR CARDINALITY(@tagsFilter) = 0 OR IR."Tags" && @tagsFilter)
-              AND (@hasNotes IS NULL
-                OR (jsonb_array_length(IR."Notes") = 0 AND @hasNotes = FALSE)
-                OR (jsonb_array_length(IR."Notes") > 0 AND @hasNotes = TRUE)
-                )
-              AND (@hasAttachments IS NULL
-                OR (jsonb_array_length(IR."Attachments") = 0 AND @hasAttachments = FALSE)
-                OR (jsonb_array_length(IR."Attachments") > 0 AND @hasAttachments = TRUE)
-                )
-            ORDER BY IR."TimeSubmitted" DESC;
+            SELECT r.*
+            FROM "ExportGetIncidentReports"(
+                @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @searchText, @locationType,
+                @level1, @level2, @level3, @level4, @level5, @pollingStationNumber, @pollingStationId,
+                @hasFlaggedAnswers, @followUpStatus, @tagsFilter, @monitoringObserverStatus, @formId, @formStatus,
+                @hasNotes, @hasAttachments, @questionsAnswered, @fromDate, @toDate, @isCompleted) r
+            WHERE r."IncidentReportId" IN (
+                SELECT s."Id"
+                FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                WHERE s."ElectionRoundId" = @electionRoundId
+                  AND {filter.Sql}
+            )
+            ORDER BY r."TimeSubmitted" DESC;
             """;
 
         IEnumerable<IncidentReportModel> incidentReports;

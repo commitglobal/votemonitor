@@ -4,65 +4,24 @@ namespace Feature.PollingStation.Information.PsiData;
 
 internal static class PsiDataQuery
 {
-    public const string FromWhere = """
-        FROM "PollingStationInformation" PSI
-            INNER JOIN "PollingStations" PS ON PS."Id" = PSI."PollingStationId"
-            INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
-            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-        WHERE PSI."ElectionRoundId" = @electionRoundId
-            AND (@level1 IS NULL OR PS."Level1" = @level1)
-            AND (@level2 IS NULL OR PS."Level2" = @level2)
-            AND (@level3 IS NULL OR PS."Level3" = @level3)
-            AND (@level4 IS NULL OR PS."Level4" = @level4)
-            AND (@level5 IS NULL OR PS."Level5" = @level5)
-            AND (@monitoringNgoId IS NULL OR MN."Id" = @monitoringNgoId)
-            AND (@isCompleted IS NULL OR PSI."IsCompleted" = @isCompleted)
-            AND (@fromDate IS NULL OR PSI."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate IS NULL OR PSI."LastUpdatedAt" <= @toDate::timestamp)
-            AND (@searchText IS NULL OR PS."Number" ILIKE @searchText OR PS."Address" ILIKE @searchText)
-        """;
-
-    public const string SelectColumns = """
-        SELECT
-            PSI."Id",
-            PS."Id" AS "PollingStationId",
-            PS."Level1",
-            PS."Level2",
-            PS."Level3",
-            PS."Level4",
-            PS."Level5",
-            PS."Number",
-            PS."Address",
-            MN."Id" AS "MonitoringNgoId",
-            N."Name" AS "NgoName",
-            MO."Id" AS "MonitoringObserverId",
-            U."DisplayName" AS "ObserverName",
-            U."Email" AS "ObserverEmail",
-            U."PhoneNumber" AS "ObserverPhoneNumber",
-            PSI."ArrivalTime",
-            PSI."DepartureTime",
-            COALESCE("ComputeMinutesMonitoring"(PSI."ArrivalTime", PSI."DepartureTime", PSI."Breaks"), 0) AS "MinutesMonitoring",
-            PSI."NumberOfQuestionsAnswered",
-            PSI."NumberOfFlaggedAnswers",
-            PSI."IsCompleted",
-            PSI."LastUpdatedAt"
+    /// <summary>The polling station information rows matching the filters of <see cref="BuildArgs"/>.</summary>
+    public const string Source = """
+        "GetPollingStationInformationData"(@electionRoundId, @level1, @level2, @level3, @level4, @level5,
+            @monitoringNgoId, @isCompleted, @fromDate, @toDate, @searchText)
         """;
 
     public const string OrderBy = """
         ORDER BY
-            CASE WHEN @sortExpression = 'LastUpdatedAt ASC' THEN PSI."LastUpdatedAt" END ASC,
-            CASE WHEN @sortExpression = 'LastUpdatedAt DESC' THEN PSI."LastUpdatedAt" END DESC,
-            CASE WHEN @sortExpression = 'Number ASC' THEN PS."Number" END ASC,
-            CASE WHEN @sortExpression = 'Number DESC' THEN PS."Number" END DESC,
-            CASE WHEN @sortExpression = 'NgoName ASC' THEN N."Name" END ASC,
-            CASE WHEN @sortExpression = 'NgoName DESC' THEN N."Name" END DESC,
-            CASE WHEN @sortExpression = 'Location ASC' THEN PS."Level1" END ASC,
-            CASE WHEN @sortExpression = 'Location DESC' THEN PS."Level1" END DESC,
-            PSI."LastUpdatedAt" DESC,
-            PSI."Id"
+            CASE WHEN @sortExpression = 'LastUpdatedAt ASC' THEN "LastUpdatedAt" END ASC,
+            CASE WHEN @sortExpression = 'LastUpdatedAt DESC' THEN "LastUpdatedAt" END DESC,
+            CASE WHEN @sortExpression = 'Number ASC' THEN "Number" END ASC,
+            CASE WHEN @sortExpression = 'Number DESC' THEN "Number" END DESC,
+            CASE WHEN @sortExpression = 'NgoName ASC' THEN "NgoName" END ASC,
+            CASE WHEN @sortExpression = 'NgoName DESC' THEN "NgoName" END DESC,
+            CASE WHEN @sortExpression = 'Location ASC' THEN "Level1" END ASC,
+            CASE WHEN @sortExpression = 'Location DESC' THEN "Level1" END DESC,
+            "LastUpdatedAt" DESC,
+            "Id"
         """;
 
     public static object BuildArgs(PsiDataFilters req, bool paged) => new

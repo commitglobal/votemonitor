@@ -59,8 +59,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 			var publishedForms = await context
 				.Forms
 				.FromSqlInterpolated(
-					@$"SELECT f.* FROM ""Forms"" f 
-                       INNER JOIN ""GetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) af on af.""FormId"" = f.""Id""              ")
+					$@"SELECT * FROM ""ExportGetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()})")
 				.Where(x => x.Status != FormStatus.Drafted)
 				.OrderBy(x => x.CreatedOn)
 				.AsNoTracking()
@@ -158,7 +157,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 		builder.OrderBy(@"s.""TimeSubmitted"" DESC");
 
 		var template = builder.AddTemplate(
-			$"""
+			"""
             SELECT
             	s."SubmissionId",
             	CASE
@@ -188,7 +187,7 @@ public class ExportFormSubmissionsSimplifiedJob(
             	s."Answers",
             	s."FollowUpStatus",
             	s."IsCompleted",
-            	{CommentsSql.JsonAgg("FormSubmissionComments", "SubmissionId", "s.\"SubmissionId\"")} AS "Comments"
+            	"ExportGetFormSubmissionComments"(@ngoId, s."SubmissionId") AS "Comments"
             FROM
             	"GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
             /**where**/

@@ -40,6 +40,8 @@ using Feature.CitizenReports.Comments;
 using Feature.CitizenReports.Notes;
 using Feature.DataCleanup;
 using Feature.PollingStationCorrections;
+using Feature.Review;
+using Feature.Severity;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.IncidentReports;
@@ -182,6 +184,8 @@ builder.Services.AddCitizenNotificationsFeature();
 builder.Services.AddCoalitionsFeature();
 builder.Services.AddDataCleanupFeature();
 builder.Services.AddPollingStationCorrectionsFeature();
+builder.Services.AddReviewFeature();
+builder.Services.AddSeverityFeature();
 
 builder.Services.AddAuthorization();
 

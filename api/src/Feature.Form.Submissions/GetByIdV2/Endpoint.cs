@@ -1,5 +1,4 @@
 ﻿using Module.Answers.Models;
-using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Feature.Form.Submissions.GetByIdV2;
@@ -29,111 +28,8 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var sql = $"""
-                  WITH submissions AS
-                           (SELECT psi."Id" AS "SubmissionId",
-                                   'PSI' AS "FormType",
-                                   'PSI' AS "FormCode",
-                                   psif."Name" AS "FormName",
-                                   psi."PollingStationId",
-                                   psi."MonitoringObserverId",
-                                   psi."Answers",
-                                   psif."Questions" AS "Questions",
-                                   psif."DefaultLanguage" AS "DefaultLanguage",
-                                   psif."Languages" AS "Languages",
-                                   psif."Id" AS "FormId",
-                                   psi."FollowUpStatus" as "FollowUpStatus",
-                                   '[]'::jsonb AS "Attachments",
-                                   '[]'::jsonb AS "Notes",
-                                   "LastUpdatedAt" AS "TimeSubmitted",
-                                   psi."ArrivalTime",
-                                   psi."DepartureTime",
-                                   psi."Breaks",
-                                   psi."IsCompleted",
-                                   '[]'::jsonb AS "PollingStationCorrections"
-                            FROM "PollingStationInformation" psi
-                                     INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = psi."MonitoringObserverId"
-                                     INNER JOIN "PollingStationInformationForms" psif on psi."ElectionRoundId" = psif."ElectionRoundId"
-                            WHERE psi."Id" = @submissionId and psi."ElectionRoundId" = @electionRoundId
-                            UNION ALL
-                            SELECT
-                                fs."Id" AS "SubmissionId",
-                                f."FormType" AS "FormType",
-                                f."Code" AS "FormCode",
-                                f."Name" AS "FormName",
-                                fs."PollingStationId",
-                                fs."MonitoringObserverId",
-                                fs."Answers",
-                                f."Questions",
-                                f."DefaultLanguage",
-                                f."Languages",
-                                f."Id" AS "FormId",
-                                fs."FollowUpStatus",
-                                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', "LastUpdatedAt"))
-                                          FROM "Attachments" a
-                                          WHERE
-                                              (
-                                                  (A."FormId" = FS."FormId" AND FS."PollingStationId" = A."PollingStationId") -- backwards compatibility
-                                                      OR A."SubmissionId" = FS."Id"
-                                                  )
-                                            AND a."MonitoringObserverId" = fs."MonitoringObserverId"
-                                            AND a."IsDeleted" = false
-                                            AND a."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
-                  
-                                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text", 'TimeSubmitted', "LastUpdatedAt"))
-                                          FROM "Notes" n
-                                          WHERE
-                                              (
-                                                  (N."FormId" = FS."FormId" AND FS."PollingStationId" = N."PollingStationId") -- backwards compatibility
-                                                      OR N."SubmissionId" = FS."Id"
-                                                  )
-                                            AND n."MonitoringObserverId" = fs."MonitoringObserverId"), '[]'::JSONB) AS "Notes",
-                  
-                                "LastUpdatedAt" AS "TimeSubmitted",
-                                NULL AS "ArrivalTime",
-                                NULL AS "DepartureTime",
-                                '[]'::jsonb AS "Breaks",
-                                fs."IsCompleted",
-                                {PollingStationCorrectionsSql.ForRecord(CorrectableRecordType.FormSubmission, "fs.\"Id\"")} AS "PollingStationCorrections"
-                            FROM "FormSubmissions" fs
-                                     INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = FS."MonitoringObserverId"
-                                     INNER JOIN "Forms" f ON f."Id" = fs."FormId"
-                            WHERE fs."Id" = @submissionId and fs."ElectionRoundId" = @electionRoundId)
-                  SELECT s."SubmissionId",
-                         s."FormId",
-                         s."TimeSubmitted",
-                         s."FormCode",
-                         s."FormName",
-                         s."FormType",
-                         s."DefaultLanguage",
-                         s."Languages",
-                         ps."Id" AS "PollingStationId",
-                         ps."Level1",
-                         ps."Level2",
-                         ps."Level3",
-                         ps."Level4",
-                         ps."Level5",
-                         ps."Number",
-                         s."MonitoringObserverId",
-                         AMO."DisplayName" "ObserverName",
-                         AMO."Email",
-                         AMO."PhoneNumber",
-                         AMO."Tags",
-                         AMO."NgoName",
-                         AMO."IsOwnObserver",
-                         s."Attachments",
-                         s."Notes",
-                         s."Answers",
-                         s."Questions",
-                         s."FollowUpStatus",
-                         s."ArrivalTime",
-                         s."DepartureTime",
-                         s."Breaks",
-                         s."IsCompleted",
-                         s."PollingStationCorrections"
-                  FROM submissions s
-                           INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
-                           INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = s."MonitoringObserverId"
+        var sql = """
+                  SELECT * FROM "GetFormSubmissionViewV2"(@electionRoundId, @ngoId, @submissionId)
                   """;
 
         var queryArgs = new

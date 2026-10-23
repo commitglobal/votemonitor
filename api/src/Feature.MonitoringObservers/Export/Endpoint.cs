@@ -45,22 +45,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var sql = """
-                      SELECT
-                          MO."Id",
-                          U."FirstName",
-                          U."LastName",
-                          U."PhoneNumber",
-                          U."Email",
-                          MO."Tags",
-                          MO."Status"
-                      FROM
-                          "MonitoringObservers" MO
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                      WHERE
-                          MN."ElectionRoundId" = @electionRoundId
-                          AND MN."NgoId" = @ngoId
+                  SELECT *
+                  FROM "GetMonitoringObserversExport"(@electionRoundId, @ngoId)
                   """;
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId, ngoId = req.NgoId };

@@ -30,61 +30,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
 
         var sql = """
                   SELECT COUNT(*) count
-                  FROM
-                      "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                  WHERE
-                      (@searchText IS NULL 
-                               OR @searchText = '' 
-                               OR mo."DisplayName" ILIKE @searchText 
-                               OR mo."Email" ILIKE @searchText 
-                               OR mo."PhoneNumber" ILIKE @searchText
-                               OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
-                      AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
+                  FROM "GetIncidentReportObserversOverview"(@electionRoundId, @ngoId, @dataSource, @searchText, @tagsFilter, NULL);
 
-                  SELECT "MonitoringObserverId",
-                         "ObserverName",
-                         "PhoneNumber",
-                         "Email",
-                         "Tags",
-                         "NumberOfFlaggedAnswers",
-                         "NumberOfIncidentsSubmitted",
-                         "FollowUpStatus"
-                  FROM (SELECT MO."MonitoringObserverId" AS "MonitoringObserverId",
-                               mo."DisplayName" AS "ObserverName",
-                               mo."PhoneNumber",
-                               mo."Email",
-                               MO."Tags",
-                               MO."NgoName",
-                               COALESCE(
-                                       (SELECT SUM("NumberOfFlaggedAnswers")
-                                        FROM "IncidentReports" IR
-                                        WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId"),
-                                       0
-                               ) AS "NumberOfFlaggedAnswers",
-                               (SELECT COUNT(1)
-                                FROM "IncidentReports" IR
-                                WHERE IR."MonitoringObserverId" = MO."MonitoringObserverId" AND IR."ElectionRoundId" = @electionRoundId) AS "NumberOfIncidentsSubmitted",
-                               (
-                                   CASE
-                                       WHEN EXISTS (SELECT 1
-                                                    FROM "IncidentReports" IR
-                                                    WHERE IR."FollowUpStatus" = 'NeedsFollowUp'
-                                                      AND IR."MonitoringObserverId" = MO."MonitoringObserverId"
-                                                      AND IR."ElectionRoundId" = @electionRoundId)
-                                           THEN 'NeedsFollowUp'
-                                       ELSE NULL
-                                       END
-                                   ) AS "FollowUpStatus"
-                        FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                        WHERE 
-                            (@searchText IS NULL 
-                                   OR @searchText = '' 
-                                   OR MO."DisplayName" ILIKE @searchText 
-                                   OR MO."Email" ILIKE @searchText 
-                                   OR MO."PhoneNumber" ILIKE @searchText
-                                   OR MO."MonitoringObserverId"::TEXT ILIKE @searchText)
-                          AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)) T
-                  WHERE (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
+                  SELECT *
+                  FROM "GetIncidentReportObserversOverview"(@electionRoundId, @ngoId, @dataSource, @searchText, @tagsFilter, @needsFollowUp)
                   ORDER BY
                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
@@ -98,8 +47,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                       CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted ASC' THEN "NumberOfIncidentsSubmitted" END ASC,
                       CASE WHEN @sortExpression = 'NumberOfIncidentsSubmitted DESC' THEN "NumberOfIncidentsSubmitted" END DESC
-                  
-                  OFFSET @offset ROWS 
+                  OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;
 

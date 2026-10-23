@@ -20,11 +20,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     public override async Task<Results<Ok<CorrectableRecordModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var sql = $"""
-                   SELECT
-                   {CorrectableRecordsSql.Columns}
-                   {CorrectableRecordsSql.FromWhere};
-                   """;
+        var sql = """
+                  SELECT *
+                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
+                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
+                  """;
 
         var args = new
         {

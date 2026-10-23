@@ -28,25 +28,9 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT
-                      c."Id",
-                      c."ElectionRoundId",
-                      c."QuickReportId",
-                      c."Text",
-                      c."CreatedBy",
-                      COALESCE(u."DisplayName", '') AS "CreatedByName",
-                      c."CreatedOn" AS "CreatedAt",
-                      c."LastModifiedOn" AS "LastModifiedAt"
-                  FROM "QuickReportComments" c
-                  INNER JOIN "QuickReports" qr ON qr."Id" = c."QuickReportId"
-                  INNER JOIN "MonitoringObservers" mo ON mo."Id" = qr."MonitoringObserverId"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                  LEFT JOIN "AspNetUsers" u ON u."Id" = c."CreatedBy"
-                  WHERE c."ElectionRoundId" = @electionRoundId
-                    AND c."QuickReportId" = @quickReportId
-                    AND mn."NgoId" = @ngoId
-                    AND mn."ElectionRoundId" = @electionRoundId
-                  ORDER BY c."CreatedOn";
+                  SELECT *
+                  FROM "GetQuickReportComments"(@electionRoundId, @ngoId, @quickReportId)
+                  ORDER BY "CreatedAt";
                   """;
 
         var queryArgs = new

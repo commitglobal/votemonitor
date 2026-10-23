@@ -29,4 +29,17 @@ public record CitizenReportEntryModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; }
+
+    /// <summary>The record's review stage in the caller's NGO.</summary>
+    public Guid StageId { get; init; }
+    public string StageName { get; init; } = "";
+    public string ReviewStatus { get; init; } = "";
+    public DateTime? StageChangedAt { get; init; }
+    public DateTime? ReviewedAt { get; init; }
+
+    /// <summary>The record's reviewers in the caller's NGO.</summary>
+    public Guid[] ReviewerIds { get; init; } = [];
+
+    /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
+    public string Severity { get; init; } = "None";
 }

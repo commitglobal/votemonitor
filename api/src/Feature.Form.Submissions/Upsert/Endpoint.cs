@@ -5,6 +5,7 @@ using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Form.Submissions.Upsert;
 
@@ -16,6 +17,7 @@ public class Endpoint(
     IReadRepository<Coalition> coalitionRepository,
     IReadRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService,
+    IRecordAutomation recordAutomation,
     ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
 {
     public override void Configure()
@@ -86,6 +88,8 @@ public class Endpoint(
     {
         submission = form.FillIn(submission, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(submission, ct);
+        await recordAutomation.RecordEditedAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
+            submission.Id, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
     }
@@ -114,6 +118,8 @@ public class Endpoint(
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers, req.IsCompleted,
             req.CreatedAt ?? timeProvider.UtcNow, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(submission, ct);
+        await recordAutomation.RecordCreatedAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
+            submission.Id, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
     }

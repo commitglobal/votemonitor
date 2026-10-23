@@ -18,7 +18,9 @@ public class ElectionRoundScenarioBuilder
     private readonly HttpClient _platformAdmin;
     public readonly ScenarioBuilder ParentBuilder;
 
-    public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation)
+    public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation,
+        string? level1 = null,
+        string? level2 = null)
     {
         var createdPollingStation = _platformAdmin.PostWithResponse<CreatePollingStationsResponse>(
             $"/api/election-rounds/{ElectionRoundId}/polling-stations",
@@ -28,7 +30,8 @@ public class ElectionRoundScenarioBuilder
                 {
                     new
                     {
-                        Level1 = Guid.NewGuid().ToString(),
+                        Level1 = level1 ?? Guid.NewGuid().ToString(),
+                        Level2 = level2,
                         Number = "1",
                         DisplayOrder = 1,
                         Address = "Address",

@@ -75,32 +75,9 @@ public class ExportPollingStationInformationJob(
     {
         const string sql =
             """
-            SELECT
-                PSI."Id" AS "SubmissionId",
-                PS."Id" AS "PollingStationId",
-                PS."Level1",
-                PS."Level2",
-                PS."Level3",
-                PS."Level4",
-                PS."Level5",
-                PS."Number",
-                PS."Address",
-                N."Name" AS "NgoName",
-                PSI."ArrivalTime",
-                PSI."DepartureTime",
-                COALESCE("ComputeMinutesMonitoring"(PSI."ArrivalTime", PSI."DepartureTime", PSI."Breaks"), 0) AS "MinutesMonitoring",
-                PSI."NumberOfQuestionsAnswered",
-                PSI."NumberOfFlaggedAnswers",
-                PSI."IsCompleted",
-                PSI."LastUpdatedAt",
-                PSI."Answers"
-            FROM "PollingStationInformation" PSI
-                INNER JOIN "PollingStations" PS ON PS."Id" = PSI."PollingStationId"
-                INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
-                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
-            WHERE PSI."ElectionRoundId" = @electionRoundId
-            ORDER BY PSI."LastUpdatedAt" DESC, PSI."Id";
+            SELECT *
+            FROM "ExportGetPollingStationInformation"(@electionRoundId)
+            ORDER BY "LastUpdatedAt" DESC, "SubmissionId";
             """;
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);

@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 
 namespace Vote.Monitor.Core.Queries;
 
@@ -28,6 +28,11 @@ public sealed class FormSubmissionEntriesFilterCriteria
     public DateTime? FromDate { get; init; }
     public DateTime? ToDate { get; init; }
     public bool? IsCompleted { get; init; }
+    public Guid? StageId { get; init; }
+    public string? ReviewStatus { get; init; }
+    public Guid? ReviewerId { get; init; }
+    public bool? HasReviewer { get; init; }
+    public string[]? Severities { get; init; }
 }
 
 public static class FormSubmissionEntriesSqlBuilder
@@ -118,6 +123,31 @@ public static class FormSubmissionEntriesSqlBuilder
         {
             builder.Where(@"s.""FollowUpStatus"" = @followUpStatus",
                 new { followUpStatus = filters.FollowUpStatus });
+        }
+
+        if (filters.StageId.HasValue)
+        {
+            builder.Where(@"s.""StageId"" = @stageId", new { stageId = filters.StageId });
+        }
+
+        if (!string.IsNullOrWhiteSpace(filters.ReviewStatus))
+        {
+            builder.Where(@"s.""ReviewStatus"" = @reviewStatus", new { reviewStatus = filters.ReviewStatus });
+        }
+
+        if (filters.ReviewerId.HasValue)
+        {
+            builder.Where(@"@reviewerId = ANY(s.""ReviewerIds"")", new { reviewerId = filters.ReviewerId });
+        }
+
+        if (filters.HasReviewer.HasValue)
+        {
+            builder.Where(@"(cardinality(s.""ReviewerIds"") > 0) = @hasReviewer", new { hasReviewer = filters.HasReviewer });
+        }
+
+        if (filters.Severities is { Length: > 0 })
+        {
+            builder.Where(@"s.""Severity"" = ANY(@severities)", new { severities = filters.Severities });
         }
 
         if (filters.Tags is { Length: > 0 })
