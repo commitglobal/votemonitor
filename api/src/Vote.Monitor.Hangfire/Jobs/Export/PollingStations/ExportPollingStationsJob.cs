@@ -74,25 +74,9 @@ public class ExportPollingStationsJob(
     private async Task<List<PollingStationModel>> GetPollingStationsAsync(Guid electionRoundId, CancellationToken ct)
     {
         var sql = """
-                  SELECT
-                      PS."Id",
-                      PS."Level1",
-                      PS."Level2",
-                      PS."Level3",
-                      PS."Level4",
-                      PS."Level5",
-                      PS."Number",
-                      PS."Address",
-                      ps."DisplayOrder",
-                      ps."Latitude",
-                      ps."Longitude",
-                      COALESCE(NULLIF(PS."Tags", 'null'::jsonb), '{}'::jsonb) AS "Tags"
-                  FROM
-                      "PollingStations" PS
-                  WHERE
-                      "ElectionRoundId" = @electionRoundId
-                  ORDER BY
-                      "DisplayOrder" ASC;
+                  SELECT *
+                  FROM "ExportGetPollingStations"(@electionRoundId)
+                  ORDER BY "DisplayOrder" ASC;
                   """;
 
         var queryArgs = new { electionRoundId, };

@@ -4,6 +4,7 @@ using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Form.Submissions.UnitTests.Endpoints;
 
@@ -32,6 +33,7 @@ public class UpsertEndpointTests
             coalitionRepository,
             _formRepository,
             _authorizationService,
+            Substitute.For<IRecordAutomation>(),
             new CurrentUtcTimeProvider());
 
         _authorizationService

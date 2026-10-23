@@ -17,28 +17,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = """
-                  SELECT
-                  	N."Name"
-                  FROM
-                  	"ElectionRounds" ER
-                  	INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                  	INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
-                  WHERE
-                      ER."Id" = @electionRoundId
-                  FETCH FIRST
-                      1 ROWS ONLY;
+                  SELECT * FROM "GetCitizenNotificationsNgoName"(@electionRoundId);
 
-                  SELECT
-                      CN."Id",
-                      CN."Title",
-                      CN."Body",
-                      CN."CreatedOn" AS "SentAt"
-                  FROM
-                      "CitizenNotifications" CN
-                  WHERE
-                      CN."ElectionRoundId" = @electionRoundId
-                  ORDER BY
-                      CN."CreatedOn" DESC;
+                  SELECT *
+                  FROM "GetElectionRoundCitizenNotifications"(@electionRoundId)
+                  ORDER BY "SentAt" DESC;
                   """;
 
         var queryArgs = new

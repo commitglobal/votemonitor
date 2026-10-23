@@ -10,19 +10,7 @@ public class RelatedDataQueryService(INpgsqlConnectionFactory connectionFactory)
     {
         using var connection = await connectionFactory.GetOpenConnectionAsync(cancellationToken);
         var sql = """
-                  SELECT
-                  EXISTS (
-                    SELECT
-                        1
-                    FROM
-                        "FormSubmissions" FS
-                        INNER JOIN "MonitoringObservers" MO ON FS."MonitoringObserverId" = MO."Id"
-                    WHERE
-                        FS."ElectionRoundId" = @electionRoundId
-                        AND MO."ObserverId" = @observerId
-                        AND FS."PollingStationId" = @pollingStationId
-                        AND JSONB_ARRAY_LENGTH(FS."Answers") > 0
-                  )
+                  SELECT "ObserverHasFormAnswersAtPollingStation"(@electionRoundId, @pollingStationId, @observerId)
                   """;
 
         var queryParams = new

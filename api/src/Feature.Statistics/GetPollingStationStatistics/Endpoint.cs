@@ -55,61 +55,7 @@ public class Endpoint(
     {
         const string sql =
             """
-            WITH "AvailableObservers" AS (
-                SELECT "MonitoringObserverId"
-                FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)
-            )
-            SELECT
-                (
-                    SELECT COUNT(*)
-                    FROM "FormSubmissions" FS
-                    WHERE FS."ElectionRoundId" = @electionRoundId
-                      AND FS."PollingStationId" = @pollingStationId
-                      AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "NumberOfFormSubmissions",
-                (
-                    SELECT COALESCE(SUM(FS."NumberOfQuestionsAnswered"), 0)
-                    FROM "FormSubmissions" FS
-                    WHERE FS."ElectionRoundId" = @electionRoundId
-                      AND FS."PollingStationId" = @pollingStationId
-                      AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "NumberOfQuestionsAnswered",
-                (
-                    SELECT COUNT(*)
-                    FROM "QuickReports" QR
-                    WHERE QR."ElectionRoundId" = @electionRoundId
-                      AND QR."PollingStationId" = @pollingStationId
-                      AND QR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "NumberOfQuickReports",
-                (
-                    SELECT COUNT(DISTINCT "MonitoringObserverId")
-                    FROM (
-                        SELECT FS."MonitoringObserverId"
-                        FROM "FormSubmissions" FS
-                        WHERE FS."ElectionRoundId" = @electionRoundId
-                          AND FS."PollingStationId" = @pollingStationId
-                          AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                        UNION
-                        SELECT PSI."MonitoringObserverId"
-                        FROM "PollingStationInformation" PSI
-                        WHERE PSI."ElectionRoundId" = @electionRoundId
-                          AND PSI."PollingStationId" = @pollingStationId
-                          AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                        UNION
-                        SELECT QR."MonitoringObserverId"
-                        FROM "QuickReports" QR
-                        WHERE QR."ElectionRoundId" = @electionRoundId
-                          AND QR."PollingStationId" = @pollingStationId
-                          AND QR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ) T
-                ) AS "NumberOfObservers",
-                EXISTS (
-                    SELECT 1
-                    FROM "PollingStationInformation" PSI
-                    WHERE PSI."ElectionRoundId" = @electionRoundId
-                      AND PSI."PollingStationId" = @pollingStationId
-                      AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "HasPollingStationInformation";
+            SELECT * FROM "GetPollingStationStatisticsTotals"(@electionRoundId, @ngoId, @pollingStationId, @dataSource);
             """;
 
         var queryArgs = new

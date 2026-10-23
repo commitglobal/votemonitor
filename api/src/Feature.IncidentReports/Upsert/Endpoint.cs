@@ -7,6 +7,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.IncidentReports.Upsert;
 
@@ -16,6 +17,7 @@ public class Endpoint(
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService,
+    IRecordAutomation recordAutomation,
     ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound>>
 {
     public override void Configure()
@@ -81,6 +83,8 @@ public class Endpoint(
     {
         incidentReport = form.FillIn(incidentReport, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(incidentReport, ct);
+        await recordAutomation.RecordEditedAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
+            incidentReport.Id, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
     }
@@ -115,6 +119,8 @@ public class Endpoint(
             req.LocationDescription, req.PollingStationId, answers, req.IsCompleted,
             req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.AddAsync(incidentReport, ct);
+        await recordAutomation.RecordCreatedAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
+            incidentReport.Id, ct);
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
     }

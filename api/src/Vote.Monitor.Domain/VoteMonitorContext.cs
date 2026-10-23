@@ -24,6 +24,7 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Domain.Entities.NgoStaffAggregate;
 using Vote.Monitor.Domain.Entities.NoteAggregate;
 using Vote.Monitor.Domain.Entities.NotificationAggregate;
 using Vote.Monitor.Domain.Entities.NotificationStubAggregate;
@@ -36,6 +37,9 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportCommentAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using Vote.Monitor.Domain.Entities.UserNotificationAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -48,6 +52,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Country> Countries { get; set; }
     public DbSet<Ngo> Ngos { get; set; }
     public DbSet<NgoAdmin> NgoAdmins { get; set; }
+    public DbSet<NgoStaff> NgoStaff { get; set; }
     public DbSet<Observer> Observers { get; set; }
     public DbSet<PollingStation> PollingStations { get; set; }
     public DbSet<ElectionRound> ElectionRounds { get; set; }
@@ -91,6 +96,14 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CoalitionGuideAccess> CoalitionGuideAccess { get; set; }
     public DbSet<ElectionRoundFormTemplate> ElectionRoundFormTemplates { get; set; }
     public DbSet<PollingStationCorrection> PollingStationCorrections { get; set; }
+    public DbSet<ReviewStage> ReviewStages { get; set; }
+    public DbSet<ReviewWorkflow> ReviewWorkflows { get; set; }
+    public DbSet<Reviewer> Reviewers { get; set; }
+    public DbSet<ReviewActivity> ReviewActivities { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
+    public DbSet<RecordSeverity> RecordSeverities { get; set; }
+    public DbSet<ReviewerRule> ReviewerRules { get; set; }
+    public DbSet<SeverityRule> SeverityRules { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -182,6 +195,14 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CoalitionGuideAccessConfiguration());
         builder.ApplyConfiguration(new ElectionRoundFormTemplateConfiguration());
         builder.ApplyConfiguration(new PollingStationCorrectionConfiguration());
+        builder.ApplyConfiguration(new ReviewStageConfiguration());
+        builder.ApplyConfiguration(new ReviewWorkflowConfiguration());
+        builder.ApplyConfiguration(new ReviewerConfiguration());
+        builder.ApplyConfiguration(new ReviewActivityConfiguration());
+        builder.ApplyConfiguration(new UserNotificationConfiguration());
+        builder.ApplyConfiguration(new RecordSeverityConfiguration());
+        builder.ApplyConfiguration(new ReviewerRuleConfiguration());
+        builder.ApplyConfiguration(new SeverityRuleConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

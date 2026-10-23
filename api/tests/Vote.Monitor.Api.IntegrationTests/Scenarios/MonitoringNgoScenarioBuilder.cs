@@ -1,4 +1,4 @@
-using Vote.Monitor.Api.IntegrationTests.Consts;
+﻿using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Models;
 
 namespace Vote.Monitor.Api.IntegrationTests.Scenarios;
@@ -20,6 +20,7 @@ public class MonitoringNgoScenarioBuilder
     public Guid FormId => _forms.First().Value.FormId;
     public Guid GuideId => _guides.First().Value;
     public CreateFormRequest Form => _forms.First().Value.Form;
+    public MonitoringNgoFormScenarioBuilder FormByCode(string formCode) => _forms[formCode];
     public MonitoringNgoFormScenarioBuilder FormData => _forms.First().Value;
 
     public (Guid ObserverId, Guid MonitoringObserverId, HttpClient Client, string FullName, string Email, string

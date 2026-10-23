@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -52,4 +54,19 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
     [QueryParam] public Guid? CoalitionMemberId { get; set; }
+
+    /// <summary>Only records in this review stage of the caller's NGO.</summary>
+    [QueryParam] public Guid? StageId { get; set; }
+
+    /// <summary>Only records with this review status.</summary>
+    [QueryParam] public ReviewStatus? ReviewStatus { get; set; }
+
+    /// <summary>Only records this user reviews in the caller's NGO.</summary>
+    [QueryParam] public Guid? ReviewerId { get; set; }
+
+    /// <summary>Only records with (true) or without (false) reviewers.</summary>
+    [QueryParam] public bool? HasReviewer { get; set; }
+
+    /// <summary>Only records with any of these severities in the caller's NGO (repeat the key for several).</summary>
+    [QueryParam] public SeverityLevel[]? Severity { get; set; }
 }

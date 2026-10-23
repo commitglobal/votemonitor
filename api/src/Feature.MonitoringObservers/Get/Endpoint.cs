@@ -30,95 +30,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql = 
+        var sql =
         """
-        WITH 
-            MONITORINGOBSERVER AS (
-                SELECT
-                    "MonitoringObserverId" AS "Id",
-                    "DisplayName",
-                    "FirstName",
-                    "LastName",
-                    "PhoneNumber",
-                    "Email",
-                    "Tags",
-                    "Status",
-                    "NgoName",
-                    "IsOwnObserver"
-                FROM
-                    "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition')
-                WHERE
-                    "MonitoringObserverId" = @id
-                LIMIT 1
-            ),
-            LATESTTIMESTAMPS AS (
-                SELECT
-                    MAX(PSI."LastUpdatedAt") AS "LatestActivityAt"
-                FROM
-                    "PollingStationInformation" PSI
-                WHERE
-                    PSI."ElectionRoundId" = @electionRoundId
-                  AND PSI."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
-        
-                UNION ALL
-        
-                SELECT
-                    MAX(N."LastUpdatedAt") AS "LatestActivityAt"
-                FROM
-                    "Notes" N
-                WHERE
-                    N."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
-        
-                UNION ALL
-        
-                SELECT
-                    MAX(A."LastUpdatedAt") AS "LatestActivityAt"
-                FROM
-                    "Attachments" A
-                INNER JOIN "MonitoringObservers" MO ON A."MonitoringObserverId" = MO."Id"
-                WHERE
-                    MO."ElectionRoundId" = @electionRoundId
-                  AND A."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
-        
-                UNION ALL
-        
-                SELECT
-                    MAX(QR."LastUpdatedAt") AS "LatestActivityAt"
-                FROM
-                    "QuickReports" QR
-                WHERE
-                    QR."ElectionRoundId" = @electionRoundId
-                  AND QR."MonitoringObserverId" = (SELECT "Id" FROM MONITORINGOBSERVER)
-            )
-        SELECT
-            MO."Id",
-            MO."DisplayName",
-            MO."FirstName",
-            MO."LastName",
-            MO."PhoneNumber",
-            MO."Email",
-            MO."Tags",
-            MO."Status",
-            MO."IsOwnObserver",
-            MAX(LT."LatestActivityAt") AS "LatestActivityAt",
-            CASE WHEN MO."Status" = 'Pending' THEN U."InvitationToken" ELSE NULL END AS "InvitationToken"
-        FROM
-            MONITORINGOBSERVER MO
-            LEFT JOIN LATESTTIMESTAMPS LT ON TRUE
-            INNER JOIN "MonitoringObservers" M ON M."Id" = MO."Id"
-            INNER JOIN "Observers" O ON O."Id" = M."ObserverId"
-            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-        GROUP BY
-            MO."Id",
-            MO."DisplayName",
-            MO."FirstName",
-            MO."LastName",
-            MO."PhoneNumber",
-            MO."Email",
-            MO."Tags",
-            MO."Status",
-            MO."IsOwnObserver",
-            U."InvitationToken";
+        SELECT *
+        FROM "GetMonitoringObserverDetails"(@electionRoundId, @ngoId, @id);
         """;
 
         var queryArgs = new

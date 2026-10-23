@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.QuickReports.Delete;
 
@@ -54,6 +56,9 @@ public class Endpoint(
                         && x.RecordType == CorrectableRecordType.QuickReport
                         && x.RecordId == quickReport.Id)
             .ExecuteDeleteAsync(ct);
+
+        await context.DeleteReviewAsync(ReportRecordType.QuickReport, quickReport.Id, ct);
+        await context.DeleteSeverityAsync(ReportRecordType.QuickReport, quickReport.Id, ct);
     }
 
     private async Task DeleteAttachmentsAsync(Request req, CancellationToken ct)

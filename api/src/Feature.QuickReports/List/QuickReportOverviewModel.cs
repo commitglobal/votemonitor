@@ -35,6 +35,19 @@ public class QuickReportOverviewModel
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; set; }
 
+    /// <summary>The record's review stage in the caller's NGO.</summary>
+    public Guid StageId { get; set; }
+    public string StageName { get; set; } = "";
+    public string ReviewStatus { get; set; } = "";
+    public DateTime? StageChangedAt { get; set; }
+    public DateTime? ReviewedAt { get; set; }
+
+    /// <summary>The record's reviewers in the caller's NGO.</summary>
+    public Guid[] ReviewerIds { get; set; } = [];
+
+    /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
+    public string Severity { get; set; } = "None";
+
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
     public IncidentCategory IncidentCategory { get; set; }
 }

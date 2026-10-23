@@ -27,35 +27,9 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT MIN(IR."LastUpdatedAt") AS "FirstSubmissionTimestamp",
-                         MAX(IR."LastUpdatedAt") AS "LastSubmissionTimestamp"
-                  FROM "IncidentReports" IR
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                  WHERE IR."ElectionRoundId" = @electionRoundId;
-
-                  -- =====================================================================================
-                  SELECT DISTINCT
-                    F."Id" AS "FormId",
-                    F."Name" AS "FormName",
-                    F."Code" AS "FormCode",
-                    F."DefaultLanguage"
-                  FROM "IncidentReports" IR
-                  INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                  WHERE IR."ElectionRoundId" = @electionRoundId;
-
-                  -- =====================================================================================
-                  SELECT DISTINCT
-                    MO."MonitoringObserverId",
-                    MO."DisplayName",
-                    MO."Email",
-                    MO."AccountStatus"
-                  FROM "IncidentReports" IR
-                  INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
-                    ON MO."MonitoringObserverId" = IR."MonitoringObserverId"
-                  WHERE IR."ElectionRoundId" = @electionRoundId
+                  SELECT * FROM "GetIncidentReportTimestampsFilterOptions"(@electionRoundId, @ngoId, @dataSource);
+                  SELECT * FROM "GetIncidentReportFormFilterOptions"(@electionRoundId, @ngoId, @dataSource);
+                  SELECT * FROM "GetIncidentReportObserverFilterOptions"(@electionRoundId, @ngoId, @dataSource);
                   """;
 
         var queryArgs = new

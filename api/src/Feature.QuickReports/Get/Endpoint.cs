@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.ConnectionFactory;
-using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.QuickReports.Get;
 
@@ -56,46 +55,9 @@ public class Endpoint(
     private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsNgoAdminAsync(
         Guid electionRoundId, Guid ngoId, Guid quickReportId, CancellationToken ct)
     {
-        var sql = $"""
-                  SELECT qr."Id",
-                         qr."ElectionRoundId",
-                         qr."QuickReportLocationType",
-                         QR."LastUpdatedAt" as "Timestamp",
-                         qr."Title",
-                         qr."Description",
-                         qr."MonitoringObserverId",
-                         AMO."DisplayName" as "ObserverName",
-                         AMO."PhoneNumber",
-                         AMO."Email",
-                         AMO."Tags",
-                         AMO."NgoName",
-                         AMO."IsOwnObserver",
-                         qr."PollingStationId",
-                         ps."Level1",
-                         ps."Level2",
-                         ps."Level3",
-                         ps."Level4",
-                         ps."Level5",
-                         ps."Number",
-                         ps."Address",
-                         qr."PollingStationDetails",
-                         qr."IncidentCategory",
-                         qr."FollowUpStatus",
-                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', qr."Id", 'FileName', qra."FileName", 'MimeType', qra."MimeType", 'FilePath', qra."FilePath", 'UploadedFileName', qra."UploadedFileName", 'TimeSubmitted', qra."LastUpdatedAt"))
-                                   FROM "QuickReportAttachments" qra
-                                   WHERE
-                                       qra."ElectionRoundId" = @electionRoundId
-                                     AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
-                                     and qra."QuickReportId" = @quickReportId
-                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments",
-                         {PollingStationCorrectionsSql.ForRecord(CorrectableRecordType.QuickReport, "qr.\"Id\"")} AS "PollingStationCorrections"
-
-                  FROM "QuickReports" QR
-                           INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
-                           INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, 'Coalition') AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
-                           LEFT JOIN "PollingStations" ps on ps."Id" = qr."PollingStationId"
-                  WHERE qr."ElectionRoundId" = @electionRoundId
-                    and qr."Id" = @quickReportId
+        var sql = """
+                  SELECT *
+                  FROM "GetNgoQuickReportDetails"(@electionRoundId, @ngoId, @quickReportId)
                   """;
 
         var queryArgs = new { electionRoundId, quickReportId, ngoId };
@@ -135,38 +97,8 @@ public class Endpoint(
         Guid electionRoundId, Guid observerId, Guid quickReportId, CancellationToken ct)
     {
         var sql = """
-                  SELECT qr."Id",
-                         qr."ElectionRoundId",
-                         qr."QuickReportLocationType",
-                         qr."LastUpdatedAt" as "Timestamp",
-                         qr."Title",
-                         qr."Description",
-                         qr."PollingStationId",
-                         ps."Level1",
-                         ps."Level2",
-                         ps."Level3",
-                         ps."Level4",
-                         ps."Level5",
-                         ps."Number",
-                         ps."Address",
-                         qr."PollingStationDetails",
-                         qr."IncidentCategory",
-                         qr."FollowUpStatus",
-                         COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', qr."Id", 'FileName', qra."FileName", 'MimeType', qra."MimeType", 'FilePath', qra."FilePath", 'UploadedFileName', qra."UploadedFileName", 'TimeSubmitted', qra."LastUpdatedAt"))
-                                   FROM "QuickReportAttachments" qra
-                                   WHERE
-                                       qra."ElectionRoundId" = @electionRoundId
-                                     AND qra."MonitoringObserverId" = qr."MonitoringObserverId"
-                                     AND qra."QuickReportId"  = @quickReportId
-                                     AND qra."IsDeleted" = false AND qra."IsCompleted" = true),'[]'::JSONB) AS "Attachments"
-                         
-                  FROM "QuickReports" QR
-                           INNER JOIN "MonitoringObservers" mo on mo."Id" = qr."MonitoringObserverId"
-                           LEFT JOIN "AspNetUsers" u on u."Id" = mo."ObserverId"
-                           LEFT JOIN "PollingStations" ps on ps."Id" = qr."PollingStationId"
-                  WHERE qr."ElectionRoundId" = @electionRoundId
-                    and qr."Id" = @quickReportId
-                    and mo."ObserverId" = @observerId;
+                  SELECT *
+                  FROM "GetObserverQuickReport"(@electionRoundId, @observerId, @quickReportId);
                   """;
 
         var queryArgs = new { electionRoundId, quickReportId, observerId };

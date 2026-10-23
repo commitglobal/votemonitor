@@ -25,57 +25,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         CancellationToken ct)
     {
         var sql = """
-                  SELECT
-                      COUNT(*)
-                  FROM
-                      "Ngos" N
-                  WHERE
-                      "Status" = 'Activated'
-                    AND "Id" NOT IN (
-                      SELECT
-                          "NgoId"
-                      FROM
-                          "MonitoringNgos"
-                      WHERE
-                          "ElectionRoundId" = @electionRoundId
-                  )
-                    AND (
-                      @searchText IS NULL
-                          OR N."Name" ILIKE @searchText
-                          OR N."Id"::TEXT ILIKE @searchText
-                      );
+                  SELECT COUNT(*)
+                  FROM "GetAvailableNgosForElectionRound"(@electionRoundId, @searchText);
 
-                  SELECT
-                      N."Id",
-                      N."Name"
-                  FROM
-                      "Ngos" N
-                  WHERE
-                      "Status" = 'Activated'
-                    AND "Id" NOT IN (
-                      SELECT
-                          "NgoId"
-                      FROM
-                          "MonitoringNgos"
-                      WHERE
-                          "ElectionRoundId" = @electionRoundId
-                  )
-                    AND (
-                      @searchText IS NULL
-                          OR N."Name" ILIKE @searchText
-                          OR N."Id"::TEXT ILIKE @searchText
-                      )
+                  SELECT "Id", "Name"
+                  FROM "GetAvailableNgosForElectionRound"(@electionRoundId, @searchText)
                   ORDER BY
-                      CASE
-                          WHEN @sortExpression = 'Name ASC' THEN "Name"
-                          END ASC,
-                      CASE
-                          WHEN @sortExpression = 'Name DESC' THEN "Name"
-                          END DESC
-                  OFFSET
-                      @offset ROWS
-                  FETCH NEXT
-                      @pageSize ROWS ONLY;
+                      CASE WHEN @sortExpression = 'Name ASC' THEN "Name" END ASC,
+                      CASE WHEN @sortExpression = 'Name DESC' THEN "Name" END DESC
+                  OFFSET @offset ROWS
+                  FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new

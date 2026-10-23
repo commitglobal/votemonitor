@@ -20,50 +20,10 @@ public class Endpoint(
     {
         var sql = """
                   SELECT count(*)
-                  FROM "FormTemplates" FT
-                  WHERE (
-                      @searchText IS NULL
-                          OR @searchText = ''
-                          OR FT."Code" ILIKE @searchText
-                          OR FT."Name" ->> FT."DefaultLanguage" ILIKE @searchText
-                          OR FT."Description" ->> FT."DefaultLanguage" ILIKE @searchText
-                          OR FT."Id"::TEXT ILIKE @searchText
-                      )
-                    AND (
-                      @type IS NULL
-                          OR FT."FormType" = @type
-                      )
-                    AND (
-                      @status IS NULL
-                          OR FT."Status" = @status
-                      );
-                  
-                  SELECT FT."Id",
-                         FT."Code",
-                         FT."Name",
-                         FT."Description",
-                         FT."DefaultLanguage",
-                         FT."Languages",
-                         FT."Status",
-                         FT."FormType",
-                         FT."NumberOfQuestions",
-                         FT."Icon",
-                         FT."LanguagesTranslationStatus",
-                         COALESCE(FT."LastModifiedOn", FT."CreatedOn")          AS "LastModifiedOn",
-                         COALESCE(UPDATER."DisplayName", CREATOR."DisplayName") AS "LastModifiedBy"
-                  FROM "FormTemplates" FT
-                           LEFT JOIN "AspNetUsers" CREATOR ON FT."CreatedBy" = CREATOR."Id"
-                           LEFT JOIN "AspNetUsers" UPDATER ON FT."LastModifiedBy" = UPDATER."Id"
-                  WHERE (
-                      @searchText IS NULL
-                          OR @searchText = ''
-                          OR FT."Code" ILIKE @searchText
-                          OR FT."Name" ->> FT."DefaultLanguage" ILIKE @searchText
-                          OR FT."Description" ->> FT."DefaultLanguage" ILIKE @searchText
-                          OR FT."Id"::TEXT ILIKE @searchText
-                      )
-                    AND (@type IS NULL OR FT."FormType" = @type)
-                    AND (@status IS NULL OR FT."Status" = @status)
+                  FROM "GetFormTemplatesList"(@searchText, @type, @status);
+
+                  SELECT *
+                  FROM "GetFormTemplatesList"(@searchText, @type, @status)
                   ORDER BY CASE
                                WHEN @sortExpression = 'Code ASC' THEN "Code"
                                END ASC,
@@ -83,10 +43,10 @@ public class Endpoint(
                                WHEN @sortExpression = 'FormType DESC' THEN "FormType"
                                END DESC,
                            CASE
-                               WHEN @sortExpression = 'Status ASC' THEN FT."Status"
+                               WHEN @sortExpression = 'Status ASC' THEN "Status"
                                END ASC,
                            CASE
-                               WHEN @sortExpression = 'Status DESC' THEN FT."Status"
+                               WHEN @sortExpression = 'Status DESC' THEN "Status"
                                END DESC
                   OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                   """;

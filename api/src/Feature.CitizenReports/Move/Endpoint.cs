@@ -1,11 +1,13 @@
 using Feature.CitizenReports.Specifications;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.CitizenReports.Move;
 
 public class Endpoint(
     IRepository<CitizenReportAggregate> repository,
-    IReadRepository<Location> locationRepository)
+    IReadRepository<Location> locationRepository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
@@ -35,6 +37,8 @@ public class Endpoint(
 
         citizenReport.MoveToLocation(location);
         await repository.UpdateAsync(citizenReport, ct);
+        await recordAutomation.RecordEditedAsync(citizenReport.ElectionRoundId, ReportRecordType.CitizenReport,
+            citizenReport.Id, ct);
 
         return TypedResults.NoContent();
     }

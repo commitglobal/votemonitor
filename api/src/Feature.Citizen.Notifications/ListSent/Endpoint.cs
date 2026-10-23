@@ -30,32 +30,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         }
 
         var sql = """
-                  SELECT
-                  	count(CN."Id")
-                  FROM
-                    "CitizenNotifications" CN
-                  	INNER JOIN "ElectionRounds" ER ON CN."ElectionRoundId" = ER."Id"
-                  	INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                  WHERE
-                      MN."NgoId" = @ngoId
-                      AND CN."ElectionRoundId" = @electionRoundId;
+                  SELECT COUNT(*) FROM "GetNgoSentCitizenNotifications"(@electionRoundId, @ngoId);
 
-                  SELECT
-                      CN."Id",
-                      CN."Title",
-                      CN."Body",
-                      CN."CreatedOn" AS "SentAt",
-                      U."DisplayName" AS "Sender"
-                  FROM
-                      "CitizenNotifications" CN
-                      INNER JOIN "ElectionRounds" ER ON CN."ElectionRoundId" = ER."Id"
-                      INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
-                      LEFT JOIN "AspNetUsers" U ON U."Id" = CN."SenderId"
-                  WHERE
-                      MN."NgoId" = @ngoId
-                      AND CN."ElectionRoundId" = @electionRoundId
-                      
-                  ORDER BY CN."CreatedOn" DESC
+                  SELECT *
+                  FROM "GetNgoSentCitizenNotifications"(@electionRoundId, @ngoId)
+                  ORDER BY "SentAt" DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
                   """;

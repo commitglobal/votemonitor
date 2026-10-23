@@ -71,111 +71,9 @@ public class Endpoint(
     private async Task<Response> GetStatisticsAsync(Request req, bool isPlatformAdmin, DataSource dataSource,
         CancellationToken ct)
     {
-        var availableObserversSql = isPlatformAdmin
-            ? """
-              SELECT MO."Id" AS "MonitoringObserverId"
-              FROM "MonitoringObservers" MO
-              WHERE MO."ElectionRoundId" = @electionRoundId
-              """
-            : """
-              SELECT "MonitoringObserverId"
-              FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource)
-              """;
-
-        var sql =
-            $"""
-            WITH "AvailableObservers" AS (
-                {availableObserversSql}
-            )
-            SELECT
-                (
-                    SELECT COALESCE((
-                        SELECT SUM(FS."NumberOfQuestionsAnswered")
-                        FROM "FormSubmissions" FS
-                        WHERE FS."ElectionRoundId" = @electionRoundId
-                          AND FS."PollingStationId" = @pollingStationId
-                          AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ), 0)
-                    + COALESCE((
-                        SELECT SUM(PSI."NumberOfQuestionsAnswered")
-                        FROM "PollingStationInformation" PSI
-                        WHERE PSI."ElectionRoundId" = @electionRoundId
-                          AND PSI."PollingStationId" = @pollingStationId
-                          AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ), 0)
-                ) AS "TotalAnswers",
-                (
-                    SELECT COALESCE((
-                        SELECT SUM(FS."NumberOfFlaggedAnswers")
-                        FROM "FormSubmissions" FS
-                        WHERE FS."ElectionRoundId" = @electionRoundId
-                          AND FS."PollingStationId" = @pollingStationId
-                          AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ), 0)
-                    + COALESCE((
-                        SELECT SUM(PSI."NumberOfFlaggedAnswers")
-                        FROM "PollingStationInformation" PSI
-                        WHERE PSI."ElectionRoundId" = @electionRoundId
-                          AND PSI."PollingStationId" = @pollingStationId
-                          AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ), 0)
-                ) AS "FlaggedAnswers",
-                (
-                    SELECT COUNT(DISTINCT "MonitoringObserverId")
-                    FROM (
-                        SELECT FS."MonitoringObserverId"
-                        FROM "FormSubmissions" FS
-                        WHERE FS."ElectionRoundId" = @electionRoundId
-                          AND FS."PollingStationId" = @pollingStationId
-                          AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                        UNION
-                        SELECT PSI."MonitoringObserverId"
-                        FROM "PollingStationInformation" PSI
-                        WHERE PSI."ElectionRoundId" = @electionRoundId
-                          AND PSI."PollingStationId" = @pollingStationId
-                          AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                        UNION
-                        SELECT QR."MonitoringObserverId"
-                        FROM "QuickReports" QR
-                        WHERE QR."ElectionRoundId" = @electionRoundId
-                          AND QR."PollingStationId" = @pollingStationId
-                          AND QR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                        UNION
-                        SELECT IR."MonitoringObserverId"
-                        FROM "IncidentReports" IR
-                        WHERE IR."ElectionRoundId" = @electionRoundId
-                          AND IR."PollingStationId" = @pollingStationId
-                          AND IR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                    ) T
-                ) AS "ObserversVisited",
-                (
-                    SELECT COALESCE(SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks")), 0)
-                    FROM "PollingStationInformation" PSI
-                    WHERE PSI."ElectionRoundId" = @electionRoundId
-                      AND PSI."PollingStationId" = @pollingStationId
-                      AND PSI."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "MinutesMonitoring",
-                (
-                    SELECT COUNT(*)
-                    FROM "FormSubmissions" FS
-                    WHERE FS."ElectionRoundId" = @electionRoundId
-                      AND FS."PollingStationId" = @pollingStationId
-                      AND FS."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "FormSubmissions",
-                (
-                    SELECT COUNT(*)
-                    FROM "QuickReports" QR
-                    WHERE QR."ElectionRoundId" = @electionRoundId
-                      AND QR."PollingStationId" = @pollingStationId
-                      AND QR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "QuickReports",
-                (
-                    SELECT COUNT(*)
-                    FROM "IncidentReports" IR
-                    WHERE IR."ElectionRoundId" = @electionRoundId
-                      AND IR."PollingStationId" = @pollingStationId
-                      AND IR."MonitoringObserverId" IN (SELECT "MonitoringObserverId" FROM "AvailableObservers")
-                ) AS "IncidentReports";
+        const string sql =
+            """
+            SELECT * FROM "GetPollingStationStatsOverview"(@electionRoundId, @ngoId, @pollingStationId, @dataSource, @isPlatformAdmin);
             """;
 
         var queryArgs = new
@@ -183,7 +81,8 @@ public class Endpoint(
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             pollingStationId = req.PollingStationId,
-            dataSource = dataSource.Value
+            dataSource = dataSource.Value,
+            isPlatformAdmin
         };
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);

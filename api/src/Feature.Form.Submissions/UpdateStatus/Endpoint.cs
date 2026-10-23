@@ -1,9 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Form.Submissions.UpdateStatus;
 
-public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
+public class Endpoint(
+    IAuthorizationService authorizationService,
+    VoteMonitorContext context,
+    ICurrentUserProvider userProvider,
+    ITimeProvider timeProvider)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
@@ -25,19 +32,26 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
         
-        await context.PollingStationInformation
+        var updatedInformation = await context.PollingStationInformation
             .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
                         && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
 
-        await context.FormSubmissions
+        var updatedSubmissions = await context.FormSubmissions
             .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
                         && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
+
+        if (updatedInformation + updatedSubmissions > 0)
+        {
+            await context.AddFollowUpStatusActivityAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission, req.Id,
+                userProvider.GetUserId()!.Value, req.FollowUpStatus.Value, timeProvider.UtcNow, ct);
+            await context.SaveChangesAsync(ct);
+        }
 
         return TypedResults.NoContent();
     }

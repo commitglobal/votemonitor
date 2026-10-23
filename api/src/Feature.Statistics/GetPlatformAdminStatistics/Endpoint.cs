@@ -44,95 +44,19 @@ public class Endpoint(
     {
         const string sql =
             """
-            SELECT
-                C."Id" AS "CountryId",
-                C."Name" AS "CountryName",
-                C."Iso2" AS "Iso2",
-                COUNT(ER."Id") AS "NumberOfElections"
-            FROM "ElectionRounds" ER
-                INNER JOIN "Countries" C ON C."Id" = ER."CountryId"
-            GROUP BY C."Id", C."Name", C."Iso2"
-            ORDER BY C."Name";
-            ------------------------------
-
-            SELECT
-                COUNT(*) FILTER (WHERE U."Status" = 'Active') AS "ActiveObservers",
-                COUNT(*) FILTER (WHERE U."Status" = 'Deactivated') AS "SuspendedObservers"
-            FROM "Observers" O
-                INNER JOIN "AspNetUsers" U ON U."Id" = O."Id";
-            ------------------------------
-
-            SELECT
-                COUNT(*) FILTER (WHERE "Status" = 'Activated') AS "ActiveNgos",
-                COUNT(*) FILTER (WHERE "Status" = 'Deactivated') AS "DeactivatedNgos"
-            FROM "Ngos";
-            ------------------------------
-
-            SELECT COUNT(*) FROM "ElectionRounds";
-            ------------------------------
-
-            SELECT COUNT(*) FROM "PollingStations";
-            ------------------------------
-
-            SELECT COUNT(DISTINCT T."PollingStationId")
-            FROM (
-                SELECT FS."PollingStationId"
-                FROM "FormSubmissions" FS
-                    INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-                WHERE F."Status" <> 'Drafted'
-                  AND FS."NumberOfQuestionsAnswered" > 0
-                UNION
-                SELECT PSI."PollingStationId"
-                FROM "PollingStationInformation" PSI
-                WHERE PSI."NumberOfQuestionsAnswered" > 0
-            ) AS T;
-            ------------------------------
-
-            SELECT COALESCE(SUM("ComputeMinutesMonitoring"("ArrivalTime", "DepartureTime", "Breaks")), 0)
-            FROM "PollingStationInformation";
-            ------------------------------
-
-            SELECT
-                (
-                    SELECT COUNT(1)
-                    FROM "FormSubmissions" FS
-                        INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-                    WHERE FS."NumberOfQuestionsAnswered" > 0
-                      AND F."Status" <> 'Drafted'
-                ) + (
-                    SELECT COUNT(1)
-                    FROM "PollingStationInformation"
-                    WHERE "NumberOfQuestionsAnswered" > 0
-                );
-            ------------------------------
-
-            SELECT
-                (
-                    SELECT COALESCE(SUM("NumberOfQuestionsAnswered"), 0)
-                    FROM "FormSubmissions" FS
-                        INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-                    WHERE FS."NumberOfQuestionsAnswered" > 0
-                      AND F."Status" <> 'Drafted'
-                ) + (
-                    SELECT COALESCE(SUM("NumberOfQuestionsAnswered"), 0)
-                    FROM "PollingStationInformation"
-                );
-            ------------------------------
-
-            SELECT COALESCE(SUM(FS."NumberOfFlaggedAnswers"), 0)
-            FROM "FormSubmissions" FS
-                INNER JOIN "Forms" F ON F."Id" = FS."FormId"
-            WHERE FS."NumberOfQuestionsAnswered" > 0
-              AND F."Status" <> 'Drafted';
-            ------------------------------
-
-            SELECT COUNT(*) FROM "QuickReports";
-            ------------------------------
-
-            SELECT COUNT(*) FROM "IncidentReports";
-            ------------------------------
-
-            SELECT COUNT(*) FROM "CitizenReports";
+            SELECT * FROM "GetPlatformAdminStatisticsCountriesHistogram"();
+            SELECT * FROM "GetPlatformAdminStatisticsObservers"();
+            SELECT * FROM "GetPlatformAdminStatisticsNgos"();
+            SELECT "GetPlatformAdminStatisticsElectionRounds"();
+            SELECT "GetPlatformAdminStatisticsPollingStations"();
+            SELECT "GetPlatformAdminStatisticsVisitedPollingStations"();
+            SELECT "GetPlatformAdminStatisticsMinutesMonitoring"();
+            SELECT "GetPlatformAdminStatisticsFormSubmissions"();
+            SELECT "GetPlatformAdminStatisticsQuestionsAnswered"();
+            SELECT "GetPlatformAdminStatisticsFlaggedAnswers"();
+            SELECT "GetPlatformAdminStatisticsQuickReports"();
+            SELECT "GetPlatformAdminStatisticsIncidentReports"();
+            SELECT "GetPlatformAdminStatisticsCitizenReports"();
             """;
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);

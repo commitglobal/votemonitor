@@ -28,52 +28,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         }
 
         var sql = """
-                 SELECT
-                     T."PollingStationId",
-                     PS."Level1",
-                     PS."Level2",
-                     PS."Level3",
-                     PS."Level4",
-                     PS."Level5",
-                     PS."Address",
-                     PS."Number",
-                     PS."Latitude",
-                     PS."Longitude",
-                     T."MonitoringObserverId",
-                     MAX(T."LatestTimestamp") "VisitedAt"
-                 FROM
-                     (
-                         SELECT
-                             PSI."ElectionRoundId",
-                             PSI."PollingStationId",
-                             PSI."MonitoringObserverId",
-                             PSI."LastUpdatedAt" "LatestTimestamp"
-                         FROM
-                             "PollingStationInformation" PSI
-                         WHERE
-                             PSI."ElectionRoundId" = @electionRoundId
-                         UNION
-                         SELECT
-                             FS."ElectionRoundId",
-                             FS."PollingStationId",
-                             FS."MonitoringObserverId",
-                             FS."LastUpdatedAt" "LatestTimestamp"
-                         FROM
-                             "FormSubmissions" FS
-                         WHERE
-                             FS."ElectionRoundId" = @electionRoundId
-                     ) T
-                     INNER JOIN "MonitoringObservers" MO ON MO."Id" = T."MonitoringObserverId"
-                     INNER JOIN "PollingStations" PS ON PS."Id" = T."PollingStationId"
-                 WHERE
-                     T."ElectionRoundId" = @electionRoundId
-                     AND MO."ObserverId" = @observerId
-                 GROUP BY
-                     T."ElectionRoundId",
-                     T."PollingStationId",
-                     T."MonitoringObserverId",
-                     PS."Id"
-                 """;
+                  SELECT * FROM "GetObserverPollingStationVisits"(@electionRoundId, @observerId)
+                  """;
 
         var queryArgs = new {electionRoundId = req.ElectionRoundId,observerId = req.ObserverId };
 

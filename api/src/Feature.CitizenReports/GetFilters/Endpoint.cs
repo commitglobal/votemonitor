@@ -27,25 +27,8 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT MIN(COALESCE(CR."LastModifiedOn", CR."CreatedOn")) AS "FirstSubmissionTimestamp",
-                         MAX(COALESCE(CR."LastModifiedOn", CR."CreatedOn")) AS "LastSubmissionTimestamp"
-                  FROM "CitizenReports" CR
-                           INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                           INNER JOIN "MonitoringNgos" MN ON ER."MonitoringNgoForCitizenReportingId" = MN."Id"
-                  WHERE CR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId;
-                  
-                  -- =====================================================================================
-                  SELECT DISTINCT F."Id" AS                       "FormId",
-                                  F."Name" "FormName",
-                                  F."Code" "FormCode",
-                                  F."DefaultLanguage"
-                  FROM "CitizenReports" CR
-                           INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
-                           INNER JOIN "MonitoringNgos" MN ON ER."MonitoringNgoForCitizenReportingId" = MN."Id"
-                           INNER JOIN "Forms" F ON F."Id" = CR."FormId"
-                  WHERE CR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
+                  SELECT * FROM "GetCitizenReportSubmissionTimestamps"(@electionRoundId, @ngoId);
+                  SELECT * FROM "GetCitizenReportFormFilterOptions"(@electionRoundId, @ngoId);
                   """;
 
         var queryArgs = new

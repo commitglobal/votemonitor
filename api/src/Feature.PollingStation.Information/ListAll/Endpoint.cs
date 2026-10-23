@@ -25,10 +25,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   {PsiDataQuery.FromWhere};
+                   FROM {PsiDataQuery.Source};
 
-                   {PsiDataQuery.SelectColumns}
-                   {PsiDataQuery.FromWhere}
+                   SELECT *
+                   FROM {PsiDataQuery.Source}
                    {PsiDataQuery.OrderBy}
                    OFFSET @offset ROWS
                    FETCH NEXT @pageSize ROWS ONLY;

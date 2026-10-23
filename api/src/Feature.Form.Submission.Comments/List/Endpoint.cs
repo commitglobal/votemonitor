@@ -28,26 +28,9 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT
-                      c."Id",
-                      c."ElectionRoundId",
-                      c."SubmissionId",
-                      c."QuestionId",
-                      c."Text",
-                      c."CreatedBy",
-                      COALESCE(u."DisplayName", '') AS "CreatedByName",
-                      c."CreatedOn" AS "CreatedAt",
-                      c."LastModifiedOn" AS "LastModifiedAt"
-                  FROM "FormSubmissionComments" c
-                  INNER JOIN "FormSubmissions" fs ON fs."Id" = c."SubmissionId"
-                  INNER JOIN "MonitoringObservers" mo ON mo."Id" = fs."MonitoringObserverId"
-                  INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
-                  LEFT JOIN "AspNetUsers" u ON u."Id" = c."CreatedBy"
-                  WHERE c."ElectionRoundId" = @electionRoundId
-                    AND c."SubmissionId" = @submissionId
-                    AND mn."NgoId" = @ngoId
-                    AND mn."ElectionRoundId" = @electionRoundId
-                  ORDER BY c."CreatedOn";
+                  SELECT *
+                  FROM "GetFormSubmissionComments"(@electionRoundId, @ngoId, @submissionId)
+                  ORDER BY "CreatedAt";
                   """;
 
         var queryArgs = new

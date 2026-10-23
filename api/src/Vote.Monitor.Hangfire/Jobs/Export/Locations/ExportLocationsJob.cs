@@ -72,21 +72,9 @@ public class ExportLocationsJob(
     private async Task<LocationModel[]> GetLocationsAsync(Guid electionRoundId, CancellationToken ct)
     {
         var sql = """
-                  SELECT
-                      "Id",
-                      "Level1",
-                      "Level2",
-                      "Level3",
-                      "Level4",
-                      "Level5",
-                      "DisplayOrder",
-                      coalesce("Tags", '{}') as "Tags"
-                  FROM
-                      "Locations"
-                  WHERE
-                      "ElectionRoundId" = @electionRoundId
-                  ORDER BY
-                      "DisplayOrder" ASC;
+                  SELECT *
+                  FROM "ExportGetLocations"(@electionRoundId)
+                  ORDER BY "DisplayOrder" ASC;
                   """;
 
         var queryArgs = new { electionRoundId, };

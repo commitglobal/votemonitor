@@ -20,72 +20,33 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     public override async Task<Results<Ok<PagedResponse<NgoModel>>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var builder = new SqlBuilder();
-        builder.AddParameters(new
+        var orderBy = GetOrderByClause(req.SortColumnName, req.IsAscendingSorting);
+
+        var sql = $"""
+                   SELECT COUNT(*) AS COUNT
+                   FROM "GetNgoOverviews"(@searchText, @status);
+
+                   SELECT *
+                   FROM "GetNgoOverviews"(@searchText, @status)
+                   ORDER BY {orderBy}
+                   OFFSET @offset ROWS
+                   FETCH NEXT @pageSize ROWS ONLY;
+                   """;
+
+        var queryArgs = new
         {
+            searchText = string.IsNullOrWhiteSpace(req.SearchText) ? null : $"%{req.SearchText.Trim()}%",
+            status = req.Status?.ToString(),
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize
-        });
-
-        if (!string.IsNullOrWhiteSpace(req.SearchText))
-        {
-            builder.Where(@"(N.""Name"" ILIKE @searchText OR N.""Id""::TEXT ILIKE @searchText)",
-                new { searchText = $"%{req.SearchText.Trim()}%" });
-        }
-
-        if (req.Status is not null)
-        {
-            builder.Where(@"N.""Status"" = @status", new { status = req.Status.ToString() });
-        }
-
-        builder.OrderBy(GetOrderByClause(req.SortColumnName, req.IsAscendingSorting));
-
-        var countTemplate = builder.AddTemplate(
-            """
-            SELECT COUNT(*) AS COUNT
-            FROM "Ngos" N
-            /**where**/
-            """);
-
-        var selectTemplate = builder.AddTemplate(
-            """
-            WITH CTE_Ngos AS (
-                SELECT
-                    N."Id",
-                    N."Name",
-                    N."Status",
-                    (SELECT COUNT(1)
-                     FROM "NgoAdmins" NA
-                     WHERE NA."NgoId" = N."Id") AS "NumberOfNgoAdmins",
-                    (SELECT COUNT(1)
-                     FROM "NgoStaff" NS
-                     WHERE NS."NgoId" = N."Id") AS "NumberOfStaff",
-                    (SELECT COUNT(1)
-                     FROM "MonitoringNgos" MN
-                     WHERE MN."NgoId" = N."Id") AS "NumberOfMonitoredElections",
-                    (
-                      SELECT MAX(ER."StartDate")
-                      FROM "MonitoringNgos" MN
-                      INNER JOIN "ElectionRounds" ER ON ER."Id" = MN."ElectionRoundId"
-                      WHERE MN."NgoId" = N."Id"
-                    ) AS "DateOfLastElection"
-                FROM "Ngos" N
-                /**where**/
-            )
-            SELECT * FROM CTE_Ngos
-            /**orderby**/
-            OFFSET @offset ROWS
-            FETCH NEXT @pageSize ROWS ONLY
-            """);
-
-        var sql = $"{countTemplate.RawSql};\n{selectTemplate.RawSql}";
+        };
 
         int totalRowCount;
         List<NgoModel> entries;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            using var multi = await dbConnection.QueryMultipleAsync(sql, countTemplate.Parameters);
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<NgoModel>().ToList();
         }

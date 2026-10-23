@@ -28,40 +28,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
         }
 
         var sql = """
-                  SELECT
-                      N."Id",
-                      N."Title",
-                      N."Body",
-                      N."CreatedOn" "SentAt",
-                      U."DisplayName" "Sender",
-                      (
-                          SELECT
-                              JSONB_AGG(
-                                  JSONB_BUILD_OBJECT(
-                                      'Id',
-                                      "MonitoringObserverId",
-                                      'Name',
-                                      MOU."DisplayName",
-                                      'HasReadNotification',
-                                      MON."IsRead"
-                                  )
-                              )
-                          FROM
-                              "MonitoringObserverNotification" MON
-                              INNER JOIN "MonitoringObservers" MO ON MO."Id" = MON."MonitoringObserverId"
-                              LEFT JOIN "AspNetUsers" MOU ON MOU."Id" = MO."ObserverId"
-                          WHERE
-                              MON."NotificationId" = N."Id"
-                      ) "Receivers"
-                  FROM
-                      "Notifications" N
-                      INNER JOIN "NgoAdmins" NA ON N."SenderId" = NA."Id"
-                      INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
-                      LEFT JOIN "AspNetUsers" U ON U."Id" = NA."Id"
-                  WHERE
-                      MN."NgoId" = @ngoId
-                      AND N."ElectionRoundId" = @electionRoundId
-                      AND N."Id" = @id
+                  SELECT * FROM "GetNgoNotificationDetails"(@electionRoundId, @ngoId, @id)
                   """;
 
         var queryArgs = new

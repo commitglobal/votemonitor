@@ -8,28 +8,10 @@ namespace Feature.IncidentReports.ListAll;
 public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, PagedResponse<IncidentReportAdminRowModel>>
 {
-    private const string FromWhere = """
-        FROM "IncidentReports" IR
-            INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-            LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
-            INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
-            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-        WHERE IR."ElectionRoundId" = @electionRoundId
-            AND (@level1 IS NULL OR PS."Level1" = @level1)
-            AND (@level2 IS NULL OR PS."Level2" = @level2)
-            AND (@level3 IS NULL OR PS."Level3" = @level3)
-            AND (@level4 IS NULL OR PS."Level4" = @level4)
-            AND (@level5 IS NULL OR PS."Level5" = @level5)
-            AND (@monitoringNgoId IS NULL OR MN."Id" = @monitoringNgoId)
-            AND (@formId IS NULL OR IR."FormId" = @formId)
-            AND (@isCompleted IS NULL OR IR."IsCompleted" = @isCompleted)
-            AND (@fromDate IS NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate IS NULL OR IR."LastUpdatedAt" <= @toDate::timestamp)
-            AND (@searchText IS NULL OR PS."Number" ILIKE @searchText OR PS."Address" ILIKE @searchText
-                 OR IR."LocationDescription" ILIKE @searchText OR F."Code" ILIKE @searchText)
+    private const string Source = """
+        "GetIncidentReportsForPlatformAdmin"(
+            @electionRoundId, @level1, @level2, @level3, @level4, @level5,
+            @monitoringNgoId, @formId, @isCompleted, @fromDate, @toDate, @searchText)
         """;
 
     public override void Configure()
@@ -49,49 +31,23 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   {FromWhere};
+                   FROM {Source};
 
-                   SELECT
-                       IR."Id" AS "IncidentReportId",
-                       IR."LastUpdatedAt" AS "TimeSubmitted",
-                       F."Id" AS "FormId",
-                       F."Code" AS "FormCode",
-                       F."Name" AS "FormName",
-                       F."DefaultLanguage" AS "FormDefaultLanguage",
-                       IR."LocationType",
-                       IR."LocationDescription",
-                       PS."Id" AS "PollingStationId",
-                       PS."Level1",
-                       PS."Level2",
-                       PS."Level3",
-                       PS."Level4",
-                       PS."Level5",
-                       PS."Number",
-                       PS."Address",
-                       MN."Id" AS "MonitoringNgoId",
-                       N."Name" AS "NgoName",
-                       MO."Id" AS "MonitoringObserverId",
-                       U."DisplayName" AS "ObserverName",
-                       U."Email" AS "ObserverEmail",
-                       U."PhoneNumber" AS "ObserverPhoneNumber",
-                       IR."NumberOfQuestionsAnswered",
-                       IR."NumberOfFlaggedAnswers",
-                       IR."FollowUpStatus",
-                       IR."IsCompleted"
-                   {FromWhere}
+                   SELECT *
+                   FROM {Source}
                    ORDER BY
-                       CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN IR."LastUpdatedAt" END ASC,
-                       CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN IR."LastUpdatedAt" END DESC,
-                       CASE WHEN @sortExpression = 'FormCode ASC' THEN F."Code" END ASC,
-                       CASE WHEN @sortExpression = 'FormCode DESC' THEN F."Code" END DESC,
-                       CASE WHEN @sortExpression = 'Number ASC' THEN PS."Number" END ASC,
-                       CASE WHEN @sortExpression = 'Number DESC' THEN PS."Number" END DESC,
-                       CASE WHEN @sortExpression = 'NgoName ASC' THEN N."Name" END ASC,
-                       CASE WHEN @sortExpression = 'NgoName DESC' THEN N."Name" END DESC,
-                       CASE WHEN @sortExpression = 'Location ASC' THEN PS."Level1" END ASC,
-                       CASE WHEN @sortExpression = 'Location DESC' THEN PS."Level1" END DESC,
-                       IR."LastUpdatedAt" DESC,
-                       IR."Id"
+                       CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN "TimeSubmitted" END ASC,
+                       CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN "TimeSubmitted" END DESC,
+                       CASE WHEN @sortExpression = 'FormCode ASC' THEN "FormCode" END ASC,
+                       CASE WHEN @sortExpression = 'FormCode DESC' THEN "FormCode" END DESC,
+                       CASE WHEN @sortExpression = 'Number ASC' THEN "Number" END ASC,
+                       CASE WHEN @sortExpression = 'Number DESC' THEN "Number" END DESC,
+                       CASE WHEN @sortExpression = 'NgoName ASC' THEN "NgoName" END ASC,
+                       CASE WHEN @sortExpression = 'NgoName DESC' THEN "NgoName" END DESC,
+                       CASE WHEN @sortExpression = 'Location ASC' THEN "Level1" END ASC,
+                       CASE WHEN @sortExpression = 'Location DESC' THEN "Level1" END DESC,
+                       "TimeSubmitted" DESC,
+                       "IncidentReportId"
                    OFFSET @offset ROWS
                    FETCH NEXT @pageSize ROWS ONLY;
                    """;

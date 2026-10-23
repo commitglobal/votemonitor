@@ -118,150 +118,19 @@ public class ExportQuickReportsJob(
         filter.AddTo(parameters);
 
         var sql = $"""
-            SELECT
-            	QR."Id",
-            	QR."QuickReportLocationType",
-            	QR."IncidentCategory",
-            	QR."MonitoringObserverId",
-            	QR."LastUpdatedAt" AS "Timestamp",
-            	QR."Title",
-            	QR."Description",
-            	QR."FollowUpStatus",
-            	COALESCE(
-            		(
-            			SELECT
-            				JSONB_AGG(
-            					JSONB_BUILD_OBJECT(
-            						'QuickReportId',
-            						"QuickReportId",
-            						'FileName',
-            						"FileName",
-            						'MimeType',
-            						"MimeType",
-            						'FilePath',
-            						"FilePath",
-            						'UploadedFileName',
-            						"UploadedFileName",
-            						'TimeSubmitted',
-            						QRA."LastUpdatedAt"
-            					)
-            				)
-            			FROM
-            				"QuickReportAttachments" QRA
-            			WHERE
-            				QRA."ElectionRoundId" = @ELECTIONROUNDID
-            				AND QRA."QuickReportId" = QR."Id"
-            		),
-            		'[]'::JSONB
-            	) AS "Attachments",
-            	{CommentsSql.JsonAgg("QuickReportComments", "QuickReportId", "QR.\"Id\"")} AS "Comments",
-            	MO."NgoName",
-            	MO."DisplayName",
-            	MO."Email",
-            	MO."PhoneNumber",
-            	MO."Tags",
-            	QR."PollingStationDetails",
-            	PS."Id" AS "PollingStationId",
-            	PS."Level1",
-            	PS."Level2",
-            	PS."Level3",
-            	PS."Level4",
-            	PS."Level5",
-            	PS."Number",
-            	PS."Address"
-            FROM
-            	"QuickReports" QR
-            	INNER JOIN "GetAvailableMonitoringObservers" (@ELECTIONROUNDID, @NGOID, @DATASOURCE) MO ON MO."MonitoringObserverId" = QR."MonitoringObserverId"
-            	LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-            WHERE
-            	(
-            		@COALITIONMEMBERID IS NULL
-            		OR MO."NgoId" = @COALITIONMEMBERID
-            	)
-            	AND (
-            		@FOLLOWUPSTATUS IS NULL
-            		OR QR."FollowUpStatus" = @FOLLOWUPSTATUS
-            	)
-            	AND (
-            		@QUICKREPORTLOCATIONTYPE IS NULL
-            		OR QR."QuickReportLocationType" = @QUICKREPORTLOCATIONTYPE
-            	)
-            	AND (
-            		@INCIDENTCATEGORY IS NULL
-            		OR QR."IncidentCategory" = @INCIDENTCATEGORY
-            	)
-            	AND (
-            		@LEVEL1 IS NULL
-            		OR PS."Level1" = @LEVEL1
-            	)
-            	AND (
-            		@LEVEL2 IS NULL
-            		OR PS."Level2" = @LEVEL2
-            	)
-            	AND (
-            		@LEVEL3 IS NULL
-            		OR PS."Level3" = @LEVEL3
-            	)
-            	AND (
-            		@LEVEL4 IS NULL
-            		OR PS."Level4" = @LEVEL4
-            	)
-            	AND (
-            		@LEVEL5 IS NULL
-            		OR PS."Level5" = @LEVEL5
-            	)
-            	AND (
-            		@POLLINGSTATIONID IS NULL
-            		OR QR."PollingStationId" = @POLLINGSTATIONID
-            	)
-            	AND (
-            		@FROMDATE IS NULL
-            		OR QR."LastUpdatedAt" >= @FROMDATE::TIMESTAMP
-            	)
-            	AND (
-            		@TODATE IS NULL
-            		OR QR."LastUpdatedAt" <= @TODATE::TIMESTAMP
-            	)
-            	AND (
-            		@HASATTACHMENTS IS NULL
-            		OR (
-            			(
-            				SELECT COUNT(1)
-            				FROM "QuickReportAttachments" QRA
-            				WHERE QRA."QuickReportId" = QR."Id"
-            				  AND QRA."IsDeleted" = FALSE
-            				  AND QRA."IsCompleted" = TRUE
-            			) = 0
-            			AND @HASATTACHMENTS = FALSE
-            		)
-            		OR (
-            			(
-            				SELECT COUNT(1)
-            				FROM "QuickReportAttachments" QRA
-            				WHERE QRA."QuickReportId" = QR."Id"
-            				  AND QRA."IsDeleted" = FALSE
-            				  AND QRA."IsCompleted" = TRUE
-            			) > 0
-            			AND @HASATTACHMENTS = TRUE
-            		)
-            	)
-            	AND (
-            		@MONITORINGOBSERVERID IS NULL
-            		OR MO."MonitoringObserverId" = @MONITORINGOBSERVERID
-            	)
-            	AND (
-            		@TAGSFILTER IS NULL
-            		OR CARDINALITY(@TAGSFILTER) = 0
-            		OR MO."Tags" && @TAGSFILTER
-            	)
-                AND QR."Id" IN (
-                    SELECT s."Id"
-                    FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
-                    WHERE s."ElectionRoundId" = @electionRoundId
-                      AND {filter.Sql}
-                )
-            ORDER BY
-            	QR."LastUpdatedAt" DESC
+            SELECT r.*
+            FROM "ExportGetQuickReports"(
+                @electionRoundId, @ngoId, @dataSource, @coalitionMemberId,
+                @level1, @level2, @level3, @level4, @level5,
+                @followUpStatus, @quickReportLocationType, @incidentCategory, @fromDate, @toDate,
+                @hasAttachments, @monitoringObserverId, @pollingStationId, @tagsFilter) r
+            WHERE r."Id" IN (
+                SELECT s."Id"
+                FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                WHERE s."ElectionRoundId" = @electionRoundId
+                  AND {filter.Sql}
+            )
+            ORDER BY r."Timestamp" DESC
             """;
 
         IEnumerable<QuickReportModel> quickReports = [];

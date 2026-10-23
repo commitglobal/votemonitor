@@ -7,6 +7,7 @@ using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.QuickReports.Upsert;
 
@@ -16,6 +17,7 @@ public class Endpoint(
     IRepository<QuickReport> repository,
     IReadRepository<QuickReportAttachment> attachmentsRepository,
     IFileStorageService fileStorageService,
+    IRecordAutomation recordAutomation,
     ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<QuickReportModel>, NotFound>>
 {
@@ -58,6 +60,8 @@ public class Endpoint(
             req.IncidentCategory, req.LastUpdatedAt ?? timeProvider.UtcNow);
 
         await repository.AddAsync(quickReport, ct);
+        await recordAutomation.RecordCreatedAsync(quickReport.ElectionRoundId, ReportRecordType.QuickReport,
+            quickReport.Id, ct);
 
         var attachments = await GetPresignedAttachments(req.ElectionRoundId, req.Id, ct);
 
@@ -71,6 +75,8 @@ public class Endpoint(
         quickReport.Update(req.Title, req.Description, req.QuickReportLocationType, req.PollingStationId,
             req.PollingStationDetails, req.IncidentCategory, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(quickReport, ct);
+        await recordAutomation.RecordEditedAsync(quickReport.ElectionRoundId, ReportRecordType.QuickReport,
+            quickReport.Id, ct);
 
         var attachments = await GetPresignedAttachments(req.ElectionRoundId, req.Id, ct);
 

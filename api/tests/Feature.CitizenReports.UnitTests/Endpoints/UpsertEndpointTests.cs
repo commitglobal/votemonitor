@@ -3,6 +3,7 @@ using Feature.CitizenReports.Specifications;
 using Feature.CitizenReports.Upsert;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.CitizenReports.UnitTests.Endpoints;
 
@@ -20,7 +21,8 @@ public class UpsertEndpointTests
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _locationsRepository = Substitute.For<IReadRepository<Location>>();
 
-        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository);
+        _endpoint = Factory.Create<Endpoint>(_repository, _locationsRepository, _formRepository,
+            Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

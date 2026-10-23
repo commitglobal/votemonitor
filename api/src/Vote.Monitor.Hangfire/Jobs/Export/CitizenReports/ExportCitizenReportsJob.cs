@@ -107,7 +107,6 @@ public class ExportCitizenReportsJob(
         var queryParams = new DynamicParameters();
         queryParams.Add("electionRoundId", electionRoundId);
         queryParams.Add("ngoId", ngoId);
-        queryParams.Add("searchText", $"%{filters?.SearchText?.Trim() ?? string.Empty}%");
         queryParams.Add("hasFlaggedAnswers", filters?.HasFlaggedAnswers);
         queryParams.Add("followUpStatus", filters?.FollowUpStatus?.ToString());
         queryParams.Add("level1", filters?.Level1Filter);
@@ -124,109 +123,21 @@ public class ExportCitizenReportsJob(
         filter.AddTo(queryParams);
 
         var sql = $"""
-                  SELECT
-                      CR."Id" AS "CitizenReportId",
-                      CR."FormId",
-                      CR."Answers",
-                      CR."FollowUpStatus",
-                      F."Questions",
-                      L."Level1",
-                      L."Level2",
-                      L."Level3",
-                      L."Level4",
-                      L."Level5",
-                      COALESCE(
-                              (
-                                  SELECT
-                                      JSONB_AGG(
-                                              JSONB_BUILD_OBJECT(
-                                                      'QuestionId',
-                                                      "QuestionId",
-                                                      'FilePath',
-                                                      "FilePath",
-                                                      'UploadedFileName',
-                                                      "UploadedFileName"
-                                              )
-                                      )
-                                  FROM
-                                      "CitizenReportAttachments" A
-                                  WHERE
-                                      A."ElectionRoundId" = @electionRoundId
-                                    AND A."FormId" = CR."FormId"
-                                    AND A."CitizenReportId" = CR."Id"
-                              ),
-                              '[]'::JSONB
-                      ) AS "Attachments",
-                      COALESCE(
-                              (
-                                  SELECT
-                                      JSONB_AGG(
-                                              JSONB_BUILD_OBJECT('QuestionId', "QuestionId", 'Text', "Text")
-                                      )
-                                  FROM
-                                      "CitizenReportNotes" N
-                                  WHERE
-                                      N."ElectionRoundId" = @electionRoundId
-                                    AND N."FormId" = CR."FormId"
-                                    AND N."CitizenReportId" = CR."Id"
-                              ),
-                              '[]'::JSONB
-                      ) AS "Notes",
-                      {CommentsSql.JsonAgg("CitizenReportComments", "CitizenReportId", "CR.\"Id\"")} AS "Comments",
-                      COALESCE(CR."LastModifiedOn", CR."CreatedOn") "TimeSubmitted"
-                  FROM
-                      "CitizenReports" CR
-                          INNER JOIN "Forms" F ON F."Id" = CR."FormId"
-                          INNER JOIN "Locations" L ON L."Id" = CR."LocationId"
-                          INNER JOIN "ElectionRounds" E ON CR."ElectionRoundId" = E."Id"
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = E."MonitoringNgoForCitizenReportingId"
-                  WHERE
-                      CR."ElectionRoundId" = @electionRoundId
-                    AND E."CitizenReportingEnabled" = TRUE
-                    AND MN."NgoId" = @ngoId
-                    AND (
-                     @hasFlaggedAnswers IS NULL
-                         OR (
-                         "NumberOfFlaggedAnswers" = 0
-                             AND @hasFlaggedAnswers = FALSE
-                         )
-                         OR (
-                         "NumberOfFlaggedAnswers" > 0
-                             AND @hasFlaggedAnswers = TRUE
-                         )
-                     )
-                   AND (
-                     @followUpStatus IS NULL
-                         OR "FollowUpStatus" = @followUpStatus
-                     )
-                   AND (@level1 IS NULL OR L."Level1" = @level1)
-                   AND (@level2 IS NULL OR L."Level2" = @level2)
-                   AND (@level3 IS NULL OR L."Level3" = @level3)
-                   AND (@level4 IS NULL OR L."Level4" = @level4)
-                   AND (@level5 IS NULL OR L."Level5" = @level5)
-                   AND (@locationId IS NULL OR CR."LocationId" = @locationId)
-                   AND (@formId IS NULL OR CR."FormId" = @formId)
-                   AND (@formStatus IS NULL OR F."Status" = @formStatus)
-                   AND (@questionsAnswered IS NULL
-                     OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
-                     OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")
-                     OR (@questionsAnswered = 'None' AND CR."NumberOfQuestionsAnswered" = 0))
-                   AND (@hasAttachments is NULL
-                     OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false)
-                     OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
-                   AND (@hasNotes is NULL
-                     OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false)
-                     OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
-                   AND CR."Id" IN (
-                       SELECT s."Id"
-                       FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
-                       WHERE s."ElectionRoundId" = @electionRoundId
-                         AND s."NgoId" = @ngoId
-                         AND s."CitizenReportingEnabled" = TRUE
-                         AND {filter.Sql}
-                   )
+                  SELECT r.*
+                  FROM "ExportGetCitizenReports"(
+                      @electionRoundId, @ngoId, @hasFlaggedAnswers, @followUpStatus,
+                      @level1, @level2, @level3, @level4, @level5, @locationId,
+                      @formId, @formStatus, @hasAttachments, @hasNotes, @questionsAnswered) r
+                  WHERE r."CitizenReportId" IN (
+                      SELECT s."Id"
+                      FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                      WHERE s."ElectionRoundId" = @electionRoundId
+                        AND s."NgoId" = @ngoId
+                        AND s."CitizenReportingEnabled" = TRUE
+                        AND {filter.Sql}
+                  )
                   ORDER BY
-                      "TimeSubmitted" DESC
+                      r."TimeSubmitted" DESC
                   """;
 
         IEnumerable<CitizenReportModel> citizenReports;

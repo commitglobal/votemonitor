@@ -1,10 +1,13 @@
 ﻿using Authorization.Policies;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.QuickReports.UpdateStatus;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, NoContent>
+public class Endpoint(VoteMonitorContext context, ICurrentUserProvider userProvider, ITimeProvider timeProvider) : Endpoint<Request, NoContent>
 {
     public override void Configure()
     {
@@ -21,12 +24,19 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, NoContent>
 
     public override async Task<NoContent> ExecuteAsync(Request req, CancellationToken ct)
     {
-        await context.QuickReports
+        var updated = await context.QuickReports
             .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
                         && x.MonitoringObserver.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
+
+        if (updated > 0)
+        {
+            await context.AddFollowUpStatusActivityAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.QuickReport, req.Id,
+                userProvider.GetUserId()!.Value, req.FollowUpStatus.Value, timeProvider.UtcNow, ct);
+            await context.SaveChangesAsync(ct);
+        }
 
         return TypedResults.NoContent();
     }

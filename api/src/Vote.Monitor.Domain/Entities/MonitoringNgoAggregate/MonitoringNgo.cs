@@ -2,6 +2,7 @@
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.ObserverAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
@@ -20,6 +21,9 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     public MonitoringNgoStatus Status { get; private set; }
     public virtual List<CoalitionMembership> Memberships { get; internal set; } = [];
 
+    /// <summary>The review stages this NGO uses for its records in this round.</summary>
+    public virtual List<ReviewStage> ReviewStages { get; internal set; } = [];
+
     internal MonitoringNgo(ElectionRound electionRound, Ngo ngo, bool allowMultipleFormSubmission = false)
     {
         Id = Guid.NewGuid();
@@ -30,6 +34,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         Status = MonitoringNgoStatus.Active;
         FormsVersion = Guid.NewGuid();
         AllowMultipleFormSubmission = allowMultipleFormSubmission;
+        ReviewStages = ReviewStage.CreateDefaults(Id).ToList();
     }
 
     public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)

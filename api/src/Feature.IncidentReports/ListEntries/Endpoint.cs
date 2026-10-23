@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Dapper;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
@@ -29,242 +30,72 @@ public class Endpoint(
         }
 
         var sql = """
-                  SELECT
-                      COUNT(*) AS COUNT
-                  FROM
-                      "IncidentReports" IR
-                          INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                          INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                          LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
-                  WHERE
-                      MN."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
-                    AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
-                    AND (@searchText IS NULL
-                          OR @searchText = ''
-                          OR U."DisplayName" ILIKE @searchText
-                          OR U."Email" ILIKE @searchText
-                          OR U."PhoneNumber" ILIKE @searchText
-                          OR MO."Id"::TEXT ILIKE @searchText
-                      )
-                    AND (@level1 IS NULL OR PS."Level1" = @level1)
-                    AND (@level2 IS NULL OR PS."Level2" = @level2)
-                    AND (@level3 IS NULL OR PS."Level3" = @level3)  
-                    AND (@level4 IS NULL OR PS."Level4" = @level4)
-                    AND (@level5 IS NULL OR PS."Level5" = @level5)
-                    AND (@pollingStationNumber IS NULL OR PS."Number" = @pollingStationNumber)
-                    AND (@pollingStationId IS NULL OR IR."PollingStationId" = @pollingStationId)
-                    AND (@hasFlaggedAnswers IS NULL
-                          OR (IR."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = FALSE)
-                          OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = TRUE)
-                      )
-                    AND (@followUpStatus IS NULL OR IR."FollowUpStatus" = @followUpStatus)
-                    AND (@tagsFilter IS NULL OR CARDINALITY(@tagsFilter) = 0 OR MO."Tags" && @tagsFilter)
-                    AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
-                    AND (@formId IS NULL OR IR."FormId" = @formId)
-                    AND (@formStatus IS NULL OR F."Status" = @formStatus)
-                    AND (@questionsAnswered IS NULL
-                          OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
-                          OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
-                          OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
-                      )
-                    AND (@locationType IS NULL OR IR."LocationType" = @locationType)
-                    AND (@hasAttachments IS NULL
-                          OR (@hasAttachments = FALSE AND
-                          (
-                              SELECT
-                                  COUNT(1)
-                              FROM
-                                  "IncidentReportAttachments" A
-                              WHERE
-                                  A."IncidentReportId" = IR."Id"
-                                AND IR."PollingStationId" = "PollingStationId"
-                                AND A."IsDeleted" = FALSE
-                                AND A."IsCompleted" = TRUE
-                          ) = 0)
-                          OR (
-                          (@hasAttachments = TRUE AND(
-                              SELECT
-                                  COUNT(1)
-                              FROM
-                                  "IncidentReportAttachments" A
-                              WHERE
-                                  A."IncidentReportId" = IR."Id"
-                                AND A."IsDeleted" = FALSE
-                                AND A."IsCompleted" = TRUE
-                          ) > 0)
-                      )
-                    AND (@hasNotes IS NULL
-                          OR (@hasNotes = FALSE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") = 0)
-                          OR (@hasNotes = TRUE AND (SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") > 0 )
-                      ))
-                    AND (@hasComments IS NULL
-                          OR (@hasComments = FALSE AND (SELECT COUNT(1) FROM "IncidentReportComments" ICC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy" AND NA."NgoId" = @ngoId WHERE ICC."IncidentReportId" = IR."Id") = 0)
-                          OR (@hasComments = TRUE AND (SELECT COUNT(1) FROM "IncidentReportComments" ICC INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy" AND NA."NgoId" = @ngoId WHERE ICC."IncidentReportId" = IR."Id") > 0)
-                      )
-                    AND (@fromDate is NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
-                    AND (@toDate is NULL OR IR."LastUpdatedAt" <= @toDate::timestamp);
-                      
-                      
-                  WITH
-                      INCIDENT_REPORTS AS (
-                          SELECT
-                              IR."Id" AS "IncidentReportId",
-                              F."Code" AS "FormCode",
-                              F."Status" AS "FormStatus",
-                              F."Name" AS "FormName",
-                              F."DefaultLanguage" "FormDefaultLanguage",
-                              IR."LocationType",
-                              IR."LocationDescription",
-                              IR."PollingStationId",
-                              IR."MonitoringObserverId",
-                              IR."NumberOfQuestionsAnswered",
-                              IR."NumberOfFlaggedAnswers",
-                              (
-                                  SELECT
-                                      COUNT(1)
-                                  FROM
-                                      "IncidentReportAttachments" A
-                                  WHERE
-                                      A."IncidentReportId" = IR."Id"
-                                    AND "IsDeleted" = FALSE
-                                    AND "IsCompleted" = TRUE
-                              ) AS "MediaFilesCount",
-                              ( SELECT COUNT(1) FROM "IncidentReportNotes" N WHERE N."IncidentReportId" = IR."Id") AS "NotesCount",
-                              ( SELECT COUNT(1)
-                                FROM "IncidentReportComments" ICC
-                                    INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = ICC."CreatedBy"
-                                        AND NA."NgoId" = @ngoId
-                                WHERE ICC."IncidentReportId" = IR."Id") AS "CommentsCount",
-                              IR."LastUpdatedAt" AS "TimeSubmitted",
-                              IR."FollowUpStatus",
-                              IR."IsCompleted"
-                          FROM
-                              "IncidentReports" IR
-                                  INNER JOIN "Forms" F ON F."Id" = IR."FormId"
-                                  INNER JOIN "MonitoringObservers" MO ON IR."MonitoringObserverId" = MO."Id"
-                                  INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                          WHERE
-                            MN."ElectionRoundId" = @electionRoundId
-                            AND MN."NgoId" = @ngoId
-                            AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
-                            AND (@monitoringObserverStatus IS NULL OR MO."Status" = @monitoringObserverStatus)
-                            AND (@formId IS NULL OR IR."FormId" = @formId)
-                            AND (@formStatus IS NULL OR F."Status" = @formStatus)
-                            AND (@locationType IS NULL OR IR."LocationType" = @locationType)
-                            AND (@questionsAnswered IS NULL
-                                OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = IR."NumberOfQuestionsAnswered")
-                                OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> IR."NumberOfQuestionsAnswered")
-                                OR (@questionsAnswered = 'None' AND IR."NumberOfQuestionsAnswered" = 0)
-                            )
-                            AND (@fromDate is NULL OR IR."LastUpdatedAt" >= @fromDate::timestamp)
-                            AND (@toDate is NULL OR IR."LastUpdatedAt" <= @toDate::timestamp)
-                      )
-                  SELECT
-                      IR."IncidentReportId",
-                      IR."TimeSubmitted",
-                      IR."FormCode",
-                      IR."FormStatus",
-                      IR."FormName",
-                      IR."FormDefaultLanguage",
-                      IR."LocationType",
-                      IR."LocationDescription",
-                      PS."Id" AS "PollingStationId",
-                      PS."Level1",
-                      PS."Level2",
-                      PS."Level3",
-                      PS."Level4",
-                      PS."Level5",
-                      PS."Number" "PollingStationNumber",
-                      IR."MonitoringObserverId",
-                      U."DisplayName" AS "ObserverName",
-                      U."Email",
-                      U."PhoneNumber",
-                      MO."Status",
-                      MO."Tags",
-                      IR."NumberOfQuestionsAnswered",
-                      IR."NumberOfFlaggedAnswers",
-                      IR."MediaFilesCount",
-                      IR."NotesCount",
-                      IR."CommentsCount",
-                      IR."FollowUpStatus",
-                      IR."IsCompleted"
-                  FROM
-                      INCIDENT_REPORTS IR
-                          INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                          INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-                          LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-                          LEFT JOIN "PollingStations" PS ON PS."Id" = IR."PollingStationId"
-                  WHERE
-                      MN."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
-                    AND (@monitoringObserverId IS NULL OR MO."Id" = @monitoringObserverId)
-                    AND (
-                      @searchText IS NULL
-                          OR @searchText = ''
-                          OR U."DisplayName" ILIKE @searchText
-                          OR U."Email" ILIKE @searchText
-                          OR U."PhoneNumber" ILIKE @searchText
-                          OR MO."Id"::TEXT ILIKE @searchText
-                      )
-                    AND (@level1 IS NULL OR PS."Level1" = @level1)
-                    AND (@level2 IS NULL OR PS."Level2" = @level2)
-                    AND (@level3 IS NULL OR PS."Level3" = @level3)
-                    AND (@level4 IS NULL OR PS."Level4" = @level4)
-                    AND (@level5 IS NULL OR PS."Level5" = @level5)
-                    AND (@pollingStationNumber IS NULL OR PS."Number" = @pollingStationNumber)
-                    AND (@pollingStationId IS NULL OR IR."PollingStationId" = @pollingStationId)
-                    AND (@hasFlaggedAnswers IS NULL
-                      OR (IR."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = FALSE)
-                      OR (IR."NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = TRUE)
-                      )
-                    AND (@followUpStatus IS NULL OR IR."FollowUpStatus" = @followUpStatus)
-                    AND (@tagsFilter IS NULL OR CARDINALITY(@tagsFilter) = 0 OR MO."Tags" && @tagsFilter)
-                    AND (@hasNotes IS NULL
-                      OR (IR."NotesCount" = 0 AND @hasNotes = FALSE)
-                      OR (IR."NotesCount" > 0 AND @hasNotes = TRUE)
-                      )
-                    AND (@hasAttachments IS NULL
-                      OR (IR."MediaFilesCount" = 0 AND @hasAttachments = FALSE)
-                      OR (IR."MediaFilesCount" > 0 AND @hasAttachments = TRUE)
-                      )
-                    AND (@hasComments IS NULL
-                      OR (IR."CommentsCount" = 0 AND @hasComments = FALSE)
-                      OR (IR."CommentsCount" > 0 AND @hasComments = TRUE)
-                      )
-                  ORDER BY
-                      CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN IR."TimeSubmitted" END ASC,
-                      CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN IR."TimeSubmitted" END DESC,
-                      CASE WHEN @sortExpression = 'FormCode ASC' THEN IR."FormCode" END ASC,
-                      CASE WHEN @sortExpression = 'FormCode DESC' THEN IR."FormCode" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered ASC' THEN IR."NumberOfQuestionsAnswered" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfQuestionsAnswered DESC' THEN IR."NumberOfQuestionsAnswered" END DESC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN IR."NumberOfFlaggedAnswers" END ASC,
-                      CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN IR."NumberOfFlaggedAnswers" END DESC,
-                      CASE WHEN @sortExpression = 'MediaFilesCount ASC' THEN IR."MediaFilesCount" END ASC,
-                      CASE WHEN @sortExpression = 'MediaFilesCount DESC' THEN IR."MediaFilesCount" END DESC,
-                      CASE WHEN @sortExpression = 'NotesCount ASC' THEN IR."NotesCount" END ASC,
-                      CASE WHEN @sortExpression = 'NotesCount DESC' THEN IR."NotesCount" END DESC,
-                      CASE WHEN @sortExpression = 'Level1 ASC' THEN PS."Level1" END ASC,
-                      CASE WHEN @sortExpression = 'Level1 DESC' THEN PS."Level1" END DESC,
-                      CASE WHEN @sortExpression = 'Level2 ASC' THEN PS."Level2" END ASC,
-                      CASE WHEN @sortExpression = 'Level2 DESC' THEN PS."Level2" END DESC,
-                      CASE WHEN @sortExpression = 'Level3 ASC' THEN PS."Level3" END ASC,
-                      CASE WHEN @sortExpression = 'Level3 DESC' THEN PS."Level3" END DESC,
-                      CASE WHEN @sortExpression = 'Level4 ASC' THEN PS."Level4" END ASC,
-                      CASE WHEN @sortExpression = 'Level4 DESC' THEN PS."Level4" END DESC,
-                      CASE WHEN @sortExpression = 'Level5 ASC' THEN PS."Level5" END ASC,
-                      CASE WHEN @sortExpression = 'Level5 DESC' THEN PS."Level5" END DESC,
-                      CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN PS."Number" END ASC,
-                      CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN PS."Number" END DESC,
-                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."DisplayName" END ASC,
-                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."DisplayName" END DESC
-                  OFFSET @offset ROWS
-                  FETCH NEXT @pageSize ROWS ONLY;
+                  SELECT "Count" FROM "GetIncidentReportListEntriesCount"(
+                      electionRoundId => @electionRoundId,
+                      ngoId => @ngoId,
+                      monitoringObserverId => @monitoringObserverId,
+                      searchText => @searchText,
+                      level1 => @level1,
+                      level2 => @level2,
+                      level3 => @level3,
+                      level4 => @level4,
+                      level5 => @level5,
+                      pollingStationNumber => @pollingStationNumber,
+                      pollingStationId => @pollingStationId,
+                      hasFlaggedAnswers => @hasFlaggedAnswers,
+                      followUpStatus => @followUpStatus,
+                      tagsFilter => @tagsFilter,
+                      monitoringObserverStatus => @monitoringObserverStatus,
+                      formId => @formId,
+                      formStatus => @formStatus,
+                      questionsAnswered => @questionsAnswered,
+                      locationType => @locationType,
+                      hasAttachments => @hasAttachments,
+                      hasNotes => @hasNotes,
+                      hasComments => @hasComments,
+                      fromDate => @fromDate,
+                      toDate => @toDate,
+                      stageId => @stageId,
+                      reviewStatus => @reviewStatus,
+                      reviewerId => @reviewerId,
+                      hasReviewer => @hasReviewer,
+                      severities => @severities
+                  );
+
+                  SELECT * FROM "GetIncidentReportListEntries"(
+                      electionRoundId => @electionRoundId,
+                      ngoId => @ngoId,
+                      monitoringObserverId => @monitoringObserverId,
+                      searchText => @searchText,
+                      level1 => @level1,
+                      level2 => @level2,
+                      level3 => @level3,
+                      level4 => @level4,
+                      level5 => @level5,
+                      pollingStationNumber => @pollingStationNumber,
+                      pollingStationId => @pollingStationId,
+                      hasFlaggedAnswers => @hasFlaggedAnswers,
+                      followUpStatus => @followUpStatus,
+                      tagsFilter => @tagsFilter,
+                      monitoringObserverStatus => @monitoringObserverStatus,
+                      formId => @formId,
+                      formStatus => @formStatus,
+                      questionsAnswered => @questionsAnswered,
+                      locationType => @locationType,
+                      hasAttachments => @hasAttachments,
+                      hasNotes => @hasNotes,
+                      hasComments => @hasComments,
+                      fromDate => @fromDate,
+                      toDate => @toDate,
+                      stageId => @stageId,
+                      reviewStatus => @reviewStatus,
+                      reviewerId => @reviewerId,
+                      hasReviewer => @hasReviewer,
+                      severities => @severities,
+                      sortExpression => @sortExpression,
+                      offsetRows => @offset,
+                      pageSize => @pageSize
+                  );
                   """;
 
         var queryArgs = new
@@ -284,6 +115,11 @@ public class Endpoint(
             pollingStationNumber = req.PollingStationNumberFilter,
             pollingStationId = req.PollingStationId,
             hasFlaggedAnswers = req.HasFlaggedAnswers,
+            stageId = req.StageId,
+            reviewStatus = req.ReviewStatus?.Value,
+            reviewerId = req.ReviewerId,
+            hasReviewer = req.HasReviewer,
+            severities = req.Severity?.Select(x => x.Value).ToArray() ?? [],
             followUpStatus = req.FollowUpStatus?.ToString(),
             tagsFilter = req.TagsFilter ?? [],
             monitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
@@ -314,6 +150,12 @@ public class Endpoint(
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
     {
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $"Severity {(isAscendingSorting ? "ASC" : "DESC")}";
+        }
+
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
             return $"{nameof(IncidentReportEntryModel.TimeSubmitted)} DESC";

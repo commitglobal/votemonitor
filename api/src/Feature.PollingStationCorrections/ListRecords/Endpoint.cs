@@ -20,24 +20,25 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
     public override async Task<PagedResponse<CorrectableRecordModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = $"""
-                   SELECT COUNT(*)
-                   {CorrectableRecordsSql.FromWhere};
+        var sql = """
+                  SELECT COUNT(*)
+                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
+                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
 
-                   SELECT
-                   {CorrectableRecordsSql.Columns}
-                   {CorrectableRecordsSql.FromWhere}
-                   ORDER BY
-                       CASE WHEN @sortExpression = 'SubmittedAt ASC' THEN R."SubmittedAt" END ASC,
-                       CASE WHEN @sortExpression = 'SubmittedAt DESC' THEN R."SubmittedAt" END DESC,
-                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN U."DisplayName" END ASC,
-                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN U."DisplayName" END DESC,
-                       CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN PS."Number" END ASC,
-                       CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN PS."Number" END DESC,
-                       R."Id"
-                   OFFSET @offset ROWS
-                   FETCH NEXT @pageSize ROWS ONLY;
-                   """;
+                  SELECT *
+                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
+                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5)
+                  ORDER BY
+                      CASE WHEN @sortExpression = 'SubmittedAt ASC' THEN "SubmittedAt" END ASC,
+                      CASE WHEN @sortExpression = 'SubmittedAt DESC' THEN "SubmittedAt" END DESC,
+                      CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
+                      CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
+                      CASE WHEN @sortExpression = 'PollingStationNumber ASC' THEN "Number" END ASC,
+                      CASE WHEN @sortExpression = 'PollingStationNumber DESC' THEN "Number" END DESC,
+                      "Id"
+                  OFFSET @offset ROWS
+                  FETCH NEXT @pageSize ROWS ONLY;
+                  """;
 
         var args = new
         {

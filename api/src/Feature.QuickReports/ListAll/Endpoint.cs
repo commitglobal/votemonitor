@@ -9,25 +9,9 @@ namespace Feature.QuickReports.ListAll;
 public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, PagedResponse<QuickReportAdminRowModel>>
 {
-    private const string FromWhere = """
-        FROM "QuickReports" QR
-            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-            INNER JOIN "Ngos" N ON N."Id" = MN."NgoId"
-            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
-            LEFT JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
-        WHERE QR."ElectionRoundId" = @electionRoundId
-            AND (@level1 IS NULL OR PS."Level1" = @level1)
-            AND (@level2 IS NULL OR PS."Level2" = @level2)
-            AND (@level3 IS NULL OR PS."Level3" = @level3)
-            AND (@level4 IS NULL OR PS."Level4" = @level4)
-            AND (@level5 IS NULL OR PS."Level5" = @level5)
-            AND (@monitoringNgoId IS NULL OR MN."Id" = @monitoringNgoId)
-            AND (@fromDate IS NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate IS NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
-            AND (@searchText IS NULL OR QR."Title" ILIKE @searchText OR PS."Number" ILIKE @searchText
-                 OR PS."Address" ILIKE @searchText OR QR."PollingStationDetails" ILIKE @searchText)
+    private const string Source = """
+        "GetPlatformAdminQuickReports"(@electionRoundId, @level1, @level2, @level3, @level4, @level5, @monitoringNgoId,
+            @fromDate, @toDate, @searchText) QR
         """;
 
     public override void Configure()
@@ -47,43 +31,22 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   {FromWhere};
+                   FROM {Source};
 
-                   SELECT
-                       QR."Id",
-                       QR."LastUpdatedAt" AS "Timestamp",
-                       QR."Title",
-                       QR."IncidentCategory",
-                       QR."QuickReportLocationType",
-                       QR."PollingStationDetails",
-                       PS."Id" AS "PollingStationId",
-                       PS."Level1",
-                       PS."Level2",
-                       PS."Level3",
-                       PS."Level4",
-                       PS."Level5",
-                       PS."Number",
-                       PS."Address",
-                       MN."Id" AS "MonitoringNgoId",
-                       N."Name" AS "NgoName",
-                       MO."Id" AS "MonitoringObserverId",
-                       U."DisplayName" AS "ObserverName",
-                       U."Email" AS "ObserverEmail",
-                       U."PhoneNumber" AS "ObserverPhoneNumber",
-                       QR."FollowUpStatus"
-                   {FromWhere}
+                   SELECT QR.*
+                   FROM {Source}
                    ORDER BY
-                       CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
-                       CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
+                       CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."Timestamp" END ASC,
+                       CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."Timestamp" END DESC,
                        CASE WHEN @sortExpression = 'Title ASC' THEN QR."Title" END ASC,
                        CASE WHEN @sortExpression = 'Title DESC' THEN QR."Title" END DESC,
-                       CASE WHEN @sortExpression = 'Number ASC' THEN PS."Number" END ASC,
-                       CASE WHEN @sortExpression = 'Number DESC' THEN PS."Number" END DESC,
-                       CASE WHEN @sortExpression = 'NgoName ASC' THEN N."Name" END ASC,
-                       CASE WHEN @sortExpression = 'NgoName DESC' THEN N."Name" END DESC,
-                       CASE WHEN @sortExpression = 'Location ASC' THEN PS."Level1" END ASC,
-                       CASE WHEN @sortExpression = 'Location DESC' THEN PS."Level1" END DESC,
-                       QR."LastUpdatedAt" DESC,
+                       CASE WHEN @sortExpression = 'Number ASC' THEN QR."Number" END ASC,
+                       CASE WHEN @sortExpression = 'Number DESC' THEN QR."Number" END DESC,
+                       CASE WHEN @sortExpression = 'NgoName ASC' THEN QR."NgoName" END ASC,
+                       CASE WHEN @sortExpression = 'NgoName DESC' THEN QR."NgoName" END DESC,
+                       CASE WHEN @sortExpression = 'Location ASC' THEN QR."Level1" END ASC,
+                       CASE WHEN @sortExpression = 'Location DESC' THEN QR."Level1" END DESC,
+                       QR."Timestamp" DESC,
                        QR."Id"
                    OFFSET @offset ROWS
                    FETCH NEXT @pageSize ROWS ONLY;

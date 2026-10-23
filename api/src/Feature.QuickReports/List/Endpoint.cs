@@ -1,3 +1,4 @@
+﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Authorization.Policies.Requirements;
 using Authorization.Policies;
@@ -36,187 +37,30 @@ public class Endpoint(
 
         var sql = """
         SELECT
-            COUNT(QR."Id") as "TotalNumberOfRows"
+            COUNT(*) AS "TotalNumberOfRows"
         FROM
-            "QuickReports" QR
-            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
-            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-        WHERE
-            QR."ElectionRoundId" = @electionRoundId
-            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
-            AND (@monitoringObserverId IS NULL OR AMO."MonitoringObserverId" = @monitoringObserverId)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR AMO."Tags" && @tagsFilter)
-            AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
-            AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
-            AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
-            AND (@searchText IS NULL 
-               OR @searchText = '' 
-               OR AMO."DisplayName" ILIKE @searchText 
-               OR AMO."Email" ILIKE @searchText 
-               OR AMO."PhoneNumber" ILIKE @searchText
-               OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
-            AND (
-                @level1 IS NULL
-                OR PS."Level1" = @level1
-            )
-            AND (
-                @level2 IS NULL
-                OR PS."Level2" = @level2
-            )
-            AND (
-                @level3 IS NULL
-                OR PS."Level3" = @level3
-            )
-            AND (
-                @level4 IS NULL
-                OR PS."Level4" = @level4
-            )
-            AND (
-                @level5 IS NULL
-                OR PS."Level5" = @level5
-            )
-            AND (@pollingStationId IS NULL OR QR."PollingStationId" = @pollingStationId)
-            AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
-            AND (@hasAttachments IS NULL
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportAttachments" QRA
-                      WHERE QRA."QuickReportId" = QR."Id"
-                        AND QRA."IsDeleted" = FALSE
-                        AND QRA."IsCompleted" = TRUE) = 0 AND @hasAttachments = FALSE)
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportAttachments" QRA
-                      WHERE QRA."QuickReportId" = QR."Id"
-                        AND QRA."IsDeleted" = FALSE
-                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
-            AND (@hasComments IS NULL
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportComments" QRC
-                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
-                          AND NA."NgoId" = @ngoId
-                      WHERE QRC."QuickReportId" = QR."Id") = 0 AND @hasComments = FALSE)
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportComments" QRC
-                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
-                          AND NA."NgoId" = @ngoId
-                      WHERE QRC."QuickReportId" = QR."Id") > 0 AND @hasComments = TRUE));
+            "GetQuickReportOverviews"(
+                @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @monitoringObserverId, @tagsFilter,
+                @followUpStatus, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities, @quickReportLocationType,
+                @incidentCategory, @searchText, @level1, @level2, @level3, @level4, @level5, @pollingStationId, @fromDate, @toDate,
+                @hasAttachments, @hasComments);
 
         SELECT
-            QR."Id",
-            QR."QuickReportLocationType",
-            QR."LastUpdatedAt" AS  "Timestamp",
-            QR."Title",
-            QR."Description",
-            QR."IncidentCategory",
-            QR."FollowUpStatus",
-            (SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND Qr."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND qra."IsDeleted" = FALSE
-                  AND qra."IsCompleted" = TRUE) AS "NumberOfAttachments",
-            (SELECT COUNT(*)
-                FROM "QuickReportComments" QRC
-                INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
-                    AND NA."NgoId" = @ngoId
-                WHERE QRC."QuickReportId" = QR."Id") AS "CommentsCount",
-            AMO."MonitoringObserverId",
-            AMO."DisplayName" "ObserverName",
-            AMO."PhoneNumber",
-            AMO."Email",
-            AMO."Tags",
-            AMO."NgoName",
-            QR."PollingStationDetails",
-            PS."Id" AS "PollingStationId",
-            PS."Level1",
-            PS."Level2",
-            PS."Level3",
-            PS."Level4",
-            PS."Level5",
-            PS."Number",
-            PS."Address"
+            QR.*
         FROM
-            "QuickReports" QR
-            INNER JOIN "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @datasource) AMO on AMO."MonitoringObserverId" = qr."MonitoringObserverId"
-            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
-        WHERE
-            QR."ElectionRoundId" = @electionRoundId
-            AND (@COALITIONMEMBERID IS NULL OR AMO."NgoId" = @COALITIONMEMBERID)
-            AND (@monitoringObserverId IS NULL OR AMO."MonitoringObserverId" = @monitoringObserverId)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR AMO."Tags" && @tagsFilter)
-            AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
-            AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
-            AND (@incidentCategory IS NULL or QR."IncidentCategory" = @incidentCategory)
-            AND (@searchText IS NULL 
-                 OR @searchText = '' 
-                 OR AMO."DisplayName" ILIKE @searchText 
-                 OR AMO."Email" ILIKE @searchText 
-                 OR AMO."PhoneNumber" ILIKE @searchText
-                 OR AMO."MonitoringObserverId"::TEXT ILIKE @searchText)
-            AND (
-                @level1 IS NULL
-                OR PS."Level1" = @level1
-            )
-            AND (
-                @level2 IS NULL
-                OR PS."Level2" = @level2
-            )
-            AND (
-                @level3 IS NULL
-                OR PS."Level3" = @level3
-            )
-            AND (
-                @level4 IS NULL
-                OR PS."Level4" = @level4
-            )
-            AND (
-                @level5 IS NULL
-                OR PS."Level5" = @level5
-            )
-            AND (@pollingStationId IS NULL OR QR."PollingStationId" = @pollingStationId)
-            AND (@fromDate is NULL OR QR."LastUpdatedAt" >= @fromDate::timestamp)
-            AND (@toDate is NULL OR QR."LastUpdatedAt" <= @toDate::timestamp)
-            AND (@hasAttachments IS NULL
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportAttachments" QRA
-                      WHERE QRA."QuickReportId" = QR."Id"
-                        AND QRA."IsDeleted" = FALSE
-                        AND QRA."IsCompleted" = TRUE) = 0 AND @hasAttachments = FALSE)
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportAttachments" QRA
-                      WHERE QRA."QuickReportId" = QR."Id"
-                        AND QRA."IsDeleted" = FALSE
-                        AND QRA."IsCompleted" = TRUE) > 0 AND @hasAttachments = TRUE))
-            AND (@hasComments IS NULL
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportComments" QRC
-                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
-                          AND NA."NgoId" = @ngoId
-                      WHERE QRC."QuickReportId" = QR."Id") = 0 AND @hasComments = FALSE)
-                 OR ((SELECT COUNT(1)
-                      FROM "QuickReportComments" QRC
-                      INNER JOIN "NgoAdmins" NA ON NA."ApplicationUserId" = QRC."CreatedBy"
-                          AND NA."NgoId" = @ngoId
-                      WHERE QRC."QuickReportId" = QR."Id") > 0 AND @hasComments = TRUE))
+            "GetQuickReportOverviews"(
+                @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @monitoringObserverId, @tagsFilter,
+                @followUpStatus, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities, @quickReportLocationType,
+                @incidentCategory, @searchText, @level1, @level2, @level3, @level4, @level5, @pollingStationId, @fromDate, @toDate,
+                @hasAttachments, @hasComments) QR
         ORDER BY
-            CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."LastUpdatedAt" END ASC,
-            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."LastUpdatedAt" END DESC,
-            CASE WHEN @sortExpression = 'NumberOfAttachments ASC' THEN (
-                SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND QRA."IsDeleted" = FALSE
-                  AND QRA."IsCompleted" = TRUE
-            ) END ASC,
-            CASE WHEN @sortExpression = 'NumberOfAttachments DESC' THEN (
-                SELECT COUNT(*)
-                FROM "QuickReportAttachments" QRA
-                WHERE QRA."QuickReportId" = QR."Id"
-                  AND QR."MonitoringObserverId" = QRA."MonitoringObserverId"
-                  AND QRA."IsDeleted" = FALSE
-                  AND QRA."IsCompleted" = TRUE
-            ) END DESC
+            CASE WHEN @sortExpression = 'Severity ASC' THEN "SeverityRank"(QR."Severity") END ASC,
+            CASE WHEN @sortExpression = 'Severity DESC' THEN "SeverityRank"(QR."Severity") END DESC,
+            CASE WHEN @sortExpression LIKE 'Severity %' THEN QR."Timestamp" END DESC,
+            CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."Timestamp" END ASC,
+            CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."Timestamp" END DESC,
+            CASE WHEN @sortExpression = 'NumberOfAttachments ASC' THEN QR."NumberOfAttachments" END ASC,
+            CASE WHEN @sortExpression = 'NumberOfAttachments DESC' THEN QR."NumberOfAttachments" END DESC
         OFFSET
             @offset ROWS
         FETCH NEXT
@@ -237,6 +81,11 @@ public class Endpoint(
             level3 = req.Level3Filter,
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
+            stageId = req.StageId,
+            reviewStatus = req.ReviewStatus?.Value,
+            reviewerId = req.ReviewerId,
+            hasReviewer = req.HasReviewer,
+            severities = req.Severity?.Select(x => x.Value).ToArray() ?? [],
             followUpStatus = req.QuickReportFollowUpStatus?.ToString(),
             quickReportLocationType = req.QuickReportLocationType?.ToString(),
             incidentCategory = req.IncidentCategory?.ToString(),
@@ -264,6 +113,12 @@ public class Endpoint(
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
     {
+        if (SeveritySql.IsSortColumn(sortColumnName))
+        {
+            // By level (Urgent highest), ties in the list's default order.
+            return $"Severity {(isAscendingSorting ? "ASC" : "DESC")}";
+        }
+
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
             return $"{nameof(QuickReportOverviewModel.Timestamp)} DESC";
