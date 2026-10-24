@@ -26,8 +26,7 @@ public class ApiTesting
         _database = await TestDatabaseFactory.CreateAsync();
 
         _apiTimeProvider = Substitute.For<ITimeProvider>();
-        _apiTimeProvider.UtcNow.Returns(_ => DateTime.UtcNow);
-        _apiTimeProvider.UtcNowDate.Returns(_ => DateOnly.FromDateTime(DateTime.UtcNow));
+        UseRealClock();
 
         _emailFactory = Substitute.For<IEmailTemplateFactory>();
         _emailFactory.GenerateConfirmAccountEmail(Arg.Any<ConfirmEmailProps>())
@@ -61,11 +60,19 @@ public class ApiTesting
             await _database.ResetAsync();
             _emailFactory.ClearReceivedCalls();
             _jobService.ClearReceivedCalls();
+            // Tests that pin UtcNow to fixed values would otherwise freeze the clock for every later test.
+            UseRealClock();
         }
         catch (Exception e)
         {
             TestContext.Out.WriteLine(e.Message);
         }
+    }
+
+    private static void UseRealClock()
+    {
+        _apiTimeProvider.UtcNow.Returns(_ => DateTime.UtcNow);
+        _apiTimeProvider.UtcNowDate.Returns(_ => DateOnly.FromDateTime(DateTime.UtcNow));
     }
 
     public static HttpClient CreateClient()
