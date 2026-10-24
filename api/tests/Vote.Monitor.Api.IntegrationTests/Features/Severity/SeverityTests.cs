@@ -205,7 +205,7 @@ public class SeverityTests : BaseApiTestFixture
     }
 
     [Test]
-    public void StaffChangeSeverityOnlyOnRecordsTheyReview()
+    public void StaffChangeSeverityOnAnyRecord()
     {
         var (data, aliceSubmissionId, _) = CoalitionScenario();
         var alfa = data.NgoByName(ScenarioNgos.Alfa);
@@ -213,13 +213,14 @@ public class SeverityTests : BaseApiTestFixture
         alfa.Admin.PutWithoutResponse($"{ReviewUri(er, aliceSubmissionId)}:reviewers",
             new { userIds = new[] { alfa.StaffIdByName(Sam) } });
 
+        // Tom doesn't review the report.
         Put(alfa.StaffByName(Tom), SeverityUri(er, aliceSubmissionId), new { severity = "High" }).StatusCode
-            .Should().Be(HttpStatusCode.Forbidden);
-        Put(alfa.StaffByName(Sam), SeverityUri(er, aliceSubmissionId), new { severity = "High" }).StatusCode
+            .Should().Be(HttpStatusCode.NoContent);
+        Put(alfa.StaffByName(Sam), SeverityUri(er, aliceSubmissionId), new { severity = "Urgent" }).StatusCode
             .Should().Be(HttpStatusCode.NoContent);
 
         alfa.StaffByName(Tom).GetResponse<SeverityResponse>(SeverityUri(er, aliceSubmissionId)).Severity
-            .Should().Be("High");
+            .Should().Be("Urgent");
     }
 
     [Test]

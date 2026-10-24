@@ -4,8 +4,7 @@ namespace Feature.Review.SetReviewers;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReviewService reviewService,
-    ICurrentUserRoleProvider roleProvider) : Endpoint<Request, Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>>
+    IReviewService reviewService) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -16,11 +15,11 @@ public class Endpoint(
         Summary(s =>
         {
             s.Summary = "Replaces a record's reviewers in the caller's NGO";
-            s.Description = "Reviewers must be active admins or staff of the caller's NGO. Staff can only add or remove themselves.";
+            s.Description = "Reviewers must be active admins or staff of the caller's NGO.";
         });
     }
 
-    public override async Task<Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>> ExecuteAsync(
+    public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(
         Request req, CancellationToken ct)
     {
         if (!await authorizationService.CanWorkOnReportsAsync(User, req.ElectionRoundId, req.RecordType))
@@ -35,11 +34,9 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var result = await reviewService.SetReviewersAsync(report, req.UserIds, actor, roleProvider.IsNgoAdmin(), ct);
+        var result = await reviewService.SetReviewersAsync(report, req.UserIds, actor, ct);
         switch (result.Outcome)
         {
-            case ReviewOutcome.Forbidden:
-                return TypedResults.Forbid();
             case ReviewOutcome.InvalidReviewers:
                 AddError(x => x.UserIds,
                     $"Not active admins or staff of your NGO: {string.Join(", ", result.InvalidUserIds)}");

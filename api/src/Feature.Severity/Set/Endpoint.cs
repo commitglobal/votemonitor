@@ -7,9 +7,8 @@ namespace Feature.Severity.Set;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IReviewService reviewService,
-    ISeverityService severityService,
-    ICurrentUserRoleProvider roleProvider)
-    : Endpoint<Request, Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>>
+    ISeverityService severityService)
+    : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -20,11 +19,11 @@ public class Endpoint(
         Summary(s =>
         {
             s.Summary = "Sets a record's severity in the caller's NGO";
-            s.Description = "NGO admins can change any record's severity; staff only on the records they review.";
+            s.Description = "NGO admins and staff can change any record's severity.";
         });
     }
 
-    public override async Task<Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>> ExecuteAsync(
+    public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(
         Request req, CancellationToken ct)
     {
         if (!await authorizationService.CanWorkOnReportsAsync(User, req.ElectionRoundId, req.RecordType))
@@ -39,7 +38,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var outcome = await severityService.SetAsync(report, req.Severity, actor, roleProvider.IsNgoAdmin(), ct);
-        return outcome == SetSeverityOutcome.Forbidden ? TypedResults.Forbid() : TypedResults.NoContent();
+        await severityService.SetAsync(report, req.Severity, actor, ct);
+        return TypedResults.NoContent();
     }
 }
