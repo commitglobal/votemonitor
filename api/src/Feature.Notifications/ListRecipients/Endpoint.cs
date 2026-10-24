@@ -39,15 +39,17 @@ public class Endpoint(
                                                        @hasFlaggedAnswers, @submissionsFollowUpStatus, @tagsFilter,
                                                        @monitoringObserverStatus, @formId, @hasNotes, @hasAttachments,
                                                        @questionsAnswered, @fromDate, @toDate, @hasQuickReports,
-                                                       @quickReportFollowUpStatus, @quickReportIncidentCategory, FALSE);
+                                                       @quickReportFollowUpStatus, @quickReportIncidentCategory, FALSE) R
+            WHERE CARDINALITY(@monitoringObserverIds) = 0 OR R."MonitoringObserverId" = ANY(@monitoringObserverIds);
 
-            SELECT *
+            SELECT "MonitoringObserverId" AS "Id", "ObserverName", "PhoneNumber", "Email", "Tags", "Status"
             FROM "GetNotificationRecipients"(@electionRoundId, @ngoId, @searchText, @formType, @level1, @level2,
                                              @level3, @level4, @level5, @pollingStationNumber, @hasFlaggedAnswers,
                                              @submissionsFollowUpStatus, @tagsFilter, @monitoringObserverStatus,
                                              @formId, @hasNotes, @hasAttachments, @questionsAnswered, @fromDate,
                                              @toDate, @hasQuickReports, @quickReportFollowUpStatus,
                                              @quickReportIncidentCategory)
+            WHERE CARDINALITY(@monitoringObserverIds) = 0 OR "MonitoringObserverId" = ANY(@monitoringObserverIds)
             ORDER BY
                 CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
                 CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
@@ -68,6 +70,7 @@ public class Endpoint(
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            monitoringObserverIds = req.MonitoringObserverIds ?? [],
             formType = req.FormTypeFilter?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
