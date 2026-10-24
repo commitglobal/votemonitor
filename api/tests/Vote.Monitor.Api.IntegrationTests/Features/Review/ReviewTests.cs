@@ -397,7 +397,7 @@ public class ReviewTests : BaseApiTestFixture
         history[0].Should().BeEquivalentTo(new
         {
             Kind = "ReturnedToDefaultStage",
-            ActorName = (string?)null,
+            ActorName = null,
             FromStageName = "Reviewed",
             ToStageName = "Not reviewed"
         });
