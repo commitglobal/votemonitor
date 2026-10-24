@@ -13,7 +13,7 @@ public class Endpoint(VoteMonitorContext context, ICurrentUserProvider userProvi
         Options(x => x.WithTags("citizen-reports"));
         Summary(s => { s.Summary = "Updates follow up status for a citizen report"; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

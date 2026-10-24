@@ -123,4 +123,38 @@ public class UpdateStatusTests : BaseApiTestFixture
         aliceSubmission.FollowUpStatus.Should().Be(SubmissionFollowUpStatus.NotApplicable);
         bobSubmission.FollowUpStatus.Should().Be(SubmissionFollowUpStatus.NeedsFollowUp);
     }
+
+    [Test]
+    public void NgoStaffCanUpdateStatusForTheirNgosFormSubmissions()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithNgo(ScenarioNgos.Alfa, ngo => ngo.WithStaff("Sam"))
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithForm("A", form => form.WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj))))
+            .Please();
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var submissionId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa)
+            .FormByCode("A").GetSubmissionId(ScenarioObserver.Alice, ScenarioPollingStation.Cluj);
+
+        // Act
+        scenarioData.NgoByName(ScenarioNgos.Alfa).StaffByName("Sam")
+            .PutWithoutResponse(
+                $"/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:status", new
+                {
+                    FollowUpStatus = SubmissionFollowUpStatus.NeedsFollowUp.ToString()
+                });
+
+        // Assert
+        var submission = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin
+            .GetResponse<FormSubmissionView>(
+                $"/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}");
+
+        submission.FollowUpStatus.Should().Be(SubmissionFollowUpStatus.NeedsFollowUp);
+    }
 }
