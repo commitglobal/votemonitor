@@ -3,13 +3,15 @@ using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.QuickReports.CompleteUpload;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<QuickReportAttachment> repository,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
@@ -40,8 +42,14 @@ public class Endpoint(
         }
 
         await fileStorageService.CompleteUploadAsync(req.UploadId, attachment.FilePath, attachment.UploadedFileName, req.Etags, ct);
+        var isNew = !attachment.IsCompleted && !attachment.IsDeleted;
         attachment.Complete();
         await repository.UpdateAsync(attachment, ct);
+        if (isNew)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.QuickReport,
+                req.QuickReportId, ct);
+        }
 
         return TypedResults.NoContent();
     }

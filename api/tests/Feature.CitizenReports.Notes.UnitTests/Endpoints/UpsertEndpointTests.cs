@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using FastEndpoints;
 using Feature.CitizenReports.Notes.Specifications;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,7 +18,7 @@ public class UpsertEndpointTests
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<CitizenReportNote>>();
-        _endpoint = Factory.Create<Upsert.Endpoint>(_repository);
+        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

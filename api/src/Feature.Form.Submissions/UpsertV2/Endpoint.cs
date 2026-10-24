@@ -4,6 +4,7 @@ using Vote.Monitor.Domain.Entities.CoalitionAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
@@ -86,10 +87,14 @@ public class Endpoint(
         DateTime? lastUpdatedAt,
         CancellationToken ct)
     {
+        var answersBefore = submission.Answers;
         submission = form.FillIn(submission, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(submission, ct);
-        await recordAutomation.RecordEditedAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
-            submission.Id, ct);
+        if (!AnswersHelpers.HaveSameContent(answersBefore, submission.Answers))
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
+                submission.Id, ct);
+        }
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
     }

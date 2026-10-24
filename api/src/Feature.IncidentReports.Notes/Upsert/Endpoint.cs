@@ -1,9 +1,11 @@
 ﻿using Feature.IncidentReports.Notes.Specifications;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.IncidentReports.Notes.Upsert;
 
 public class Endpoint(
-    IRepository<IncidentReportNoteAggregate> repository)
+    IRepository<IncidentReportNoteAggregate> repository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<Ok<IncidentReportNoteModel>, NotFound>>
 {
     public override void Configure()
@@ -25,8 +27,14 @@ public class Endpoint(
     private async Task<Results<Ok<IncidentReportNoteModel>, NotFound>> UpdateNoteAsync(IncidentReportNoteAggregate note,
         Request req, CancellationToken ct)
     {
+        var isChanged = note.Text != req.Text;
         note.UpdateText(req.Text);
         await repository.UpdateAsync(note, ct);
+        if (isChanged)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.IncidentReport,
+                req.IncidentReportId, ct);
+        }
 
         return TypedResults.Ok(IncidentReportNoteModel.FromEntity(note));
     }
@@ -41,6 +49,8 @@ public class Endpoint(
             req.Text);
 
         await repository.AddAsync(note, ct);
+        await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.IncidentReport,
+            req.IncidentReportId, ct);
 
         return TypedResults.Ok(IncidentReportNoteModel.FromEntity(note));
     }

@@ -1,11 +1,13 @@
 ﻿using Feature.CitizenReports.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.CitizenReports.Attachments.Complete;
 
 public class Endpoint(
     IRepository<CitizenReportAttachmentAggregate> repository,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
@@ -31,8 +33,14 @@ public class Endpoint(
         }
 
         await fileStorageService.CompleteUploadAsync(req.UploadId, attachment.FilePath, attachment.UploadedFileName, req.Etags, ct);
+        var isNew = !attachment.IsCompleted && !attachment.IsDeleted;
         attachment.Complete();
         await repository.UpdateAsync(attachment, ct);
+        if (isNew)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.CitizenReport,
+                req.CitizenReportId, ct);
+        }
 
         return TypedResults.NoContent();
     }

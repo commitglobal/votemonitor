@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.QuickReports.UnitTests.Endpoints;
@@ -11,7 +12,8 @@ public class DeleteAttachmentEndpointTests
     public DeleteAttachmentEndpointTests()
     {
         _authorizationService = Substitute.For<IAuthorizationService>();
-        _endpoint = Factory.Create<DeleteAttachment.Endpoint>(_authorizationService, TestContext.Fake());
+        _endpoint = Factory.Create<DeleteAttachment.Endpoint>(_authorizationService, TestContext.Fake(),
+            Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

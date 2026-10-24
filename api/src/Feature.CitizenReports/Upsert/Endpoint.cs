@@ -3,6 +3,7 @@ using Feature.CitizenReports.Specifications;
 using Module.Answers.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
@@ -63,10 +64,14 @@ public class Endpoint(
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
+        var answersBefore = citizenReport.Answers;
         citizenReport = form.FillIn(citizenReport, answers);
         await repository.UpdateAsync(citizenReport, ct);
-        await recordAutomation.RecordEditedAsync(citizenReport.ElectionRoundId, ReportRecordType.CitizenReport,
-            citizenReport.Id, ct);
+        if (!AnswersHelpers.HaveSameContent(answersBefore, citizenReport.Answers))
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(citizenReport.ElectionRoundId, ReportRecordType.CitizenReport,
+                citizenReport.Id, ct);
+        }
 
         return TypedResults.Ok(CitizenReportModel.FromEntity(citizenReport));
     }

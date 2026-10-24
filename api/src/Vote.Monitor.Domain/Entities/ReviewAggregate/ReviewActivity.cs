@@ -16,7 +16,10 @@ public class ReviewActivity : IAggregateRoot
     public Guid RecordId { get; private set; }
     public ReviewActivityKind Kind { get; private set; }
 
-    /// <summary>The user who made the change; null when an automation rule made it.</summary>
+    /// <summary>
+    /// The user who made the change; null when an automation rule made it, or for
+    /// <see cref="ReviewActivityKind.ReturnedToDefaultStage"/>.
+    /// </summary>
     public Guid? ActorId { get; private set; }
     public string? ActorName { get; private set; }
 
@@ -52,6 +55,20 @@ public class ReviewActivity : IAggregateRoot
         {
             FromStageId = from?.Id,
             FromStageName = from?.Name,
+            ToStageId = to.Id,
+            ToStageName = to.Name,
+            ToStatus = to.Status
+        };
+
+    /// <summary>The report's author changed it, which sends it back to the NGO's default stage.</summary>
+    public static ReviewActivity ReturnedToDefaultStage(ReviewTarget target,
+        ReviewStage from,
+        ReviewStage to,
+        DateTime occurredAt) =>
+        new(target, ReviewActivityKind.ReturnedToDefaultStage, occurredAt)
+        {
+            FromStageId = from.Id,
+            FromStageName = from.Name,
             ToStageId = to.Id,
             ToStageName = to.Name,
             ToStatus = to.Status

@@ -20,6 +20,19 @@ public class DeleteRequestValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldFail_When_IncidentReportId_Empty()
+    {
+        // Arrange
+        var request = new Request { IncidentReportId = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.IncidentReportId);
+    }
+
+    [Fact]
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
@@ -39,6 +52,7 @@ public class DeleteRequestValidatorTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
+            IncidentReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 

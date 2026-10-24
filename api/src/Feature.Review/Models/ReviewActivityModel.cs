@@ -8,7 +8,10 @@ public record ReviewActivityModel
     public required Guid Id { get; init; }
     public required ReviewActivityKind Kind { get; init; }
 
-    /// <summary>The user who made the change; null when an automation rule made it.</summary>
+    /// <summary>
+    /// The user who made the change; null when an automation rule made it, or when the report went back to the
+    /// default stage because its author changed it (<see cref="ReviewActivityKind.ReturnedToDefaultStage"/>).
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Guid? ActorId { get; init; }
 

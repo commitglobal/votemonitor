@@ -65,4 +65,17 @@ public class AnswersHelpers
 
         return answers.Count(x => questionIds.Contains(x.QuestionId));
     }
+
+    /// <summary>
+    /// Whether two sets of answers say the same thing: same questions, same values. Answer timestamps and order are
+    /// ignored, so re-sending unchanged answers isn't an edit.
+    /// </summary>
+    public static bool HaveSameContent(IEnumerable<BaseAnswer> answers, IEnumerable<BaseAnswer> otherAnswers)
+    {
+        var first = answers.Select(x => x.WithTimestamps(null, null)).ToList();
+        var second = otherAnswers.Select(x => x.WithTimestamps(null, null)).ToList();
+
+        return first.Count == second.Count
+               && first.OrderBy(x => x.QuestionId).SequenceEqual(second.OrderBy(x => x.QuestionId));
+    }
 }

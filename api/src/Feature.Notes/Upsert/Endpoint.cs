@@ -3,6 +3,7 @@ using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Notes.Upsert;
 
@@ -11,6 +12,7 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<MonitoringObserver> monitoringObserverRepository,
     IRepository<NoteAggregate> repository,
+    IRecordAutomation recordAutomation,
     ITimeProvider timeProvider)
     : Endpoint<Request, Results<Ok<NoteModel>, NotFound>>
 {
@@ -42,8 +44,14 @@ public class Endpoint(
     private async Task<Results<Ok<NoteModel>, NotFound>> UpdateNoteAsync(NoteAggregate note, Request req,
         CancellationToken ct)
     {
+        var isChanged = note.Text != req.Text;
         note.UpdateText(req.Text, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(note, ct);
+        if (isChanged)
+        {
+            await recordAutomation.FormSubmissionPartChangedByAuthorAsync(req.ElectionRoundId, note.SubmissionId,
+                note.PollingStationId, note.FormId, note.MonitoringObserverId, ct);
+        }
 
         return TypedResults.Ok(NoteModel.FromEntity(note));
     }
@@ -65,6 +73,8 @@ public class Endpoint(
             req.LastUpdatedAt ?? timeProvider.UtcNow);
 
         await repository.AddAsync(note, ct);
+        await recordAutomation.FormSubmissionPartChangedByAuthorAsync(req.ElectionRoundId, note.SubmissionId,
+            note.PollingStationId, note.FormId, note.MonitoringObserverId, ct);
 
         return TypedResults.Ok(NoteModel.FromEntity(note));
     }
