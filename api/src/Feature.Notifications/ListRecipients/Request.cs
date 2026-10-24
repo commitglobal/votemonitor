@@ -16,6 +16,9 @@ public class Request : BaseSortPaginatedRequest
     
     [QueryParam] public string? SearchText { get; set; }
 
+    /// <summary>Specific monitoring observers, with or without submissions; ANDed with the other filters.</summary>
+    [QueryParam] public Guid[]? MonitoringObserverIds { get; set; } = [];
+
     [QueryParam] public FormType? FormTypeFilter { get; set; }
 
     [QueryParam] public string? Level1Filter { get; set; }

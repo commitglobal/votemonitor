@@ -22,6 +22,9 @@ public class Request
 
     public string? SearchText { get; set; }
 
+    /// <summary>Specific monitoring observers, with or without submissions; ANDed with the other filters.</summary>
+    public Guid[]? MonitoringObserverIds { get; set; } = [];
+
     public FormType? FormTypeFilter { get; set; }
 
     public string? Level1Filter { get; set; }

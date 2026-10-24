@@ -35,6 +35,7 @@ public class Endpoint(
                                                   @monitoringObserverStatus, @formId, @hasNotes, @hasAttachments,
                                                   @questionsAnswered, @fromDate, @toDate, @hasQuickReports,
                                                   @quickReportFollowUpStatus, @quickReportIncidentCategory)
+            WHERE CARDINALITY(@monitoringObserverIds) = 0 OR "MonitoringObserverId" = ANY(@monitoringObserverIds)
             """;
 
         var queryArgs = new
@@ -42,6 +43,7 @@ public class Endpoint(
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            monitoringObserverIds = req.MonitoringObserverIds ?? [],
             formType = req.FormTypeFilter?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
