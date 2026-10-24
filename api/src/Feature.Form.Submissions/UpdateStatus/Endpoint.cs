@@ -20,13 +20,13 @@ public class Endpoint(
         Options(x => x.WithTags("form-submissions"));
         Summary(s => { s.Summary = "Updates follow up status for a submission"; });
 
-        Policies(PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.NgoAdminOrStaff);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
