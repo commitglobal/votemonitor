@@ -4,8 +4,7 @@ namespace Feature.Review.SetStage;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IReviewService reviewService,
-    ICurrentUserRoleProvider roleProvider) : Endpoint<Request, Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>>
+    IReviewService reviewService) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -16,11 +15,11 @@ public class Endpoint(
         Summary(s =>
         {
             s.Summary = "Moves a report to another of the caller's NGO's stages";
-            s.Description = "NGO admins can move any report; staff only the records they review.";
+            s.Description = "NGO admins and staff can move any report.";
         });
     }
 
-    public override async Task<Results<NoContent, NotFound, ForbidHttpResult, ValidationProblem>> ExecuteAsync(
+    public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(
         Request req, CancellationToken ct)
     {
         if (!await authorizationService.CanWorkOnReportsAsync(User, req.ElectionRoundId, req.RecordType))
@@ -35,11 +34,9 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var outcome = await reviewService.SetStageAsync(report, req.StageId, actor, roleProvider.IsNgoAdmin(), ct);
+        var outcome = await reviewService.SetStageAsync(report, req.StageId, actor, ct);
         switch (outcome)
         {
-            case ReviewOutcome.Forbidden:
-                return TypedResults.Forbid();
             case ReviewOutcome.InvalidStage:
                 AddError(x => x.StageId, "The stage doesn't belong to your NGO in this election round");
                 return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());

@@ -117,7 +117,7 @@ public class ReviewTests : BaseApiTestFixture
     }
 
     [Test]
-    public void ReviewerStaffAreNotifiedAndCanMoveTheReport_OtherStaffCannot()
+    public void ReviewersAreNotified_AndAnyStaffCanMoveTheReportAndPickItsReviewers()
     {
         var (data, aliceSubmissionId, _) = CoalitionScenario();
         var alfa = data.NgoByName(ScenarioNgos.Alfa);
@@ -130,21 +130,20 @@ public class ReviewTests : BaseApiTestFixture
         inbox.Items.Should().ContainSingle(x => x.Reason == "AddedAsReviewer" && x.RecordId == aliceSubmissionId);
         alfa.Admin.GetResponse<UnreadCountResponse>("/api/inbox:unread-count").Count.Should().Be(0);
 
-        Put(alfa.StaffByName(Tom), $"{uri}:stage", new { stageId = reviewed.Id }).Should().Be(HttpStatusCode.Forbidden);
+        // Tom doesn't review the report, but staff work on any record of their NGO.
+        Put(alfa.StaffByName(Tom), $"{uri}:stage", new { stageId = reviewed.Id }).Should().Be(HttpStatusCode.NoContent);
         Put(alfa.StaffByName(Tom), $"{uri}:reviewers", new { userIds = new[] { alfa.StaffIdByName(Sam), alfa.AdminId } })
-            .Should().Be(HttpStatusCode.Forbidden);
-
-        alfa.StaffByName(Sam).PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
+            .Should().Be(HttpStatusCode.NoContent);
 
         var review = alfa.Admin.GetResponse<ReviewResponse>(uri);
         review.Stage.Name.Should().Be("Reviewed");
         review.ReviewedAt.Should().NotBeNull();
-        review.Reviewers.Select(x => x.Id).Should().Equal(alfa.StaffIdByName(Sam));
+        review.Reviewers.Select(x => x.Id).Should().BeEquivalentTo([alfa.StaffIdByName(Sam), alfa.AdminId]);
 
         var history = alfa.Admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history");
-        history.Select(x => x.Kind).Should().Equal("StageChanged", "ReviewerAdded");
-        history[0].FromStageName.Should().Be("Not reviewed");
-        history[0].ToStageName.Should().Be("Reviewed");
+        history.Select(x => x.Kind).Should().Equal("ReviewerAdded", "StageChanged", "ReviewerAdded");
+        history[1].FromStageName.Should().Be("Not reviewed");
+        history[1].ToStageName.Should().Be("Reviewed");
     }
 
     [Test]
@@ -397,7 +396,7 @@ public class ReviewTests : BaseApiTestFixture
         history[0].Should().BeEquivalentTo(new
         {
             Kind = "ReturnedToDefaultStage",
-            ActorName = null,
+            ActorName = (string?)null,
             FromStageName = "Reviewed",
             ToStageName = "Not reviewed"
         });

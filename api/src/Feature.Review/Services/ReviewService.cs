@@ -18,7 +18,6 @@ public sealed class ReviewContext
 public enum ReviewOutcome
 {
     Done,
-    Forbidden,
     InvalidStage,
     InvalidReviewers
 }
@@ -26,7 +25,6 @@ public enum ReviewOutcome
 public sealed record SetReviewersResult(ReviewOutcome Outcome, IReadOnlyList<Guid> InvalidUserIds)
 {
     public static readonly SetReviewersResult Done = new(ReviewOutcome.Done, []);
-    public static readonly SetReviewersResult Forbidden = new(ReviewOutcome.Forbidden, []);
 }
 
 public interface IReviewService
@@ -43,13 +41,11 @@ public interface IReviewService
     Task<ReviewActor?> GetActorAsync(Guid userId, CancellationToken ct);
 
     /// <summary>
-    /// NGO admins change any report's stage; staff only the records they review. Then runs the NGO's reviewer rules of
-    /// the new stage.
+    /// NGO admins and staff change any report's stage. Then runs the NGO's reviewer rules of the new stage.
     /// </summary>
     Task<ReviewOutcome> SetStageAsync(ReviewContext report,
         Guid stageId,
         ReviewActor actor,
-        bool actorIsNgoAdmin,
         CancellationToken ct);
 
     /// <summary>
@@ -59,13 +55,11 @@ public interface IReviewService
     Task ReturnToDefaultStageAsync(ReviewContext report, CancellationToken ct);
 
     /// <summary>
-    /// Replaces the report's reviewers. NGO admins assign any active admin or staff member of their NGO; staff can
-    /// only add or remove themselves.
+    /// Replaces the report's reviewers. NGO admins and staff assign any active admin or staff member of their NGO.
     /// </summary>
     Task<SetReviewersResult> SetReviewersAsync(ReviewContext report,
         IReadOnlyCollection<Guid> userIds,
         ReviewActor actor,
-        bool actorIsNgoAdmin,
         CancellationToken ct);
 
     /// <summary>
@@ -149,14 +143,8 @@ internal class ReviewService(
     public async Task<ReviewOutcome> SetStageAsync(ReviewContext report,
         Guid stageId,
         ReviewActor actor,
-        bool actorIsNgoAdmin,
         CancellationToken ct)
     {
-        if (!actorIsNgoAdmin && report.Reviewers.All(x => x.UserId != actor.Id))
-        {
-            return ReviewOutcome.Forbidden;
-        }
-
         var stage = await context.ReviewStages
             .FirstOrDefaultAsync(x => x.Id == stageId && x.MonitoringNgoId == report.Target.MonitoringNgoId, ct);
         if (stage is null)
@@ -240,18 +228,12 @@ internal class ReviewService(
     public async Task<SetReviewersResult> SetReviewersAsync(ReviewContext report,
         IReadOnlyCollection<Guid> userIds,
         ReviewActor actor,
-        bool actorIsNgoAdmin,
         CancellationToken ct)
     {
         var requested = userIds.ToHashSet();
         var current = report.Reviewers.Select(x => x.UserId).ToHashSet();
         var added = requested.Except(current).ToList();
         var removed = current.Except(requested).ToList();
-
-        if (!actorIsNgoAdmin && added.Concat(removed).Any(x => x != actor.Id))
-        {
-            return SetReviewersResult.Forbidden;
-        }
 
         if (requested.Count > MaxReviewers)
         {
