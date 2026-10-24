@@ -2,13 +2,15 @@
 using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Notes.UpsertV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<MonitoringObserver> monitoringObserverRepository,
-    IRepository<NoteAggregate> repository)
+    IRepository<NoteAggregate> repository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<Ok<NoteModelV2>, NotFound>>
 {
     public override void Configure()
@@ -39,8 +41,14 @@ public class Endpoint(
     private async Task<Results<Ok<NoteModelV2>, NotFound>> UpdateNoteAsync(NoteAggregate note, Request req,
         CancellationToken ct)
     {
+        var isChanged = note.Text != req.Text;
         note.UpdateText(req.Text, req.LastUpdatedAt);
         await repository.UpdateAsync(note, ct);
+        if (isChanged)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.FormSubmission,
+                req.SubmissionId, ct);
+        }
 
         return TypedResults.Ok(NoteModelV2.FromEntity(req.ElectionRoundId, note));
     }
@@ -60,6 +68,8 @@ public class Endpoint(
             req.LastUpdatedAt);
 
         await repository.AddAsync(note, ct);
+        await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.FormSubmission,
+            req.SubmissionId, ct);
 
         return TypedResults.Ok(NoteModelV2.FromEntity(req.ElectionRoundId, note));
     }

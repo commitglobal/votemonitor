@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using System.Security.Claims;
 using FastEndpoints;
 using Feature.Notes.Specifications;
 using FluentAssertions;
@@ -27,6 +28,8 @@ public class UpsertEndpointTests
         _endpoint = Factory.Create<Upsert.Endpoint>(_authorizationService,
             _monitoringObserverRepository,
             _repository,
+           
+            Substitute.For<IRecordAutomation>(),
             new CurrentUtcTimeProvider());
     }
 

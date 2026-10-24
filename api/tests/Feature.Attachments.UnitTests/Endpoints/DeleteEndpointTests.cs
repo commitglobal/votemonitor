@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using System.Security.Claims;
 using FastEndpoints;
 using Feature.Attachments.Delete;
 using Feature.Attachments.Specifications;
@@ -25,7 +26,8 @@ public class DeleteEndpointTests
         _authorizationService = Substitute.For<IAuthorizationService>();
         _repository = Substitute.For<IRepository<AttachmentAggregate>>();
         _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-        _endpoint = Factory.Create<Endpoint>(_authorizationService, _repository);
+        _endpoint = Factory.Create<Endpoint>(_authorizationService, _repository,
+            Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

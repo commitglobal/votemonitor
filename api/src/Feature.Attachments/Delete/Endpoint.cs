@@ -1,12 +1,14 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Attachments.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Attachments.Delete;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<AttachmentAggregate> repository)
+    IRepository<AttachmentAggregate> repository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<NoContent, NotFound, BadRequest<ProblemDetails>>>
 {
     public override void Configure()
@@ -38,9 +40,16 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        // Only an uploaded attachment was part of the submission.
+        var wasVisible = attachment.IsCompleted && !attachment.IsDeleted;
         attachment.Delete();
 
         await repository.UpdateAsync(attachment, ct);
+        if (wasVisible)
+        {
+            await recordAutomation.FormSubmissionPartChangedByAuthorAsync(req.ElectionRoundId, attachment.SubmissionId,
+                attachment.PollingStationId, attachment.FormId, attachment.MonitoringObserverId, ct);
+        }
 
         return TypedResults.NoContent();
     }

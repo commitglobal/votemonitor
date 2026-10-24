@@ -1,9 +1,11 @@
 ﻿using Feature.CitizenReports.Notes.Specifications;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.CitizenReports.Notes.Upsert;
 
 public class Endpoint(
-    IRepository<CitizenReportNoteAggregate> repository)
+    IRepository<CitizenReportNoteAggregate> repository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<Ok<CitizenReportNoteModel>, NotFound>>
 {
     public override void Configure()
@@ -26,8 +28,14 @@ public class Endpoint(
     private async Task<Results<Ok<CitizenReportNoteModel>, NotFound>> UpdateNoteAsync(CitizenReportNoteAggregate note,
         Request req, CancellationToken ct)
     {
+        var isChanged = note.Text != req.Text;
         note.UpdateText(req.Text);
         await repository.UpdateAsync(note, ct);
+        if (isChanged)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.CitizenReport,
+                req.CitizenReportId, ct);
+        }
 
         return TypedResults.Ok(CitizenReportNoteModel.FromEntity(note));
     }
@@ -42,6 +50,8 @@ public class Endpoint(
             req.Text);
 
         await repository.AddAsync(note, ct);
+        await recordAutomation.RecordChangedByAuthorAsync(req.ElectionRoundId, ReportRecordType.CitizenReport,
+            req.CitizenReportId, ct);
 
         return TypedResults.Ok(CitizenReportNoteModel.FromEntity(note));
     }

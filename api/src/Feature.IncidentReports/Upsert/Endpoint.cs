@@ -81,10 +81,14 @@ public class Endpoint(
         DateTime? lastUpdatedAt,
         CancellationToken ct)
     {
+        var answersBefore = incidentReport.Answers;
         incidentReport = form.FillIn(incidentReport, answers, isCompleted, lastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(incidentReport, ct);
-        await recordAutomation.RecordEditedAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
-            incidentReport.Id, ct);
+        if (!AnswersHelpers.HaveSameContent(answersBefore, incidentReport.Answers))
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
+                incidentReport.Id, ct);
+        }
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
     }

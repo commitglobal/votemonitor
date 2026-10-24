@@ -1,4 +1,5 @@
-﻿using Feature.IncidentReports.Notes.Specifications;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using Feature.IncidentReports.Notes.Specifications;
 using Feature.IncidentReports.Notes.Upsert;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 
@@ -12,7 +13,7 @@ public class UpsertEndpointTests
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<IncidentReportNote>>();
-        _endpoint = Factory.Create<Endpoint>(_repository);
+        _endpoint = Factory.Create<Endpoint>(_repository, Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Notes.Delete;
 
@@ -8,7 +9,8 @@ namespace Feature.Notes.Delete;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<NoteAggregate> repository)
+    IRepository<NoteAggregate> repository,
+    IRecordAutomation recordAutomation)
     : Endpoint<Request, Results<NoContent, NotFound, BadRequest<ProblemDetails>>>
 {
     public override void Configure()
@@ -36,6 +38,9 @@ public class Endpoint(
         }
 
         await repository.DeleteAsync(note, ct);
+
+        await recordAutomation.FormSubmissionPartChangedByAuthorAsync(req.ElectionRoundId, note.SubmissionId,
+            note.PollingStationId, note.FormId, note.MonitoringObserverId, ct);
 
         return TypedResults.NoContent();
     }

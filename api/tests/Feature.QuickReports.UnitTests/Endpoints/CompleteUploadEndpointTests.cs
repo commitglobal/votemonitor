@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using System.Security.Claims;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -20,7 +21,8 @@ public class CompleteUploadEndpointTests
         _fileStorageService = Substitute.For<IFileStorageService>();
         _endpoint = Factory.Create<CompleteUpload.Endpoint>(_authorizationService,
             _repository,
-            _fileStorageService);
+            _fileStorageService,
+            Substitute.For<IRecordAutomation>());
     }
 
     [Fact]

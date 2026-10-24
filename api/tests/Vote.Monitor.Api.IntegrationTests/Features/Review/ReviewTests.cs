@@ -1,6 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
+using Module.Answers.Requests;
+using Module.Forms.Requests;
 using Vote.Monitor.Api.IntegrationTests.Consts;
+using Vote.Monitor.Api.IntegrationTests.Models;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
@@ -76,6 +79,26 @@ public class ReviewTests : BaseApiTestFixture
         client.PostWithResponse<PagedResponse<EntryResponse>>(
             $"/api/election-rounds/{electionRoundId}/form-submissions:byEntryV2",
             new { dataSource, filter, pageSize = 100 }).Items;
+
+    /// <summary>Submits (or, at a place where the observer already did, edits) the common form, answering its number question.</summary>
+    private static Guid Submit(ScenarioData data, ScenarioObserver observer, ScenarioPollingStation pollingStation,
+        int number) =>
+        data.ObserverByName(observer).PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{data.ElectionRoundId}/form-submissions",
+            new FormSubmissionRequest
+            {
+                PollingStationId = data.ElectionRound.PollingStationByName(pollingStation),
+                FormId = data.ElectionRound.Coalition.FormId,
+                Answers =
+                [
+                    new NumberAnswerRequest
+                    {
+                        QuestionId = data.ElectionRound.Coalition.Form.Questions.OfType<NumberQuestionRequest>()
+                            .Single().Id,
+                        Value = number
+                    }
+                ]
+            }).Id;
 
     [Test]
     public void EveryMonitoringNgoStartsWithDefaultStagesAndReportsStartInTheDefaultOne()
@@ -341,5 +364,73 @@ public class ReviewTests : BaseApiTestFixture
 
         var history = admin.GetResponse<HistoryEntryResponse[]>($"{Review(data.ElectionRoundId, aliceSubmissionId)}/history");
         history.Should().ContainSingle(x => x.Kind == "FollowUpStatusChanged" && x.FollowUpStatus == "NeedsFollowUp");
+    }
+
+    [Test]
+    public void AnObserversChangeReturnsTheReportToEachNgosDefaultStage_ResendingItUnchangedDoesNot()
+    {
+        var (data, _, bobSubmissionId) = CoalitionScenario();
+        var alfa = data.NgoByName(ScenarioNgos.Alfa);
+        var beta = data.NgoByName(ScenarioNgos.Beta);
+        var er = data.ElectionRoundId;
+        var uri = Review(er, bobSubmissionId);
+        Submit(data, ScenarioObserver.Bob, ScenarioPollingStation.Iasi, 5);
+
+        alfa.Admin.PutWithoutResponse($"{uri}:stage", new { stageId = StageNamed(alfa.Admin, er, "Reviewed").Id });
+        alfa.Admin.PutWithoutResponse($"{uri}:reviewers", new { userIds = new[] { alfa.StaffIdByName(Sam) } });
+        beta.Admin.PutWithoutResponse($"{uri}:stage", new { stageId = StageNamed(beta.Admin, er, "In review").Id });
+
+        Submit(data, ScenarioObserver.Bob, ScenarioPollingStation.Iasi, 5);
+
+        alfa.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Reviewed");
+        beta.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("In review");
+
+        Submit(data, ScenarioObserver.Bob, ScenarioPollingStation.Iasi, 6);
+
+        var alfaReview = alfa.Admin.GetResponse<ReviewResponse>(uri);
+        alfaReview.Stage.Name.Should().Be("Not reviewed");
+        alfaReview.ReviewedAt.Should().BeNull();
+        alfaReview.Reviewers.Select(x => x.Id).Should().Equal(alfa.StaffIdByName(Sam));
+        beta.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Not reviewed");
+
+        var history = alfa.Admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history");
+        history[0].Should().BeEquivalentTo(new
+        {
+            Kind = "ReturnedToDefaultStage",
+            ActorName = null,
+            FromStageName = "Reviewed",
+            ToStageName = "Not reviewed"
+        });
+        alfa.StaffByName(Sam).GetResponse<PagedResponse<InboxItemResponse>>("/api/inbox").Items
+            .Should().Contain(x => x.Reason == "ReviewingRecordChanged" && x.Activity.Kind == "ReturnedToDefaultStage");
+    }
+
+    [Test]
+    public void AnObserversNoteReturnsTheReportToTheDefaultStage_ResendingItUnchangedDoesNot()
+    {
+        var (data, aliceSubmissionId, _) = CoalitionScenario();
+        var admin = data.NgoByName(ScenarioNgos.Alfa).Admin;
+        var er = data.ElectionRoundId;
+        var uri = Review(er, aliceSubmissionId);
+        var reviewed = StageNamed(admin, er, "Reviewed");
+        var noteUri = $"/api/election-rounds/{er}/form-submissions/{aliceSubmissionId}/notes/{Guid.NewGuid()}";
+        var note = new
+        {
+            questionId = data.ElectionRound.Coalition.Form.Questions.OfType<NumberQuestionRequest>().Single().Id,
+            text = "Queue outside",
+            lastUpdatedAt = DateTime.UtcNow
+        };
+
+        admin.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
+        data.ObserverByName(ScenarioObserver.Alice).PostWithoutResponse(noteUri, note);
+
+        admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Not reviewed");
+
+        admin.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
+        data.ObserverByName(ScenarioObserver.Alice).PostWithoutResponse(noteUri, note);
+
+        admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Reviewed");
+        admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history")
+            .Count(x => x.Kind == "ReturnedToDefaultStage").Should().Be(1);
     }
 }

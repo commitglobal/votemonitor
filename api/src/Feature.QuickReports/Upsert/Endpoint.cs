@@ -72,11 +72,21 @@ public class Endpoint(
         QuickReport quickReport,
         CancellationToken ct)
     {
+        var isChanged = quickReport.Title != req.Title
+                        || quickReport.Description != req.Description
+                        || quickReport.QuickReportLocationType != req.QuickReportLocationType
+                        || quickReport.PollingStationId != req.PollingStationId
+                        || quickReport.PollingStationDetails != req.PollingStationDetails
+                        || quickReport.IncidentCategory != req.IncidentCategory;
+
         quickReport.Update(req.Title, req.Description, req.QuickReportLocationType, req.PollingStationId,
             req.PollingStationDetails, req.IncidentCategory, req.LastUpdatedAt ?? timeProvider.UtcNow);
         await repository.UpdateAsync(quickReport, ct);
-        await recordAutomation.RecordEditedAsync(quickReport.ElectionRoundId, ReportRecordType.QuickReport,
-            quickReport.Id, ct);
+        if (isChanged)
+        {
+            await recordAutomation.RecordChangedByAuthorAsync(quickReport.ElectionRoundId, ReportRecordType.QuickReport,
+                quickReport.Id, ct);
+        }
 
         var attachments = await GetPresignedAttachments(req.ElectionRoundId, req.Id, ct);
 

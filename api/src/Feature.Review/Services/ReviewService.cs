@@ -53,6 +53,12 @@ public interface IReviewService
         CancellationToken ct);
 
     /// <summary>
+    /// Sends a report its author changed back to the NGO's default stage, when it is in another stage, and records it
+    /// in the history. Then runs the NGO's reviewer rules of the default stage.
+    /// </summary>
+    Task ReturnToDefaultStageAsync(ReviewContext report, CancellationToken ct);
+
+    /// <summary>
     /// Replaces the report's reviewers. NGO admins assign any active admin or staff member of their NGO; staff can
     /// only add or remove themselves.
     /// </summary>
@@ -200,6 +206,35 @@ internal class ReviewService(
         }
 
         return ReviewOutcome.Done;
+    }
+
+    public async Task ReturnToDefaultStageAsync(ReviewContext report, CancellationToken ct)
+    {
+        // No row of its own: the report already follows the default stage.
+        if (report.Workflow is null)
+        {
+            return;
+        }
+
+        var defaultStage = await context.ReviewStages
+            .FirstAsync(x => x.MonitoringNgoId == report.Target.MonitoringNgoId && x.IsDefault, ct);
+        if (defaultStage.Id == report.Stage.Id)
+        {
+            return;
+        }
+
+        var now = timeProvider.UtcNow;
+        report.Workflow.SetStage(defaultStage, now);
+
+        var activity = ReviewActivity.ReturnedToDefaultStage(report.Target, report.Stage, defaultStage, now);
+        context.ReviewActivities.Add(activity);
+        await context.NotifyAsync(activity,
+            report.Reviewers.Select(x => x.UserId),
+            UserNotificationReason.ReviewingRecordChanged,
+            ct);
+
+        await context.SaveChangesAsync(ct);
+        await reviewerRules.RunAsync(report, defaultStage, ct);
     }
 
     public async Task<SetReviewersResult> SetReviewersAsync(ReviewContext report,
