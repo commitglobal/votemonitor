@@ -110,20 +110,20 @@ public class ListRequestValidatorTests
     public void Validation_ShouldFail_When_UnknownCountryId()
     {
         // Arrange
-        var request = new List.Request { CountryId = Guid.NewGuid() };
+        var request = new List.Request { CountryId = [CountriesList.MD.Id, Guid.NewGuid()] };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.CountryId);
+        result.ShouldHaveValidationErrorFor("CountryId[1]");
     }
 
     [Fact]
     public void Validation_ShouldPass_When_ValidCountryId()
     {
         // Arrange
-        var request = new List.Request { CountryId = CountriesList.MD.Id };
+        var request = new List.Request { CountryId = [CountriesList.MD.Id, CountriesList.RO.Id] };
 
         // Act
         var result = _validator.TestValidate(request);

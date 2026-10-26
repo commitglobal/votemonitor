@@ -8,20 +8,21 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam]
     public string? AddressFilter { get; set; }
 
+    // Each level filter keeps the records matching any of its values (repeat the key for several).
     [QueryParam]
-    public string? Level1Filter { get; set; }
+    public string[]? Level1Filter { get; set; }
 
     [QueryParam]
-    public string? Level2Filter { get; set; }
+    public string[]? Level2Filter { get; set; }
 
     [QueryParam]
-    public string? Level3Filter { get; set; }
+    public string[]? Level3Filter { get; set; }
 
     [QueryParam]
-    public string? Level4Filter { get; set; }
+    public string[]? Level4Filter { get; set; }
 
     [QueryParam]
-    public string? Level5Filter { get; set; }
+    public string[]? Level5Filter { get; set; }
     
     [QueryParam]
     public string? PollingStationNumberFilter { get; set; }

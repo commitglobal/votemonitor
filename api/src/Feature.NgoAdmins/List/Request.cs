@@ -9,7 +9,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam]
     public string? SearchText { get; set; }
 
+    /// <summary>Only admins with any of these statuses (repeat the key for several).</summary>
     [QueryParam]
-    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
-    public UserStatus? Status { get; set; }
+    public UserStatus[]? Status { get; set; }
 }

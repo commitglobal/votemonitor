@@ -8,7 +8,9 @@ public class Request : BaseSortPaginatedRequest
 {
     [QueryParam] public string? SearchText { get; set; }
 
-    [QueryParam] public FormStatus? FormStatus { get; set; }
+    /// <summary>Only templates with any of these statuses (repeat the key for several).</summary>
+    [QueryParam] public FormStatus[]? FormStatus { get; set; }
 
-    [QueryParam] public FormType? FormTemplateType { get; set; }
+    /// <summary>Only templates of any of these types (repeat the key for several).</summary>
+    [QueryParam] public FormType[]? FormTemplateType { get; set; }
 }

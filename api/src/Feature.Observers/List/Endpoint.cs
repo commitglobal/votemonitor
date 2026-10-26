@@ -17,10 +17,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   select count(*)
-                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified);
+                  from "GetPlatformObserversList"(@searchText, NULL, @isEmailVerified)
+                  WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses);
 
                   select *
-                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified)
+                  from "GetPlatformObserversList"(@searchText, NULL, @isEmailVerified)
+                  WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses)
                   ORDER BY CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
                            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
                            CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,
@@ -40,7 +42,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
         var queryArgs = new
         {
-            status = req.Status?.ToString(),
+            statuses = req.Status?.Select(x => x.Value).ToArray() ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             isemailverified = req.IsEmailVerified,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),

@@ -4,9 +4,8 @@ public class Validator : Validator<Request>
 {
     public Validator()
     {
-        RuleFor(x => x.CountryId)
-            .Must(countryId => CountriesList.IsKnownCountry(countryId!.Value))
-            .When(x => x.CountryId != null)
+        RuleForEach(x => x.CountryId)
+            .Must(countryId => CountriesList.IsKnownCountry(countryId))
             .WithMessage("Unknown country id.");
 
         RuleFor(x => x.PageNumber)

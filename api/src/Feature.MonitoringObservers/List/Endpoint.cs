@@ -35,7 +35,8 @@ public class Endpoint(
 
         var sql = """
         SELECT COUNT(*) count
-        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, @status);
+        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, NULL)
+        WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses);
 
         SELECT
             "Id",
@@ -48,7 +49,8 @@ public class Endpoint(
             "Status",
             "LatestActivityAt",
             "InvitationToken"
-        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, @status)
+        FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, NULL)
+        WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses)
 
         ORDER BY
             CASE WHEN @sortExpression = 'DisplayName ASC' THEN "DisplayName" END ASC,
@@ -85,7 +87,7 @@ public class Endpoint(
             pageSize = req.PageSize,
             tagsFilter = req.Tags ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
-            status = req.Status?.ToString(),
+            statuses = req.Status?.Select(x => x.Value).ToArray() ?? [],
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
