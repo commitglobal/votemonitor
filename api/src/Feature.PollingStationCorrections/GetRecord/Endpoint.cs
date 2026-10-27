@@ -17,14 +17,19 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         });
     }
 
+    private static readonly string RecordsWithObserverEmailAndSubmissionNumber =
+        CorrectableRecordsSql.WithObserverEmailAndSubmissionNumber("""
+            "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
+                @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5)
+            """);
+
     public override async Task<Results<Ok<CorrectableRecordModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var sql = """
-                  SELECT *
-                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
-                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
-                  """;
+        var sql = $"""
+                   SELECT *
+                   FROM {RecordsWithObserverEmailAndSubmissionNumber};
+                   """;
 
         var args = new
         {

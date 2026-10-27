@@ -18,9 +18,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         });
     }
 
+    private static readonly string RecordsWithObserverEmailAndSubmissionNumber =
+        CorrectableRecordsSql.WithObserverEmailAndSubmissionNumber("""
+            "GetCorrectableRecords"(@electionRoundId, NULL, @recordId, @monitoringNgoId, @searchText,
+                @pollingStationNumber, @correctedOnly, NULL, NULL, NULL, NULL, NULL)
+            """);
+
     public override async Task<PagedResponse<CorrectableRecordModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = """
+        var sql = $$"""
                   SELECT COUNT(*)
                   FROM "GetCorrectableRecords"(@electionRoundId, NULL, @recordId, @monitoringNgoId, @searchText,
                       @pollingStationNumber, @correctedOnly, NULL, NULL, NULL, NULL, NULL)
@@ -32,8 +38,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                     AND (CARDINALITY(@level5) = 0 OR "Level5" = ANY(@level5));
 
                   SELECT *
-                  FROM "GetCorrectableRecords"(@electionRoundId, NULL, @recordId, @monitoringNgoId, @searchText,
-                      @pollingStationNumber, @correctedOnly, NULL, NULL, NULL, NULL, NULL)
+                  FROM {{RecordsWithObserverEmailAndSubmissionNumber}}
                   WHERE (CARDINALITY(@recordTypes) = 0 OR "RecordType" = ANY(@recordTypes))
                     AND (CARDINALITY(@level1) = 0 OR "Level1" = ANY(@level1))
                     AND (CARDINALITY(@level2) = 0 OR "Level2" = ANY(@level2))

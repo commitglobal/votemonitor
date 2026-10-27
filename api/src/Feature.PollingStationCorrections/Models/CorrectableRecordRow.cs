@@ -1,5 +1,3 @@
-using Vote.Monitor.Core.Helpers;
-
 namespace Feature.PollingStationCorrections.Models;
 
 internal record CorrectableRecordRow
@@ -7,6 +5,8 @@ internal record CorrectableRecordRow
     public Guid Id { get; init; }
     public string RecordType { get; init; } = string.Empty;
     public string? ObserverName { get; init; }
+    public string? ObserverEmail { get; init; }
+    public int? SubmissionNumber { get; init; }
     public string NgoName { get; init; } = string.Empty;
     public string? FormCode { get; init; }
     public string? FormName { get; init; }
@@ -25,7 +25,9 @@ internal record CorrectableRecordRow
     {
         Id = Id,
         RecordType = RecordType,
-        ObserverName = PersonalDataMasker.MaskName(ObserverName),
+        ObserverName = ObserverName ?? string.Empty,
+        ObserverEmail = ObserverEmail,
+        SubmissionNumber = SubmissionNumber,
         NgoName = NgoName,
         FormCode = FormCode,
         FormName = FormName,
