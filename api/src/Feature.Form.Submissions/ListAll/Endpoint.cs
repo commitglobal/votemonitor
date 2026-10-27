@@ -6,29 +6,9 @@ namespace Feature.Form.Submissions.ListAll;
 public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, PagedResponse<FormSubmissionAdminRowModel>>
 {
-    // The function's rows with the submission number: which of the observer's submissions of that form at that polling
-    // station it is, by creation (always 1 for PSI forms), as in the form submissions export. It counts all of the
-    // observer's submissions, so filters and pages never change it.
     private const string Source = """
-        (SELECT R.*,
-                CASE
-                    WHEN R."FormType" = 'PSI' THEN 1
-                    ELSE (SELECT COUNT(*)::int
-                          FROM "FormSubmissions" S
-                          WHERE S."ElectionRoundId" = FS."ElectionRoundId"
-                            AND S."FormId" = FS."FormId"
-                            AND S."PollingStationId" = FS."PollingStationId"
-                            AND S."MonitoringObserverId" = FS."MonitoringObserverId"
-                            AND (S."CreatedAt", S."Id") <= (FS."CreatedAt", FS."Id"))
-                END AS "SubmissionNumber"
-         FROM "GetElectionRoundFormSubmissionRows"(@electionRoundId, NULL, NULL, NULL, NULL, NULL,
-                 @monitoringNgoId, @formId, @isCompleted, @fromDate, @toDate, @searchText) R
-             INNER JOIN "FormSubmissions" FS ON FS."Id" = R."SubmissionId") R
-        WHERE (CARDINALITY(@level1) = 0 OR "Level1" = ANY(@level1))
-          AND (CARDINALITY(@level2) = 0 OR "Level2" = ANY(@level2))
-          AND (CARDINALITY(@level3) = 0 OR "Level3" = ANY(@level3))
-          AND (CARDINALITY(@level4) = 0 OR "Level4" = ANY(@level4))
-          AND (CARDINALITY(@level5) = 0 OR "Level5" = ANY(@level5))
+        "GetElectionRoundFormSubmissionRows"(@electionRoundId, @level1, @level2, @level3, @level4, @level5,
+            @monitoringNgoId, @formId, @isCompleted, @fromDate, @toDate, @searchText)
         """;
 
     public override void Configure()
