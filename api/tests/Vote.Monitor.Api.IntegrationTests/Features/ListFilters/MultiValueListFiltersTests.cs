@@ -146,6 +146,68 @@ public class MultiValueListFiltersTests : BaseApiTestFixture
             .GetAwaiter().GetResult().StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
+    /// <summary>Alice (Alfa) submitted a form in Iasi (01/001) and Cluj (02/001) and a quick report in Bacau (01/002).</summary>
+    private ScenarioData RecordsScenario() =>
+        ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi, level1: "Iasi", number: "01/001")
+                .WithPollingStation(ScenarioPollingStation.Bacau, level1: "Bacau", number: "01/002")
+                .WithPollingStation(ScenarioPollingStation.Cluj, level1: "Cluj", number: "02/001")
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithForm("A", form => form
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj)))
+                .WithQuickReport(ScenarioObserver.Alice, ScenarioPollingStation.Bacau))
+            .Please();
+
+    [Test]
+    public void CorrectableRecords_ShouldKeepRecordsMatchingAnyLevelOrType()
+    {
+        var scenarioData = RecordsScenario();
+        var url = $"/api/election-rounds/{scenarioData.ElectionRoundId}/polling-station-corrections:records";
+
+        Count(scenarioData.PlatformAdmin, url).Should().Be(3);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi&level1Filter=Bacau").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi&level1Filter=").Should().Be(1);
+
+        Count(scenarioData.PlatformAdmin, url + "?recordType=FormSubmission").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?recordType=QuickReport").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?recordType=FormSubmission&recordType=QuickReport").Should().Be(3);
+        Count(scenarioData.PlatformAdmin, url + "?recordType=IncidentReport").Should().Be(0);
+        Count(scenarioData.PlatformAdmin, url + "?recordType=QuickReport&level1Filter=Iasi&level1Filter=Bacau")
+            .Should().Be(1);
+    }
+
+    [Test]
+    public void CorrectableRecords_ShouldMatchPartOfTheNumber()
+    {
+        var scenarioData = RecordsScenario();
+        var url = $"/api/election-rounds/{scenarioData.ElectionRoundId}/polling-station-corrections:records";
+
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=01%2F").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=001").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=02%2F001").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=001&level1Filter=Cluj").Should().Be(1);
+    }
+
+    [Test]
+    public void AllFormSubmissions_ShouldKeepSubmissionsMatchingAnyLevelValue()
+    {
+        var scenarioData = RecordsScenario();
+        var url = $"/api/election-rounds/{scenarioData.ElectionRoundId}/form-submissions:all";
+
+        Count(scenarioData.PlatformAdmin, url).Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi&level1Filter=Cluj").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Iasi&level1Filter=Bacau").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=Bacau").Should().Be(0);
+        Count(scenarioData.PlatformAdmin, url + "?level1Filter=").Should().Be(2);
+    }
+
     private static int Count(HttpClient client, string url) =>
         client.GetResponse<PagedResponse<JsonElement>>(url).TotalCount;
 }

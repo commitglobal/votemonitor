@@ -22,12 +22,24 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   SELECT COUNT(*)
-                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
-                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
+                  FROM "GetCorrectableRecords"(@electionRoundId, NULL, @recordId, @monitoringNgoId, @searchText,
+                      @pollingStationNumber, @correctedOnly, NULL, NULL, NULL, NULL, NULL)
+                  WHERE (CARDINALITY(@recordTypes) = 0 OR "RecordType" = ANY(@recordTypes))
+                    AND (CARDINALITY(@level1) = 0 OR "Level1" = ANY(@level1))
+                    AND (CARDINALITY(@level2) = 0 OR "Level2" = ANY(@level2))
+                    AND (CARDINALITY(@level3) = 0 OR "Level3" = ANY(@level3))
+                    AND (CARDINALITY(@level4) = 0 OR "Level4" = ANY(@level4))
+                    AND (CARDINALITY(@level5) = 0 OR "Level5" = ANY(@level5));
 
                   SELECT *
-                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
-                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5)
+                  FROM "GetCorrectableRecords"(@electionRoundId, NULL, @recordId, @monitoringNgoId, @searchText,
+                      @pollingStationNumber, @correctedOnly, NULL, NULL, NULL, NULL, NULL)
+                  WHERE (CARDINALITY(@recordTypes) = 0 OR "RecordType" = ANY(@recordTypes))
+                    AND (CARDINALITY(@level1) = 0 OR "Level1" = ANY(@level1))
+                    AND (CARDINALITY(@level2) = 0 OR "Level2" = ANY(@level2))
+                    AND (CARDINALITY(@level3) = 0 OR "Level3" = ANY(@level3))
+                    AND (CARDINALITY(@level4) = 0 OR "Level4" = ANY(@level4))
+                    AND (CARDINALITY(@level5) = 0 OR "Level5" = ANY(@level5))
                   ORDER BY
                       CASE WHEN @sortExpression = 'SubmittedAt ASC' THEN "SubmittedAt" END ASC,
                       CASE WHEN @sortExpression = 'SubmittedAt DESC' THEN "SubmittedAt" END DESC,
@@ -43,17 +55,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var args = new
         {
             electionRoundId = req.ElectionRoundId,
-            recordType = req.RecordType?.Value,
+            recordTypes = req.RecordType?.Select(x => x.Value).Distinct().ToArray() ?? [],
             recordId = (Guid?)null,
             monitoringNgoId = req.MonitoringNgoId,
             searchText = ToContainsPattern(req.SearchText),
             pollingStationNumber = ToContainsPattern(req.PollingStationNumberFilter),
             correctedOnly = req.CorrectedOnly,
-            level1 = NullIfEmpty(req.Level1Filter),
-            level2 = NullIfEmpty(req.Level2Filter),
-            level3 = NullIfEmpty(req.Level3Filter),
-            level4 = NullIfEmpty(req.Level4Filter),
-            level5 = NullIfEmpty(req.Level5Filter),
+            level1 = NonEmpty(req.Level1Filter),
+            level2 = NonEmpty(req.Level2Filter),
+            level3 = NonEmpty(req.Level3Filter),
+            level4 = NonEmpty(req.Level4Filter),
+            level5 = NonEmpty(req.Level5Filter),
             sortExpression = GetSortExpression(req.SortColumnName, req.SortOrder),
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize
@@ -68,7 +80,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         return new PagedResponse<CorrectableRecordModel>(items, totalCount, req.PageNumber, req.PageSize);
     }
 
-    private static string? NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
+    /// <summary>The filter's values without the blank ones; empty means no filter.</summary>
+    private static string[] NonEmpty(string[]? values) =>
+        values?.Where(value => !string.IsNullOrWhiteSpace(value)).ToArray() ?? [];
 
     private static string? ToContainsPattern(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : $"%{value.Trim()}%";
