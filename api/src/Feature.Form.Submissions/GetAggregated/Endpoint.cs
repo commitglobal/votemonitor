@@ -43,7 +43,7 @@ public class Endpoint(
                                   SELECT * FROM "GetFormSubmissionsAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()})
                                   """)
             .Where(x => x.Id == req.FormId)
-            .Where(x => x.Status == FormStatus.Published)
+            .Where(x => x.Status == FormStatus.Published || x.Status == FormStatus.Obsolete)
             .Where(x => x.FormType != FormType.CitizenReporting)
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
