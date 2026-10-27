@@ -1,4 +1,6 @@
-﻿using Module.Answers.Aggregators;
+﻿using System.Net;
+using System.Net.Http.Json;
+using Module.Answers.Aggregators;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
 using Vote.Monitor.Api.IntegrationTests.TestCases;
@@ -234,5 +236,102 @@ public class GetAggregatedTests : BaseApiTestFixture
             new Responder(bob.MonitoringObserverId, bob.DisplayName, bob.Email, bob.PhoneNumber)
         ]);
         aggregatedFormResponses.SubmissionsAggregate.SubmissionCount.Should().Be(2);
+    }
+
+    [Test]
+    public void ShouldReturnAggregatedV2_WhenFormIsArchived()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithForm("A", form => form
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj))))
+            .Please();
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var formId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var admin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+
+        admin.PostWithoutResponse($"/api/election-rounds/{electionRoundId}/forms/{formId}:obsolete");
+
+        // Act
+        var aggregatedFormResponses = admin.PostWithResponse<GetAggregatedResponse>(
+            $"/api/election-rounds/{electionRoundId}/form-submissions/{formId}:aggregatedV2",
+            new { DataSource = "Ngo" });
+
+        // Assert
+        aggregatedFormResponses.SubmissionsAggregate.FormId.Should().Be(formId);
+        aggregatedFormResponses.SubmissionsAggregate.SubmissionCount.Should().Be(2);
+    }
+
+    [Test]
+    public void ShouldReturnAggregated_WhenFormIsArchived()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithPollingStation(ScenarioPollingStation.Cluj)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithForm("A", form => form
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi)
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Cluj))))
+            .Please();
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var formId = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+        var admin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+
+        admin.PostWithoutResponse($"/api/election-rounds/{electionRoundId}/forms/{formId}:obsolete");
+
+        // Act
+        var aggregatedFormResponses = admin.GetResponse<GetAggregatedResponse>(
+            $"/api/election-rounds/{electionRoundId}/form-submissions/{formId}:aggregated?dataSource=Ngo");
+
+        // Assert
+        aggregatedFormResponses.SubmissionsAggregate.FormId.Should().Be(formId);
+        aggregatedFormResponses.SubmissionsAggregate.SubmissionCount.Should().Be(2);
+    }
+
+    [Test]
+    public void ShouldReturnQuestionAggregatedByLevel_WhenFormIsArchived()
+    {
+        // Arrange
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithObserver(ScenarioObserver.Alice)
+            .WithNgo(ScenarioNgos.Alfa)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi)
+                .WithMonitoringNgo(ScenarioNgos.Alfa, ngo => ngo
+                    .WithMonitoringObserver(ScenarioObserver.Alice)
+                    .WithForm("A", form => form
+                        .WithSubmission(ScenarioObserver.Alice, ScenarioPollingStation.Iasi))))
+            .Please();
+
+        var electionRoundId = scenarioData.ElectionRoundId;
+        var form = scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormByCode("A");
+        var questionId = form.Form.Questions.First().Id;
+        var admin = scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+
+        admin.PostWithoutResponse($"/api/election-rounds/{electionRoundId}/forms/{form.FormId}:obsolete");
+
+        // Act
+        var response = admin.PostAsJsonAsync(
+                $"/api/election-rounds/{electionRoundId}/form-submissions/{form.FormId}/questions/{questionId}:aggregatedByLevel",
+                new { DataSource = "Ngo", Level = "Level1" })
+            .GetAwaiter().GetResult();
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }

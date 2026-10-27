@@ -35,7 +35,7 @@ public class Endpoint(
             .Build(req.Filter);
 
         const string sql = """
-                           SELECT * FROM "GetQuestionAggregateByLevel"(@electionRoundId, @ngoId, @dataSource, @formId, @questionId, @level, @filter, @filterParameters::jsonb)
+                           SELECT * FROM "GetFormSubmissionsQuestionAggregateByLevel"(@electionRoundId, @ngoId, @dataSource, @formId, @questionId, @level, @filter, @filterParameters::jsonb)
                            """;
 
         QuestionAggregateByLevel? aggregate;
