@@ -20,7 +20,8 @@ public sealed class ListPollingStationsSpecification : Specification<PollingStat
             .Where(x => level3.Contains(x.Level3), level3.Length > 0)
             .Where(x => level4.Contains(x.Level4), level4.Length > 0)
             .Where(x => level5.Contains(x.Level5), level5.Length > 0)
-            .Where(x => x.Number == request.PollingStationNumberFilter, !string.IsNullOrWhiteSpace(request.PollingStationNumberFilter))
+            // Part of the number ("01/" finds 01/001, 01/002…); its own search group, so it is ANDed with the address.
+            .Search(x => x.Number, "%" + request.PollingStationNumberFilter + "%", !string.IsNullOrWhiteSpace(request.PollingStationNumberFilter), searchGroup: 2)
             .ApplyOrdering(request)
             .Paginate(request)
             .AsNoTracking();

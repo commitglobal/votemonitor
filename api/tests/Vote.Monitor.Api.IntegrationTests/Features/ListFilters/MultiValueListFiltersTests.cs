@@ -30,6 +30,24 @@ public class MultiValueListFiltersTests : BaseApiTestFixture
     }
 
     [Test]
+    public void PollingStationsList_ShouldMatchPartOfTheNumber()
+    {
+        var scenarioData = ScenarioBuilder.New(CreateClient)
+            .WithElectionRound(ScenarioElectionRound.A, er => er
+                .WithPollingStation(ScenarioPollingStation.Iasi, level1: "Iasi", number: "01/001")
+                .WithPollingStation(ScenarioPollingStation.Bacau, level1: "Bacau", number: "01/002")
+                .WithPollingStation(ScenarioPollingStation.Cluj, level1: "Cluj", number: "02/001"))
+            .Please();
+
+        var url = $"/api/election-rounds/{scenarioData.ElectionRoundId}/polling-stations:list";
+
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=01%2F").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=001").Should().Be(2);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=02%2F001").Should().Be(1);
+        Count(scenarioData.PlatformAdmin, url + "?pollingStationNumberFilter=001&level1Filter=Cluj").Should().Be(1);
+    }
+
+    [Test]
     public void LocationsList_ShouldKeepLocationsMatchingAnyLevelValue()
     {
         var scenarioData = ScenarioBuilder.New(CreateClient)

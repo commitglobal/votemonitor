@@ -20,7 +20,8 @@ public class ElectionRoundScenarioBuilder
 
     public ElectionRoundScenarioBuilder WithPollingStation(ScenarioPollingStation pollingStation,
         string? level1 = null,
-        string? level2 = null)
+        string? level2 = null,
+        string number = "1")
     {
         var createdPollingStation = _platformAdmin.PostWithResponse<CreatePollingStationsResponse>(
             $"/api/election-rounds/{ElectionRoundId}/polling-stations",
@@ -32,7 +33,7 @@ public class ElectionRoundScenarioBuilder
                     {
                         Level1 = level1 ?? Guid.NewGuid().ToString(),
                         Level2 = level2,
-                        Number = "1",
+                        Number = number,
                         DisplayOrder = 1,
                         Address = "Address",
                         Tags = new { }
