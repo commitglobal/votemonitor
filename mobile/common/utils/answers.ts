@@ -6,7 +6,9 @@ import { ApiFormAnswer } from "../../services/interfaces/answer.type";
  *
  * @param {ApiFormAnswer} answer - The ApiFormAnswer object to get the display string for.
  * depending on the answer type, the value has a different key
- *  type date -> date
+ *  type date -> date (the day only)
+ *  type time -> time ("HH:mm")
+ *  type dateTime -> dateTime
  *  type text -> text
  *  type number -> value
  *  type rating -> value
@@ -20,8 +22,12 @@ export const getAnswerDisplay = (answer: ApiFormAnswer, displaySingleSelectOther
 
   switch (answer.$answerType) {
     case "dateAnswer":
-      const date = new Date(answer.date); // eslint-disable-line no-case-declarations
-      return format(date, "yyyy-MM-dd HH:mm");
+      // a calendar day: shown as received, without a time or a time zone shift
+      return answer.date?.slice(0, 10) ?? "";
+    case "timeAnswer":
+      return answer.time?.slice(0, 5) ?? "";
+    case "dateTimeAnswer":
+      return answer.dateTime ? format(new Date(answer.dateTime), "yyyy-MM-dd HH:mm") : "";
     case "textAnswer":
       return answer.text;
     case "singleSelectAnswer":

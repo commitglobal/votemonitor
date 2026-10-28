@@ -486,6 +486,9 @@
       "max": "The field must have a maximum of {{value}} characters",
       "required": "This field is required",
       "date_placeholder": "Please enter a date",
+      "time_placeholder": "Please enter a time",
+      "datetime_placeholder": "Please enter a date and time",
+      "unsupported_question": "This question needs a newer version of the app. Update the app to answer it.",
       "text_placeholder": "Please enter a text"
     },
     "save_and_continue": "Save and continue",

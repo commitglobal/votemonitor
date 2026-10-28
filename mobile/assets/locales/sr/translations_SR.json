@@ -483,6 +483,9 @@
       "max": "Polje mora da sadrži najviše {{value}} karaktera",
       "required": "Ovo polje je obavezno",
       "date_placeholder": "Unesite datum",
+      "time_placeholder": "Unesite vreme",
+      "datetime_placeholder": "Unesite datum i vreme",
+      "unsupported_question": "Za ovo pitanje potrebna je novija verzija aplikacije. Ažurirajte aplikaciju da biste odgovorili.",
       "text_placeholder": "Unesite text"
     },
     "save_and_continue": "Sačuvaj promene i nastavi.",

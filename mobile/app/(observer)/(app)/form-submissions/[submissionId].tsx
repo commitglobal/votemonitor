@@ -37,6 +37,7 @@ import { useCamera } from "../../../../hooks/useCamera";
 import { AddAttachmentStartAPIPayload } from "../../../../services/api/add-attachment.api";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  withAnswerTimestamps,
   setFormDefaultValues,
   shouldDisplayQuestion,
 } from "../../../../services/form.parser";
@@ -159,10 +160,14 @@ const FormSubmissions = () => {
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
       // map the answer values
-      const updatedAnswer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
-        questionId,
-        activeQuestion?.question.$questionType,
-        formValues[questionId],
+      // stamped with when it was first given and last changed (kept as is when unchanged)
+      const updatedAnswer = withAnswerTimestamps(
+        mapFormSubmissionDataToAPIFormSubmissionAnswer(
+          questionId,
+          activeQuestion?.question.$questionType,
+          formValues[questionId],
+        ),
+        answers?.[questionId],
       );
 
       const updatedAnswers = {

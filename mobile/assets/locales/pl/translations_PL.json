@@ -490,6 +490,9 @@
       "max": "Pole musi zawierać maksymalnie {{value}} znaków",
       "required": "To pole jest wymagane",
       "date_placeholder": "Proszę wprowadzić datę",
+      "time_placeholder": "Proszę wprowadzić godzinę",
+      "datetime_placeholder": "Proszę wprowadzić datę i godzinę",
+      "unsupported_question": "To pytanie wymaga nowszej wersji aplikacji. Zaktualizuj aplikację, aby na nie odpowiedzieć.",
       "text_placeholder": "Proszę wpisać tekst"
     },
     "save_and_continue": "Zapisz i kontynuuj",

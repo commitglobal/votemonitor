@@ -25,8 +25,13 @@ import { Icon } from "../../../components/Icon";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import {
+  fromDayIso,
+  fromTimeOfDay,
   mapAPIAnswersToFormAnswers,
   mapAPIQuestionsToFormQuestions,
+  toDayIso,
+  toTimeOfDay,
+  withAnswerTimestamps,
 } from "../../../services/form.parser";
 import Button from "../../../components/Button";
 import { useBottomInset } from "../../../hooks/useBottomInset";
@@ -120,7 +125,7 @@ const PollingStationQuestionnaire = () => {
   };
 
   const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
-    const answers: ApiFormAnswer[] = Object.keys(formData)
+    const updatedAnswers: ApiFormAnswer[] = Object.keys(formData)
       .map((questionId: string) => {
         const question: ApiFormQuestion = questions[questionId];
 
@@ -150,7 +155,19 @@ const PollingStationQuestionnaire = () => {
             return {
               $answerType: "dateAnswer",
               questionId,
-              date: new Date(formData[questionId] as string).toISOString(),
+              date: toDayIso(new Date(formData[questionId] as string)),
+            } as ApiFormAnswer;
+          case "timeAnswer":
+            return {
+              $answerType: "timeAnswer",
+              questionId,
+              time: toTimeOfDay(new Date(formData[questionId] as string)),
+            } as ApiFormAnswer;
+          case "dateTimeAnswer":
+            return {
+              $answerType: "dateTimeAnswer",
+              questionId,
+              dateTime: new Date(formData[questionId] as string).toISOString(),
             } as ApiFormAnswer;
           case "singleSelectAnswer":
             return {
@@ -181,13 +198,20 @@ const PollingStationQuestionnaire = () => {
             return undefined;
         }
       })
+      .map((answer) => answer && withAnswerTimestamps(answer, answers[answer.questionId]))
       .filter(Boolean) as ApiFormAnswer[];
+
+    // Answers to questions this version can't show are kept as they are, not dropped on save.
+    const keptAnswers = Object.values(answers).filter((answer) => {
+      const question = questions[answer.questionId];
+      return !!question && !(question.$questionType in FormQuestionAnswerTypeMapping);
+    });
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
-        answers,
+        answers: [...updatedAnswers, ...keptAnswers],
         lastUpdatedAt: new Date().toISOString(),
       });
       router.back();
@@ -224,7 +248,13 @@ const PollingStationQuestionnaire = () => {
             acc[questionId] = answer?.value?.toString() ?? "";
             break;
           case "dateAnswer":
-            acc[questionId] = answer.date ? new Date(answer.date) : "";
+            acc[questionId] = answer.date ? fromDayIso(answer.date) : "";
+            break;
+          case "timeAnswer":
+            acc[questionId] = answer.time ? fromTimeOfDay(answer.time) : "";
+            break;
+          case "dateTimeAnswer":
+            acc[questionId] = answer.dateTime ? new Date(answer.dateTime) : "";
             break;
           case "singleSelectAnswer":
             acc[questionId] = {
@@ -378,7 +408,11 @@ const PollingStationQuestionnaire = () => {
                 );
               }
 
-              if (question.$questionType === "dateQuestion") {
+              if (
+                question.$questionType === "dateQuestion" ||
+                question.$questionType === "timeQuestion" ||
+                question.$questionType === "dateTimeQuestion"
+              ) {
                 return (
                   <Controller
                     key={question.id}
@@ -387,6 +421,13 @@ const PollingStationQuestionnaire = () => {
                     render={({ field: { onChange, value } }) => (
                       <YStack>
                         <DateFormInput
+                          mode={
+                            question.$questionType === "dateQuestion"
+                              ? "date"
+                              : question.$questionType === "timeQuestion"
+                                ? "time"
+                                : "datetime"
+                          }
                           title={question.text[currentLanguage]}
                           onChange={onChange}
                           value={value}
@@ -535,7 +576,14 @@ const PollingStationQuestionnaire = () => {
                 );
               }
 
-              return <Typography key={question.id}></Typography>;
+              // A question type this version doesn't know: say so instead of an empty gap.
+              return (
+                <FormElement key={question.id} title={question.text?.[currentLanguage] ?? ""}>
+                  <Typography color="$gray5">
+                    {t("form.unsupported_question", { ns: "polling_station_form_wizard" })}
+                  </Typography>
+                </FormElement>
+              );
             })}
           </YStack>
         </ScreenScrollView>
