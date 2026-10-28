@@ -88,7 +88,9 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."ReviewerIds",
                                 s."Severity",
                                 s."IsCompleted",
-                                s."MonitoringObserverStatus"
+                                s."MonitoringObserverStatus",
+                                s."SubmissionNumber",
+                                s."SubmissionCount"
                          FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
                          WHERE {filter.Sql}
                          ORDER BY {orderBy}, s."SubmissionId"

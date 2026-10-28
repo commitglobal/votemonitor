@@ -7,11 +7,12 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] public string? SearchText { get; set; }
 
-    [QueryParam] public string? Level1Filter { get; set; }
-    [QueryParam] public string? Level2Filter { get; set; }
-    [QueryParam] public string? Level3Filter { get; set; }
-    [QueryParam] public string? Level4Filter { get; set; }
-    [QueryParam] public string? Level5Filter { get; set; }
+    // Each level filter keeps the submissions matching any of its values (repeat the key for several).
+    [QueryParam] public string[]? Level1Filter { get; set; }
+    [QueryParam] public string[]? Level2Filter { get; set; }
+    [QueryParam] public string[]? Level3Filter { get; set; }
+    [QueryParam] public string[]? Level4Filter { get; set; }
+    [QueryParam] public string[]? Level5Filter { get; set; }
 
     [QueryParam] public Guid? MonitoringNgoId { get; set; }
     [QueryParam] public Guid? FormId { get; set; }

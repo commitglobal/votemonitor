@@ -7,5 +7,6 @@ public class Request : BaseSortPaginatedRequest
 {
     [QueryParam] public string? SearchText { get; set; }
 
-    [QueryParam] public NgoStatus? Status { get; set; }
+    /// <summary>Only NGOs with any of these statuses (repeat the key for several).</summary>
+    [QueryParam] public NgoStatus[]? Status { get; set; }
 }

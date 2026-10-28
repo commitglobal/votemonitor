@@ -17,10 +17,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   select count(*)
-                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified);
+                  from "GetPlatformObserversList"(@searchText, NULL, @isEmailVerified)
+                  WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses);
 
                   select *
-                  from "GetPlatformObserversList"(@searchText, @status, @isEmailVerified)
+                  from "GetPlatformObserversList"(@searchText, NULL, @isEmailVerified)
+                  WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses)
                   ORDER BY CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
                            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
                            CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,
@@ -34,13 +36,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                            CASE WHEN @sortExpression = 'IsAccountVerified ASC' THEN "IsAccountVerified" END ASC,
                            CASE WHEN @sortExpression = 'IsAccountVerified DESC' THEN "IsAccountVerified" END DESC,
                            CASE WHEN @sortExpression = 'MonitoredElections ASC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END ASC,
-                           CASE WHEN @sortExpression = 'MonitoredElections DESC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END DESC
+                           CASE WHEN @sortExpression = 'MonitoredElections DESC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END DESC,
+                           -- ties (every row of one status, say) keep a stable order across pages
+                           "FirstName", "LastName", "Id"
                   OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
         var queryArgs = new
         {
-            status = req.Status?.ToString(),
+            statuses = req.Status?.Select(x => x.Value).ToArray() ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             isemailverified = req.IsEmailVerified,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),

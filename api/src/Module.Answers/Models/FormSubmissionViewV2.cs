@@ -47,4 +47,11 @@ public record FormSubmissionViewV2
 
     /// <summary>Moves of this submission to another polling station by a platform admin, oldest first.</summary>
     public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
+
+    /// <summary>
+    /// Which of the observer's submissions of this form at this polling station this is (by creation), and how many there are;
+    /// 1 of 1 for polling station information.
+    /// </summary>
+    public int SubmissionNumber { get; init; } = 1;
+    public int SubmissionCount { get; init; } = 1;
 }

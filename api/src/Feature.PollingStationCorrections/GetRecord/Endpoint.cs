@@ -20,26 +20,26 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     public override async Task<Results<Ok<CorrectableRecordModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var sql = """
-                  SELECT *
-                  FROM "GetCorrectableRecords"(@electionRoundId, @recordType, @recordId, @monitoringNgoId, @searchText,
-                      @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
-                  """;
+        const string sql = """
+                           SELECT *
+                           FROM "GetCorrectableRecords"(@electionRoundId, @recordTypes, @recordId, @monitoringNgoId, @searchText,
+                               @pollingStationNumber, @correctedOnly, @level1, @level2, @level3, @level4, @level5);
+                           """;
 
         var args = new
         {
             electionRoundId = req.ElectionRoundId,
-            recordType = req.RecordType.Value,
+            recordTypes = new[] { req.RecordType.Value },
             recordId = (Guid?)req.RecordId,
             monitoringNgoId = (Guid?)null,
             searchText = (string?)null,
             pollingStationNumber = (string?)null,
             correctedOnly = (bool?)null,
-            level1 = (string?)null,
-            level2 = (string?)null,
-            level3 = (string?)null,
-            level4 = (string?)null,
-            level5 = (string?)null
+            level1 = Array.Empty<string>(),
+            level2 = Array.Empty<string>(),
+            level3 = Array.Empty<string>(),
+            level4 = Array.Empty<string>(),
+            level5 = Array.Empty<string>()
         };
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);

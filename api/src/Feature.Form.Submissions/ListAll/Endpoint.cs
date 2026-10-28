@@ -19,7 +19,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Policies(PolicyNames.PlatformAdminsOnly);
         Summary(s =>
         {
-            s.Summary = "Lists all form submissions in an election round with anonymized observer data (platform admins)";
+            s.Summary = "Lists all form submissions in an election round with their observer's name and email (platform admins)";
         });
     }
 
@@ -52,11 +52,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var args = new
         {
             electionRoundId = req.ElectionRoundId,
-            level1 = NullIfEmpty(req.Level1Filter),
-            level2 = NullIfEmpty(req.Level2Filter),
-            level3 = NullIfEmpty(req.Level3Filter),
-            level4 = NullIfEmpty(req.Level4Filter),
-            level5 = NullIfEmpty(req.Level5Filter),
+            level1 = NonEmpty(req.Level1Filter),
+            level2 = NonEmpty(req.Level2Filter),
+            level3 = NonEmpty(req.Level3Filter),
+            level4 = NonEmpty(req.Level4Filter),
+            level5 = NonEmpty(req.Level5Filter),
             monitoringNgoId = req.MonitoringNgoId,
             formId = req.FormId,
             isCompleted = req.IsCompleted,
@@ -72,12 +72,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         using var multi = await dbConnection.QueryMultipleAsync(sql, args);
 
         var totalCount = multi.Read<int>().Single();
-        var items = multi.Read<FormSubmissionAdminRowModel>().Select(x => x.WithMaskedObserverData()).ToList();
+        var items = multi.Read<FormSubmissionAdminRowModel>().Select(x => x.WithMaskedPhoneNumber()).ToList();
 
         return new PagedResponse<FormSubmissionAdminRowModel>(items, totalCount, req.PageNumber, req.PageSize);
     }
 
-    private static string? NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
+    /// <summary>The filter's values without the blank ones; empty means no filter.</summary>
+    private static string[] NonEmpty(string[]? values) =>
+        values?.Where(value => !string.IsNullOrWhiteSpace(value)).ToArray() ?? [];
 
     private static string GetSortExpression(string? sortColumnName, bool isAscending)
     {

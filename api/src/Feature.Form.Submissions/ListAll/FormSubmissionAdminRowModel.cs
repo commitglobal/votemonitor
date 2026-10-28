@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Models;
@@ -40,10 +40,17 @@ public record FormSubmissionAdminRowModel
 
     public bool IsCompleted { get; init; }
 
-    public FormSubmissionAdminRowModel WithMaskedObserverData() => this with
+    /// <summary>
+    /// Which of the observer's submissions of this form at this polling station this is, by creation (1 for PSI forms).
+    /// </summary>
+    public int SubmissionNumber { get; init; }
+
+    /// <summary>How many submissions of this form the observer sent from this polling station (1 for PSI forms).</summary>
+    public int SubmissionCount { get; init; }
+
+    /// <summary>Platform admins see who sent a submission (name and email), never their phone number.</summary>
+    public FormSubmissionAdminRowModel WithMaskedPhoneNumber() => this with
     {
-        ObserverName = PersonalDataMasker.MaskName(ObserverName),
-        ObserverEmail = PersonalDataMasker.MaskEmail(ObserverEmail),
         ObserverPhoneNumber = PersonalDataMasker.MaskPhoneNumber(ObserverPhoneNumber)
     };
 }

@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
@@ -19,7 +20,8 @@ public class GetEndpointTests
     public GetEndpointTests()
     {
         _repository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
-        _endpoint = Factory.Create<Get.Endpoint>(_repository);
+        _endpoint = Factory.Create<Get.Endpoint>(_repository,
+            Substitute.For<IReadRepository<PollingStationInformation>>());
     }
 
     [Fact]

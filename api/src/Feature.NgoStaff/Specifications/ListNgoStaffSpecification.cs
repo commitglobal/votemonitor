@@ -12,7 +12,7 @@ public sealed class ListNgoStaffSpecification : Specification<NgoStaffAggregate>
             .Where(x => x.NgoId == request.NgoId)
             .Include(x => x.ApplicationUser)
             .Search(x => x.ApplicationUser.DisplayName, $"%{request.SearchText?.Trim() ?? string.Empty}%", !string.IsNullOrEmpty(request.SearchText))
-            .Where(x => x.ApplicationUser.Status == request.Status, request.Status != null)
+            .Where(x => request.Status!.Contains(x.ApplicationUser.Status), request.Status is { Length: > 0 })
             .ApplyOrdering(request)
             .Paginate(request);
     }

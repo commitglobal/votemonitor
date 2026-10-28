@@ -1,6 +1,11 @@
-﻿namespace Feature.PollingStation.Information.Forms.Get;
+﻿using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
-public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
+namespace Feature.PollingStation.Information.Forms.Get;
+
+public class Endpoint(
+    IReadRepository<PollingStationInfoFormAggregate> repository,
+    IReadRepository<PollingStationInformation> submissionsRepository)
+    : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -20,6 +25,15 @@ public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repositor
         if (form is null)
         {
             return TypedResults.NotFound();
+        }
+
+        if (req.NgoId is { } ngoId)
+        {
+            form = form with
+            {
+                NumberOfSubmissions = await submissionsRepository.CountAsync(
+                    new CountNgoPollingStationInformationSpecification(req.ElectionRoundId, ngoId), ct)
+            };
         }
 
         return TypedResults.Ok(form);

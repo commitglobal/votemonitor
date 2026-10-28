@@ -21,6 +21,12 @@ public class FormSlimModel
     public required string DefaultLanguage { get; init; }
     public required string[] Languages { get; init; } = [];
     public int NumberOfQuestions { get; init; }
+
+    /// <summary>
+    /// Records sent on the form: all of them for the NGO's own forms, its own observers' for forms a coalition shares
+    /// with it (from the forms list function; 0 where a form is read another way).
+    /// </summary>
+    public int NumberOfSubmissions { get; init; }
     public required DateTime LastModifiedOn { get; init; }
 
     public string LastModifiedBy { get; init; }

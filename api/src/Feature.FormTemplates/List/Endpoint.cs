@@ -20,10 +20,14 @@ public class Endpoint(
     {
         var sql = """
                   SELECT count(*)
-                  FROM "GetFormTemplatesList"(@searchText, @type, @status);
+                  FROM "GetFormTemplatesList"(@searchText, NULL, NULL)
+                  WHERE (CARDINALITY(@types) = 0 OR "FormType" = ANY(@types))
+                    AND (CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses));
 
                   SELECT *
-                  FROM "GetFormTemplatesList"(@searchText, @type, @status)
+                  FROM "GetFormTemplatesList"(@searchText, NULL, NULL)
+                  WHERE (CARDINALITY(@types) = 0 OR "FormType" = ANY(@types))
+                    AND (CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses))
                   ORDER BY CASE
                                WHEN @sortExpression = 'Code ASC' THEN "Code"
                                END ASC,
@@ -56,8 +60,8 @@ public class Endpoint(
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
-            status = req.FormStatus?.ToString(),
-            type = req.FormTemplateType?.ToString(),
+            statuses = req.FormStatus?.Select(x => x.Value).ToArray() ?? [],
+            types = req.FormTemplateType?.Select(x => x.Value).ToArray() ?? [],
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

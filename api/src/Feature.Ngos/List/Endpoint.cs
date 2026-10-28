@@ -24,10 +24,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
         var sql = $"""
                    SELECT COUNT(*) AS COUNT
-                   FROM "GetNgoOverviews"(@searchText, @status);
+                   FROM "GetNgoOverviews"(@searchText, NULL)
+                   WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses);
 
                    SELECT *
-                   FROM "GetNgoOverviews"(@searchText, @status)
+                   FROM "GetNgoOverviews"(@searchText, NULL)
+                   WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses)
                    ORDER BY {orderBy}
                    OFFSET @offset ROWS
                    FETCH NEXT @pageSize ROWS ONLY;
@@ -36,7 +38,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         var queryArgs = new
         {
             searchText = string.IsNullOrWhiteSpace(req.SearchText) ? null : $"%{req.SearchText.Trim()}%",
-            status = req.Status?.ToString(),
+            statuses = req.Status?.Select(x => x.Value).ToArray() ?? [],
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize
         };

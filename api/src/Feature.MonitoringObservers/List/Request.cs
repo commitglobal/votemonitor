@@ -16,6 +16,7 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam]
     public string? SearchText { get; set; }
 
+    /// <summary>Only observers with any of these statuses (repeat the key for several).</summary>
     [QueryParam]
-    public MonitoringObserverStatus? Status { get; set; }
+    public MonitoringObserverStatus[]? Status { get; set; }
 }

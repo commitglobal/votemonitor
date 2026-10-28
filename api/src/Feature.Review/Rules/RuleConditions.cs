@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Feature.Review.Services;
 using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.RulesEngine.Rules;
@@ -245,6 +245,23 @@ public static class RuleConditions
         if (recordType == ReportRecordType.FormSubmission || recordType == ReportRecordType.IncidentReport)
         {
             fields["formType"] = listFields["formType"];
+        }
+
+        if (recordType != ReportRecordType.CitizenReport)
+        {
+            // Records at a polling station: its number too (citizen reports are at a location, named by its levels).
+            fields["pollingStationNumber"] = listFields["pollingStationNumber"];
+        }
+
+        if (recordType == ReportRecordType.QuickReport || recordType == ReportRecordType.IncidentReport)
+        {
+            // At a polling station, or elsewhere (quick reports: also the kind of incident).
+            fields["locationType"] = listFields["locationType"];
+        }
+
+        if (recordType == ReportRecordType.QuickReport)
+        {
+            fields["incidentCategory"] = listFields["incidentCategory"];
         }
 
         if (kind == AutomationRuleKind.Reviewer && recordType != ReportRecordType.CitizenReport)

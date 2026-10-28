@@ -19,10 +19,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     {
         var sql = """
                   SELECT COUNT(*)
-                  FROM "GetElectionRoundOverviews"(@searchText, @electionRoundStatus, @countryId);
+                  FROM "GetElectionRoundOverviews"(@searchText, NULL, NULL)
+                  WHERE (CARDINALITY(@electionRoundStatuses) = 0 OR "Status" = ANY(@electionRoundStatuses))
+                    AND (CARDINALITY(@countryIds) = 0 OR "CountryId" = ANY(@countryIds));
 
                   SELECT *
-                  FROM "GetElectionRoundOverviews"(@searchText, @electionRoundStatus, @countryId)
+                  FROM "GetElectionRoundOverviews"(@searchText, NULL, NULL)
+                  WHERE (CARDINALITY(@electionRoundStatuses) = 0 OR "Status" = ANY(@electionRoundStatuses))
+                    AND (CARDINALITY(@countryIds) = 0 OR "CountryId" = ANY(@countryIds))
                   ORDER BY CASE WHEN @sortExpression = 'Title ASC' THEN "Title" END ASC,
                            CASE WHEN @sortExpression = 'Title DESC' THEN "Title" END DESC,
                            CASE WHEN @sortExpression = 'EnglishTitle ASC' THEN "EnglishTitle" END ASC,
@@ -43,8 +47,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
-            electionroundstatus = req.ElectionRoundStatus?.ToString(),
-            countryId = req.CountryId,
+            electionRoundStatuses = req.ElectionRoundStatus?.Select(x => x.Value).ToArray() ?? [],
+            countryIds = req.CountryId ?? [],
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

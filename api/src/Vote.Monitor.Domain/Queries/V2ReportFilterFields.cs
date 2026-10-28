@@ -145,6 +145,7 @@ public static class V2ReportFilterFields
             ["level3"] = new("s.\"Level3\"", "text", FilterOperators.Set, FilterValue.String),
             ["level4"] = new("s.\"Level4\"", "text", FilterOperators.Set, FilterValue.String),
             ["level5"] = new("s.\"Level5\"", "text", FilterOperators.Set, FilterValue.String),
+            ["pollingStationNumber"] = new("s.\"Number\"", "text", FilterOperators.Text, FilterValue.String),
             ["submittedAt"] = new("s.\"TimeSubmitted\"", "timestamptz", FilterOperators.Comparison,
                 FilterValue.UtcDateTimeOffset),
             ["followUpStatus"] = new("s.\"FollowUpStatus\"", "text", FilterOperators.Set,

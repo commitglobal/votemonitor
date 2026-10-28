@@ -2,6 +2,7 @@
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Extensions;
+using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export;
@@ -82,10 +83,10 @@ public class SimplifiedAnswerWriter
                 break;
             case SingleSelectAnswer singleSelectAnswer:
                 var singleSelectQuestion = _question as SingleSelectQuestion;
-                var selectedOptionText = singleSelectQuestion!.Options
-                    .First(x => x.Id == singleSelectAnswer.Selection.OptionId).Text;
+                var selectedOption = singleSelectQuestion!.Options
+                    .First(x => x.Id == singleSelectAnswer.Selection.OptionId);
 
-                data.Add(selectedOptionText[_defaultLanguage]);
+                data.Add(Flag(selectedOption.Text[_defaultLanguage], selectedOption.IsFlagged));
 
                 if (singleSelectQuestion.Options.Any(x => x.IsFreeText))
                 {
@@ -96,12 +97,12 @@ public class SimplifiedAnswerWriter
             case MultiSelectAnswer multiSelectAnswer:
                 var multiSelectQuestion = _question as MultiSelectQuestion;
                 var selectedOptionIds = multiSelectAnswer.Selection.Select(x => x.OptionId);
-                var optionTexts = multiSelectQuestion!.Options.Where(x => selectedOptionIds.Contains(x.Id))
-                    .Select(x => x.Text[_defaultLanguage]);
+                var selectedOptions = multiSelectQuestion!.Options.Where(x => selectedOptionIds.Contains(x.Id)).ToList();
+                var optionTexts = selectedOptions.Select(x => x.Text[_defaultLanguage]);
 
                 var freeTexts = multiSelectAnswer.Selection.Select(x => x.Text).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-                data.Add(string.Join(",", optionTexts));
+                data.Add(Flag(string.Join(",", optionTexts), selectedOptions.Any(x => x.IsFlagged)));
 
                 if (multiSelectQuestion.Options.Any(x => x.IsFreeText))
                 {
@@ -118,6 +119,9 @@ public class SimplifiedAnswerWriter
         _submissionsAttachments.Add(submissionId, attachments.Select(x => x.PresignedUrl).ToList());
     }
 
+
+    /// <summary>Marks the cell of an answer that picks a flagged option, so the workbook colours it.</summary>
+    private static string Flag(string text, bool isFlagged) => isFlagged ? ColorMarkers.Red + text : text;
 
     public List<object> Write(Guid submissionId)
     {
