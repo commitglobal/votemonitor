@@ -1,3 +1,4 @@
+using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -400,7 +401,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
         [
             [.. GetDefaultExpectedColumns(submission1), Option1Text, null, "", ""],
             [.. GetDefaultExpectedColumns(submission2), Option2Text, null, "", JoinedAttachments],
-            [.. GetDefaultExpectedColumns(submission3), Option3Text, null, JoinedNotes, ""],
+            [.. GetDefaultExpectedColumns(submission3), ColorMarkers.Red + Option3Text, null, JoinedNotes, ""],
             [.. GetDefaultExpectedColumns(submission4), Option4Text, "some free text", JoinedNotes, JoinedAttachments],
         ];
 
@@ -474,13 +475,13 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
         [
             [
                 .. GetDefaultExpectedColumns(submission1),
-                string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", "", ""
+                ColorMarkers.Red + string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", "", ""
             ],
             [
                 .. GetDefaultExpectedColumns(submission2), Option4Text, "some written text", "", JoinedAttachments
             ],
             [
-                .. GetDefaultExpectedColumns(submission3), string.Join(",", Option2Text, Option3Text), "", JoinedNotes, ""
+                .. GetDefaultExpectedColumns(submission3), ColorMarkers.Red + string.Join(",", Option2Text, Option3Text), "", JoinedNotes, ""
             ],
             [
                 .. GetDefaultExpectedColumns(submission4), string.Join(",", Option1Text, Option4Text), "some free text",
@@ -590,7 +591,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
             [Option4Text, "user written text", JoinedNotes, JoinedAttachments];
         object[] expectedMultiSelectAnswerColumns =
         [
-            string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", JoinedNotes,
+            ColorMarkers.Red + string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), "user written text", JoinedNotes,
             JoinedAttachments
         ];
 
