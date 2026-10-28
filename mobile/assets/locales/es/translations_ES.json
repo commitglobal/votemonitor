@@ -485,6 +485,9 @@
       "max": "El campo debe tener un máximo de {{value}} caracteres",
       "required": "Este campo es obligatorio",
       "date_placeholder": "Por favor, ingresa una fecha",
+      "time_placeholder": "Por favor, ingresa una hora",
+      "datetime_placeholder": "Por favor, ingresa una fecha y hora",
+      "unsupported_question": "Esta pregunta requiere una versión más reciente de la aplicación. Actualiza la aplicación para responderla.",
       "text_placeholder": "Por favor, ingresa un texto"
     },
     "save_and_continue": "Guardar y continuar",

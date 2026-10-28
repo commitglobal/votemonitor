@@ -486,6 +486,9 @@
       "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
       "required": "Acest câmp este obligatoriu",
       "date_placeholder": "Te rugăm să introduci data",
+      "time_placeholder": "Te rugăm să introduci ora",
+      "datetime_placeholder": "Te rugăm să introduci data și ora",
+      "unsupported_question": "Această întrebare necesită o versiune mai nouă a aplicației. Actualizează aplicația ca să poți răspunde.",
       "text_placeholder": "Te rugăm să introduci un text"
     },
     "save_and_continue": "Salvează și continuă",

@@ -254,7 +254,13 @@ const DeleteFormSubmission = () => {
       {
         onSuccess: () => {
           setShowWarningModal(false);
-          router.push(`/multi-submission-form-details/${formId}?language=${language}`);
+          // leave this preview: back to the form's submissions it was opened from, so back from there doesn't
+          // return to a deleted submission
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace(`/multi-submission-form-details/${formId}?language=${language}`);
+          }
         },
       },
     );

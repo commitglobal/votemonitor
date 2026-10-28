@@ -486,6 +486,9 @@
             "max": "Das Feld darf maximal {{value}} Zeichen enthalten.",
             "required": "Dieses Feld ist ein Pflichtfeld.",
             "date_placeholder": "Bitte geben Sie ein Datum ein.",
+            "time_placeholder": "Bitte geben Sie eine Uhrzeit ein.",
+            "datetime_placeholder": "Bitte geben Sie Datum und Uhrzeit ein.",
+            "unsupported_question": "Für diese Frage ist eine neuere Version der App erforderlich. Aktualisieren Sie die App, um sie zu beantworten.",
             "text_placeholder": "Bitte geben Sie einen Text ein."
         },
         "save_and_continue": "Speichern und fortfahren",

@@ -483,6 +483,9 @@
       "max": "Sütunun maksimum {{value}} simvolu olmalıdır",
       "required": "Bu sahə tələb olunur",
       "date_placeholder": "Xahiş edirik tarixi qeyd edin",
+      "time_placeholder": "Xahiş edirik vaxtı qeyd edin",
+      "datetime_placeholder": "Xahiş edirik tarixi və vaxtı qeyd edin",
+      "unsupported_question": "Bu sual tətbiqin daha yeni versiyasını tələb edir. Cavab vermək üçün tətbiqi yeniləyin.",
       "text_placeholder": "Xahiş edirik mətni qeyd edin"
     },
     "save_and_continue": "Yadda saxlayın və davam edin",
