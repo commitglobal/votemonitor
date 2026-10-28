@@ -56,7 +56,7 @@ public static class CacheExtensions
                         nameof(configuration));
                 }
                 
-                var muxer = ConnectionMultiplexer.Connect("localhost:6379");
+                var muxer = ConnectionMultiplexer.Connect(connectionString);
 
                 fusionCache
                     // IncludeFields lets FusionCache serialize the value tuples it uses internally.
