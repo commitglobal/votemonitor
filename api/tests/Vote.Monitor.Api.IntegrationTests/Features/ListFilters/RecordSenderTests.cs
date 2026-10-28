@@ -155,6 +155,61 @@ public class RecordSenderTests : BaseApiTestFixture
         oldestFirst.Select(row => row.GetProperty("submissionNumber").GetInt32()).Should().Equal(2);
     }
 
+    [Test]
+    public void SubmissionsList_ShouldNumberAnObserversSubmissionsAtTheSamePollingStation()
+    {
+        var admin = _scenarioData.AdminOfNgo(ScenarioNgos.Alfa);
+        var url = $"{ElectionRoundUrl}/form-submissions:byEntryV2";
+
+        var rows = admin.PostWithResponse<PagedResponse<JsonElement>>(url, new { PageSize = 100 }).Items
+            .ToDictionary(row => row.GetProperty("submissionId").GetGuid());
+
+        rows[_iasiFirstId].GetProperty("submissionNumber").GetInt32().Should().Be(1);
+        rows[_iasiSecondId].GetProperty("submissionNumber").GetInt32().Should().Be(2);
+        rows[_iasiFirstId].GetProperty("submissionCount").GetInt32().Should().Be(2);
+        rows[_bacauSubmissionId].GetProperty("submissionNumber").GetInt32().Should().Be(1);
+        rows[_bacauSubmissionId].GetProperty("submissionCount").GetInt32().Should().Be(1);
+
+        // Counted over all of the observer's submissions: a page holding only the second keeps its number.
+        var page = admin.PostWithResponse<PagedResponse<JsonElement>>(url, new { PageSize = 1, SortColumnName = "TimeSubmitted", SortOrder = "Desc" }).Items;
+        page.Single().GetProperty("submissionId").GetGuid().Should().Be(_iasiSecondId);
+        page.Single().GetProperty("submissionNumber").GetInt32().Should().Be(2);
+    }
+
+    [Test]
+    public void EverySubmissionView_ShouldCountTheObserversSubmissionsAtTheSamePollingStation()
+    {
+        var corrections = Rows($"{ElectionRoundUrl}/polling-station-corrections:records?pageSize=100").ToDictionary(Id);
+        corrections[_iasiSecondId].GetProperty("submissionCount").GetInt32().Should().Be(2);
+        corrections[_bacauSubmissionId].GetProperty("submissionCount").GetInt32().Should().Be(1);
+        // Not a form submission: no count (null values are left out of the response).
+        corrections[_quickReportId].TryGetProperty("submissionCount", out var quickReportCount).Should().BeFalse(quickReportCount.ToString());
+
+        var all = Rows($"{ElectionRoundUrl}/form-submissions:all?pageSize=100").ToDictionary(row => row.GetProperty("submissionId").GetGuid());
+        all[_iasiFirstId].GetProperty("submissionCount").GetInt32().Should().Be(2);
+        all[_bacauSubmissionId].GetProperty("submissionCount").GetInt32().Should().Be(1);
+
+        var admin = _scenarioData.AdminOfNgo(ScenarioNgos.Alfa);
+        var second = admin.GetResponse<JsonElement>($"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:v2");
+        second.GetProperty("submissionNumber").GetInt32().Should().Be(2);
+        second.GetProperty("submissionCount").GetInt32().Should().Be(2);
+        var bacau = admin.GetResponse<JsonElement>($"{ElectionRoundUrl}/form-submissions/{_bacauSubmissionId}:v2");
+        bacau.GetProperty("submissionNumber").GetInt32().Should().Be(1);
+        bacau.GetProperty("submissionCount").GetInt32().Should().Be(1);
+    }
+
+    [Test]
+    public void FormsList_ShouldCountEachFormsSubmissions()
+    {
+        var admin = _scenarioData.AdminOfNgo(ScenarioNgos.Alfa);
+        var formId = _scenarioData.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa).FormId;
+
+        var forms = admin.GetResponse<List<JsonElement>>($"{ElectionRoundUrl}/forms:listAll");
+
+        forms.Single(form => form.GetProperty("id").GetGuid() == formId)
+            .GetProperty("numberOfSubmissions").GetInt32().Should().Be(3);
+    }
+
     private List<JsonElement> Rows(string url) =>
         _scenarioData.PlatformAdmin.GetResponse<PagedResponse<JsonElement>>(url).Items;
 

@@ -1,4 +1,4 @@
-namespace Feature.PollingStationCorrections.Models;
+﻿namespace Feature.PollingStationCorrections.Models;
 
 /// <summary>Metadata of a record a platform admin can move to another polling station. Never what was reported.</summary>
 public record CorrectableRecordModel
@@ -13,6 +13,9 @@ public record CorrectableRecordModel
     /// (1 for PSI forms); null for quick reports and incident reports.
     /// </summary>
     public required int? SubmissionNumber { get; init; }
+
+    /// <summary>For form submissions, how many submissions of that form the observer sent from that polling station; null otherwise.</summary>
+    public int? SubmissionCount { get; init; }
 
     public required string NgoName { get; init; }
     public required string? FormCode { get; init; }

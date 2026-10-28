@@ -62,4 +62,11 @@ public record FormSubmissionEntry
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
 
     public bool IsCompleted { get; set; }
+
+    /// <summary>
+    /// Which of the observer's submissions of this form at this polling station this is (1 = the first, by creation time),
+    /// and how many there are; the same numbering as the export.
+    /// </summary>
+    public int SubmissionNumber { get; init; } = 1;
+    public int SubmissionCount { get; init; } = 1;
 }

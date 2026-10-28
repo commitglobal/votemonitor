@@ -11,6 +11,12 @@ public record PollingStationInformationFormModel
     public string DefaultLanguage { get; init; }
     public List<string> Languages { get; init; } = [];
 
+    /// <summary>
+    /// How many polling station information records the caller's NGO's observers sent, as the forms list counts its
+    /// forms; null when an NGO user didn't ask (platform admins, observers).
+    /// </summary>
+    public int? NumberOfSubmissions { get; init; }
+
     public static PollingStationInformationFormModel FromEntity(PollingStationInfoFormAggregate entity) => new()
     {
         Id = entity.Id,

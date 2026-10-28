@@ -1,4 +1,4 @@
-namespace Feature.PollingStationCorrections.Models;
+﻿namespace Feature.PollingStationCorrections.Models;
 
 internal record CorrectableRecordRow
 {
@@ -7,6 +7,7 @@ internal record CorrectableRecordRow
     public string? ObserverName { get; init; }
     public string? ObserverEmail { get; init; }
     public int? SubmissionNumber { get; init; }
+    public int? SubmissionCount { get; init; }
     public string NgoName { get; init; } = string.Empty;
     public string? FormCode { get; init; }
     public string? FormName { get; init; }
@@ -28,6 +29,7 @@ internal record CorrectableRecordRow
         ObserverName = ObserverName ?? string.Empty,
         ObserverEmail = ObserverEmail,
         SubmissionNumber = SubmissionNumber,
+        SubmissionCount = SubmissionCount,
         NgoName = NgoName,
         FormCode = FormCode,
         FormName = FormName,
