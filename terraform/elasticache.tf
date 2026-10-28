@@ -4,7 +4,7 @@ resource "aws_elasticache_cluster" "main" {
   node_type            = "cache.t4g.micro"
   num_cache_nodes      = 1
   parameter_group_name = "default.valkey9"
-  engine_version       = "7.0"
+  engine_version       = "9.0"
   port                 = 6379
   subnet_group_name    = aws_elasticache_subnet_group.elasticache_subnet_group.name
   security_group_ids   = [aws_security_group.elasticache.id]
