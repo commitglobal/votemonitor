@@ -36,7 +36,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                            CASE WHEN @sortExpression = 'IsAccountVerified ASC' THEN "IsAccountVerified" END ASC,
                            CASE WHEN @sortExpression = 'IsAccountVerified DESC' THEN "IsAccountVerified" END DESC,
                            CASE WHEN @sortExpression = 'MonitoredElections ASC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END ASC,
-                           CASE WHEN @sortExpression = 'MonitoredElections DESC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END DESC
+                           CASE WHEN @sortExpression = 'MonitoredElections DESC' THEN JSONB_ARRAY_LENGTH("MonitoredElections") END DESC,
+                           -- ties (every row of one status, say) keep a stable order across pages
+                           "FirstName", "LastName", "Id"
                   OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                   """;
 
