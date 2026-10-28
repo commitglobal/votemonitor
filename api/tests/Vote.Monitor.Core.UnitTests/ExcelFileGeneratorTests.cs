@@ -34,7 +34,7 @@ public class ExcelFileGeneratorTests
 
         row.GetCell(0).StringCellValue.Should().Be("Yes");
         row.GetCell(0).CellStyle.FillPattern.Should().Be(FillPattern.SolidForeground);
-        row.GetCell(0).CellStyle.FillForegroundColor.Should().Be(IndexedColors.Rose.Index);
+        row.GetCell(0).CellStyle.FillForegroundColor.Should().Be(IndexedColors.Red.Index);
         row.GetCell(1).CellStyle.FillPattern.Should().Be(FillPattern.NoFill);
     }
 }
