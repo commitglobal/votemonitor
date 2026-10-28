@@ -78,7 +78,7 @@ export const fromTimeOfDay = (value: string) => {
  */
 const matchesSelectCondition = (
   picked: string[],
-  logic: { condition: DisplayLogicCondition; optionIds?: string[] | null },
+  logic: { condition: DisplayLogicCondition; value?: string | null; optionIds?: string[] | null },
 ) => {
   const targets = logic.optionIds ?? [];
   switch (logic.condition) {
@@ -87,7 +87,8 @@ const matchesSelectCondition = (
     case "All":
       return targets.length > 0 && targets.every((id) => picked.includes(id));
     default:
-      return true;
+      // older rules name a single option in value: shown when that option is picked
+      return !!logic.value && picked.includes(logic.value);
   }
 };
 
