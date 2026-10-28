@@ -292,4 +292,31 @@ public class SeverityRuleTests : BaseApiTestFixture
         alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{cluj}").Severity
             .Should().Be("None");
     }
+
+    [Test]
+    public void QuickReportRulesCanUseTheirLocationTypeIncidentTypeAndStationNumber()
+    {
+        var (data, _, _) = CoalitionScenario();
+        var alfa = data.NgoByName(ScenarioNgos.Alfa);
+        var er = data.ElectionRoundId;
+        // The test quick reports are about "Other" incidents at a visited polling station.
+        CreateRule(alfa.Admin, er, Rule("Other at stations", "High", Where(
+            new { field = "locationType", op = "in", values = new[] { "VisitedPollingStation" } },
+            new { field = "incidentCategory", op = "in", values = new[] { "Other" } }), ["QuickReport"]));
+        CreateRule(alfa.Admin, er, Rule("Violence", "Urgent", Where(
+            new { field = "incidentCategory", op = "in", values = new[] { "PhysicalViolenceIntimidationPressure" } }), ["QuickReport"]));
+
+        // Quick report fields aren't form submission fields.
+        Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("Wrong kind", "High", Where(
+                new { field = "incidentCategory", op = "in", values = new[] { "Other" } }))))
+            .Should().ContainSingle(x => x.Name == "conditions");
+        // Every record at a polling station can be matched by its number.
+        CreateRule(alfa.Admin, er, Rule("Station number", "Low", Where(
+            new { field = "pollingStationNumber", op = "eq", value = "no such station" }), ["FormSubmission", "QuickReport", "IncidentReport"]));
+
+        data.ElectionRound.WithQuickReport(ScenarioObserver.Alice, ScenarioPollingStation.Iasi);
+        var report = data.ElectionRound.GetQuickReportId(ScenarioObserver.Alice, ScenarioPollingStation.Iasi);
+        alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{report}").Severity
+            .Should().Be("High");
+    }
 }
