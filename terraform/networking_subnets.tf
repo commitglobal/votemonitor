@@ -33,3 +33,11 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   }
 }
 
+resource "aws_elasticache_subnet_group" "elasticache_subnet_group" {
+  name       = "${local.namespace}-elasticache-private"
+  subnet_ids = aws_subnet.private.*.id
+
+  tags = {
+    access = "private"
+  }
+}

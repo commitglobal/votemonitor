@@ -1,14 +1,15 @@
 terraform {
-  required_version = "~> 1.5"
+  required_version = "~> 1.17"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.16"
+      version = "~> 5.100"
     }
   }
 
   cloud {
+    hostname     = "terrakube-api.serval-mark.ts.net"
     organization = "commitglobal"
 
     workspaces {

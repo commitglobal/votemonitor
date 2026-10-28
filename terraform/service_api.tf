@@ -108,6 +108,14 @@ module "ecs_api" {
       name  = "PushNotifications__Expo__BatchSize"
       value = "75"
     },
+    {
+      name  = "Cache__CacheType"
+      value = "Redis"
+    },
+    {
+      name  = "Cache__Redis__ConnectionString"
+      value = "redis://${aws_elasticache_cluster.main.cache_nodes.0.address}:${aws_elasticache_cluster.main.cache_nodes.0.port}"
+    },
   ]
 
   secrets = [
