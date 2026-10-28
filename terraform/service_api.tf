@@ -114,7 +114,7 @@ module "ecs_api" {
     },
     {
       name  = "Cache__Redis__ConnectionString"
-      value = "redis://${aws_elasticache_cluster.main.cache_nodes.0.address}:${aws_elasticache_cluster.main.cache_nodes.0.port}"
+      value = "redis://${aws_elasticache_replication_group.main.primary_endpoint_address}:${aws_elasticache_replication_group.main.port}"
     },
   ]
 
