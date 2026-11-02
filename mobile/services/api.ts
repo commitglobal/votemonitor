@@ -151,7 +151,8 @@ API.interceptors.response.use(
       return handleTokenRefresh(originalRequest);
     }
 
-    console.log("❌ [API FAILED] Error", error);
+    // console output becomes a Sentry breadcrumb in release builds: keep it to development
+    if (__DEV__) console.log("❌ [API FAILED] Error", error);
     reportApiError(error);
 
     throw error;
@@ -163,6 +164,20 @@ const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 // Replace ids so the same endpoint is grouped into a single Sentry issue
 const normalizeUrl = (url?: string) =>
   (url ?? "").split("?")[0].replace(UUID_REGEX, "{id}").replace(/^\//, "");
+
+/**
+ * Not found (e.g. a round without citizen reporting forms), timeouts and requests without a response (no
+ * connectivity) are expected on observers' phones, and the queries retry them: reporting each one only buries real
+ * errors. Sentry's beforeSend drops them wherever they're captured.
+ */
+export const isExpectedApiError = (error: unknown) => {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    return status === 404 || (!status && !!error.request);
+  }
+  // fetch (uploads, push tokens) without connectivity
+  return error instanceof TypeError && error.message === "Network request failed";
+};
 
 const reportApiError = (error: AxiosError) => {
   if (axios.isCancel(error)) {
@@ -178,23 +193,19 @@ const reportApiError = (error: AxiosError) => {
     return;
   }
 
-  let title: string;
-  let level: Sentry.SeverityLevel;
+  if (isExpectedApiError(error)) {
+    return;
+  }
 
-  if (status) {
-    // The server responded with an error status
-    title = `API ${status} ${method} ${url}`;
-    level = status >= 500 ? "error" : "warning";
-  } else if (error.request) {
-    // No response: timeout or no connectivity
-    const isTimeout = error.code === "ECONNABORTED" || error.code === "ETIMEDOUT";
-    title = `API ${isTimeout ? "timeout" : "network error"} ${method} ${url}`;
-    level = "warning";
-  } else {
+  if (!status) {
     // The request could not be created
     Sentry.captureException(error);
     return;
   }
+
+  // The server responded with an error status
+  const title = `API ${status} ${method} ${url}`;
+  const level: Sentry.SeverityLevel = status >= 500 ? "error" : "warning";
 
   const apiError = new Error(title);
   apiError.name = "ApiError";

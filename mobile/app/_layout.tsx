@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react-native";
+import { isExpectedApiError } from "../services/api";
 import { TamaguiProvider } from "@tamagui/core";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
@@ -50,6 +51,8 @@ Sentry.init({
   // We recommend adjusting this value in production
   tracesSampleRate: process.env.EXPO_PUBLIC_ENVIRONMENT === "production" ? 0.2 : 0,
   integrations: [Sentry.reactNativeTracingIntegration()],
+  // 404s, timeouts and lost connectivity are expected (see isExpectedApiError)
+  beforeSend: (event, hint) => (isExpectedApiError(hint.originalException) ? null : event),
 });
 
 SplashScreen.preventAutoHideAsync();
