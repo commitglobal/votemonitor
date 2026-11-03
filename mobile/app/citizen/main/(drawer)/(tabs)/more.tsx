@@ -40,7 +40,7 @@ export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: Men
 );
 
 const More = () => {
-  const { t, i18n } = useTranslation(["more", "languages", "common", "settings"]);
+  const { t, i18n } = useTranslation(["more", "languages", "common", "dateTimeFormatSettings"]);
   const { is24Hour, dateFormat } = useDateTimeFormat();
 
   const navigation = useNavigation();
@@ -80,7 +80,7 @@ const More = () => {
           icon="clock"
           chevronRight={true}
           onClick={() => router.push("/citizen/main/date-time-settings")}
-          helper={`${is24Hour ? t("time_format.24h", { ns: "settings" }) : t("time_format.12h", { ns: "settings" })} · ${getDateFormatLabel(dateFormat)}`}
+          helper={`${is24Hour ? t("time_format.24h", { ns: "dateTimeFormatSettings" }) : t("time_format.12h", { ns: "dateTimeFormatSettings" })} · ${getDateFormatLabel(dateFormat)}`}
         ></MoreMenuItem>
         <MoreMenuItem
           label={t("terms")}

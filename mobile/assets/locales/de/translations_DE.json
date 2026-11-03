@@ -787,7 +787,7 @@
             "p2": "Schauen Sie regelmäßig nach, ob Sie neue Informationen erhalten haben."
         }
     },
-    "settings": {
+    "dateTimeFormatSettings": {
         "title": "Zeit- und Datumseinstellungen",
         "time_format": {
             "title": "Zeitformat",

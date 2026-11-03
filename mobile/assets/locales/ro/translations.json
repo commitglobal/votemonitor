@@ -787,7 +787,7 @@
       "p2": "Verifică periodic pentru a vedea dacă ai primit informații noi."
     }
   },
-  "settings": {
+  "dateTimeFormatSettings": {
     "title": "Setări de oră și dată",
     "time_format": {
       "title": "Format oră",

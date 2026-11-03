@@ -784,7 +784,7 @@
       "p2": "Hər hansı yeni məlumat alıb-almadığınızı yoxlamaq üçün vaxtaşırı yoxlayın."
     }
   },
-  "settings": {
+  "dateTimeFormatSettings": {
     "title": "Vaxt və tarix parametrləri",
     "time_format": {
       "title": "Vaxt formatı",

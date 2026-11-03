@@ -791,7 +791,7 @@
       "p2": "Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
     }
   },
-  "settings": {
+  "dateTimeFormatSettings": {
     "title": "Ustawienia godziny i daty",
     "time_format": {
       "title": "Format godziny",

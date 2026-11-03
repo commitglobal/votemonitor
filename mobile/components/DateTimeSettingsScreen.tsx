@@ -35,7 +35,7 @@ const SettingsOption = ({ label, example, selected, onPress }: SettingsOptionPro
 );
 
 const DateTimeSettingsScreen = () => {
-  const { t } = useTranslation("settings");
+  const { t } = useTranslation("dateTimeFormatSettings");
   const { is24Hour, setIs24Hour, dateFormat, setDateFormat } = useDateTimeFormat();
 
   // a fixed afternoon shows the difference between the 12 and 24-hour clocks

@@ -787,7 +787,7 @@
       "p2": "Check back periodically to see if you have received any new information."
     }
   },
-  "settings": {
+  "dateTimeFormatSettings": {
     "title": "Time and date settings",
     "time_format": {
       "title": "Time format",

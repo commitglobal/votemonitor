@@ -787,7 +787,7 @@
             "p2": "Verifique periodicamente para ver se você recebeu alguma informação nova."
         }
     },
-    "settings": {
+    "dateTimeFormatSettings": {
         "title": "Configurações de hora e data",
         "time_format": {
             "title": "Formato de hora",

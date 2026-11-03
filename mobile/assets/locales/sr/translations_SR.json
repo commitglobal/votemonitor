@@ -784,7 +784,7 @@
       "p2": "Proveravajte periodično da li ste primili nove informacije."
     }
   },
-  "settings": {
+  "dateTimeFormatSettings": {
     "title": "Podešavanja vremena i datuma",
     "time_format": {
       "title": "Format vremena",
