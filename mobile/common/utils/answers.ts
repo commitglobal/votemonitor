@@ -1,4 +1,11 @@
-import { format } from "date-fns";
+import {
+  DateFormat,
+  DEFAULT_DATE_FORMAT,
+  formatDate,
+  formatDayIso,
+  formatTime,
+  formatTimeOfDay,
+} from "./time";
 import { ApiFormAnswer } from "../../services/interfaces/answer.type";
 
 /**
@@ -6,8 +13,8 @@ import { ApiFormAnswer } from "../../services/interfaces/answer.type";
  *
  * @param {ApiFormAnswer} answer - The ApiFormAnswer object to get the display string for.
  * depending on the answer type, the value has a different key
- *  type date -> date (the day only)
- *  type time -> time ("HH:mm")
+ *  type date -> date (the day only), shown in the chosen date format
+ *  type time -> time ("HH:mm:ss"), shown in the chosen clock format
  *  type dateTime -> dateTime
  *  type text -> text
  *  type number -> value
@@ -17,17 +24,27 @@ import { ApiFormAnswer } from "../../services/interfaces/answer.type";
  * @return {string} The display string for the given ApiFormAnswer object.
  */
 
-export const getAnswerDisplay = (answer: ApiFormAnswer, displaySingleSelectOtherText?: boolean) => {
+export const getAnswerDisplay = (
+  answer: ApiFormAnswer,
+  displaySingleSelectOtherText?: boolean,
+  formats: { is24Hour: boolean; dateFormat: DateFormat } = {
+    is24Hour: true,
+    dateFormat: DEFAULT_DATE_FORMAT,
+  },
+) => {
   if (!answer) return "";
 
   switch (answer.$answerType) {
     case "dateAnswer":
       // a calendar day: shown as received, without a time or a time zone shift
-      return answer.date?.slice(0, 10) ?? "";
+      return answer.date ? formatDayIso(answer.date, formats.dateFormat) : "";
     case "timeAnswer":
-      return answer.time?.slice(0, 5) ?? "";
-    case "dateTimeAnswer":
-      return answer.dateTime ? format(new Date(answer.dateTime), "yyyy-MM-dd HH:mm") : "";
+      return answer.time ? formatTimeOfDay(answer.time, formats.is24Hour) : "";
+    case "dateTimeAnswer": {
+      if (!answer.dateTime) return "";
+      const dateTime = new Date(answer.dateTime);
+      return `${formatDate(dateTime, formats.dateFormat)} ${formatTime(dateTime, formats.is24Hour)}`;
+    }
     case "textAnswer":
       return answer.text;
     case "singleSelectAnswer":

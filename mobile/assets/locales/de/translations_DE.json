@@ -787,9 +787,21 @@
             "p2": "Schauen Sie regelmäßig nach, ob Sie neue Informationen erhalten haben."
         }
     },
+    "settings": {
+        "title": "Zeit- und Datumseinstellungen",
+        "time_format": {
+            "title": "Zeitformat",
+            "24h": "24-Stunden",
+            "12h": "12-Stunden"
+        },
+        "date_format": {
+            "title": "Datumsformat"
+        }
+    },
     "more": {
         "title": "Mehr",
         "change-language": "App-Sprache ändern",
+        "date_time_settings": "Zeit- und Datumseinstellungen",
         "change-password": "Passwort ändern",
         "terms": "Allgemeine Geschäftsbedingungen",
         "privacy_policy": "Datenschutzerklärung",

@@ -787,9 +787,21 @@
       "p2": "Verifică periodic pentru a vedea dacă ai primit informații noi."
     }
   },
+  "settings": {
+    "title": "Setări de oră și dată",
+    "time_format": {
+      "title": "Format oră",
+      "24h": "24 de ore",
+      "12h": "12 ore"
+    },
+    "date_format": {
+      "title": "Format dată"
+    }
+  },
   "more": {
     "title": "Altele",
     "change-language": "Schimbă limba aplicației",
+    "date_time_settings": "Setări de oră și dată",
     "change-password": "Schimbă parola",
     "terms": "Termeni și Condiții",
     "privacy_policy": "Politica de Confidențialitate",

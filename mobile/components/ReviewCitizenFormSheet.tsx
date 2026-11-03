@@ -35,6 +35,7 @@ import {
   useUploadS3ChunkMutation,
 } from "../services/mutations/attachments/add-attachment.mutation";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { AttachmentData } from "../services/api/add-attachment.api";
 
@@ -72,6 +73,7 @@ export default function ReviewCitizenFormSheet({
 }) {
   const cancelRef = useRef<boolean>(false);
   const { t } = useTranslation("citizen_form");
+  const dateTimeFormat = useDateTimeFormat();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { isOnline } = useNetInfoContext();
@@ -403,7 +405,11 @@ export default function ReviewCitizenFormSheet({
                       <Typography fontWeight="500">{question.text[language]}</Typography>
                       {mappedAnswers && mappedAnswers[question.id] && (
                         <Typography marginTop="$xs" color="$gray5">
-                          {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+                          {getAnswerDisplay(
+                            mappedAnswers[question.id] as ApiFormAnswer,
+                            true,
+                            dateTimeFormat,
+                          )}
                         </Typography>
                       )}
                       {attachments && attachments[question.id] ? (

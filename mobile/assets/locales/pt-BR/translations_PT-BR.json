@@ -787,9 +787,21 @@
             "p2": "Verifique periodicamente para ver se você recebeu alguma informação nova."
         }
     },
+    "settings": {
+        "title": "Configurações de hora e data",
+        "time_format": {
+            "title": "Formato de hora",
+            "24h": "24 horas",
+            "12h": "12 horas"
+        },
+        "date_format": {
+            "title": "Formato de data"
+        }
+    },
     "more": {
         "title": "Mais",
         "change-language": "Alterar o idioma do aplicativo",
+        "date_time_settings": "Configurações de hora e data",
         "change-password": "Alterar senha",
         "terms": "Termos e Condições",
         "privacy_policy": "Política de Privacidade",

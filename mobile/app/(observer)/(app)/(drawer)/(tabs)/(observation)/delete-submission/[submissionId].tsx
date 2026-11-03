@@ -12,6 +12,7 @@ import { Screen } from "../../../../../../../components/Screen";
 import { Typography } from "../../../../../../../components/Typography";
 import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 import { useUserData } from "../../../../../../../contexts/user/UserContext.provider";
+import { useDateTimeFormat } from "../../../../../../../contexts/date-time-format/DateTimeFormatContext.provider";
 import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
 import {
   ApiFormAnswer,
@@ -34,6 +35,7 @@ type SearchParamsType = {
 
 const DeleteFormSubmission = () => {
   const { t } = useTranslation(["delete_submission", "common"]);
+  const dateTimeFormat = useDateTimeFormat();
   const { formId, submissionId, language, submissionNumber } =
     useLocalSearchParams<SearchParamsType>();
   const { isOnline } = useNetInfoContext();
@@ -329,7 +331,11 @@ const DeleteFormSubmission = () => {
             </Typography>
             {mappedAnswers && mappedAnswers[question.id] && (
               <Typography marginTop="$xs" color="$gray5">
-                {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+                {getAnswerDisplay(
+                  mappedAnswers[question.id] as ApiFormAnswer,
+                  true,
+                  dateTimeFormat,
+                )}
               </Typography>
             )}
             {attachments && attachments[question.id] ? (

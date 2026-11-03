@@ -784,9 +784,21 @@
       "p2": "Hər hansı yeni məlumat alıb-almadığınızı yoxlamaq üçün vaxtaşırı yoxlayın."
     }
   },
+  "settings": {
+    "title": "Vaxt və tarix parametrləri",
+    "time_format": {
+      "title": "Vaxt formatı",
+      "24h": "24 saatlıq",
+      "12h": "12 saatlıq"
+    },
+    "date_format": {
+      "title": "Tarix formatı"
+    }
+  },
   "more": {
     "title": "Daha artıq",
     "change-language": "Aplikasiya dilinin dəyişdirilməsi",
+    "date_time_settings": "Vaxt və tarix parametrləri",
     "change-password": "Parolun dəyişdirilməsi",
     "terms": "Qaydalar və şərtlər",
     "privacy_policy": "Gizlilik siyasəti",

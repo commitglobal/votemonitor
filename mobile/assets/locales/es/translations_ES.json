@@ -786,9 +786,21 @@
       "p2": "Revisa periódicamente para ver si has recibido nueva información."
     }
   },
+  "settings": {
+    "title": "Ajustes de hora y fecha",
+    "time_format": {
+      "title": "Formato de hora",
+      "24h": "24 horas",
+      "12h": "12 horas"
+    },
+    "date_format": {
+      "title": "Formato de fecha"
+    }
+  },
   "more": {
     "title": "Más",
     "change-language": "Cambiar idioma de la app",
+    "date_time_settings": "Ajustes de hora y fecha",
     "change-password": "Cambiar contraseña",
     "terms": "Términos y condiciones",
     "privacy_policy": "Política de privacidad",

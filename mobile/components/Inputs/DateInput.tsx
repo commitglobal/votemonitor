@@ -11,6 +11,8 @@ import Button from "../Button";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import useAnimatedKeyboardPadding from "../../hooks/useAnimatedKeyboardPadding";
+import { useDateTimeFormat } from "../../contexts/date-time-format/DateTimeFormatContext.provider";
+import { getPickerLocale } from "../../common/utils/time";
 
 export type DateInputMode = "date" | "time" | "datetime";
 
@@ -25,15 +27,15 @@ export interface DateInputProps extends XStackProps {
   error?: string;
 }
 
-const formatDay = (value: Date) =>
-  value.toLocaleDateString(["en-GB"], { month: "2-digit", day: "2-digit", year: "numeric" });
-const formatTime = (value: Date) =>
-  value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-const formatValue = (value: Date, mode: DateInputMode) => {
-  if (mode === "date") return formatDay(value);
+const formatValue = (
+  value: Date,
+  mode: DateInputMode,
+  formatDate: (value: Date) => string,
+  formatTime: (value: Date) => string,
+) => {
+  if (mode === "date") return formatDate(value);
   if (mode === "time") return formatTime(value);
-  return `${formatDay(value)} - ${formatTime(value)}`;
+  return `${formatDate(value)} - ${formatTime(value)}`;
 };
 
 export const DateInput: React.FC<DateInputProps> = ({
@@ -52,7 +54,8 @@ export const DateInput: React.FC<DateInputProps> = ({
   // on ios we use a temporary date, as the onChange function gets triggered every time the user picks a new date
   // therefore, we will update the FINAL date state (that comes from the outside), only onDonePress
   const [tempDate, setTempDate] = useState(value || new Date());
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
+  const { is24Hour, formatDate, formatTime } = useDateTimeFormat();
 
   const handleSheetOpen = () => {
     Keyboard.dismiss();
@@ -80,6 +83,7 @@ export const DateInput: React.FC<DateInputProps> = ({
               onChange(selectedDate);
             }
           },
+          is24Hour,
         });
       } else if (event.type === "dismissed") {
         // press Cancel - close modal
@@ -121,7 +125,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         numberOfLines={1}
         width="90%"
       >
-        {value ? formatValue(value, mode) : placeholder}
+        {value ? formatValue(value, mode, formatDate, formatTime) : placeholder}
       </Typography>
       <Icon icon="calendar" color={disabled ? "$gray3" : "$gray4"} />
       {/* open bottom sheet on ios with date picker */}
@@ -140,7 +144,10 @@ export const DateInput: React.FC<DateInputProps> = ({
                 onChange={onDateChange}
                 minimumDate={minimumDate || undefined}
                 maximumDate={maximumDate || undefined}
-                locale={localParams.language as string}
+                locale={getPickerLocale(
+                  (localParams.language as string) || i18n.language,
+                  is24Hour,
+                )}
               />
             </XStack>
           </AnimatedSheetFrame>
@@ -152,7 +159,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           mode: mode === "time" ? "time" : "date",
           value: value || new Date(),
           onChange: onDateChange,
-          is24Hour: true,
+          is24Hour,
           minimumDate: minimumDate || undefined,
           maximumDate: maximumDate || undefined,
         })

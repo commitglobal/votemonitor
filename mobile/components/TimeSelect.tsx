@@ -10,6 +10,8 @@ import RNDateTimePicker, {
 import CardFooter from "../components/CardFooter";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
+import { getPickerLocale } from "../common/utils/time";
 
 interface TimeSelectProps {
   type: "arrival" | "departure";
@@ -22,6 +24,7 @@ interface TimeSelectProps {
 const TimeSelect: React.FC<TimeSelectProps> = memo(
   ({ type, time, setTime, arrivalTime, departureTime }) => {
     const { t, i18n } = useTranslation("observation");
+    const { is24Hour, formatDate, formatTime } = useDateTimeFormat();
     const [open, setOpen] = useState(false);
     // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
     // therefore, we will update the FINAL time state (that comes from the outside), only onDonePress
@@ -101,7 +104,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                 setTime(finalTime);
               }
             },
-            is24Hour: true,
+            is24Hour,
           });
         } else if (event.type === "dismissed") {
           // press Cancel - close modal
@@ -149,19 +152,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             {time ? (
               <React.Fragment>
                 <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
-                  {time &&
-                    time.toLocaleDateString(["en-GB"], {
-                      month: "2-digit",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
+                  {time && formatDate(time)}
                 </Typography>
                 <Typography preset="heading" fontWeight="500">
-                  {time &&
-                    time.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                  {time && formatTime(time)}
                 </Typography>
               </React.Fragment>
             ) : (
@@ -210,7 +204,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                   minimumDate={type === "departure" && arrivalTime ? arrivalTime : undefined}
                   // if setting arrival time and departure time has already been set -> don't allow a later time
                   maximumDate={type === "arrival" && departureTime ? departureTime : undefined}
-                  locale={i18n.language}
+                  locale={getPickerLocale(i18n.language, is24Hour)}
                 />
               </XStack>
             </Sheet.Frame>
@@ -222,7 +216,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             mode: "date",
             value: time || new Date(),
             onChange,
-            is24Hour: true,
+            is24Hour,
             // if setting departure date and arrival date has already been set -> don't allow an earlier date
             minimumDate: type === "departure" && arrivalTime ? arrivalTime : undefined,
             maximumDate: type === "arrival" && departureTime ? departureTime : undefined,

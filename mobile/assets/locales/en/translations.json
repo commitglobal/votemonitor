@@ -787,9 +787,21 @@
       "p2": "Check back periodically to see if you have received any new information."
     }
   },
+  "settings": {
+    "title": "Time and date settings",
+    "time_format": {
+      "title": "Time format",
+      "24h": "24-hour",
+      "12h": "12-hour"
+    },
+    "date_format": {
+      "title": "Date format"
+    }
+  },
   "more": {
     "title": "More",
     "change-language": "Change app language",
+    "date_time_settings": "Time and date settings",
     "change-password": "Change password",
     "terms": "Terms and Conditions",
     "privacy_policy": "Privacy Policy",

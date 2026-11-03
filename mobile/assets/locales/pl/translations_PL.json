@@ -791,9 +791,21 @@
       "p2": "Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
     }
   },
+  "settings": {
+    "title": "Ustawienia godziny i daty",
+    "time_format": {
+      "title": "Format godziny",
+      "24h": "24-godzinny",
+      "12h": "12-godzinny"
+    },
+    "date_format": {
+      "title": "Format daty"
+    }
+  },
   "more": {
     "title": "Więcej",
     "change-language": "Zmień język aplikacji",
+    "date_time_settings": "Ustawienia godziny i daty",
     "change-password": "Zmień hasło",
     "terms": "Regulamin",
     "privacy_policy": "Polityka prywatności",

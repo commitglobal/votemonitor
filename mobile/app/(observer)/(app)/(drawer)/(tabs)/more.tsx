@@ -5,6 +5,8 @@ import { Screen } from "../../../../../components/Screen";
 import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
 import { useTranslation } from "react-i18next";
+import { getDateFormatLabel } from "../../../../../common/utils/time";
+import { useDateTimeFormat } from "../../../../../contexts/date-time-format/DateTimeFormatContext.provider";
 import { openExternalUrl } from "../../../../../common/utils/utils";
 import { router, useNavigation } from "expo-router";
 import { useAuth } from "../../../../../hooks/useAuth";
@@ -45,7 +47,8 @@ export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: Men
 );
 
 const More = () => {
-  const { t, i18n } = useTranslation(["more", "languages", "common"]);
+  const { t, i18n } = useTranslation(["more", "languages", "common", "settings"]);
+  const { is24Hour, dateFormat } = useDateTimeFormat();
 
   const { isOnline } = useNetInfoContext();
   const { signOut } = useAuth();
@@ -101,6 +104,13 @@ const More = () => {
           icon="language"
           onClick={setIsLanguageSelectSheetOpen.bind(null, true)}
           helper={t(i18n.language, { ns: "languages" })}
+        ></MoreMenuItem>
+        <MoreMenuItem
+          label={t("date_time_settings")}
+          icon="clock"
+          chevronRight={true}
+          onClick={() => router.push("/date-time-settings")}
+          helper={`${is24Hour ? t("time_format.24h", { ns: "settings" }) : t("time_format.12h", { ns: "settings" })} · ${getDateFormatLabel(dateFormat)}`}
         ></MoreMenuItem>
         <MoreMenuItem
           label={t("terms")}

@@ -784,9 +784,21 @@
       "p2": "Proveravajte periodično da li ste primili nove informacije."
     }
   },
+  "settings": {
+    "title": "Podešavanja vremena i datuma",
+    "time_format": {
+      "title": "Format vremena",
+      "24h": "24-časovni",
+      "12h": "12-časovni"
+    },
+    "date_format": {
+      "title": "Format datuma"
+    }
+  },
   "more": {
     "title": "Još opcija",
     "change-language": "Promenite jezik aplikacije",
+    "date_time_settings": "Podešavanja vremena i datuma",
     "change-password": "Promenite loziku",
     "terms": "Uslovi korišćenja",
     "privacy_policy": "Politika privatnosti",

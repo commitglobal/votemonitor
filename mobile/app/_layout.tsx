@@ -14,6 +14,7 @@ import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
+import DateTimeFormatContextProvider from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
 import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
 import { tamaguiConfig } from "../tamagui.config";
@@ -100,13 +101,15 @@ function RootLayout() {
             <PersistQueryContextProvider>
               <PortalProvider>
                 <LanguageContextProvider>
-                  <EasUpdateMonitorContextProvider>
-                    <AppModeContextProvider>
-                      <Slot />
-                      <Toast config={toastConfig} position="top" />
-                      <NetInfoBanner />
-                    </AppModeContextProvider>
-                  </EasUpdateMonitorContextProvider>
+                  <DateTimeFormatContextProvider>
+                    <EasUpdateMonitorContextProvider>
+                      <AppModeContextProvider>
+                        <Slot />
+                        <Toast config={toastConfig} position="top" />
+                        <NetInfoBanner />
+                      </AppModeContextProvider>
+                    </EasUpdateMonitorContextProvider>
+                  </DateTimeFormatContextProvider>
                 </LanguageContextProvider>
               </PortalProvider>
             </PersistQueryContextProvider>
