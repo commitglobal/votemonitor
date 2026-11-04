@@ -26,8 +26,6 @@ import {
   useUploadAttachmentCitizenMutation,
 } from "../services/mutations/citizen/add-attachment-citizen.mutation";
 import { AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
-import * as FileSystem from "expo-file-system/legacy";
-import { Buffer } from "buffer";
 import * as Sentry from "@sentry/react-native";
 import MediaLoading from "./MediaLoading";
 import {
@@ -298,14 +296,12 @@ export default function ReviewCitizenFormSheet({
         if (cancelRef.current) {
           throw new Error("Upload aborted");
         }
-        const chunk = await FileSystem.readAsStringAsync(filePath, {
-          length: MULTIPART_FILE_UPLOAD_SIZE,
-          position: index * MULTIPART_FILE_UPLOAD_SIZE,
-          encoding: FileSystem.EncodingType.Base64,
+                const data = await uploadS3Chunk({
+          url,
+          filePath,
+          partIndex: index,
+          partSize: MULTIPART_FILE_UPLOAD_SIZE,
         });
-        const buffer = Buffer.from(chunk, "base64");
-
-        const data = await uploadS3Chunk({ url, chunk: buffer });
 
         setUploadProgress(
           `${t("attachments.upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
