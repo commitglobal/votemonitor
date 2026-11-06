@@ -242,7 +242,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
             // if (query.meta?.dontPersist) return false;
 
-            return defaultShouldDehydrateQuery(query);
+            // a refetch that failed while offline (status "error") still has the data from before: keep it,
+            // otherwise starting the app offline a second time finds nothing (no election rounds, visits, ...)
+            return (
+              defaultShouldDehydrateQuery(query) ||
+              (query.state.status === "error" && query.state.data !== undefined)
+            );
           },
           shouldDehydrateMutation: (mutation) => {
             if (mutation.options.scope?.id === MUTATION_SCOPE_DO_NOT_HYDRATE) {
