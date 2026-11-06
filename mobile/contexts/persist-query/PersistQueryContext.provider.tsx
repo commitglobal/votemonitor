@@ -29,6 +29,8 @@ import {
   upsertIncidentReport,
   upsertIncidentReportNote,
   UpsertIncidentReportNoteAPIPayload,
+  deleteIncidentReportNote,
+  DeleteIncidentReportNoteAPIPayload,
 } from "../../services/api/incident-report/incident-report.api";
 import { AddIncidentReportMutationPayload } from "../../services/mutations/incident-report/add-incident-report.mutation";
 
@@ -164,6 +166,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   queryClient.setMutationDefaults(IncidentReportKeys.addNote(), {
     mutationFn: (payload: UpsertIncidentReportNoteAPIPayload) => {
       return upsertIncidentReportNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(IncidentReportKeys.deleteNote(), {
+    mutationFn: (payload: DeleteIncidentReportNoteAPIPayload) => {
+      return deleteIncidentReportNote(payload);
     },
   });
 

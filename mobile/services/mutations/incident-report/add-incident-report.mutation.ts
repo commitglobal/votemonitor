@@ -5,8 +5,19 @@ import {
   IncidentReportNoteAPIResponse,
   UpsertIncidentReportAPIPayload,
   UpsertIncidentReportNoteAPIPayload,
+  DeleteIncidentReportNoteAPIPayload,
+  deleteIncidentReportAttachment,
 } from "../../api/incident-report/incident-report.api";
 import { IncidentReportKeys } from "../../queries/incident-reports.query";
+import { isNetworkError } from "../../api";
+
+/*
+  Incident report saves (the report and its notes) must not be lost when the connection drops: a request
+  that got no response is retried (with a growing delay, paused while offline) until it goes through.
+  Errors the server answered (e.g. a locked report) are not retried.
+*/
+const retryWhileNoConnection = (_failureCount: number, error: unknown) => isNetworkError(error);
+const retryDelay = (attempt: number) => Math.min(1000 * 2 ** attempt, 30 * 1000);
 
 // attachments and notes are only used for the optimistic update, they are sent separately
 export type AddIncidentReportMutationPayload = UpsertIncidentReportAPIPayload & {
@@ -22,6 +33,8 @@ export const useAddIncidentReport = (incidentReportId: string) => {
   return useMutation({
     mutationKey: IncidentReportKeys.add(),
     scope: { id: IncidentReportKeys.mutationScope(incidentReportId) },
+    retry: retryWhileNoConnection,
+    retryDelay,
     onMutate: async ({
       attachments,
       notes,
@@ -71,9 +84,47 @@ export const useAddIncidentReportNote = (incidentReportId: string) => {
   return useMutation({
     mutationKey: IncidentReportKeys.addNote(),
     scope: { id: IncidentReportKeys.mutationScope(incidentReportId) },
+    retry: retryWhileNoConnection,
+    retryDelay,
     onSettled: (_data, _err, variables: UpsertIncidentReportNoteAPIPayload) => {
       return queryClient.invalidateQueries({
         queryKey: IncidentReportKeys.byElectionRound(variables.electionRoundId),
+      });
+    },
+  });
+};
+
+export const useDeleteIncidentReportNote = (incidentReportId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: IncidentReportKeys.deleteNote(),
+    scope: { id: IncidentReportKeys.mutationScope(incidentReportId) },
+    retry: retryWhileNoConnection,
+    retryDelay,
+    onSettled: (_data, _err, variables: DeleteIncidentReportNoteAPIPayload) => {
+      return queryClient.invalidateQueries({
+        queryKey: IncidentReportKeys.byElectionRound(variables.electionRoundId),
+      });
+    },
+  });
+};
+
+// online only: deleting a file needs the server (adding one does too)
+export const useDeleteIncidentReportAttachment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteIncidentReportAttachment,
+    onSettled: (_data, _err, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: IncidentReportKeys.byElectionRound(variables.electionRoundId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: IncidentReportKeys.attachments(
+          variables.electionRoundId,
+          variables.incidentReportId,
+        ),
       });
     },
   });

@@ -730,6 +730,8 @@
     "title": "İnsident hesabatı",
     "form_not_found": "Bu insident hesabatı forması artıq mövcud deyil.",
     "progress_bar_label": "Formanın tərəqqisi",
+    "previous_question": "Əvvəlki sual",
+    "next_question": "Növbəti sual",
     "error": "İnsident hesabatı göndərilərkən problem baş verdi.",
     "report_type_sheet": {
       "title": "Nə barədə məlumat vermək istəyirsiniz?",

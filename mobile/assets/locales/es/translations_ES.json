@@ -732,6 +732,8 @@
     "title": "Informe de incidente",
     "form_not_found": "Este formulario de informe de incidente ya no está disponible.",
     "progress_bar_label": "Progreso del formulario",
+    "previous_question": "Pregunta anterior",
+    "next_question": "Siguiente pregunta",
     "error": "Hubo un problema al enviar el informe de incidente.",
     "report_type_sheet": {
       "title": "¿Qué quieres reportar?",

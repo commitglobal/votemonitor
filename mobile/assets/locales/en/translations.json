@@ -733,6 +733,8 @@
     "title": "Incident report",
     "form_not_found": "This incident report form is no longer available.",
     "progress_bar_label": "Form progress",
+    "previous_question": "Previous question",
+    "next_question": "Next question",
     "error": "There was a problem while sending the incident report.",
     "report_type_sheet": {
       "title": "What do you want to report?",

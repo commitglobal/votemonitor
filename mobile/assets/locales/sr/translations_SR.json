@@ -730,6 +730,8 @@
     "title": "Izveštaj o incidentu",
     "form_not_found": "Ovaj obrazac za izveštaj o incidentu više nije dostupan.",
     "progress_bar_label": "Napredak obrasca",
+    "previous_question": "Prethodno pitanje",
+    "next_question": "Sledeće pitanje",
     "error": "Došlo je do problema prilikom slanja izveštaja o incidentu.",
     "report_type_sheet": {
       "title": "Šta želite da prijavite?",

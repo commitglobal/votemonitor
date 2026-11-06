@@ -737,6 +737,8 @@
     "title": "Raport o incydencie",
     "form_not_found": "Ten formularz raportu o incydencie nie jest już dostępny.",
     "progress_bar_label": "Postęp formularza",
+    "previous_question": "Poprzednie pytanie",
+    "next_question": "Następne pytanie",
     "error": "Wystąpił problem podczas wysyłania raportu o incydencie.",
     "report_type_sheet": {
       "title": "Co chcesz zgłosić?",

@@ -733,6 +733,8 @@
         "title": "Relatório de incidente",
         "form_not_found": "Este formulário de relatório de incidente não está mais disponível.",
         "progress_bar_label": "Progresso do formulário",
+        "previous_question": "Pergunta anterior",
+        "next_question": "Próxima pergunta",
         "error": "Houve um problema ao enviar o relatório de incidente.",
         "report_type_sheet": {
             "title": "O que você deseja relatar?",

@@ -31,6 +31,7 @@ import {
 import { useNetInfoContext } from "../../../../../../contexts/net-info-banner/NetInfoContext";
 import {
   getFormDisplayName,
+  getFormLanguage,
   getIncidentReportLocationLabel,
 } from "../../../../../../helpers/incidentReport";
 
@@ -204,6 +205,23 @@ const QuickReportContent = ({
   const { data: incidentReports, refetch: refetchIncidentReports } =
     useIncidentReports(electionRoundId);
 
+  // a sent report is locked and only viewed, a draft is continued in the language it was started in
+  const openListedIncidentReport = async (report: IncidentReportAPIResponse) => {
+    if (report.isCompleted) {
+      router.push(`/incident-report-details/${report.id}`);
+      return;
+    }
+    const form = incidentReportingForms?.find((f) => f.id === report.formId);
+    const preferredLanguage = await getFormLanguagePreference({ formId: report.formId });
+    const language =
+      preferredLanguage && form?.languages.includes(preferredLanguage)
+        ? preferredLanguage
+        : getFormLanguage(form);
+    router.push(
+      `/incident-report?formId=${report.formId}&incidentReportId=${report.id}&language=${language}`,
+    );
+  };
+
   const reports: ReportListItem[] = useMemo(
     () =>
       [
@@ -290,7 +308,9 @@ const QuickReportContent = ({
               location={getIncidentReportLocationLabel(item.report, visits)}
               numberOfAnswers={item.report.answers.length}
               numberOfAttachments={item.report.attachments.length}
-              onPress={() => router.push(`/incident-report-details/${item.report.id}`)}
+              isCompleted={item.report.isCompleted}
+              timestamp={item.report.timestamp}
+              onPress={() => openListedIncidentReport(item.report)}
             />
           )
         }

@@ -243,6 +243,8 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
   answer:
     | string
     | number
+    // date, time and date-time questions
+    | Date
     | Record<string, string>
     | Record<string, { optionId: string; text: string }>,
 ): ApiFormAnswer | undefined => {
@@ -271,19 +273,19 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
       return {
         $answerType: "dateAnswer",
         questionId,
-        date: toDayIso(new Date(answer as string)),
+        date: toDayIso(new Date(answer as string | Date)),
       } as ApiFormAnswer;
     case "timeAnswer":
       return {
         $answerType: "timeAnswer",
         questionId,
-        time: toTimeOfDay(new Date(answer as string)),
+        time: toTimeOfDay(new Date(answer as string | Date)),
       } as ApiFormAnswer;
     case "dateTimeAnswer":
       return {
         $answerType: "dateTimeAnswer",
         questionId,
-        dateTime: new Date(answer as string).toISOString(),
+        dateTime: new Date(answer as string | Date).toISOString(),
       } as ApiFormAnswer;
     case "singleSelectAnswer":
       return {

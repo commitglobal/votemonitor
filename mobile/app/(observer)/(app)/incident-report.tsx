@@ -16,6 +16,7 @@ import {
   MUTATION_SCOPE_DO_NOT_HYDRATE,
 } from "../../../common/constants";
 import AddAttachment from "../../../components/AddAttachment";
+import Button from "../../../components/Button";
 import Card from "../../../components/Card";
 import FormElement from "../../../components/FormInputs/FormElement";
 import FormInput from "../../../components/FormInputs/FormInput";
@@ -27,7 +28,6 @@ import MediaLoading from "../../../components/MediaLoading";
 import NoteForm from "../../../components/NoteForm";
 import OptionsSheet from "../../../components/OptionsSheet";
 import QuestionForm from "../../../components/QuestionForm";
-import ReviewIncidentReportSheet from "../../../components/ReviewIncidentReportSheet";
 import { Screen } from "../../../components/Screen";
 import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import Select from "../../../components/Select";
@@ -36,13 +36,11 @@ import WarningDialog from "../../../components/WarningDialog";
 import WizzardControls from "../../../components/WizzardControls";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
+import { getFormDisplayName, getFormLanguage } from "../../../helpers/incidentReport";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { AttachmentData } from "../../../services/api/add-attachment.api";
+import { useBottomInset } from "../../../hooks/useBottomInset";
 import { AttachmentMimeType } from "../../../services/api/get-attachments.api";
-import {
-  IncidentReportAttachmentAPIResponse,
-  IncidentReportLocationType,
-} from "../../../services/api/incident-report/incident-report.api";
+import { IncidentReportLocationType } from "../../../services/api/incident-report/incident-report.api";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   removeAnswersForHiddenQuestions,
@@ -64,16 +62,23 @@ import {
 import {
   useAddIncidentReport,
   useAddIncidentReportNote,
+  useDeleteIncidentReportAttachment,
+  useDeleteIncidentReportNote,
 } from "../../../services/mutations/incident-report/add-incident-report.mutation";
 import { useFormById } from "../../../services/queries/forms.query";
 import {
-  getFormDisplayName,
-  getFormLanguage,
-  getIncidentReportLocationLabel,
-} from "../../../helpers/incidentReport";
-import { IncidentReportKeys } from "../../../services/queries/incident-reports.query";
+  IncidentReportKeys,
+  useIncidentReportAttachments,
+  useIncidentReportById,
+} from "../../../services/queries/incident-reports.query";
 
-type LocalNote = { id: string; text: string };
+// without an id (from a server that does not send it) a note can only be shown, not edited or deleted
+type ReportNote = { id?: string; text: string };
+// without an id (when it could not be loaded with its id) a file can only be shown, not deleted
+type ReportAttachment = { id?: string; fileName: string; mimeType: string; uri: string };
+
+// the active question's value, keyed by question id (the shape setFormDefaultValues gives)
+type QuestionFormValues = NonNullable<ReturnType<typeof setFormDefaultValues>>;
 
 type LocationFormType = {
   // a visited polling station id, or one of the OtherPollingStation / NotRelatedToAPollingStation location types
@@ -103,14 +108,43 @@ const isLocationType = (location: string) =>
   location === IncidentReportLocationType.OtherPollingStation ||
   location === IncidentReportLocationType.NotRelatedToAPollingStation;
 
+const groupByQuestion = <T extends { questionId: string }, R>(
+  items: T[],
+  map: (item: T) => R,
+): Record<string, R[]> =>
+  items.reduce(
+    (acc, item) => {
+      acc[item.questionId] = [...(acc[item.questionId] || []), map(item)];
+      return acc;
+    },
+    {} as Record<string, R[]>,
+  );
+
+/*
+  An incident report is saved while it is filled in, so the organization has whatever the observer
+  managed to send even if they can not finish it:
+  - the draft (isCompleted: false) is created once the location is chosen, and saved again with all
+    the answers on every "Next step" / "Back" (queued while offline, sent in order later)
+  - notes are sent when they are saved, edited or deleted (queued while offline, after the report)
+  - media files are uploaded as soon as they are picked (that needs a connection)
+  - "Send report" on the review saves it with isCompleted: true, which locks it (the server refuses
+    further changes)
+  A draft can be continued later from the report list (incidentReportId param).
+*/
 const IncidentReport = () => {
-  const { formId, language: languageParam } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     formId: string;
     language?: string;
+    // set when continuing a draft
+    incidentReportId?: string;
   }>();
+  const { formId, language: languageParam } = params;
+  const isResuming = !!params.incidentReportId;
+
   const { t } = useTranslation([
     "incident_report",
     "report_new_issue",
+    "report_details",
     "polling_station_form_wizard",
   ]);
   const queryClient = useQueryClient();
@@ -119,39 +153,55 @@ const IncidentReport = () => {
   const { visits, activeElectionRound } = useUserData();
   const { isOnline } = useNetInfoContext();
   const { uploadCameraOrMedia } = useCamera();
+  const bottomInset = useBottomInset();
+
+  const [incidentReportId] = useState(params.incidentReportId ?? Crypto.randomUUID());
 
   const { data: currentForm, isLoading: isLoadingForm } = useFormById(
     activeElectionRound?.id,
     formId,
   );
+  const { data: existingReport, isLoading: isLoadingReport } = useIncidentReportById(
+    activeElectionRound?.id,
+    incidentReportId,
+  );
+  const { data: existingAttachments, isFetchedAfterMount: areExistingAttachmentsFresh } =
+    useIncidentReportAttachments(
+      activeElectionRound?.id,
+      incidentReportId,
+      formId,
+      isResuming && isOnline,
+    );
 
-  // the report id is generated once, so retrying a submission upserts the same report
-  const [incidentReportId] = useState(Crypto.randomUUID());
-  const [step, setStep] = useState<"location" | "questions">("location");
+  // once the draft is saved (or queued while offline) the location is fixed: the server keeps the first one
+  const [isSaved, setIsSaved] = useState(isResuming);
+  // whether the report is known to exist on the server, which uploading media needs
+  const isOnServerRef = useRef(isResuming);
+  const [isInitialized, setIsInitialized] = useState(!isResuming);
+
+  const [step, setStep] = useState<"location" | "questions">(isResuming ? "questions" : "location");
   const [questionId, setQuestionId] = useState<string | undefined>();
   const [answers, setAnswers] = useState<Record<string, ApiFormAnswer | undefined>>({});
-  const [attachments, setAttachments] = useState<Record<string, AttachmentData[]>>({});
-  // notes are kept here until the report is sent
-  const [notes, setNotes] = useState<Record<string, LocalNote[]>>({});
+  const [notes, setNotes] = useState<Record<string, ReportNote[]>>({});
+  const [attachments, setAttachments] = useState<Record<string, ReportAttachment[]>>({});
+
   // when set, the options sheet shows the note form (a new note, or editing the one with noteId)
   const [noteEditor, setNoteEditor] = useState<{ noteId?: string; text?: string } | null>(null);
   const [selectedNoteToDelete, setSelectedNoteToDelete] = useState<string | null>(null);
+  const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] = useState<string | null>(null);
+  const [previewAttachment, setPreviewAttachment] = useState<ReportAttachment | null>(null);
 
-  const [isReviewSheetOpen, setIsReviewSheetOpen] = useState(false);
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
-  const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] = useState<string | null>(null);
-  const [previewAttachment, setPreviewAttachment] = useState<AttachmentData | null>(null);
 
-  const {
-    mutate: addIncidentReport,
-    mutateAsync: addIncidentReportAsync,
-    isPending,
-  } = useAddIncidentReport(incidentReportId);
-  const { mutate: addIncidentReportNote } = useAddIncidentReportNote(incidentReportId);
+  const { mutate: saveReport, mutateAsync: saveReportAsync } =
+    useAddIncidentReport(incidentReportId);
+  const { mutate: saveNoteOnServer } = useAddIncidentReportNote(incidentReportId);
+  const { mutate: deleteNoteOnServer } = useDeleteIncidentReportNote(incidentReportId);
+  const { mutateAsync: deleteAttachmentOnServer } = useDeleteIncidentReportAttachment();
   const { mutateAsync: initAttachment } = useUploadAttachmentIncidentReportMutation();
   const { mutateAsync: completeAttachment } = useUploadAttachmentIncidentReportCompleteMutation();
   const { mutateAsync: abortAttachment } = useUploadAttachmentIncidentReportAbortMutation();
@@ -164,6 +214,7 @@ const IncidentReport = () => {
     handleSubmit: handleLocationSubmit,
     watch: watchLocation,
     getValues: getLocationValues,
+    reset: resetLocationForm,
     formState: { errors: locationErrors, isDirty: isLocationDirty },
   } = useForm<LocationFormType>({
     defaultValues: { location: "", locationDescription: "" },
@@ -202,8 +253,7 @@ const IncidentReport = () => {
     control: questionControl,
     handleSubmit: handleQuestionSubmit,
     reset: resetQuestionForm,
-    formState: { isDirty: isQuestionDirty },
-  } = useForm<any>();
+  } = useForm<QuestionFormValues>();
 
   // one screen walks through all the questions, so load the saved answer whenever the question changes
   useEffect(() => {
@@ -212,15 +262,92 @@ const IncidentReport = () => {
     }
   }, [questionId]);
 
-  const hasProgress =
-    isLocationDirty ||
-    isQuestionDirty ||
-    Object.keys(answers).length > 0 ||
-    Object.values(attachments).some((a) => a.length > 0) ||
-    Object.values(notes).some((n) => n.length > 0);
+  const findNextQuestion = (
+    index: number,
+    updatedAnswers: Record<string, ApiFormAnswer | undefined>,
+  ): ApiFormQuestion | null => {
+    if (!currentForm || index + 1 >= currentForm.questions.length) return null;
+    const nextQuestion = currentForm.questions[index + 1];
+    if (shouldDisplayQuestion(nextQuestion, updatedAnswers)) return nextQuestion;
+    return findNextQuestion(index + 1, updatedAnswers);
+  };
+
+  const findPreviousQuestion = (
+    index: number,
+    updatedAnswers: Record<string, ApiFormAnswer | undefined>,
+  ): ApiFormQuestion | null => {
+    if (!currentForm || index - 1 < 0) return null;
+    const prevQuestion = currentForm.questions[index - 1];
+    if (shouldDisplayQuestion(prevQuestion, updatedAnswers)) return prevQuestion;
+    return findPreviousQuestion(index - 1, updatedAnswers);
+  };
+
+  // continuing a draft: fill in what was already sent
+  useEffect(() => {
+    if (isInitialized || !currentForm || !existingReport) return;
+
+    if (existingReport.isCompleted) {
+      // a sent report is locked, it can only be viewed
+      router.replace(`/incident-report-details/${incidentReportId}`);
+      return;
+    }
+
+    resetLocationForm({
+      location:
+        existingReport.locationType === IncidentReportLocationType.PollingStation
+          ? existingReport.pollingStationId || ""
+          : existingReport.locationType,
+      locationDescription: existingReport.locationDescription || "",
+    });
+    const existingAnswers = Object.fromEntries(
+      existingReport.answers.map((answer) => [answer.questionId, answer]),
+    );
+    setAnswers(existingAnswers);
+    setNotes(groupByQuestion(existingReport.notes, (note) => ({ id: note.id, text: note.text })));
+    setAttachments(
+      groupByQuestion(existingReport.attachments, (attachment) => ({
+        fileName: attachment.fileName,
+        mimeType: attachment.mimeType,
+        uri: attachment.presignedUrl,
+      })),
+    );
+    setQuestionId(findNextQuestion(-1, existingAnswers)?.id);
+    setIsInitialized(true);
+  }, [currentForm, existingReport, isInitialized]);
+
+  // the attachments with their ids (so they can be deleted) replace the ones from the report list
+  const appliedExistingAttachmentsRef = useRef(false);
+  useEffect(() => {
+    // a cached list can be older than the report (e.g. a file uploaded since), so only a fresh one is used
+    if (
+      !isInitialized ||
+      !existingAttachments ||
+      !areExistingAttachmentsFresh ||
+      appliedExistingAttachmentsRef.current
+    ) {
+      return;
+    }
+    appliedExistingAttachmentsRef.current = true;
+    setAttachments((current) => {
+      const fromServer = groupByQuestion(existingAttachments, (attachment): ReportAttachment => ({
+        id: attachment.id,
+        fileName: attachment.fileName,
+        mimeType: attachment.mimeType,
+        uri: attachment.presignedUrl,
+      }));
+      // keep the ones uploaded in the meantime
+      Object.entries(current).forEach(([id, questionAttachments]) => {
+        const known = new Set((fromServer[id] || []).map((a) => a.id));
+        const added = questionAttachments.filter((a) => a.id && !known.has(a.id));
+        if (added.length) fromServer[id] = [...(fromServer[id] || []), ...added];
+      });
+      return fromServer;
+    });
+  }, [isInitialized, existingAttachments, areExistingAttachmentsFresh]);
 
   const handleGoBack = () => {
-    if (hasProgress) {
+    // a saved draft can be continued from the report list, only an unsaved location is lost
+    if (!isSaved && isLocationDirty) {
       Keyboard.dismiss();
       setShowWarningDialog(true);
     } else {
@@ -234,7 +361,7 @@ const IncidentReport = () => {
       return true;
     });
     return () => backHandler.remove();
-  }, [hasProgress]);
+  }, [isSaved, isLocationDirty]);
 
   const getLocation = () => {
     const { location, locationDescription } = getLocationValues();
@@ -246,47 +373,75 @@ const IncidentReport = () => {
       : { locationType: IncidentReportLocationType.PollingStation, pollingStationId: location };
   };
 
-  const findNextQuestion = (
-    index: number,
-    updatedAnswers: Record<string, ApiFormAnswer | undefined>,
-  ): ApiFormQuestion | null => {
-    if (!currentForm || index + 1 >= currentForm.questions.length) return null;
-    const nextQuestion = currentForm.questions[index + 1];
-    if (shouldDisplayQuestion(nextQuestion, updatedAnswers)) return nextQuestion;
-    return findNextQuestion(index + 1, updatedAnswers);
+  const buildReportPayload = (
+    reportAnswers: Record<string, ApiFormAnswer | undefined>,
+    isCompleted: boolean,
+  ) => {
+    const now = new Date().toISOString();
+    return {
+      id: incidentReportId,
+      electionRoundId: activeElectionRound!.id,
+      formId: currentForm!.id,
+      ...getLocation(),
+      answers: Object.values(reportAnswers).filter(Boolean) as ApiFormAnswer[],
+      isCompleted,
+      lastUpdatedAt: now,
+      // only for showing the report in the list until it is reloaded from the server
+      attachments: Object.entries(attachments).flatMap(([id, questionAttachments]) =>
+        questionAttachments.map((attachment) => ({
+          submissionId: incidentReportId,
+          questionId: id,
+          fileName: attachment.fileName,
+          mimeType: attachment.mimeType,
+          presignedUrl: attachment.uri,
+          urlValidityInSeconds: 0,
+        })),
+      ),
+      notes: Object.entries(notes).flatMap(([id, questionNotes]) =>
+        questionNotes.map((note) => ({
+          id: note.id,
+          submissionId: incidentReportId,
+          questionId: id,
+          text: note.text,
+          timeSubmitted: now,
+        })),
+      ),
+    };
   };
 
-  const findPreviousQuestion = (index: number): ApiFormQuestion | null => {
-    if (!currentForm || index - 1 < 0) return null;
-    const prevQuestion = currentForm.questions[index - 1];
-    if (shouldDisplayQuestion(prevQuestion, answers)) return prevQuestion;
-    return findPreviousQuestion(index - 1);
+  // saves the draft; queued (and sent in order with the notes) while offline
+  const saveDraft = (reportAnswers: Record<string, ApiFormAnswer | undefined>) => {
+    if (!activeElectionRound || !currentForm) return;
+    saveReport(buildReportPayload(reportAnswers, false), {
+      onSuccess: () => {
+        isOnServerRef.current = true;
+      },
+    });
+    setIsSaved(true);
+  };
+
+  // media files reference the report, so it has to exist on the server before uploading one
+  const ensureReportOnServer = async () => {
+    if (isOnServerRef.current) return;
+    await saveReportAsync(buildReportPayload(answers, false));
+    isOnServerRef.current = true;
   };
 
   const onSubmitLocation = () => {
+    saveDraft(answers);
     const firstQuestion = findNextQuestion(-1, answers);
     if (!firstQuestion) {
-      // a form without questions: nothing to fill in, go straight to the review
-      Keyboard.dismiss();
-      setIsReviewSheetOpen(true);
+      // a form without questions: nothing to fill in, the report is sent right away
+      sendReport(answers);
       return;
     }
     setQuestionId((current) => current ?? firstQuestion.id);
     setStep("questions");
   };
 
-  const goToPrevious = () => {
-    if (!activeQuestion) return;
-    const prevQuestion = findPreviousQuestion(activeQuestion.indexInAllQuestions);
-    if (prevQuestion) {
-      setQuestionId(prevQuestion.id);
-    } else {
-      setStep("location");
-    }
-  };
-
-  const onSubmitAnswer = (formValues: any) => {
-    if (!activeQuestion) return;
+  // keeps the active question's answer and saves the draft when anything changed
+  const commitAnswer = (formValues: QuestionFormValues) => {
+    if (!activeQuestion) return answers;
     const id = activeQuestion.question.id;
 
     const updatedAnswer = withAnswerTimestamps(
@@ -303,50 +458,89 @@ const IncidentReport = () => {
       ...answers,
       [id]: updatedAnswer,
     }) as Record<string, ApiFormAnswer | undefined>;
-    setAnswers(updatedAnswers);
 
+    if (JSON.stringify(updatedAnswers) !== JSON.stringify(answers)) {
+      setAnswers(updatedAnswers);
+      saveDraft(updatedAnswers);
+    }
+    return updatedAnswers;
+  };
+
+  const onSubmitAnswer = (formValues: QuestionFormValues) => {
+    if (!activeQuestion) return;
+    const updatedAnswers = commitAnswer(formValues);
     const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
     if (nextQuestion) {
       setQuestionId(nextQuestion.id);
-    } else {
-      Keyboard.dismiss();
-      setIsReviewSheetOpen(true);
     }
   };
 
-  const uploadAttachment = async (
-    attachment: AttachmentData,
-    questionId: string,
-    uploadedPartsNo: number,
-    totalParts: number,
-  ) => {
+  // the report can be sent at any point, in one tap (no review step: an observer in danger must be
+  // able to send what they have right away), with whatever was filled in so far
+  const onSendNow = (formValues: QuestionFormValues) => {
+    sendReport(commitAnswer(formValues));
+  };
+
+  const onPreviousAnswer = (formValues: QuestionFormValues) => {
+    if (!activeQuestion) return;
+    const updatedAnswers = commitAnswer(formValues);
+    const prevQuestion = findPreviousQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
+    if (prevQuestion) {
+      setQuestionId(prevQuestion.id);
+    } else if (!isSaved) {
+      setStep("location");
+    }
+  };
+
+  // never waits for the server: the save is queued (with the earlier ones) and sent as soon as there
+  // is a connection, retried while there is none, and kept if the app is closed while offline
+  const sendReport = (reportAnswers: Record<string, ApiFormAnswer | undefined>) => {
     if (!activeElectionRound || !currentForm) return;
 
-    const { uploadId, uploadUrls } = await initAttachment({
-      id: attachment.id,
-      electionRoundId: activeElectionRound.id,
-      incidentReportId,
-      formId: currentForm.id,
-      questionId,
-      fileName: attachment.fileMetadata.name,
-      contentType: attachment.fileMetadata.type,
-      numberOfUploadParts: Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE),
-    });
+    Keyboard.dismiss();
+    saveReport(buildReportPayload(reportAnswers, true));
+    router.back();
+  };
+
+  const uploadNewAttachment = async (fileMetadata: FileMetadata) => {
+    if (!activeElectionRound || !currentForm || !questionId) return;
+    const attachmentQuestionId = questionId;
+    const attachmentId = Crypto.randomUUID();
+    let uploadId: string | undefined;
+
+    cancelRef.current = false;
+    setIsUploading(true);
+    setUploadProgress(t("upload.starting", { ns: "report_new_issue" }));
 
     try {
+      await ensureReportOnServer();
+
+      const numberOfUploadParts = Math.ceil(fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
+      const upload = await initAttachment({
+        id: attachmentId,
+        electionRoundId: activeElectionRound.id,
+        incidentReportId,
+        formId: currentForm.id,
+        questionId: attachmentQuestionId,
+        fileName: fileMetadata.name,
+        contentType: fileMetadata.type,
+        numberOfUploadParts,
+      });
+      uploadId = upload.uploadId;
+
       let etags: Record<number, string> = {};
-      for (const [index, url] of Object.values(uploadUrls).entries()) {
+      for (const [index, url] of Object.values(upload.uploadUrls).entries()) {
         if (cancelRef.current) {
           throw new Error("Upload aborted");
         }
         const data = await uploadS3Chunk({
           url,
-          filePath: attachment.fileMetadata.uri,
+          filePath: fileMetadata.uri,
           partIndex: index,
           partSize: MULTIPART_FILE_UPLOAD_SIZE,
         });
         setUploadProgress(
-          `${t("upload.progress", { ns: "report_new_issue" })} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
+          `${t("upload.progress", { ns: "report_new_issue" })} ${Math.ceil(((index + 1) / numberOfUploadParts) * 100)}%`,
         );
         etags = { ...etags, [index + 1]: data.ETag };
       }
@@ -355,138 +549,58 @@ const IncidentReport = () => {
         uploadId,
         etags,
         electionRoundId: activeElectionRound.id,
-        id: attachment.id,
+        id: attachmentId,
         incidentReportId,
       });
 
       setAttachments((current) => ({
         ...current,
-        [questionId]: current[questionId].map((a) =>
-          a.id === attachment.id ? { ...a, uploaded: true } : a,
-        ),
+        [attachmentQuestionId]: [
+          ...(current[attachmentQuestionId] || []),
+          {
+            id: attachmentId,
+            fileName: fileMetadata.name,
+            mimeType: fileMetadata.type,
+            uri: fileMetadata.uri,
+          },
+        ],
       }));
+      setIsOptionsSheetOpen(false);
+      queryClient.invalidateQueries({
+        queryKey: IncidentReportKeys.attachments(activeElectionRound.id, incidentReportId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: IncidentReportKeys.byElectionRound(activeElectionRound.id),
+      });
     } catch (err) {
-      Sentry.captureException(err, { data: { incidentReportId, questionId } });
-      setUploadProgress(t("upload.aborted", { ns: "report_new_issue" }));
-      await abortAttachment({
-        id: attachment.id,
-        uploadId,
-        electionRoundId: activeElectionRound.id,
-        incidentReportId,
-      });
+      Sentry.captureException(err, { data: { incidentReportId } });
+      if (uploadId) {
+        abortAttachment({
+          id: attachmentId,
+          uploadId,
+          electionRoundId: activeElectionRound.id,
+          incidentReportId,
+        }).catch(() => undefined);
+      }
+      if (!cancelRef.current) {
+        Toast.show({ type: "error", text2: t("media.error", { ns: "report_new_issue" }) });
+      }
+    } finally {
+      setIsUploading(false);
+      setUploadProgress("");
     }
   };
 
-  const uploadAttachments = async () => {
-    // only the attachments of questions that are still displayed
-    const pending = displayedQuestions.flatMap((question) =>
-      (attachments[question.id] || [])
-        .filter((attachment) => !attachment.uploaded)
-        .map((attachment) => ({ attachment, questionId: question.id })),
-    );
-    if (!pending.length) return;
-
-    setIsUploading(true);
-    cancelRef.current = false;
-    setUploadProgress(t("upload.starting", { ns: "report_new_issue" }));
-
-    const totalParts = pending.reduce(
-      (acc, { attachment }) =>
-        acc + Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE),
-      0,
-    );
-    let uploadedPartsNo = 0;
-
-    for (const { attachment, questionId } of pending) {
-      if (cancelRef.current) break;
-      try {
-        await uploadAttachment(attachment, questionId, uploadedPartsNo, totalParts);
-      } catch (err) {
-        Sentry.captureException(err);
-      }
-      uploadedPartsNo += Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE);
-    }
-
-    setUploadProgress(t("upload.completed", { ns: "report_new_issue" }));
+  const onAbortUpload = () => {
+    cancelRef.current = true;
     setIsUploading(false);
-    queryClient.invalidateQueries({
-      queryKey: IncidentReportKeys.byElectionRound(activeElectionRound?.id),
-    });
+    setIsOptionsSheetOpen(false);
+    setUploadProgress("");
+    removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
   };
 
-  const onSubmitReport = async () => {
-    if (!activeElectionRound || !currentForm) return;
-
-    const optimisticAttachments: IncidentReportAttachmentAPIResponse[] = displayedQuestions.flatMap(
-      (question) =>
-        (attachments[question.id] || []).map((attachment) => ({
-          submissionId: incidentReportId,
-          questionId: question.id,
-          fileName: attachment.fileMetadata.name,
-          mimeType: attachment.fileMetadata.type,
-          presignedUrl: attachment.fileMetadata.uri,
-          urlValidityInSeconds: 0,
-        })),
-    );
-
-    const payload = {
-      id: incidentReportId,
-      electionRoundId: activeElectionRound.id,
-      formId: currentForm.id,
-      ...getLocation(),
-      answers: Object.values(answers).filter(Boolean) as ApiFormAnswer[],
-      isCompleted: true,
-      lastUpdatedAt: new Date().toISOString(),
-      attachments: optimisticAttachments,
-      notes: displayedQuestions.flatMap((question) =>
-        (notes[question.id] || []).map((note) => ({
-          submissionId: incidentReportId,
-          questionId: question.id,
-          text: note.text,
-          timeSubmitted: new Date().toISOString(),
-        })),
-      ),
-    };
-
-    // the notes share the report's mutation scope, so they are sent (also after being offline)
-    // only once the report was created
-    const sendNotes = () => {
-      displayedQuestions.forEach((question) =>
-        (notes[question.id] || []).forEach((note) =>
-          addIncidentReportNote({
-            id: note.id,
-            electionRoundId: activeElectionRound.id,
-            incidentReportId,
-            formId: currentForm.id,
-            questionId: question.id,
-            text: note.text,
-          }),
-        ),
-      );
-    };
-
-    const onError = () => {
-      Toast.show({ type: "error", text2: t("error") });
-    };
-
-    if (!optimisticAttachments.length) {
-      // like quick reports: without attachments the report is queued while offline and sent later
-      addIncidentReport(payload, {
-        onError,
-        onSuccess: () => {
-          setIsReviewSheetOpen(false);
-          router.back();
-        },
-      });
-      sendNotes();
-      if (!onlineManager.isOnline()) {
-        setIsReviewSheetOpen(false);
-        router.back();
-      }
-      return;
-    }
-
-    // attachments reference the incident report, so it has to exist on the server before uploading them
+  const removeAttachment = async (id: string) => {
+    if (!activeElectionRound || !questionId) return;
     if (!onlineManager.isOnline()) {
       Toast.show({
         type: "error",
@@ -496,50 +610,21 @@ const IncidentReport = () => {
       });
       return;
     }
-
+    const attachmentQuestionId = questionId;
     try {
-      await addIncidentReportAsync(payload);
-    } catch {
-      onError();
-      return;
+      await deleteAttachmentOnServer({
+        id,
+        electionRoundId: activeElectionRound.id,
+        incidentReportId,
+      });
+      setAttachments((current) => ({
+        ...current,
+        [attachmentQuestionId]: (current[attachmentQuestionId] || []).filter((a) => a.id !== id),
+      }));
+    } catch (err) {
+      Sentry.captureException(err);
+      Toast.show({ type: "error", text2: t("error") });
     }
-    sendNotes();
-
-    await uploadAttachments();
-
-    if (!cancelRef.current) {
-      setIsReviewSheetOpen(false);
-      router.back();
-    }
-  };
-
-  const onAbortUpload = () => {
-    // the report itself is already sent, only the remaining attachments are dropped
-    cancelRef.current = true;
-    setIsUploading(false);
-    setUploadProgress("");
-    removeMutationByScopeId(queryClient, MUTATION_SCOPE_DO_NOT_HYDRATE);
-    setIsReviewSheetOpen(false);
-    router.back();
-  };
-
-  const addLocalAttachment = (fileMetadata: FileMetadata) => {
-    if (!questionId) return;
-    setAttachments((current) => ({
-      ...current,
-      [questionId]: [
-        ...(current[questionId] || []),
-        { fileMetadata, id: Crypto.randomUUID(), uploaded: false },
-      ],
-    }));
-  };
-
-  const removeLocalAttachment = (id: string) => {
-    if (!questionId) return;
-    setAttachments((current) => ({
-      ...current,
-      [questionId]: (current[questionId] || []).filter((attachment) => attachment.id !== id),
-    }));
   };
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
@@ -550,19 +635,19 @@ const IncidentReport = () => {
         `${t("upload.compressing", { ns: "report_new_issue" })} ${Math.ceil(progress * 100)}%`,
       ),
     );
-    if (cameraResult) {
-      setIsOptionsSheetOpen(false);
-      addLocalAttachment(cameraResult);
-    }
     setIsPreparingFile(false);
+    if (cameraResult) {
+      await uploadNewAttachment(cameraResult);
+    } else {
+      setUploadProgress("");
+    }
   };
 
   const handleUploadAudio = async () => {
     const doc = await DocumentPicker.getDocumentAsync({ type: "audio/*", multiple: false });
     const file = doc?.assets?.[0];
     if (file) {
-      setIsOptionsSheetOpen(false);
-      addLocalAttachment({
+      await uploadNewAttachment({
         name: file.name,
         type: file.mimeType || "audio/mpeg",
         uri: file.uri,
@@ -571,34 +656,48 @@ const IncidentReport = () => {
     }
   };
 
-  const saveLocalNote = (text: string) => {
-    if (!questionId || !noteEditor) return;
-    const { noteId } = noteEditor;
+  const saveNote = (text: string) => {
+    if (!activeElectionRound || !currentForm || !questionId || !noteEditor) return;
+    const noteQuestionId = questionId;
+    const id = noteEditor.noteId ?? Crypto.randomUUID();
+
     setNotes((current) => {
-      const questionNotes = current[questionId] || [];
+      const questionNotes = current[noteQuestionId] || [];
       return {
         ...current,
-        [questionId]: noteId
-          ? questionNotes.map((note) => (note.id === noteId ? { ...note, text } : note))
-          : [...questionNotes, { id: Crypto.randomUUID(), text }],
+        [noteQuestionId]: noteEditor.noteId
+          ? questionNotes.map((note) => (note.id === id ? { ...note, text } : note))
+          : [...questionNotes, { id, text }],
       };
     });
+    // shares the report's mutation scope: sent after the report, also when queued offline
+    saveNoteOnServer({
+      id,
+      electionRoundId: activeElectionRound.id,
+      incidentReportId,
+      formId: currentForm.id,
+      questionId: noteQuestionId,
+      text,
+    });
+
     Keyboard.dismiss();
     setNoteEditor(null);
     setIsOptionsSheetOpen(false);
   };
 
-  const removeLocalNote = (id: string) => {
-    if (!questionId) return;
+  const removeNote = (id: string) => {
+    if (!activeElectionRound || !questionId) return;
+    const noteQuestionId = questionId;
     setNotes((current) => ({
       ...current,
-      [questionId]: (current[questionId] || []).filter((note) => note.id !== id),
+      [noteQuestionId]: (current[noteQuestionId] || []).filter((note) => note.id !== id),
     }));
+    deleteNoteOnServer({ id, electionRoundId: activeElectionRound.id, incidentReportId });
   };
 
-  const openNoteEditor = (note?: LocalNote) => {
+  const openNoteEditor = (note: ReportNote) => {
     Keyboard.dismiss();
-    setNoteEditor(note ? { noteId: note.id, text: note.text } : {});
+    setNoteEditor({ noteId: note.id, text: note.text });
     setIsOptionsSheetOpen(true);
   };
 
@@ -607,7 +706,7 @@ const IncidentReport = () => {
     setIsOptionsSheetOpen(true);
   };
 
-  // adding media needs a connection (the files are uploaded when the report is sent)
+  // adding media needs a connection (the files are uploaded right away)
   const whenOnline = (action: () => void) => () => {
     if (isOnline) {
       action();
@@ -625,7 +724,7 @@ const IncidentReport = () => {
     return <Typography>Incorrect page params</Typography>;
   }
 
-  if (isLoadingForm) {
+  if (isLoadingForm || (isResuming && isLoadingReport)) {
     return (
       <YStack justifyContent="center" alignItems="center" flex={1}>
         <Spinner size="large" color="$purple5" />
@@ -633,7 +732,7 @@ const IncidentReport = () => {
     );
   }
 
-  if (!currentForm) {
+  if (!currentForm || (isResuming && !existingReport)) {
     return (
       <Screen preset="fixed" contentContainerStyle={$containerStyle}>
         <Header
@@ -641,13 +740,29 @@ const IncidentReport = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <Typography padding="$md">{t("form_not_found")}</Typography>
+        <Typography padding="$md">
+          {currentForm ? t("error", { ns: "report_details" }) : t("form_not_found")}
+        </Typography>
       </Screen>
+    );
+  }
+
+  if (!isInitialized) {
+    return (
+      <YStack justifyContent="center" alignItems="center" flex={1}>
+        <Spinner size="large" color="$purple5" />
+      </YStack>
     );
   }
 
   const questionAttachments = (questionId && attachments[questionId]) || [];
   const questionNotes = (questionId && notes[questionId]) || [];
+  const isFirstQuestion =
+    !!activeQuestion && findPreviousQuestion(activeQuestion.indexInAllQuestions, answers) === null;
+  const isLastQuestion =
+    !!activeQuestion && findNextQuestion(activeQuestion.indexInAllQuestions, answers) === null;
+  // once saved, the location can not be changed any more
+  const showPrevious = !isFirstQuestion || !isSaved;
 
   return (
     <Screen
@@ -660,18 +775,45 @@ const IncidentReport = () => {
           <WizzardControls
             isFirstElement
             isLastElement={displayedQuestions.length === 0}
+            actionBtnLabel={t("next_question")}
             onActionButtonPress={handleLocationSubmit(onSubmitLocation)}
           />
         ) : (
-          <WizzardControls
-            isFirstElement={false}
-            isLastElement={
-              !!activeQuestion &&
-              findNextQuestion(activeQuestion.indexInAllQuestions, answers) === null
-            }
-            onActionButtonPress={handleQuestionSubmit(onSubmitAnswer)}
-            onPreviousButtonPress={goToPrevious}
-          />
+          <YStack
+            backgroundColor="white"
+            elevation={2}
+            gap="$sm"
+            padding="$md"
+            paddingBottom={16 + bottomInset}
+          >
+            {showPrevious || !isLastQuestion ? (
+              <XStack gap="$sm">
+                {showPrevious ? (
+                  <Button
+                    flex={1}
+                    preset="chromeless"
+                    icon={<Icon icon="chevronLeft" color="$purple5" />}
+                    onPress={handleQuestionSubmit(onPreviousAnswer)}
+                  >
+                    {t("previous_question")}
+                  </Button>
+                ) : (
+                  false
+                )}
+                {!isLastQuestion ? (
+                  <Button flex={1} preset="outlined" onPress={handleQuestionSubmit(onSubmitAnswer)}>
+                    {t("next_question")}
+                  </Button>
+                ) : (
+                  false
+                )}
+              </XStack>
+            ) : (
+              false
+            )}
+            {/* the main action: sends the report as it is, at any question */}
+            <Button onPress={handleQuestionSubmit(onSendNow)}>{t("review.send")}</Button>
+          </YStack>
         )
       }
     >
@@ -768,28 +910,32 @@ const IncidentReport = () => {
                   <Typography fontWeight="500">
                     {t("notes.heading", { ns: "polling_station_form_wizard" })}
                   </Typography>
-                  {questionNotes.map((note) => (
+                  {questionNotes.map((note, index) => (
                     <Card
-                      key={note.id}
+                      key={note.id ?? index}
                       flexDirection="row"
                       justifyContent="space-between"
                       padding="$0"
                       paddingLeft="$md"
-                      onPress={() => openNoteEditor(note)}
+                      onPress={note.id ? () => openNoteEditor(note) : undefined}
                     >
                       <Typography paddingVertical="$md" maxWidth="85%" numberOfLines={5}>
                         {note.text}
                       </Typography>
-                      <YStack
-                        padding="$md"
-                        onPress={() => {
-                          Keyboard.dismiss();
-                          setSelectedNoteToDelete(note.id);
-                        }}
-                        pressStyle={{ opacity: 0.5 }}
-                      >
-                        <Icon icon="xCircle" size={24} color="$gray5" />
-                      </YStack>
+                      {note.id ? (
+                        <YStack
+                          padding="$md"
+                          onPress={() => {
+                            Keyboard.dismiss();
+                            setSelectedNoteToDelete(note.id!);
+                          }}
+                          pressStyle={{ opacity: 0.5 }}
+                        >
+                          <Icon icon="xCircle" size={24} color="$gray5" />
+                        </YStack>
+                      ) : (
+                        false
+                      )}
                     </Card>
                   ))}
                 </YStack>
@@ -800,29 +946,39 @@ const IncidentReport = () => {
               {questionAttachments.length ? (
                 <YStack gap="$xxs" paddingTop="$lg">
                   <Typography fontWeight="500">{t("attachments.heading")}</Typography>
-                  {questionAttachments.map((attachment) => (
+                  {questionAttachments.map((attachment, index) => (
                     <Card
                       padding="$0"
                       paddingLeft="$md"
-                      key={attachment.id}
+                      key={attachment.id ?? index}
                       flexDirection="row"
                       justifyContent="space-between"
                       alignItems="center"
                       onPress={() => setPreviewAttachment(attachment)}
                     >
-                      <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
-                        {attachment.fileMetadata.name}
-                      </Typography>
-                      <YStack
-                        padding="$md"
-                        onPress={() => {
-                          Keyboard.dismiss();
-                          setSelectedAttachmentToDelete(attachment.id);
-                        }}
-                        pressStyle={{ opacity: 0.5 }}
+                      <Typography
+                        preset="body1"
+                        fontWeight="700"
+                        maxWidth="85%"
+                        numberOfLines={1}
+                        paddingVertical="$md"
                       >
-                        <Icon icon="xCircle" size={24} color="$gray5" />
-                      </YStack>
+                        {attachment.fileName}
+                      </Typography>
+                      {attachment.id ? (
+                        <YStack
+                          padding="$md"
+                          onPress={() => {
+                            Keyboard.dismiss();
+                            setSelectedAttachmentToDelete(attachment.id!);
+                          }}
+                          pressStyle={{ opacity: 0.5 }}
+                        >
+                          <Icon icon="xCircle" size={24} color="$gray5" />
+                        </YStack>
+                      ) : (
+                        false
+                      )}
                     </Card>
                   ))}
                 </YStack>
@@ -840,12 +996,9 @@ const IncidentReport = () => {
         )}
       </ScreenScrollView>
 
-      {previewAttachment && previewAttachment.fileMetadata.type === AttachmentMimeType.IMG && (
+      {previewAttachment && previewAttachment.mimeType === AttachmentMimeType.IMG && (
         <MediaDialog
-          media={{
-            type: previewAttachment.fileMetadata.type,
-            src: previewAttachment.fileMetadata.uri,
-          }}
+          media={{ type: previewAttachment.mimeType, src: previewAttachment.uri }}
           onClose={() => setPreviewAttachment(null)}
         />
       )}
@@ -857,7 +1010,7 @@ const IncidentReport = () => {
           actionBtnText={t("attachments.delete.actions.clear")}
           cancelBtnText={t("attachments.delete.actions.cancel")}
           action={() => {
-            removeLocalAttachment(selectedAttachmentToDelete);
+            removeAttachment(selectedAttachmentToDelete);
             setSelectedAttachmentToDelete(null);
           }}
           onCancel={() => setSelectedAttachmentToDelete(null)}
@@ -871,27 +1024,10 @@ const IncidentReport = () => {
           actionBtnText={t("notes.delete.actions.delete", { ns: "polling_station_form_wizard" })}
           cancelBtnText={t("notes.delete.actions.cancel", { ns: "polling_station_form_wizard" })}
           action={() => {
-            removeLocalNote(selectedNoteToDelete);
+            removeNote(selectedNoteToDelete);
             setSelectedNoteToDelete(null);
           }}
           onCancel={() => setSelectedNoteToDelete(null)}
-        />
-      )}
-
-      {isReviewSheetOpen && (
-        <ReviewIncidentReportSheet
-          currentForm={currentForm}
-          language={language}
-          locationLabel={getIncidentReportLocationLabel(getLocation(), visits)}
-          answers={answers}
-          attachments={attachments}
-          notes={notes}
-          isSubmitting={isPending}
-          isUploading={isUploading}
-          uploadProgress={uploadProgress}
-          onSubmit={onSubmitReport}
-          onAbortUpload={onAbortUpload}
-          onClose={() => setIsReviewSheetOpen(false)}
         />
       )}
 
@@ -899,14 +1035,19 @@ const IncidentReport = () => {
         <OptionsSheet
           open
           setOpen={(open) => {
+            if (isUploading) return;
             setIsOptionsSheetOpen(open);
             if (!open) setNoteEditor(null);
           }}
-          isLoading={isPreparingFile}
+          isLoading={isPreparingFile || isUploading}
           disableDrag={!!noteEditor}
         >
-          {isPreparingFile ? (
-            <MediaLoading progress={uploadProgress} />
+          {isPreparingFile || isUploading ? (
+            <MediaLoading
+              progress={uploadProgress}
+              isUploading={isUploading}
+              onAbortUpload={onAbortUpload}
+            />
           ) : noteEditor ? (
             <NoteForm
               key={noteEditor.noteId ?? "new"}
@@ -916,7 +1057,7 @@ const IncidentReport = () => {
                   : t("notes.add.heading", { ns: "polling_station_form_wizard" })
               }
               initialText={noteEditor.text}
-              onSave={saveLocalNote}
+              onSave={saveNote}
               onCancel={() => setNoteEditor(null)}
             />
           ) : (

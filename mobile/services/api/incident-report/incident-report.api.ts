@@ -20,6 +20,8 @@ export type IncidentReportAttachmentAPIResponse = {
 };
 
 export type IncidentReportNoteAPIResponse = {
+  // missing from servers that predate it
+  id?: string;
   submissionId: string;
   questionId: string;
   text: string;
@@ -170,5 +172,62 @@ export const upsertIncidentReportNote = ({
   return API.post(
     `election-rounds/${electionRoundId}/incident-reports/${incidentReportId}/notes`,
     payload,
+  ).then((res) => res.data);
+};
+
+export type DeleteIncidentReportNoteAPIPayload = {
+  id: string;
+  electionRoundId: string;
+  incidentReportId: string;
+};
+
+export const deleteIncidentReportNote = ({
+  id,
+  electionRoundId,
+  incidentReportId,
+}: DeleteIncidentReportNoteAPIPayload): Promise<unknown> => {
+  return API.delete(
+    `election-rounds/${electionRoundId}/incident-reports/${incidentReportId}/notes/${id}`,
+  ).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= GET / DELETE incident report attachments ============
+    ========================================================================
+    @description Unlike the attachments in incident-reports:my, these have their ids (needed to delete them)
+*/
+export type IncidentReportAttachmentWithIdAPIResponse = {
+  id: string;
+  incidentReportId: string;
+  formId: string;
+  questionId: string;
+  fileName: string;
+  mimeType: string;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+};
+
+export const getIncidentReportAttachments = (
+  electionRoundId: string,
+  incidentReportId: string,
+  formId: string,
+): Promise<IncidentReportAttachmentWithIdAPIResponse[]> => {
+  return API.get<{ attachments: IncidentReportAttachmentWithIdAPIResponse[] }>(
+    `election-rounds/${electionRoundId}/incident-reports/${incidentReportId}/attachments`,
+    { params: { formId } },
+  ).then((res) => res.data.attachments);
+};
+
+export const deleteIncidentReportAttachment = ({
+  id,
+  electionRoundId,
+  incidentReportId,
+}: {
+  id: string;
+  electionRoundId: string;
+  incidentReportId: string;
+}): Promise<unknown> => {
+  return API.delete(
+    `election-rounds/${electionRoundId}/incident-reports/${incidentReportId}/attachments/${id}`,
   ).then((res) => res.data);
 };

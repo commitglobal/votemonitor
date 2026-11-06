@@ -170,6 +170,10 @@ const normalizeUrl = (url?: string) =>
  * connectivity) are expected on observers' phones, and the queries retry them: reporting each one only buries real
  * errors. Sentry's beforeSend drops them wherever they're captured.
  */
+// the request got no response: no connectivity, an unreachable server or a timeout
+export const isNetworkError = (error: unknown) =>
+  axios.isAxiosError(error) && !error.response && !axios.isCancel(error);
+
 export const isExpectedApiError = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     const status = error.response?.status;

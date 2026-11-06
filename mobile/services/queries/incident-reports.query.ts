@@ -1,6 +1,7 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import {
+  getIncidentReportAttachments,
   getMyIncidentReports,
   IncidentReportAPIResponse,
 } from "../api/incident-report/incident-report.api";
@@ -21,6 +22,13 @@ export const IncidentReportKeys = {
   ],
   add: () => [...IncidentReportKeys.all, "add"] as const,
   addNote: () => [...IncidentReportKeys.all, "addNote"] as const,
+  deleteNote: () => [...IncidentReportKeys.all, "deleteNote"] as const,
+  attachments: (electionRoundId: string | undefined, incidentReportId: string | undefined) => [
+    ...IncidentReportKeys.all,
+    "attachments",
+    electionRoundId,
+    incidentReportId,
+  ],
   // the report and its notes run one after the other (also when resumed after being offline):
   // a note can only be added to a report that exists on the server
   mutationScope: (incidentReportId: string) => `incident-report:${incidentReportId}`,
@@ -59,3 +67,20 @@ const selectIncidentReportingForms = (data: ElectionRoundsAllFormsAPIResponse): 
 
 export const useIncidentReportingForms = (electionRoundId: string | undefined) =>
   useElectionRoundAllForms(electionRoundId, selectIncidentReportingForms);
+
+// the attachments of a report with their ids (incident-reports:my does not have them)
+export const useIncidentReportAttachments = (
+  electionRoundId: string | undefined,
+  incidentReportId: string | undefined,
+  formId: string | undefined,
+  enabled: boolean,
+) =>
+  useQuery({
+    queryKey: IncidentReportKeys.attachments(electionRoundId, incidentReportId),
+    queryFn:
+      enabled && electionRoundId && incidentReportId && formId
+        ? () => getIncidentReportAttachments(electionRoundId, incidentReportId, formId)
+        : skipToken,
+    // continuing a draft needs the current files
+    refetchOnMount: "always",
+  });

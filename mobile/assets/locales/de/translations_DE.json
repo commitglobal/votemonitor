@@ -733,6 +733,8 @@
         "title": "Vorfallsbericht",
         "form_not_found": "Dieses Formular für Vorfallsberichte ist nicht mehr verfügbar.",
         "progress_bar_label": "Formularfortschritt",
+        "previous_question": "Vorherige Frage",
+        "next_question": "Nächste Frage",
         "error": "Beim Senden des Vorfallsberichts ist ein Problem aufgetreten.",
         "report_type_sheet": {
             "title": "Was möchten Sie melden?",
