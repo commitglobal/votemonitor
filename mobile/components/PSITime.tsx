@@ -8,9 +8,11 @@ import Card from "./Card";
 import { TimeNotDefined } from "./TimeNotDefined";
 import { PollingStationInformationAPIResponse } from "../services/definitions.api";
 import { router } from "expo-router";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 
 export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIResponse | null }) => {
   const { t } = useTranslation("observation");
+  const { formatDate, formatTime } = useDateTimeFormat();
 
   const handleNavigateToObservationTime = () => {
     router.push("/observation-time");
@@ -49,11 +51,7 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
                 color={psiData.arrivalTime ? "$gray7" : "$gray3"}
               >
                 {psiData.arrivalTime
-                  ? new Date(psiData.arrivalTime).toLocaleDateString(["en-GB"], {
-                      month: "2-digit",
-                      day: "2-digit",
-                      year: "numeric",
-                    })
+                  ? formatDate(new Date(psiData.arrivalTime))
                   : t("polling_stations_information.observation_time.undefined_date")}
               </Typography>
 
@@ -63,10 +61,7 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
                 color={psiData.arrivalTime ? "$gray7" : "$gray3"}
               >
                 {psiData.arrivalTime
-                  ? new Date(psiData.arrivalTime).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
+                  ? formatTime(new Date(psiData.arrivalTime))
                   : t("polling_stations_information.observation_time.undefined_time")}
               </Typography>
             </YStack>
@@ -85,11 +80,7 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
                 color={psiData.departureTime ? "$gray7" : "$gray3"}
               >
                 {psiData.departureTime
-                  ? new Date(psiData.departureTime).toLocaleDateString(["en-GB"], {
-                      month: "2-digit",
-                      day: "2-digit",
-                      year: "numeric",
-                    })
+                  ? formatDate(new Date(psiData.departureTime))
                   : t("polling_stations_information.observation_time.undefined_date")}
               </Typography>
 
@@ -99,10 +90,7 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
                 color={psiData.departureTime ? "$gray7" : "$gray3"}
               >
                 {psiData.departureTime
-                  ? new Date(psiData.departureTime).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
+                  ? formatTime(new Date(psiData.departureTime))
                   : t("polling_stations_information.observation_time.undefined_time")}
               </Typography>
             </YStack>

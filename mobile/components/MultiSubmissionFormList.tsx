@@ -20,6 +20,7 @@ import {
 } from "../services/queries.service";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
+import { isIncidentReportingForm } from "../services/definitions.api";
 import Button from "./Button";
 import { Dialog } from "./Dialog";
 import MultiSubmissionFormCard from "./MultiSubmissionFormCard";
@@ -38,10 +39,7 @@ export type MultiSubmissionFormListItem = {
 };
 
 type ListHeaderComponentType =
-  | ComponentType<any>
-  | ReactElement<any, string | JSXElementConstructor<any>>
-  | null
-  | undefined;
+  ComponentType<any> | ReactElement<any, string | JSXElementConstructor<any>> | null | undefined;
 
 interface IMultiSubmissionFormListProps {
   ListHeaderComponent: ListHeaderComponentType;
@@ -93,7 +91,10 @@ const MultiSubmissionFormList = ({ ListHeaderComponent }: IMultiSubmissionFormLi
   };
 
   const formList: MultiSubmissionFormListItem[] = useMemo(() => {
-    return mapFormToMultiSubmissionFormListItem(allForms?.forms, formSubmissions);
+    return mapFormToMultiSubmissionFormListItem(
+      allForms?.forms.filter((form) => !isIncidentReportingForm(form)),
+      formSubmissions,
+    );
   }, [allForms, formSubmissions]);
 
   const {

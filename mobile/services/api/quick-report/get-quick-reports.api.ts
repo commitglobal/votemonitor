@@ -28,6 +28,7 @@ export type QuickReportsAPIResponse = {
   pollingStationId?: string | null;
   pollingStationDetails?: string;
   attachments: Array<QuickReportAttachmentAPIResponse>;
+  timestamp?: string;
 };
 
 export const getQuickReports = (

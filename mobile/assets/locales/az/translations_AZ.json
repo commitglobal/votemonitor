@@ -483,6 +483,9 @@
       "max": "Sütunun maksimum {{value}} simvolu olmalıdır",
       "required": "Bu sahə tələb olunur",
       "date_placeholder": "Xahiş edirik tarixi qeyd edin",
+      "time_placeholder": "Xahiş edirik vaxtı qeyd edin",
+      "datetime_placeholder": "Xahiş edirik tarixi və vaxtı qeyd edin",
+      "unsupported_question": "Bu sual tətbiqin daha yeni versiyasını tələb edir. Cavab vermək üçün tətbiqi yeniləyin.",
       "text_placeholder": "Xahiş edirik mətni qeyd edin"
     },
     "save_and_continue": "Yadda saxlayın və davam edin",
@@ -599,6 +602,7 @@
     "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır."
   },
   "quick_report": {
+    "header_title": "Hesabatlar",
     "list": {
       "title": "Pozuntu barədə sürətli bildiriş vermək",
       "heading": "Mənim göndərdiyim pozuntular barədə sürətli bildirişlər",
@@ -722,6 +726,55 @@
     "no_files": "Əlavə fayllar yoxdur",
     "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
   },
+  "incident_report": {
+    "title": "İnsident hesabatı",
+    "form_not_found": "Bu insident hesabatı forması artıq mövcud deyil.",
+    "progress_bar_label": "Formanın tərəqqisi",
+    "previous_question": "Əvvəlki sual",
+    "next_question": "Növbəti sual",
+    "error": "İnsident hesabatı göndərilərkən problem baş verdi.",
+    "report_type_sheet": {
+      "title": "Nə barədə məlumat vermək istəyirsiniz?",
+      "quick_report": "Pozuntu barədə sürətli bildiriş"
+    },
+    "list": {
+      "answers": "Cavablandırılmış suallar: {{count}}"
+    },
+    "location": {
+      "label": "Məkan"
+    },
+    "location_description": {
+      "label_other_polling_station": "Seçki məntəqəsinin detalları *",
+      "label_not_related": "Məkanın detalları *",
+      "placeholder": "Xahiş edirik, burada bu məkana aid identifikasiya detallarını qeyd edin (ünvan, ad, nömrə və s. kimi)",
+      "required": "Bu sütun mütləqdir",
+      "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır."
+    },
+    "review": {
+      "heading": "Hesabatınızı nəzərdən keçirin",
+      "send": "Hesabatı göndərin",
+      "sending_report": "Hesabatınızı göndəririk. Zəhmət olmasa gözləyin..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Saxlanmamış dəyişiklikləriniz var",
+      "description": "Bu səhifəni tərk etmək hesabat üzrə bütün irəliləyişlərinizin itirilməsinə səbəb olacaq. Geri qayıtmaq istədiyinizə əminsiniz?",
+      "actions": {
+        "discard": "Geri qayıt",
+        "save": "Burada qalın"
+      }
+    },
+    "attachments": {
+      "heading": "Yüklənmiş media",
+      "delete": {
+        "title": "Media faylın silinməsi",
+        "description": "Bu əməliyyatı geri qaytarmaq mümkün deyil. Silinmiş media faylını bərpa etmək mümkün deyil.",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "clear": "Silmək"
+        }
+      }
+    }
+  },
   "guides": {
     "title": "Bələdçilər",
     "empty": {
@@ -781,9 +834,21 @@
       "p2": "Hər hansı yeni məlumat alıb-almadığınızı yoxlamaq üçün vaxtaşırı yoxlayın."
     }
   },
+  "dateTimeFormatSettings": {
+    "title": "Vaxt və tarix parametrləri",
+    "time_format": {
+      "title": "Vaxt formatı",
+      "24h": "24 saatlıq",
+      "12h": "12 saatlıq"
+    },
+    "date_format": {
+      "title": "Tarix formatı"
+    }
+  },
   "more": {
     "title": "Daha artıq",
     "change-language": "Aplikasiya dilinin dəyişdirilməsi",
+    "date_time_settings": "Vaxt və tarix parametrləri",
     "change-password": "Parolun dəyişdirilməsi",
     "terms": "Qaydalar və şərtlər",
     "privacy_policy": "Gizlilik siyasəti",

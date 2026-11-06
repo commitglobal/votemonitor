@@ -486,6 +486,9 @@
             "max": "Das Feld darf maximal {{value}} Zeichen enthalten.",
             "required": "Dieses Feld ist ein Pflichtfeld.",
             "date_placeholder": "Bitte geben Sie ein Datum ein.",
+            "time_placeholder": "Bitte geben Sie eine Uhrzeit ein.",
+            "datetime_placeholder": "Bitte geben Sie Datum und Uhrzeit ein.",
+            "unsupported_question": "Für diese Frage ist eine neuere Version der App erforderlich. Aktualisieren Sie die App, um sie zu beantworten.",
             "text_placeholder": "Bitte geben Sie einen Text ein."
         },
         "save_and_continue": "Speichern und fortfahren",
@@ -602,6 +605,7 @@
         "offline_error_toast_msg": "Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
     },
     "quick_report": {
+        "header_title": "Berichte",
         "list": {
             "title": "Kurzbericht",
             "heading": "Meine gemeldeten Vorkommnise",
@@ -725,6 +729,55 @@
         "no_files": "Keine angehängten Dateien",
         "error": "Fehler beim Laden des Berichts"
     },
+    "incident_report": {
+        "title": "Vorfallsbericht",
+        "form_not_found": "Dieses Formular für Vorfallsberichte ist nicht mehr verfügbar.",
+        "progress_bar_label": "Formularfortschritt",
+        "previous_question": "Vorherige Frage",
+        "next_question": "Nächste Frage",
+        "error": "Beim Senden des Vorfallsberichts ist ein Problem aufgetreten.",
+        "report_type_sheet": {
+            "title": "Was möchten Sie melden?",
+            "quick_report": "Kurzbericht"
+        },
+        "list": {
+            "answers": "Beantwortete Fragen: {{count}}"
+        },
+        "location": {
+            "label": "Ort"
+        },
+        "location_description": {
+            "label_other_polling_station": "Angaben zum Wahllokal *",
+            "label_not_related": "Angaben zum Ort *",
+            "placeholder": "Bitte geben Sie hier einige Identifikationsdaten für diesen Ort an (z. B. Adresse, Name, Nummer usw.).",
+            "required": "Dieses Feld ist ein Pflichtfeld.",
+            "max": "Die Eingabe darf {{value}} Zeichen nicht überschreiten."
+        },
+        "review": {
+            "heading": "Bericht überprüfen",
+            "send": "Bericht senden",
+            "sending_report": "Ihr Bericht wird gesendet. Bitte warten…"
+        },
+        "unsaved_changes_dialog": {
+            "title": "Sie haben ungespeicherte Änderungen",
+            "description": "Wenn Sie diese Seite verlassen, gehen alle bisherigen Eingaben im Bericht verloren. Möchten Sie wirklich zurückgehen?",
+            "actions": {
+                "discard": "Zurückgehen",
+                "save": "Hier bleiben"
+            }
+        },
+        "attachments": {
+            "heading": "Hochgeladene Medien",
+            "delete": {
+                "title": "Mediendatei löschen",
+                "description": "Diese Aktion kann nicht rückgängig gemacht werden. Nach dem Löschen kann eine Mediendatei nicht wiederhergestellt werden.",
+                "actions": {
+                    "cancel": "Abbrechen",
+                    "clear": "Löschen"
+                }
+            }
+        }
+    },
     "guides": {
         "title": "Ressourcen",
         "empty": {
@@ -784,9 +837,21 @@
             "p2": "Schauen Sie regelmäßig nach, ob Sie neue Informationen erhalten haben."
         }
     },
+    "dateTimeFormatSettings": {
+        "title": "Zeit- und Datumseinstellungen",
+        "time_format": {
+            "title": "Zeitformat",
+            "24h": "24-Stunden",
+            "12h": "12-Stunden"
+        },
+        "date_format": {
+            "title": "Datumsformat"
+        }
+    },
     "more": {
         "title": "Mehr",
         "change-language": "App-Sprache ändern",
+        "date_time_settings": "Zeit- und Datumseinstellungen",
         "change-password": "Passwort ändern",
         "terms": "Allgemeine Geschäftsbedingungen",
         "privacy_policy": "Datenschutzerklärung",

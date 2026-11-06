@@ -11,15 +11,32 @@ import Button from "../Button";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import useAnimatedKeyboardPadding from "../../hooks/useAnimatedKeyboardPadding";
+import { useDateTimeFormat } from "../../contexts/date-time-format/DateTimeFormatContext.provider";
+import { getPickerLocale } from "../../common/utils/time";
+
+export type DateInputMode = "date" | "time" | "datetime";
 
 export interface DateInputProps extends XStackProps {
   value: Date | null;
+  // what is picked: a calendar day, a time of day, or both (the default)
+  mode?: DateInputMode;
   onChange: (...event: any[]) => void;
   minimumDate?: Date | null;
   maximumDate?: Date | null;
   placeholder?: string;
   error?: string;
 }
+
+const formatValue = (
+  value: Date,
+  mode: DateInputMode,
+  formatDate: (value: Date) => string,
+  formatTime: (value: Date) => string,
+) => {
+  if (mode === "date") return formatDate(value);
+  if (mode === "time") return formatTime(value);
+  return `${formatDate(value)} - ${formatTime(value)}`;
+};
 
 export const DateInput: React.FC<DateInputProps> = ({
   value,
@@ -29,6 +46,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   placeholder,
   disabled,
   error,
+  mode = "datetime",
   ...rest
 }) => {
   const localParams = useLocalSearchParams();
@@ -36,7 +54,8 @@ export const DateInput: React.FC<DateInputProps> = ({
   // on ios we use a temporary date, as the onChange function gets triggered every time the user picks a new date
   // therefore, we will update the FINAL date state (that comes from the outside), only onDonePress
   const [tempDate, setTempDate] = useState(value || new Date());
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
+  const { is24Hour, formatDate, formatTime } = useDateTimeFormat();
 
   const handleSheetOpen = () => {
     Keyboard.dismiss();
@@ -49,6 +68,11 @@ export const DateInput: React.FC<DateInputProps> = ({
     } else {
       if (event.type === "set") {
         onClose();
+        // android picks one part per dialog: a date or time question is done after its own dialog
+        if (mode !== "datetime") {
+          selectedDate && onChange(selectedDate);
+          return;
+        }
         DateTimePickerAndroid.open({
           mode: "time",
           value: value || new Date(),
@@ -59,6 +83,7 @@ export const DateInput: React.FC<DateInputProps> = ({
               onChange(selectedDate);
             }
           },
+          is24Hour,
         });
       } else if (event.type === "dismissed") {
         // press Cancel - close modal
@@ -100,16 +125,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         numberOfLines={1}
         width="90%"
       >
-        {value
-          ? `${value.toLocaleDateString(["en-GB"], {
-              month: "2-digit",
-              day: "2-digit",
-              year: "numeric",
-            })} - ${value.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}`
-          : placeholder}
+        {value ? formatValue(value, mode, formatDate, formatTime) : placeholder}
       </Typography>
       <Icon icon="calendar" color={disabled ? "$gray3" : "$gray4"} />
       {/* open bottom sheet on ios with date picker */}
@@ -122,13 +138,16 @@ export const DateInput: React.FC<DateInputProps> = ({
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center" marginVertical="$sm">
               <RNDateTimePicker
-                mode="datetime"
+                mode={mode}
                 display="spinner"
                 value={tempDate}
                 onChange={onDateChange}
                 minimumDate={minimumDate || undefined}
                 maximumDate={maximumDate || undefined}
-                locale={localParams.language as string}
+                locale={getPickerLocale(
+                  (localParams.language as string) || i18n.language,
+                  is24Hour,
+                )}
               />
             </XStack>
           </AnimatedSheetFrame>
@@ -137,10 +156,10 @@ export const DateInput: React.FC<DateInputProps> = ({
         // open date picker modal on android
         open &&
         DateTimePickerAndroid.open({
-          mode: "date",
+          mode: mode === "time" ? "time" : "date",
           value: value || new Date(),
           onChange: onDateChange,
-          is24Hour: true,
+          is24Hour,
           minimumDate: minimumDate || undefined,
           maximumDate: maximumDate || undefined,
         })

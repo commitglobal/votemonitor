@@ -24,6 +24,15 @@ import { ASYNC_STORAGE_KEYS, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../common/
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
 import { QuickReportAttachmentAPIResponse } from "../../services/api/quick-report/get-quick-reports.api";
+import { IncidentReportKeys } from "../../services/queries/incident-reports.query";
+import {
+  upsertIncidentReport,
+  upsertIncidentReportNote,
+  UpsertIncidentReportNoteAPIPayload,
+  deleteIncidentReportNote,
+  DeleteIncidentReportNoteAPIPayload,
+} from "../../services/api/incident-report/incident-report.api";
+import { AddIncidentReportMutationPayload } from "../../services/mutations/incident-report/add-incident-report.mutation";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -144,6 +153,28 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
+  queryClient.setMutationDefaults(IncidentReportKeys.add(), {
+    mutationFn: async ({
+      attachments: _attachments,
+      notes: _notes,
+      ...payload
+    }: AddIncidentReportMutationPayload) => {
+      return upsertIncidentReport(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(IncidentReportKeys.addNote(), {
+    mutationFn: (payload: UpsertIncidentReportNoteAPIPayload) => {
+      return upsertIncidentReportNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(IncidentReportKeys.deleteNote(), {
+    mutationFn: (payload: DeleteIncidentReportNoteAPIPayload) => {
+      return deleteIncidentReportNote(payload);
+    },
+  });
+
   const runPendingMutations = async () => {
     console.log(
       "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage and put in MutationCache",
@@ -219,7 +250,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
             // if (query.meta?.dontPersist) return false;
 
-            return defaultShouldDehydrateQuery(query);
+            // a refetch that failed while offline (status "error") still has the data from before: keep it,
+            // otherwise starting the app offline a second time finds nothing (no election rounds, visits, ...)
+            return (
+              defaultShouldDehydrateQuery(query) ||
+              (query.state.status === "error" && query.state.data !== undefined)
+            );
           },
           shouldDehydrateMutation: (mutation) => {
             if (mutation.options.scope?.id === MUTATION_SCOPE_DO_NOT_HYDRATE) {

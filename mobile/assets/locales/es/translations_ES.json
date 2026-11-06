@@ -485,6 +485,9 @@
       "max": "El campo debe tener un máximo de {{value}} caracteres",
       "required": "Este campo es obligatorio",
       "date_placeholder": "Por favor, ingresa una fecha",
+      "time_placeholder": "Por favor, ingresa una hora",
+      "datetime_placeholder": "Por favor, ingresa una fecha y hora",
+      "unsupported_question": "Esta pregunta requiere una versión más reciente de la aplicación. Actualiza la aplicación para responderla.",
       "text_placeholder": "Por favor, ingresa un texto"
     },
     "save_and_continue": "Guardar y continuar",
@@ -601,6 +604,7 @@
     "offline_error_toast_msg": "Necesitas una conexión a internet para realizar esta acción."
   },
   "quick_report": {
+    "header_title": "Informes",
     "list": {
       "title": "Informe rápido",
       "heading": "Mis problemas reportados",
@@ -724,6 +728,55 @@
     "no_files": "No se adjuntaron archivos",
     "error": "Error al cargar el informe"
   },
+  "incident_report": {
+    "title": "Informe de incidente",
+    "form_not_found": "Este formulario de informe de incidente ya no está disponible.",
+    "progress_bar_label": "Progreso del formulario",
+    "previous_question": "Pregunta anterior",
+    "next_question": "Siguiente pregunta",
+    "error": "Hubo un problema al enviar el informe de incidente.",
+    "report_type_sheet": {
+      "title": "¿Qué quieres reportar?",
+      "quick_report": "Informe rápido"
+    },
+    "list": {
+      "answers": "Preguntas respondidas: {{count}}"
+    },
+    "location": {
+      "label": "Ubicación"
+    },
+    "location_description": {
+      "label_other_polling_station": "Detalles de la estación de votación *",
+      "label_not_related": "Detalles de la ubicación *",
+      "placeholder": "Por favor, escribe aquí algunos detalles de identificación para esta ubicación (como dirección, nombre, número, etc.)",
+      "required": "Este campo es obligatorio.",
+      "max": "La entrada no puede exceder {{value}} caracteres."
+    },
+    "review": {
+      "heading": "Revisar tu informe",
+      "send": "Enviar informe",
+      "sending_report": "Estamos enviando tu informe. Por favor, espera..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Tienes cambios no guardados",
+      "description": "Salir de esta página hará que se pierda todo tu progreso en el informe. ¿Estás seguro de que deseas volver?",
+      "actions": {
+        "discard": "Volver",
+        "save": "Quedarse aquí"
+      }
+    },
+    "attachments": {
+      "heading": "Medios subidos",
+      "delete": {
+        "title": "Eliminar archivo multimedia",
+        "description": "Esta acción no se puede deshacer. Una vez eliminado, un archivo multimedia no puede ser recuperado.",
+        "actions": {
+          "cancel": "Cancelar",
+          "clear": "Eliminar"
+        }
+      }
+    }
+  },
   "guides": {
     "title": "Recursos",
     "empty": {
@@ -783,9 +836,21 @@
       "p2": "Revisa periódicamente para ver si has recibido nueva información."
     }
   },
+  "dateTimeFormatSettings": {
+    "title": "Ajustes de hora y fecha",
+    "time_format": {
+      "title": "Formato de hora",
+      "24h": "24 horas",
+      "12h": "12 horas"
+    },
+    "date_format": {
+      "title": "Formato de fecha"
+    }
+  },
   "more": {
     "title": "Más",
     "change-language": "Cambiar idioma de la app",
+    "date_time_settings": "Ajustes de hora y fecha",
     "change-password": "Cambiar contraseña",
     "terms": "Términos y condiciones",
     "privacy_policy": "Política de privacidad",

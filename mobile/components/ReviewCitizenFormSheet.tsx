@@ -4,13 +4,9 @@ import { Typography } from "./Typography";
 import Button from "./Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FormAPIModel } from "../services/definitions.api";
-import {
-  ApiFormAnswer,
-  MultiSelectAnswer,
-  SingleSelectAnswer,
-} from "../services/interfaces/answer.type";
+import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import { Separator, Sheet, Spinner, YStack } from "tamagui";
-import { getAnswerDisplay } from "../common/utils/answers";
+import { getAnswerDisplay, mapAnswersForDisplay } from "../common/utils/answers";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
 import { useTranslation } from "react-i18next";
 import * as Crypto from "expo-crypto";
@@ -26,8 +22,6 @@ import {
   useUploadAttachmentCitizenMutation,
 } from "../services/mutations/citizen/add-attachment-citizen.mutation";
 import { AddAttachmentCitizenStartAPIPayload } from "../services/api/citizen/attachments.api";
-import * as FileSystem from "expo-file-system/legacy";
-import { Buffer } from "buffer";
 import * as Sentry from "@sentry/react-native";
 import MediaLoading from "./MediaLoading";
 import {
@@ -35,6 +29,7 @@ import {
   useUploadS3ChunkMutation,
 } from "../services/mutations/attachments/add-attachment.mutation";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { AttachmentData } from "../services/api/add-attachment.api";
 
@@ -72,6 +67,7 @@ export default function ReviewCitizenFormSheet({
 }) {
   const cancelRef = useRef<boolean>(false);
   const { t } = useTranslation("citizen_form");
+  const dateTimeFormat = useDateTimeFormat();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { isOnline } = useNetInfoContext();
@@ -91,66 +87,10 @@ export default function ReviewCitizenFormSheet({
 
   const { mutateAsync: addAttachmentCitizen } = useUploadAttachmentCitizenMutation();
 
-  const mappedAnswers = useMemo(() => {
-    if (!answers || !questions) return {};
-
-    return Object.entries(answers).reduce(
-      (acc, [questionId, answer]) => {
-        if (!answer) return acc;
-        const question = questions.find((q) => q.id === questionId);
-        if (!question) return acc;
-
-        let mappedAnswer = { ...answer } as SingleSelectAnswer | MultiSelectAnswer;
-
-        if (
-          answer.$answerType === "singleSelectAnswer" &&
-          question.$questionType === "singleSelectQuestion"
-        ) {
-          const selectedOptionId = answer.selection.optionId;
-
-          const selectedOptionText = question.options.find((o) => o.id === selectedOptionId)?.text[
-            language
-          ];
-
-          mappedAnswer = {
-            ...mappedAnswer,
-            selection: {
-              ...mappedAnswer.selection,
-              value: selectedOptionText,
-            },
-          } as SingleSelectAnswer;
-        } else if (
-          answer.$answerType === "multiSelectAnswer" &&
-          question.$questionType === "multiSelectQuestion"
-        ) {
-          const selectedOptionIds = answer.selection.map((selection) => selection.optionId);
-          const selectedOptionsTexts: string[] = [];
-          for (const option of question.options) {
-            if (selectedOptionIds.includes(option.id)) {
-              const selectedOption = answer.selection.find(
-                (selection) => selection.optionId === option.id,
-              );
-              const optionText = option.text[language] || "";
-              const userText = selectedOption?.text || "";
-              selectedOptionsTexts.push(
-                userText ? `${optionText} (${userText.trim()})` : optionText,
-              );
-            }
-          }
-
-          mappedAnswer = {
-            ...mappedAnswer,
-            selection: answer.selection,
-            selectionValues: selectedOptionsTexts,
-          } as MultiSelectAnswer;
-        }
-
-        acc[questionId] = mappedAnswer;
-        return acc;
-      },
-      {} as Record<string, ApiFormAnswer>,
-    );
-  }, [answers, questions]);
+  const mappedAnswers = useMemo(
+    () => mapAnswersForDisplay(answers, questions, language),
+    [answers, questions, language],
+  );
   //   only display the questions that have an answer to them (because in case of skip logic we would have multiple questions that were not shown to the user)
   const displayedQuestions = useMemo(() => {
     if (!currentForm?.questions || !mappedAnswers) return [];
@@ -296,14 +236,12 @@ export default function ReviewCitizenFormSheet({
         if (cancelRef.current) {
           throw new Error("Upload aborted");
         }
-        const chunk = await FileSystem.readAsStringAsync(filePath, {
-          length: MULTIPART_FILE_UPLOAD_SIZE,
-          position: index * MULTIPART_FILE_UPLOAD_SIZE,
-          encoding: FileSystem.EncodingType.Base64,
+        const data = await uploadS3Chunk({
+          url,
+          filePath,
+          partIndex: index,
+          partSize: MULTIPART_FILE_UPLOAD_SIZE,
         });
-        const buffer = Buffer.from(chunk, "base64");
-
-        const data = await uploadS3Chunk({ url, chunk: buffer });
 
         setUploadProgress(
           `${t("attachments.upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
@@ -403,7 +341,11 @@ export default function ReviewCitizenFormSheet({
                       <Typography fontWeight="500">{question.text[language]}</Typography>
                       {mappedAnswers && mappedAnswers[question.id] && (
                         <Typography marginTop="$xs" color="$gray5">
-                          {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+                          {getAnswerDisplay(
+                            mappedAnswers[question.id] as ApiFormAnswer,
+                            true,
+                            dateTimeFormat,
+                          )}
                         </Typography>
                       )}
                       {attachments && attachments[question.id] ? (

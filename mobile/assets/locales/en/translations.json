@@ -486,6 +486,9 @@
       "max": "The field must have a maximum of {{value}} characters",
       "required": "This field is required",
       "date_placeholder": "Please enter a date",
+      "time_placeholder": "Please enter a time",
+      "datetime_placeholder": "Please enter a date and time",
+      "unsupported_question": "This question needs a newer version of the app. Update the app to answer it.",
       "text_placeholder": "Please enter a text"
     },
     "save_and_continue": "Save and continue",
@@ -602,6 +605,7 @@
     "offline_error_toast_msg": "You need an internet connection in order to perform this action."
   },
   "quick_report": {
+    "header_title": "Reports",
     "list": {
       "title": "Quick Report",
       "heading": "My reported issues",
@@ -725,6 +729,55 @@
     "no_files": "No attached files",
     "error": "Error while loading the report"
   },
+  "incident_report": {
+    "title": "Incident report",
+    "form_not_found": "This incident report form is no longer available.",
+    "progress_bar_label": "Form progress",
+    "previous_question": "Previous question",
+    "next_question": "Next question",
+    "error": "There was a problem while sending the incident report.",
+    "report_type_sheet": {
+      "title": "What do you want to report?",
+      "quick_report": "Quick report"
+    },
+    "list": {
+      "answers": "Answered questions: {{count}}"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "location_description": {
+      "label_other_polling_station": "Polling station details *",
+      "label_not_related": "Location details *",
+      "placeholder": "Please write here some identification details for this location (such as address, name, number, etc.)",
+      "required": "This field is required.",
+      "max": "Input text should not exceed {{value}} characters."
+    },
+    "review": {
+      "heading": "Review your report",
+      "send": "Send report",
+      "sending_report": "We're sending your report. Please wait..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "You have unsaved changes",
+      "description": "Leaving this page will cause all your progress on the report to be lost. Are you sure you wish to go back?",
+      "actions": {
+        "discard": "Go back",
+        "save": "Stay here"
+      }
+    },
+    "attachments": {
+      "heading": "Uploaded media",
+      "delete": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Delete"
+        }
+      }
+    }
+  },
   "guides": {
     "title": "Resources",
     "empty": {
@@ -784,9 +837,21 @@
       "p2": "Check back periodically to see if you have received any new information."
     }
   },
+  "dateTimeFormatSettings": {
+    "title": "Time and date settings",
+    "time_format": {
+      "title": "Time format",
+      "24h": "24-hour",
+      "12h": "12-hour"
+    },
+    "date_format": {
+      "title": "Date format"
+    }
+  },
   "more": {
     "title": "More",
     "change-language": "Change app language",
+    "date_time_settings": "Time and date settings",
     "change-password": "Change password",
     "terms": "Terms and Conditions",
     "privacy_policy": "Privacy Policy",
