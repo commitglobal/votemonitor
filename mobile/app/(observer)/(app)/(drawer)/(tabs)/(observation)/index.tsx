@@ -196,7 +196,10 @@ const Index = () => {
             <SingleSubmissionFormList
               ListHeaderComponent={
                 <YStack>
-                  <PollingStationGeneral psiData={shownPsiData} psiFormQuestions={psiFormQuestions} />
+                  <PollingStationGeneral
+                    psiData={shownPsiData}
+                    psiFormQuestions={psiFormQuestions}
+                  />
                   <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
                     {t("forms.heading")}
                   </Typography>
@@ -211,7 +214,10 @@ const Index = () => {
             <MultiSubmissionFormList
               ListHeaderComponent={
                 <YStack>
-                  <PollingStationGeneral psiData={shownPsiData} psiFormQuestions={psiFormQuestions} />
+                  <PollingStationGeneral
+                    psiData={shownPsiData}
+                    psiFormQuestions={psiFormQuestions}
+                  />
                   <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
                     {t("forms.heading")}
                   </Typography>

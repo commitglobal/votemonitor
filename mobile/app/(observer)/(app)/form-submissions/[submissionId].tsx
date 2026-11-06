@@ -520,7 +520,7 @@ const FormSubmissions = () => {
           throw new Error("Upload cancelled");
         }
 
-                const data = await uploadS3Chunk({
+        const data = await uploadS3Chunk({
           url,
           filePath,
           partIndex: index,

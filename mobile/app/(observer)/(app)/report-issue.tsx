@@ -257,7 +257,7 @@ const ReportIssue = () => {
           throw new Error("Upload aborted");
         }
 
-                const data = await uploadS3Chunk({
+        const data = await uploadS3Chunk({
           url,
           filePath,
           partIndex: index,
