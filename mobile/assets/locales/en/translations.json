@@ -605,6 +605,7 @@
     "offline_error_toast_msg": "You need an internet connection in order to perform this action."
   },
   "quick_report": {
+    "header_title": "Reports",
     "list": {
       "title": "Quick Report",
       "heading": "My reported issues",
@@ -727,6 +728,53 @@
     "uploaded_media": "Uploaded media",
     "no_files": "No attached files",
     "error": "Error while loading the report"
+  },
+  "incident_report": {
+    "title": "Incident report",
+    "form_not_found": "This incident report form is no longer available.",
+    "progress_bar_label": "Form progress",
+    "error": "There was a problem while sending the incident report.",
+    "report_type_sheet": {
+      "title": "What do you want to report?",
+      "quick_report": "Quick report"
+    },
+    "list": {
+      "answers": "Answered questions: {{count}}"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "location_description": {
+      "label_other_polling_station": "Polling station details *",
+      "label_not_related": "Location details *",
+      "placeholder": "Please write here some identification details for this location (such as address, name, number, etc.)",
+      "required": "This field is required.",
+      "max": "Input text should not exceed {{value}} characters."
+    },
+    "review": {
+      "heading": "Review your report",
+      "send": "Send report",
+      "sending_report": "We're sending your report. Please wait..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "You have unsaved changes",
+      "description": "Leaving this page will cause all your progress on the report to be lost. Are you sure you wish to go back?",
+      "actions": {
+        "discard": "Go back",
+        "save": "Stay here"
+      }
+    },
+    "attachments": {
+      "heading": "Uploaded media",
+      "delete": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "clear": "Delete"
+        }
+      }
+    }
   },
   "guides": {
     "title": "Resources",

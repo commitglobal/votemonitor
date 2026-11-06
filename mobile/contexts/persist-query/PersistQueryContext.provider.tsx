@@ -24,6 +24,13 @@ import { ASYNC_STORAGE_KEYS, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../common/
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
 import { QuickReportAttachmentAPIResponse } from "../../services/api/quick-report/get-quick-reports.api";
+import { IncidentReportKeys } from "../../services/queries/incident-reports.query";
+import {
+  upsertIncidentReport,
+  upsertIncidentReportNote,
+  UpsertIncidentReportNoteAPIPayload,
+} from "../../services/api/incident-report/incident-report.api";
+import { AddIncidentReportMutationPayload } from "../../services/mutations/incident-report/add-incident-report.mutation";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -141,6 +148,22 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       ...payload
     }: AddQuickReportAPIPayload & { attachments: QuickReportAttachmentAPIResponse[] }) => {
       return addQuickReport(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(IncidentReportKeys.add(), {
+    mutationFn: async ({
+      attachments: _attachments,
+      notes: _notes,
+      ...payload
+    }: AddIncidentReportMutationPayload) => {
+      return upsertIncidentReport(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(IncidentReportKeys.addNote(), {
+    mutationFn: (payload: UpsertIncidentReportNoteAPIPayload) => {
+      return upsertIncidentReportNote(payload);
     },
   });
 

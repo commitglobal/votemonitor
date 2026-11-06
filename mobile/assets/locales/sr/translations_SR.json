@@ -602,6 +602,7 @@
     "offline_error_toast_msg": "Potrebna vam je internet veza da biste izvršili ovu radnju"
   },
   "quick_report": {
+    "header_title": "Izveštaji",
     "list": {
       "title": "Incident",
       "heading": "Moji incidenti",
@@ -724,6 +725,53 @@
     "uploaded_media": "Otpremljeni mediji",
     "no_files": "Nema medijskih datoteka",
     "error": "Greška pri učitavanju izveštaja"
+  },
+  "incident_report": {
+    "title": "Izveštaj o incidentu",
+    "form_not_found": "Ovaj obrazac za izveštaj o incidentu više nije dostupan.",
+    "progress_bar_label": "Napredak obrasca",
+    "error": "Došlo je do problema prilikom slanja izveštaja o incidentu.",
+    "report_type_sheet": {
+      "title": "Šta želite da prijavite?",
+      "quick_report": "Incident"
+    },
+    "list": {
+      "answers": "Odgovorena pitanja: {{count}}"
+    },
+    "location": {
+      "label": "Lokacija"
+    },
+    "location_description": {
+      "label_other_polling_station": "Informacije o biračkom mestu *",
+      "label_not_related": "Informacije o lokaciji *",
+      "placeholder": "Molimo vas da ovde napišete neke identifikacione detalje za ovu lokaciju (kao što su adresa, ime, broj i sl.)",
+      "required": "Polje je obavezno.",
+      "max": "Unos ne može preći preko {{value}} karaktera."
+    },
+    "review": {
+      "heading": "Pregledajte izveštaj",
+      "send": "Pošaljite izveštaj",
+      "sending_report": "Šaljemo vaš izveštaj. Molimo vas, sačekajte..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Imate nesačuvane izmene",
+      "description": "Napuštanje ove stranice će učiniti da sav vaš napredak na izveštaju bude izgubljen. Da li ste sigurni da želite da se vratite?",
+      "actions": {
+        "discard": "Vrati se nazad",
+        "save": "Ostani ovde"
+      }
+    },
+    "attachments": {
+      "heading": "Učitani mediji",
+      "delete": {
+        "title": "Izbriši medijsku datoteku",
+        "description": "Ova radnja se ne može poništiti. Kada je medijska datoteka izbrisana, ne može se povratiti.",
+        "actions": {
+          "cancel": "Otkaži",
+          "clear": "Izbriši"
+        }
+      }
+    }
   },
   "guides": {
     "title": "Resursi",

@@ -605,6 +605,7 @@
     "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
   },
   "quick_report": {
+    "header_title": "Rapoarte",
     "list": {
       "title": "Raportare rapidă",
       "heading": "Raportările mele",
@@ -727,6 +728,53 @@
     "uploaded_media": "Fișiere media încărcate",
     "no_files": "Niciun fișier atașat",
     "error": "Eroare la încărcarea raportării"
+  },
+  "incident_report": {
+    "title": "Raport de incident",
+    "form_not_found": "Acest formular de raportare a incidentelor nu mai este disponibil.",
+    "progress_bar_label": "Progresul formularului",
+    "error": "A apărut o problemă la trimiterea raportului de incident.",
+    "report_type_sheet": {
+      "title": "Ce vrei să raportezi?",
+      "quick_report": "Raportare rapidă"
+    },
+    "list": {
+      "answers": "Întrebări răspunse: {{count}}"
+    },
+    "location": {
+      "label": "Locație"
+    },
+    "location_description": {
+      "label_other_polling_station": "Detaliile secției de votare *",
+      "label_not_related": "Detaliile locației *",
+      "placeholder": "Te rugăm să ne oferi câteva detalii de identificare ale acestei locații (precum adresă, nume, număr, etc.)",
+      "required": "Acest câmp este obligatoriu.",
+      "max": "Câmpul nu poate depăși {{value}} caractere."
+    },
+    "review": {
+      "heading": "Revizuiește raportul tău",
+      "send": "Trimite raportul",
+      "sending_report": "Trimitem raportul tău. Te rugăm să aștepți..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Ai modificări nesalvate",
+      "description": "Părăsirea acestei pagini va duce la pierderea întregului tău progres în raport. Ești sigur că vrei să te întorci?",
+      "actions": {
+        "discard": "Întoarce-te",
+        "save": "Rămâi aici"
+      }
+    },
+    "attachments": {
+      "heading": "Fișiere media încărcate",
+      "delete": {
+        "title": "Șterge fișierul media",
+        "description": "Această acțiune nu poate fi anulată. Odată șters, un fișier media nu mai poate fi recuperat.",
+        "actions": {
+          "cancel": "Anulează",
+          "clear": "Șterge"
+        }
+      }
+    }
   },
   "guides": {
     "title": "Resurse",

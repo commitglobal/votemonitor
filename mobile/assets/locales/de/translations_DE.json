@@ -605,6 +605,7 @@
         "offline_error_toast_msg": "Sie benötigen eine Internetverbindung, um diese Aktion auszuführen."
     },
     "quick_report": {
+        "header_title": "Berichte",
         "list": {
             "title": "Kurzbericht",
             "heading": "Meine gemeldeten Vorkommnise",
@@ -727,6 +728,53 @@
         "uploaded_media": "Hochgeladene Medien",
         "no_files": "Keine angehängten Dateien",
         "error": "Fehler beim Laden des Berichts"
+    },
+    "incident_report": {
+        "title": "Vorfallsbericht",
+        "form_not_found": "Dieses Formular für Vorfallsberichte ist nicht mehr verfügbar.",
+        "progress_bar_label": "Formularfortschritt",
+        "error": "Beim Senden des Vorfallsberichts ist ein Problem aufgetreten.",
+        "report_type_sheet": {
+            "title": "Was möchten Sie melden?",
+            "quick_report": "Kurzbericht"
+        },
+        "list": {
+            "answers": "Beantwortete Fragen: {{count}}"
+        },
+        "location": {
+            "label": "Ort"
+        },
+        "location_description": {
+            "label_other_polling_station": "Angaben zum Wahllokal *",
+            "label_not_related": "Angaben zum Ort *",
+            "placeholder": "Bitte geben Sie hier einige Identifikationsdaten für diesen Ort an (z. B. Adresse, Name, Nummer usw.).",
+            "required": "Dieses Feld ist ein Pflichtfeld.",
+            "max": "Die Eingabe darf {{value}} Zeichen nicht überschreiten."
+        },
+        "review": {
+            "heading": "Bericht überprüfen",
+            "send": "Bericht senden",
+            "sending_report": "Ihr Bericht wird gesendet. Bitte warten…"
+        },
+        "unsaved_changes_dialog": {
+            "title": "Sie haben ungespeicherte Änderungen",
+            "description": "Wenn Sie diese Seite verlassen, gehen alle bisherigen Eingaben im Bericht verloren. Möchten Sie wirklich zurückgehen?",
+            "actions": {
+                "discard": "Zurückgehen",
+                "save": "Hier bleiben"
+            }
+        },
+        "attachments": {
+            "heading": "Hochgeladene Medien",
+            "delete": {
+                "title": "Mediendatei löschen",
+                "description": "Diese Aktion kann nicht rückgängig gemacht werden. Nach dem Löschen kann eine Mediendatei nicht wiederhergestellt werden.",
+                "actions": {
+                    "cancel": "Abbrechen",
+                    "clear": "Löschen"
+                }
+            }
+        }
     },
     "guides": {
         "title": "Ressourcen",

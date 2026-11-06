@@ -6,7 +6,12 @@ import {
   formatTime,
   formatTimeOfDay,
 } from "./time";
-import { ApiFormAnswer } from "../../services/interfaces/answer.type";
+import {
+  ApiFormAnswer,
+  MultiSelectAnswer,
+  SingleSelectAnswer,
+} from "../../services/interfaces/answer.type";
+import { ApiFormQuestion } from "../../services/interfaces/question.type";
 
 /**
  * Returns a display string for a given ApiFormAnswer object.
@@ -59,4 +64,64 @@ export const getAnswerDisplay = (
     default:
       return "";
   }
+};
+
+/**
+ * Fills in the option texts (in the given language) on single and multi select answers,
+ * so they can be shown with getAnswerDisplay. Answers to unknown questions are dropped.
+ */
+export const mapAnswersForDisplay = (
+  answers: Record<string, ApiFormAnswer | undefined> | undefined,
+  questions: ApiFormQuestion[] | undefined,
+  language: string,
+): Record<string, ApiFormAnswer> => {
+  if (!answers || !questions) return {};
+
+  return Object.entries(answers).reduce(
+    (acc, [questionId, answer]) => {
+      if (!answer) return acc;
+      const question = questions.find((q) => q.id === questionId);
+      if (!question) return acc;
+
+      let mappedAnswer = { ...answer } as ApiFormAnswer;
+
+      if (
+        answer.$answerType === "singleSelectAnswer" &&
+        question.$questionType === "singleSelectQuestion"
+      ) {
+        const selectedOptionText = question.options.find((o) => o.id === answer.selection.optionId)
+          ?.text[language];
+
+        mappedAnswer = {
+          ...answer,
+          selection: { ...answer.selection, value: selectedOptionText },
+        } as SingleSelectAnswer;
+      } else if (
+        answer.$answerType === "multiSelectAnswer" &&
+        question.$questionType === "multiSelectQuestion"
+      ) {
+        const selectedOptionIds = answer.selection.map((selection) => selection.optionId);
+        const selectedOptionsTexts: string[] = [];
+        for (const option of question.options) {
+          if (selectedOptionIds.includes(option.id)) {
+            const selectedOption = answer.selection.find(
+              (selection) => selection.optionId === option.id,
+            );
+            const optionText = option.text[language] || "";
+            const userText = selectedOption?.text || "";
+            selectedOptionsTexts.push(userText ? `${optionText} (${userText.trim()})` : optionText);
+          }
+        }
+
+        mappedAnswer = {
+          ...answer,
+          selectionValues: selectedOptionsTexts,
+        } as MultiSelectAnswer;
+      }
+
+      acc[questionId] = mappedAnswer;
+      return acc;
+    },
+    {} as Record<string, ApiFormAnswer>,
+  );
 };

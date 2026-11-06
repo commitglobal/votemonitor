@@ -605,6 +605,7 @@
         "offline_error_toast_msg": "Você precisa de uma conexão com a internet para realizar esta ação."
     },
     "quick_report": {
+        "header_title": "Relatórios",
         "list": {
             "title": "Relatório rápido",
             "heading": "Meus problemas relatados",
@@ -727,6 +728,53 @@
         "uploaded_media": "Mídia enviada",
         "no_files": "Nenhum arquivo anexado",
         "error": "Erro ao carregar o relatório"
+    },
+    "incident_report": {
+        "title": "Relatório de incidente",
+        "form_not_found": "Este formulário de relatório de incidente não está mais disponível.",
+        "progress_bar_label": "Progresso do formulário",
+        "error": "Houve um problema ao enviar o relatório de incidente.",
+        "report_type_sheet": {
+            "title": "O que você deseja relatar?",
+            "quick_report": "Relatório rápido"
+        },
+        "list": {
+            "answers": "Perguntas respondidas: {{count}}"
+        },
+        "location": {
+            "label": "Local"
+        },
+        "location_description": {
+            "label_other_polling_station": "Detalhes da seção eleitoral *",
+            "label_not_related": "Detalhes do local *",
+            "placeholder": "Por favor, escreva aqui alguns detalhes de identificação para este local (como endereço, nome, número, etc.)",
+            "required": "Este campo é obrigatório.",
+            "max": "A entrada não pode exceder {{value}} caracteres."
+        },
+        "review": {
+            "heading": "Revisar seu relatório",
+            "send": "Enviar relatório",
+            "sending_report": "Estamos enviando seu relatório. Aguarde..."
+        },
+        "unsaved_changes_dialog": {
+            "title": "Você tem alterações não salvas",
+            "description": "Sair desta página fará com que todo o seu progresso no relatório seja perdido. Tem certeza de que deseja voltar?",
+            "actions": {
+                "discard": "Voltar",
+                "save": "Permanecer aqui"
+            }
+        },
+        "attachments": {
+            "heading": "Mídia enviada",
+            "delete": {
+                "title": "Excluir arquivo de mídia",
+                "description": "Esta ação não pode ser desfeita. Uma vez excluído, um arquivo de mídia não pode ser recuperado.",
+                "actions": {
+                    "cancel": "Cancelar",
+                    "clear": "Excluir"
+                }
+            }
+        }
     },
     "guides": {
         "title": "Recursos",

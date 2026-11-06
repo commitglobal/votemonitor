@@ -206,6 +206,20 @@ export const getPollingStationInformation = (
     @returns {PollingStationInformationAPIResponse} 
 */
 
+export enum FormType {
+  Opening = "Opening",
+  Voting = "Voting",
+  ClosingAndCounting = "ClosingAndCounting",
+  PSI = "PSI",
+  IncidentReporting = "IncidentReporting",
+  CitizenReporting = "CitizenReporting",
+  Other = "Other",
+}
+
+// incident reporting forms are filled in from the report tab, not from the observation forms list
+export const isIncidentReportingForm = (form: Pick<FormAPIModel, "formType">) =>
+  form.formType === FormType.IncidentReporting;
+
 export type FormAPIModel = {
   id: string;
   formType: string; // "ClosingAndCounting",

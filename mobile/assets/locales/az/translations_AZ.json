@@ -602,6 +602,7 @@
     "offline_error_toast_msg": "Bu fəaliyyəti həyata keçirmək üçün sizə internet bağlantısı lazımdır."
   },
   "quick_report": {
+    "header_title": "Hesabatlar",
     "list": {
       "title": "Pozuntu barədə sürətli bildiriş vermək",
       "heading": "Mənim göndərdiyim pozuntular barədə sürətli bildirişlər",
@@ -724,6 +725,53 @@
     "uploaded_media": "Yüklənmiş media",
     "no_files": "Əlavə fayllar yoxdur",
     "error": "Hesabatı əlavə edərkən xəta qeydə alındı"
+  },
+  "incident_report": {
+    "title": "İnsident hesabatı",
+    "form_not_found": "Bu insident hesabatı forması artıq mövcud deyil.",
+    "progress_bar_label": "Formanın tərəqqisi",
+    "error": "İnsident hesabatı göndərilərkən problem baş verdi.",
+    "report_type_sheet": {
+      "title": "Nə barədə məlumat vermək istəyirsiniz?",
+      "quick_report": "Pozuntu barədə sürətli bildiriş"
+    },
+    "list": {
+      "answers": "Cavablandırılmış suallar: {{count}}"
+    },
+    "location": {
+      "label": "Məkan"
+    },
+    "location_description": {
+      "label_other_polling_station": "Seçki məntəqəsinin detalları *",
+      "label_not_related": "Məkanın detalları *",
+      "placeholder": "Xahiş edirik, burada bu məkana aid identifikasiya detallarını qeyd edin (ünvan, ad, nömrə və s. kimi)",
+      "required": "Bu sütun mütləqdir",
+      "max": "Əlavə edilən mətn {{value}} simvoldan artıq olmamalıdır."
+    },
+    "review": {
+      "heading": "Hesabatınızı nəzərdən keçirin",
+      "send": "Hesabatı göndərin",
+      "sending_report": "Hesabatınızı göndəririk. Zəhmət olmasa gözləyin..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Saxlanmamış dəyişiklikləriniz var",
+      "description": "Bu səhifəni tərk etmək hesabat üzrə bütün irəliləyişlərinizin itirilməsinə səbəb olacaq. Geri qayıtmaq istədiyinizə əminsiniz?",
+      "actions": {
+        "discard": "Geri qayıt",
+        "save": "Burada qalın"
+      }
+    },
+    "attachments": {
+      "heading": "Yüklənmiş media",
+      "delete": {
+        "title": "Media faylın silinməsi",
+        "description": "Bu əməliyyatı geri qaytarmaq mümkün deyil. Silinmiş media faylını bərpa etmək mümkün deyil.",
+        "actions": {
+          "cancel": "Ləğv etmək",
+          "clear": "Silmək"
+        }
+      }
+    }
   },
   "guides": {
     "title": "Bələdçilər",
