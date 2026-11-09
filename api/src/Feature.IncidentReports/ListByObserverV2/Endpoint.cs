@@ -1,5 +1,4 @@
 using Dapper;
-using Feature.IncidentReports.ListByObserver;
 using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Queries;
@@ -8,7 +7,7 @@ using Vote.Monitor.Domain.Specifications;
 namespace Feature.IncidentReports.ListByObserverV2;
 
 public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, Results<Ok<PagedResponse<ObserverIncidentReportsOverview>>, NotFound>>
+    : Endpoint<Request, Results<Ok<PagedResponse<ObserverIncidentReportsOverviewV2>>, NotFound>>
 {
     public override void Configure()
     {
@@ -20,7 +19,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         Summary(x => { x.Summary = "Incident reports aggregated by observer (v2)"; });
     }
 
-    public override async Task<Results<Ok<PagedResponse<ObserverIncidentReportsOverview>>, NotFound>> ExecuteAsync(
+    public override async Task<Results<Ok<PagedResponse<ObserverIncidentReportsOverviewV2>>, NotFound>> ExecuteAsync(
         Request req,
         CancellationToken ct)
     {
@@ -66,11 +65,18 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              SELECT
                                s."MonitoringObserverId",
                                SUM(s."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers",
-                               COUNT(*) AS "NumberOfIncidentsSubmitted",
-                               BOOL_OR(s."FollowUpStatus" = 'NeedsFollowUp') AS "NeedsFollowUp"
+                               COUNT(*) AS "NumberOfIncidentsSubmitted"
                              FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
                              WHERE {filter.Sql}
                              GROUP BY s."MonitoringObserverId"
+                           ),
+                           -- Per observer, how many of the reports are on each of the caller NGO's follow-up statuses.
+                           FOLLOW_UPS AS (
+                             SELECT s."MonitoringObserverId", FUS."Id", FUS."Name", FUS."Color", FUS."Icon", FUS."Sequence", COUNT(*) AS "Count"
+                             FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                             JOIN "FollowUpStatuses" FUS ON FUS."Id" = {V2ReportFilterFields.FollowUpStatusIdSql("s.\"Id\"", "IncidentReport")}
+                             WHERE {filter.Sql}
+                             GROUP BY s."MonitoringObserverId", FUS."Id", FUS."Name", FUS."Color", FUS."Icon", FUS."Sequence"
                            )
                          SELECT
                            MO."MonitoringObserverId",
@@ -80,7 +86,8 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                            MO."Tags",
                            COALESCE(IR."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",
                            COALESCE(IR."NumberOfIncidentsSubmitted", 0) AS "NumberOfIncidentsSubmitted",
-                           CASE WHEN IR."NeedsFollowUp" THEN 'NeedsFollowUp' END AS "FollowUpStatus"
+                           (SELECT JSON_AGG(JSON_BUILD_OBJECT('id', F."Id", 'name', F."Name", 'color', F."Color", 'icon', F."Icon", 'count', F."Count") ORDER BY F."Sequence")
+                            FROM FOLLOW_UPS F WHERE F."MonitoringObserverId" = MO."MonitoringObserverId")::TEXT AS "FollowUpsJson"
                          FROM "GetAvailableMonitoringObservers"(@electionRoundId, @ngoId, @dataSource) MO
                          {observersJoin} INCIDENT_REPORTS IR ON IR."MonitoringObserverId" = MO."MonitoringObserverId"
                          ORDER BY {orderBy}, MO."MonitoringObserverId"
@@ -93,10 +100,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         using var multi = await dbConnection.QueryMultipleAsync(sql, parameters);
 
         var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<ObserverIncidentReportsOverview>().ToList();
+        var entries = multi.Read<ObserverIncidentReportsRow>().Select(x => x.ToModel()).ToList();
 
         return TypedResults.Ok(
-            new PagedResponse<ObserverIncidentReportsOverview>(entries, totalRowCount, req.PageNumber, req.PageSize));
+            new PagedResponse<ObserverIncidentReportsOverviewV2>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetOrderByClause(string? sortColumnName, bool isAscendingSorting)
@@ -108,37 +115,37 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.ObserverName),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.ObserverName),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""ObserverName"" {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.Email),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.Email),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""Email"" {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.PhoneNumber),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.PhoneNumber),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""PhoneNumber"" {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.Tags),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.Tags),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""Tags"" {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfFlaggedAnswers),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.NumberOfFlaggedAnswers),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""NumberOfFlaggedAnswers"" {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverview.NumberOfIncidentsSubmitted),
+        if (string.Equals(sortColumnName, nameof(ObserverIncidentReportsOverviewV2.NumberOfIncidentsSubmitted),
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"""NumberOfIncidentsSubmitted"" {sortOrder}";

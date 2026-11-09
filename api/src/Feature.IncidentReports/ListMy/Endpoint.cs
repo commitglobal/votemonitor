@@ -46,13 +46,15 @@ public class Endpoint(
                 FormQuestions = incidentReport.Form.Questions,
                 Answers = incidentReport.Answers,
                 Notes = incidentReport.Notes,
-                Attachments = incidentReport.Attachments,
+                // only the uploaded files that were not deleted
+                Attachments = incidentReport.Attachments.Where(a => !a.IsDeleted && a.IsCompleted).ToList(),
                 Questions = incidentReport.Form.Questions,
                 MonitoringObserverId = incidentReport.MonitoringObserverId,
                 ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
                                incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
                 Timestamp = incidentReport.LastUpdatedAt,
                 FollowUpStatus = incidentReport.FollowUpStatus,
+                IsCompleted = incidentReport.IsCompleted,
 
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
@@ -80,7 +82,8 @@ public class Endpoint(
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
                 PollingStationId = incidentReport.PollingStation?.Id,
-                Timestamp = incidentReport.Timestamp
+                Timestamp = incidentReport.Timestamp,
+                IsCompleted = incidentReport.IsCompleted
             });
         }
 

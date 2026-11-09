@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+﻿using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Dapper;
 using Feature.CitizenReports.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -29,16 +30,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var sql = $$"""
                   SELECT COUNT(*)
                   FROM "GetCitizenReportListEntries"(@electionRoundId, @ngoId, @followUpStatus, @level1, @level2, @level3,
                       @level4, @level5, @locationId, @formId, @formStatus, @questionsAnswered, @hasAttachments, @hasNotes,
-                      @hasComments, NULL, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities);
+                      @hasComments, NULL, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities) E
+                  WHERE TRUE {{LabelSql.Filter(LabelSql.LabelsOf("E.\"CitizenReportId\"", "CitizenReport"))}};
 
-                  SELECT *
+                  SELECT E.*, {{LabelSql.LabelsOf("E.\"CitizenReportId\"", "CitizenReport")}} AS "Labels"
                   FROM "GetCitizenReportListEntries"(@electionRoundId, @ngoId, @followUpStatus, @level1, @level2, @level3,
                       @level4, @level5, @locationId, @formId, @formStatus, @questionsAnswered, @hasAttachments, @hasNotes,
-                      @hasComments, @hasFlaggedAnswers, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities)
+                      @hasComments, @hasFlaggedAnswers, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities) E
+                  WHERE TRUE {{LabelSql.Filter(LabelSql.LabelsOf("E.\"CitizenReportId\"", "CitizenReport"))}}
                   ORDER BY
                   	CASE WHEN @sortExpression = 'Severity ASC' THEN "SeverityRank"("Severity") END ASC,
                   	CASE WHEN @sortExpression = 'Severity DESC' THEN "SeverityRank"("Severity") END DESC,
@@ -81,6 +84,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
             reviewerId = req.ReviewerId,
             hasReviewer = req.HasReviewer,
             severities = req.Severity?.Select(x => x.Value).ToArray() ?? [],
+            labels = req.Labels ?? [],
             followUpStatus = req.FollowUpStatus?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,

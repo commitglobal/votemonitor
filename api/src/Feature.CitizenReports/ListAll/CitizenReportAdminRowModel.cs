@@ -25,4 +25,10 @@ public record CitizenReportAdminRowModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; } = null!;
+
+    /// <summary>The follow-up status of the NGO that owns the record (see /follow-up-statuses); FollowUpStatus is the record's fixed value.</summary>
+    public Guid? FollowUpStatusId { get; init; }
+    public string? FollowUpStatusName { get; init; }
+    public string? FollowUpStatusColor { get; init; }
+    public string? FollowUpStatusIcon { get; init; }
 }

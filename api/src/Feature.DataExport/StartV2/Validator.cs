@@ -56,7 +56,8 @@ public class Validator : Validator<Request>
             return V2ReportFilterFields.CitizenReports;
         }
 
-        if (exportedDataType == ExportedDataType.IncidentReports)
+        if (exportedDataType == ExportedDataType.IncidentReports
+            || exportedDataType == ExportedDataType.IncidentReportsSimplified)
         {
             return V2ReportFilterFields.IncidentReports;
         }

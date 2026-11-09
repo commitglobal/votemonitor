@@ -40,6 +40,10 @@ internal class NoopJobService : IJobService
     {
     }
 
+    public void EnqueueExportIncidentReportsSimplified(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    {
+    }
+
     public void EnqueueExportPollingStationInformation(Guid electionRoundId, Guid exportedDataId)
     {
     }

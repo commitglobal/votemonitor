@@ -1,0 +1,121 @@
+﻿using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
+
+namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
+
+public class IncidentReportsSimplifiedDataTableGenerator
+{
+    private readonly List<string> _header;
+    private readonly List<List<object>> _dataTable;
+    private readonly Guid _formId;
+
+    private readonly Dictionary<Guid, SimplifiedAnswerWriter> _answerWriters;
+    private readonly List<IncidentReportModel> _incidentReports = [];
+
+    private IncidentReportsSimplifiedDataTableGenerator(List<string> header,
+        List<List<object>> dataTable,
+        Guid formId,
+        List<SimplifiedAnswerWriter> answerWriters)
+    {
+        _header = header;
+        _dataTable = dataTable;
+        _formId = formId;
+        _answerWriters = answerWriters.ToDictionary(x => x.QuestionId);
+    }
+
+    internal static IncidentReportsSimplifiedDataTableGenerator For(List<string> header,
+        List<List<object>> dataTable,
+        Guid formId,
+        List<SimplifiedAnswerWriter> answerWriters)
+    {
+        return new IncidentReportsSimplifiedDataTableGenerator(header, dataTable, formId, answerWriters);
+    }
+
+    public IncidentReportsSimplifiedDataTableGenerator For(params IncidentReportModel[] incidentReports)
+    {
+        foreach (var incidentReport in incidentReports)
+        {
+            if (incidentReport.FormId != _formId)
+            {
+                // ignore submission if it is not for the current form
+                continue;
+            }
+
+            MapToAnswerData(incidentReport);
+
+            var row = new List<object>
+            {
+                incidentReport.IncidentReportId.ToString(),
+                incidentReport.TimeSubmitted.ToString("s"),
+                incidentReport.FollowUpStatusName ?? incidentReport.FollowUpStatus.Value,
+                string.Join("; ", incidentReport.Labels ?? []),
+                incidentReport.LocationType.ToString(),
+
+                incidentReport.LocationDescription ?? "",
+                incidentReport.Level1 ?? "",
+                incidentReport.Level2 ?? "",
+                incidentReport.Level3 ?? "",
+                incidentReport.Level4 ?? "",
+                incidentReport.Level5 ?? "",
+                incidentReport.Number ?? "",
+
+                incidentReport.NgoName,
+                incidentReport.MonitoringObserverId.ToString(),
+                incidentReport.DisplayName,
+                incidentReport.Email,
+                incidentReport.PhoneNumber,
+                string.Join(", ", incidentReport.Tags ?? [])
+            };
+
+            _dataTable.Add(row);
+        }
+
+        return this;
+    }
+
+    private void MapToAnswerData(IncidentReportModel incidentReport)
+    {
+        _incidentReports.Add(incidentReport);
+        var answerNotes = incidentReport
+            .Notes
+            .GroupBy(x => x.QuestionId)
+            .ToDictionary(x => x.Key, y => y.ToList());
+
+        var answerAttachments = incidentReport
+            .Attachments
+            .GroupBy(x => x.QuestionId)
+            .ToDictionary(x => x.Key, y => y.ToList());
+
+        foreach (var answer in incidentReport.Answers)
+        {
+            var notes = answerNotes.GetValueOrDefault(answer.QuestionId, []);
+            var attachments = answerAttachments.GetValueOrDefault(answer.QuestionId, []);
+            if (_answerWriters.TryGetValue(answer.QuestionId, out var writer))
+            {
+                writer.WithSubmission(incidentReport.IncidentReportId, answer, attachments, notes);
+            }
+        }
+    }
+
+    public (List<string> header, List<List<object>> dataTable) Please()
+    {
+        foreach (var writer in _answerWriters.Values)
+        {
+            _header.AddRange(writer.Header);
+        }
+
+        _header.Add(CommentsFormatter.ColumnHeader);
+
+        for (var index = 0; index < _incidentReports.Count; index++)
+        {
+            var submission = _incidentReports[index];
+            foreach (var writer in _answerWriters.Values)
+            {
+                _dataTable[index].AddRange(writer.Write(submission.IncidentReportId));
+            }
+
+            _dataTable[index].Add(CommentsFormatter.Format(submission.Comments));
+        }
+
+        return (_header, _dataTable);
+    }
+}

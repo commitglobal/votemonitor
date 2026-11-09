@@ -3,7 +3,9 @@ using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.QuickReports.Get;
 
@@ -12,7 +14,8 @@ public class Endpoint(
     INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService,
     ICurrentUserRoleProvider userRoleProvider,
-    ICurrentUserProvider userProvider)
+    ICurrentUserProvider userProvider,
+    VoteMonitorContext context)
     : Endpoint<Request, Results<Ok<QuickReportDetailedModel>, NotFound>>
 {
     public override void Configure()
@@ -76,7 +79,14 @@ public class Endpoint(
 
         await SetPresignUrls(submission);
 
-        return TypedResults.Ok(submission);
+        var followUp = await context.GetFollowUpStatusAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct);
+        return TypedResults.Ok(submission with
+        {
+            FollowUpStatusId = followUp?.Id,
+            FollowUpStatusName = followUp?.Name,
+            FollowUpStatusColor = followUp?.Color,
+            FollowUpStatusIcon = followUp?.Icon
+        });
     }
 
     private async Task SetPresignUrls(QuickReportDetailedModel submission)

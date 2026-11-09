@@ -43,7 +43,8 @@ public class Endpoint(
              || req.ExportedDataType == ExportedDataType.QuickReports
              || req.ExportedDataType == ExportedDataType.CitizenReports
              || req.ExportedDataType == ExportedDataType.IncidentReports
-             || req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified))
+             || req.ExportedDataType == ExportedDataType.FormSubmissionsSimplified
+             || req.ExportedDataType == ExportedDataType.IncidentReportsSimplified))
         {
             if (!userRoleProvider.IsNgoAdmin() && !userRoleProvider.IsNgoStaff())
             {
@@ -89,6 +90,11 @@ public class Endpoint(
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
             jobService.EnqueueExportIncidentReports(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
+        }
+
+        if (req.ExportedDataType == ExportedDataType.IncidentReportsSimplified)
+        {
+            jobService.EnqueueExportIncidentReportsSimplified(req.ElectionRoundId, userProvider.GetNgoId()!.Value, exportedData.Id);
         }
 
         if (req.ExportedDataType == ExportedDataType.PollingStations)
@@ -147,6 +153,13 @@ public class Endpoint(
         if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
             return ExportedData.CreateForIncidentReports(req.UserId,
+                timeProvider.UtcNow,
+                req.IncidentReportsFilters?.ToFilter());
+        }
+
+        if (req.ExportedDataType == ExportedDataType.IncidentReportsSimplified)
+        {
+            return ExportedData.CreateForIncidentReportsSimplified(req.UserId,
                 timeProvider.UtcNow,
                 req.IncidentReportsFilters?.ToFilter());
         }

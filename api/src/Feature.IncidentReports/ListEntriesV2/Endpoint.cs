@@ -76,6 +76,10 @@ public class Endpoint(
                                 s."NotesCount",
                                 s."CommentsCount",
                                 s."FollowUpStatus",
+                                FUS."Id" AS "FollowUpStatusId",
+                                FUS."Name" AS "FollowUpStatusName",
+                                FUS."Color" AS "FollowUpStatusColor",
+                                FUS."Icon" AS "FollowUpStatusIcon",
                                 s."StageId",
                                 s."StageName",
                                 s."ReviewStatus",
@@ -83,8 +87,11 @@ public class Endpoint(
                                 s."ReviewedAt",
                                 s."ReviewerIds",
                                 s."Severity",
-                                s."IsCompleted"
+                                s."Labels",
+                                s."IsCompleted",
+                                {V2ReportFilterFields.ChangedAfterReviewSql("s.\"Id\"")} AS "ChangedAfterReview"
                          FROM "GetIncidentReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         LEFT JOIN "FollowUpStatuses" FUS ON FUS."Id" = {V2ReportFilterFields.FollowUpStatusIdSql("s.\"Id\"", "IncidentReport")}
                          WHERE {filter.Sql}
                          ORDER BY {orderBy}, s."Id"
                          LIMIT @pageSize OFFSET @offset

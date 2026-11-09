@@ -59,7 +59,8 @@ public class Endpoint(
                       reviewStatus => @reviewStatus,
                       reviewerId => @reviewerId,
                       hasReviewer => @hasReviewer,
-                      severities => @severities
+                      severities => @severities,
+                      labels => @labels
                   );
 
                   SELECT * FROM "GetIncidentReportListEntries"(
@@ -94,7 +95,8 @@ public class Endpoint(
                       severities => @severities,
                       sortExpression => @sortExpression,
                       offsetRows => @offset,
-                      pageSize => @pageSize
+                      pageSize => @pageSize,
+                      labels => @labels
                   );
                   """;
 
@@ -120,6 +122,7 @@ public class Endpoint(
             reviewerId = req.ReviewerId,
             hasReviewer = req.HasReviewer,
             severities = req.Severity?.Select(x => x.Value).ToArray() ?? [],
+            labels = req.Labels ?? [],
             followUpStatus = req.FollowUpStatus?.ToString(),
             tagsFilter = req.TagsFilter ?? [],
             monitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),

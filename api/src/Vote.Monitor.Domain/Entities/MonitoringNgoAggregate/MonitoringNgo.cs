@@ -23,6 +23,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     /// <summary>The review stages this NGO uses for its records in this round.</summary>
     public virtual List<ReviewStage> ReviewStages { get; internal set; } = [];
+    public virtual List<FollowUpAggregate.FollowUpStatusDefinition> FollowUpStatuses { get; internal set; } = [];
 
     internal MonitoringNgo(ElectionRound electionRound, Ngo ngo, bool allowMultipleFormSubmission = false)
     {
@@ -35,6 +36,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         FormsVersion = Guid.NewGuid();
         AllowMultipleFormSubmission = allowMultipleFormSubmission;
         ReviewStages = ReviewStage.CreateDefaults(Id).ToList();
+        FollowUpStatuses = FollowUpAggregate.FollowUpStatusDefinition.CreateDefaults(Id).ToList();
     }
 
     public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)

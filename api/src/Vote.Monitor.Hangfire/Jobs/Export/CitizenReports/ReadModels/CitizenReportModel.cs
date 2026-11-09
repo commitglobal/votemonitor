@@ -14,6 +14,12 @@ public class CitizenReportModel
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; } = CitizenReportFollowUpStatus.NotApplicable;
 
+    /// <summary>The exporting NGO's own follow-up status; the column falls back to the record's fixed value.</summary>
+    public string? FollowUpStatusName { get; init; }
+
+    /// <summary>The exporting NGO's labels on the record, A to Z.</summary>
+    public string[] Labels { get; init; } = [];
+
     public Guid FormId { get; init; }
     public DateTime TimeSubmitted { get; init; }
     public string Level1 { get; init; } = default!;

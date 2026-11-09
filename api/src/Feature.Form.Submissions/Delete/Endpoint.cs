@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
@@ -46,6 +47,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
             await context.DeleteReviewAsync(ReportRecordType.FormSubmission, req.SubmissionId, ct);
             await context.DeleteSeverityAsync(ReportRecordType.FormSubmission, req.SubmissionId, ct);
+            await context.DeleteLabelsAsync(ReportRecordType.FormSubmission, req.SubmissionId, ct);
         }
 
         await context.Notes

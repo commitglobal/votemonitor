@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+﻿using Vote.Monitor.Domain.Queries;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Feature.Form.Submissions.ListEntries;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.RulesEngine;
@@ -80,6 +81,10 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."HasNotes",
                                 s."HasAttachments",
                                 s."FollowUpStatus",
+                                FUS."Id" AS "FollowUpStatusId",
+                                FUS."Name" AS "FollowUpStatusName",
+                                FUS."Color" AS "FollowUpStatusColor",
+                                FUS."Icon" AS "FollowUpStatusIcon",
                                 s."StageId",
                                 s."StageName",
                                 s."ReviewStatus",
@@ -87,11 +92,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."ReviewedAt",
                                 s."ReviewerIds",
                                 s."Severity",
+                                s."Labels",
                                 s."IsCompleted",
                                 s."MonitoringObserverStatus",
                                 s."SubmissionNumber",
-                                s."SubmissionCount"
+                                s."SubmissionCount",
+                                {V2ReportFilterFields.ChangedAfterReviewSql("s.\"SubmissionId\"")} AS "ChangedAfterReview"
                          FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         LEFT JOIN "FollowUpStatuses" FUS ON FUS."Id" = {V2ReportFilterFields.FollowUpStatusIdSql("s.\"SubmissionId\"", "FormSubmission")}
                          WHERE {filter.Sql}
                          ORDER BY {orderBy}, s."SubmissionId"
                          LIMIT @pageSize OFFSET @offset

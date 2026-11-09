@@ -7,11 +7,16 @@ public record RecordTypeMetricsModel(
     int Total,
     StageCountModel[] Stages,
     SeverityCountModel[] Severities,
-    PlaceMetricsModel[]? Places);
+    PlaceMetricsModel[]? Places,
+    LabelCountModel[] Labels,
+    int Unlabelled);
 
 public record StageCountModel(Guid StageId, int Count);
 
 public record SeverityCountModel(string Severity, int Count);
+
+/// <summary>How many records carry a label (a record with several labels counts under each).</summary>
+public record LabelCountModel(string Label, int Count);
 
 public record PlaceMetricsModel(
     string? Level1,

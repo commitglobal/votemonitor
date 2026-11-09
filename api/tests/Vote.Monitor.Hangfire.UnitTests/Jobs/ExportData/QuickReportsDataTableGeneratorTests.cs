@@ -19,6 +19,7 @@ public class QuickReportsDataTableGeneratorTests
         "QuickReportId",
         "TimeSubmitted",
         "FollowUpStatus",
+        "Labels",
         "IncidentCategory",
         "Ngo",
         "MonitoringObserverId",
@@ -37,6 +38,22 @@ public class QuickReportsDataTableGeneratorTests
         "Title",
         "Description",
     ];
+
+    [Fact]
+    public void QuickReportsDataTableGenerator_Should_Write_The_Labels_Joined_After_The_FollowUpStatus()
+    {
+        var labelled = Fake.QuickReport(_quickReportId1, QuickReportLocationType.VisitedPollingStation, []);
+        labelled.Labels = ["Ballot secrecy", "Media"];
+        var unlabelled = Fake.QuickReport(_quickReportId2, QuickReportLocationType.VisitedPollingStation, []);
+        unlabelled.Labels = [];
+
+        var result = QuickReportsDataTable.New().WithData().ForQuickReports([labelled, unlabelled]).Please();
+
+        var column = result.header.IndexOf("Labels");
+        column.Should().Be(result.header.IndexOf("FollowUpStatus") + 1);
+        result.dataTable[0][column].Should().Be("Ballot secrecy; Media");
+        result.dataTable[1][column].Should().Be("");
+    }
 
     [Fact]
     public void QuickReportsDataTableGenerator_Should_Generate_DataTable_With_Default_Columns()
@@ -193,6 +210,7 @@ public class QuickReportsDataTableGeneratorTests
             quickReport.Id.ToString(),
             quickReport.Timestamp.ToString("s"),
             quickReport.FollowUpStatus.Value,
+            string.Join("; ", quickReport.Labels),
             quickReport.IncidentCategory.Value,
             quickReport.NgoName,
             quickReport.MonitoringObserverId.ToString(),

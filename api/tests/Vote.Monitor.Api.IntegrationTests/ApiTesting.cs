@@ -80,6 +80,9 @@ public class ApiTesting
         return _factory.CreateClient();
     }
 
+    /// <summary>The API's services, for tests that run a background job directly.</summary>
+    public static IServiceProvider Services => _factory.Services;
+
     [OneTimeTearDown]
     public async Task RunAfterAnyTests()
     {

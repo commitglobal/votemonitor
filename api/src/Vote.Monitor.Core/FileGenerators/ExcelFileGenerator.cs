@@ -90,7 +90,9 @@ public class ExcelFileGenerator
                     cell.CellStyle = _flaggedValueCellStyle;
                 }
 
-                if ((cellValue?.StartsWith("https://") ?? false) || (cellValue?.StartsWith("http://") ?? false))
+                // A link only when the cell is one URL (several attachments share a cell, one per paragraph).
+                var isSingleUrl = (cellValue.StartsWith("https://") || cellValue.StartsWith("http://")) && !cellValue.Any(char.IsWhiteSpace);
+                if (isSingleUrl)
                 {
                     var targetLink = new XSSFHyperlink(HyperlinkType.Url)
                     {

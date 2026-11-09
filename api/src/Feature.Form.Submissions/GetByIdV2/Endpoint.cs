@@ -1,12 +1,15 @@
 ﻿using Module.Answers.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
 namespace Feature.Form.Submissions.GetByIdV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     INpgsqlConnectionFactory dbConnectionFactory,
-    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<FormSubmissionViewV2>, NotFound>>
+    IFileStorageService fileStorageService,
+    VoteMonitorContext context) : Endpoint<Request, Results<Ok<FormSubmissionViewV2>, NotFound>>
 {
     public override void Configure()
     {
@@ -49,8 +52,14 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
+            req.SubmissionId, ct);
         submission = submission with
         {
+            FollowUpStatusId = followUp?.Id,
+            FollowUpStatusName = followUp?.Name,
+            FollowUpStatusColor = followUp?.Color,
+            FollowUpStatusIcon = followUp?.Icon,
             Attachments = await Task.WhenAll(
                 submission.Attachments.Select(async attachment =>
                 {

@@ -18,6 +18,12 @@ public class ReviewWorkflow : IAggregateRoot
     /// <summary>When the report entered a stage of the Reviewed status; cleared when it leaves that status.</summary>
     public DateTime? ReviewedAt { get; private set; }
 
+    /// <summary>
+    /// When its author last changed the report's answers after this NGO had reviewed it; cleared when the NGO
+    /// reviews it again.
+    /// </summary>
+    public DateTime? ChangedAfterReviewAt { get; private set; }
+
     public static ReviewWorkflow Create(Guid electionRoundId,
         Guid monitoringNgoId,
         ReportRecordType recordType,
@@ -41,6 +47,19 @@ public class ReviewWorkflow : IAggregateRoot
         Stage = stage;
         StageChangedAt = now;
         ReviewedAt = stage.Status == ReviewStatus.Reviewed ? now : null;
+        if (ReviewedAt is not null)
+        {
+            ChangedAfterReviewAt = null;
+        }
+    }
+
+    /// <summary>The author changed the answers: marked when the NGO had reviewed the report.</summary>
+    public void MarkAnswersChanged(DateTime now)
+    {
+        if (ReviewedAt is not null)
+        {
+            ChangedAfterReviewAt = now;
+        }
     }
 
     private ReviewWorkflow(Guid id,

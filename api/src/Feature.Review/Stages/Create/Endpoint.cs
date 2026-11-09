@@ -48,9 +48,25 @@ public class Endpoint(
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures, StatusCodes.Status409Conflict));
         }
 
-        var sequence = stages.Where(x => x.Status == req.Status).Select(x => x.Sequence).DefaultIfEmpty(0).Max()
-                       + ReviewStage.SequenceStep;
-        var stage = ReviewStage.Create(monitoringNgoId.Value, name, req.Description?.Trim(), req.Status, sequence);
+        ReviewStage? parent = null;
+        if (req.ParentStageId is { } parentId)
+        {
+            parent = stages.FirstOrDefault(x => x.Id == parentId);
+            if (parent is null || parent.ParentStageId is not null)
+            {
+                AddError(x => x.ParentStageId, "Pick one of your top-level stages; sub-stages can't have sub-stages");
+                return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
+            }
+        }
+
+        // A sub-stage takes its parent's status and goes last among its siblings.
+        var status = parent?.Status ?? req.Status;
+        var siblings = parent is null
+            ? stages.Where(x => x.ParentStageId is null && x.Status == status)
+            : stages.Where(x => x.ParentStageId == parent.Id);
+        var sequence = siblings.Select(x => x.Sequence).DefaultIfEmpty(0).Max() + ReviewStage.SequenceStep;
+        var stage = ReviewStage.Create(monitoringNgoId.Value, name, req.Description?.Trim(), status, sequence,
+            parentStageId: parent?.Id, color: req.Color, icon: req.Icon);
         context.ReviewStages.Add(stage);
         await context.SaveChangesAsync(ct);
 

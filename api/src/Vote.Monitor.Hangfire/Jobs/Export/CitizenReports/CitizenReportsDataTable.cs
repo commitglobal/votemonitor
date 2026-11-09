@@ -22,6 +22,7 @@ public class CitizenReportsDataTable
             "CitizenReportId",
             "TimeSubmitted",
             "FollowUpStatus",
+            "Labels",
             "Level1",
             "Level2",
             "Level3",

@@ -11,6 +11,7 @@ using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 
@@ -60,7 +61,7 @@ public class ExportIncidentReportsJob(
                 .ToListAsync(ct);
 
             var filters = exportedData.IncidentReportsFilters ?? new ExportIncidentReportsFilters();
-            var incidentReports = await GetIncidentReports(
+            var incidentReports = await GetIncidentReports(dbConnectionFactory,
                 electionRoundId, ngoId, filters, exportedData.FilterConditions, ct);
 
             foreach (var incidentReport in incidentReports)
@@ -99,7 +100,9 @@ public class ExportIncidentReportsJob(
         }
     }
 
-    private async Task<IncidentReportModel[]> GetIncidentReports(Guid electionRoundId, Guid ngoId,
+    /// <summary>The incident reports to export, shared by the detailed and simplified exports.</summary>
+    internal static async Task<IncidentReportModel[]> GetIncidentReports(
+        INpgsqlConnectionFactory dbConnectionFactory, Guid electionRoundId, Guid ngoId,
         ExportIncidentReportsFilters filters, System.Text.Json.JsonDocument? filterConditions, CancellationToken ct)
     {
         var filter = new FilterSqlCompiler(V2ReportFilterFields.IncidentReports)
@@ -133,7 +136,8 @@ public class ExportIncidentReportsJob(
         filter.AddTo(queryParams);
 
         var sql = $"""
-            SELECT r.*
+            SELECT r.*, {V2ReportFilterFields.FollowUpStatusNameSql("r.\"IncidentReportId\"", "IncidentReport")} AS "FollowUpStatusName",
+                {LabelSql.LabelsOf("r.\"IncidentReportId\"", "IncidentReport")} AS "Labels"
             FROM "ExportGetIncidentReports"(
                 @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @searchText, @locationType,
                 @level1, @level2, @level3, @level4, @level5, @pollingStationNumber, @pollingStationId,

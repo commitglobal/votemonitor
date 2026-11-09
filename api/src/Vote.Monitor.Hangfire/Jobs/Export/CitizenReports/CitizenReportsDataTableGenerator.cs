@@ -46,7 +46,8 @@ public class CitizenReportsDataTableGenerator
             {
                 citizenReport.CitizenReportId.ToString(),
                 citizenReport.TimeSubmitted.ToString("s"),
-                citizenReport.FollowUpStatus.Value,
+                citizenReport.FollowUpStatusName ?? citizenReport.FollowUpStatus.Value,
+                string.Join("; ", citizenReport.Labels ?? []),
                 citizenReport.Level1,
                 citizenReport.Level2,
                 citizenReport.Level3,

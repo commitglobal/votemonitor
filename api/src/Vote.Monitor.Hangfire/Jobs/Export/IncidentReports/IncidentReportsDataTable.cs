@@ -22,6 +22,7 @@ public class IncidentReportsDataTable
             "IncidentReportId",
             "TimeSubmitted",
             "FollowUpStatus",
+            "Labels",
             "LocationType",
             "LocationDescription",
             "Level1",

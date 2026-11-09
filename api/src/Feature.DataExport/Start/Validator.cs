@@ -23,7 +23,8 @@ public class Validator : Validator<Request>
             RuleFor(x => x.ElectionRoundId).NotEmpty();
         });
 
-        When(x => x.ExportedDataType == ExportedDataType.IncidentReports, () =>
+        When(x => x.ExportedDataType == ExportedDataType.IncidentReports
+                  || x.ExportedDataType == ExportedDataType.IncidentReportsSimplified, () =>
         {
             RuleFor(x => x.ElectionRoundId).NotEmpty();
         });

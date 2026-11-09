@@ -42,7 +42,7 @@ public class Request : BaseFilterConditionsRequest
         FilterRules.Eq("pollingStationNumber", PollingStationNumberFilter),
         FilterRules.Eq("pollingStationId", PollingStationId),
         FilterRules.Eq("hasFlaggedAnswers", HasFlaggedAnswers),
-        FilterRules.Eq("followUpStatus", FollowUpStatusFilter?.Name),
+        FilterRules.Eq("recordFollowUpStatus", FollowUpStatusFilter?.Name),
         FilterRules.Eq("locationType", LocationTypeFilter?.Name),
         FilterRules.Eq("hasNotes", HasNotes),
         FilterRules.Eq("hasAttachments", HasAttachments),

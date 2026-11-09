@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
 namespace Feature.IncidentReports.GetById;
@@ -76,8 +77,14 @@ public class Endpoint(
         var pollingStationCorrections = await context.GetPollingStationCorrectionsAsync(req.ElectionRoundId,
             CorrectableRecordType.IncidentReport, incidentReport.Id, ct);
 
+        var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.IncidentReport,
+            incidentReport.Id, ct);
         var response = new Response
         {
+            FollowUpStatusId = followUp?.Id,
+            FollowUpStatusName = followUp?.Name,
+            FollowUpStatusColor = followUp?.Color,
+            FollowUpStatusIcon = followUp?.Icon,
             IncidentReportId = incidentReport.Id,
             FormId = incidentReport.FormId,
             FormCode = incidentReport.FormCode,

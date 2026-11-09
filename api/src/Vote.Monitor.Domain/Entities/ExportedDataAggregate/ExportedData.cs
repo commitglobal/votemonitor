@@ -129,6 +129,19 @@ public class ExportedData : BaseEntity, IAggregateRoot
             filterConditions: filterConditions);
     }
 
+    public static ExportedData CreateForIncidentReportsSimplified(Guid ownerId,
+        DateTime startedAt, ExportIncidentReportsFilters? filters, JsonDocument? filterConditions = null)
+    {
+        return new ExportedData(ownerId: ownerId,
+            exportedDataType: ExportedDataType.IncidentReportsSimplified,
+            startedAt: startedAt,
+            formSubmissionsFilters: null,
+            quickReportsFilters: null,
+            citizenReportsFilers: null,
+            incidentReportsFilters: filters,
+            filterConditions: filterConditions);
+    }
+
 
 #pragma warning disable CS8618 // Required by Entity Framework
     private ExportedData()

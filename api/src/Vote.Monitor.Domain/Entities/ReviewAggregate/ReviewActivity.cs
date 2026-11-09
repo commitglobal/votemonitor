@@ -46,6 +46,10 @@ public class ReviewActivity : IAggregateRoot
     public SeverityLevel? FromSeverity { get; private set; }
     public SeverityLevel? ToSeverity { get; private set; }
 
+    /// <summary>For <see cref="ReviewActivityKind.LabelsChanged"/>: the labels put on and taken off the record.</summary>
+    public string[]? AddedLabels { get; private set; }
+    public string[]? RemovedLabels { get; private set; }
+
     public static ReviewActivity StageChanged(ReviewTarget target,
         ReviewActor actor,
         ReviewStage? from,
@@ -136,6 +140,17 @@ public class ReviewActivity : IAggregateRoot
         {
             FromSeverity = from,
             ToSeverity = to
+        };
+
+    public static ReviewActivity LabelsChanged(ReviewTarget target,
+        ReviewActor actor,
+        string[] added,
+        string[] removed,
+        DateTime occurredAt) =>
+        new(target, ReviewActivityKind.LabelsChanged, actor, occurredAt)
+        {
+            AddedLabels = added,
+            RemovedLabels = removed
         };
 
     private ReviewActivity(ReviewTarget target, ReviewActivityKind kind, ReviewActor actor, DateTime occurredAt)

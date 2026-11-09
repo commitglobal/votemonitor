@@ -92,6 +92,13 @@ public sealed class FilterSqlCompiler
 
         var column = field.Sql;
 
+        // An array column: "is" means it holds the value (a record's stage and the stage it is a sub-stage of).
+        if (field.IsArray && op is FilterOps.Eq or FilterOps.Ne)
+        {
+            var holds = $"{AddRequired(rule.Value, field)} = ANY({column})";
+            return op == FilterOps.Eq ? $"({holds})" : $"(NOT ({holds}))";
+        }
+
         return op switch
         {
             FilterOps.Eq => $"{column} = {AddRequired(rule.Value, field)}",
@@ -245,7 +252,8 @@ public sealed class FilterSqlCompiler
         var name = $"filter_{_parameterIndex++}";
         _parameters.Add(name, $"%{escaped}%");
 
-        return $"{column} {(negate ? "NOT LIKE" : "LIKE")} {Reference(name)} ESCAPE '\\'";
+        var like = field.IgnoreCase ? "ILIKE" : "LIKE";
+        return $"{column} {(negate ? "NOT " : "")}{like} {Reference(name)} ESCAPE '\\'";
     }
 
     private static string CompileEmpty(FilterField field, bool isEmpty)

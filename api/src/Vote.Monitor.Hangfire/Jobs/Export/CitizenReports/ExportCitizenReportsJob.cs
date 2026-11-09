@@ -10,6 +10,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports.ReadModels;
@@ -123,7 +124,8 @@ public class ExportCitizenReportsJob(
         filter.AddTo(queryParams);
 
         var sql = $"""
-                  SELECT r.*
+                  SELECT r.*, {V2ReportFilterFields.FollowUpStatusNameSql("r.\"CitizenReportId\"", "CitizenReport")} AS "FollowUpStatusName",
+                      {LabelSql.LabelsOf("r.\"CitizenReportId\"", "CitizenReport")} AS "Labels"
                   FROM "ExportGetCitizenReports"(
                       @electionRoundId, @ngoId, @hasFlaggedAnswers, @followUpStatus,
                       @level1, @level2, @level3, @level4, @level5, @locationId,

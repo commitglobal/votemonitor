@@ -14,6 +14,12 @@ public class IncidentReportModel
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus FollowUpStatus { get; set; } = IncidentReportFollowUpStatus.NotApplicable;
 
+    /// <summary>The exporting NGO's own follow-up status; the column falls back to the record's fixed value.</summary>
+    public string? FollowUpStatusName { get; set; }
+
+    /// <summary>The exporting NGO's labels on the record, A to Z.</summary>
+    public string[] Labels { get; set; } = [];
+
     public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; set; }
 

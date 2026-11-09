@@ -157,7 +157,7 @@ public class ExportFormSubmissionsSimplifiedJob(
 		builder.OrderBy(@"s.""TimeSubmitted"" DESC");
 
 		var template = builder.AddTemplate(
-			"""
+			$"""
             SELECT
             	s."SubmissionId",
             	CASE
@@ -186,6 +186,8 @@ public class ExportFormSubmissionsSimplifiedJob(
             	s."Notes",
             	s."Answers",
             	s."FollowUpStatus",
+            	{V2ReportFilterFields.FollowUpStatusNameSql("s.\"SubmissionId\"", "FormSubmission")} AS "FollowUpStatusName",
+            	s."Labels",
             	s."IsCompleted",
             	"ExportGetFormSubmissionComments"(@ngoId, s."SubmissionId") AS "Comments"
             FROM

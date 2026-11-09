@@ -24,6 +24,7 @@ public sealed partial class Fake
             .RuleFor(x => x.FollowUpStatus,
                 f => f.PickRandom<QuickReportFollowUpStatus>(QuickReportFollowUpStatus.List))
             .RuleFor(x => x.IncidentCategory, f => f.PickRandom<IncidentCategory>(IncidentCategory.List))
+            .RuleFor(x => x.Labels, f => f.Make(2, () => f.Lorem.Word()).ToArray())
             .Rules((f, x) =>
             {
                 x.QuickReportLocationType = locationType;

@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Queries;
 using Dapper;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
@@ -19,14 +20,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     public override async Task<PagedResponse<CitizenReportAdminRowModel>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var sql = """
+        var sql = $"""
                   SELECT COUNT(*)
                   FROM "GetAllCitizenReports"(@electionRoundId, @level1, @level2, @level3, @level4, @level5,
                       @monitoringNgoId, @formId, @fromDate, @toDate, @searchText);
 
-                  SELECT *
+                  SELECT CR.*, FU.*
                   FROM "GetAllCitizenReports"(@electionRoundId, @level1, @level2, @level3, @level4, @level5,
-                      @monitoringNgoId, @formId, @fromDate, @toDate, @searchText)
+                      @monitoringNgoId, @formId, @fromDate, @toDate, @searchText) CR
+                  {V2ReportFilterFields.FollowUpOfNgoJoinSql("CR.\"CitizenReportId\"", "CitizenReport", "CR.\"MonitoringNgoId\"")}
                   ORDER BY
                       CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN "TimeSubmitted" END ASC,
                       CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN "TimeSubmitted" END DESC,

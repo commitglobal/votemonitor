@@ -18,7 +18,7 @@ public class Endpoint(
     IReadRepository<FormAggregate> formRepository,
     IAuthorizationService authorizationService,
     IRecordAutomation recordAutomation,
-    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound>>
+    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<IncidentReportModel>, NotFound, Conflict>>
 {
     public override void Configure()
     {
@@ -28,7 +28,7 @@ public class Endpoint(
         Summary(s => { s.Summary = "Upserts incident report"; });
     }
 
-    public override async Task<Results<Ok<IncidentReportModel>, NotFound>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<IncidentReportModel>, NotFound, Conflict>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var authorizationResult =
@@ -58,6 +58,11 @@ public class Endpoint(
         var specification =
             new GetIncidentReportSpecification(req.ElectionRoundId, req.ObserverId, req.FormId, req.Id);
         var incidentReport = await repository.FirstOrDefaultAsync(specification, ct);
+        // a completed (finalized) incident report is locked: the observer can no longer change it
+        if (incidentReport is { IsCompleted: true })
+        {
+            return TypedResults.Conflict();
+        }
 
         List<BaseAnswer>? answers = null;
         if (req.Answers != null)
@@ -73,7 +78,7 @@ public class Endpoint(
                 req.LastUpdatedAt ?? timeProvider.UtcNow, ct);
     }
 
-    private async Task<Results<Ok<IncidentReportModel>, NotFound>> UpdateIncidentReportAsync(
+    private async Task<Results<Ok<IncidentReportModel>, NotFound, Conflict>> UpdateIncidentReportAsync(
         FormAggregate form,
         IncidentReport incidentReport,
         List<BaseAnswer>? answers,
@@ -86,14 +91,14 @@ public class Endpoint(
         await repository.UpdateAsync(incidentReport, ct);
         if (!AnswersHelpers.HaveSameContent(answersBefore, incidentReport.Answers))
         {
-            await recordAutomation.RecordChangedByAuthorAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
-                incidentReport.Id, ct);
+            await recordAutomation.AnswersChangedByAuthorAsync(incidentReport.ElectionRoundId, ReportRecordType.IncidentReport,
+                incidentReport.Id, answersBefore, incidentReport.Answers, ct);
         }
 
         return TypedResults.Ok(IncidentReportModel.FromEntity(incidentReport));
     }
 
-    private async Task<Results<Ok<IncidentReportModel>, NotFound>> AddIncidentReportAsync(Request req,
+    private async Task<Results<Ok<IncidentReportModel>, NotFound, Conflict>> AddIncidentReportAsync(Request req,
         FormAggregate form,
         List<BaseAnswer>? answers,
         CancellationToken ct)

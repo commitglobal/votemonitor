@@ -362,7 +362,8 @@ public class ReviewTests : BaseApiTestFixture
             new { FollowUpStatus = SubmissionFollowUpStatus.NeedsFollowUp.ToString() });
 
         var history = admin.GetResponse<HistoryEntryResponse[]>($"{Review(data.ElectionRoundId, aliceSubmissionId)}/history");
-        history.Should().ContainSingle(x => x.Kind == "FollowUpStatusChanged" && x.FollowUpStatus == "NeedsFollowUp");
+        // The history names the NGO's own status the fixed value maps to.
+        history.Should().ContainSingle(x => x.Kind == "FollowUpStatusChanged" && x.FollowUpStatus == "Needs follow-up");
     }
 
     [Test]

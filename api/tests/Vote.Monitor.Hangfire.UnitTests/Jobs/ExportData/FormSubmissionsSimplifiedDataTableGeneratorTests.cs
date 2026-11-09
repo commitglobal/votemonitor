@@ -28,7 +28,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
 
     private const string Note1 = "Some Note 1";
     private const string Note2 = "Some Note 2";
-    private const string NotesSeparator = "--------------------------\n\n";
+    private const string NotesSeparator = "\n\n--------------------\n\n";
 
     private const string Attachment1Url = "https://example.com/1";
     private const string Attachment2Url = "https://example.com/2";
@@ -118,6 +118,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
         "SubmissionNumber",
         "TimeSubmitted",
         "FollowUpStatus",
+        "Labels",
         "Level1",
         "Level2",
         "Level3",
@@ -769,6 +770,7 @@ public class FormSubmissionsSimplifiedDataTableGeneratorTests
             submission.SubmissionNumber,
             submission.TimeSubmitted.ToString("s"),
             submission.FollowUpStatus.Value,
+            string.Join("; ", submission.Labels),
             submission.Level1,
             submission.Level2,
             submission.Level3,

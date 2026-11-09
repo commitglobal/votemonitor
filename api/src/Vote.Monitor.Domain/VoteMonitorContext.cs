@@ -37,6 +37,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportCommentAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 using Vote.Monitor.Domain.Entities.UserNotificationAggregate;
@@ -98,12 +99,17 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<PollingStationCorrection> PollingStationCorrections { get; set; }
     public DbSet<ReviewStage> ReviewStages { get; set; }
     public DbSet<ReviewWorkflow> ReviewWorkflows { get; set; }
+    public DbSet<Entities.AnswerHistoryAggregate.AnswerChange> AnswerChanges { get; set; }
     public DbSet<Reviewer> Reviewers { get; set; }
     public DbSet<ReviewActivity> ReviewActivities { get; set; }
     public DbSet<UserNotification> UserNotifications { get; set; }
     public DbSet<RecordSeverity> RecordSeverities { get; set; }
+    public DbSet<RecordLabel> RecordLabels { get; set; }
+    public DbSet<Entities.FollowUpAggregate.FollowUpStatusDefinition> FollowUpStatuses { get; set; }
+    public DbSet<Entities.FollowUpAggregate.RecordFollowUp> RecordFollowUps { get; set; }
     public DbSet<ReviewerRule> ReviewerRules { get; set; }
     public DbSet<SeverityRule> SeverityRules { get; set; }
+    public DbSet<Entities.SavedViewAggregate.SavedView> SavedViews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -197,12 +203,17 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new PollingStationCorrectionConfiguration());
         builder.ApplyConfiguration(new ReviewStageConfiguration());
         builder.ApplyConfiguration(new ReviewWorkflowConfiguration());
+        builder.ApplyConfiguration(new AnswerChangeConfiguration());
         builder.ApplyConfiguration(new ReviewerConfiguration());
         builder.ApplyConfiguration(new ReviewActivityConfiguration());
         builder.ApplyConfiguration(new UserNotificationConfiguration());
         builder.ApplyConfiguration(new RecordSeverityConfiguration());
+        builder.ApplyConfiguration(new RecordLabelConfiguration());
+        builder.ApplyConfiguration(new FollowUpStatusDefinitionConfiguration());
+        builder.ApplyConfiguration(new RecordFollowUpConfiguration());
         builder.ApplyConfiguration(new ReviewerRuleConfiguration());
         builder.ApplyConfiguration(new SeverityRuleConfiguration());
+        builder.ApplyConfiguration(new SavedViewConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

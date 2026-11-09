@@ -133,8 +133,8 @@ public class SimplifiedAnswerWriter
             return
             [
                 ..data,
-                string.Join("--------------------------\n\n", notes),
-                string.Join("--------------------------\n\n", attachments)
+                string.Join(AnswerWriter.ItemSeparator, notes),
+                string.Join(AnswerWriter.ItemSeparator, attachments)
             ];
         }
 

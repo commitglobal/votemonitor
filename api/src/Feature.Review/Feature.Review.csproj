@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+    <ProjectReference Include="..\Module.Answers\Module.Answers.csproj" />
   </ItemGroup>
 
 </Project>

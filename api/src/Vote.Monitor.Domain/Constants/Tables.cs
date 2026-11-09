@@ -16,10 +16,15 @@ public static class Tables
     public const string PollingStationCorrections = "PollingStationCorrections";
     public const string ReviewStages = "ReviewStages";
     public const string ReviewWorkflows = "ReviewWorkflows";
+    public const string AnswerChanges = "AnswerChanges";
     public const string Reviewers = "Reviewers";
     public const string ReviewActivities = "ReviewActivities";
     public const string UserNotifications = "UserNotifications";
     public const string RecordSeverities = "RecordSeverities";
+    public const string RecordLabels = "RecordLabels";
+    public const string FollowUpStatuses = "FollowUpStatuses";
+    public const string RecordFollowUps = "RecordFollowUps";
     public const string ReviewerRules = "ReviewerRules";
     public const string SeverityRules = "SeverityRules";
+    public const string SavedViews = "SavedViews";
 }

@@ -41,4 +41,10 @@ public class Response
 
     /// <summary>Moves of this report to another polling station by a platform admin, oldest first.</summary>
     public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
+
+    /// <summary>The caller NGO's own follow-up status (see /follow-up-statuses); FollowUpStatus is the record's fixed value.</summary>
+    public Guid? FollowUpStatusId { get; init; }
+    public string? FollowUpStatusName { get; init; }
+    public string? FollowUpStatusColor { get; init; }
+    public string? FollowUpStatusIcon { get; init; }
 }

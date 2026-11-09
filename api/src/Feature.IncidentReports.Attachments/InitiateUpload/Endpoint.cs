@@ -1,10 +1,12 @@
 ﻿using Feature.IncidentReports.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
 namespace Feature.IncidentReports.Attachments.InitiateUpload;
 
 public class Endpoint(
     IRepository<IncidentReportAttachmentAggregate> repository,
+    IReadRepository<IncidentReport> incidentReportRepository,
     IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<Response>, NotFound, Conflict>>
 {
@@ -23,6 +25,13 @@ public class Endpoint(
     public override async Task<Results<Ok<Response>, NotFound, Conflict>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
+        // a completed incident report is locked
+        if (await incidentReportRepository.AnyAsync(
+                new CompletedIncidentReportSpecification(req.ElectionRoundId, req.IncidentReportId), ct))
+        {
+            return TypedResults.Conflict();
+        }
+
         var specification = new GetAttachmentByIdSpecification(req.ElectionRoundId, req.IncidentReportId, req.Id);
         var existingAttachment = await repository.FirstOrDefaultAsync(specification, ct);
         if (existingAttachment != null)

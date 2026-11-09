@@ -25,6 +25,8 @@ internal class ReviewActivityConfiguration : IEntityTypeConfiguration<ReviewActi
         builder.Property(x => x.FollowUpStatus).HasMaxLength(64);
         builder.Property(x => x.FromSeverity);
         builder.Property(x => x.ToSeverity);
+        builder.Property(x => x.AddedLabels);
+        builder.Property(x => x.RemovedLabels);
 
         builder.HasIndex(x => new { x.MonitoringNgoId, x.RecordType, x.RecordId, x.OccurredAt });
 

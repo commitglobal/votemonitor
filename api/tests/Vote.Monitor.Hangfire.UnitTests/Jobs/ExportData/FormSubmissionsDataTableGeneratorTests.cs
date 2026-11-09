@@ -10,6 +10,9 @@ namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
 public class FormSubmissionsDataTableGeneratorTests
 {
+    /// <summary>A flagged answer\'s cell: the red marker the Excel writer colours.</summary>
+    private static string Red(object value) => Vote.Monitor.Core.FileGenerators.ColorMarkers.Red + value;
+
     private const string DefaultLanguageCode = "EN";
     private const string OtherLanguageCode = "RO";
     private const string QuestionText = "Question text";
@@ -114,6 +117,7 @@ public class FormSubmissionsDataTableGeneratorTests
         "SubmissionNumber",
         "TimeSubmitted",
         "FollowUpStatus",
+        "Labels",
         "Level1",
         "Level2",
         "Level3",
@@ -168,10 +172,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "answer 1", 0, "", "", 0, "", "", ""],
-            [.. GetDefaultExpectedColumns(submission2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url, ""],
-            [.. GetDefaultExpectedColumns(submission3), "answer 3", 2, Note1, Note2, 0, "", "", ""],
-            [.. GetDefaultExpectedColumns(submission4), "answer 4", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url, Fake.FormattedComments],
+            [.. GetDefaultExpectedColumns(submission1), "answer 1", "", "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "answer 2", "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}", ""],
+            [.. GetDefaultExpectedColumns(submission3), "answer 3", $"{Note1}\n\n--------------------\n\n{Note2}", "", ""],
+            [.. GetDefaultExpectedColumns(submission4), "answer 4", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}", Fake.FormattedComments],
         ];
 
         // Act
@@ -190,11 +194,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "TQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             "Comments",
         ];
 
@@ -227,10 +227,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 42, 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), 43, 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 44, 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), 45, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 42, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 43, "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"],
+            [.. GetDefaultExpectedColumns(submission3), 44, $"{Note1}\n\n--------------------\n\n{Note2}", ""],
+            [.. GetDefaultExpectedColumns(submission4), 45, $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"],
         ];
 
         // Act
@@ -249,11 +249,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "NQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -285,10 +281,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 4, 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), 5, 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 9, 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), 10, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 4, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 5, "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"],
+            [.. GetDefaultExpectedColumns(submission3), 9, $"{Note1}\n\n--------------------\n\n{Note2}", ""],
+            [.. GetDefaultExpectedColumns(submission4), 10, $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"],
         ];
 
         // Act
@@ -307,11 +303,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "RQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -348,15 +340,13 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), "", ""],
             [
-                .. GetDefaultExpectedColumns(submission2), date2.ToString("s"), 0, "", "", 2, Attachment1Url,
-                Attachment2Url
+                .. GetDefaultExpectedColumns(submission2), date2.ToString("s"), "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
             ],
-            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), $"{Note1}\n\n--------------------\n\n{Note2}", ""],
             [
-                .. GetDefaultExpectedColumns(submission4), date4.ToString("s"), 2, Note1, Note2, 2, Attachment1Url,
-                Attachment2Url
+                .. GetDefaultExpectedColumns(submission4), date4.ToString("s"), $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
             ],
         ];
 
@@ -376,11 +366,7 @@ public class FormSubmissionsDataTableGeneratorTests
             .. _submissionColumns,
             "DQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -417,21 +403,17 @@ public class FormSubmissionsDataTableGeneratorTests
         List<object[]> expectedData =
         [
             [
-                .. GetDefaultExpectedColumns(submission1), Option1Text, true, false, false, false, "", 0, "", "", 0, "",
+                .. GetDefaultExpectedColumns(submission1), Option1Text, true, false, false, false, "", "", ""
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission2), Option2Text, false, true, false, false, "", "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission3), Red(Option3Text), false, false, Red(true), false, "", $"{Note1}\n\n--------------------\n\n{Note2}",
                 ""
             ],
             [
-                .. GetDefaultExpectedColumns(submission2), Option2Text, false, true, false, false, "", 0, "", "", 2,
-                Attachment1Url, Attachment2Url
-            ],
-            [
-                .. GetDefaultExpectedColumns(submission3), Option3Text, false, false, true, false, "", 2, Note1, Note2,
-                0, "", ""
-            ],
-            [
-                .. GetDefaultExpectedColumns(submission4), Option4Text, false, false, false, true, "some free text", 2,
-                Note1,
-                Note2, 2, Attachment1Url, Attachment2Url
+                .. GetDefaultExpectedColumns(submission4), Option4Text, false, false, false, true, "some free text", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
             ],
         ];
 
@@ -456,11 +438,7 @@ public class FormSubmissionsDataTableGeneratorTests
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -513,23 +491,21 @@ public class FormSubmissionsDataTableGeneratorTests
         [
             [
                 .. GetDefaultExpectedColumns(submission1),
-                string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
-                "user written text", 0, "", "",
-                0, "", ""
+                Red(string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text)), true, true, Red(true), true,
+                "user written text", "",
+                ""
             ],
             [
                 .. GetDefaultExpectedColumns(submission2), string.Join(",", Option4Text), false, false, false, true,
-                "some written text", 0, "",
-                "", 2, Attachment1Url, Attachment2Url
+                "some written text", "", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
             ],
             [
-                .. GetDefaultExpectedColumns(submission3), string.Join(",", Option2Text, Option3Text), false, true,
-                true, false, "", 2, Note1, Note2, 0, "", ""
+                .. GetDefaultExpectedColumns(submission3), Red(string.Join(",", Option2Text, Option3Text)), false, true,
+                Red(true), false, "", $"{Note1}\n\n--------------------\n\n{Note2}", ""
             ],
             [
                 .. GetDefaultExpectedColumns(submission4), string.Join(",", Option1Text, Option4Text), true, false,
-                false, true, "some free text", 2, Note1,
-                Note2, 2, Attachment1Url, Attachment2Url
+                false, true, "some free text", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
             ],
         ];
 
@@ -554,11 +530,7 @@ public class FormSubmissionsDataTableGeneratorTests
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -634,28 +606,27 @@ public class FormSubmissionsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        object[] expectedTextAnswerColumns = ["some answer", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedNumberAnswerColumns = [42, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedRatingAnswerColumns = [3, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedTextAnswerColumns = ["some answer", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"];
+        object[] expectedNumberAnswerColumns = [42, $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"];
+        object[] expectedRatingAnswerColumns = [3, $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"];
         object[] expectedDateAnswerColumns =
-            [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+            [_utcNow.ToString("s"), $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"];
 
         object[] expectedSingleSelectAnswerColumns =
         [
-            Option4Text, false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url,
-            Attachment2Url
+            Option4Text, false, false, false, true, "user written text", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
         ];
         object[] expectedMultiSelectAnswerColumns =
         [
-            string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
-            "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url
+            Red(string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text)), true, true, Red(true), true,
+            "user written text", $"{Note1}\n\n--------------------\n\n{Note2}", $"{Attachment1Url}\n\n--------------------\n\n{Attachment2Url}"
         ];
 
         List<object[]> expectedData =
         [
             [
                 .. GetDefaultExpectedColumns(submission1),
-                "", "", "", "", "", "", "",
+                "", "", "",
                 .. expectedNumberAnswerColumns,
                 .. expectedRatingAnswerColumns,
                 .. expectedDateAnswerColumns,
@@ -667,7 +638,7 @@ public class FormSubmissionsDataTableGeneratorTests
                 .. GetDefaultExpectedColumns(submission2),
                 .. expectedTextAnswerColumns,
                 .. expectedNumberAnswerColumns,
-                "", "", "", "", "", "", "",
+                "", "", "",
                 .. expectedDateAnswerColumns,
                 .. expectedSingleSelectAnswerColumns,
                 .. expectedMultiSelectAnswerColumns
@@ -679,7 +650,7 @@ public class FormSubmissionsDataTableGeneratorTests
                 .. expectedNumberAnswerColumns,
                 .. expectedRatingAnswerColumns,
                 .. expectedDateAnswerColumns,
-                "", "", "", "", "", "", "", "", "", "", "", "",
+                "", "", "", "", "", "",
                 .. expectedMultiSelectAnswerColumns
             ]
         ];
@@ -700,35 +671,19 @@ public class FormSubmissionsDataTableGeneratorTests
             // text question columns
             "TQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // number answer columns
             "NQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // rating answer columns
             "RQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Date question columns
             "DQ - Question text",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Single select question columns
             "SC - Question text",
             Option1Text,
@@ -737,11 +692,7 @@ public class FormSubmissionsDataTableGeneratorTests
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
             // Multi select question columns
             "MC - Question text",
             Option1Text,
@@ -750,11 +701,7 @@ public class FormSubmissionsDataTableGeneratorTests
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
-            "Note 1",
-            "Note 2",
             "Attachments",
-            "Attachment 1",
-            "Attachment 2",
         ];
 
         result.Should().NotBeNull();
@@ -862,6 +809,7 @@ public class FormSubmissionsDataTableGeneratorTests
             submission.SubmissionId.ToString(),
             submission.TimeSubmitted.ToString("s"),
             submission.FollowUpStatus.Value,
+            string.Join("; ", submission.Labels),
             submission.Level1,
             submission.Level2,
             submission.Level3,
