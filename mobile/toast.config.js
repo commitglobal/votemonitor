@@ -17,7 +17,7 @@ export const toastConfig = {
       style={{
         borderLeftColor: "hsl(142, 71%, 27%)",
         height: "auto",
-        backgroundColor: "whsl(142, 71%, 27%)",
+        backgroundColor: "hsl(142, 71%, 27%)",
         maxWidth: "90%",
       }}
     />

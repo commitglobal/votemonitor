@@ -734,6 +734,11 @@
     "progress_bar_label": "Progreso del formulario",
     "previous_question": "Pregunta anterior",
     "next_question": "Siguiente pregunta",
+    "send": "Enviar",
+    "sending": {
+      "sent": "Informe enviado",
+      "queued": "Informe guardado. Se enviará en cuanto vuelvas a estar en línea."
+    },
     "error": "Hubo un problema al enviar el informe de incidente.",
     "report_type_sheet": {
       "title": "¿Qué quieres reportar?",

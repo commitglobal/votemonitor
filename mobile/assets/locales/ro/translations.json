@@ -735,6 +735,11 @@
     "progress_bar_label": "Progresul formularului",
     "previous_question": "Întrebarea anterioară",
     "next_question": "Întrebarea următoare",
+    "send": "Trimite",
+    "sending": {
+      "sent": "Raport trimis",
+      "queued": "Raport salvat. Va fi trimis imediat ce revii online."
+    },
     "error": "A apărut o problemă la trimiterea raportului de incident.",
     "report_type_sheet": {
       "title": "Ce vrei să raportezi?",

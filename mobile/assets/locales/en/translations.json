@@ -735,6 +735,11 @@
     "progress_bar_label": "Form progress",
     "previous_question": "Previous question",
     "next_question": "Next question",
+    "send": "Send",
+    "sending": {
+      "sent": "Report sent",
+      "queued": "Report saved. It will be sent as soon as you are back online."
+    },
     "error": "There was a problem while sending the incident report.",
     "report_type_sheet": {
       "title": "What do you want to report?",

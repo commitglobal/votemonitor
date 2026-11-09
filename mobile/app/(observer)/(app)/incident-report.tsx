@@ -16,7 +16,6 @@ import {
   MUTATION_SCOPE_DO_NOT_HYDRATE,
 } from "../../../common/constants";
 import AddAttachment from "../../../components/AddAttachment";
-import Button from "../../../components/Button";
 import Card from "../../../components/Card";
 import FormElement from "../../../components/FormInputs/FormElement";
 import FormInput from "../../../components/FormInputs/FormInput";
@@ -38,7 +37,6 @@ import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoCont
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { getFormDisplayName, getFormLanguage } from "../../../helpers/incidentReport";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { useBottomInset } from "../../../hooks/useBottomInset";
 import { AttachmentMimeType } from "../../../services/api/get-attachments.api";
 import { IncidentReportLocationType } from "../../../services/api/incident-report/incident-report.api";
 import {
@@ -127,8 +125,8 @@ const groupByQuestion = <T extends { questionId: string }, R>(
     the answers on every "Next step" / "Back" (queued while offline, sent in order later)
   - notes are sent when they are saved, edited or deleted (queued while offline, after the report)
   - media files are uploaded as soon as they are picked (that needs a connection)
-  - "Send report" on the review saves it with isCompleted: true, which locks it (the server refuses
-    further changes)
+  - "Send report" (any question, one tap) saves it with isCompleted: true, which locks
+    it (the server refuses further changes)
   A draft can be continued later from the report list (incidentReportId param).
 */
 const IncidentReport = () => {
@@ -153,7 +151,6 @@ const IncidentReport = () => {
   const { visits, activeElectionRound } = useUserData();
   const { isOnline } = useNetInfoContext();
   const { uploadCameraOrMedia } = useCamera();
-  const bottomInset = useBottomInset();
 
   const [incidentReportId] = useState(params.incidentReportId ?? Crypto.randomUUID());
 
@@ -431,7 +428,7 @@ const IncidentReport = () => {
     saveDraft(answers);
     const firstQuestion = findNextQuestion(-1, answers);
     if (!firstQuestion) {
-      // a form without questions: nothing to fill in, the report is sent right away
+      // a form without questions: nothing to fill in, the report can be sent right away
       sendReport(answers);
       return;
     }
@@ -475,8 +472,8 @@ const IncidentReport = () => {
     }
   };
 
-  // the report can be sent at any point, in one tap (no review step: an observer in danger must be
-  // able to send what they have right away), with whatever was filled in so far
+  // the report can be sent at any point, in one tap (no review step: an observer in danger must be able
+  // to send what they have right away), with whatever was filled in so far
   const onSendNow = (formValues: QuestionFormValues) => {
     sendReport(commitAnswer(formValues));
   };
@@ -499,6 +496,11 @@ const IncidentReport = () => {
 
     Keyboard.dismiss();
     saveReport(buildReportPayload(reportAnswers, true));
+    Toast.show({
+      type: "success",
+      text2: isOnline ? t("sending.sent") : t("sending.queued"),
+      visibilityTime: 4000,
+    });
     router.back();
   };
 
@@ -779,41 +781,13 @@ const IncidentReport = () => {
             onActionButtonPress={handleLocationSubmit(onSubmitLocation)}
           />
         ) : (
-          <YStack
-            backgroundColor="white"
-            elevation={2}
-            gap="$sm"
-            padding="$md"
-            paddingBottom={16 + bottomInset}
-          >
-            {showPrevious || !isLastQuestion ? (
-              <XStack gap="$sm">
-                {showPrevious ? (
-                  <Button
-                    flex={1}
-                    preset="chromeless"
-                    icon={<Icon icon="chevronLeft" color="$purple5" />}
-                    onPress={handleQuestionSubmit(onPreviousAnswer)}
-                  >
-                    {t("previous_question")}
-                  </Button>
-                ) : (
-                  false
-                )}
-                {!isLastQuestion ? (
-                  <Button flex={1} preset="outlined" onPress={handleQuestionSubmit(onSubmitAnswer)}>
-                    {t("next_question")}
-                  </Button>
-                ) : (
-                  false
-                )}
-              </XStack>
-            ) : (
-              false
-            )}
-            {/* the main action: sends the report as it is, at any question */}
-            <Button onPress={handleQuestionSubmit(onSendNow)}>{t("review.send")}</Button>
-          </YStack>
+          <WizzardControls
+            isFirstElement={!showPrevious}
+            previousBtnLabel={t("previous_question")}
+            onPreviousButtonPress={handleQuestionSubmit(onPreviousAnswer)}
+            actionBtnLabel={isLastQuestion ? t("review.send") : t("next_question")}
+            onActionButtonPress={handleQuestionSubmit(isLastQuestion ? onSendNow : onSubmitAnswer)}
+          />
         )
       }
     >
@@ -821,6 +795,28 @@ const IncidentReport = () => {
         title={formTitle}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={handleGoBack}
+        rightAction={
+          // one tap sends the report as it is, from any question; kept up here, away from "Next"
+          step === "questions" ? (
+            <XStack
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={t("review.send")}
+              onPress={handleQuestionSubmit(onSendNow)}
+              hitSlop={8}
+              minHeight={36}
+              maxWidth="100%"
+              alignItems="center"
+              gap="$xxxs"
+              pressStyle={{ opacity: 0.5 }}
+            >
+              <Icon icon="send" color="white" size={24} />
+              <Typography preset="body2" color="white" numberOfLines={1} flexShrink={1}>
+                {t("send")}
+              </Typography>
+            </XStack>
+          ) : undefined
+        }
       />
       <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}>
         {step === "location" && (

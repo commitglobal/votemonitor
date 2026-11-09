@@ -732,6 +732,11 @@
     "progress_bar_label": "Formanın tərəqqisi",
     "previous_question": "Əvvəlki sual",
     "next_question": "Növbəti sual",
+    "send": "Göndər",
+    "sending": {
+      "sent": "Hesabat göndərildi",
+      "queued": "Hesabat yadda saxlanıldı. İnternetə qoşulan kimi göndəriləcək."
+    },
     "error": "İnsident hesabatı göndərilərkən problem baş verdi.",
     "report_type_sheet": {
       "title": "Nə barədə məlumat vermək istəyirsiniz?",

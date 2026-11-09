@@ -732,6 +732,11 @@
     "progress_bar_label": "Napredak obrasca",
     "previous_question": "Prethodno pitanje",
     "next_question": "Sledeće pitanje",
+    "send": "Pošalji",
+    "sending": {
+      "sent": "Izveštaj je poslat",
+      "queued": "Izveštaj je sačuvan. Biće poslat čim ponovo budete na mreži."
+    },
     "error": "Došlo je do problema prilikom slanja izveštaja o incidentu.",
     "report_type_sheet": {
       "title": "Šta želite da prijavite?",

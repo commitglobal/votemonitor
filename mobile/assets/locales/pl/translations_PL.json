@@ -739,6 +739,11 @@
     "progress_bar_label": "Postęp formularza",
     "previous_question": "Poprzednie pytanie",
     "next_question": "Następne pytanie",
+    "send": "Wyślij",
+    "sending": {
+      "sent": "Raport wysłany",
+      "queued": "Raport zapisany. Zostanie wysłany, gdy tylko wrócisz do sieci."
+    },
     "error": "Wystąpił problem podczas wysyłania raportu o incydencie.",
     "report_type_sheet": {
       "title": "Co chcesz zgłosić?",
