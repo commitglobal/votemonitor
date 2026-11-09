@@ -735,7 +735,7 @@
         "progress_bar_label": "Progresso do formulário",
         "previous_question": "Pergunta anterior",
         "next_question": "Próxima pergunta",
-        "send": "Enviar",
+        "change_language": "Alterar idioma",
         "sending": {
           "sent": "Relatório enviado",
           "queued": "Relatório salvo. Ele será enviado assim que você estiver online."

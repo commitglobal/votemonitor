@@ -732,7 +732,7 @@
     "progress_bar_label": "Napredak obrasca",
     "previous_question": "Prethodno pitanje",
     "next_question": "Sledeće pitanje",
-    "send": "Pošalji",
+    "change_language": "Promeni jezik",
     "sending": {
       "sent": "Izveštaj je poslat",
       "queued": "Izveštaj je sačuvan. Biće poslat čim ponovo budete na mreži."

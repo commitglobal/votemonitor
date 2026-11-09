@@ -739,7 +739,7 @@
     "progress_bar_label": "Postęp formularza",
     "previous_question": "Poprzednie pytanie",
     "next_question": "Następne pytanie",
-    "send": "Wyślij",
+    "change_language": "Zmień język",
     "sending": {
       "sent": "Raport wysłany",
       "queued": "Raport zapisany. Zostanie wysłany, gdy tylko wrócisz do sieci."

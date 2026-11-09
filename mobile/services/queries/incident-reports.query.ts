@@ -1,9 +1,10 @@
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { QueryClient, skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import {
   getIncidentReportAttachments,
   getMyIncidentReports,
   IncidentReportAPIResponse,
+  UpsertIncidentReportAPIPayload,
 } from "../api/incident-report/incident-report.api";
 import {
   ElectionRoundsAllFormsAPIResponse,
@@ -37,13 +38,45 @@ export const IncidentReportKeys = {
   addAttachmentAbort: () => [...IncidentReportKeys.all, "addAttachmentAbort"],
 };
 
+/*
+  A sent report is locked as soon as "Send report" is pressed, even before the server has it: while
+  that save is still pending (queued offline, or behind the report's earlier saves) the server still
+  returns the report as a draft, so a refetch would make it editable again. Those reports keep what
+  was sent, as completed.
+*/
+const withPendingSends = (
+  queryClient: QueryClient,
+  reports: IncidentReportAPIResponse[],
+): IncidentReportAPIResponse[] => {
+  const pendingSends = new Map(
+    queryClient
+      .getMutationCache()
+      .findAll({ mutationKey: IncidentReportKeys.add(), status: "pending" })
+      .map((mutation) => mutation.state.variables as UpsertIncidentReportAPIPayload | undefined)
+      .filter((payload) => !!payload?.isCompleted)
+      .map((payload) => [payload!.id, payload!]),
+  );
+  if (!pendingSends.size) return reports;
+
+  return reports.map((report) => {
+    const sent = pendingSends.get(report.id);
+    return sent && !report.isCompleted
+      ? { ...report, answers: sent.answers, isCompleted: true, isNotSynched: true }
+      : report;
+  });
+};
+
 export const useIncidentReports = <TResult = IncidentReportAPIResponse[]>(
   electionRoundId?: string,
   select?: (data: IncidentReportAPIResponse[]) => TResult,
 ) => {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: IncidentReportKeys.byElectionRound(electionRoundId),
-    queryFn: electionRoundId ? () => getMyIncidentReports(electionRoundId) : skipToken,
+    queryFn: electionRoundId
+      ? async () => withPendingSends(queryClient, await getMyIncidentReports(electionRoundId))
+      : skipToken,
     select,
   });
 };

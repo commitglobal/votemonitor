@@ -735,7 +735,7 @@
         "progress_bar_label": "Formularfortschritt",
         "previous_question": "Vorherige Frage",
         "next_question": "Nächste Frage",
-        "send": "Senden",
+        "change_language": "Sprache ändern",
         "sending": {
           "sent": "Bericht gesendet",
           "queued": "Bericht gespeichert. Er wird gesendet, sobald du wieder online bist."

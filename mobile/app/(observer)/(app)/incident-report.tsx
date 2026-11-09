@@ -26,11 +26,14 @@ import { MediaDialog } from "../../../components/MediaDialog";
 import MediaLoading from "../../../components/MediaLoading";
 import NoteForm from "../../../components/NoteForm";
 import OptionsSheet from "../../../components/OptionsSheet";
+import ChangeLanguageDialog from "../../../components/ChangeLanguageDialog";
+import { setFormLanguagePreference } from "../../../common/language.preferences";
 import QuestionForm from "../../../components/QuestionForm";
 import { Screen } from "../../../components/Screen";
 import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import Select from "../../../components/Select";
 import { Typography } from "../../../components/Typography";
+import Button from "../../../components/Button";
 import WarningDialog from "../../../components/WarningDialog";
 import WizzardControls from "../../../components/WizzardControls";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
@@ -144,6 +147,7 @@ const IncidentReport = () => {
     "report_new_issue",
     "report_details",
     "polling_station_form_wizard",
+    "languages",
   ]);
   const queryClient = useQueryClient();
   const cancelRef = useRef(false);
@@ -174,6 +178,8 @@ const IncidentReport = () => {
   const [isSaved, setIsSaved] = useState(isResuming);
   // whether the report is known to exist on the server, which uploading media needs
   const isOnServerRef = useRef(isResuming);
+  // once sent the report is locked: nothing is saved or sent again from this screen (e.g. a second tap)
+  const isSentRef = useRef(false);
   const [isInitialized, setIsInitialized] = useState(!isResuming);
 
   const [step, setStep] = useState<"location" | "questions">(isResuming ? "questions" : "location");
@@ -218,14 +224,24 @@ const IncidentReport = () => {
   });
   const locationWatch = watchLocation("location");
 
-  // the language picked when choosing the form, if the form still has it
+  // the language picked when choosing the form (or switched to here), if the form still has it
+  const [selectedLanguage, setSelectedLanguage] = useState(languageParam);
+  const [isChangeLanguageOpen, setIsChangeLanguageOpen] = useState(false);
+  const [isFormMenuOpen, setIsFormMenuOpen] = useState(false);
   const language = useMemo(
     () =>
-      languageParam && currentForm?.languages.includes(languageParam)
-        ? languageParam
+      selectedLanguage && currentForm?.languages.includes(selectedLanguage)
+        ? selectedLanguage
         : getFormLanguage(currentForm),
-    [currentForm, languageParam],
+    [currentForm, selectedLanguage],
   );
+
+  // only changes how the questions are shown: answers are kept by question / option id
+  const onChangeLanguage = (formId: string, newLanguage: string) => {
+    setFormLanguagePreference({ formId, language: newLanguage });
+    setSelectedLanguage(newLanguage);
+    setIsChangeLanguageOpen(false);
+  };
   const formTitle = useMemo(
     () => (currentForm ? `${getFormDisplayName(currentForm, language)} (${language})` : ""),
     [currentForm, language],
@@ -408,7 +424,7 @@ const IncidentReport = () => {
 
   // saves the draft; queued (and sent in order with the notes) while offline
   const saveDraft = (reportAnswers: Record<string, ApiFormAnswer | undefined>) => {
-    if (!activeElectionRound || !currentForm) return;
+    if (!activeElectionRound || !currentForm || isSentRef.current) return;
     saveReport(buildReportPayload(reportAnswers, false), {
       onSuccess: () => {
         isOnServerRef.current = true;
@@ -492,7 +508,8 @@ const IncidentReport = () => {
   // never waits for the server: the save is queued (with the earlier ones) and sent as soon as there
   // is a connection, retried while there is none, and kept if the app is closed while offline
   const sendReport = (reportAnswers: Record<string, ApiFormAnswer | undefined>) => {
-    if (!activeElectionRound || !currentForm) return;
+    if (!activeElectionRound || !currentForm || isSentRef.current) return;
+    isSentRef.current = true;
 
     Keyboard.dismiss();
     saveReport(buildReportPayload(reportAnswers, true));
@@ -765,6 +782,8 @@ const IncidentReport = () => {
     !!activeQuestion && findNextQuestion(activeQuestion.indexInAllQuestions, answers) === null;
   // once saved, the location can not be changed any more
   const showPrevious = !isFirstQuestion || !isSaved;
+  // the form menu, as on the other forms (for now it only changes the language)
+  const hasFormMenu = step === "questions" && (currentForm?.languages.length ?? 0) > 1;
 
   return (
     <Screen
@@ -795,27 +814,14 @@ const IncidentReport = () => {
         title={formTitle}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={handleGoBack}
-        rightAction={
-          // one tap sends the report as it is, from any question; kept up here, away from "Next"
-          step === "questions" ? (
-            <XStack
-              accessible
-              accessibilityRole="button"
-              accessibilityLabel={t("review.send")}
-              onPress={handleQuestionSubmit(onSendNow)}
-              hitSlop={8}
-              minHeight={36}
-              maxWidth="100%"
-              alignItems="center"
-              gap="$xxxs"
-              pressStyle={{ opacity: 0.5 }}
-            >
-              <Icon icon="send" color="white" size={24} />
-              <Typography preset="body2" color="white" numberOfLines={1} flexShrink={1}>
-                {t("send")}
-              </Typography>
-            </XStack>
-          ) : undefined
+        rightIcon={hasFormMenu ? <Icon icon="dotsVertical" color="white" /> : undefined}
+        onRightPress={
+          hasFormMenu
+            ? () => {
+                Keyboard.dismiss();
+                setIsFormMenuOpen(true);
+              }
+            : undefined
         }
       />
       <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}>
@@ -891,6 +897,15 @@ const IncidentReport = () => {
                 current={activeQuestion.indexInDisplayedQuestions + 1}
                 total={displayedQuestions.length}
               />
+              {/* one tap sends the report as it is, from any question; kept away from "Next" */}
+              <Button
+                preset="outlined"
+                marginTop="$sm"
+                icon={<Icon icon="send" color="$purple5" size={20} />}
+                onPress={handleQuestionSubmit(onSendNow)}
+              >
+                {t("review.send")}
+              </Button>
             </YStack>
 
             <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
@@ -1093,6 +1108,33 @@ const IncidentReport = () => {
             </YStack>
           )}
         </OptionsSheet>
+      )}
+
+      {isFormMenuOpen && (
+        <OptionsSheet open setOpen={setIsFormMenuOpen}>
+          <YStack paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
+            <Typography
+              preset="body1"
+              paddingVertical="$xs"
+              onPress={() => {
+                setIsFormMenuOpen(false);
+                setIsChangeLanguageOpen(true);
+              }}
+            >
+              {t("change_language")}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
+
+      {isChangeLanguageOpen && currentForm && (
+        <ChangeLanguageDialog
+          formId={currentForm.id}
+          currentLanguage={language}
+          languages={currentForm.languages}
+          onSelectLanguage={onChangeLanguage}
+          onCancel={() => setIsChangeLanguageOpen(false)}
+        />
       )}
 
       {showWarningDialog && (

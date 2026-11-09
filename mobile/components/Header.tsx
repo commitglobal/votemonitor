@@ -47,11 +47,6 @@ interface HeaderProps {
    */
   onRightPress?: TouchableOpacityProps["onPress"];
   /**
-   * A wider element (e.g. a labelled button) shown on the right instead of `rightIcon`.
-   * It takes the width it needs (up to 45%) and the title wraps / shrinks to fit next to it.
-   */
-  rightAction?: React.ReactNode;
-  /**
    * children
    */
   children?: React.ReactNode;
@@ -73,7 +68,6 @@ const Header = ({
   onLeftPress,
   rightIcon,
   onRightPress,
-  rightAction,
   children,
 }: HeaderProps) => {
   const insets = useSafeAreaInsets();
@@ -103,17 +97,13 @@ const Header = ({
           </Typography>
         </YStack>
         {/* right icon */}
-        {rightAction ? (
-          <XStack style={$rightActionContainer}>{rightAction}</XStack>
-        ) : (
-          <TouchableOpacity
-            onPress={rightIcon && onRightPress ? onRightPress : undefined}
-            style={$rightIconContainer}
-            disabled={!onRightPress}
-          >
-            {rightIcon || null}
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          onPress={rightIcon && onRightPress ? onRightPress : undefined}
+          style={$rightIconContainer}
+          disabled={!onRightPress}
+        >
+          {rightIcon || null}
+        </TouchableOpacity>
       </XStack>
       {children}
     </StyledWrapper>
@@ -140,15 +130,6 @@ const $rightIconContainer: ViewStyle = {
   paddingVertical: tokens.space.sm.val,
   paddingRight: 14,
   flexDirection: "row",
-  justifyContent: "flex-end",
-};
-
-const $rightActionContainer: ViewStyle = {
-  flexShrink: 0,
-  maxWidth: "45%",
-  paddingVertical: tokens.space.sm.val,
-  paddingLeft: tokens.space.xs.val,
-  paddingRight: 14,
   justifyContent: "flex-end",
 };
 
