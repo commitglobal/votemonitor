@@ -31,7 +31,9 @@ public class Endpoint(
                 "Counts the records the report lists show for the data source. Every stage (in workflow order) and " +
                 "severity (Urgent to None) is listed, with zero counts. Citizen reports are included only when the " +
                 "NGO does citizen reporting in the round. With level, places lists one entry per level path (the " +
-                "records without a place at that level in one entry with all levels null), largest first.";
+                "records without a place at that level in one entry with all levels null), largest first. labels " +
+                "counts the records carrying each of the NGO's labels (most used first; a record with several labels " +
+                "counts under each) and unlabelled the records without one.";
         });
     }
 
@@ -68,18 +70,20 @@ public class Endpoint(
             : MonitoringRecordTypes;
 
         const string sql = """
-                           SELECT * FROM "GetReviewMetrics"(@electionRoundId, @ngoId, @dataSource, @level)
+                           SELECT * FROM "GetReviewMetrics"(@electionRoundId, @ngoId, @dataSource, @level);
+                           SELECT * FROM "GetLabelMetrics"(@electionRoundId, @ngoId, @dataSource);
                            """;
 
         using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
-        var groups = (await dbConnection.QueryAsync<MetricsGroup>(new CommandDefinition(sql, new
-            {
-                electionRoundId = req.ElectionRoundId,
-                ngoId = req.NgoId,
-                dataSource = req.DataSource.ToString(),
-                level = req.Level
-            }, cancellationToken: ct)))
-            .ToList();
+        using var multi = await dbConnection.QueryMultipleAsync(new CommandDefinition(sql, new
+        {
+            electionRoundId = req.ElectionRoundId,
+            ngoId = req.NgoId,
+            dataSource = req.DataSource.ToString(),
+            level = req.Level
+        }, cancellationToken: ct));
+        var groups = (await multi.ReadAsync<MetricsGroup>()).ToList();
+        var labelGroups = (await multi.ReadAsync<LabelGroup>()).ToList();
 
         var stageIds = stages.Select(x => x.Id).ToArray();
         var result = recordTypes.Select(recordType =>
@@ -106,11 +110,19 @@ public class Endpoint(
                     .ThenBy(x => x.Level5, StringComparer.Ordinal)
                     .ToArray();
 
+            var labelsOfType = labelGroups.Where(x => x.RecordType == recordType.Value).ToList();
             return new RecordTypeMetricsModel(recordType,
                 ofType.Sum(x => x.Count),
                 CountStages(stageIds, ofType),
                 CountSeverities(ofType),
-                places);
+                places,
+                labelsOfType
+                    .Where(x => x.Label is not null)
+                    .OrderByDescending(x => x.Count)
+                    .ThenBy(x => x.Label, StringComparer.OrdinalIgnoreCase)
+                    .Select(x => new LabelCountModel(x.Label!, x.Count))
+                    .ToArray(),
+                labelsOfType.Where(x => x.Label is null).Sum(x => x.Count));
         }).ToArray();
 
         return TypedResults.Ok(new ReviewMetricsModel(result));
@@ -126,6 +138,13 @@ public class Endpoint(
     {
         var counts = groups.GroupBy(x => x.Severity).ToDictionary(x => x.Key, x => x.Sum(g => g.Count));
         return SeverityOrder.Select(x => new SeverityCountModel(x.Value, counts.GetValueOrDefault(x.Value))).ToArray();
+    }
+
+    private sealed class LabelGroup
+    {
+        public string RecordType { get; init; } = null!;
+        public string? Label { get; init; }
+        public int Count { get; init; }
     }
 
     private sealed class MetricsGroup

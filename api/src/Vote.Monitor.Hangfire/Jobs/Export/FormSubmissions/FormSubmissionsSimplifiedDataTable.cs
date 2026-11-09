@@ -23,6 +23,7 @@ public class FormSubmissionsSimplifiedDataTable
             "SubmissionNumber",
             "TimeSubmitted",
             "FollowUpStatus",
+            "Labels",
             "Level1",
             "Level2",
             "Level3",

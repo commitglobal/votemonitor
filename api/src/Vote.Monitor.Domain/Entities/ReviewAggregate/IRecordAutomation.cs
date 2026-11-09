@@ -22,6 +22,18 @@ public interface IRecordAutomation
         CancellationToken ct);
 
     /// <summary>
+    /// Its observer changed a record's answers (call it only when they really changed): keeps each changed answer in
+    /// the record's answer history, marks it changed after review for every NGO that had reviewed it, then
+    /// <see cref="RecordChangedByAuthorAsync"/>.
+    /// </summary>
+    Task AnswersChangedByAuthorAsync(Guid electionRoundId,
+        ReportRecordType recordType,
+        Guid recordId,
+        IReadOnlyList<FormAnswerBase.Answers.BaseAnswer> before,
+        IReadOnlyList<FormAnswerBase.Answers.BaseAnswer> after,
+        CancellationToken ct);
+
+    /// <summary>
     /// An observer changed a note or attachment of a form submission: <see cref="RecordChangedByAuthorAsync"/> for
     /// the submission it belongs to. One made through the v1 API has no submission (<paramref name="submissionId"/> is
     /// empty): it belongs to the observer's submissions of its form at its polling station.

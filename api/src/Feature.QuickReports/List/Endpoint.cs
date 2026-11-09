@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+﻿using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Microsoft.AspNetCore.Authorization;
 using Authorization.Policies.Requirements;
 using Authorization.Policies;
@@ -35,7 +36,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var sql = """
+        var sql = $$"""
         SELECT
             COUNT(*) AS "TotalNumberOfRows"
         FROM
@@ -43,16 +44,18 @@ public class Endpoint(
                 @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @monitoringObserverId, @tagsFilter,
                 @followUpStatus, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities, @quickReportLocationType,
                 @incidentCategory, @searchText, @level1, @level2, @level3, @level4, @level5, @pollingStationId, @fromDate, @toDate,
-                @hasAttachments, @hasComments);
+                @hasAttachments, @hasComments) QR
+        WHERE TRUE {{LabelSql.Filter(LabelSql.LabelsOf("QR.\"Id\"", "QuickReport"))}};
 
         SELECT
-            QR.*
+            QR.*, {{LabelSql.LabelsOf("QR.\"Id\"", "QuickReport")}} AS "Labels"
         FROM
             "GetQuickReportOverviews"(
                 @electionRoundId, @ngoId, @dataSource, @coalitionMemberId, @monitoringObserverId, @tagsFilter,
                 @followUpStatus, @stageId, @reviewStatus, @reviewerId, @hasReviewer, @severities, @quickReportLocationType,
                 @incidentCategory, @searchText, @level1, @level2, @level3, @level4, @level5, @pollingStationId, @fromDate, @toDate,
                 @hasAttachments, @hasComments) QR
+        WHERE TRUE {{LabelSql.Filter(LabelSql.LabelsOf("QR.\"Id\"", "QuickReport"))}}
         ORDER BY
             CASE WHEN @sortExpression = 'Severity ASC' THEN "SeverityRank"(QR."Severity") END ASC,
             CASE WHEN @sortExpression = 'Severity DESC' THEN "SeverityRank"(QR."Severity") END DESC,
@@ -86,6 +89,7 @@ public class Endpoint(
             reviewerId = req.ReviewerId,
             hasReviewer = req.HasReviewer,
             severities = req.Severity?.Select(x => x.Value).ToArray() ?? [],
+            labels = req.Labels ?? [],
             followUpStatus = req.QuickReportFollowUpStatus?.ToString(),
             quickReportLocationType = req.QuickReportLocationType?.ToString(),
             incidentCategory = req.IncidentCategory?.ToString(),

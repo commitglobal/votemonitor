@@ -1,4 +1,5 @@
-﻿using Module.Answers.Mappers;
+﻿using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Module.Forms.Mappers;
 using Feature.CitizenReports.Models;
@@ -58,8 +59,14 @@ public class Endpoint(
 
         var attachments = await fileStorageService.PresignAsync(
             citizenReport.Attachments.Select(AttachmentMapper.ToModel));
+        var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.CitizenReport,
+            citizenReport.Id, ct);
         var response = new Response
         {
+            FollowUpStatusId = followUp?.Id,
+            FollowUpStatusName = followUp?.Name,
+            FollowUpStatusColor = followUp?.Color,
+            FollowUpStatusIcon = followUp?.Icon,
             CitizenReportId = citizenReport.Id,
             FormId = form.Id,
             FormCode = form.Code,

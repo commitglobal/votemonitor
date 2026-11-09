@@ -176,6 +176,45 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.AnswerHistoryAggregate.AnswerChange", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CurrentAnswerJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("CurrentAnswer");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PreviousAnswerJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("PreviousAnswer");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("RecordType", "RecordId", "ChangedAt");
+
+                    b.ToTable("AnswerChanges", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3529,6 +3568,119 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("UserFeedback");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.FollowUpAggregate.FollowUpStatusDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LegacyStatus")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<double>("Sequence")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MonitoringNgoId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_FollowUpStatuses_MonitoringNgoId_Default")
+                        .HasFilter("\"IsDefault\"");
+
+                    b.HasIndex("MonitoringNgoId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("FollowUpStatuses", (string)null);
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.FollowUpAggregate.RecordFollowUp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ChangedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FollowUpStatusId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("FollowUpStatusId");
+
+                    b.HasIndex("MonitoringNgoId", "RecordType", "RecordId")
+                        .IsUnique();
+
+                    b.ToTable("RecordFollowUps", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.FormAggregate.Form", b =>
                 {
                     b.Property<Guid>("Id")
@@ -6411,6 +6563,54 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("QuickReportComments", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.RecordLabelAggregate.RecordLabel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MonitoringNgoId");
+
+                    b.HasIndex("ElectionRoundId", "MonitoringNgoId");
+
+                    b.ToTable("RecordLabels", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.RecordSeverityAggregate.RecordSeverity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -6524,6 +6724,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string[]>("AddedLabels")
+                        .HasColumnType("text[]");
+
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
@@ -6557,6 +6760,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("RecordType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string[]>("RemovedLabels")
+                        .HasColumnType("text[]");
 
                     b.Property<Guid?>("ReviewerId")
                         .HasColumnType("uuid");
@@ -6603,6 +6809,10 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Color")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -6612,6 +6822,10 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
@@ -6630,6 +6844,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<Guid?>("ParentStageId")
+                        .HasColumnType("uuid");
+
                     b.Property<double>("Sequence")
                         .HasColumnType("double precision");
 
@@ -6644,6 +6861,8 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasDatabaseName("IX_ReviewStages_MonitoringNgoId_Default")
                         .HasFilter("\"IsDefault\"");
 
+                    b.HasIndex("ParentStageId");
+
                     b.HasIndex("MonitoringNgoId", "Name")
                         .IsUnique();
 
@@ -6655,6 +6874,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ChangedAfterReviewAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
@@ -6783,6 +7005,65 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("ReviewerRules", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.SavedViewAggregate.SavedView", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Access")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedByName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("RecordType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<JsonDocument>("State")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MonitoringNgoId");
+
+                    b.HasIndex("ElectionRoundId", "MonitoringNgoId", "RecordType");
+
+                    b.ToTable("SavedViews", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.UserNotificationAggregate.UserNotification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -6873,6 +7154,15 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.AnswerHistoryAggregate.AnswerChange", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -7182,6 +7472,40 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("ElectionRound");
 
                     b.Navigation("Observer");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.FollowUpAggregate.FollowUpStatusDefinition", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "MonitoringNgo")
+                        .WithMany("FollowUpStatuses")
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MonitoringNgo");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.FollowUpAggregate.RecordFollowUp", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.FollowUpAggregate.FollowUpStatusDefinition", "FollowUpStatus")
+                        .WithMany()
+                        .HasForeignKey("FollowUpStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", null)
+                        .WithMany()
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FollowUpStatus");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.FormAggregate.Form", b =>
@@ -7685,6 +8009,21 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("QuickReport");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.RecordLabelAggregate.RecordLabel", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", null)
+                        .WithMany()
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.RecordSeverityAggregate.RecordSeverity", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
@@ -7738,6 +8077,11 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Vote.Monitor.Domain.Entities.ReviewAggregate.ReviewStage", null)
+                        .WithMany()
+                        .HasForeignKey("ParentStageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("MonitoringNgo");
                 });
 
@@ -7788,6 +8132,21 @@ namespace Vote.Monitor.Domain.Migrations
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ReviewAggregate.ReviewerRule", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", null)
+                        .WithMany()
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.SavedViewAggregate.SavedView", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
                         .WithMany()
@@ -7855,6 +8214,8 @@ namespace Vote.Monitor.Domain.Migrations
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", b =>
                 {
+                    b.Navigation("FollowUpStatuses");
+
                     b.Navigation("Memberships");
 
                     b.Navigation("MonitoringObservers");

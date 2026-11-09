@@ -46,7 +46,8 @@ public class IncidentReportsDataTableGenerator
             {
                 incidentReport.IncidentReportId.ToString(),
                 incidentReport.TimeSubmitted.ToString("s"),
-                incidentReport.FollowUpStatus.Value,
+                incidentReport.FollowUpStatusName ?? incidentReport.FollowUpStatus.Value,
+                string.Join("; ", incidentReport.Labels ?? []),
                 incidentReport.LocationType.ToString(),
 
                 incidentReport.LocationDescription ?? "",

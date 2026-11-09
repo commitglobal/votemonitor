@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 
@@ -59,6 +60,7 @@ public class Endpoint(
 
         await context.DeleteReviewAsync(ReportRecordType.QuickReport, quickReport.Id, ct);
         await context.DeleteSeverityAsync(ReportRecordType.QuickReport, quickReport.Id, ct);
+        await context.DeleteLabelsAsync(ReportRecordType.QuickReport, quickReport.Id, ct);
     }
 
     private async Task DeleteAttachmentsAsync(Request req, CancellationToken ct)

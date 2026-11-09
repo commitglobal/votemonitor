@@ -42,6 +42,8 @@ using Feature.DataCleanup;
 using Feature.PollingStationCorrections;
 using Feature.Review;
 using Feature.Severity;
+using Feature.Labels;
+using Feature.SavedViews;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.IncidentReports;
@@ -186,6 +188,8 @@ builder.Services.AddDataCleanupFeature();
 builder.Services.AddPollingStationCorrectionsFeature();
 builder.Services.AddReviewFeature();
 builder.Services.AddSeverityFeature();
+builder.Services.AddLabelsFeature();
+builder.Services.AddSavedViewsFeature();
 
 builder.Services.AddAuthorization();
 

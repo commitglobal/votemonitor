@@ -54,6 +54,12 @@ public class Endpoint(
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures, StatusCodes.Status409Conflict));
         }
 
+        if (stages.Any(x => x.ParentStageId == stage.Id))
+        {
+            AddError(x => x.Id, "The stage has sub-stages; delete them or move them to another stage first");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures, StatusCodes.Status409Conflict));
+        }
+
         var workflows = await context.ReviewWorkflows.Where(x => x.StageId == stage.Id).ToListAsync(ct);
         var target = stages.FirstOrDefault(x => x.Id == req.MoveTo);
         if (workflows.Count > 0 && target is null)

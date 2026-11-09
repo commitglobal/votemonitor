@@ -33,6 +33,12 @@ public class QuickReportModel
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
     public QuickReportFollowUpStatus FollowUpStatus { get; set; }
 
+    /// <summary>The exporting NGO's own follow-up status; the column falls back to the record's fixed value.</summary>
+    public string? FollowUpStatusName { get; set; }
+
+    /// <summary>The exporting NGO's labels on the record, A to Z.</summary>
+    public string[] Labels { get; set; } = [];
+
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
     public IncidentCategory IncidentCategory { get; set; }
 

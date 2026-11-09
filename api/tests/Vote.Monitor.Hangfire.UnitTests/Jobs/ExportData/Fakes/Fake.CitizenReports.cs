@@ -30,6 +30,7 @@ public sealed partial class Fake
             .RuleFor(x => x.Answers, answers ?? [])
             .RuleFor(x => x.Notes, notes ?? [])
             .RuleFor(x => x.FollowUpStatus, f => f.PickRandom(_citizenReportFollowUpStatuses))
+            .RuleFor(x => x.Labels, f => f.Make(2, () => f.Lorem.Word()).ToArray())
             .RuleFor(x => x.Attachments, attachments ?? []);
 
         return fakeCitizenReport.Generate();

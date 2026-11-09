@@ -10,6 +10,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate.Filters;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Queries;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
@@ -118,7 +119,8 @@ public class ExportQuickReportsJob(
         filter.AddTo(parameters);
 
         var sql = $"""
-            SELECT r.*
+            SELECT r.*, {V2ReportFilterFields.FollowUpStatusNameSql("r.\"Id\"", "QuickReport")} AS "FollowUpStatusName",
+                {LabelSql.LabelsOf("r.\"Id\"", "QuickReport")} AS "Labels"
             FROM "ExportGetQuickReports"(
                 @electionRoundId, @ngoId, @dataSource, @coalitionMemberId,
                 @level1, @level2, @level3, @level4, @level5,

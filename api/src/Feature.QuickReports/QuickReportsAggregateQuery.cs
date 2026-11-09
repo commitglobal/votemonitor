@@ -37,7 +37,6 @@ public static class QuickReportsAggregateQuery
         parameters.Add("toLevel", toLevel.Depth);
         parameters.Add("incidentCategories", IncidentCategory.List.Select(x => x.Value).ToArray());
         parameters.Add("locationTypes", QuickReportLocationType.List.Select(x => x.Value).ToArray());
-        parameters.Add("followUpStatuses", QuickReportFollowUpStatus.List.Select(x => x.Value).ToArray());
 
         filter.AddTo(parameters);
 
@@ -49,7 +48,8 @@ public static class QuickReportsAggregateQuery
                                    s."PollingStationId",
                                    s."IncidentCategory",
                                    s."LocationType",
-                                   s."FollowUpStatus",
+                                   -- The caller NGO's own follow-up status (its name).
+                                   {{V2ReportFilterFields.FollowUpStatusNameSql("s.\"Id\"", "QuickReport")}} AS "FollowUpStatus",
                                    NULLIF(s."Level1", '') AS l1,
                                    NULLIF(s."Level2", '') AS l2,
                                    NULLIF(s."Level3", '') AS l3,
@@ -113,7 +113,8 @@ public static class QuickReportsAggregateQuery
                                            'LocationTypeHistogram', (SELECT COALESCE(JSONB_OBJECT_AGG(V, (SELECT COUNT(*) FROM UNNEST(G.location_types) X WHERE X = V)), '{}'::JSONB)
                                                                      FROM UNNEST(@locationTypes::TEXT[]) V),
                                            'FollowUpStatusHistogram', (SELECT COALESCE(JSONB_OBJECT_AGG(V, (SELECT COUNT(*) FROM UNNEST(G.follow_up_statuses) X WHERE X = V)), '{}'::JSONB)
-                                                                       FROM UNNEST(@followUpStatuses::TEXT[]) V)
+                                                                       FROM (SELECT FUS."Name" AS V FROM "FollowUpStatuses" FUS
+                                                                             WHERE FUS."MonitoringNgoId" = (SELECT MN."Id" FROM "MonitoringNgos" MN WHERE MN."ElectionRoundId" = @electionRoundId AND MN."NgoId" = @ngoId)) N)
                                    ) AS stats
                             FROM GROUPS G
                         ),

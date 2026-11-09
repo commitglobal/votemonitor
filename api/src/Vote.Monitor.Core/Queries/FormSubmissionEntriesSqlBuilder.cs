@@ -33,6 +33,9 @@ public sealed class FormSubmissionEntriesFilterCriteria
     public Guid? ReviewerId { get; init; }
     public bool? HasReviewer { get; init; }
     public string[]? Severities { get; init; }
+
+    /// <summary>Only records carrying any of these labels in the caller's NGO, ignoring case.</summary>
+    public string[]? Labels { get; init; }
 }
 
 public static class FormSubmissionEntriesSqlBuilder
@@ -148,6 +151,13 @@ public static class FormSubmissionEntriesSqlBuilder
         if (filters.Severities is { Length: > 0 })
         {
             builder.Where(@"s.""Severity"" = ANY(@severities)", new { severities = filters.Severities });
+        }
+
+        if (filters.Labels is { Length: > 0 })
+        {
+            builder.Where(
+                @"EXISTS (SELECT 1 FROM unnest(s.""Labels"") LBL(v) WHERE lower(LBL.v) = ANY (SELECT lower(x) FROM unnest(@labels::text[]) x))",
+                new { labels = filters.Labels });
         }
 
         if (filters.Tags is { Length: > 0 })

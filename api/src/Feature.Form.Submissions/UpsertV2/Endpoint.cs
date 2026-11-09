@@ -92,8 +92,8 @@ public class Endpoint(
         await repository.UpdateAsync(submission, ct);
         if (!AnswersHelpers.HaveSameContent(answersBefore, submission.Answers))
         {
-            await recordAutomation.RecordChangedByAuthorAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
-                submission.Id, ct);
+            await recordAutomation.AnswersChangedByAuthorAsync(submission.ElectionRoundId, ReportRecordType.FormSubmission,
+                submission.Id, answersBefore, submission.Answers, ct);
         }
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));

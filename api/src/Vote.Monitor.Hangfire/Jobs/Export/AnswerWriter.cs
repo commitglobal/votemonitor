@@ -3,6 +3,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Extensions;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.FileGenerators;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export;
 
@@ -15,8 +16,9 @@ public class AnswerWriter
     private readonly Dictionary<Guid, List<string>> _submissionsNotes = new();
     private readonly Dictionary<Guid, List<string>> _submissionsAttachments = new();
 
-    private int _maxNumberOfAttachments = 0;
-    private int _maxNumberOfNotes = 0;
+
+    /// <summary>Between the notes, and between the attachments, of one answer: each kind all in one cell.</summary>
+    public const string ItemSeparator = "\n\n--------------------\n\n";
 
     public Guid QuestionId => _question.Id;
     private readonly BaseQuestion _question;
@@ -24,21 +26,10 @@ public class AnswerWriter
     public List<string> Header =>
     [
         .._questionHeader,
+        // One cell for every note of the answer, one for every attachment.
         "Notes",
-        ..GetNotesHeader(),
-        "Attachments",
-        ..GetAttachmentsHeader()
+        "Attachments"
     ];
-
-    private List<string> GetNotesHeader()
-    {
-        return Enumerable.Range(1, _maxNumberOfNotes).Select(x => $"Note {x}").ToList();
-    }
-
-    private List<string> GetAttachmentsHeader()
-    {
-        return Enumerable.Range(1, _maxNumberOfAttachments).Select(x => $"Attachment {x}").ToList();
-    }
 
     public AnswerWriter(string defaultLanguage, BaseQuestion question)
     {
@@ -90,8 +81,6 @@ public class AnswerWriter
     public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments,
         List<NoteModel> notes)
     {
-        _maxNumberOfAttachments = Math.Max(_maxNumberOfAttachments, attachments.Count);
-        _maxNumberOfNotes = Math.Max(_maxNumberOfNotes, notes.Count);
         List<object> data = [];
 
         switch (answer)
@@ -121,12 +110,15 @@ public class AnswerWriter
                 var selectedOptionText = singleSelectQuestion!.Options
                     .First(x => x.Id == singleSelectAnswer.Selection.OptionId).Text;
 
-                data.Add(selectedOptionText[_defaultLanguage]);
+                var selectedFlagged = singleSelectQuestion.Options.First(x => x.Id == singleSelectAnswer.Selection.OptionId).IsFlagged;
+                data.Add(Flag(selectedOptionText[_defaultLanguage], selectedFlagged));
 
                 foreach (var option in singleSelectQuestion!.Options)
                 {
                     var selectedOption = singleSelectAnswer.Selection;
-                    data.Add(selectedOption.OptionId == option.Id);
+                    var isSelected = selectedOption.OptionId == option.Id;
+                    // A picked flagged option is red in its own column too.
+                    data.Add(isSelected && option.IsFlagged ? Flag(isSelected.ToString(), true) : isSelected);
 
                     if (option.IsFreeText)
                     {
@@ -141,12 +133,14 @@ public class AnswerWriter
                 var optionTexts = multiSelectQuestion!.Options.Where(x => selectedOptionIds.Contains(x.Id))
                     .Select(x => x.Text[_defaultLanguage]);
 
-                data.Add(string.Join(",", optionTexts));
+                var anyFlagged = multiSelectQuestion.Options.Any(x => x.IsFlagged && selectedOptionIds.Contains(x.Id));
+                data.Add(Flag(string.Join(",", optionTexts), anyFlagged));
 
                 foreach (var option in multiSelectQuestion!.Options)
                 {
                     var selectedOption = multiSelectAnswer.Selection.FirstOrDefault(x => x.OptionId == option.Id);
-                    data.Add(selectedOption != null);
+                    var isSelected = selectedOption != null;
+                    data.Add(isSelected && option.IsFlagged ? Flag(isSelected.ToString(), true) : isSelected);
 
                     if (option.IsFreeText)
                     {
@@ -165,6 +159,9 @@ public class AnswerWriter
     }
 
 
+    /// <summary>A flagged answer's cell: red in the sheet (ExcelFileGenerator reads the marker).</summary>
+    private static object Flag(string text, bool isFlagged) => isFlagged ? ColorMarkers.Red + text : text;
+
     public List<object> Write(Guid submissionId)
     {
         if (_submissionsData.TryGetValue(submissionId, out var data))
@@ -175,10 +172,8 @@ public class AnswerWriter
             return
             [
                 ..data,
-                notes.Count,
-                ..notes.PadListToTheRight(_maxNumberOfNotes, string.Empty),
-                attachments.Count,
-                ..attachments.PadListToTheRight(_maxNumberOfAttachments, string.Empty)
+                string.Join(ItemSeparator, notes),
+                string.Join(ItemSeparator, attachments)
             ];
         }
 

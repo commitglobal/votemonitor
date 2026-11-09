@@ -4,6 +4,7 @@ namespace Feature.IncidentReports.Models;
 
 public record NoteModel
 {
+    public Guid Id { get; init; }
     public Guid SubmissionId { get; init; }
     public Guid QuestionId { get; init; }
     public string Text { get; init; }
@@ -15,6 +16,7 @@ public record NoteModel
             ? null
             : new NoteModel
             {
+                Id = note.Id,
                 SubmissionId = note.IncidentReportId,
                 QuestionId = note.QuestionId,
                 Text = note.Text,

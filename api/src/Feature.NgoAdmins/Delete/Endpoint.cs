@@ -2,12 +2,15 @@
 using Feature.NgoAdmins.Specifications;
 using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.SavedViewAggregate;
 
 namespace Feature.NgoAdmins.Delete;
 
 public class Endpoint(
     UserManager<ApplicationUser> userManager,
-    IRepository<NgoAdminAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
+    IRepository<NgoAdminAggregate> repository,
+    VoteMonitorContext context) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -29,12 +32,16 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var userId = ngoAdmin.ApplicationUser.Id;
         var result = await userManager.DeleteAsync(ngoAdmin.ApplicationUser);
         if (!result.Succeeded)
         {
             AddError(x => x.Id, result.GetAllErrors());
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
+
+        // Their private saved views go with the account; shared ones stay for the NGO.
+        await context.DeletePrivateViewsAsync(userId, ct);
 
         return TypedResults.NoContent();
     }

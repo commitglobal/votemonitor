@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Queries;
 using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
@@ -33,8 +34,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                    SELECT COUNT(*)
                    FROM {Source};
 
-                   SELECT QR.*
+                   SELECT QR.*, FU.*
                    FROM {Source}
+                   {V2ReportFilterFields.FollowUpOfNgoJoinSql("QR.\"Id\"", "QuickReport", "QR.\"MonitoringNgoId\"")}
                    ORDER BY
                        CASE WHEN @sortExpression = 'Timestamp ASC' THEN QR."Timestamp" END ASC,
                        CASE WHEN @sortExpression = 'Timestamp DESC' THEN QR."Timestamp" END DESC,

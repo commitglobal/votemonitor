@@ -27,7 +27,8 @@ public class QuickReportsDataTableGenerator
         {
             quickReport.Id.ToString(),
             quickReport.Timestamp.ToString("s"),
-            quickReport.FollowUpStatus.Value,
+            quickReport.FollowUpStatusName ?? quickReport.FollowUpStatus.Value,
+            string.Join("; ", quickReport.Labels ?? []),
             quickReport.IncidentCategory.Value,
             quickReport.NgoName,
             quickReport.MonitoringObserverId.ToString(),

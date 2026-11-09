@@ -63,4 +63,7 @@ public class Request : BaseSortPaginatedRequest
 
     /// <summary>Only records with any of these severities in the caller's NGO (repeat the key for several).</summary>
     [QueryParam] public SeverityLevel[]? Severity { get; set; }
+
+    /// <summary>Only records carrying any of these labels in the caller's NGO, ignoring case (repeat the key for several).</summary>
+    [QueryParam] public string[]? Labels { get; set; }
 }

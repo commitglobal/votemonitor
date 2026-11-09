@@ -38,7 +38,7 @@ public class Request : BaseFilterConditionsRequest
         FilterRules.Eq("level5", Level5Filter),
         FilterRules.Eq("locationId", LocationId),
         FilterRules.Eq("hasFlaggedAnswers", HasFlaggedAnswers),
-        FilterRules.Eq("followUpStatus", FollowUpStatus?.Name),
+        FilterRules.Eq("recordFollowUpStatus", FollowUpStatus?.Name),
         FilterRules.Eq("hasNotes", HasNotes),
         FilterRules.Eq("hasAttachments", HasAttachments),
         FilterRules.Eq("questionsAnswered", QuestionsAnswered?.Name));

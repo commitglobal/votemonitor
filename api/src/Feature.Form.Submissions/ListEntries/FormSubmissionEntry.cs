@@ -59,6 +59,9 @@ public record FormSubmissionEntry
 
     /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
     public string Severity { get; init; } = "None";
+
+    /// <summary>The record\'s labels in the caller\'s NGO, A to Z; empty when it has none.</summary>
+    public string[] Labels { get; init; } = [];
     public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
 
     public bool IsCompleted { get; set; }
@@ -69,4 +72,13 @@ public record FormSubmissionEntry
     /// </summary>
     public int SubmissionNumber { get; init; } = 1;
     public int SubmissionCount { get; init; } = 1;
+
+    /// <summary>Its observer changed the answers after the caller's NGO reviewed it (see the answer history).</summary>
+    public bool ChangedAfterReview { get; init; }
+
+    /// <summary>The caller NGO's own follow-up status (see /follow-up-statuses); FollowUpStatus is the record's fixed value.</summary>
+    public Guid? FollowUpStatusId { get; init; }
+    public string? FollowUpStatusName { get; init; }
+    public string? FollowUpStatusColor { get; init; }
+    public string? FollowUpStatusIcon { get; init; }
 }

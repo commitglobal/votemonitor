@@ -8,6 +8,9 @@ public record ReviewStageModel
     public required ReviewStatus Status { get; init; }
     public required double Sequence { get; init; }
     public required bool IsDefault { get; init; }
+    public Guid? ParentStageId { get; init; }
+    public string? Color { get; init; }
+    public string? Icon { get; init; }
 
     public static ReviewStageModel FromEntity(ReviewStage stage) => new()
     {
@@ -16,6 +19,9 @@ public record ReviewStageModel
         Description = stage.Description,
         Status = stage.Status,
         Sequence = stage.Sequence,
-        IsDefault = stage.IsDefault
+        IsDefault = stage.IsDefault,
+        ParentStageId = stage.ParentStageId,
+        Color = stage.Color,
+        Icon = stage.Icon
     };
 }

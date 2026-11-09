@@ -66,6 +66,10 @@ public class Endpoint(
                                 s."Description",
                                 s."IncidentCategory",
                                 s."FollowUpStatus",
+                                FUS."Id" AS "FollowUpStatusId",
+                                FUS."Name" AS "FollowUpStatusName",
+                                FUS."Color" AS "FollowUpStatusColor",
+                                FUS."Icon" AS "FollowUpStatusIcon",
                                 s."StageId",
                                 s."StageName",
                                 s."ReviewStatus",
@@ -73,6 +77,7 @@ public class Endpoint(
                                 s."ReviewedAt",
                                 s."ReviewerIds",
                                 s."Severity",
+                                s."Labels",
                                 s."NumberOfAttachments",
                                 s."CommentsCount",
                                 s."MonitoringObserverId",
@@ -91,6 +96,7 @@ public class Endpoint(
                                 s."Number",
                                 s."Address"
                          FROM "GetQuickReportEntries"(@electionRoundId, @ngoId, @dataSource) s
+                         LEFT JOIN "FollowUpStatuses" FUS ON FUS."Id" = {V2ReportFilterFields.FollowUpStatusIdSql("s.\"Id\"", "QuickReport")}
                          WHERE {filter.Sql}
                          ORDER BY {orderBy}, s."Id"
                          LIMIT @pageSize OFFSET @offset

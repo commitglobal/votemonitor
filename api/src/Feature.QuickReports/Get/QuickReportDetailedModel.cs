@@ -68,4 +68,10 @@ public record QuickReportDetailedModel
         };
     }
 
+
+    /// <summary>The caller NGO's own follow-up status (see /follow-up-statuses); FollowUpStatus is the record's fixed value.</summary>
+    public Guid? FollowUpStatusId { get; init; }
+    public string? FollowUpStatusName { get; init; }
+    public string? FollowUpStatusColor { get; init; }
+    public string? FollowUpStatusIcon { get; init; }
 }

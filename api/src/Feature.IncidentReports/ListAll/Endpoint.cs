@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Queries;
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -33,8 +34,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                    SELECT COUNT(*)
                    FROM {Source};
 
-                   SELECT *
-                   FROM {Source}
+                   SELECT IR.*, FU.*
+                   FROM {Source} IR
+                   {V2ReportFilterFields.FollowUpOfNgoJoinSql("IR.\"IncidentReportId\"", "IncidentReport", "IR.\"MonitoringNgoId\"")}
                    ORDER BY
                        CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN "TimeSubmitted" END ASC,
                        CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN "TimeSubmitted" END DESC,

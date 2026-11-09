@@ -42,4 +42,13 @@ public record CitizenReportEntryModel
 
     /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
     public string Severity { get; init; } = "None";
+
+    /// <summary>The record\'s labels in the caller\'s NGO, A to Z; empty when it has none.</summary>
+    public string[] Labels { get; init; } = [];
+
+    /// <summary>The caller NGO's own follow-up status (see /follow-up-statuses); FollowUpStatus is the record's fixed value.</summary>
+    public Guid? FollowUpStatusId { get; init; }
+    public string? FollowUpStatusName { get; init; }
+    public string? FollowUpStatusColor { get; init; }
+    public string? FollowUpStatusIcon { get; init; }
 }

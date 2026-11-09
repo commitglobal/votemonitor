@@ -15,6 +15,12 @@ public class SubmissionModel
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; set; }
 
+    /// <summary>The exporting NGO's own follow-up status; the column falls back to the record's fixed value.</summary>
+    public string? FollowUpStatusName { get; set; }
+
+    /// <summary>The exporting NGO's labels on the record, A to Z.</summary>
+    public string[] Labels { get; set; } = [];
+
     public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; init; }
     public string Level1 { get; init; } = default!;

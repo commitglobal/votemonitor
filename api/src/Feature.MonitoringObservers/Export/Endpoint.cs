@@ -44,12 +44,22 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        // the list's function, filtered the same way as the list
         var sql = """
-                  SELECT *
-                  FROM "GetMonitoringObserversExport"(@electionRoundId, @ngoId)
+                  SELECT "Id", "FirstName", "LastName", "PhoneNumber", "Email", "Tags", "Status", "LatestActivityAt"
+                  FROM "GetMonitoringObserversList"(@electionRoundId, @ngoId, @searchText, @tagsFilter, NULL)
+                  WHERE CARDINALITY(@statuses) = 0 OR "Status" = ANY(@statuses)
+                  ORDER BY "DisplayName", "Id"
                   """;
 
-        var queryArgs = new { electionRoundId = req.ElectionRoundId, ngoId = req.NgoId };
+        var queryArgs = new
+        {
+            electionRoundId = req.ElectionRoundId,
+            ngoId = req.NgoId,
+            tagsFilter = req.Tags ?? [],
+            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            statuses = req.Status?.Select(x => x.Value).ToArray() ?? []
+        };
         IEnumerable<MonitoringObserverExportModel> monitoringObservers = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {

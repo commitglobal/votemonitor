@@ -132,6 +132,7 @@ builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>(
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
 builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
 builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
+builder.Services.AddScoped<IExportIncidentReportsSimplifiedJob, ExportIncidentReportsSimplifiedJob>();
 builder.Services.AddScoped<IExportPollingStationInformationJob, ExportPollingStationInformationJob>();
 builder.Services.AddScoped<ISendNotificationJob, SendNotificationJob>();
 #endregion

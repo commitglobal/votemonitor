@@ -24,7 +24,8 @@ public class GetEndpointTests
             dbConnectionFactory,
             fileStorageService,
             userRoleProvider,
-            userProvider);
+            userProvider,
+            TestContext.Fake());
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 using Feature.IncidentReports.Notes.Specifications;
 using Feature.IncidentReports.Notes.Upsert;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 
 namespace Feature.IncidentReports.Notes.UnitTests.Endpoints;
@@ -8,12 +9,15 @@ namespace Feature.IncidentReports.Notes.UnitTests.Endpoints;
 public class UpsertEndpointTests
 {
     private readonly IRepository<IncidentReportNote> _repository;
+    private readonly IReadRepository<IncidentReport> _incidentReportRepository;
     private readonly Endpoint _endpoint;
 
     public UpsertEndpointTests()
     {
         _repository = Substitute.For<IRepository<IncidentReportNote>>();
-        _endpoint = Factory.Create<Endpoint>(_repository, Substitute.For<IRecordAutomation>());
+        _incidentReportRepository = Substitute.For<IReadRepository<IncidentReport>>();
+        _endpoint = Factory.Create<Endpoint>(_repository, _incidentReportRepository,
+            Substitute.For<IRecordAutomation>());
     }
 
     [Fact]
@@ -91,5 +95,31 @@ public class UpsertEndpointTests
         var model = result.Result.As<Ok<IncidentReportNoteModel>>();
         model.Value!.Text.Should().Be(updatedText);
         model.Value.Id.Should().Be(fakeNote.Id);
+    }
+
+    [Fact]
+    public async Task ShouldReturnConflict_AndNotChangeNotes_WhenIncidentReportIsCompleted()
+    {
+        // Arrange
+        _incidentReportRepository
+            .AnyAsync(Arg.Any<CompletedIncidentReportSpecification>(), Arg.Any<CancellationToken>())
+            .Returns(true);
+
+        // Act
+        var request = new Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            IncidentReportId = Guid.NewGuid(),
+            FormId = Guid.NewGuid(),
+            QuestionId = Guid.NewGuid(),
+            Text = "a note on a locked report",
+            Id = Guid.NewGuid()
+        };
+        var result = await _endpoint.ExecuteAsync(request, CancellationToken.None);
+
+        // Assert
+        result.Result.Should().BeOfType<Conflict>();
+        await _repository.DidNotReceiveWithAnyArgs().AddAsync(default!);
+        await _repository.DidNotReceiveWithAnyArgs().UpdateAsync(default!);
     }
 }

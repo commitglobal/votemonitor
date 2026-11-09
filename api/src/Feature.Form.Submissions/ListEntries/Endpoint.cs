@@ -87,6 +87,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                    s."ReviewedAt",
                    s."ReviewerIds",
                    s."Severity",
+                   s."Labels",
                    s."IsCompleted",
                    s."MonitoringObserverStatus"
             FROM "GetFormSubmissionEntries"(@electionRoundId, @ngoId, @dataSource) s
@@ -132,6 +133,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         ReviewerId = req.ReviewerId,
         HasReviewer = req.HasReviewer,
         Severities = req.Severity?.Select(x => x.Value).ToArray(),
+        Labels = req.Labels,
         Tags = req.TagsFilter,
         MonitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
         FormId = req.FormId,

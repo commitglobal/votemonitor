@@ -63,6 +63,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                                 s."MediaFilesCount",
                                 s."CommentsCount",
                                 s."FollowUpStatus",
+                                FUS."Id" AS "FollowUpStatusId",
+                                FUS."Name" AS "FollowUpStatusName",
+                                FUS."Color" AS "FollowUpStatusColor",
+                                FUS."Icon" AS "FollowUpStatusIcon",
                                 s."StageId",
                                 s."StageName",
                                 s."ReviewStatus",
@@ -70,12 +74,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                                 s."ReviewedAt",
                                 s."ReviewerIds",
                                 s."Severity",
+                                s."Labels",
                                 s."Level1",
                                 s."Level2",
                                 s."Level3",
                                 s."Level4",
                                 s."Level5"
                          FROM "GetCitizenReportEntries"(@electionRoundId, @ngoId) s
+                         LEFT JOIN "FollowUpStatuses" FUS ON FUS."Id" = {V2ReportFilterFields.FollowUpStatusIdSql("s.\"Id\"", "CitizenReport")}
                          WHERE {filter.Sql}
                          ORDER BY {orderBy}, s."Id"
                          LIMIT @pageSize OFFSET @offset

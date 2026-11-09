@@ -1,6 +1,9 @@
 using Feature.Review.Rules;
 using Feature.Review.Services;
 using Microsoft.Extensions.Logging;
+using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Domain.Entities.AnswerHistoryAggregate;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 namespace Feature.Severity.Rules;
 
@@ -14,6 +17,7 @@ internal class RecordAutomation(
     IReviewService reviewService,
     ISeverityRuleRunner severityRules,
     IReviewerRuleRunner reviewerRules,
+    ITimeProvider timeProvider,
     ILogger<RecordAutomation> logger) : IRecordAutomation
 {
     public Task RecordCreatedAsync(Guid electionRoundId,
@@ -33,6 +37,38 @@ internal class RecordAutomation(
         Guid recordId,
         CancellationToken ct) =>
         RunAsync(electionRoundId, recordType, recordId, RecordChange.ChangedByAuthor, ct);
+
+    public async Task AnswersChangedByAuthorAsync(Guid electionRoundId,
+        ReportRecordType recordType,
+        Guid recordId,
+        IReadOnlyList<BaseAnswer> before,
+        IReadOnlyList<BaseAnswer> after,
+        CancellationToken ct)
+    {
+        try
+        {
+            // Before the record goes back to the default stage: that move clears when it was reviewed.
+            var now = timeProvider.UtcNow;
+            context.AnswerChanges.AddRange(AnswerChange.Between(electionRoundId, recordType, recordId, before, after, now));
+            var workflows = await context.ReviewWorkflows
+                .Where(x => x.RecordType == recordType && x.RecordId == recordId && x.ReviewedAt != null)
+                .ToListAsync(ct);
+            foreach (var workflow in workflows)
+            {
+                workflow.MarkAnswersChanged(now);
+            }
+
+            await context.SaveChangesAsync(ct);
+        }
+        catch (Exception e)
+        {
+            // The record is saved; its history must not fail the submission.
+            context.ChangeTracker.Clear();
+            logger.LogError(e, "Could not keep the answer history of {RecordType} {RecordId}", recordType, recordId);
+        }
+
+        await RecordChangedByAuthorAsync(electionRoundId, recordType, recordId, ct);
+    }
 
     public async Task FormSubmissionPartChangedByAuthorAsync(Guid electionRoundId,
         Guid submissionId,

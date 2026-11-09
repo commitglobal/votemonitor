@@ -40,6 +40,13 @@ public record ReviewActivityModel
     public SeverityLevel? FromSeverity { get; init; }
     public SeverityLevel? ToSeverity { get; init; }
 
+    /// <summary>For <see cref="ReviewActivityKind.LabelsChanged"/>: the labels put on and taken off; null for other kinds.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public string[]? AddedLabels { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public string[]? RemovedLabels { get; init; }
+
     public static ReviewActivityModel FromEntity(ReviewActivity activity) => new()
     {
         Id = activity.Id,
@@ -59,6 +66,8 @@ public record ReviewActivityModel
         ReviewerName = activity.ReviewerName,
         FollowUpStatus = activity.FollowUpStatus,
         FromSeverity = activity.FromSeverity,
-        ToSeverity = activity.ToSeverity
+        ToSeverity = activity.ToSeverity,
+        AddedLabels = activity.AddedLabels,
+        RemovedLabels = activity.RemovedLabels
     };
 }

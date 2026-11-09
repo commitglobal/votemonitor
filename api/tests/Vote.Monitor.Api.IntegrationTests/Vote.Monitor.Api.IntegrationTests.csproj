@@ -37,6 +37,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vote.Monitor.Api\Vote.Monitor.Api.csproj" />
+    <!-- The export jobs, run directly in the export tests; aliased because it is a web app with its own Program. -->
+    <ProjectReference Include="..\..\src\Vote.Monitor.Hangfire\Vote.Monitor.Hangfire.csproj" Aliases="HangfireJobs" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 
