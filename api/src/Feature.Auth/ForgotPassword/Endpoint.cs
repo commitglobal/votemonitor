@@ -38,7 +38,7 @@ public class Endpoint(
             ? await GetResetPasswordEmail(user)
             : GetAcceptInviteEmail(user);
 
-        jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body);
+        jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body, mail.TextBody);
 
         return TypedResults.Ok();
     }

@@ -107,7 +107,7 @@ public class ObserverImportService(
 
                     var email = GenerateCreateAccountEmail(existingAccount.InvitationToken!, fullName, ngoName,
                         electionRoundName);
-                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
+                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body, email.TextBody);
                 }
                 else
                 {
@@ -124,7 +124,7 @@ public class ObserverImportService(
                             existingObserver.ApplicationUser.DisplayName, ngoName, electionRoundName)
                         : GenerateNotificationEmail(fullName, ngoName, electionRoundName);
 
-                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
+                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body, email.TextBody);
                 }
             }
             else
@@ -147,7 +147,7 @@ public class ObserverImportService(
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
                 var email = GenerateCreateAccountEmail(user.InvitationToken!, fullName, ngoName, electionRoundName);
-                jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
+                jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body, email.TextBody);
             }
         }
 

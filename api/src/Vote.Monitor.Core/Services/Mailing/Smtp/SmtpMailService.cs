@@ -28,6 +28,8 @@ public class SmtpMailService(IOptions<SmtpOptions> settings, ILogger<SmtpMailSer
             email.Sender = new MailboxAddress(_options.SenderName, _options.SenderEmail);
             email.Subject = request.Subject;
             builder.HtmlBody = request.Body;
+            // With a plain-text alternative too (multipart/alternative): some clients (Mail.ru) show no HTML.
+            if (!string.IsNullOrEmpty(request.TextBody)) builder.TextBody = request.TextBody;
 
             email.Body = builder.ToMessageBody();
 

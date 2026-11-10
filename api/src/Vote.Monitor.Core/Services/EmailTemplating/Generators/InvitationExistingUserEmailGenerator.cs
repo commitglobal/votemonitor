@@ -6,16 +6,17 @@ namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 internal class InvitationExistingUserEmailGenerator
 {
     private static readonly string Template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationExistingUser);
+    private static readonly string TextTemplate = EmailTemplateLoader.GetTextTemplate(EmailTemplateType.InvitationExistingUser);
 
     public static EmailModel Generate(InvitationExistingUserEmailProps props)
     {
-        var body = Template
+        string Fill(string template) => template
             .Replace("~$name$~", props.FullName)
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$ngoName$~", props.NgoName)
-            .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails);
+            .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails)
+            .Replace("~$year$~", DateTime.UtcNow.Year.ToString());
 
-        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.",
-            body);
+        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.", Fill(Template), Fill(TextTemplate));
     }
 }

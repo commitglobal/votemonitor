@@ -30,19 +30,19 @@ public class ApiTesting
 
         _emailFactory = Substitute.For<IEmailTemplateFactory>();
         _emailFactory.GenerateConfirmAccountEmail(Arg.Any<ConfirmEmailProps>())
-            .Returns(new EmailModel("fake", "fake"));
+            .Returns(new EmailModel("fake", "fake", "fake"));
 
         _emailFactory.GenerateResetPasswordEmail(Arg.Any<ResetPasswordEmailProps>())
-            .Returns(new EmailModel("fake", "fake"));
+            .Returns(new EmailModel("fake", "fake", "fake"));
 
         _emailFactory.GenerateInvitationExistingUserEmail(Arg.Any<InvitationExistingUserEmailProps>())
-            .Returns(new EmailModel("fake", "fake"));
+            .Returns(new EmailModel("fake", "fake", "fake"));
 
         _emailFactory.GenerateNewUserInvitationEmail(Arg.Any<InvitationNewUserEmailProps>())
-            .Returns(new EmailModel("fake", "fake"));
+            .Returns(new EmailModel("fake", "fake", "fake"));
 
         _emailFactory.GenerateCitizenReportEmail(Arg.Any<CitizenReportEmailProps>())
-            .Returns(new EmailModel("fake", "fake"));
+            .Returns(new EmailModel("fake", "fake", "fake"));
 
         _jobService = Substitute.For<IJobService>();
 

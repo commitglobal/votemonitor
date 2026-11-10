@@ -1,0 +1,18 @@
+Hello, ~$name$~
+
+Thank you for your decision to be an independent observer! We are very glad and grateful to have you here.
+
+~$ngoName$~ has invited you to be an observer for ~$electionRoundDetails$~.
+
+Please follow this link to complete your registration and to set your password in order to use the application:
+~$confirmUrl$~
+
+You may install the app from Google Play or Apple Store:
+Google Play: https://play.google.com/store/apps/details?id=org.commitglobal.votemonitor.app
+Apple Store: https://apps.apple.com/ro/app/vote-monitor/id6478601394
+
+Thank you.
+
+If you have any questions, reach out to us at info@commitglobal.org.
+
+© ~$year$~ Commit Global. All rights reserved.

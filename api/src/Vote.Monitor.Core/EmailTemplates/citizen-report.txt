@@ -1,0 +1,3 @@
+~$heading$~
+
+~$answers$~© ~$year$~ Commit Global. All rights reserved.

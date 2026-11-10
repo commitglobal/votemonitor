@@ -62,7 +62,7 @@ public class Endpoint(
             $"Citizen report #{req.CitizenReportId}",
             MapAnswersToEmailFragmentProps(form, citizenReport), _apiConfiguration.WebAppUrl));
 
-        jobService.EnqueueSendEmail(req.Email, email.Subject, email.Body);
+        jobService.EnqueueSendEmail(req.Email, email.Subject, email.Body, email.TextBody);
 
 
         return TypedResults.NoContent();
