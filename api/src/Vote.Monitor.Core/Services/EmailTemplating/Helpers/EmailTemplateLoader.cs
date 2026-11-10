@@ -44,7 +44,7 @@ internal static class EmailTemplateLoader
     {
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         var tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
-        var filePath = Path.Combine(tmplFolder, relativePath);
+        var filePath = Path.Join(tmplFolder, relativePath);
 
         using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var sr = new StreamReader(fs, Encoding.Default);
