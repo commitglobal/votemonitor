@@ -742,7 +742,8 @@
     "change_language": "Zmień język",
     "sending": {
       "sent": "Raport wysłany",
-      "queued": "Raport zapisany. Zostanie wysłany, gdy tylko wrócisz do sieci."
+      "queued": "Raport zapisany. Zostanie wysłany, gdy tylko wrócisz do sieci.",
+      "failed": "Nie udało się wysłać raportu o incydencie. Otwórz go z listy raportów i wyślij ponownie."
     },
     "error": "Wystąpił problem podczas wysyłania raportu o incydencie.",
     "report_type_sheet": {

@@ -152,10 +152,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             {time ? (
               <React.Fragment>
                 <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
-                  {time && formatDate(time)}
+                  {formatDate(time)}
                 </Typography>
                 <Typography preset="heading" fontWeight="500">
-                  {time && formatTime(time)}
+                  {formatTime(time)}
                 </Typography>
               </React.Fragment>
             ) : (

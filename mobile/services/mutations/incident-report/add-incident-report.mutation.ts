@@ -9,14 +9,8 @@ import {
   deleteIncidentReportAttachment,
 } from "../../api/incident-report/incident-report.api";
 import { IncidentReportKeys } from "../../queries/incident-reports.query";
-import { isNetworkError } from "../../api";
+import { retryWhileNoConnection } from "../../api-errors";
 
-/*
-  Incident report saves (the report and its notes) must not be lost when the connection drops: a request
-  that got no response is retried (with a growing delay, paused while offline) until it goes through.
-  Errors the server answered (e.g. a locked report) are not retried.
-*/
-const retryWhileNoConnection = (_failureCount: number, error: unknown) => isNetworkError(error);
 const retryDelay = (attempt: number) => Math.min(1000 * 2 ** attempt, 30 * 1000);
 
 // attachments and notes are only used for the optimistic update, they are sent separately

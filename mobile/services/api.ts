@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestHeaders } from "axios";
+import { isExpectedApiError, isNetworkError, normalizeUrl } from "./api-errors";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
@@ -159,29 +160,7 @@ API.interceptors.response.use(
   },
 );
 
-const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
-
-// Replace ids so the same endpoint is grouped into a single Sentry issue
-const normalizeUrl = (url?: string) =>
-  (url ?? "").split("?")[0].replace(UUID_REGEX, "{id}").replace(/^\//, "");
-
-/**
- * Not found (e.g. a round without citizen reporting forms), timeouts and requests without a response (no
- * connectivity) are expected on observers' phones, and the queries retry them: reporting each one only buries real
- * errors. Sentry's beforeSend drops them wherever they're captured.
- */
-// the request got no response: no connectivity, an unreachable server or a timeout
-export const isNetworkError = (error: unknown) =>
-  axios.isAxiosError(error) && !error.response && !axios.isCancel(error);
-
-export const isExpectedApiError = (error: unknown) => {
-  if (axios.isAxiosError(error)) {
-    const status = error.response?.status;
-    return status === 404 || (!status && !!error.request);
-  }
-  // fetch (uploads, push tokens) without connectivity
-  return error instanceof TypeError && error.message === "Network request failed";
-};
+export { isExpectedApiError, isNetworkError };
 
 const reportApiError = (error: AxiosError) => {
   if (axios.isCancel(error)) {

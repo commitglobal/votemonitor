@@ -738,7 +738,8 @@
         "change_language": "Alterar idioma",
         "sending": {
           "sent": "Relatório enviado",
-          "queued": "Relatório salvo. Ele será enviado assim que você estiver online."
+          "queued": "Relatório salvo. Ele será enviado assim que você estiver online.",
+          "failed": "Não foi possível enviar o relatório de incidente. Abra-o na lista de relatórios e envie novamente."
         },
         "error": "Houve um problema ao enviar o relatório de incidente.",
         "report_type_sheet": {

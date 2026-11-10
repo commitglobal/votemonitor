@@ -4,12 +4,14 @@ import {
   QueryClient,
   defaultShouldDehydrateMutation,
   defaultShouldDehydrateQuery,
+  matchMutation,
 } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
+import { withoutRequestErrors } from "./persisted-client";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
@@ -23,6 +25,8 @@ import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS, MUTATION_SCOPE_DO_NOT_HYDRATE } from "../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
+import Toast from "react-native-toast-message";
+import i18n from "../../common/config/i18n";
 import { QuickReportAttachmentAPIResponse } from "../../services/api/quick-report/get-quick-reports.api";
 import { IncidentReportKeys } from "../../services/queries/incident-reports.query";
 import {
@@ -47,6 +51,19 @@ const queryClient = new QueryClient({
         SuperJSON.stringify(mutation),
       );
       Sentry.captureException(error);
+
+      // "Send report" already told the observer the report was sent: say that it was not after all
+      const payload = mutation.state.variables as AddIncidentReportMutationPayload | undefined;
+      if (
+        matchMutation({ mutationKey: IncidentReportKeys.add() }, mutation) &&
+        payload?.isCompleted
+      ) {
+        Toast.show({
+          type: "error",
+          text2: i18n.t("sending.failed", { ns: "incident_report" }),
+          visibilityTime: 8000,
+        });
+      }
     },
   }),
   defaultOptions: {
@@ -99,6 +116,7 @@ const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
   throttleTime: 1000,
   key: ASYNC_STORAGE_KEYS.REACT_QUERY_OFFLINE_CACHE,
+  serialize: (client) => JSON.stringify(withoutRequestErrors(client)),
 });
 
 const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {

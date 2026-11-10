@@ -79,7 +79,8 @@ export const DateInput: React.FC<DateInputProps> = ({
           onChange: (event, eventTime) => {
             if (eventTime && selectedDate) {
               selectedDate.setHours(eventTime.getHours());
-              selectedDate.setMinutes(eventTime.getMinutes());
+              // no seconds: picking the same date and time again is not a change to sync
+              selectedDate.setMinutes(eventTime.getMinutes(), 0, 0);
               onChange(selectedDate);
             }
           },

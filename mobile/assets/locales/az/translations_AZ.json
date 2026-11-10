@@ -735,7 +735,8 @@
     "change_language": "Dili dəyiş",
     "sending": {
       "sent": "Hesabat göndərildi",
-      "queued": "Hesabat yadda saxlanıldı. İnternetə qoşulan kimi göndəriləcək."
+      "queued": "Hesabat yadda saxlanıldı. İnternetə qoşulan kimi göndəriləcək.",
+      "failed": "İnsident hesabatı göndərilə bilmədi. Onu hesabatlar siyahısından açın və yenidən göndərin."
     },
     "error": "İnsident hesabatı göndərilərkən problem baş verdi.",
     "report_type_sheet": {

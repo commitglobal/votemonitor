@@ -737,7 +737,8 @@
     "change_language": "Cambiar idioma",
     "sending": {
       "sent": "Informe enviado",
-      "queued": "Informe guardado. Se enviará en cuanto vuelvas a estar en línea."
+      "queued": "Informe guardado. Se enviará en cuanto vuelvas a estar en línea.",
+      "failed": "No se pudo enviar el informe de incidente. Ábrelo desde la lista de informes y envíalo de nuevo."
     },
     "error": "Hubo un problema al enviar el informe de incidente.",
     "report_type_sheet": {

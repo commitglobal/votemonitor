@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { dayOfIso } from "./date-answers";
 
 // the date formats the user can pick in settings, as date-fns patterns
 export const DATE_FORMATS = ["yyyy-MM-dd", "dd.MM.yyyy", "dd/MM/yyyy", "MM/dd/yyyy"] as const;
@@ -15,11 +16,10 @@ export const formatTime = (value: Date, is24Hour: boolean) =>
 /** A calendar day in the chosen date format, e.g. "2026-11-03" or "03.11.2026". */
 export const formatDate = (value: Date, dateFormat: DateFormat) => format(value, dateFormat);
 
-/** A calendar day stored as "YYYY-MM-DD", shown in the chosen date format without a time zone shift. */
+/** A date answer (see dayOfIso), shown in the chosen date format without a time zone shift. */
 export const formatDayIso = (day: string, dateFormat: DateFormat) => {
-  const [year, month, date] = day.slice(0, 10).split("-").map(Number);
-  if ([year, month, date].some(Number.isNaN)) return day.slice(0, 10);
-  return formatDate(new Date(year, month - 1, date), dateFormat);
+  const date = dayOfIso(day);
+  return date ? formatDate(date, dateFormat) : day.slice(0, 10);
 };
 
 /** A wall-clock time stored as "HH:mm" or "HH:mm:ss", shown in the chosen clock format. */

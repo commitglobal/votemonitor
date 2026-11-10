@@ -25,12 +25,10 @@ import { Icon } from "../../../components/Icon";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import {
-  fromDayIso,
-  fromTimeOfDay,
   mapAPIAnswersToFormAnswers,
   mapAPIQuestionsToFormQuestions,
-  toDayIso,
-  toTimeOfDay,
+  mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  setFormDefaultValues as answerToFormValue,
   withAnswerTimestamps,
 } from "../../../services/form.parser";
 import Button from "../../../components/Button";
@@ -130,73 +128,19 @@ const PollingStationQuestionnaire = () => {
         const question: ApiFormQuestion = questions[questionId];
 
         if (!question) return undefined;
-        if (!formData[questionId]) return undefined;
 
-        switch (FormQuestionAnswerTypeMapping[question.$questionType]) {
-          case "numberAnswer":
-            return {
-              $answerType: "numberAnswer",
-              questionId,
-              value: +formData[questionId],
-            } as ApiFormAnswer;
-          case "ratingAnswer":
-            return {
-              $answerType: "ratingAnswer",
-              questionId,
-              value: +formData[questionId],
-            } as ApiFormAnswer;
-          case "textAnswer":
-            return {
-              $answerType: "textAnswer",
-              questionId,
-              text: formData[questionId],
-            } as ApiFormAnswer;
-          case "dateAnswer":
-            return {
-              $answerType: "dateAnswer",
-              questionId,
-              date: toDayIso(new Date(formData[questionId] as string)),
-            } as ApiFormAnswer;
-          case "timeAnswer":
-            return {
-              $answerType: "timeAnswer",
-              questionId,
-              time: toTimeOfDay(new Date(formData[questionId] as string)),
-            } as ApiFormAnswer;
-          case "dateTimeAnswer":
-            return {
-              $answerType: "dateTimeAnswer",
-              questionId,
-              dateTime: new Date(formData[questionId] as string).toISOString(),
-            } as ApiFormAnswer;
-          case "singleSelectAnswer":
-            return {
-              $answerType: "singleSelectAnswer",
-              questionId,
-              selection: {
-                optionId: (formData[questionId] as Record<string, string>).radioValue,
-                text: (formData[questionId] as Record<string, string>).textValue,
-              },
-            } as ApiFormAnswer;
-          case "multiSelectAnswer": {
-            const selections: Record<string, { optionId: string; text: string }> = formData[
-              questionId
-            ] as Record<string, { optionId: string; text: string }>;
-            const mappedSelections = Object.values(selections).map((selection) => ({
-              optionId: selection.optionId,
-              text: selection.text,
-            }));
-            return mappedSelections?.length
-              ? ({
-                  $answerType: "multiSelectAnswer",
-                  questionId,
-                  selection: mappedSelections,
-                } as ApiFormAnswer)
-              : undefined;
-          }
-          default:
-            return undefined;
+        const answer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
+          questionId,
+          question.$questionType,
+          formData[questionId] as Parameters<
+            typeof mapFormSubmissionDataToAPIFormSubmissionAnswer
+          >[2],
+        );
+        // a multi select question with nothing picked has no answer
+        if (answer?.$answerType === "multiSelectAnswer" && !answer.selection.length) {
+          return undefined;
         }
+        return answer;
       })
       .map((answer) => answer && withAnswerTimestamps(answer, answers[answer.questionId]))
       .filter(Boolean) as ApiFormAnswer[];
@@ -237,42 +181,10 @@ const PollingStationQuestionnaire = () => {
 
   const setFormDefaultValues = () => {
     const formFields: Record<string, any> = Object.keys(answers).reduce(
-      (acc: Record<string, any>, questionId: string) => {
-        const answer = answers[questionId];
-        switch (answer.$answerType) {
-          case "textAnswer":
-            acc[questionId] = answer.text;
-            break;
-          case "numberAnswer":
-          case "ratingAnswer":
-            acc[questionId] = answer?.value?.toString() ?? "";
-            break;
-          case "dateAnswer":
-            acc[questionId] = answer.date ? fromDayIso(answer.date) : "";
-            break;
-          case "timeAnswer":
-            acc[questionId] = answer.time ? fromTimeOfDay(answer.time) : "";
-            break;
-          case "dateTimeAnswer":
-            acc[questionId] = answer.dateTime ? new Date(answer.dateTime) : "";
-            break;
-          case "singleSelectAnswer":
-            acc[questionId] = {
-              radioValue: answer.selection.optionId,
-              textValue: answer.selection.text,
-            };
-            break;
-          case "multiSelectAnswer":
-            acc[questionId] = answer.selection.reduce((acc: Record<string, any>, curr) => {
-              acc[curr.optionId] = { optionId: curr.optionId, text: curr.text };
-              return acc;
-            }, {});
-            break;
-          default:
-            break;
-        }
-        return acc;
-      },
+      (acc: Record<string, any>, questionId: string) => ({
+        ...acc,
+        ...answerToFormValue(questionId, answers[questionId]),
+      }),
       {},
     );
 

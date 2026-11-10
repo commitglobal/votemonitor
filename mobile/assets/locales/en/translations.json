@@ -738,7 +738,8 @@
     "change_language": "Change language",
     "sending": {
       "sent": "Report sent",
-      "queued": "Report saved. It will be sent as soon as you are back online."
+      "queued": "Report saved. It will be sent as soon as you are back online.",
+      "failed": "Your incident report could not be sent. Open it from the report list and send it again."
     },
     "error": "There was a problem while sending the incident report.",
     "report_type_sheet": {

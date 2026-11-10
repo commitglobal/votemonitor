@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { SECURE_STORAGE_KEYS } from "../../common/constants";
 import {
   DATE_FORMATS,
@@ -50,20 +50,20 @@ const DateTimeFormatContextProvider = ({ children }: React.PropsWithChildren) =>
     setSecureStoreItem(SECURE_STORAGE_KEYS.DATE_FORMAT, value);
   };
 
-  return (
-    <DateTimeFormatContext.Provider
-      value={{
-        is24Hour,
-        setIs24Hour,
-        dateFormat,
-        setDateFormat,
-        formatTime: (value: Date) => formatTime(value, is24Hour),
-        formatDate: (value: Date) => formatDate(value, dateFormat),
-      }}
-    >
-      {children}
-    </DateTimeFormatContext.Provider>
+  // a new value only when a format changes, so consumers don't re-render with every root render
+  const value = useMemo(
+    () => ({
+      is24Hour,
+      setIs24Hour,
+      dateFormat,
+      setDateFormat,
+      formatTime: (date: Date) => formatTime(date, is24Hour),
+      formatDate: (date: Date) => formatDate(date, dateFormat),
+    }),
+    [is24Hour, dateFormat],
   );
+
+  return <DateTimeFormatContext.Provider value={value}>{children}</DateTimeFormatContext.Provider>;
 };
 
 export const useDateTimeFormat = () => {

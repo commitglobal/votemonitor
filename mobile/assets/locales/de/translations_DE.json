@@ -738,7 +738,8 @@
         "change_language": "Sprache ändern",
         "sending": {
           "sent": "Bericht gesendet",
-          "queued": "Bericht gespeichert. Er wird gesendet, sobald du wieder online bist."
+          "queued": "Bericht gespeichert. Er wird gesendet, sobald du wieder online bist.",
+          "failed": "Der Vorfallbericht konnte nicht gesendet werden. Öffne ihn in der Berichtsliste und sende ihn erneut."
         },
         "error": "Beim Senden des Vorfallsberichts ist ein Problem aufgetreten.",
         "report_type_sheet": {

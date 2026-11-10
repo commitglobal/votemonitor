@@ -738,7 +738,8 @@
     "change_language": "Schimbă limba",
     "sending": {
       "sent": "Raport trimis",
-      "queued": "Raport salvat. Va fi trimis imediat ce revii online."
+      "queued": "Raport salvat. Va fi trimis imediat ce revii online.",
+      "failed": "Raportul de incident nu a putut fi trimis. Deschide-l din lista de rapoarte și trimite-l din nou."
     },
     "error": "A apărut o problemă la trimiterea raportului de incident.",
     "report_type_sheet": {

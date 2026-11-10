@@ -4,6 +4,13 @@ import { FormListItem } from "../components/SingleSubmissionFormList";
 import { MultiSubmissionFormListItem } from "../components/MultiSubmissionFormList";
 import { FormSubmissionDetails } from "../components/FormSubmissionListItem";
 import { arrayToKeyObject, groupArrayByKey } from "../helpers/misc";
+import {
+  fromDayIso,
+  fromTimeOfDay,
+  toDateTimeIso,
+  toDayIso,
+  toTimeOfDay,
+} from "../common/utils/date-answers";
 import { FormAPIModel, FormSubmission, FormSubmissionsApiResponse } from "./definitions.api";
 import {
   ApiFormAnswer,
@@ -48,28 +55,8 @@ const mapDisplayConditionToMath = (
   }
 };
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
-/** The picked local day as "YYYY-MM-DDT00:00:00Z": the API keeps the date part as is, with no time zone shift. */
-export const toDayIso = (date: Date) =>
-  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T00:00:00Z`;
-
-/** A date answer back to a local Date on that day (only the first 10 characters count). */
-export const fromDayIso = (value: string) => {
-  const [year, month, day] = value.slice(0, 10).split("-").map(Number);
-  return new Date(year, month - 1, day);
-};
-
-/** The picked local time as "HH:mm:ss" (a time of day, without a date or time zone). */
-export const toTimeOfDay = (date: Date) => `${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
-
-/** A time answer back to a Date today at that time, for the picker. */
-export const fromTimeOfDay = (value: string) => {
-  const [hours, minutes] = value.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hours || 0, minutes || 0, 0, 0);
-  return date;
-};
+// the values date, time and date-time questions send and read back (see date-answers)
+export { fromDayIso, fromTimeOfDay, toDayIso, toTimeOfDay } from "../common/utils/date-answers";
 
 /**
  * Whether a select parent's picked options meet a display rule. The rule lists the options in
@@ -101,11 +88,12 @@ const answerValueKey = (answer: ApiFormAnswer): string => {
     case "ratingAnswer":
       return `${answer.$answerType}:${answer.value}`;
     case "dateAnswer":
-      return `date:${answer.date?.slice(0, 10)}`;
+      return `date:${answer.date ? toDayIso(fromDayIso(answer.date)) : ""}`;
     case "timeAnswer":
       return `time:${answer.time?.slice(0, 5)}`;
     case "dateTimeAnswer":
-      return `dateTime:${new Date(answer.dateTime).getTime()}`;
+      // to the minute, like what is sent: an older answer with seconds is not a change
+      return `dateTime:${toDateTimeIso(new Date(answer.dateTime))}`;
     case "singleSelectAnswer":
       return `single:${answer.selection?.optionId}:${answer.selection?.text ?? ""}`;
     case "multiSelectAnswer":
@@ -285,7 +273,7 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
       return {
         $answerType: "dateTimeAnswer",
         questionId,
-        dateTime: new Date(answer as string | Date).toISOString(),
+        dateTime: toDateTimeIso(new Date(answer as string | Date)),
       } as ApiFormAnswer;
     case "singleSelectAnswer":
       return {

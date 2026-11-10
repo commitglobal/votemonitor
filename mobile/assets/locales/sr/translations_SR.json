@@ -735,7 +735,8 @@
     "change_language": "Promeni jezik",
     "sending": {
       "sent": "Izveštaj je poslat",
-      "queued": "Izveštaj je sačuvan. Biće poslat čim ponovo budete na mreži."
+      "queued": "Izveštaj je sačuvan. Biće poslat čim ponovo budete na mreži.",
+      "failed": "Izveštaj o incidentu nije mogao da bude poslat. Otvorite ga iz liste izveštaja i pošaljite ponovo."
     },
     "error": "Došlo je do problema prilikom slanja izveštaja o incidentu.",
     "report_type_sheet": {

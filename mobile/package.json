@@ -20,7 +20,8 @@
     "eas-update-production": "dotenv -e .env.production -- node scripts/publish-update.js",
     "eas-update": "dotenv -e .env -- node scripts/publish-update.js",
     "build-and-bump": "dotenv -e .env -- node scripts/build.js",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "test": "node --test \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
