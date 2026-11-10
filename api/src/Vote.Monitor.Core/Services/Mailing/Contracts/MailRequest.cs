@@ -1,5 +1,8 @@
 ﻿namespace Vote.Monitor.Core.Services.Mailing.Contracts;
 
+/// <summary>
+/// Represents an email message request payload.
+/// </summary>
 /// <param name="textBody">The plain-text alternative of the HTML <paramref name="body"/>; null sends HTML only.</param>
 public class MailRequest(string to, string subject, string body, string? textBody = null)
 {
