@@ -62,7 +62,7 @@ public class PendingInviteResendJob(
                 ElectionRoundDetails: observer.ElectionRoundDetails);
 
             var email = emailFactory.GenerateNewUserInvitationEmail(emailProps);
-            await sendEmailJob.SendAsync(observer.Email, email.Subject, email.Body);
+            await sendEmailJob.SendAsync(observer.Email, email.Subject, email.Body, email.TextBody);
         }
     }
 }

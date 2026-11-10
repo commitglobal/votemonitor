@@ -6,9 +6,9 @@ namespace Vote.Monitor.Api.Hangfire;
 
 public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJobService
 {
-    public void EnqueueSendEmail(string to, string subject, string body)
+    public void EnqueueSendEmail(string to, string subject, string body, string textBody)
     {
-        backgroundJobClient.Enqueue<ISendEmailJob>(job => job.SendAsync(to, subject, body));
+        backgroundJobClient.Enqueue<ISendEmailJob>(job => job.SendAsync(to, subject, body, textBody));
     }
 
     public void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)

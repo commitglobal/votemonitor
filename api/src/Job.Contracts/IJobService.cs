@@ -2,7 +2,7 @@
 
 public interface IJobService
 {
-    void EnqueueSendEmail(string to, string subject, string body);
+    void EnqueueSendEmail(string to, string subject, string body, string textBody);
     void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
     void EnqueueExportQuickReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
     void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId);

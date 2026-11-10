@@ -5,11 +5,16 @@ namespace Vote.Monitor.Hangfire.Jobs;
 
 public class SendEmailJob(IMailService mailService, ILogger<SendEmailJob> logger) : ISendEmailJob
 {
-    public async Task SendAsync(string to, string subject, string body)
+    public Task SendAsync(string to, string subject, string body) => Send(new MailRequest(to, subject, body));
+
+    public Task SendAsync(string to, string subject, string body, string textBody) =>
+        Send(new MailRequest(to, subject, body, textBody));
+
+    private async Task Send(MailRequest request)
     {
         try
         {
-            await mailService.SendAsync(new MailRequest(to, subject, body), CancellationToken.None);
+            await mailService.SendAsync(request, CancellationToken.None);
         }
         catch (Exception e)
         {

@@ -44,6 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Plain-text alternatives of the HTML templates, sent beside them (some clients show no HTML). -->
+    <Content Include="EmailTemplates\**\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="EmailTemplates\confirm-email.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

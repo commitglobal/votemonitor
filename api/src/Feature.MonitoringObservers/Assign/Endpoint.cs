@@ -95,7 +95,7 @@ public class Endpoint(
             ElectionRoundDetails: electionRound.Title);
 
         var email = emailFactory.GenerateInvitationExistingUserEmail(invitationExistingUserEmailProps);
-        jobService.EnqueueSendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
+        jobService.EnqueueSendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body, email.TextBody);
 
         return TypedResults.Ok(new Response
         {
