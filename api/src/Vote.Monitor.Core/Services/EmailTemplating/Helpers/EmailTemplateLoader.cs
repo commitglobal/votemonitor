@@ -30,11 +30,21 @@ internal static class EmailTemplateLoader
         { EmailTemplateType.NoteFragment, "Fragments/note-fragment.html" }
     };
 
-    public static string GetTemplate(EmailTemplateType templateType)
+    public static string GetTemplate(EmailTemplateType templateType) => Read(_templateMap[templateType]);
+
+    /// <summary>The template's plain-text version: the same name with <c>.txt</c>.</summary>
+    public static string GetTextTemplate(EmailTemplateType templateType) =>
+        Read(Path.ChangeExtension(_templateMap[templateType], ".txt"));
+
+    /// <summary>The HTML or the plain-text template.</summary>
+    public static string Get(EmailTemplateType templateType, bool text) =>
+        text ? GetTextTemplate(templateType) : GetTemplate(templateType);
+
+    private static string Read(string relativePath)
     {
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         var tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
-        var filePath = Path.Combine(tmplFolder, _templateMap[templateType]);
+        var filePath = Path.Combine(tmplFolder, relativePath);
 
         using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var sr = new StreamReader(fs, Encoding.Default);

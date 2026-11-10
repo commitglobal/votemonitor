@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Hangfire;
 
 internal class NoopJobService : IJobService
 {
-    public void EnqueueSendEmail(string to, string subject, string body)
+    public void EnqueueSendEmail(string to, string subject, string body, string textBody)
     {
     }
 

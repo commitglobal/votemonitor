@@ -1,0 +1,10 @@
+Hello, ~$name$~
+
+This is an automatic email that was sent to confirm your account. Please follow this link to complete your registration and to set your password in order to use the application:
+~$confirmUrl$~
+
+Thank you.
+
+If you have any questions, reach out to us at info@commitglobal.org.
+
+© ~$year$~ Commit Global. All rights reserved.

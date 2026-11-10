@@ -21,6 +21,8 @@ public class SesMailService(IOptions<SesOptions> settings,
             {
                 Html = new Content(mailRequest.Body)
             };
+            // With a plain-text alternative too: some clients (Mail.ru) show no HTML.
+            if (!string.IsNullOrEmpty(mailRequest.TextBody)) mailBody.Text = new Content(mailRequest.TextBody);
             var message = new Message(new Content(mailRequest.Subject), mailBody);
             var destination = new Destination([mailRequest.To]);
             var request = new SendEmailRequest(_options.SenderEmail, destination, message);

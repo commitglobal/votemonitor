@@ -22,9 +22,9 @@ public class ImportObserversTests : BaseApiTestFixture
     {
         // Arrange
         EmailFactory.GenerateNewUserInvitationEmail(Arg.Any<InvitationNewUserEmailProps>())
-            .Returns(new EmailModel(string.Empty, string.Empty));
+            .Returns(new EmailModel(string.Empty, string.Empty, string.Empty));
         EmailFactory.GenerateInvitationExistingUserEmail(Arg.Any<InvitationExistingUserEmailProps>())
-            .Returns(new EmailModel(string.Empty, string.Empty));
+            .Returns(new EmailModel(string.Empty, string.Empty, string.Empty));
 
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(ScenarioNgos.Alfa)
@@ -72,9 +72,9 @@ public class ImportObserversTests : BaseApiTestFixture
     {
         // Arrange
         EmailFactory.GenerateNewUserInvitationEmail(Arg.Any<InvitationNewUserEmailProps>())
-            .Returns(new EmailModel(string.Empty, string.Empty));
+            .Returns(new EmailModel(string.Empty, string.Empty, string.Empty));
         EmailFactory.GenerateInvitationExistingUserEmail(Arg.Any<InvitationExistingUserEmailProps>())
-            .Returns(new EmailModel(string.Empty, string.Empty));
+            .Returns(new EmailModel(string.Empty, string.Empty, string.Empty));
 
         var scenarioData = ScenarioBuilder.New(CreateClient)
             .WithNgo(ScenarioNgos.Alfa)
@@ -99,7 +99,7 @@ public class ImportObserversTests : BaseApiTestFixture
             {
                 invitationToken = GetInvitationTokenFromInviteUrl(x.AcceptUrl);
             }))
-            .Returns(new EmailModel(string.Empty, string.Empty));
+            .Returns(new EmailModel(string.Empty, string.Empty, string.Empty));
 
         admin.PostFileWithoutResponse($"/api/election-rounds/{electionRoundAId}/monitoring-observers:import",
             importFile);
@@ -154,7 +154,7 @@ public class ImportObserversTests : BaseApiTestFixture
 
         EmailFactory
             .GenerateNewUserInvitationEmail(Arg.Any<InvitationNewUserEmailProps>())
-            .Returns(new EmailModel("This is a confirm account email", acceptUrl));
+            .Returns(new EmailModel("This is a confirm account email", acceptUrl, "Confirm text"));
 
         // Act
         admin.PostFileWithoutResponse($"/api/election-rounds/{electionRoundAId}/monitoring-observers:import",
@@ -166,7 +166,7 @@ public class ImportObserversTests : BaseApiTestFixture
         // Assert
         JobService
             .Received(2)
-            .EnqueueSendEmail(aliceEmail, "This is a confirm account email", acceptUrl);
+            .EnqueueSendEmail(aliceEmail, "This is a confirm account email", acceptUrl, "Confirm text");
     }
 
     [Test]
@@ -198,11 +198,11 @@ public class ImportObserversTests : BaseApiTestFixture
                 invitationToken = GetInvitationTokenFromInviteUrl(x.AcceptUrl);
             }))
             .Returns(x => new EmailModel("This is a confirm account email",
-                GetInvitationTokenFromInviteUrl(x.Arg<InvitationNewUserEmailProps>().AcceptUrl)));
+                GetInvitationTokenFromInviteUrl(x.Arg<InvitationNewUserEmailProps>().AcceptUrl), "Confirm text"));
 
         EmailFactory
             .GenerateInvitationExistingUserEmail(Arg.Any<InvitationExistingUserEmailProps>())
-            .Returns(new EmailModel("This is a notification email", "Notification email body"));
+            .Returns(new EmailModel("This is a notification email", "Notification email body", "Notification email text"));
 
         admin.PostFileWithoutResponse($"/api/election-rounds/{electionRoundAId}/monitoring-observers:import",
             importFile);
@@ -218,11 +218,11 @@ public class ImportObserversTests : BaseApiTestFixture
         JobService
             .Received(1)
             .EnqueueSendEmail(aliceEmail,
-                "This is a confirm account email", Arg.Is(invitationToken));
+                "This is a confirm account email", Arg.Is(invitationToken), "Confirm text");
 
         JobService
             .Received(1)
-            .EnqueueSendEmail(aliceEmail, "This is a notification email", "Notification email body");
+            .EnqueueSendEmail(aliceEmail, "This is a notification email", "Notification email body", "Notification email text");
     }
 
     private string GetInvitationTokenFromInviteUrl(string inviteUrl)

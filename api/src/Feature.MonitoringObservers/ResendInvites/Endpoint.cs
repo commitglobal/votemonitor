@@ -84,7 +84,7 @@ public class Endpoint(
                 ElectionRoundDetails: electionRoundName);
 
             var email = emailFactory.GenerateNewUserInvitationEmail(invitationNewUserEmailProps);
-            jobService.EnqueueSendEmail(monitoringObserver.Email!, email.Subject, email.Body);
+            jobService.EnqueueSendEmail(monitoringObserver.Email!, email.Subject, email.Body, email.TextBody);
         }
 
         return TypedResults.NoContent();

@@ -1,0 +1,17 @@
+Hello, ~$name$~
+
+Thank you for your service as an observer. We are glad to have you back.
+
+~$ngoName$~ has invited you to be an observer for ~$electionRoundDetails$~.
+
+Go to the Vote Monitor app and reactivate your account. Please make sure you have the latest version installed on your phone.
+
+If you no longer have the app on your device, you may install it from Google Play or Apple Store:
+Google Play: https://play.google.com/store/apps/details?id=org.commitglobal.votemonitor.app
+Apple Store: https://apps.apple.com/ro/app/vote-monitor/id6478601394
+
+Thank you.
+
+If you have any questions, reach out to us at info@commitglobal.org.
+
+© ~$year$~ Commit Global. All rights reserved.
