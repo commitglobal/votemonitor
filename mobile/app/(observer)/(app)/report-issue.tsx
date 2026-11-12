@@ -42,8 +42,6 @@ import {
   MULTIPART_FILE_UPLOAD_SIZE,
   MUTATION_SCOPE_DO_NOT_HYDRATE,
 } from "../../../common/constants";
-import * as FileSystem from "expo-file-system/legacy";
-import { Buffer } from "buffer";
 import MediaLoading from "../../../components/MediaLoading";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import {
@@ -259,13 +257,12 @@ const ReportIssue = () => {
           throw new Error("Upload aborted");
         }
 
-        const chunk = await FileSystem.readAsStringAsync(filePath, {
-          length: MULTIPART_FILE_UPLOAD_SIZE,
-          position: index * MULTIPART_FILE_UPLOAD_SIZE,
-          encoding: FileSystem.EncodingType.Base64,
+        const data = await uploadS3Chunk({
+          url,
+          filePath,
+          partIndex: index,
+          partSize: MULTIPART_FILE_UPLOAD_SIZE,
         });
-        const buffer = Buffer.from(chunk, "base64");
-        const data = await uploadS3Chunk({ url, chunk: buffer });
         setUploadProgress(
           `${t("upload.progress")} ${Math.ceil(((uploadedPartsNo + index) / totalParts) * 100)}%`,
         );

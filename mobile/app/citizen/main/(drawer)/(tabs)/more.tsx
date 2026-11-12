@@ -5,6 +5,8 @@ import { Screen } from "../../../../../components/Screen";
 import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
 import { useTranslation } from "react-i18next";
+import { getDateFormatLabel } from "../../../../../common/utils/time";
+import { useDateTimeFormat } from "../../../../../contexts/date-time-format/DateTimeFormatContext.provider";
 import { openExternalUrl } from "../../../../../common/utils/utils";
 import { router, useNavigation } from "expo-router";
 import Header from "../../../../../components/Header";
@@ -38,7 +40,8 @@ export const MoreMenuItem = ({ label, helper, icon, chevronRight, onClick }: Men
 );
 
 const More = () => {
-  const { t, i18n } = useTranslation(["more", "languages", "common"]);
+  const { t, i18n } = useTranslation(["more", "languages", "common", "dateTimeFormatSettings"]);
+  const { is24Hour, dateFormat } = useDateTimeFormat();
 
   const navigation = useNavigation();
 
@@ -71,6 +74,13 @@ const More = () => {
           icon="language"
           onClick={setIsLanguageSelectSheetOpen.bind(null, true)}
           helper={t(i18n.language, { ns: "languages" })}
+        ></MoreMenuItem>
+        <MoreMenuItem
+          label={t("date_time_settings")}
+          icon="clock"
+          chevronRight={true}
+          onClick={() => router.push("/citizen/main/date-time-settings")}
+          helper={`${is24Hour ? t("time_format.24h", { ns: "dateTimeFormatSettings" }) : t("time_format.12h", { ns: "dateTimeFormatSettings" })} · ${getDateFormatLabel(dateFormat)}`}
         ></MoreMenuItem>
         <MoreMenuItem
           label={t("terms")}

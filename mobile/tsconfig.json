@@ -2,7 +2,9 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    // tests run with node --test, which needs the .ts extension in imports (noEmit: never compiled)
+    "allowImportingTsExtensions": true
     // "strictPropertyInitialization": false
   }
 }

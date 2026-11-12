@@ -486,6 +486,9 @@
       "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
       "required": "Acest câmp este obligatoriu",
       "date_placeholder": "Te rugăm să introduci data",
+      "time_placeholder": "Te rugăm să introduci ora",
+      "datetime_placeholder": "Te rugăm să introduci data și ora",
+      "unsupported_question": "Această întrebare necesită o versiune mai nouă a aplicației. Actualizează aplicația ca să poți răspunde.",
       "text_placeholder": "Te rugăm să introduci un text"
     },
     "save_and_continue": "Salvează și continuă",
@@ -602,6 +605,7 @@
     "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
   },
   "quick_report": {
+    "header_title": "Rapoarte",
     "list": {
       "title": "Raportare rapidă",
       "heading": "Raportările mele",
@@ -725,6 +729,61 @@
     "no_files": "Niciun fișier atașat",
     "error": "Eroare la încărcarea raportării"
   },
+  "incident_report": {
+    "title": "Raport de incident",
+    "form_not_found": "Acest formular de raportare a incidentelor nu mai este disponibil.",
+    "progress_bar_label": "Progresul formularului",
+    "previous_question": "Întrebarea anterioară",
+    "next_question": "Întrebarea următoare",
+    "change_language": "Schimbă limba",
+    "sending": {
+      "sent": "Raport trimis",
+      "queued": "Raport salvat. Va fi trimis imediat ce revii online.",
+      "failed": "Raportul de incident nu a putut fi trimis. Deschide-l din lista de rapoarte și trimite-l din nou."
+    },
+    "error": "A apărut o problemă la trimiterea raportului de incident.",
+    "report_type_sheet": {
+      "title": "Ce vrei să raportezi?",
+      "quick_report": "Raportare rapidă"
+    },
+    "list": {
+      "answers": "Întrebări răspunse: {{count}}"
+    },
+    "location": {
+      "label": "Locație"
+    },
+    "location_description": {
+      "label_other_polling_station": "Detaliile secției de votare *",
+      "label_not_related": "Detaliile locației *",
+      "placeholder": "Te rugăm să ne oferi câteva detalii de identificare ale acestei locații (precum adresă, nume, număr, etc.)",
+      "required": "Acest câmp este obligatoriu.",
+      "max": "Câmpul nu poate depăși {{value}} caractere."
+    },
+    "review": {
+      "heading": "Revizuiește raportul tău",
+      "send": "Trimite raportul",
+      "sending_report": "Trimitem raportul tău. Te rugăm să aștepți..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Ai modificări nesalvate",
+      "description": "Părăsirea acestei pagini va duce la pierderea întregului tău progres în raport. Ești sigur că vrei să te întorci?",
+      "actions": {
+        "discard": "Întoarce-te",
+        "save": "Rămâi aici"
+      }
+    },
+    "attachments": {
+      "heading": "Fișiere media încărcate",
+      "delete": {
+        "title": "Șterge fișierul media",
+        "description": "Această acțiune nu poate fi anulată. Odată șters, un fișier media nu mai poate fi recuperat.",
+        "actions": {
+          "cancel": "Anulează",
+          "clear": "Șterge"
+        }
+      }
+    }
+  },
   "guides": {
     "title": "Resurse",
     "empty": {
@@ -784,9 +843,21 @@
       "p2": "Verifică periodic pentru a vedea dacă ai primit informații noi."
     }
   },
+  "dateTimeFormatSettings": {
+    "title": "Setări de oră și dată",
+    "time_format": {
+      "title": "Format oră",
+      "24h": "24 de ore",
+      "12h": "12 ore"
+    },
+    "date_format": {
+      "title": "Format dată"
+    }
+  },
   "more": {
     "title": "Altele",
     "change-language": "Schimbă limba aplicației",
+    "date_time_settings": "Setări de oră și dată",
     "change-password": "Schimbă parola",
     "terms": "Termeni și Condiții",
     "privacy_policy": "Politica de Confidențialitate",

@@ -1,9 +1,9 @@
-import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 import { SubmissionStateToTextMapper } from "../common/utils/form-submissions";
 import { FormSubmission } from "../services/definitions.api";
 import { SubmissionStatus } from "../services/form.parser";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import Badge from "./Badge";
 import Card from "./Card";
 import { Icon } from "./Icon";
@@ -34,6 +34,7 @@ const FormSubmissionListItem = ({
   onDeleteSubmission,
 }: FormSubmissionListItemProps) => {
   const { t } = useTranslation(["form_submission_card", "common"]);
+  const { formatDate, formatTime } = useDateTimeFormat();
 
   return (
     <Card gap="$xxs" padding="$md" marginBottom="$xxs">
@@ -57,7 +58,7 @@ const FormSubmissionListItem = ({
       <YStack onPress={onClick} gap="$xxs">
         <XStack justifyContent="space-between">
           <Typography preset="body2">{t("last_updated_at")}</Typography>
-          <Typography preset="body1">{format(lastUpdatedAt, "yyyy-MM-dd HH:mm")}</Typography>
+          <Typography preset="body1">{`${formatDate(new Date(lastUpdatedAt))} ${formatTime(new Date(lastUpdatedAt))}`}</Typography>
         </XStack>
         <XStack justifyContent="space-between">
           <Typography preset="body2">{t("form_status")}</Typography>

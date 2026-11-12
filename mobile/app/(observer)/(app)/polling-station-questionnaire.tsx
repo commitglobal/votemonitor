@@ -27,6 +27,9 @@ import Header from "../../../components/Header";
 import {
   mapAPIAnswersToFormAnswers,
   mapAPIQuestionsToFormQuestions,
+  mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  setFormDefaultValues as answerToFormValue,
+  withAnswerTimestamps,
 } from "../../../services/form.parser";
 import Button from "../../../components/Button";
 import { useBottomInset } from "../../../hooks/useBottomInset";
@@ -120,74 +123,39 @@ const PollingStationQuestionnaire = () => {
   };
 
   const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
-    const answers: ApiFormAnswer[] = Object.keys(formData)
+    const updatedAnswers: ApiFormAnswer[] = Object.keys(formData)
       .map((questionId: string) => {
         const question: ApiFormQuestion = questions[questionId];
 
         if (!question) return undefined;
-        if (!formData[questionId]) return undefined;
 
-        switch (FormQuestionAnswerTypeMapping[question.$questionType]) {
-          case "numberAnswer":
-            return {
-              $answerType: "numberAnswer",
-              questionId,
-              value: +formData[questionId],
-            } as ApiFormAnswer;
-          case "ratingAnswer":
-            return {
-              $answerType: "ratingAnswer",
-              questionId,
-              value: +formData[questionId],
-            } as ApiFormAnswer;
-          case "textAnswer":
-            return {
-              $answerType: "textAnswer",
-              questionId,
-              text: formData[questionId],
-            } as ApiFormAnswer;
-          case "dateAnswer":
-            return {
-              $answerType: "dateAnswer",
-              questionId,
-              date: new Date(formData[questionId] as string).toISOString(),
-            } as ApiFormAnswer;
-          case "singleSelectAnswer":
-            return {
-              $answerType: "singleSelectAnswer",
-              questionId,
-              selection: {
-                optionId: (formData[questionId] as Record<string, string>).radioValue,
-                text: (formData[questionId] as Record<string, string>).textValue,
-              },
-            } as ApiFormAnswer;
-          case "multiSelectAnswer": {
-            const selections: Record<string, { optionId: string; text: string }> = formData[
-              questionId
-            ] as Record<string, { optionId: string; text: string }>;
-            const mappedSelections = Object.values(selections).map((selection) => ({
-              optionId: selection.optionId,
-              text: selection.text,
-            }));
-            return mappedSelections?.length
-              ? ({
-                  $answerType: "multiSelectAnswer",
-                  questionId,
-                  selection: mappedSelections,
-                } as ApiFormAnswer)
-              : undefined;
-          }
-          default:
-            return undefined;
+        const answer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
+          questionId,
+          question.$questionType,
+          formData[questionId] as Parameters<
+            typeof mapFormSubmissionDataToAPIFormSubmissionAnswer
+          >[2],
+        );
+        // a multi select question with nothing picked has no answer
+        if (answer?.$answerType === "multiSelectAnswer" && !answer.selection.length) {
+          return undefined;
         }
+        return answer;
       })
+      .map((answer) => answer && withAnswerTimestamps(answer, answers[answer.questionId]))
       .filter(Boolean) as ApiFormAnswer[];
+
+    // Answers to questions this version can't show are kept as they are, not dropped on save.
+    const keptAnswers = Object.values(answers).filter((answer) => {
+      const question = questions[answer.questionId];
+      return !!question && !(question.$questionType in FormQuestionAnswerTypeMapping);
+    });
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
-        answers,
+        answers: [...updatedAnswers, ...keptAnswers],
         lastUpdatedAt: new Date().toISOString(),
       });
       router.back();
@@ -213,36 +181,10 @@ const PollingStationQuestionnaire = () => {
 
   const setFormDefaultValues = () => {
     const formFields: Record<string, any> = Object.keys(answers).reduce(
-      (acc: Record<string, any>, questionId: string) => {
-        const answer = answers[questionId];
-        switch (answer.$answerType) {
-          case "textAnswer":
-            acc[questionId] = answer.text;
-            break;
-          case "numberAnswer":
-          case "ratingAnswer":
-            acc[questionId] = answer?.value?.toString() ?? "";
-            break;
-          case "dateAnswer":
-            acc[questionId] = answer.date ? new Date(answer.date) : "";
-            break;
-          case "singleSelectAnswer":
-            acc[questionId] = {
-              radioValue: answer.selection.optionId,
-              textValue: answer.selection.text,
-            };
-            break;
-          case "multiSelectAnswer":
-            acc[questionId] = answer.selection.reduce((acc: Record<string, any>, curr) => {
-              acc[curr.optionId] = { optionId: curr.optionId, text: curr.text };
-              return acc;
-            }, {});
-            break;
-          default:
-            break;
-        }
-        return acc;
-      },
+      (acc: Record<string, any>, questionId: string) => ({
+        ...acc,
+        ...answerToFormValue(questionId, answers[questionId]),
+      }),
       {},
     );
 
@@ -378,7 +320,11 @@ const PollingStationQuestionnaire = () => {
                 );
               }
 
-              if (question.$questionType === "dateQuestion") {
+              if (
+                question.$questionType === "dateQuestion" ||
+                question.$questionType === "timeQuestion" ||
+                question.$questionType === "dateTimeQuestion"
+              ) {
                 return (
                   <Controller
                     key={question.id}
@@ -387,6 +333,13 @@ const PollingStationQuestionnaire = () => {
                     render={({ field: { onChange, value } }) => (
                       <YStack>
                         <DateFormInput
+                          mode={
+                            question.$questionType === "dateQuestion"
+                              ? "date"
+                              : question.$questionType === "timeQuestion"
+                                ? "time"
+                                : "datetime"
+                          }
                           title={question.text[currentLanguage]}
                           onChange={onChange}
                           value={value}
@@ -535,7 +488,14 @@ const PollingStationQuestionnaire = () => {
                 );
               }
 
-              return <Typography key={question.id}></Typography>;
+              // A question type this version doesn't know: say so instead of an empty gap.
+              return (
+                <FormElement key={question.id} title={question.text?.[currentLanguage] ?? ""}>
+                  <Typography color="$gray5">
+                    {t("form.unsupported_question", { ns: "polling_station_form_wizard" })}
+                  </Typography>
+                </FormElement>
+              );
             })}
           </YStack>
         </ScreenScrollView>

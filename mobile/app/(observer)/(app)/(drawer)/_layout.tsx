@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useTheme, XStack } from "tamagui";
+import { useTheme, XStack, YStack } from "tamagui";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
@@ -43,10 +43,21 @@ export const DrawerContent = (props: DrawerContentProps) => {
           <DrawerItem
             key={index}
             // use a custom component for the label, as the default one only displays one line of text
+            // only started rounds are listed, so the status is not shown;
+            // the english title is added when it differs from the (local language) title
             label={({ color }) => (
-              <Typography preset="body2" color={color}>
-                {`${round.status} - ${round.title}`}
-              </Typography>
+              <YStack>
+                <Typography preset="body2" color={color}>
+                  {round.title}
+                </Typography>
+                {round.englishTitle && round.englishTitle.trim() !== round.title.trim() ? (
+                  <Typography preset="body1" color={color} opacity={0.8}>
+                    {round.englishTitle}
+                  </Typography>
+                ) : (
+                  false
+                )}
+              </YStack>
             )}
             focused={activeElectionRound?.id === round.id}
             activeTintColor={theme.purple5?.val}

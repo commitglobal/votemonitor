@@ -1,9 +1,7 @@
 import * as Sentry from "@sentry/react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { Buffer } from "buffer";
 import * as Crypto from "expo-crypto";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system/legacy";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,6 +35,7 @@ import { useCamera } from "../../../../hooks/useCamera";
 import { AddAttachmentStartAPIPayload } from "../../../../services/api/add-attachment.api";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
+  withAnswerTimestamps,
   removeAnswersForHiddenQuestions,
   setFormDefaultValues,
   shouldDisplayQuestion,
@@ -160,10 +159,14 @@ const FormQuestionnaire = () => {
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
       // map the answer values
-      const updatedAnswer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
-        questionId,
-        activeQuestion?.question.$questionType,
-        formValues[questionId],
+      // stamped with when it was first given and last changed (kept as is when unchanged)
+      const updatedAnswer = withAnswerTimestamps(
+        mapFormSubmissionDataToAPIFormSubmissionAnswer(
+          questionId,
+          activeQuestion?.question.$questionType,
+          formValues[questionId],
+        ),
+        answers?.[questionId],
       );
 
       // Remove answers only for dependent questions that are no longer displayed
@@ -511,13 +514,12 @@ const FormQuestionnaire = () => {
           throw new Error("Upload cancelled");
         }
 
-        const chunk = await FileSystem.readAsStringAsync(filePath, {
-          length: MULTIPART_FILE_UPLOAD_SIZE,
-          position: index * MULTIPART_FILE_UPLOAD_SIZE,
-          encoding: FileSystem.EncodingType.Base64,
+        const data = await uploadS3Chunk({
+          url,
+          filePath,
+          partIndex: index,
+          partSize: MULTIPART_FILE_UPLOAD_SIZE,
         });
-        const buffer = Buffer.from(chunk, "base64");
-        const data = await uploadS3Chunk({ url, chunk: buffer });
         setUploadProgress(
           `${t("attachments.upload.progress")} ${Math.ceil(((index + 1) / totalParts) * 100)}%`,
         );

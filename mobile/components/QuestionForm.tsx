@@ -11,6 +11,7 @@ import WizardRatingFormInput from "./WizardFormInputs/WizardRatingFormInput";
 
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
+import { FormQuestionAnswerTypeMapping } from "../services/interfaces/answer.type";
 import { Typography } from "./Typography";
 
 interface IQuestionFormProps {
@@ -39,6 +40,9 @@ const QuestionForm = ({
   const { t } = useTranslation("polling_station_form_wizard");
 
   let returnedComponent: React.ReactNode;
+  // A question type this version of the app doesn't know can't be answered, so it must never block the form.
+  const supported =
+    !!activeQuestion && activeQuestion.question.$questionType in FormQuestionAnswerTypeMapping;
 
   return (
     <>
@@ -46,7 +50,7 @@ const QuestionForm = ({
         key={activeQuestion?.question?.id}
         name={activeQuestion?.question?.id}
         rules={{
-          required: required ? { value: true, message: t("form.required") } : false,
+          required: required && supported ? { value: true, message: t("form.required") } : false,
         }}
         control={control}
         render={({ field: { value, onChange }, fieldState: { error } }) => {
@@ -91,8 +95,33 @@ const QuestionForm = ({
             case "dateQuestion":
               returnedComponent = (
                 <WizardDateFormInput
+                  mode="date"
                   label={`${question.code}. ${question.text[language]}`}
                   placeholder={t("form.date_placeholder")}
+                  paragraph={question.helptext?.[language] || ""}
+                  onChange={onChange}
+                  value={value}
+                />
+              );
+              break;
+            case "timeQuestion":
+              returnedComponent = (
+                <WizardDateFormInput
+                  mode="time"
+                  label={`${question.code}. ${question.text[language]}`}
+                  placeholder={t("form.time_placeholder")}
+                  paragraph={question.helptext?.[language] || ""}
+                  onChange={onChange}
+                  value={value}
+                />
+              );
+              break;
+            case "dateTimeQuestion":
+              returnedComponent = (
+                <WizardDateFormInput
+                  mode="datetime"
+                  label={`${question.code}. ${question.text[language]}`}
+                  placeholder={t("form.datetime_placeholder")}
                   paragraph={question.helptext?.[language] || ""}
                   onChange={onChange}
                   value={value}
@@ -215,6 +244,17 @@ const QuestionForm = ({
                 />
               );
               break;
+            default: {
+              const unknown: ApiFormQuestion = activeQuestion.question;
+              returnedComponent = (
+                <WizardFormElement
+                  label={`${unknown.code}. ${unknown.text?.[language] ?? ""}`}
+                  paragraph={unknown.helptext?.[language] || ""}
+                >
+                  <Typography color="$gray5">{t("form.unsupported_question")}</Typography>
+                </WizardFormElement>
+              );
+            }
           }
 
           return (

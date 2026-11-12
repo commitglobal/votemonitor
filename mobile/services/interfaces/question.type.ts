@@ -2,6 +2,8 @@ export type FormQuestionType =
   | "numberQuestion"
   | "textQuestion"
   | "dateQuestion"
+  | "timeQuestion"
+  | "dateTimeQuestion"
   | "singleSelectQuestion"
   | "multiSelectQuestion"
   | "ratingQuestion";
@@ -20,12 +22,17 @@ export type DisplayLogicCondition =
   | "LessEqual"
   | "GreaterThan"
   | "GreaterEqual"
-  | "Includes";
+  | "Includes"
+  | "AnyOf"
+  | "All";
 
 type ApiFormQuestionDisplayLogic = {
   condition: DisplayLogicCondition;
   parentQuestionId: string;
-  value: string;
+  // number/rating/text parents compare against value
+  value?: string | null;
+  // select parents ("AnyOf" / "All") list their options here; value is empty
+  optionIds?: string[] | null;
 };
 
 export type ApiFormQuestion = {
@@ -50,6 +57,7 @@ export type ApiFormQuestion = {
       options: ApiFormQuestionSelectOption[];
     }
   | {
-      $questionType: "dateQuestion";
+      // dateQuestion: a calendar day; timeQuestion: a time of day; dateTimeQuestion: a moment
+      $questionType: "dateQuestion" | "timeQuestion" | "dateTimeQuestion";
     }
 );
