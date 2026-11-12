@@ -33,7 +33,6 @@ import { Screen } from "../../../components/Screen";
 import { ScreenScrollView } from "../../../components/ScreenScrollView";
 import Select from "../../../components/Select";
 import { Typography } from "../../../components/Typography";
-import Button from "../../../components/Button";
 import WarningDialog from "../../../components/WarningDialog";
 import WizzardControls from "../../../components/WizzardControls";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
@@ -782,8 +781,9 @@ const IncidentReport = () => {
     !!activeQuestion && findNextQuestion(activeQuestion.indexInAllQuestions, answers) === null;
   // once saved, the location can not be changed any more
   const showPrevious = !isFirstQuestion || !isSaved;
-  // the form menu, as on the other forms (for now it only changes the language)
-  const hasFormMenu = step === "questions" && (currentForm?.languages.length ?? 0) > 1;
+  // the form menu, as on the other forms: send the report (from any question) and change the language
+  const hasFormMenu = step === "questions";
+  const hasTranslations = (currentForm?.languages.length ?? 0) > 1;
 
   return (
     <Screen
@@ -897,15 +897,6 @@ const IncidentReport = () => {
                 current={activeQuestion.indexInDisplayedQuestions + 1}
                 total={displayedQuestions.length}
               />
-              {/* one tap sends the report as it is, from any question; kept away from "Next" */}
-              <Button
-                preset="outlined"
-                marginTop="$sm"
-                icon={<Icon icon="send" color="$purple5" size={20} />}
-                onPress={handleQuestionSubmit(onSendNow)}
-              >
-                {t("review.send")}
-              </Button>
             </YStack>
 
             <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
@@ -1113,16 +1104,29 @@ const IncidentReport = () => {
       {isFormMenuOpen && (
         <OptionsSheet open setOpen={setIsFormMenuOpen}>
           <YStack paddingVertical="$xxs" paddingHorizontal="$sm" gap="$xxs">
+            {/* sends the report as it is (with the answer on screen) and locks it, in one tap */}
             <Typography
               preset="body1"
               paddingVertical="$xs"
               onPress={() => {
                 setIsFormMenuOpen(false);
-                setIsChangeLanguageOpen(true);
+                handleQuestionSubmit(onSendNow)();
               }}
             >
-              {t("change_language")}
+              {t("review.send")}
             </Typography>
+            {hasTranslations && (
+              <Typography
+                preset="body1"
+                paddingVertical="$xs"
+                onPress={() => {
+                  setIsFormMenuOpen(false);
+                  setIsChangeLanguageOpen(true);
+                }}
+              >
+                {t("change_language")}
+              </Typography>
+            )}
           </YStack>
         </OptionsSheet>
       )}
