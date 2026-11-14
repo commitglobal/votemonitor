@@ -1,6 +1,5 @@
 ﻿using Feature.Forms.Models;
 using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase;
@@ -80,7 +79,9 @@ public class Endpoint(VoteMonitorContext context)
         return TypedResults.Ok(new NgoFormsResponseModel
         {
             ElectionRoundId = monitoringNgo.ElectionRoundId,
-            Version = DeterministicGuid.Create(resultForms.Select(x => x.Id)).ToString(),
+            // The same key as forms:version, so it changes when a form's content changes, not only the set of forms.
+            Version = await ObserverFormsVersion.GetAsync(context, req.ElectionRoundId, monitoringNgo.MonitoringNgoId,
+                monitoringNgo.FormsVersion, ct),
             Forms = resultForms.OrderBy(x => x.DisplayOrder).ThenBy(x => x.Code).ToList()
         });
     }
