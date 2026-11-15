@@ -18,6 +18,7 @@ import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
 import Check from "../assets/icons/check.svg";
 import Calendar from "../assets/icons/Calendar.svg";
+import Clock from "../assets/icons/Clock.svg";
 import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
 import LoadingScreenDevice from "../assets/icons/loading-screen-device.svg";
 import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
@@ -126,6 +127,7 @@ export const defaultIcon = (props: IconProps): React.ReactElement => {
     dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
     check: <Check fill={color} width={size} height={size} />,
     calendar: <Calendar stroke={color} width={size} height={size} />,
+    clock: <Clock stroke={color} width={size} height={size} />,
     peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
     loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
     missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,

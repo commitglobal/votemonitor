@@ -490,6 +490,9 @@
       "max": "Pole musi zawierać maksymalnie {{value}} znaków",
       "required": "To pole jest wymagane",
       "date_placeholder": "Proszę wprowadzić datę",
+      "time_placeholder": "Proszę wprowadzić godzinę",
+      "datetime_placeholder": "Proszę wprowadzić datę i godzinę",
+      "unsupported_question": "To pytanie wymaga nowszej wersji aplikacji. Zaktualizuj aplikację, aby na nie odpowiedzieć.",
       "text_placeholder": "Proszę wpisać tekst"
     },
     "save_and_continue": "Zapisz i kontynuuj",
@@ -606,6 +609,7 @@
     "offline_error_toast_msg": "Aby wykonać tę czynność, potrzebujesz połączenia internetowego."
   },
   "quick_report": {
+    "header_title": "Raporty",
     "list": {
       "title": "Szybki raport",
       "heading": "Moje zgłoszone sprawy",
@@ -729,6 +733,61 @@
     "no_files": "Brak załączonych plików",
     "error": "Błąd podczas ładowania raportu"
   },
+  "incident_report": {
+    "title": "Raport o incydencie",
+    "form_not_found": "Ten formularz raportu o incydencie nie jest już dostępny.",
+    "progress_bar_label": "Postęp formularza",
+    "previous_question": "Poprzednie pytanie",
+    "next_question": "Następne pytanie",
+    "change_language": "Zmień język",
+    "sending": {
+      "sent": "Raport wysłany",
+      "queued": "Raport zapisany. Zostanie wysłany, gdy tylko wrócisz do sieci.",
+      "failed": "Nie udało się wysłać raportu o incydencie. Otwórz go z listy raportów i wyślij ponownie."
+    },
+    "error": "Wystąpił problem podczas wysyłania raportu o incydencie.",
+    "report_type_sheet": {
+      "title": "Co chcesz zgłosić?",
+      "quick_report": "Szybki raport"
+    },
+    "list": {
+      "answers": "Odpowiedziane pytania: {{count}}"
+    },
+    "location": {
+      "label": "Lokalizacja"
+    },
+    "location_description": {
+      "label_other_polling_station": "Szczegóły komisji wyborczej *",
+      "label_not_related": "Szczegóły lokalizacji *",
+      "placeholder": "Zapisz proszę szczegóły tej lokalizacji, które pozwolą ją zidentyfikować (adres, nazwa, numer itd.)",
+      "required": "To pole jest wymagane.",
+      "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków."
+    },
+    "review": {
+      "heading": "Przejrzyj swój raport",
+      "send": "Wyślij raport",
+      "sending_report": "Wysyłamy raport. Proszę czekać..."
+    },
+    "unsaved_changes_dialog": {
+      "title": "Masz niezapisane zmiany",
+      "description": "Opuszczenie tej strony spowoduje utratę wszystkich postępów w raporcie. Czy na pewno chcesz wrócić?",
+      "actions": {
+        "discard": "Wróć",
+        "save": "Zostań tutaj"
+      }
+    },
+    "attachments": {
+      "heading": "Przesłane multimedia",
+      "delete": {
+        "title": "Usuń plik multimedialny",
+        "description": "Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.",
+        "actions": {
+          "cancel": "Anuluj",
+          "clear": "Usuń"
+        }
+      }
+    }
+  },
   "guides": {
     "title": "Zasoby",
     "empty": {
@@ -788,9 +847,21 @@
       "p2": "Sprawdzaj okresowo, czy otrzymałeś jakieś nowe informacje."
     }
   },
+  "dateTimeFormatSettings": {
+    "title": "Ustawienia godziny i daty",
+    "time_format": {
+      "title": "Format godziny",
+      "24h": "24-godzinny",
+      "12h": "12-godzinny"
+    },
+    "date_format": {
+      "title": "Format daty"
+    }
+  },
   "more": {
     "title": "Więcej",
     "change-language": "Zmień język aplikacji",
+    "date_time_settings": "Ustawienia godziny i daty",
     "change-password": "Zmień hasło",
     "terms": "Regulamin",
     "privacy_policy": "Polityka prywatności",

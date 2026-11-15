@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import Card, { CardProps } from "./Card";
 import CardFooter from "./CardFooter";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 
 interface GuideCardProps extends CardProps {
   guide: Guide;
@@ -18,6 +19,7 @@ interface GuideCardProps extends CardProps {
 
 const GuideCard = ({ guide, onResourcePress, ...rest }: GuideCardProps) => {
   const { t } = useTranslation(["guides", "resources"]);
+  const { formatDate, formatTime } = useDateTimeFormat();
   const createdOn = new Date(guide.createdOn);
 
   const handleGuidePress = () => {
@@ -46,7 +48,7 @@ const GuideCard = ({ guide, onResourcePress, ...rest }: GuideCardProps) => {
       )}
       {createdOn && (
         <CardFooter
-          text={`${t("list.guide.created_on")} ${createdOn.toLocaleDateString()}, ${createdOn.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+          text={`${t("list.guide.created_on")} ${formatDate(createdOn)}, ${formatTime(createdOn)}`}
         />
       )}
     </Card>

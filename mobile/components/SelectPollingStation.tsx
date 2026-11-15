@@ -108,7 +108,6 @@ const SelectPollingStation = () => {
                   <Button
                     width="80%"
                     height="100%"
-                    textAlign="center"
                     textStyle={{ textAlign: "center" }}
                     preset="outlined"
                     onPress={() => {

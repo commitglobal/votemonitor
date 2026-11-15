@@ -57,5 +57,12 @@
         "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
       }
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6478601394"
+      }
+    }
   }
 }

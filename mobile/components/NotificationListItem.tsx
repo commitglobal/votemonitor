@@ -4,10 +4,12 @@ import { useWindowDimensions, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import Card from "./Card";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import RenderHtml from "react-native-render-html";
 
 const NotificationListItem = ({ notification }: { notification: Notification }) => {
-  const { t, i18n } = useTranslation("inbox");
+  const { t } = useTranslation("inbox");
+  const { formatDate, formatTime } = useDateTimeFormat();
 
   const sentAt = new Date(notification.sentAt);
   const isToday = sentAt.toDateString() === new Date().toDateString();
@@ -18,18 +20,8 @@ const NotificationListItem = ({ notification }: { notification: Notification }) 
     <YStack gap="$sm" marginVertical="$xxs">
       <Typography textAlign="center" color="$gray6">
         {isToday
-          ? `${t("today")}, ` +
-            sentAt.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : sentAt.toLocaleString(i18n.language, {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+          ? `${t("today")}, ${formatTime(sentAt)}`
+          : `${formatDate(sentAt)}, ${formatTime(sentAt)}`}
       </Typography>
       <Card
         borderTopStartRadius={20}

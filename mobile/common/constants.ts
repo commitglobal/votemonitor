@@ -11,6 +11,8 @@ export const SECURE_STORAGE_KEYS = {
   ONBOARDING_COMPLETE: "onboardingComplete",
   ONBOARDING_NEW_COMPLETE: "onboardingNewComplete",
   I18N_LANGUAGE: "i18n-language",
+  CLOCK_FORMAT: "clock-format",
+  DATE_FORMAT: "date-format",
 };
 
 // export const I18N_LANGUAGE = "i18n-language";

@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react-native";
+import { isExpectedApiError } from "../services/api";
 import { TamaguiProvider } from "@tamagui/core";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
@@ -13,6 +14,7 @@ import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
+import DateTimeFormatContextProvider from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
 import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
 import { tamaguiConfig } from "../tamagui.config";
@@ -50,6 +52,8 @@ Sentry.init({
   // We recommend adjusting this value in production
   tracesSampleRate: process.env.EXPO_PUBLIC_ENVIRONMENT === "production" ? 0.2 : 0,
   integrations: [Sentry.reactNativeTracingIntegration()],
+  // 404s, timeouts and lost connectivity are expected (see isExpectedApiError)
+  beforeSend: (event, hint) => (isExpectedApiError(hint.originalException) ? null : event),
 });
 
 SplashScreen.preventAutoHideAsync();
@@ -97,13 +101,15 @@ function RootLayout() {
             <PersistQueryContextProvider>
               <PortalProvider>
                 <LanguageContextProvider>
-                  <EasUpdateMonitorContextProvider>
-                    <AppModeContextProvider>
-                      <Slot />
-                      <Toast config={toastConfig} position="top" />
-                      <NetInfoBanner />
-                    </AppModeContextProvider>
-                  </EasUpdateMonitorContextProvider>
+                  <DateTimeFormatContextProvider>
+                    <EasUpdateMonitorContextProvider>
+                      <AppModeContextProvider>
+                        <Slot />
+                        <Toast config={toastConfig} position="top" />
+                        <NetInfoBanner />
+                      </AppModeContextProvider>
+                    </EasUpdateMonitorContextProvider>
+                  </DateTimeFormatContextProvider>
                 </LanguageContextProvider>
               </PortalProvider>
             </PersistQueryContextProvider>

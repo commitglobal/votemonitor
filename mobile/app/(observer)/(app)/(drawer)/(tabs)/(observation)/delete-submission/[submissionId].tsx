@@ -2,7 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScrollView, Separator, Spinner, YStack } from "tamagui";
 import { getAnswerDisplay } from "../../../../../../../common/utils/answers";
 import Button from "../../../../../../../components/Button";
@@ -13,6 +12,7 @@ import { Screen } from "../../../../../../../components/Screen";
 import { Typography } from "../../../../../../../components/Typography";
 import { useNetInfoContext } from "../../../../../../../contexts/net-info-banner/NetInfoContext";
 import { useUserData } from "../../../../../../../contexts/user/UserContext.provider";
+import { useDateTimeFormat } from "../../../../../../../contexts/date-time-format/DateTimeFormatContext.provider";
 import { shouldDisplayQuestion } from "../../../../../../../services/form.parser";
 import {
   ApiFormAnswer,
@@ -35,6 +35,7 @@ type SearchParamsType = {
 
 const DeleteFormSubmission = () => {
   const { t } = useTranslation(["delete_submission", "common"]);
+  const dateTimeFormat = useDateTimeFormat();
   const { formId, submissionId, language, submissionNumber } =
     useLocalSearchParams<SearchParamsType>();
   const { isOnline } = useNetInfoContext();
@@ -46,7 +47,6 @@ const DeleteFormSubmission = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const insets = useSafeAreaInsets();
 
   const { mutate: deleteSubmission } = useDeleteFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -254,7 +254,13 @@ const DeleteFormSubmission = () => {
       {
         onSuccess: () => {
           setShowWarningModal(false);
-          router.push(`/multi-submission-form-details/${formId}?language=${language}`);
+          // leave this preview: back to the form's submissions it was opened from, so back from there doesn't
+          // return to a deleted submission
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace(`/multi-submission-form-details/${formId}?language=${language}`);
+          }
         },
       },
     );
@@ -309,48 +315,64 @@ const DeleteFormSubmission = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" flex={1}>
-        <YStack flex={1} marginBottom={insets.bottom + 16}>
-          <Typography preset="heading"> {formTitle}</Typography>
-          {displayedQuestions.map((question) => (
-            <YStack key={question.id} marginTop="$md">
-              <Typography fontWeight="500">
-                {question.code} - {question.text[language]}
+      {/* The answers scroll; the delete button stays pinned under them so it is always reachable. */}
+      <ScrollView
+        flex={1}
+        contentContainerStyle={{ paddingTop: 28, paddingHorizontal: 16, paddingBottom: 16 }}
+        showsVerticalScrollIndicator
+        bounces={isOnline}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefetch} />}
+      >
+        <Typography preset="heading"> {formTitle}</Typography>
+        {displayedQuestions.map((question) => (
+          <YStack key={question.id} marginTop="$md">
+            <Typography fontWeight="500">
+              {question.code} - {question.text[language]}
+            </Typography>
+            {mappedAnswers && mappedAnswers[question.id] && (
+              <Typography marginTop="$xs" color="$gray5">
+                {getAnswerDisplay(
+                  mappedAnswers[question.id] as ApiFormAnswer,
+                  true,
+                  dateTimeFormat,
+                )}
               </Typography>
-              {mappedAnswers && mappedAnswers[question.id] && (
-                <Typography marginTop="$xs" color="$gray5">
-                  {getAnswerDisplay(mappedAnswers[question.id] as ApiFormAnswer, true)}
+            )}
+            {attachments && attachments[question.id] ? (
+              <YStack gap="$xxs">
+                <Typography fontWeight="500">
+                  {t("attachments", { value: attachments[question.id].length })}
                 </Typography>
-              )}
-              {attachments && attachments[question.id] ? (
-                <YStack gap="$xxs">
-                  <Typography fontWeight="500">
-                    {t("attachments", { value: attachments[question.id].length })}
-                  </Typography>
-                </YStack>
-              ) : (
-                false
-              )}
+              </YStack>
+            ) : (
+              false
+            )}
 
-              {notes && notes[question.id] ? (
-                <YStack gap="$xxs">
-                  <Typography fontWeight="500">
-                    {t("notes", { value: notes[question.id].length })}
-                  </Typography>
-                </YStack>
-              ) : (
-                false
-              )}
-              <Separator marginTop="$xs" />
-            </YStack>
-          ))}
-
-          <YStack paddingHorizontal="$lg" paddingTop="$md">
-            <Button preset="red" onPress={() => setShowWarningModal(true)}>
-              {t("delete")}
-            </Button>
+            {notes && notes[question.id] ? (
+              <YStack gap="$xxs">
+                <Typography fontWeight="500">
+                  {t("notes", { value: notes[question.id].length })}
+                </Typography>
+              </YStack>
+            ) : (
+              false
+            )}
+            <Separator marginTop="$xs" />
           </YStack>
-        </YStack>
+        ))}
+      </ScrollView>
+
+      <YStack
+        paddingHorizontal="$xl"
+        paddingTop="$md"
+        paddingBottom="$md"
+        borderTopWidth={1}
+        borderTopColor="$gray3"
+        backgroundColor="white"
+      >
+        <Button preset="red" onPress={() => setShowWarningModal(true)}>
+          {t("delete")}
+        </Button>
       </YStack>
 
       {showWarningModal && (

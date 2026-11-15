@@ -19,6 +19,7 @@ import {
 } from "../services/queries.service";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
+import { isIncidentReportingForm } from "../services/definitions.api";
 import Button from "./Button";
 import { Dialog } from "./Dialog";
 import SingleSubmissionFormCard from "./SingleSubmissionFormCard";
@@ -40,10 +41,7 @@ export type FormListItem = {
 };
 
 type ListHeaderComponentType =
-  | ComponentType<any>
-  | ReactElement<any, string | JSXElementConstructor<any>>
-  | null
-  | undefined;
+  ComponentType<any> | ReactElement<any, string | JSXElementConstructor<any>> | null | undefined;
 
 interface ISingleSubmissionFormListProps {
   ListHeaderComponent: ListHeaderComponentType;
@@ -95,7 +93,10 @@ const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionForm
   };
 
   const formList: FormListItem[] = useMemo(() => {
-    return mapFormToFormListItem(allForms?.forms, formSubmissions);
+    return mapFormToFormListItem(
+      allForms?.forms.filter((form) => !isIncidentReportingForm(form)),
+      formSubmissions,
+    );
   }, [allForms, formSubmissions]);
 
   const {

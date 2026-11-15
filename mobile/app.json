@@ -2,23 +2,18 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "2.6.1",
+    "version": "2.6.2",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/icons/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FDD20C"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "158",
+      "buildNumber": "160",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -31,7 +26,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 161,
+      "versionCode": 163,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -63,6 +58,18 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icons/splash-logo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FDD20C",
+          "imageWidth": 190,
+          "ios": {
+            "imageWidth": 280
+          }
+        }
+      ],
       [
         "expo-font",
         {

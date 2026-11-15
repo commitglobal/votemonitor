@@ -12,6 +12,7 @@ import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Sentry from "@sentry/react-native";
+import { isExpectedApiError } from "./api";
 import { exists } from "i18next";
 
 export const electionRoundsKeys = {
@@ -174,10 +175,12 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
             }
           } catch (err) {
             console.warn("usePollingStationsNomenclatorQuery", err);
-            Sentry.captureMessage(
-              `Failed to save nomenclator. Exists: ${exists}, LocalVersionKey: ${localVersionKey}, ServerVersionKey: ${serverVersionKey}`,
-            );
-            Sentry.captureException(err);
+            if (!isExpectedApiError(err)) {
+              Sentry.captureMessage(
+                `Failed to save nomenclator. Exists: ${exists}, LocalVersionKey: ${localVersionKey}, ServerVersionKey: ${serverVersionKey}`,
+              );
+              Sentry.captureException(err);
+            }
             throw err;
           }
         }

@@ -78,7 +78,10 @@ export const useCamera = () => {
 
     const result = await luncher({
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
-      quality: 0.1,
+      // Keep at 1: any value below 1 makes the picker decode the full-resolution photo into
+      // a bitmap on Android (hundreds of MB on 50–200MP cameras) and crashes with OOM.
+      // Image.compress below does a downsampled decode instead and handles the size.
+      quality: 1,
       allowsMultipleSelection: false,
       videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,

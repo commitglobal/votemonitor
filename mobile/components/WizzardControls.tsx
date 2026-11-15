@@ -11,6 +11,7 @@ interface WizzardControlsProps extends XStackProps {
   onPreviousButtonPress?: () => void;
   onActionButtonPress?: () => void;
   actionBtnLabel?: string;
+  previousBtnLabel?: string;
   actionBtnPreset?: "default" | "outlined" | "chromeless" | "yellow" | "red";
 }
 
@@ -21,6 +22,7 @@ const WizzardControls = ({
   onPreviousButtonPress,
   onActionButtonPress,
   actionBtnLabel,
+  previousBtnLabel,
   actionBtnPreset = "default",
   ...rest
 }: WizzardControlsProps) => {
@@ -47,7 +49,7 @@ const WizzardControls = ({
             onPress={onPreviousButtonPress}
             textStyle={{ textAlign: "center" }}
           >
-            {t("actions.back")}
+            {previousBtnLabel || t("actions.back")}
           </Button>
         </XStack>
       )}

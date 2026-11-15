@@ -7,6 +7,7 @@ import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import QuestionCardFooter from "./QuestionCardFooter";
 import { AttachmentMimeType } from "../services/api/get-attachments.api";
 import { getAnswerDisplay } from "../common/utils/answers";
+import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 
 export enum QuestionStatus {
   ANSWERED = "answered",
@@ -42,6 +43,7 @@ const FormQuestionListItem = ({
   onClick,
 }: FormQuestionListItemProps) => {
   const { t } = useTranslation("form_overview");
+  const dateTimeFormat = useDateTimeFormat();
 
   const QuestionStatusToTextWrapper = {
     [QuestionStatus.ANSWERED]: t("questions.answered"),
@@ -62,7 +64,7 @@ const FormQuestionListItem = ({
 
       {answer && (
         <Typography preset="body1" color="$gray6" numberOfLines={1} width="90%">
-          {getAnswerDisplay(answer)}
+          {getAnswerDisplay(answer, false, dateTimeFormat)}
         </Typography>
       )}
       <QuestionCardFooter

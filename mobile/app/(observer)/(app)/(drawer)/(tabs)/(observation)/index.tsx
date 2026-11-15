@@ -19,6 +19,7 @@ import SingleSubmissionFormList from "../../../../../../components/SingleSubmiss
 import ObservationSkeleton from "../../../../../../components/SkeletonLoaders/ObservationSkeleton";
 import { Typography } from "../../../../../../components/Typography";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
+import { useSettledValue } from "../../../../../../hooks/useSettledValue";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
@@ -36,6 +37,9 @@ const Index = () => {
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
+  // saving arrival / departure time or the PSI form updates this data while the screen comes back into view;
+  // showing the change only once it's settled avoids an Android crash (see useSettledValue)
+  const shownPsiData = useSettledValue(psiData);
 
   const { data: psiFormQuestions, isLoading: isLoadingPsiFormQuestions } =
     usePollingStationInformationForm(activeElectionRound?.id);
@@ -192,7 +196,10 @@ const Index = () => {
             <SingleSubmissionFormList
               ListHeaderComponent={
                 <YStack>
-                  <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
+                  <PollingStationGeneral
+                    psiData={shownPsiData}
+                    psiFormQuestions={psiFormQuestions}
+                  />
                   <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
                     {t("forms.heading")}
                   </Typography>
@@ -207,7 +214,10 @@ const Index = () => {
             <MultiSubmissionFormList
               ListHeaderComponent={
                 <YStack>
-                  <PollingStationGeneral psiData={psiData} psiFormQuestions={psiFormQuestions} />
+                  <PollingStationGeneral
+                    psiData={shownPsiData}
+                    psiFormQuestions={psiFormQuestions}
+                  />
                   <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
                     {t("forms.heading")}
                   </Typography>

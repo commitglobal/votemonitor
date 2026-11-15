@@ -7,6 +7,7 @@ import {
 } from "../api/citizen/get-election-round-locations";
 import * as CitizenLocationsDB from "../../database/DAO/CitizenLocationsDAO";
 import * as Sentry from "@sentry/react-native";
+import { isExpectedApiError } from "../api";
 import { CitizenLocationVM } from "../../common/models/citizen-locations.model";
 import { ElectionRoundsAllFormsAPIResponse } from "../definitions.api";
 import { useCallback } from "react";
@@ -96,10 +97,12 @@ export const useGetCitizenLocations = (electionRoundId: string) => {
             }
           } catch (err) {
             console.warn("useGetCitizenReportingForms", err);
-            Sentry.captureMessage(
-              `Failed to get citizen reporting forms. ElectionRoundId: ${electionRoundId}`,
-            );
-            Sentry.captureException(err);
+            if (!isExpectedApiError(err)) {
+              Sentry.captureMessage(
+                `Failed to get citizen reporting forms. ElectionRoundId: ${electionRoundId}`,
+              );
+              Sentry.captureException(err);
+            }
             throw err;
           }
         }

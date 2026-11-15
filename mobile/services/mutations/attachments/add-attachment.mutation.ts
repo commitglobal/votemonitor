@@ -7,6 +7,7 @@ import {
   addAttachmentMultipartAbort,
   addAttachmentMultipartComplete,
   addAttachmentMultipartStart,
+  UploadS3ChunkPayload,
   uploadS3Chunk,
 } from "../../api/add-attachment.api";
 import { AttachmentsKeys } from "../../queries/attachments.query";
@@ -66,8 +67,7 @@ export const useUploadS3ChunkMutation = () => {
       id: MUTATION_SCOPE_DO_NOT_HYDRATE,
     },
     mutationKey: AttachmentsKeys.addS3ChunkMutation(),
-    mutationFn: (payload: { url: string; chunk: any }): Promise<{ ETag: string }> =>
-      uploadS3Chunk(payload.url, payload.chunk),
+    mutationFn: (payload: UploadS3ChunkPayload) => uploadS3Chunk(payload),
     retry: 3,
   });
 };

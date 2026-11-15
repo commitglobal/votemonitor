@@ -4,6 +4,13 @@ import { FormListItem } from "../components/SingleSubmissionFormList";
 import { MultiSubmissionFormListItem } from "../components/MultiSubmissionFormList";
 import { FormSubmissionDetails } from "../components/FormSubmissionListItem";
 import { arrayToKeyObject, groupArrayByKey } from "../helpers/misc";
+import {
+  fromDayIso,
+  fromTimeOfDay,
+  toDateTimeIso,
+  toDayIso,
+  toTimeOfDay,
+} from "../common/utils/date-answers";
 import { FormAPIModel, FormSubmission, FormSubmissionsApiResponse } from "./definitions.api";
 import {
   ApiFormAnswer,
@@ -21,10 +28,15 @@ import {
 } from "./interfaces/question.type";
 
 const mapDisplayConditionToMath = (
-  operand1: string,
-  operand2: string,
+  answer: string | number,
+  target: string,
   condition: DisplayLogicCondition,
 ) => {
+  // numbers and ratings compare as numbers ("10" > "9"); text compares as text
+  const numeric = typeof answer === "number";
+  const operand1 = answer;
+  const operand2 = numeric ? Number(target) : target;
+  if (numeric && Number.isNaN(operand2)) return false;
   switch (condition) {
     case "Equals":
       return operand1 === operand2;
@@ -43,6 +55,73 @@ const mapDisplayConditionToMath = (
   }
 };
 
+// the values date, time and date-time questions send and read back (see date-answers)
+export { fromDayIso, fromTimeOfDay, toDayIso, toTimeOfDay } from "../common/utils/date-answers";
+
+/**
+ * Whether a select parent's picked options meet a display rule. The rule lists the options in
+ * `optionIds`: "AnyOf" needs one of them picked, "All" every one of them.
+ * A condition this version doesn't know shows the question, so its answer is never discarded.
+ */
+const matchesSelectCondition = (
+  picked: string[],
+  logic: { condition: DisplayLogicCondition; value?: string | null; optionIds?: string[] | null },
+) => {
+  const targets = logic.optionIds ?? [];
+  switch (logic.condition) {
+    case "AnyOf":
+      return picked.some((id) => targets.includes(id));
+    case "All":
+      return targets.length > 0 && targets.every((id) => picked.includes(id));
+    default:
+      // older rules name a single option in value: shown when that option is picked
+      return !!logic.value && picked.includes(logic.value);
+  }
+};
+
+/** What an answer says, for comparing two answers (ignores stamps and display-only fields). */
+const answerValueKey = (answer: ApiFormAnswer): string => {
+  switch (answer.$answerType) {
+    case "textAnswer":
+      return `text:${answer.text}`;
+    case "numberAnswer":
+    case "ratingAnswer":
+      return `${answer.$answerType}:${answer.value}`;
+    case "dateAnswer":
+      return `date:${answer.date ? toDayIso(fromDayIso(answer.date)) : ""}`;
+    case "timeAnswer":
+      return `time:${answer.time?.slice(0, 5)}`;
+    case "dateTimeAnswer":
+      // to the minute, like what is sent: an older answer with seconds is not a change
+      return `dateTime:${toDateTimeIso(new Date(answer.dateTime))}`;
+    case "singleSelectAnswer":
+      return `single:${answer.selection?.optionId}:${answer.selection?.text ?? ""}`;
+    case "multiSelectAnswer":
+      return `multi:${(answer.selection ?? [])
+        .map((option) => `${option.optionId}:${option.text ?? ""}`)
+        .sort()
+        .join("|")}`;
+    default:
+      return JSON.stringify(answer);
+  }
+};
+
+/**
+ * Stamps an answer with when it was first given and last changed. An unchanged answer keeps its
+ * stamps, so re-saving a form doesn't move them; a changed one keeps its createdAt.
+ */
+export const withAnswerTimestamps = (
+  next: ApiFormAnswer | undefined,
+  previous: ApiFormAnswer | undefined,
+  now: string = new Date().toISOString(),
+): ApiFormAnswer | undefined => {
+  if (!next) return undefined;
+  if (previous && answerValueKey(previous) === answerValueKey(next)) {
+    return { ...next, createdAt: previous.createdAt, lastUpdatedAt: previous.lastUpdatedAt };
+  }
+  return { ...next, createdAt: previous?.createdAt ?? now, lastUpdatedAt: now };
+};
+
 export const shouldDisplayQuestion = (
   q: ApiFormQuestion,
   answers: Record<string, ApiFormAnswer | undefined> | undefined,
@@ -54,26 +133,31 @@ export const shouldDisplayQuestion = (
     const condition: DisplayLogicCondition = q.displayLogic.condition;
     const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId]?.$answerType;
     const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
-    const value = q.displayLogic?.value;
+    const value = q.displayLogic?.value ?? "";
+    const optionIds = q.displayLogic?.optionIds ?? [];
 
     let shouldDisplay = false;
 
-    if (!condition || !parentAnswerType || !value) {
+    if (!condition || !parentAnswerType || (!value && optionIds.length === 0)) {
       return shouldDisplay;
     }
 
     switch (parentAnswerType) {
       case "multiSelectAnswer":
-        shouldDisplay = !!(parentAnswer as MultiSelectAnswer).selection.find(
-          (option) => option.optionId === value,
+        shouldDisplay = matchesSelectCondition(
+          (parentAnswer as MultiSelectAnswer).selection.map((option) => option.optionId),
+          q.displayLogic,
         );
         break;
       case "singleSelectAnswer":
-        shouldDisplay = (parentAnswer as SingleSelectAnswer).selection.optionId === value;
+        shouldDisplay = matchesSelectCondition(
+          [(parentAnswer as SingleSelectAnswer).selection.optionId],
+          q.displayLogic,
+        );
         break;
       case "numberAnswer":
         shouldDisplay = mapDisplayConditionToMath(
-          (parentAnswer as NumberAnswer).value.toString(),
+          (parentAnswer as NumberAnswer).value,
           value,
           condition,
         );
@@ -87,7 +171,7 @@ export const shouldDisplayQuestion = (
         break;
       case "ratingAnswer":
         shouldDisplay = mapDisplayConditionToMath(
-          (parentAnswer as RatingAnswer).value.toString(),
+          (parentAnswer as RatingAnswer).value,
           value,
           condition,
         );
@@ -147,6 +231,8 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
   answer:
     | string
     | number
+    // date, time and date-time questions
+    | Date
     | Record<string, string>
     | Record<string, { optionId: string; text: string }>,
 ): ApiFormAnswer | undefined => {
@@ -175,7 +261,19 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
       return {
         $answerType: "dateAnswer",
         questionId,
-        date: new Date(answer as string).toISOString(),
+        date: toDayIso(new Date(answer as string | Date)),
+      } as ApiFormAnswer;
+    case "timeAnswer":
+      return {
+        $answerType: "timeAnswer",
+        questionId,
+        time: toTimeOfDay(new Date(answer as string | Date)),
+      } as ApiFormAnswer;
+    case "dateTimeAnswer":
+      return {
+        $answerType: "dateTimeAnswer",
+        questionId,
+        dateTime: toDateTimeIso(new Date(answer as string | Date)),
       } as ApiFormAnswer;
     case "singleSelectAnswer":
       return {
@@ -217,7 +315,11 @@ export const setFormDefaultValues = (questionId: string, answer?: ApiFormAnswer)
     case "ratingAnswer":
       return { [questionId]: answer?.value?.toString() ?? "" };
     case "dateAnswer":
-      return { [questionId]: answer.date ? new Date(answer.date) : "" };
+      return { [questionId]: answer.date ? fromDayIso(answer.date) : "" };
+    case "timeAnswer":
+      return { [questionId]: answer.time ? fromTimeOfDay(answer.time) : "" };
+    case "dateTimeAnswer":
+      return { [questionId]: answer.dateTime ? new Date(answer.dateTime) : "" };
     case "singleSelectAnswer":
       return {
         [questionId]: {
