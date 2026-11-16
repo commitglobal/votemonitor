@@ -27,7 +27,7 @@ public class ReviewMetricsTests : BaseApiTestFixture
 
     public record MetricsResponse(RecordTypeMetrics[] RecordTypes);
 
-    private static readonly string[] SeverityOrder = ["Urgent", "High", "Medium", "Low", "None"];
+    private static readonly string[] SeverityOrder = ["Urgent", "High", "Medium", "Low", "None", "NotAssessed"];
 
     /// <summary>
     /// Alfa (Alice) submitted form A at Iasi (North › A), Bacau (North › B) and Cluj (South, no level 2), a quick
@@ -133,16 +133,16 @@ public class ReviewMetricsTests : BaseApiTestFixture
         {
             ["Not reviewed"] = 2, ["In review"] = 0, ["Reviewed"] = 1
         });
-        BySeverity(submissions.Severities).Should().Equal(1, 0, 0, 1, 1);
+        BySeverity(submissions.Severities).Should().Equal(1, 0, 0, 1, 0, 1);
 
         var quickReports = metrics.RecordTypes[1];
         quickReports.Total.Should().Be(1);
         ByStageName(stages, quickReports.Stages)["Not reviewed"].Should().Be(1);
-        BySeverity(quickReports.Severities).Should().Equal(0, 0, 0, 0, 1);
+        BySeverity(quickReports.Severities).Should().Equal(0, 0, 0, 0, 0, 1);
 
         var incidents = metrics.RecordTypes[2];
         incidents.Total.Should().Be(1);
-        BySeverity(incidents.Severities).Should().Equal(0, 0, 0, 0, 1);
+        BySeverity(incidents.Severities).Should().Equal(0, 0, 0, 0, 0, 1);
     }
 
     [Test]
@@ -161,8 +161,8 @@ public class ReviewMetricsTests : BaseApiTestFixture
         submissionsByLevel1.Select(x => (x.Level1, x.Level2, x.Total)).Should()
             .Equal(("North", null, 2), ("South", null, 1));
         ByStageName(stages, submissionsByLevel1[0].Stages)["Reviewed"].Should().Be(1);
-        BySeverity(submissionsByLevel1[0].Severities).Should().Equal(1, 0, 0, 1, 0);
-        BySeverity(submissionsByLevel1[1].Severities).Should().Equal(0, 0, 0, 0, 1);
+        BySeverity(submissionsByLevel1[0].Severities).Should().Equal(1, 0, 0, 1, 0, 0);
+        BySeverity(submissionsByLevel1[1].Severities).Should().Equal(0, 0, 0, 0, 0, 1);
 
         var incidentsByLevel1 = level1.RecordTypes.Single(x => x.RecordType == "IncidentReport").Places!;
         incidentsByLevel1.Should().ContainSingle();
@@ -172,7 +172,7 @@ public class ReviewMetricsTests : BaseApiTestFixture
         var submissionsByLevel2 = level2.RecordTypes.Single(x => x.RecordType == "FormSubmission").Places!;
         submissionsByLevel2.Select(x => (x.Level1, x.Level2, x.Level3, x.Total)).Should()
             .Equal(("North", "A", null, 1), ("North", "B", null, 1), (null, null, null, 1));
-        BySeverity(submissionsByLevel2[0].Severities).Should().Equal(1, 0, 0, 0, 0);
+        BySeverity(submissionsByLevel2[0].Severities).Should().Equal(1, 0, 0, 0, 0, 0);
         ByStageName(stages, submissionsByLevel2[1].Stages)["Not reviewed"].Should().Be(1);
     }
 
@@ -190,7 +190,7 @@ public class ReviewMetricsTests : BaseApiTestFixture
         var submissions = metrics.RecordTypes.Single(x => x.RecordType == "FormSubmission");
         submissions.Total.Should().Be(1);
         ByStageName(stages, submissions.Stages)["Not reviewed"].Should().Be(1);
-        BySeverity(submissions.Severities).Should().Equal(0, 0, 0, 0, 1);
+        BySeverity(submissions.Severities).Should().Equal(0, 0, 0, 0, 0, 1);
         submissions.Places!.Select(x => (x.Level1, x.Total)).Should().Equal(("North", 1));
         metrics.RecordTypes.Single(x => x.RecordType == "QuickReport").Total.Should().Be(0);
         metrics.RecordTypes.Single(x => x.RecordType == "IncidentReport").Total.Should().Be(0);

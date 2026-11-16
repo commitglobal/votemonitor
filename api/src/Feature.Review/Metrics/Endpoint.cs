@@ -5,7 +5,7 @@ namespace Feature.Review.Metrics;
 
 /// <summary>
 /// How many of the records the caller's NGO can see sit in each of its review stages and severities, per record type
-/// and optionally per place. Records the NGO never touched count in its default stage with severity None.
+/// and optionally per place. Records the NGO never touched count in its default stage with severity NotAssessed.
 /// </summary>
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -29,7 +29,7 @@ public class Endpoint(
             s.Summary = "Counts the caller's NGO's records per review stage and severity, per record type and place";
             s.Description =
                 "Counts the records the report lists show for the data source. Every stage (in workflow order) and " +
-                "severity (Urgent to None) is listed, with zero counts. Citizen reports are included only when the " +
+                "severity (Urgent to NotAssessed) is listed, with zero counts. Citizen reports are included only when the " +
                 "NGO does citizen reporting in the round. With level, places lists one entry per level path (the " +
                 "records without a place at that level in one entry with all levels null), largest first. labels " +
                 "counts the records carrying each of the NGO's labels (most used first; a record with several labels " +

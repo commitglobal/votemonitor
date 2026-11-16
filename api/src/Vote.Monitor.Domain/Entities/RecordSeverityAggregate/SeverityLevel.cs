@@ -1,16 +1,20 @@
 namespace Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 
-/// <summary>How severe a monitoring NGO considers a report, ascending from <see cref="None"/> to <see cref="Urgent"/>.</summary>
+/// <summary>
+/// How severe a monitoring NGO considers a report, ascending from <see cref="NotAssessed"/> (where every report starts:
+/// nobody looked yet) through <see cref="None"/> (looked, nothing severe) to <see cref="Urgent"/>.
+/// </summary>
 [JsonConverter(typeof(SmartEnumValueConverter<SeverityLevel, string>))]
 public sealed class SeverityLevel : SmartEnum<SeverityLevel, string>
 {
+    public static readonly SeverityLevel NotAssessed = new(nameof(NotAssessed), nameof(NotAssessed), -1);
     public static readonly SeverityLevel None = new(nameof(None), nameof(None), 0);
     public static readonly SeverityLevel Low = new(nameof(Low), nameof(Low), 1);
     public static readonly SeverityLevel Medium = new(nameof(Medium), nameof(Medium), 2);
     public static readonly SeverityLevel High = new(nameof(High), nameof(High), 3);
     public static readonly SeverityLevel Urgent = new(nameof(Urgent), nameof(Urgent), 4);
 
-    /// <summary>The position in the scale, 0 (None) to 4 (Urgent).</summary>
+    /// <summary>The position in the scale: -1 (NotAssessed), 0 (None) to 4 (Urgent).</summary>
     public int Level { get; }
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>

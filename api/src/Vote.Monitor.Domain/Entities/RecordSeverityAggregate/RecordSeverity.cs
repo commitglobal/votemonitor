@@ -4,7 +4,7 @@ namespace Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 
 /// <summary>
 /// One monitoring NGO's severity for one report. A report without a row for a monitoring NGO has severity
-/// <see cref="SeverityLevel.None"/> there. Coalition members and the leader each keep their own row, and never see each
+/// <see cref="SeverityLevel.NotAssessed"/> there. Coalition members and the leader each keep their own row, and never see each
 /// other's.
 /// </summary>
 public class RecordSeverity : AuditableBaseEntity, IAggregateRoot

@@ -83,11 +83,11 @@ public class SeverityTests : BaseApiTestFixture
         var json = JsonDocument.Parse(Body(response)).RootElement;
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        json.GetProperty("severity").GetString().Should().Be("None");
+        json.GetProperty("severity").GetString().Should().Be("NotAssessed");
         json.GetProperty("changedAt").ValueKind.Should().Be(JsonValueKind.Null);
         Entries(admin, data.ElectionRoundId, "Coalition").Should().HaveCount(2)
-            .And.OnlyContain(x => x.Severity == "None");
-        EntriesV1(admin, data.ElectionRoundId, "").Should().HaveCount(2).And.OnlyContain(x => x.Severity == "None");
+            .And.OnlyContain(x => x.Severity == "NotAssessed");
+        EntriesV1(admin, data.ElectionRoundId, "").Should().HaveCount(2).And.OnlyContain(x => x.Severity == "NotAssessed");
     }
 
     [Test]
@@ -158,13 +158,13 @@ public class SeverityTests : BaseApiTestFixture
             $"/api/election-rounds/{er}/quick-reports?dataSource=Ngo&sortColumnName=severity&sortOrder=Asc");
         var v2None = admin.PostWithResponse<PagedResponse<QuickReportEntryResponse>>(
             $"/api/election-rounds/{er}/quick-reports:listV2",
-            new { dataSource = "Ngo", filter = new { op = "eq", field = "severity", value = "None" } });
+            new { dataSource = "Ngo", filter = new { op = "eq", field = "severity", value = "NotAssessed" } });
         var v2Sorted = admin.PostWithResponse<PagedResponse<QuickReportEntryResponse>>(
             $"/api/election-rounds/{er}/quick-reports:listV2",
             new { dataSource = "Ngo", sortColumnName = "severity", sortOrder = "Desc" });
 
         v1.Items.Single(x => x.Id == iasi).Severity.Should().Be("High");
-        v1.Items.Single(x => x.Id == cluj).Severity.Should().Be("None");
+        v1.Items.Single(x => x.Id == cluj).Severity.Should().Be("NotAssessed");
         v1High.Items.Select(x => x.Id).Should().Equal(iasi);
         v1Sorted.Items.Select(x => x.Id).Should().Equal(cluj, iasi);
         v2None.Items.Select(x => x.Id).Should().Equal(cluj);
@@ -238,7 +238,7 @@ public class SeverityTests : BaseApiTestFixture
 
         var history = alfa.Admin.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(er, aliceSubmissionId)}/history");
         history.Where(x => x.Kind == "SeverityChanged").Should().ContainSingle()
-            .Which.Should().BeEquivalentTo(new { FromSeverity = "None", ToSeverity = "Urgent" });
+            .Which.Should().BeEquivalentTo(new { FromSeverity = "NotAssessed", ToSeverity = "Urgent" });
         history.Where(x => x.Kind != "SeverityChanged").Should().OnlyContain(x => x.FromSeverity == null && x.ToSeverity == null);
 
         var samInbox = alfa.StaffByName(Sam).GetResponse<PagedResponse<InboxItemResponse>>("/api/inbox");
@@ -247,7 +247,7 @@ public class SeverityTests : BaseApiTestFixture
             {
                 Reason = "ReviewingRecordChanged",
                 RecordId = aliceSubmissionId,
-                Activity = new { FromSeverity = "None", ToSeverity = "Urgent" }
+                Activity = new { FromSeverity = "NotAssessed", ToSeverity = "Urgent" }
             });
         alfa.Admin.GetResponse<PagedResponse<InboxItemResponse>>("/api/inbox").Items
             .Should().NotContain(x => x.Activity.Kind == "SeverityChanged");
@@ -263,8 +263,8 @@ public class SeverityTests : BaseApiTestFixture
 
         alfa.Admin.PutWithoutResponse(SeverityUri(er, bobSubmissionId), new { severity = "Urgent" });
 
-        beta.Admin.GetResponse<SeverityResponse>(SeverityUri(er, bobSubmissionId)).Severity.Should().Be("None");
-        Entries(beta.Admin, er, "Ngo").Single(x => x.SubmissionId == bobSubmissionId).Severity.Should().Be("None");
+        beta.Admin.GetResponse<SeverityResponse>(SeverityUri(er, bobSubmissionId)).Severity.Should().Be("NotAssessed");
+        Entries(beta.Admin, er, "Ngo").Single(x => x.SubmissionId == bobSubmissionId).Severity.Should().Be("NotAssessed");
         Entries(beta.Admin, er, "Ngo", new { op = "eq", field = "severity", value = "Urgent" }).Should().BeEmpty();
         beta.Admin.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(er, bobSubmissionId)}/history")
             .Should().NotContain(x => x.Kind == "SeverityChanged");

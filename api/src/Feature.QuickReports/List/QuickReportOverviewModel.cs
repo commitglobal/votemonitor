@@ -46,7 +46,7 @@ public class QuickReportOverviewModel
     public Guid[] ReviewerIds { get; set; } = [];
 
     /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
-    public string Severity { get; set; } = "None";
+    public string Severity { get; set; } = "NotAssessed";
 
     /// <summary>The record\'s labels in the caller\'s NGO, A to Z; empty when it has none.</summary>
     public string[] Labels { get; set; } = [];
