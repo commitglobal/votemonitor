@@ -111,6 +111,10 @@ public class ReviewActivity : IAggregateRoot
             ReviewerName = reviewerName
         };
 
+    /// <summary>A member of the NGO unlocked the completed report for its observer to change again.</summary>
+    public static ReviewActivity UnlockedForEditing(ReviewTarget target, ReviewActor actor, DateTime occurredAt) =>
+        new(target, ReviewActivityKind.UnlockedForEditing, actor, occurredAt);
+
     public static ReviewActivity FollowUpStatusChanged(ReviewTarget target,
         ReviewActor actor,
         string followUpStatus,
