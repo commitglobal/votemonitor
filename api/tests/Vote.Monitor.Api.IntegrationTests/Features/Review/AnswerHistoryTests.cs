@@ -54,6 +54,17 @@ public class AnswerHistoryTests : BaseApiTestFixture
                 ]
             }).Id;
 
+    /// <summary>Submits the common form at Iasi without answering anything.</summary>
+    private static Guid SubmitEmpty(ScenarioData data) =>
+        data.ObserverByName(ScenarioObserver.Alice).PostWithResponse<ResponseWithId>(
+            $"/api/election-rounds/{data.ElectionRoundId}/form-submissions",
+            new FormSubmissionRequest
+            {
+                PollingStationId = data.ElectionRound.PollingStationByName(ScenarioPollingStation.Iasi),
+                FormId = data.ElectionRound.Coalition.FormId,
+                Answers = []
+            }).Id;
+
     private static List<EntryResponse> Entries(HttpClient client, Guid electionRoundId, object? filter = null) =>
         client.PostWithResponse<PagedResponse<EntryResponse>>(
             $"/api/election-rounds/{electionRoundId}/form-submissions:byEntryV2",
@@ -91,6 +102,34 @@ public class AnswerHistoryTests : BaseApiTestFixture
         again.ChangedAfterReviewAt.Should().BeNull();
         again.Changes.Should().ContainSingle();
         Entries(alfa, er, new { field = "changedAfterReview", op = "eq", value = true }).Should().BeEmpty();
+    }
+
+    [Test]
+    public void AnsweringAnEmptyQuestionIsNotAChange_AndDoesNotMarkItChangedAfterReview()
+    {
+        var data = Scenario();
+        var alfa = data.NgoByName(ScenarioNgos.Alfa).Admin;
+        var er = data.ElectionRoundId;
+        var submissionId = SubmitEmpty(data);
+        var uri = $"/api/election-rounds/{er}/reviews/FormSubmission/{submissionId}";
+        var reviewed = alfa.GetResponse<StageResponse[]>($"/api/election-rounds/{er}/review-stages")
+            .Single(x => x.Name == "Reviewed");
+        alfa.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
+
+        Submit(data, 3);
+
+        var answered = alfa.GetResponse<AnswerHistoryResponse>($"{uri}/answer-history");
+        answered.Changes.Should().BeEmpty();
+        answered.ChangedAfterReviewAt.Should().BeNull();
+
+        // Changing that answer afterwards is (an edit sends the record back for review, so review it again first).
+        alfa.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
+        Submit(data, 4);
+
+        var changed = alfa.GetResponse<AnswerHistoryResponse>($"{uri}/answer-history");
+        changed.Changes.Should().ContainSingle();
+        changed.Changes[0].PreviousAnswer!.Value.GetProperty("value").GetInt32().Should().Be(3);
+        changed.ChangedAfterReviewAt.Should().NotBeNull();
     }
 
     [Test]

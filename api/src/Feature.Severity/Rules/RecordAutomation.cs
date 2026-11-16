@@ -49,16 +49,21 @@ internal class RecordAutomation(
         {
             // Before the record goes back to the default stage: that move clears when it was reviewed.
             var now = timeProvider.UtcNow;
-            context.AnswerChanges.AddRange(AnswerChange.Between(electionRoundId, recordType, recordId, before, after, now));
-            var workflows = await context.ReviewWorkflows
-                .Where(x => x.RecordType == recordType && x.RecordId == recordId && x.ReviewedAt != null)
-                .ToListAsync(ct);
-            foreach (var workflow in workflows)
+            var changes = AnswerChange.Between(electionRoundId, recordType, recordId, before, after, now).ToList();
+            // Only answers that had a value and changed count: answering an empty question changes nothing reviewed.
+            if (changes.Count > 0)
             {
-                workflow.MarkAnswersChanged(now);
-            }
+                context.AnswerChanges.AddRange(changes);
+                var workflows = await context.ReviewWorkflows
+                    .Where(x => x.RecordType == recordType && x.RecordId == recordId && x.ReviewedAt != null)
+                    .ToListAsync(ct);
+                foreach (var workflow in workflows)
+                {
+                    workflow.MarkAnswersChanged(now);
+                }
 
-            await context.SaveChangesAsync(ct);
+                await context.SaveChangesAsync(ct);
+            }
         }
         catch (Exception e)
         {
