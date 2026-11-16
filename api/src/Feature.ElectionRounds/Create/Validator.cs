@@ -23,8 +23,8 @@ public class Validator : Validator<Request>
             .Must(startDate =>
             {
                 var timeProvider = Resolve<ITimeProvider>();
-                return startDate >= timeProvider.UtcNowDate;
+                return startDate >= ElectionRoundStartDate.EarliestAllowed(timeProvider);
             })
-            .WithMessage("Election start date cannot be in the past.");
+            .WithMessage(ElectionRoundStartDate.InThePastMessage);
     }
 }

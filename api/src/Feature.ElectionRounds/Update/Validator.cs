@@ -21,13 +21,5 @@ public class Validator : Validator<Request>
             .MinimumLength(3)
             .MaximumLength(256)
             .When(x => !string.IsNullOrWhiteSpace(x.EnglishTitle));
-
-        RuleFor(x => x.StartDate)
-            .Must(startDate =>
-            {
-                var timeProvider = Resolve<ITimeProvider>();
-                return startDate >= timeProvider.UtcNowDate;
-            })
-            .WithMessage("Election start date cannot be in the past.");
     }
 }

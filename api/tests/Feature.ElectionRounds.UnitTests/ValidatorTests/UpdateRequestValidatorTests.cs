@@ -160,38 +160,11 @@ public class UpdateRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.EnglishTitle);
     }
 
-    [Theory]
-    [MemberData(nameof(InvalidStartDates))]
-    public void Validation_ShouldFail_When_StartDateInThePast(DateOnly startDate)
-    {
-        // Arrange
-        var request = new Update.Request { StartDate = startDate };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.StartDate);
-    }
-
     [Fact]
-    public void Validation_ShouldPass_When_StartDateIsToday()
+    public void Validation_ShouldPass_When_StartDateInThePast()
     {
         // Arrange
-        var request = new Update.Request { StartDate = new(2024, 01, 02) };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
-    }
-
-    [Fact]
-    public void Validation_ShouldPass_When_StartDateInTheFuture()
-    {
-        // Arrange
-        var request = new Update.Request { StartDate = new(2024, 01, 11) };
+        var request = new Update.Request { StartDate = new(2020, 01, 01) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -238,11 +211,4 @@ public class UpdateRequestValidatorTests
         // Assert
         result.ShouldNotHaveValidationErrorFor(x => x.CountryId);
     }
-
-    public static IEnumerable<object[]> InvalidStartDates =>
-        new List<object[]>
-        {
-            new object[] { new DateOnly(2023,12,31)},
-            new object[] { new DateOnly(2024,01,01)}
-        };
 }
