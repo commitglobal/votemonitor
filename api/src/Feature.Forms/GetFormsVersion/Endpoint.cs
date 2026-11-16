@@ -15,7 +15,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
         Summary(s =>
         {
             s.Summary = "Gets current version of forms for users monitoring ngo";
-            s.Description = "Cache key changes every time any form changes";
+            s.Description = "Cache key changes every time any form the observer receives changes, coalition forms included";
         });
     }
 
@@ -28,7 +28,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
             .Where(x => x.ElectionRoundId == req.ElectionRoundId)
             .Where(x => x.Status == MonitoringObserverStatus.Active)
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
-            .Select(x => new { x.MonitoringNgo.FormsVersion, x.MonitoringNgo.ElectionRoundId })
+            .Select(x => new { x.MonitoringNgoId, x.MonitoringNgo.FormsVersion, x.MonitoringNgo.ElectionRoundId })
             .FirstOrDefaultAsync(ct);
 
         if (monitoringNgo is null)
@@ -38,7 +38,9 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
 
         return TypedResults.Ok(new FormVersionResponseModel
         {
-            ElectionRoundId = monitoringNgo.ElectionRoundId, CacheKey = monitoringNgo.FormsVersion.ToString()
+            ElectionRoundId = monitoringNgo.ElectionRoundId,
+            CacheKey = await ObserverFormsVersion.GetAsync(context, req.ElectionRoundId, monitoringNgo.MonitoringNgoId,
+                monitoringNgo.FormsVersion, ct)
         });
     }
 }
