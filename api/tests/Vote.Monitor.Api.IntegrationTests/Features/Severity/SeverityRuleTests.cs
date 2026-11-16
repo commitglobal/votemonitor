@@ -168,6 +168,8 @@ public class SeverityRuleTests : BaseApiTestFixture
             .Select(x => x.Name).Should().Equal("name");
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("South", "None")))
             .Select(x => x.Name).Should().Equal("severity");
+        Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("South", "NotAssessed")))
+            .Select(x => x.Name).Should().Equal("severity");
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("South", "High", recordTypes: ["CitizenReport"])))
             .Select(x => x.Name).Should().Equal("recordTypes");
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er),
@@ -200,10 +202,10 @@ public class SeverityRuleTests : BaseApiTestFixture
 
         Severity(alfa.Admin, er, aliceInIasi).Should().Be("Urgent");
         SeverityHistory(alfa.Admin, er, aliceInIasi).Should().ContainSingle().Which.Should().BeEquivalentTo(
-            new HistoryEntryResponse("SeverityChanged", null, null, alsoNorth.Id, "Also north", "Severity", "None",
+            new HistoryEntryResponse("SeverityChanged", null, null, alsoNorth.Id, "Also north", "Severity", "NotAssessed",
                 "Urgent"));
         // Rules act on future events only: the existing record kept its severity.
-        Severity(alfa.Admin, er, aliceSubmissionId).Should().Be("None");
+        Severity(alfa.Admin, er, aliceSubmissionId).Should().Be("NotAssessed");
     }
 
     [Test]
@@ -218,7 +220,7 @@ public class SeverityRuleTests : BaseApiTestFixture
             Where(new { op = "answer-gte", form = data.ElectionRound.Coalition.FormId, question = NumberQuestionId(data), value = 5 })));
 
         Submit(data, ScenarioObserver.Alice, ScenarioPollingStation.Cluj, number: 3);
-        Severity(alfa.Admin, er, aliceSubmissionId).Should().Be("None");
+        Severity(alfa.Admin, er, aliceSubmissionId).Should().Be("NotAssessed");
 
         Submit(data, ScenarioObserver.Alice, ScenarioPollingStation.Cluj, number: 7);
         Severity(alfa.Admin, er, aliceSubmissionId).Should().Be("Medium");
@@ -290,7 +292,7 @@ public class SeverityRuleTests : BaseApiTestFixture
         alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{iasi}").Severity
             .Should().Be("High");
         alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{cluj}").Severity
-            .Should().Be("None");
+            .Should().Be("NotAssessed");
     }
 
     [Test]

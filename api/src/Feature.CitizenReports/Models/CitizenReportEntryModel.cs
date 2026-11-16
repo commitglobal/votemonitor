@@ -41,7 +41,7 @@ public record CitizenReportEntryModel
     public Guid[] ReviewerIds { get; init; } = [];
 
     /// <summary>The record's severity in the caller's NGO: None, Low, Medium, High or Urgent.</summary>
-    public string Severity { get; init; } = "None";
+    public string Severity { get; init; } = "NotAssessed";
 
     /// <summary>The record\'s labels in the caller\'s NGO, A to Z; empty when it has none.</summary>
     public string[] Labels { get; init; } = [];

@@ -37,7 +37,7 @@ internal class SeverityRuleRunner(
             .FirstOrDefault();
 
         var current = await severityService.GetAsync(report.Target, ct);
-        var from = current?.Severity ?? SeverityLevel.None;
+        var from = current?.Severity ?? SeverityLevel.NotAssessed;
         if (rule is null || rule.Severity.Level <= from.Level)
         {
             return;

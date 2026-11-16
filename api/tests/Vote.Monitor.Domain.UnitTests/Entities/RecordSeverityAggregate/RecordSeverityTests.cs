@@ -50,10 +50,10 @@ public class RecordSeverityTests
     }
 
     [Fact]
-    public void Levels_AscendFromNoneToUrgent()
+    public void Levels_AscendFromNotAssessedToUrgent()
     {
         SeverityLevel.List.OrderBy(x => x.Level).Select(x => x.Value)
-            .Should().Equal("None", "Low", "Medium", "High", "Urgent");
+            .Should().Equal("NotAssessed", "None", "Low", "Medium", "High", "Urgent");
     }
 
     [Fact]

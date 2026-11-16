@@ -15,7 +15,7 @@ public abstract class SeverityRuleRequestValidator<T> : SaveRuleRequestValidator
     {
         RuleFor(x => x.Severity)
             .NotNull()
-            .NotEqual(SeverityLevel.None)
+            .Must(x => x is null || x.Level > SeverityLevel.None.Level)
             .WithMessage("A rule must set a severity above None");
     }
 }

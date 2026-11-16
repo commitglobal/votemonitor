@@ -35,7 +35,7 @@ public class Endpoint(
         var severity = await severityService.GetAsync(report.Target, ct);
         return TypedResults.Ok(new SeverityModel
         {
-            Severity = severity?.Severity ?? SeverityLevel.None,
+            Severity = severity?.Severity ?? SeverityLevel.NotAssessed,
             ChangedAt = severity?.ChangedAt
         });
     }

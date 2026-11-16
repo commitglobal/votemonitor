@@ -32,7 +32,7 @@ internal class SeverityService(VoteMonitorContext context, IReviewService review
     {
         var now = timeProvider.UtcNow;
         var current = await GetAsync(report.Target, ct);
-        var from = current?.Severity ?? SeverityLevel.None;
+        var from = current?.Severity ?? SeverityLevel.NotAssessed;
         if (from == severity)
         {
             return;
