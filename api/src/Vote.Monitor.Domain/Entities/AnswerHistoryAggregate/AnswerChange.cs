@@ -5,8 +5,9 @@ namespace Vote.Monitor.Domain.Entities.AnswerHistoryAggregate;
 
 /// <summary>
 /// One answer of a record (form submission or incident report) its observer changed after sending it: the question,
-/// what it said before and what it says now (null when the answer was added or cleared), and when. Written once per
-/// changed question each time the record's answers change.
+/// what it said before and what it says now (null when the answer was cleared), and when. Written once per changed
+/// question each time the record's answers change. Answering a question left empty isn't a change: only answers that
+/// already had a value are kept.
 /// </summary>
 public class AnswerChange : IAggregateRoot
 {
@@ -15,7 +16,10 @@ public class AnswerChange : IAggregateRoot
     public ReportRecordType RecordType { get; private set; }
     public Guid RecordId { get; private set; }
     public Guid QuestionId { get; private set; }
-    /// <summary>The answer before, as JSON (its <c>$answerType</c> picks the type back); null when it was added.</summary>
+    /// <summary>
+    /// The answer before, as JSON (its <c>$answerType</c> picks the type back). Null only on changes kept before
+    /// answers given for the first time stopped counting (the history leaves those out).
+    /// </summary>
     public string? PreviousAnswerJson { get; private set; }
 
     /// <summary>The answer after, as JSON; null when it was cleared.</summary>
@@ -31,7 +35,7 @@ public class AnswerChange : IAggregateRoot
 
     /// <summary>
     /// The answers that differ between two versions of a record's answers, one change per question (answer
-    /// timestamps don't count).
+    /// timestamps don't count). A question answered for the first time (empty before) is not a change.
     /// </summary>
     public static IEnumerable<AnswerChange> Between(Guid electionRoundId,
         ReportRecordType recordType,
@@ -47,7 +51,7 @@ public class AnswerChange : IAggregateRoot
         {
             var was = previous.GetValueOrDefault(questionId);
             var now = current.GetValueOrDefault(questionId);
-            if (was is not null && now is not null && FormBase.AnswersHelpers.HaveSameContent([was], [now]))
+            if (was is null || (now is not null && FormBase.AnswersHelpers.HaveSameContent([was], [now])))
             {
                 continue;
             }

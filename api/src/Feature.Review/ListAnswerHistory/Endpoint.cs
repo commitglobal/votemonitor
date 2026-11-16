@@ -66,7 +66,9 @@ public class Endpoint(
             .AsNoTracking()
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.RecordType == req.RecordType
-                        && x.RecordId == req.RecordId)
+                        && x.RecordId == req.RecordId
+                        // Answers given for the first time, kept before they stopped counting, aren't changes.
+                        && x.PreviousAnswerJson != null)
             .OrderByDescending(x => x.ChangedAt)
             .ToListAsync(ct);
 
