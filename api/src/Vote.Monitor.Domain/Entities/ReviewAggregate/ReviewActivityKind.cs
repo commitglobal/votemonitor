@@ -11,6 +11,9 @@ public sealed class ReviewActivityKind : SmartEnum<ReviewActivityKind, string>
     public static readonly ReviewActivityKind SeverityChanged = new(nameof(SeverityChanged), nameof(SeverityChanged));
     public static readonly ReviewActivityKind LabelsChanged = new(nameof(LabelsChanged), nameof(LabelsChanged));
 
+    /// <summary>A member of the NGO unlocked a completed incident report so its observer can change it again.</summary>
+    public static readonly ReviewActivityKind UnlockedForEditing = new(nameof(UnlockedForEditing), nameof(UnlockedForEditing));
+
     /// <summary>The observer or citizen who submitted the report changed it, so it went back to the default stage.</summary>
     public static readonly ReviewActivityKind ReturnedToDefaultStage = new(nameof(ReturnedToDefaultStage), nameof(ReturnedToDefaultStage));
 

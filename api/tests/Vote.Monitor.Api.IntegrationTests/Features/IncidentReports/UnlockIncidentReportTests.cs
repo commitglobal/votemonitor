@@ -53,22 +53,37 @@ public class UnlockIncidentReportTests : BaseApiTestFixture
         client.PutAsJsonAsync($"/api/election-rounds/{electionRoundId}/incident-reports/{reportId}:unlock", new { })
             .GetAwaiter().GetResult().StatusCode;
 
+    public record HistoryEntry(string Kind, Guid? ActorId, string? ActorName);
+
+    private static HistoryEntry[] History(HttpClient client, Guid electionRoundId, Guid reportId) =>
+        client.GetResponse<HistoryEntry[]>($"/api/election-rounds/{electionRoundId}/reviews/IncidentReport/{reportId}/history");
+
     [Test]
-    public void AnNgoAdminUnlocksACompletedReport_SoItsObserverCanChangeItAgain()
+    public void NgoMembersUnlockACompletedReport_SoItsObserverCanChangeItAgain_AndTheHistoryKeepsIt()
     {
         var (data, formId, reportId) = Scenario();
         var alfa = data.NgoByName(ScenarioNgos.Alfa);
+        var er = data.ElectionRoundId;
 
         Save(data, formId, reportId).StatusCode.Should().Be(HttpStatusCode.Conflict, "a completed report is locked");
-
-        Unlock(alfa.StaffByName(Sam), data.ElectionRoundId, reportId).Should().Be(HttpStatusCode.Forbidden);
-        Unlock(data.NgoByName(ScenarioNgos.Beta).Admin, data.ElectionRoundId, reportId).Should().Be(HttpStatusCode.NotFound);
+        Unlock(data.NgoByName(ScenarioNgos.Beta).Admin, er, reportId).Should().Be(HttpStatusCode.NotFound);
         Save(data, formId, reportId).StatusCode.Should().Be(HttpStatusCode.Conflict);
 
-        Unlock(alfa.Admin, data.ElectionRoundId, reportId).Should().Be(HttpStatusCode.NoContent);
+        // Staff unlock too.
+        Unlock(alfa.StaffByName(Sam), er, reportId).Should().Be(HttpStatusCode.NoContent);
         Save(data, formId, reportId).StatusCode.Should().Be(HttpStatusCode.OK);
-        // Unlocking a report that isn't locked changes nothing.
-        Unlock(alfa.Admin, data.ElectionRoundId, reportId).Should().Be(HttpStatusCode.NoContent);
+        History(alfa.Admin, er, reportId).Where(x => x.Kind == "UnlockedForEditing").Should().ContainSingle()
+            .Which.ActorId.Should().Be(alfa.StaffIdByName(Sam));
+
+        // Unlocking a report that isn't locked changes nothing and isn't kept.
+        Unlock(alfa.Admin, er, reportId).Should().Be(HttpStatusCode.NoContent);
+        History(alfa.Admin, er, reportId).Count(x => x.Kind == "UnlockedForEditing").Should().Be(1);
+
+        // Locked again by its observer, an admin unlocks it again: a second entry.
+        Save(data, formId, reportId, isCompleted: true).StatusCode.Should().Be(HttpStatusCode.OK);
+        Unlock(alfa.Admin, er, reportId).Should().Be(HttpStatusCode.NoContent);
+        History(alfa.Admin, er, reportId).Where(x => x.Kind == "UnlockedForEditing").Select(x => x.ActorId)
+            .Should().BeEquivalentTo(new Guid?[] { alfa.AdminId, alfa.StaffIdByName(Sam) });
     }
 
     [Test]

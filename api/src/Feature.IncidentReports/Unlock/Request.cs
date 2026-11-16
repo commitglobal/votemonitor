@@ -9,5 +9,8 @@ public class Request
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
+    [FromClaim(ApplicationClaimTypes.UserId)]
+    public Guid UserId { get; set; }
+
     public Guid Id { get; set; }
 }
