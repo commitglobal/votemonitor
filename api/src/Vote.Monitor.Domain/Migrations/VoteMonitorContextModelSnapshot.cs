@@ -3381,6 +3381,57 @@ namespace Vote.Monitor.Domain.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.DashboardAggregate.Dashboard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<JsonDocument>("Charts")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedByName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MonitoringNgoId");
+
+                    b.HasIndex("ElectionRoundId", "MonitoringNgoId");
+
+                    b.ToTable("Dashboards", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
                 {
                     b.Property<Guid>("Id")
@@ -7406,6 +7457,21 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("ElectionRound");
 
                     b.Navigation("MonitoringNgo");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.DashboardAggregate.Dashboard", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", null)
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", null)
+                        .WithMany()
+                        .HasForeignKey("MonitoringNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>

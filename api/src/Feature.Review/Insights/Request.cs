@@ -17,8 +17,11 @@ public class Request
     /// <summary>The same filter as the report list, so the numbers match it.</summary>
     public FilterRule? Filter { get; set; }
 
-    /// <summary>What each bar is (an axis key, see <see cref="InsightAxes"/>).</summary>
-    public string XAxis { get; set; } = null!;
+    /// <summary>
+    /// What each bar is (an axis key, see <see cref="InsightAxes"/>). Left out: the total only, no bars (a dashboard's
+    /// single number).
+    /// </summary>
+    public string? XAxis { get; set; }
 
     /// <summary>Optionally splits each bar by a second axis.</summary>
     public string? GroupBy { get; set; }

@@ -110,6 +110,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ReviewerRule> ReviewerRules { get; set; }
     public DbSet<SeverityRule> SeverityRules { get; set; }
     public DbSet<Entities.SavedViewAggregate.SavedView> SavedViews { get; set; }
+    public DbSet<Entities.DashboardAggregate.Dashboard> Dashboards { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -214,6 +215,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new ReviewerRuleConfiguration());
         builder.ApplyConfiguration(new SeverityRuleConfiguration());
         builder.ApplyConfiguration(new SavedViewConfiguration());
+        builder.ApplyConfiguration(new DashboardConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

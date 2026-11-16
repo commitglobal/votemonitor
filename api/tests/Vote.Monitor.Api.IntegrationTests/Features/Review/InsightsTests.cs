@@ -17,7 +17,7 @@ public class InsightsTests : BaseApiTestFixture
 
     public record BarResponse(string? Key, string? Label, long Value, BucketResponse[]? Parts);
 
-    public record InsightsResponse(string XAxis, string? GroupBy, string Metric, long Total, BarResponse[] Bars,
+    public record InsightsResponse(string? XAxis, string? GroupBy, string Metric, long Total, BarResponse[] Bars,
         BucketResponse[]? Groups);
 
     /// <summary>Alfa leads a coalition with Beta; Alice (Alfa) and Bob (Beta) each submitted the common form.</summary>
@@ -111,6 +111,28 @@ public class InsightsTests : BaseApiTestFixture
         days.Bars.Sum(x => x.Value).Should().Be(2);
         days.Bars.Should().OnlyContain(x => System.Text.RegularExpressions.Regex.IsMatch(x.Key!, @"^\d{4}-\d{2}-\d{2}$"));
         hours.Bars.Should().OnlyContain(x => x.Key!.EndsWith(":00") && x.Key.Contains('T'));
+    }
+
+    [Test]
+    public void WithoutAnAxisCountsTheTotalOnly_DistinctPollingStationsAndObserversToo()
+    {
+        var (data, _, _) = CoalitionScenario();
+        var admin = data.NgoByName(ScenarioNgos.Alfa).Admin;
+
+        var stations = admin.PostWithResponse<InsightsResponse>(Uri(data.ElectionRoundId),
+            new { dataSource = "Coalition", metric = "pollingStations" });
+        var observers = admin.PostWithResponse<InsightsResponse>(Uri(data.ElectionRoundId),
+            new { dataSource = "Coalition", metric = "observers" });
+        var own = admin.PostWithResponse<InsightsResponse>(Uri(data.ElectionRoundId), new { dataSource = "Ngo" });
+
+        stations.XAxis.Should().BeNull();
+        stations.Total.Should().Be(2);
+        stations.Bars.Should().BeEmpty();
+        stations.Groups.Should().BeNull();
+        observers.Total.Should().Be(2);
+        own.Total.Should().Be(1);
+        admin.PostAsJsonAsync(Uri(data.ElectionRoundId), new { groupBy = "stage" }).GetAwaiter().GetResult()
+            .StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Test]

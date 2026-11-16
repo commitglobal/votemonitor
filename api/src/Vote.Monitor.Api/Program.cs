@@ -44,6 +44,7 @@ using Feature.Review;
 using Feature.Severity;
 using Feature.Labels;
 using Feature.SavedViews;
+using Feature.Dashboards;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.IncidentReports;
@@ -190,6 +191,7 @@ builder.Services.AddReviewFeature();
 builder.Services.AddSeverityFeature();
 builder.Services.AddLabelsFeature();
 builder.Services.AddSavedViewsFeature();
+builder.Services.AddDashboardsFeature();
 
 builder.Services.AddAuthorization();
 

@@ -34,7 +34,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         }
 
         var axes = InsightAxes.For(req.RecordType);
-        var x = axes[req.XAxis];
+        var x = req.XAxis is null ? null : axes[req.XAxis];
         var g = req.GroupBy is null ? null : axes[req.GroupBy];
         var metric = InsightMetrics.For(req.RecordType)[req.Metric];
         var (source, fields) = GetSource(req.RecordType);
@@ -61,8 +61,14 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                     """;
         }
 
-        var statements = new List<string> { Query(), Query((x, "x")) };
-        if (g is not null)
+        // Without an X axis only the total is counted (a dashboard's number): no bars, so no group either.
+        var statements = new List<string> { Query() };
+        if (x is not null)
+        {
+            statements.Add(Query((x, "x")));
+        }
+
+        if (x is not null && g is not null)
         {
             statements.Add(Query((g, "g")));
             statements.Add(Query((x, "x"), (g, "g")));
@@ -73,16 +79,16 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             new CommandDefinition(string.Join(";\n", statements), parameters, cancellationToken: ct));
 
         var total = (await multi.ReadAsync<long>()).Single();
-        var bars = (await multi.ReadAsync<Row>()).ToList();
-        var groups = g is null ? null : (await multi.ReadAsync<Row>()).ToList();
-        var cells = g is null ? null : (await multi.ReadAsync<Row>()).ToLookup(c => c.XKey);
+        var bars = x is null ? [] : (await multi.ReadAsync<Row>()).ToList();
+        var groups = x is null || g is null ? null : (await multi.ReadAsync<Row>()).ToList();
+        var cells = x is null || g is null ? null : (await multi.ReadAsync<Row>()).ToLookup(c => c.XKey);
 
         var model = new InsightsModel(
             req.XAxis,
-            req.GroupBy,
+            x is null ? null : req.GroupBy,
             req.Metric,
             total,
-            Order(bars, x.IsTime, b => b.XKey, b => b.Value)
+            Order(bars, x?.IsTime ?? false, b => b.XKey, b => b.Value)
                 .Select(b => new InsightBarModel(b.XKey, b.XLabel, b.Value,
                     cells is null
                         ? null
