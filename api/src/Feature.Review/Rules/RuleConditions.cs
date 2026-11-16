@@ -30,9 +30,9 @@ public static class RuleConditions
     private static IReadOnlyDictionary<string, FilterField> Fields(AutomationRuleKind kind, ReportRecordType recordType) =>
         FieldsByKindAndRecordType[(kind, recordType)];
 
-    /// <summary>Whether a kind of rule can use answer conditions for a record type: severity rules, on records with answers.</summary>
+    /// <summary>Whether a rule can use answer conditions for a record type: records with answers (not quick reports).</summary>
     private static bool AllowsAnswers(AutomationRuleKind kind, ReportRecordType recordType) =>
-        kind == AutomationRuleKind.Severity && recordType != ReportRecordType.QuickReport;
+        recordType != ReportRecordType.QuickReport;
 
     /// <summary>
     /// Why the conditions can't be saved on a rule of this kind for these record types, or null when they can: every
@@ -160,11 +160,6 @@ public static class RuleConditions
                 return FindValueError(field.Value, field.Values, field.From, field.To);
 
             case AnswerRule answer:
-                if (kind != AutomationRuleKind.Severity)
-                {
-                    return $"Answer conditions can't be used in {KindLabel(kind)}";
-                }
-
                 var withoutAnswers = recordTypes.FirstOrDefault(x => !AllowsAnswers(kind, x));
                 if (withoutAnswers is not null)
                 {

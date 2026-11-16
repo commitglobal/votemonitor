@@ -200,7 +200,7 @@ public class ReviewerRuleTests : BaseApiTestFixture
         Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("South", [inReview], [alfa.AdminId])).StatusCode
             .Should().Be(HttpStatusCode.Created);
         Send(alfa.Admin, HttpMethod.Put, $"{RulesUri(er)}/{rule.Id}", Rule("Renamed", [inReview], [alfa.AdminId]))
-            .StatusCode.Should().Be(HttpStatusCode.OK);
+            .IsSuccessStatusCode.Should().BeTrue();
         Send(alfa.Admin, HttpMethod.Delete, $"{RulesUri(er)}/{rule.Id}").StatusCode.Should().Be(HttpStatusCode.NoContent);
         alfa.StaffByName(Sam).GetResponse<RuleResponse[]>(RulesUri(er)).Select(x => x.Name).Should().Equal("South");
     }
@@ -270,8 +270,11 @@ public class ReviewerRuleTests : BaseApiTestFixture
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er),
                 Rule("New", [inReview], [alfa.AdminId], formType, ["FormSubmission", "QuickReport"])))
             .Should().Equal(("conditions", "Field 'formType' can't be used for quick reports"));
-        Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("New", [inReview], [alfa.AdminId], answer)))
-            .Should().Equal(("conditions", "Answer conditions can't be used in reviewer rules"));
+        Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er),
+                Rule("New", [inReview], [alfa.AdminId], answer, ["FormSubmission", "QuickReport"])))
+            .Should().Equal(("conditions", "Answer conditions can't be used for quick reports"));
+        Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("Answers", [inReview], [alfa.AdminId], answer))
+            .IsSuccessStatusCode.Should().BeTrue();
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("New", [inReview], [alfa.AdminId], tooDeep)))
             .Select(x => x.Name).Should().Equal("conditions");
         Errors(Send(alfa.Admin, HttpMethod.Post, RulesUri(er), Rule("New", [inReview], [alfa.AdminId],
@@ -301,6 +304,27 @@ public class ReviewerRuleTests : BaseApiTestFixture
             new { ngoId = alfa.NgoId });
 
         Send(alfa.Admin, HttpMethod.Post, RulesUri(er), rule).StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    [Test]
+    public void ReviewerRulesMatchOnAnswers()
+    {
+        var (data, aliceSubmissionId, _) = CoalitionScenario();
+        var alfa = data.NgoByName(ScenarioNgos.Alfa);
+        var er = data.ElectionRoundId;
+        var inReview = StageId(alfa.Admin, er, "In review");
+        var form = data.ElectionRound.Coalition.FormId;
+        var question = data.ElectionRound.Coalition.Form.Questions.First().Id;
+        object Answered(string op) => new { op = "and", values = new object[] { new { op, form, question } } };
+        // Exactly one of the two holds for the submission, whatever it answered.
+        CreateRule(alfa.Admin, er, Rule("Unanswered", [inReview], [alfa.StaffIdByName(Sam)], Answered("answer-isEmpty")));
+        CreateRule(alfa.Admin, er, Rule("Answered", [inReview], [alfa.StaffIdByName(Tom)], Answered("answer-isNotEmpty")));
+
+        MoveTo(alfa.Admin, er, aliceSubmissionId, inReview);
+
+        var reviewers = Reviewers(alfa.Admin, er, aliceSubmissionId);
+        reviewers.Should().ContainSingle();
+        new[] { alfa.StaffIdByName(Sam), alfa.StaffIdByName(Tom) }.Should().Contain(reviewers.Single());
     }
 
     [Test]
