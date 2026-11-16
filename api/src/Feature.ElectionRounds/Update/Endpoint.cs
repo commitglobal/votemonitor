@@ -27,7 +27,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        electionRound.UpdateDetails(req.CountryId, req.Title, req.EnglishTitle, req.StartDate);
+        electionRound.UpdateDetails(req.CountryId, req.Title, EnglishTitle.Or(req.EnglishTitle, req.Title), req.StartDate);
         await repository.SaveChangesAsync(ct);
         return TypedResults.NoContent();
     }

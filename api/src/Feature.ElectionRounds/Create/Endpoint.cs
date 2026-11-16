@@ -28,7 +28,7 @@ public class Endpoint(
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title, req.EnglishTitle, req.StartDate);
+        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title, EnglishTitle.Or(req.EnglishTitle, req.Title), req.StartDate);
         await repository.AddAsync(electionRound, ct);
         
         IEnumerable<string> languages = new[] { LanguagesList.EN.Iso1 };

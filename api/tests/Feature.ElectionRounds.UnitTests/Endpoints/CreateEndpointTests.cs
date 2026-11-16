@@ -45,6 +45,37 @@ public class CreateEndpointTests
         model.Value.Status.Should().Be(ElectionRoundStatus.NotStarted);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task ShouldUseTheTitle_WhenEnglishTitleIsEmpty(string? englishTitle)
+    {
+        // Arrange
+        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var psiFormRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
+        repository
+            .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
+            .Returns(false);
+        var endpoint = Factory.Create<Create.Endpoint>(repository, psiFormRepository);
+
+        // Act
+        var request = new Create.Request
+        {
+            Title = "Parliamentary elections 2026",
+            EnglishTitle = englishTitle,
+            StartDate = new DateOnly(2024, 01, 02),
+            CountryId = CountriesList.MD.Id
+        };
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
+
+        // Assert
+        await repository
+            .Received(1)
+            .AddAsync(Arg.Is<ElectionRoundAggregate>(x => x.EnglishTitle == "Parliamentary elections 2026"));
+        result.Result.As<Ok<ElectionRoundModel>>().Value.EnglishTitle.Should().Be("Parliamentary elections 2026");
+    }
+
     [Fact]
     public async Task ShouldReturnConflict_WhenElectionRoundWithSameTitleExists()
     {

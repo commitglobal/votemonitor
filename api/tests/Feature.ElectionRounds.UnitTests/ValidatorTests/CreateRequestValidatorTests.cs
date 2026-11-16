@@ -82,16 +82,29 @@ public class CreateRequestValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_EnglishTitle_Empty(string title)
+    public void Validation_ShouldPass_When_EnglishTitle_Empty(string title)
     {
-        // Arrange
+        // Arrange: the English title is optional (the round's title stands in for it).
         var request = new Create.Request { EnglishTitle = title };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.EnglishTitle);
+        result.ShouldNotHaveValidationErrorFor(x => x.EnglishTitle);
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_EnglishTitle_Missing()
+    {
+        // Arrange
+        var request = new Create.Request { EnglishTitle = null };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.EnglishTitle);
     }
 
     [Fact]

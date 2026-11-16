@@ -48,6 +48,36 @@ public class UpdateEndpointTests
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task ShouldUseTheTitle_WhenEnglishTitleIsEmpty(string? englishTitle)
+    {
+        // Arrange
+        var electionRound = Substitute.For<ElectionRoundAggregate>();
+        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        repository
+            .GetByIdAsync(Arg.Any<Guid>())
+            .Returns(electionRound);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
+        var countryId = Guid.NewGuid();
+        var startDate = new DateOnly(2024, 01, 02);
+
+        // Act
+        await endpoint.ExecuteAsync(new Update.Request
+        {
+            Id = Guid.NewGuid(),
+            Title = "Alegeri parlamentare 2026",
+            EnglishTitle = englishTitle,
+            CountryId = countryId,
+            StartDate = startDate
+        }, CancellationToken.None);
+
+        // Assert
+        electionRound.Received(1).UpdateDetails(countryId, "Alegeri parlamentare 2026", "Alegeri parlamentare 2026", startDate);
+    }
+
     [Fact] public async Task ShouldNoContent_AfterUpdatingElectionRoundDetails()
     {
         // Arrange
