@@ -9,13 +9,17 @@ public class Validator : Validator<Request>
         RuleFor(x => x.RecordType).NotNull();
         RuleFor(x => x.DataSource).NotNull();
         RuleFor(x => x.XAxis)
-            .NotEmpty()
-            .Must((req, axis) => req.RecordType is null || InsightAxes.For(req.RecordType).ContainsKey(axis))
-            .WithMessage("Unknown axis for this record type.");
+            .Must((req, axis) => req.RecordType is null || InsightAxes.For(req.RecordType).ContainsKey(axis!))
+            .WithMessage("Unknown axis for this record type.")
+            .When(x => x.XAxis is not null);
         RuleFor(x => x.GroupBy)
             .Must((req, axis) => req.RecordType is null || InsightAxes.For(req.RecordType).ContainsKey(axis!))
             .WithMessage("Unknown axis for this record type.")
             .NotEqual(x => x.XAxis)
+            .When(x => x.GroupBy is not null);
+        RuleFor(x => x.XAxis)
+            .NotEmpty()
+            .WithMessage("Group by needs an axis.")
             .When(x => x.GroupBy is not null);
         RuleFor(x => x.Metric)
             .NotEmpty()

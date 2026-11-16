@@ -6,7 +6,7 @@ namespace Feature.Review.Insights;
 /// and records with several reviewers or tags are never counted twice in a total.
 /// </summary>
 public record InsightsModel(
-    string XAxis,
+    string? XAxis,
     string? GroupBy,
     string Metric,
     long Total,

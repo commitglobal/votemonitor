@@ -27,4 +27,5 @@ public static class Tables
     public const string ReviewerRules = "ReviewerRules";
     public const string SeverityRules = "SeverityRules";
     public const string SavedViews = "SavedViews";
+    public const string Dashboards = "Dashboards";
 }
