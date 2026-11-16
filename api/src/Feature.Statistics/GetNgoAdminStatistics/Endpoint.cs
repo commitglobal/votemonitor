@@ -85,8 +85,9 @@ public class Endpoint(
                 visitedPollingStationsStats = multi.Read<VisitedPollingStationLevelStats>().ToList();
                 formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
                 quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
-                incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
+                // In the query's order: citizen reports before incident reports.
                 citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
+                incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
             }
         }
 
