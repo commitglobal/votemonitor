@@ -46,6 +46,34 @@ public class CreateEndpointTests
     }
 
     [Fact]
+    public async Task ShouldStoreNoEnglishTitle_WhenEnglishTitleIsMissing()
+    {
+        // Arrange
+        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var psiFormRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
+        repository
+            .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
+            .Returns(false);
+        var endpoint = Factory.Create<Create.Endpoint>(repository, psiFormRepository);
+
+        // Act
+        var request = new Create.Request
+        {
+            Title = "Parliamentary elections 2026",
+            EnglishTitle = null,
+            StartDate = new DateOnly(2024, 01, 02),
+            CountryId = CountriesList.MD.Id
+        };
+        var result = await endpoint.ExecuteAsync(request, CancellationToken.None);
+
+        // Assert
+        await repository
+            .Received(1)
+            .AddAsync(Arg.Is<ElectionRoundAggregate>(x => x.EnglishTitle == null));
+        result.Result.As<Ok<ElectionRoundModel>>().Value.EnglishTitle.Should().BeNull();
+    }
+
+    [Fact]
     public async Task ShouldReturnConflict_WhenElectionRoundWithSameTitleExists()
     {
         // Arrange

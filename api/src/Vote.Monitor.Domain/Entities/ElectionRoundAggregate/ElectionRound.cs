@@ -15,7 +15,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     public Guid Id { get; private set; }
     public string Title { get; private set; }
-    public string EnglishTitle { get; private set; }
+    public string? EnglishTitle { get; private set; }
     public DateOnly StartDate { get; private set; }
     public ElectionRoundStatus Status { get; private set; } = ElectionRoundStatus.NotStarted;
     public Guid CountryId { get; private set; }
@@ -31,7 +31,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     public ElectionRound(Guid countryId,
         string title,
-        string englishTitle,
+        string? englishTitle,
         DateOnly startDate)
     {
         Id = Guid.NewGuid();
@@ -46,7 +46,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     internal ElectionRound(Guid id,
         string title,
-        string englishTitle,
+        string? englishTitle,
         DateOnly startDate,
         Country country,
         List<MonitoringNgo> monitoringNgos)
@@ -60,7 +60,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         _monitoringNgos = monitoringNgos;
     }
 
-    public virtual void UpdateDetails(Guid countryId, string title, string englishTitle, DateOnly startDate)
+    public virtual void UpdateDetails(Guid countryId, string title, string? englishTitle, DateOnly startDate)
     {
         Title = title;
         EnglishTitle = englishTitle;

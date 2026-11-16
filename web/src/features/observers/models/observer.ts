@@ -9,7 +9,7 @@ export enum ObserverStatus {
 
 export interface ObserversMonitoredElectionModel {
   id: string;
-  englishTitle: string;
+  englishTitle: string | null;
   title: string;
   startDate: string;
   ngoName: string;

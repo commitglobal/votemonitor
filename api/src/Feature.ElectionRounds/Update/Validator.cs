@@ -20,7 +20,7 @@ public class Validator : Validator<Request>
         RuleFor(x => x.EnglishTitle)
             .MinimumLength(3)
             .MaximumLength(256)
-            .NotEmpty();
+            .When(x => !string.IsNullOrWhiteSpace(x.EnglishTitle));
 
         RuleFor(x => x.StartDate)
             .Must(startDate =>

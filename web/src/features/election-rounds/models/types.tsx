@@ -13,7 +13,7 @@ export interface ElectionRoundModel {
   countryId: string;
   countryName: string;
   title: string;
-  englishTitle: string;
+  englishTitle: string | null;
   startDate: string;
   status: ElectionRoundStatus;
   createdOn: string;

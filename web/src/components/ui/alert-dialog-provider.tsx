@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import * as React from "react";
@@ -24,6 +25,8 @@ export type AlertAction =
     cancelButtonClass?: string;
     actionButton?: string;
     actionButtonClass?: string;
+    /** When set, the action button stays disabled until the user types this exact text. */
+    confirmationText?: string;
   }
   | { type: "close" };
 
@@ -36,6 +39,7 @@ interface AlertDialogState {
   cancelButtonClass?: string;
   actionButton: string;
   actionButtonClass?: string;
+  confirmationText?: string;
 }
 
 export function alertDialogReducer(
@@ -52,7 +56,8 @@ export function alertDialogReducer(
         ...action,
         cancelButton: action.cancelButton,
         actionButton: action.actionButton || 'Ok',
-        actionButtonClass: action.actionButtonClass ?? buttonVariants({ variant: "default" })
+        actionButtonClass: action.actionButtonClass ?? buttonVariants({ variant: "default" }),
+        confirmationText: action.confirmationText
       };
     default:
       return state;
@@ -74,6 +79,8 @@ export function AlertDialogProvider({
   });
 
   const resolveRef = React.useRef<(tf: any) => void>();
+  const [typedConfirmation, setTypedConfirmation] = React.useState("");
+  const isConfirmationPending = !!state.confirmationText && typedConfirmation !== state.confirmationText;
 
   function close() {
     dispatch({ type: "close" });
@@ -86,6 +93,7 @@ export function AlertDialogProvider({
   }
 
   const dialog = React.useCallback(async <T extends AlertAction>(params: T) => {
+    setTypedConfirmation("");
     dispatch(params);
 
     return new Promise<boolean>((resolve) => {
@@ -108,6 +116,21 @@ export function AlertDialogProvider({
             <AlertDialogTitle>{state.title}</AlertDialogTitle>
             <Separator />
             {state.body ? (<AlertDialogDescription>{state.body}</AlertDialogDescription>) : null}
+            {state.confirmationText ? (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Type <span className="font-mono font-semibold text-foreground">{state.confirmationText}</span> to confirm.
+                </p>
+                <Input
+                  autoFocus
+                  value={typedConfirmation}
+                  onChange={(e) => setTypedConfirmation(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isConfirmationPending) confirm();
+                  }}
+                />
+              </div>
+            ) : null}
           </AlertDialogHeader>
           <AlertDialogFooter>
             {state.cancelButton ? (
@@ -117,6 +140,7 @@ export function AlertDialogProvider({
                 {state.cancelButton}
               </AlertDialogCancel>) : null}
             <AlertDialogAction
+              disabled={isConfirmationPending}
               onClick={confirm}
               className={state.actionButtonClass}>
               {state.actionButton}

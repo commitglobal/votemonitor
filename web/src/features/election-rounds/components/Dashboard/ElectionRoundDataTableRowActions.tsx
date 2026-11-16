@@ -42,8 +42,9 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
   const handleDeleteElectionRound = React.useCallback(async () => {
     if (
       await confirm({
-        title: `Delete election round: ${electionRound.englishTitle}?`,
-        body: 'Are you sure you want to delete this election round?',
+        title: `Delete election round: ${electionRound.englishTitle ?? electionRound.title}?`,
+        body: 'Are you sure you want to delete this election round? This cannot be undone.',
+        confirmationText: electionRound.id.split('-')[0],
       })
     ) {
       deleteElectionRound({
@@ -61,7 +62,7 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
   const handleArchiveElectionRound = React.useCallback(async () => {
     if (
       await confirm({
-        title: `Archive election round: ${electionRound.englishTitle}?`,
+        title: `Archive election round: ${electionRound.englishTitle ?? electionRound.title}?`,
         body: 'Are you sure you want to archive this election round?',
         cancelButton: 'Cancel',
       })
@@ -81,7 +82,7 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
   const handleUnstartElectionRound = React.useCallback(async () => {
     if (
       await confirm({
-        title: `Draft election round: ${electionRound.englishTitle}?`,
+        title: `Draft election round: ${electionRound.englishTitle ?? electionRound.title}?`,
         body: 'Are you sure you want to draft this election round?',
         cancelButton: 'Cancel',
       })
@@ -101,7 +102,7 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
   const handleUnarchiveElectionRound = React.useCallback(async () => {
     if (
       await confirm({
-        title: `Unarchive election round: ${electionRound.englishTitle}?`,
+        title: `Unarchive election round: ${electionRound.englishTitle ?? electionRound.title}?`,
         body: 'Are you sure you want to unarchive this election round?',
         cancelButton: 'Cancel',
       })
@@ -121,7 +122,7 @@ export function ElectionRoundDataTableRowActions({ electionRound }: ElectionRoun
   const handleStartElectionRound = React.useCallback(async () => {
     if (
       await confirm({
-        title: `Start election round: ${electionRound.englishTitle}?`,
+        title: `Start election round: ${electionRound.englishTitle ?? electionRound.title}?`,
         body: 'Are you sure you want to start this election round?',
         cancelButton: 'Cancel',
       })

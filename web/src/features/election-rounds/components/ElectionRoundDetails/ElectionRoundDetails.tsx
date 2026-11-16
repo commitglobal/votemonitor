@@ -28,7 +28,7 @@ function ElectionRoundDetails() {
   }, [electionRoundId, setCurrentElectionRoundId]);
 
   return (
-    <Layout title={electionRound.title} subtitle={electionRound.englishTitle} enableBreadcrumbs={false}>
+    <Layout title={electionRound.title} subtitle={electionRound.englishTitle ?? undefined} enableBreadcrumbs={false}>
       <Tabs
         defaultValue={tab ?? ElectionRoundDetailsTab.EventDetails}
         onValueChange={(tab) => {

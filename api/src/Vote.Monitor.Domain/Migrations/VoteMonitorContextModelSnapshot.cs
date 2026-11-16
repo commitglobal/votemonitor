@@ -3402,7 +3402,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EnglishTitle")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 

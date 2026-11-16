@@ -18,7 +18,7 @@ public record ElectionRoundModel
     public required string CountryFullName { get; init; }
 
     public required string Title { get; init; }
-    public required string EnglishTitle { get; init; }
+    public string? EnglishTitle { get; init; }
     public required DateOnly StartDate { get; init; }
 
     public required ElectionRoundStatus Status { get; init; }

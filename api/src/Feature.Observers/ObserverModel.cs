@@ -20,7 +20,7 @@ public record ObserverModel
     {
         public Guid Id { get; init; }
         public string Title { get; init; }
-        public string EnglishTitle { get; init; }
+        public string? EnglishTitle { get; init; }
         public string StartDate { get; init; }
         public ElectionRoundStatus Status { get; init; }
         public string NgoName { get; init; }

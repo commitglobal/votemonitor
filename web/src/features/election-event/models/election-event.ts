@@ -3,7 +3,7 @@ import { ElectionRoundStatus } from '@/common/types';
 export interface ElectionEvent {
   id: string;
   title: string;
-  englishTitle: string;
+  englishTitle: string | null;
   startDate: string;
   status: ElectionRoundStatus;
   countryId: string;
