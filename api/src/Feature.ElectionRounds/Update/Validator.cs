@@ -22,12 +22,14 @@ public class Validator : Validator<Request>
             .MaximumLength(256)
             .When(x => !string.IsNullOrWhiteSpace(x.EnglishTitle));
 
+        // Today or later where the admin is: the date is a plain day, so today counts in any time zone (UTC-12 is at
+        // most one day behind UTC).
         RuleFor(x => x.StartDate)
             .Must(startDate =>
             {
                 var timeProvider = Resolve<ITimeProvider>();
-                return startDate > timeProvider.UtcNowDate;
+                return startDate >= timeProvider.UtcNowDate.AddDays(-1);
             })
-            .WithMessage("Election start date must be in the future.");
+            .WithMessage("Election start date must be today or later.");
     }
 }

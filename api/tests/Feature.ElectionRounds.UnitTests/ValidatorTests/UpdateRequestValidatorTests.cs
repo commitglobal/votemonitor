@@ -174,6 +174,20 @@ public class UpdateRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.StartDate);
     }
 
+    [Theory]
+    [MemberData(nameof(TodayStartDates))]
+    public void Validation_ShouldPass_When_StartDateIsToday(DateOnly startDate)
+    {
+        // Arrange
+        var request = new Update.Request { StartDate = startDate };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
+    }
+
     [Fact]
     public void Validation_ShouldPass_When_StartDateInTheFuture()
     {
@@ -226,7 +240,15 @@ public class UpdateRequestValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.CountryId);
     }
 
+    // Now is 2024-01-02 03:04 UTC: 2024-01-01 is still today west of UTC-3.
     public static IEnumerable<object[]> InvalidStartDates =>
+        new List<object[]>
+        {
+            new object[] { new DateOnly(2023,12,31)},
+            new object[] { new DateOnly(2023,06,01)}
+        };
+
+    public static IEnumerable<object[]> TodayStartDates =>
         new List<object[]>
         {
             new object[] { new DateOnly(2024,01,01)},
