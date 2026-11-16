@@ -42,7 +42,7 @@ export default function ElectionEventDescription() {
   const handleArchiveElectionRound = useCallback(async () => {
     if (
       await confirm({
-        title: `Archive election round: ${electionEvent!.englishTitle}?`,
+        title: `Archive election round: ${electionEvent!.englishTitle ?? electionEvent!.title}?`,
         body: 'Are you sure you want to archive this election round?',
       })
     ) {
@@ -64,7 +64,7 @@ export default function ElectionEventDescription() {
   const handleUnstartElectionRound = useCallback(async () => {
     if (
       await confirm({
-        title: `Draft election round: ${electionEvent!.englishTitle}?`,
+        title: `Draft election round: ${electionEvent!.englishTitle ?? electionEvent!.title}?`,
         body: 'Are you sure you want to draft this election round?',
       })
     ) {
@@ -88,7 +88,7 @@ export default function ElectionEventDescription() {
   const handleUnarchiveElectionRound = useCallback(async () => {
     if (
       await confirm({
-        title: `Unarchive election round: ${electionEvent!.englishTitle}?`,
+        title: `Unarchive election round: ${electionEvent!.englishTitle ?? electionEvent!.title}?`,
         body: 'Are you sure you want to unarchive this election round?',
       })
     ) {
@@ -109,7 +109,7 @@ export default function ElectionEventDescription() {
   const handleStartElectionRound = useCallback(async () => {
     if (
       await confirm({
-        title: `Start election round: ${electionEvent!.englishTitle}?`,
+        title: `Start election round: ${electionEvent!.englishTitle ?? electionEvent!.title}?`,
         body: 'Are you sure you want to start this election round?',
       })
     ) {
@@ -178,7 +178,7 @@ export default function ElectionEventDescription() {
           </div>
           <div className='flex flex-col gap-1'>
             <p className='font-bold text-gray-700'>{t('electionEvent.eventDetails.englishTitle')}</p>
-            <p className='font-normal text-gray-900'>{electionEvent?.englishTitle}</p>
+            <p className='font-normal text-gray-900'>{electionEvent?.englishTitle ?? electionEvent?.title}</p>
           </div>
           <div className='flex flex-col gap-1'>
             <p className='font-bold text-gray-700'>{t('electionEvent.eventDetails.country')}</p>

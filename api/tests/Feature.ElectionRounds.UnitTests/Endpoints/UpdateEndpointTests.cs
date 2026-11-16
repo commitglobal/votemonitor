@@ -48,11 +48,8 @@ public class UpdateEndpointTests
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task ShouldUseTheTitle_WhenEnglishTitleIsEmpty(string? englishTitle)
+    [Fact]
+    public async Task ShouldStoreNoEnglishTitle_WhenEnglishTitleIsMissing()
     {
         // Arrange
         var electionRound = Substitute.For<ElectionRoundAggregate>();
@@ -69,13 +66,13 @@ public class UpdateEndpointTests
         {
             Id = Guid.NewGuid(),
             Title = "Alegeri parlamentare 2026",
-            EnglishTitle = englishTitle,
+            EnglishTitle = null,
             CountryId = countryId,
             StartDate = startDate
         }, CancellationToken.None);
 
         // Assert
-        electionRound.Received(1).UpdateDetails(countryId, "Alegeri parlamentare 2026", "Alegeri parlamentare 2026", startDate);
+        electionRound.Received(1).UpdateDetails(countryId, "Alegeri parlamentare 2026", null, startDate);
     }
 
     [Fact] public async Task ShouldNoContent_AfterUpdatingElectionRoundDetails()

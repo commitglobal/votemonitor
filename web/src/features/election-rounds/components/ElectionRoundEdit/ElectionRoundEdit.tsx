@@ -52,7 +52,7 @@ function ElectionRoundEdit() {
   );
 
   return (
-    <Layout title={electionRound.title} subtitle={electionRound.englishTitle} enableBreadcrumbs={false}>
+    <Layout title={electionRound.title} subtitle={electionRound.englishTitle ?? undefined} enableBreadcrumbs={false}>
       <Card>
         <CardHeader>
           <CardTitle>Edit event details</CardTitle>

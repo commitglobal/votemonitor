@@ -6,7 +6,7 @@ import { z } from 'zod';
 export interface MonitoredElectionModel {
   id: string;
   title: string;
-  englishTitle: string;
+  englishTitle: string | null;
   startDate: string;
   status: ElectionRoundStatus;
 }

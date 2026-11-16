@@ -45,11 +45,8 @@ public class CreateEndpointTests
         model.Value.Status.Should().Be(ElectionRoundStatus.NotStarted);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task ShouldUseTheTitle_WhenEnglishTitleIsEmpty(string? englishTitle)
+    [Fact]
+    public async Task ShouldStoreNoEnglishTitle_WhenEnglishTitleIsMissing()
     {
         // Arrange
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
@@ -63,7 +60,7 @@ public class CreateEndpointTests
         var request = new Create.Request
         {
             Title = "Parliamentary elections 2026",
-            EnglishTitle = englishTitle,
+            EnglishTitle = null,
             StartDate = new DateOnly(2024, 01, 02),
             CountryId = CountriesList.MD.Id
         };
@@ -72,8 +69,8 @@ public class CreateEndpointTests
         // Assert
         await repository
             .Received(1)
-            .AddAsync(Arg.Is<ElectionRoundAggregate>(x => x.EnglishTitle == "Parliamentary elections 2026"));
-        result.Result.As<Ok<ElectionRoundModel>>().Value.EnglishTitle.Should().Be("Parliamentary elections 2026");
+            .AddAsync(Arg.Is<ElectionRoundAggregate>(x => x.EnglishTitle == null));
+        result.Result.As<Ok<ElectionRoundModel>>().Value.EnglishTitle.Should().BeNull();
     }
 
     [Fact]

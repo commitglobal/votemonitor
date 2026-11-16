@@ -19,7 +19,7 @@ export const electionRoundColDefs: ColumnDef<ElectionRoundModel>[] = [
     enableResizing: true,
     enableSorting: true,
     header: ({ column }) => <DataTableColumnHeader title='English title' column={column} />,
-    cell: ({ row }) => row.original.englishTitle,
+    cell: ({ row }) => row.original.englishTitle ?? row.original.title,
   }),
   columnHelper.display({
     id: 'countryName',

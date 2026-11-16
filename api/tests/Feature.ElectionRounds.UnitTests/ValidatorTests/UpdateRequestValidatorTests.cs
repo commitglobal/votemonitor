@@ -111,7 +111,7 @@ public class UpdateRequestValidatorTests
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldPass_When_EnglishTitle_Empty(string title)
     {
-        // Arrange: the English title is optional (the round's title stands in for it).
+        // Arrange
         var request = new Update.Request { EnglishTitle = title };
 
         // Act

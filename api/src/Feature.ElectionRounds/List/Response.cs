@@ -16,7 +16,7 @@ public record Response
     public string CountryFullName { get; init; } = string.Empty;
 
     public string Title { get; init; } = string.Empty;
-    public string EnglishTitle { get; init; } = string.Empty;
+    public string? EnglishTitle { get; init; }
     public DateOnly StartDate { get; init; }
 
     public ElectionRoundStatus Status { get; init; } = ElectionRoundStatus.NotStarted;
