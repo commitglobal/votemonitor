@@ -175,6 +175,19 @@ public class UpdateRequestValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldPass_When_StartDateIsToday()
+    {
+        // Arrange
+        var request = new Update.Request { StartDate = new(2024, 01, 02) };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
+    }
+
+    [Fact]
     public void Validation_ShouldPass_When_StartDateInTheFuture()
     {
         // Arrange
@@ -229,7 +242,7 @@ public class UpdateRequestValidatorTests
     public static IEnumerable<object[]> InvalidStartDates =>
         new List<object[]>
         {
-            new object[] { new DateOnly(2024,01,01)},
-            new object[] { new DateOnly(2024,01,02)}
+            new object[] { new DateOnly(2023,12,31)},
+            new object[] { new DateOnly(2024,01,01)}
         };
 }
