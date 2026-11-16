@@ -1,6 +1,6 @@
 ﻿namespace Feature.ElectionRounds.Update;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository, ITimeProvider timeProvider)
+public class Endpoint(IRepository<ElectionRoundAggregate> repository)
     : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -19,13 +19,10 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository, ITimeProvi
             return TypedResults.NotFound();
         }
 
-        // A round that is running or not started yet keeps its start date even once it has passed, so its details
-        // can still be fixed; an archived round cannot be given a past start date.
-        if (electionRound.Status == ElectionRoundStatus.Archived
-            && req.StartDate < ElectionRoundStartDate.EarliestAllowed(timeProvider))
+        if (electionRound.Status == ElectionRoundStatus.Archived)
         {
-            AddError(r => r.StartDate, ElectionRoundStartDate.InThePastMessage);
-            ThrowIfAnyErrors();
+            AddError("An archived election round cannot be edited");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
         var specification = new GetActiveElectionRoundSpecification(req.Id, req.CountryId, req.Title);

@@ -2,19 +2,15 @@
 
 public class UpdateEndpointTests
 {
-    private static readonly ITimeProvider TimeProvider =
-        new FreezeTimeProvider(new DateTime(2024, 01, 10, 03, 04, 05, DateTimeKind.Utc));
-
     [Theory]
-    [MemberData(nameof(NotArchived))]
-    public async Task ShouldUpdate_WhenStartDateInThePastAndElectionRoundNotArchived(Action<ElectionRoundAggregate> setStatus)
+    [MemberData(nameof(NotArchivedStatuses))]
+    public async Task ShouldUpdate_WhenStartDateInThePastAndElectionRoundNotArchived(string status)
     {
         // Arrange
-        var electionRound = new ElectionRoundAggregateFaker().Generate();
-        setStatus(electionRound);
+        var electionRound = new ElectionRoundAggregateFaker(status: ElectionRoundStatus.FromValue(status)).Generate();
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
         repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
         var startDate = new DateOnly(2023, 06, 01);
 
         // Act
@@ -32,38 +28,13 @@ public class UpdateEndpointTests
     }
 
     [Fact]
-    public async Task ShouldFail_WhenStartDateInThePastAndElectionRoundArchived()
+    public async Task ShouldReturnConflict_WhenElectionRoundArchived()
     {
         // Arrange
-        var electionRound = new ElectionRoundAggregateFaker().Generate();
-        electionRound.Archive();
+        var electionRound = new ElectionRoundAggregateFaker(status: ElectionRoundStatus.Archived).Generate();
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
         repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
-
-        // Act
-        var act = () => endpoint.ExecuteAsync(new Update.Request
-        {
-            Id = electionRound.Id,
-            Title = "a fixed title",
-            CountryId = electionRound.CountryId,
-            StartDate = new DateOnly(2024, 01, 08)
-        }, CancellationToken.None);
-
-        // Assert
-        await act.Should().ThrowAsync<ValidationFailureException>();
-        await repository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
-    public async Task ShouldUpdate_WhenStartDateIsTodayWestOfUtcAndElectionRoundArchived()
-    {
-        // Arrange: the UTC date is 2024-01-10, still 2024-01-09 west of UTC
-        var electionRound = new ElectionRoundAggregateFaker().Generate();
-        electionRound.Archive();
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
 
         // Act
         var result = await endpoint.ExecuteAsync(new Update.Request
@@ -71,17 +42,18 @@ public class UpdateEndpointTests
             Id = electionRound.Id,
             Title = "a fixed title",
             CountryId = electionRound.CountryId,
-            StartDate = new DateOnly(2024, 01, 09)
+            StartDate = new DateOnly(2030, 01, 01)
         }, CancellationToken.None);
 
         // Assert
-        result.Result.Should().BeOfType<NoContent>();
+        result.Result.Should().BeOfType<Conflict<ProblemDetails>>();
+        await repository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
-    public static IEnumerable<object[]> NotArchived =>
+    public static IEnumerable<object[]> NotArchivedStatuses =>
     [
-        [(Action<ElectionRoundAggregate>)(_ => { })],
-        [(Action<ElectionRoundAggregate>)(x => x.Start())]
+        [ElectionRoundStatus.NotStarted.Value],
+        [ElectionRoundStatus.Started.Value]
     ];
 
     [Fact]
@@ -89,7 +61,7 @@ public class UpdateEndpointTests
     {
         // Arrange
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
 
         // Act
         var request = new Update.Request { Id = Guid.NewGuid() };
@@ -106,7 +78,7 @@ public class UpdateEndpointTests
     public async Task ShouldReturnConflict_WhenElectionRoundWithSameTitleExists()
     {
         // Arrange
-        var electionRound = new ElectionRoundAggregateFaker().Generate();
+        var electionRound = new ElectionRoundAggregateFaker(status: ElectionRoundStatus.NotStarted).Generate();
 
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
         repository
@@ -117,7 +89,7 @@ public class UpdateEndpointTests
             .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
 
         // Act
         var request = new Update.Request { Id = electionRound.Id, Title = "ExistingTitle" };
@@ -139,7 +111,7 @@ public class UpdateEndpointTests
         repository
             .GetByIdAsync(Arg.Any<Guid>())
             .Returns(electionRound);
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
         var countryId = Guid.NewGuid();
         var startDate = new DateOnly(2024, 01, 02);
 
@@ -167,7 +139,7 @@ public class UpdateEndpointTests
             .GetByIdAsync(Arg.Any<Guid>())
             .Returns(electionRound);
 
-        var endpoint = Factory.Create<Update.Endpoint>(repository, TimeProvider);
+        var endpoint = Factory.Create<Update.Endpoint>(repository);
 
         // Act
         var updatedTitle = "updatedTitle";

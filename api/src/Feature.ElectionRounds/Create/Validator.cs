@@ -22,9 +22,10 @@ public class Validator : Validator<Request>
         RuleFor(x => x.StartDate)
             .Must(startDate =>
             {
+                // Today somewhere on Earth: west of UTC (down to UTC-12) the date can be one day behind the UTC date.
                 var timeProvider = Resolve<ITimeProvider>();
-                return startDate >= ElectionRoundStartDate.EarliestAllowed(timeProvider);
+                return startDate >= timeProvider.UtcNowDate.AddDays(-1);
             })
-            .WithMessage(ElectionRoundStartDate.InThePastMessage);
+            .WithMessage("Election start date cannot be in the past.");
     }
 }
