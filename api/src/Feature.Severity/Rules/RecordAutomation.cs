@@ -1,3 +1,5 @@
+using Feature.Labels.Rules;
+using Feature.Review.FollowUpRules;
 using Feature.Review.Rules;
 using Feature.Review.Services;
 using Microsoft.Extensions.Logging;
@@ -8,14 +10,16 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 namespace Feature.Severity.Rules;
 
 /// <summary>
-/// Runs severity rules (this feature) and reviewer rules (<see cref="Feature.Review"/>) on records observers and
-/// citizens save, and sends records their authors change back to the default stage; it lives here because this
-/// feature sees both.
+/// Runs severity rules (this feature), follow-up and reviewer rules (<see cref="Feature.Review"/>) and label rules
+/// (<see cref="Feature.Labels"/>) on records observers and citizens save, and sends records their authors change back
+/// to the default stage; it lives here because this feature sees them all.
 /// </summary>
 internal class RecordAutomation(
     VoteMonitorContext context,
     IReviewService reviewService,
     ISeverityRuleRunner severityRules,
+    IFollowUpRuleRunner followUpRules,
+    ILabelRuleRunner labelRules,
     IReviewerRuleRunner reviewerRules,
     ITimeProvider timeProvider,
     ILogger<RecordAutomation> logger) : IRecordAutomation
@@ -129,6 +133,8 @@ internal class RecordAutomation(
             var ngoIds = await context.MonitoringNgos
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && (context.SeverityRules.Any(rule => rule.MonitoringNgoId == x.Id)
+                                || context.FollowUpRules.Any(rule => rule.MonitoringNgoId == x.Id)
+                                || context.LabelRules.Any(rule => rule.MonitoringNgoId == x.Id)
                                 || (isNew && context.ReviewerRules.Any(rule => rule.MonitoringNgoId == x.Id))
                                 || (returnsToDefaultStage && context.ReviewWorkflows.Any(workflow =>
                                     workflow.MonitoringNgoId == x.Id
@@ -147,6 +153,8 @@ internal class RecordAutomation(
                 }
 
                 await severityRules.RunAsync(report, ct);
+                await followUpRules.RunAsync(report, ct);
+                await labelRules.RunAsync(report, ct);
                 if (isNew)
                 {
                     // A new record has no stage of its own yet: it enters the NGO's default stage.

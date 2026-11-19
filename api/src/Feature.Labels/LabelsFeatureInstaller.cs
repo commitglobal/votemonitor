@@ -1,3 +1,4 @@
+using Feature.Labels.Rules;
 using Feature.Labels.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +9,7 @@ public static class LabelsFeatureInstaller
     public static IServiceCollection AddLabelsFeature(this IServiceCollection services)
     {
         services.AddScoped<ILabelService, LabelService>();
+        services.AddScoped<ILabelRuleRunner, LabelRuleRunner>();
         return services;
     }
 }

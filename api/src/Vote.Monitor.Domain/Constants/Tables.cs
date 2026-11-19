@@ -26,6 +26,8 @@ public static class Tables
     public const string RecordFollowUps = "RecordFollowUps";
     public const string ReviewerRules = "ReviewerRules";
     public const string SeverityRules = "SeverityRules";
+    public const string FollowUpRules = "FollowUpRules";
+    public const string LabelRules = "LabelRules";
     public const string SavedViews = "SavedViews";
     public const string Dashboards = "Dashboards";
 }

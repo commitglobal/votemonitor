@@ -15,6 +15,13 @@ public interface ILabelService
     /// recorded once in the report's history and its reviewers are notified.
     /// </summary>
     Task SetAsync(ReviewContext report, IReadOnlyCollection<string> labels, ReviewActor actor, CancellationToken ct);
+
+    /// <summary>
+    /// Label rules matched the report: adds each rule's labels (in the given order) that the report doesn't carry yet,
+    /// ignoring case, until it carries <see cref="Set.Validator.MaxLabels"/>. Never removes a label. Each rule that added at least one
+    /// label is recorded in the report's history, attributed to it; the report's reviewers are notified once.
+    /// </summary>
+    Task AddByRulesAsync(ReviewContext report, IReadOnlyList<LabelRule> rules, CancellationToken ct);
 }
 
 internal class LabelService(VoteMonitorContext context, IReviewService reviewService, ITimeProvider timeProvider)
@@ -75,6 +82,61 @@ internal class LabelService(VoteMonitorContext context, IReviewService reviewSer
             ReviewActivity.LabelsChanged(target, actor, Sort(added), Sort(removed.Select(x => x.Label)), now),
             ct);
 
+        await context.SaveChangesAsync(ct);
+    }
+
+    public async Task AddByRulesAsync(ReviewContext report, IReadOnlyList<LabelRule> rules, CancellationToken ct)
+    {
+        var target = report.Target;
+        var labels = await context.RecordLabels
+            .Where(x => x.MonitoringNgoId == target.MonitoringNgoId
+                        && x.RecordType == target.RecordType
+                        && x.RecordId == target.RecordId)
+            .Select(x => x.Label)
+            .ToListAsync(ct);
+
+        // As when a person sets them: a label the NGO already uses in the round keeps its spelling.
+        var known = (await RoundLabelsAsync(target.ElectionRoundId, target.MonitoringNgoId, ct))
+            .GroupBy(x => x, IgnoreCase)
+            .ToDictionary(x => x.Key, x => x.First(), IgnoreCase);
+
+        var now = timeProvider.UtcNow;
+        var activities = new List<ReviewActivity>();
+        foreach (var rule in rules)
+        {
+            var added = new List<string>();
+            foreach (var label in Normalize(rule.Labels).Select(x => known.GetValueOrDefault(x, x)))
+            {
+                if (labels.Count >= Set.Validator.MaxLabels)
+                {
+                    break;
+                }
+
+                if (labels.Contains(label, IgnoreCase))
+                {
+                    continue;
+                }
+
+                labels.Add(label);
+                added.Add(label);
+                // The user who added it is the one saving the record; the history names the rule.
+                context.RecordLabels.Add(RecordLabel.Create(target, label, Guid.Empty, now));
+            }
+
+            if (added.Count > 0)
+            {
+                activities.Add(ReviewActivity.LabelsChanged(target, rule, Sort(added), [], now));
+            }
+        }
+
+        if (activities.Count == 0)
+        {
+            return;
+        }
+
+        // One notification per reviewer, however many rules added labels: with the last entry.
+        context.ReviewActivities.AddRange(activities.SkipLast(1));
+        await reviewService.AddActivityAsync(report, activities[^1], ct);
         await context.SaveChangesAsync(ct);
     }
 

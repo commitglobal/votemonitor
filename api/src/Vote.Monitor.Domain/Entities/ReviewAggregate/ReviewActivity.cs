@@ -124,6 +124,15 @@ public class ReviewActivity : IAggregateRoot
             FollowUpStatus = followUpStatus
         };
 
+    public static ReviewActivity FollowUpStatusChanged(ReviewTarget target,
+        AutomationRule rule,
+        string followUpStatus,
+        DateTime occurredAt) =>
+        new(target, ReviewActivityKind.FollowUpStatusChanged, rule, occurredAt)
+        {
+            FollowUpStatus = followUpStatus
+        };
+
     public static ReviewActivity SeverityChanged(ReviewTarget target,
         ReviewActor actor,
         SeverityLevel from,
@@ -152,6 +161,17 @@ public class ReviewActivity : IAggregateRoot
         string[] removed,
         DateTime occurredAt) =>
         new(target, ReviewActivityKind.LabelsChanged, actor, occurredAt)
+        {
+            AddedLabels = added,
+            RemovedLabels = removed
+        };
+
+    public static ReviewActivity LabelsChanged(ReviewTarget target,
+        AutomationRule rule,
+        string[] added,
+        string[] removed,
+        DateTime occurredAt) =>
+        new(target, ReviewActivityKind.LabelsChanged, rule, occurredAt)
         {
             AddedLabels = added,
             RemovedLabels = removed
