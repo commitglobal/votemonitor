@@ -109,6 +109,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Entities.FollowUpAggregate.RecordFollowUp> RecordFollowUps { get; set; }
     public DbSet<ReviewerRule> ReviewerRules { get; set; }
     public DbSet<SeverityRule> SeverityRules { get; set; }
+    public DbSet<Entities.FollowUpAggregate.FollowUpRule> FollowUpRules { get; set; }
+    public DbSet<LabelRule> LabelRules { get; set; }
     public DbSet<Entities.SavedViewAggregate.SavedView> SavedViews { get; set; }
     public DbSet<Entities.DashboardAggregate.Dashboard> Dashboards { get; set; }
 
@@ -214,6 +216,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new RecordFollowUpConfiguration());
         builder.ApplyConfiguration(new ReviewerRuleConfiguration());
         builder.ApplyConfiguration(new SeverityRuleConfiguration());
+        builder.ApplyConfiguration(new FollowUpRuleConfiguration());
+        builder.ApplyConfiguration(new LabelRuleConfiguration());
         builder.ApplyConfiguration(new SavedViewConfiguration());
         builder.ApplyConfiguration(new DashboardConfiguration());
     }

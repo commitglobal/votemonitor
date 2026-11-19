@@ -6,15 +6,19 @@ namespace Vote.Monitor.Domain.Entities.ReviewAggregate;
 /// </summary>
 public interface IRecordAutomation
 {
-    /// <summary>A new record: severity rules, then the reviewer rules of the NGO's default stage, which it enters.</summary>
+    /// <summary>
+    /// A new record: severity, follow-up and label rules, then the reviewer rules of the NGO's default stage, which it
+    /// enters.
+    /// </summary>
     Task RecordCreatedAsync(Guid electionRoundId, ReportRecordType recordType, Guid recordId, CancellationToken ct);
 
-    /// <summary>A record moved to another place by a platform admin: severity rules.</summary>
+    /// <summary>A record moved to another place by a platform admin: severity, follow-up and label rules.</summary>
     Task RecordEditedAsync(Guid electionRoundId, ReportRecordType recordType, Guid recordId, CancellationToken ct);
 
     /// <summary>
     /// A record its observer or citizen changed (call it only when the content really changed, not on a re-sync):
-    /// severity rules, then the record goes back to each NGO's default stage and gets that stage's reviewer rules.
+    /// severity, follow-up and label rules, then the record goes back to each NGO's default stage and gets that
+    /// stage's reviewer rules.
     /// </summary>
     Task RecordChangedByAuthorAsync(Guid electionRoundId,
         ReportRecordType recordType,

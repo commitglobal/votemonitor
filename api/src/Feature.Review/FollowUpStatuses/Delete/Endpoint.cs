@@ -9,7 +9,7 @@ public class Request : FollowUpStatusesRequest
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid UserId { get; set; }
 
-    /// <summary>Where the reports on the deleted status go. Required when it is in use.</summary>
+    /// <summary>Where the reports and follow-up rules on the deleted status go. Required when it is in use.</summary>
     [QueryParam]
     public Guid? MoveTo { get; set; }
 }
@@ -43,7 +43,8 @@ public class Endpoint(
         Summary(s =>
         {
             s.Summary = "Deletes a follow-up status, moving its reports to another one";
-            s.Description = "The default can't be deleted. A status in use needs moveTo; each moved report gets a history entry.";
+            s.Description = "The default can't be deleted. A status in use (by reports or follow-up rules) needs moveTo; " +
+                            "each moved report gets a history entry and the rules move to that status too.";
         });
     }
 
@@ -79,10 +80,13 @@ public class Endpoint(
         }
 
         var rows = await context.RecordFollowUps.Where(x => x.FollowUpStatusId == status.Id).ToListAsync(ct);
+        // Follow-up rules that set the status use it too.
+        var rules = await context.FollowUpRules.Where(x => x.FollowUpStatusId == status.Id).ToListAsync(ct);
         var target = statuses.FirstOrDefault(x => x.Id == req.MoveTo);
-        if (rows.Count > 0 && target is null)
+        if ((rows.Count > 0 || rules.Count > 0) && target is null)
         {
-            AddError(x => x.MoveTo, "The status is in use; choose another of your statuses to move its reports to");
+            AddError(x => x.MoveTo,
+                "The status is in use; choose another of your statuses to move its reports and follow-up rules to");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures, StatusCodes.Status409Conflict));
         }
 
@@ -97,9 +101,21 @@ public class Endpoint(
                 now));
         }
 
-        await context.SaveChangesAsync(ct);
-        context.FollowUpStatuses.Remove(status);
-        await context.SaveChangesAsync(ct);
+        foreach (var rule in rules)
+        {
+            rule.MoveTo(target!.Id);
+        }
+
+        // One transaction: the reports and rules move, then the status goes (two saves, as the rows reference it).
+        var strategy = context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync(ct);
+            await context.SaveChangesAsync(ct);
+            context.FollowUpStatuses.Remove(status);
+            await context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+        });
 
         return TypedResults.NoContent();
     }

@@ -269,7 +269,10 @@ public static class RuleConditions
     }
 
     private static string KindLabel(AutomationRuleKind kind) =>
-        kind == AutomationRuleKind.Reviewer ? "reviewer rules" : "severity rules";
+        kind == AutomationRuleKind.Reviewer ? "reviewer rules"
+        : kind == AutomationRuleKind.Severity ? "severity rules"
+        : kind == AutomationRuleKind.FollowUp ? "follow-up rules"
+        : "label rules";
 
     private static string RecordTypeLabel(ReportRecordType recordType) =>
         recordType == ReportRecordType.FormSubmission ? "form submissions"

@@ -50,8 +50,7 @@ public class Endpoint(
                 Attachments = incidentReport.Attachments.Where(a => !a.IsDeleted && a.IsCompleted).ToList(),
                 Questions = incidentReport.Form.Questions,
                 MonitoringObserverId = incidentReport.MonitoringObserverId,
-                ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
-                               incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+                ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.DisplayName,
                 Timestamp = incidentReport.LastUpdatedAt,
                 FollowUpStatus = incidentReport.FollowUpStatus,
                 IsCompleted = incidentReport.IsCompleted,
