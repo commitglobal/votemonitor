@@ -87,13 +87,6 @@ public static class V2ReportFilterFields
         EmptySql: LabelSql.EntryHasNoLabels,
         IsArray: true);
 
-    /// <summary>
-    /// A question the respondent was shown (display logic applied) is left unanswered; "questionsAnswered" counts the
-    /// shown questions too (None: none answered, All: none left unanswered).
-    /// </summary>
-    private static readonly FilterField HasUnansweredQuestionsField = new("(s.\"NumberOfUnansweredQuestions\" > 0)",
-        "boolean", FilterOperators.Boolean, FilterValue.Boolean);
-
     public static readonly IReadOnlyDictionary<string, FilterField> FormSubmissions =
         new Dictionary<string, FilterField>
         {
@@ -138,8 +131,7 @@ public static class V2ReportFilterFields
             ["formType"] = new("s.\"FormType\"", "text", FilterOperators.Set, FilterValue.Enum<FormType>()),
             ["formStatus"] = new("s.\"FormStatus\"", "text", FilterOperators.Set, FilterValue.Enum<FormStatus>()),
             ["questionsAnswered"] = new("s.\"QuestionsAnswered\"", "text", FilterOperators.Set,
-                FilterValue.Enum<QuestionsAnsweredFilter>()),
-            ["hasUnansweredQuestions"] = HasUnansweredQuestionsField
+                FilterValue.Enum<QuestionsAnsweredFilter>())
         };
 
     public static readonly IReadOnlyDictionary<string, FilterField> CitizenReports =
@@ -174,8 +166,7 @@ public static class V2ReportFilterFields
             ["hasComments"] = new("s.\"HasComments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["hasAttachments"] = new("s.\"HasAttachments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["questionsAnswered"] = new("s.\"QuestionsAnswered\"", "text", FilterOperators.Set,
-                FilterValue.Enum<QuestionsAnsweredFilter>()),
-            ["hasUnansweredQuestions"] = HasUnansweredQuestionsField
+                FilterValue.Enum<QuestionsAnsweredFilter>())
         };
 
     public static readonly IReadOnlyDictionary<string, FilterField> IncidentReports =
@@ -221,7 +212,6 @@ public static class V2ReportFilterFields
             ["hasAttachments"] = new("s.\"HasAttachments\"", "boolean", FilterOperators.Boolean, FilterValue.Boolean),
             ["questionsAnswered"] = new("s.\"QuestionsAnswered\"", "text", FilterOperators.Set,
                 FilterValue.Enum<QuestionsAnsweredFilter>()),
-            ["hasUnansweredQuestions"] = HasUnansweredQuestionsField,
             ["formType"] = new("s.\"FormType\"", "text", FilterOperators.Set, FilterValue.Enum<FormType>())
         };
 

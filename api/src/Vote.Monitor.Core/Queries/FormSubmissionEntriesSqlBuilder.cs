@@ -25,9 +25,6 @@ public sealed class FormSubmissionEntriesFilterCriteria
     public bool? HasAttachments { get; init; }
     public bool? HasComments { get; init; }
     public string? QuestionsAnswered { get; init; }
-
-    /// <summary>Whether a question the observer was shown (display logic applied) is left unanswered.</summary>
-    public bool? HasUnansweredQuestions { get; init; }
     public DateTime? FromDate { get; init; }
     public DateTime? ToDate { get; init; }
     public bool? IsCompleted { get; init; }
@@ -184,12 +181,6 @@ public static class FormSubmissionEntriesSqlBuilder
         {
             builder.Where(@"s.""QuestionsAnswered"" = @questionsAnswered",
                 new { questionsAnswered = filters.QuestionsAnswered });
-        }
-
-        if (filters.HasUnansweredQuestions.HasValue)
-        {
-            builder.Where(@"(s.""NumberOfUnansweredQuestions"" > 0) = @hasUnansweredQuestions",
-                new { hasUnansweredQuestions = filters.HasUnansweredQuestions });
         }
 
         if (filters.HasNotes == true)

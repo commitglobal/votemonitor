@@ -142,7 +142,6 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         HasAttachments = req.HasAttachments,
         HasComments = req.HasComments,
         QuestionsAnswered = req.QuestionsAnswered?.ToString(),
-        HasUnansweredQuestions = req.HasUnansweredQuestions,
         FromDate = req.FromDateFilter,
         ToDate = req.ToDateFilter
     };

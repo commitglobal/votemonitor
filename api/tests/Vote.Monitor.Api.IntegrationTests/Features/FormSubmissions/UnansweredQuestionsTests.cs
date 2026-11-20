@@ -185,10 +185,6 @@ public class UnansweredQuestionsTests : BaseApiTestFixture
             .Should().Be(new CountsResponse(2, 0));
 
         // V2 filters.
-        Entries(admin, er, Rule("hasUnansweredQuestions", true)).Select(x => x.SubmissionId)
-            .Should().BeEquivalentTo([alices]);
-        Entries(admin, er, Rule("hasUnansweredQuestions", false)).Select(x => x.SubmissionId)
-            .Should().BeEquivalentTo([bobs, leftOver]);
         Entries(admin, er, Rule("questionsAnswered", "Some")).Select(x => x.SubmissionId)
             .Should().BeEquivalentTo([alices]);
         Entries(admin, er, Rule("questionsAnswered", "All")).Select(x => x.SubmissionId)
@@ -196,8 +192,6 @@ public class UnansweredQuestionsTests : BaseApiTestFixture
         Entries(admin, er, Rule("questionsAnswered", "None")).Should().BeEmpty();
 
         // Simple (V1) query parameters.
-        EntriesV1(admin, er, "hasUnansweredQuestions=true").Should().BeEquivalentTo([alices]);
-        EntriesV1(admin, er, "hasUnansweredQuestions=false").Should().BeEquivalentTo([bobs, leftOver]);
         EntriesV1(admin, er, "questionsAnswered=All").Should().BeEquivalentTo([bobs, leftOver]);
         EntriesV1(admin, er, "questionsAnswered=Some").Should().BeEquivalentTo([alices]);
 
@@ -205,9 +199,8 @@ public class UnansweredQuestionsTests : BaseApiTestFixture
         var monitoringNgo = data.ElectionRound.MonitoringNgoByName(ScenarioNgos.Alfa);
         var alice = monitoringNgo.ObserverByName(ScenarioObserver.Alice).MonitoringObserverId;
         var bob = monitoringNgo.ObserverByName(ScenarioObserver.Bob).MonitoringObserverId;
-        Recipients(admin, er, Rule("fs:hasUnansweredQuestions", true)).Should().BeEquivalentTo([alice]);
-        Recipients(admin, er, Rule("fs:hasUnansweredQuestions", false)).Should().BeEquivalentTo([alice, bob]);
         Recipients(admin, er, Rule("fs:questionsAnswered", "Some")).Should().BeEquivalentTo([alice]);
+        Recipients(admin, er, Rule("fs:questionsAnswered", "All")).Should().BeEquivalentTo([alice, bob]);
     }
 
     [Test]
@@ -288,7 +281,6 @@ public class UnansweredQuestionsTests : BaseApiTestFixture
         Entries().Should().BeEquivalentTo([
             new IncidentEntryResponse(alices, 1, 2), new IncidentEntryResponse(bobs, 1, 1)
         ]);
-        Entries(Rule("hasUnansweredQuestions", true)).Should().HaveCount(2);
         Entries(Rule("questionsAnswered", "Some")).Should().HaveCount(2);
         Entries(Rule("questionsAnswered", "All")).Should().BeEmpty();
 
@@ -305,9 +297,8 @@ public class UnansweredQuestionsTests : BaseApiTestFixture
                 })
             .GetAwaiter().GetResult().StatusCode.Should().Be(HttpStatusCode.OK);
 
-        Entries(Rule("hasUnansweredQuestions", false)).Select(x => x.IncidentReportId).Should().Equal(bobs);
         Entries(Rule("questionsAnswered", "All")).Select(x => x.IncidentReportId).Should().Equal(bobs);
-        Recipients(admin, er, Rule("ir:hasUnansweredQuestions", true)).Should()
+        Recipients(admin, er, Rule("ir:questionsAnswered", "Some")).Should()
             .BeEquivalentTo([monitoringNgo.ObserverByName(ScenarioObserver.Alice).MonitoringObserverId]);
     }
 }
