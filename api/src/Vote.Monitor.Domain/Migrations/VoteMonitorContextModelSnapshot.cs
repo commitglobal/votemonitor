@@ -565,6 +565,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<int>("NumberOfQuestionsAnswered")
                         .HasColumnType("integer");
 
+                    b.Property<int>("NumberOfUnansweredQuestions")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ElectionRoundId");
@@ -3423,6 +3426,12 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MonitoringNgoId");
@@ -3854,6 +3863,12 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ElectionRoundId");
@@ -3901,6 +3916,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("NumberOfQuestionsAnswered")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NumberOfUnansweredQuestions")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("PollingStationId")
@@ -4022,6 +4040,12 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.ToTable("FormTemplates");
@@ -4108,6 +4132,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("NumberOfQuestionsAnswered")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NumberOfUnansweredQuestions")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("PollingStationId")
@@ -6421,6 +6448,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<int>("NumberOfQuestionsAnswered")
                         .HasColumnType("integer");
 
+                    b.Property<int>("NumberOfUnansweredQuestions")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("PollingStationId")
                         .HasColumnType("uuid");
 
@@ -6506,6 +6536,12 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text")
                         .HasDefaultValue("Published");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 

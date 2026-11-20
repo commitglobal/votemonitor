@@ -16,7 +16,8 @@ public class GetEndpointTests
 
     public GetEndpointTests()
     {
-        _endpoint = Factory.Create<Get.Endpoint>(_repository, _userRoleProvider, _authorizationService);
+        _endpoint = Factory.Create<Get.Endpoint>(_repository, _userRoleProvider, _authorizationService,
+            Substitute.For<Vote.Monitor.Domain.IUserDisplayNameProvider>());
     }
 
     [Fact]

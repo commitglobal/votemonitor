@@ -106,11 +106,11 @@ public class PSIFormSubmissionsAggregateTests
         var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -134,15 +134,15 @@ public class PSIFormSubmissionsAggregateTests
         var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver1,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver2,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver1,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -174,15 +174,15 @@ public class PSIFormSubmissionsAggregateTests
         var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            22, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            22, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            44, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            44, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            55, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            55, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -207,15 +207,15 @@ public class PSIFormSubmissionsAggregateTests
         var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 12, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 12, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 22, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 22, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now), [],
-            0, 35, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            0, 0, 35, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -260,15 +260,15 @@ public class PSIFormSubmissionsAggregateTests
         var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
-            submission1Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            submission1Answers, 0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
-            submission2Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            submission2Answers, 0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
         var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation,
             monitoringObserver,
             _form, ValueOrUndefined<DateTime?>.Some(DateTime.Now), ValueOrUndefined<DateTime?>.Some(DateTime.Now),
-            submission3Answers, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
+            submission3Answers, 0, 0, 0, [], ValueOrUndefined<bool>.Some(false), DateTime.UtcNow);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);

@@ -13,14 +13,17 @@ public record QuickReportDetailedModel
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportLocationType, string>))]
     public QuickReportLocationType QuickReportLocationType { get; init; }
     public DateTime Timestamp { get; init; }
-    public string Title { get; init; }
-    public string Description { get; init; }
+    public string? Title { get; init; }
+    public string? Description { get; init; }
     public Guid MonitoringObserverId { get; init; }
     public bool IsOwnObserver { get; init; }
     public string ObserverName { get; init; }
     public string Email { get; init; }
     public string? PhoneNumber { get; init; }
-    public string[] Tags { get; init; } = [];
+
+    /// <summary>The NGO whose observer sent the report; set for platform admins.</summary>
+    public string? NgoName { get; init; }
+    public string[]? Tags { get; init; } = [];
     public Guid? PollingStationId { get; init; }
     public string? Level1 { get; init; }
     public string? Level2 { get; init; }
@@ -32,11 +35,11 @@ public record QuickReportDetailedModel
     public string? PollingStationDetails { get; init; }
     
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentCategory, string>))]
-    public IncidentCategory IncidentCategory { get; init; } 
+    public IncidentCategory? IncidentCategory { get; init; } 
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
-    public QuickReportFollowUpStatus FollowUpStatus { get; init; }
-    public QuickReportAttachmentModel[] Attachments { get; init; }
+    public QuickReportFollowUpStatus? FollowUpStatus { get; init; }
+    public QuickReportAttachmentModel[]? Attachments { get; init; }
 
     /// <summary>Moves of this report to another polling station by a platform admin, oldest first. NGO-side only.</summary>
     public PollingStationCorrectionModel[] PollingStationCorrections { get; init; } = [];
@@ -74,4 +77,39 @@ public record QuickReportDetailedModel
     public string? FollowUpStatusName { get; init; }
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
+
+    /// <summary>The caller NGO's review stage of the record; null for callers outside an NGO (platform admins).</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewStage? ReviewStage { get; init; }
+
+    public DateTime? StageChangedAt { get; init; }
+    public DateTime? ReviewedAt { get; init; }
+
+    /// <summary>The caller NGO's members reviewing the record.</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewer[]? Reviewers { get; init; }
+
+    /// <summary>The caller NGO's severity of the record (<c>NotAssessed</c> when it never set one).</summary>
+    public Vote.Monitor.Domain.Entities.RecordSeverityAggregate.SeverityLevel? Severity { get; init; }
+
+    public DateTime? SeverityChangedAt { get; init; }
+
+    /// <summary>The caller NGO's labels on the record, sorted ignoring case.</summary>
+    public string[]? Labels { get; init; }
+
+    /// <summary>
+    /// The report as platform admins see it (ADR 9): who sent it (name and email), the NGO, from where and when, and
+    /// its polling-station corrections. What the observer reported (title, description, category, the station's
+    /// details, media) and what the NGO keeps about the report or the observer (phone, tags, follow-up) are left out.
+    /// </summary>
+    public QuickReportDetailedModel ForPlatformAdmin(string ngoName) => this with
+    {
+        NgoName = ngoName,
+        Title = null,
+        Description = null,
+        IncidentCategory = null,
+        PollingStationDetails = null,
+        Attachments = null,
+        PhoneNumber = null,
+        Tags = null,
+        FollowUpStatus = null
+    };
 }

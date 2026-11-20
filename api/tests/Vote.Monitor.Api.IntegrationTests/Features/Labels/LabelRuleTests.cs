@@ -18,7 +18,12 @@ public class LabelRuleTests : BaseApiTestFixture
     public record RuleResponse(Guid Id, string Name, string[] RecordTypes, JsonElement? Conditions, string[] Labels,
         Guid UpdatedById);
 
-    public record LabelsResponse(string[] Labels);
+    public record LabelsResponse(string[]? Labels);
+
+    /// <summary>A submission's own GET, with the caller NGO's labels.</summary>
+    public record SubmissionLabelsResponse(string[]? Labels);
+
+    public record RuleExistsResponse(string Kind, Guid? RuleId, bool RuleExists);
 
     public record HistoryEntryResponse(string Kind, Guid? ActorId, string? ActorName, Guid? RuleId, string? RuleName,
         string? RuleKind, string[]? AddedLabels, string[]? RemovedLabels);
@@ -86,7 +91,7 @@ public class LabelRuleTests : BaseApiTestFixture
     }
 
     private static string[] Labels(HttpClient client, Guid electionRoundId, Guid submissionId) =>
-        client.GetResponse<LabelsResponse>(LabelsUri(electionRoundId, submissionId)).Labels;
+        client.GetResponse<LabelsResponse>(RecordUris.Of(electionRoundId, "FormSubmission", submissionId)).Labels ?? [];
 
     private static HistoryEntryResponse[] LabelHistory(HttpClient client, Guid electionRoundId, Guid submissionId) =>
         client.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(electionRoundId, submissionId)}/history")
@@ -205,6 +210,15 @@ public class LabelRuleTests : BaseApiTestFixture
         });
         // Rules act on future events only.
         Labels(alfa.Admin, er, aliceSubmissionId).Should().BeEmpty();
+
+        // The submission's own GET carries its labels; history entries say whether their rule still exists.
+        alfa.Admin.GetResponse<SubmissionLabelsResponse>($"/api/election-rounds/{er}/form-submissions/{aliceInIasi}:v2")
+            .Labels.Should().Equal("Ballot", "Escalate", "Media");
+        Send(alfa.Admin, HttpMethod.Delete, $"{RulesUri(er)}/{first.Id}").StatusCode.Should().Be(HttpStatusCode.NoContent);
+        alfa.Admin.GetResponse<RuleExistsResponse[]>($"{ReviewUri(er, aliceInIasi)}/history")
+            .Where(x => x.Kind == "LabelsChanged")
+            .Select(x => (x.RuleId, x.RuleExists))
+            .Should().BeEquivalentTo(new (Guid?, bool)[] { (first.Id, false), (second.Id, true) });
     }
 
     [Test]

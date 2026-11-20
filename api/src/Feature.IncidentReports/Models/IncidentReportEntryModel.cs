@@ -20,6 +20,10 @@ public record IncidentReportEntryModel
     public string? PhoneNumber { get; set; } = null!;
     public string[] Tags { get; set; } = [];
     public int NumberOfQuestionsAnswered { get; set; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered; null where a list doesn't read it.</summary>
+    public int? NumberOfUnansweredQuestions { get; set; }
+
     public int NumberOfFlaggedAnswers { get; set; }
     public int NotesCount { get; set; }
     public int MediaFilesCount { get; set; }

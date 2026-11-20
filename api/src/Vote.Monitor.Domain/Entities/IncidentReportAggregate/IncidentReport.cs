@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
@@ -22,6 +23,9 @@ public class IncidentReport :  IAggregateRoot
     public Guid FormId { get; private set; }
     public Form Form { get; private set; }
     public int NumberOfQuestionsAnswered { get; private set; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public IncidentReportFollowUpStatus FollowUpStatus { get; private set; }
     public DateTime LastUpdatedAt { get;  private set; }
@@ -44,6 +48,7 @@ public class IncidentReport :  IAggregateRoot
         Guid formId,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
         DateTime lastUpdatedAt)
@@ -55,6 +60,7 @@ public class IncidentReport :  IAggregateRoot
         FormId = formId;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfUnansweredQuestions = numberOfUnansweredQuestions;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         LocationType = locationType;
         LocationDescription = locationDescription;
@@ -76,6 +82,7 @@ public class IncidentReport :  IAggregateRoot
         Guid formId,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         bool? isCompleted, 
         DateTime lastUpdatedAt)
@@ -97,6 +104,7 @@ public class IncidentReport :  IAggregateRoot
                 formId,
                 answers,
                 numberOfQuestionAnswered,
+                numberOfUnansweredQuestions,
                 numberOfFlaggedAnswers,
                 isCompleted,
                 lastUpdatedAt);
@@ -120,6 +128,7 @@ public class IncidentReport :  IAggregateRoot
                 formId,
                 answers,
                 numberOfQuestionAnswered,
+                numberOfUnansweredQuestions,
                 numberOfFlaggedAnswers,
                 isCompleted,
                 lastUpdatedAt);
@@ -131,6 +140,7 @@ public class IncidentReport :  IAggregateRoot
     
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
+        int? numberOfUnansweredQuestions,
         int? numberOfFlaggedAnswers,
         bool? isCompleted,
         DateTime lastUpdatedAt)
@@ -149,6 +159,11 @@ public class IncidentReport :  IAggregateRoot
         {
             NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
         }
+
+        if (numberOfUnansweredQuestions is not null)
+        {
+            NumberOfUnansweredQuestions = numberOfUnansweredQuestions.Value;
+        }
         
         if(isCompleted.HasValue)
         {
@@ -164,6 +179,7 @@ public class IncidentReport :  IAggregateRoot
         Answers = [];
         NumberOfFlaggedAnswers = 0;
         NumberOfQuestionsAnswered = 0;
+        NumberOfUnansweredQuestions = Form is null ? 0 : AnswersHelpers.CountAnswers(Form.Questions, []).Unanswered;
     }
 
     public void UpdateFollowUpStatus(IncidentReportFollowUpStatus followUpStatus)

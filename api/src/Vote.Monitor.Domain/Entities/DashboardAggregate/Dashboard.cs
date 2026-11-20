@@ -29,6 +29,9 @@ public class Dashboard : AuditableBaseEntity, IAggregateRoot
     public JsonDocument Charts { get; private set; }
     public string CreatedByName { get; private set; }
 
+    /// <summary>The row's version: Postgres's <c>xmin</c>, the concurrency token (concurrent edits contract).</summary>
+    public uint Version { get; private set; }
+
     public static Dashboard Create(Guid electionRoundId,
         Guid monitoringNgoId,
         string name,

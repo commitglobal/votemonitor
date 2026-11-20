@@ -12,6 +12,8 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
     public void Configure(EntityTypeBuilder<PollingStationInformationForm> builder)
     {
         builder.HasKey(e => e.Id);
+        // Postgres's xmin system column as the concurrency token (no column of its own).
+        builder.Property(x => x.Version).IsRowVersion();
 
         builder
             .HasOne(x => x.ElectionRound)

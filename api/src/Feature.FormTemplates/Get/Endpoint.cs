@@ -2,6 +2,7 @@
 using Feature.FormTemplates.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Get;
@@ -9,7 +10,8 @@ namespace Feature.FormTemplates.Get;
 public class Endpoint(
     IReadRepository<FormTemplate> repository,
     ICurrentUserRoleProvider userRoleProvider,
-    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormTemplateFullModel>, NotFound>>
+    IAuthorizationService authorizationService,
+    IUserDisplayNameProvider userDisplayNames) : Endpoint<Request, Results<Ok<FormTemplateFullModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -39,6 +41,6 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(FormTemplateFullModel.FromEntity(formTemplate));
+        return TypedResults.Ok(await FormTemplateFullModel.FromEntityAsync(formTemplate, userDisplayNames, ct));
     }
 }

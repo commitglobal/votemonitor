@@ -176,17 +176,11 @@ public static class FormSubmissionEntriesSqlBuilder
             builder.Where(@"s.""FormId"" = @formId", new { formId = filters.FormId });
         }
 
-        if (filters.QuestionsAnswered == "All")
+        // Over the questions the observer was shown (display logic applied).
+        if (filters.QuestionsAnswered is "All" or "Some" or "None")
         {
-            builder.Where(@"s.""NumberOfQuestions"" = s.""NumberOfQuestionsAnswered""");
-        }
-        else if (filters.QuestionsAnswered == "Some")
-        {
-            builder.Where(@"s.""NumberOfQuestions"" <> s.""NumberOfQuestionsAnswered""");
-        }
-        else if (filters.QuestionsAnswered == "None")
-        {
-            builder.Where(@"s.""NumberOfQuestionsAnswered"" = 0");
+            builder.Where(@"s.""QuestionsAnswered"" = @questionsAnswered",
+                new { questionsAnswered = filters.QuestionsAnswered });
         }
 
         if (filters.HasNotes == true)

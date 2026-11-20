@@ -28,14 +28,14 @@ public static class DashboardAccessRules
 
     /// <summary>
     /// The dashboards as the caller sees them, each with whether they may change it (NGO admins); the creator's current
-    /// name, or the one kept with the dashboard when their account is gone.
+    /// name, or the one kept with the dashboard when their account is gone; who saved its version (null when unknown).
     /// </summary>
     public static async Task<List<DashboardModel>> ToModelsAsync(this VoteMonitorContext context,
         IReadOnlyCollection<Dashboard> dashboards,
         bool isNgoAdmin,
         CancellationToken ct)
     {
-        var creatorIds = dashboards.Select(x => x.CreatedBy).Distinct().ToList();
+        var creatorIds = dashboards.SelectMany(x => new[] { x.CreatedBy, x.LastModifiedBy }).Distinct().ToList();
         var names = await context.Users
             .AsNoTracking()
             .Where(x => creatorIds.Contains(x.Id))
@@ -45,6 +45,7 @@ public static class DashboardAccessRules
         return dashboards
             .Select(dashboard => DashboardModel.FromEntity(dashboard,
                 names.GetValueOrDefault(dashboard.CreatedBy, dashboard.CreatedByName),
+                names.GetValueOrDefault(dashboard.LastModifiedBy),
                 isNgoAdmin))
             .ToList();
     }

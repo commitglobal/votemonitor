@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Domain.Entities.ReviewAggregate;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 using Module.Answers.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Module.Forms.Mappers;
@@ -61,12 +63,23 @@ public class Endpoint(
             citizenReport.Attachments.Select(AttachmentMapper.ToModel));
         var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.CitizenReport,
             citizenReport.Id, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.CitizenReport, citizenReport.Id, ct);
+        var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
+        var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
+        var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         var response = new Response
         {
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
+            ReviewStage = reviewWorkflow?.Stage,
+            StageChangedAt = reviewWorkflow?.StageChangedAt,
+            ReviewedAt = reviewWorkflow?.ReviewedAt,
+            Reviewers = reviewWorkflow?.Reviewers,
+            Severity = recordSeverity?.Severity,
+            SeverityChangedAt = recordSeverity?.ChangedAt,
+            Labels = recordLabels,
             CitizenReportId = citizenReport.Id,
             FormId = form.Id,
             FormCode = form.Code,
@@ -79,6 +92,8 @@ public class Endpoint(
 
             TimeSubmitted = citizenReport.LastModifiedOn ?? citizenReport.CreatedOn,
             FollowUpStatus = citizenReport.FollowUpStatus,
+            NumberOfQuestionsAnswered = citizenReport.NumberOfQuestionsAnswered,
+            NumberOfUnansweredQuestions = citizenReport.NumberOfUnansweredQuestions,
 
             LocationId = citizenReport.Location.Level1,
             LocationLevel1 = citizenReport.Location.Level1,

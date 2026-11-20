@@ -14,6 +14,9 @@ public class Request : BaseFilterConditionsRequest
 
     public Guid QuestionId { get; set; }
 
+    /// <summary>The caller NGO's own incident reports, or (coalition leaders) the coalition's.</summary>
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
+
     /// <summary>
     /// The level to break the submissions down by.
     /// </summary>

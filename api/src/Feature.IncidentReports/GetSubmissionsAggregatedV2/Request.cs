@@ -1,3 +1,4 @@
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.RulesEngine;
 using Vote.Monitor.Core.RulesEngine.Rules;
 using Vote.Monitor.Core.Security;
@@ -13,6 +14,9 @@ public class Request : BaseFilterConditionsRequest
     public Guid NgoId { get; set; }
 
     public Guid FormId { get; set; }
+
+    /// <summary>The caller NGO's own incident reports, or (coalition leaders) the coalition's.</summary>
+    public DataSource DataSource { get; set; } = DataSource.Ngo;
 
     [QueryParam] public string? Level1Filter { get; set; }
     [QueryParam] public string? Level2Filter { get; set; }
