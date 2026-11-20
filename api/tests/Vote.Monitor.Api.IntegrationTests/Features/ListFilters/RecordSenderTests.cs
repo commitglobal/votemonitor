@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using Vote.Monitor.Api.IntegrationTests.Consts;
 using Vote.Monitor.Api.IntegrationTests.Scenarios;
@@ -91,15 +92,26 @@ public class RecordSenderTests : BaseApiTestFixture
     public void CorrectableRecord_ShouldShowObserverNameEmailAndSubmissionNumber()
     {
         var submission = _scenarioData.PlatformAdmin.GetResponse<JsonElement>(
-            $"{ElectionRoundUrl}/polling-station-corrections:records/FormSubmission/{_iasiSecondId}");
+            $"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:admin");
         submission.GetProperty("observerName").GetString().Should().Be(Alice.DisplayName);
         submission.GetProperty("observerEmail").GetString().Should().Be(Alice.Email);
         SubmissionNumber(submission).Should().Be(2);
 
         var quickReport = _scenarioData.PlatformAdmin.GetResponse<JsonElement>(
-            $"{ElectionRoundUrl}/polling-station-corrections:records/QuickReport/{_quickReportId}");
+            $"{ElectionRoundUrl}/quick-reports/{_quickReportId}:admin");
         quickReport.GetProperty("observerEmail").GetString().Should().Be(Alice.Email);
         SubmissionNumber(quickReport).Should().BeNull();
+
+        // The platform GETs are platform admins' own; the NGO's GETs of the same records still answer the NGO.
+        var ngoAdmin = _scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
+        ngoAdmin.GetAsync($"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:admin").GetAwaiter().GetResult()
+            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        ngoAdmin.GetAsync($"{ElectionRoundUrl}/quick-reports/{_quickReportId}").GetAwaiter().GetResult()
+            .StatusCode.Should().Be(HttpStatusCode.OK);
+        ngoAdmin.GetAsync($"{ElectionRoundUrl}/incident-reports/{Guid.NewGuid()}:admin").GetAwaiter().GetResult()
+            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        _scenarioData.PlatformAdmin.GetAsync($"{ElectionRoundUrl}/incident-reports/{Guid.NewGuid()}:admin")
+            .GetAwaiter().GetResult().StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Test]

@@ -13,7 +13,8 @@ public class SeverityTests : BaseApiTestFixture
     private const string Sam = "Sam";
     private const string Tom = "Tom";
 
-    public record SeverityResponse(string Severity, DateTime? ChangedAt);
+    /// <summary>A record's own GET: the caller NGO's severity of it.</summary>
+    public record SeverityResponse(string Severity, DateTime? SeverityChangedAt);
 
     /// <summary>A record's own GET, with the caller NGO's severity and labels.</summary>
     public record RecordSeverityResponse(string? Severity, DateTime? SeverityChangedAt, string[]? Labels);
@@ -82,12 +83,13 @@ public class SeverityTests : BaseApiTestFixture
         var (data, aliceSubmissionId, _) = CoalitionScenario();
         var admin = data.NgoByName(ScenarioNgos.Alfa).Admin;
 
-        var response = admin.GetAsync(SeverityUri(data.ElectionRoundId, aliceSubmissionId)).GetAwaiter().GetResult();
+        var response = admin.GetAsync(RecordUris.OfPerRecordUri(SeverityUri(data.ElectionRoundId, aliceSubmissionId)))
+            .GetAwaiter().GetResult();
         var json = JsonDocument.Parse(Body(response)).RootElement;
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         json.GetProperty("severity").GetString().Should().Be("NotAssessed");
-        json.GetProperty("changedAt").ValueKind.Should().Be(JsonValueKind.Null);
+        json.GetProperty("severityChangedAt").ValueKind.Should().Be(JsonValueKind.Null);
         Entries(admin, data.ElectionRoundId, "Coalition").Should().HaveCount(2)
             .And.OnlyContain(x => x.Severity == "NotAssessed");
         EntriesV1(admin, data.ElectionRoundId, "").Should().HaveCount(2).And.OnlyContain(x => x.Severity == "NotAssessed");
@@ -105,14 +107,14 @@ public class SeverityTests : BaseApiTestFixture
         Put(admin, SeverityUri(er, bobSubmissionId), new { severity = "Low" }).StatusCode
             .Should().Be(HttpStatusCode.NoContent);
 
-        var severity = admin.GetResponse<SeverityResponse>(SeverityUri(er, aliceSubmissionId));
+        var severity = admin.GetResponse<SeverityResponse>(RecordUris.OfPerRecordUri(SeverityUri(er, aliceSubmissionId)));
         severity.Severity.Should().Be("Urgent");
-        severity.ChangedAt.Should().NotBeNull();
+        severity.SeverityChangedAt.Should().NotBeNull();
         // The submission's own GET carries it too, so its page needs no separate call.
         var record = admin.GetResponse<RecordSeverityResponse>(
             $"/api/election-rounds/{er}/form-submissions/{aliceSubmissionId}:v2");
         record.Severity.Should().Be("Urgent");
-        record.SeverityChangedAt.Should().Be(severity.ChangedAt);
+        record.SeverityChangedAt.Should().Be(severity.SeverityChangedAt);
         record.Labels.Should().BeEmpty();
         admin.GetResponse<RecordSeverityResponse>($"/api/election-rounds/{er}/form-submissions/{bobSubmissionId}:v2")
             .Severity.Should().Be("Low");
@@ -232,7 +234,7 @@ public class SeverityTests : BaseApiTestFixture
         Put(alfa.StaffByName(Sam), SeverityUri(er, aliceSubmissionId), new { severity = "Urgent" }).StatusCode
             .Should().Be(HttpStatusCode.NoContent);
 
-        alfa.StaffByName(Tom).GetResponse<SeverityResponse>(SeverityUri(er, aliceSubmissionId)).Severity
+        alfa.StaffByName(Tom).GetResponse<SeverityResponse>(RecordUris.OfPerRecordUri(SeverityUri(er, aliceSubmissionId))).Severity
             .Should().Be("Urgent");
     }
 
@@ -276,7 +278,7 @@ public class SeverityTests : BaseApiTestFixture
 
         alfa.Admin.PutWithoutResponse(SeverityUri(er, bobSubmissionId), new { severity = "Urgent" });
 
-        beta.Admin.GetResponse<SeverityResponse>(SeverityUri(er, bobSubmissionId)).Severity.Should().Be("NotAssessed");
+        beta.Admin.GetResponse<SeverityResponse>(RecordUris.OfPerRecordUri(SeverityUri(er, bobSubmissionId))).Severity.Should().Be("NotAssessed");
         Entries(beta.Admin, er, "Ngo").Single(x => x.SubmissionId == bobSubmissionId).Severity.Should().Be("NotAssessed");
         Entries(beta.Admin, er, "Ngo", new { op = "eq", field = "severity", value = "Urgent" }).Should().BeEmpty();
         beta.Admin.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(er, bobSubmissionId)}/history")
@@ -285,7 +287,7 @@ public class SeverityTests : BaseApiTestFixture
             .Should().Be("Urgent");
 
         beta.Admin.PutWithoutResponse(SeverityUri(er, bobSubmissionId), new { severity = "Low" });
-        alfa.Admin.GetResponse<SeverityResponse>(SeverityUri(er, bobSubmissionId)).Severity.Should().Be("Urgent");
+        alfa.Admin.GetResponse<SeverityResponse>(RecordUris.OfPerRecordUri(SeverityUri(er, bobSubmissionId))).Severity.Should().Be("Urgent");
     }
 
     [Test]
@@ -298,7 +300,7 @@ public class SeverityTests : BaseApiTestFixture
         var response = Put(admin, SeverityUri(data.ElectionRoundId, aliceSubmissionId), new { severity = "High" });
 
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-        admin.GetResponse<SeverityResponse>(SeverityUri(data.ElectionRoundId, aliceSubmissionId)).Severity
+        admin.GetResponse<SeverityResponse>(RecordUris.OfPerRecordUri(SeverityUri(data.ElectionRoundId, aliceSubmissionId))).Severity
             .Should().Be("High");
     }
 

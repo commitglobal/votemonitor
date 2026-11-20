@@ -18,7 +18,7 @@ public class LabelRuleTests : BaseApiTestFixture
     public record RuleResponse(Guid Id, string Name, string[] RecordTypes, JsonElement? Conditions, string[] Labels,
         Guid UpdatedById);
 
-    public record LabelsResponse(string[] Labels);
+    public record LabelsResponse(string[]? Labels);
 
     /// <summary>A submission's own GET, with the caller NGO's labels.</summary>
     public record SubmissionLabelsResponse(string[]? Labels);
@@ -91,7 +91,7 @@ public class LabelRuleTests : BaseApiTestFixture
     }
 
     private static string[] Labels(HttpClient client, Guid electionRoundId, Guid submissionId) =>
-        client.GetResponse<LabelsResponse>(LabelsUri(electionRoundId, submissionId)).Labels;
+        client.GetResponse<LabelsResponse>(RecordUris.Of(electionRoundId, "FormSubmission", submissionId)).Labels ?? [];
 
     private static HistoryEntryResponse[] LabelHistory(HttpClient client, Guid electionRoundId, Guid submissionId) =>
         client.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(electionRoundId, submissionId)}/history")
