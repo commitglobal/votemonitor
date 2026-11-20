@@ -34,6 +34,12 @@ public class FormFullModel
 
     public string LastModifiedBy { get; set; } = string.Empty;
 
+    /// <summary>The record's version (opaque); sent back with a save (concurrent edits contract).</summary>
+    public uint Version { get; set; }
+
+    /// <summary>The display name of who saved this version; null when unknown.</summary>
+    public string? LastModifiedByName { get; set; }
+
     public bool IsFormOwner { get; init; }
 
     public static FormFullModel FromEntity(FormAggregate form) => FromEntity(form, string.Empty, isFormOwner: true);
@@ -60,6 +66,7 @@ public class FormFullModel
             DisplayOrder = form.DisplayOrder,
             LastModifiedOn = form.LastModifiedOn ?? form.CreatedOn,
             LastModifiedBy = lastModifiedBy,
+            Version = form.Version,
             IsFormOwner = isFormOwner
         };
 
@@ -84,6 +91,7 @@ public class FormFullModel
             Icon = form.Icon,
             LastModifiedOn = form.LastModifiedOn ?? form.CreatedOn,
             LastModifiedBy = lastModifiedBy,
+            Version = form.Version,
             IsFormOwner = false
         };
 }

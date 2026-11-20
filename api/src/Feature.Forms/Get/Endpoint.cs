@@ -1,6 +1,5 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
-using Dapper;
 using Feature.Forms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -28,23 +27,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var sql = """
-                  SELECT *
-                  FROM "GetNgoFormDetails"(@electionRoundId, @ngoId, @id);
-                  """;
-
-        var queryArgs = new
-        {
-            electionRoundId = req.ElectionRoundId,
-            ngoId = req.NgoId,
-            id = req.Id
-        };
-
-        FormFullModel? form;
-        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
-        {
-            form = await dbConnection.QuerySingleOrDefaultAsync<FormFullModel>(sql, queryArgs);
-        }
+        var form = await FormDetailsQuery.GetAsync(dbConnectionFactory, req.ElectionRoundId, req.NgoId, req.Id, ct);
 
         if (form is null)
         {

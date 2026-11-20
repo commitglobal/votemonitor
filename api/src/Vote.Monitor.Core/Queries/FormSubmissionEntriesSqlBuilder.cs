@@ -25,6 +25,9 @@ public sealed class FormSubmissionEntriesFilterCriteria
     public bool? HasAttachments { get; init; }
     public bool? HasComments { get; init; }
     public string? QuestionsAnswered { get; init; }
+
+    /// <summary>Whether a question the observer was shown (display logic applied) is left unanswered.</summary>
+    public bool? HasUnansweredQuestions { get; init; }
     public DateTime? FromDate { get; init; }
     public DateTime? ToDate { get; init; }
     public bool? IsCompleted { get; init; }
@@ -176,17 +179,17 @@ public static class FormSubmissionEntriesSqlBuilder
             builder.Where(@"s.""FormId"" = @formId", new { formId = filters.FormId });
         }
 
-        if (filters.QuestionsAnswered == "All")
+        // Over the questions the observer was shown (display logic applied).
+        if (filters.QuestionsAnswered is "All" or "Some" or "None")
         {
-            builder.Where(@"s.""NumberOfQuestions"" = s.""NumberOfQuestionsAnswered""");
+            builder.Where(@"s.""QuestionsAnswered"" = @questionsAnswered",
+                new { questionsAnswered = filters.QuestionsAnswered });
         }
-        else if (filters.QuestionsAnswered == "Some")
+
+        if (filters.HasUnansweredQuestions.HasValue)
         {
-            builder.Where(@"s.""NumberOfQuestions"" <> s.""NumberOfQuestionsAnswered""");
-        }
-        else if (filters.QuestionsAnswered == "None")
-        {
-            builder.Where(@"s.""NumberOfQuestionsAnswered"" = 0");
+            builder.Where(@"(s.""NumberOfUnansweredQuestions"" > 0) = @hasUnansweredQuestions",
+                new { hasUnansweredQuestions = filters.HasUnansweredQuestions });
         }
 
         if (filters.HasNotes == true)

@@ -23,6 +23,7 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
 
         builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
         builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();
+        builder.Property(x => x.NumberOfUnansweredQuestions).IsRequired();
         builder.Property(x => x.FollowUpStatus)
             .IsRequired()
             .HasDefaultValue(SubmissionFollowUpStatus.NotApplicable);

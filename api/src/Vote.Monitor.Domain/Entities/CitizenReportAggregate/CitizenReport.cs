@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -14,6 +15,9 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
     public Guid FormId { get; private set; }
     public Form Form { get; private set; }
     public int NumberOfQuestionsAnswered { get; private set; }
+
+    /// <summary>The questions the citizen was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public CitizenReportFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
@@ -33,6 +37,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers)
     {
         Id = id;
@@ -41,6 +46,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         FormId = form.Id;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfUnansweredQuestions = numberOfUnansweredQuestions;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = CitizenReportFollowUpStatus.NotApplicable;
         Location = location;
@@ -53,11 +59,13 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers) =>
-        new(id, electionRoundId, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        new(id, electionRoundId, form, location, answers, numberOfQuestionAnswered, numberOfUnansweredQuestions,
+            numberOfFlaggedAnswers);
 
     internal void Update(IEnumerable<BaseAnswer>? answers, int? numberOfQuestionsAnswered,
-        int? numberOfFlaggedAnswers)
+        int? numberOfUnansweredQuestions, int? numberOfFlaggedAnswers)
     {
         if (answers is not null)
         {
@@ -72,6 +80,11 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         if (numberOfQuestionsAnswered is not null)
         {
             NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
+
+        if (numberOfUnansweredQuestions is not null)
+        {
+            NumberOfUnansweredQuestions = numberOfUnansweredQuestions.Value;
         }
     }
 
@@ -91,6 +104,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Answers = [];
         NumberOfFlaggedAnswers = 0;
         NumberOfQuestionsAnswered = 0;
+        NumberOfUnansweredQuestions = Form is null ? 0 : AnswersHelpers.CountAnswers(Form.Questions, []).Unanswered;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

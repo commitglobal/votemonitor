@@ -48,7 +48,7 @@ public class Endpoint(
             {
                 electionRoundId = req.ElectionRoundId,
                 ngoId = req.NgoId,
-                dataSource = DataSource.Ngo.ToString(),
+                dataSource = req.DataSource.ToString(),
                 formId = req.FormId,
                 questionId = req.QuestionId,
                 level = req.Level.Depth,

@@ -40,7 +40,9 @@ public class Endpoint(
         var form = await context
             .Forms
             .FromSqlInterpolated($"""
-                                  SELECT * FROM "GetFormSubmissionsAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()})
+                                  SELECT AF.*, F.xmin -- the concurrency token the Form entity maps
+                                  FROM "GetFormSubmissionsAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()}) AF
+                                           INNER JOIN "Forms" F ON F."Id" = AF."Id"
                                   """)
             .Where(x => x.Id == req.FormId)
             .Where(x => x.Status == FormStatus.Published || x.Status == FormStatus.Obsolete)

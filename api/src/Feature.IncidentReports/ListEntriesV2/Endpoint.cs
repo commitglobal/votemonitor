@@ -71,6 +71,7 @@ public class Endpoint(
                                 s."PhoneNumber",
                                 s."Tags",
                                 s."NumberOfQuestionsAnswered",
+                                s."NumberOfUnansweredQuestions",
                                 s."NumberOfFlaggedAnswers",
                                 s."MediaFilesCount",
                                 s."NotesCount",
@@ -140,6 +141,12 @@ public class Endpoint(
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"s.""NumberOfQuestionsAnswered"" {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.NumberOfUnansweredQuestions),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $@"s.""NumberOfUnansweredQuestions"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(IncidentReportEntryModel.NumberOfFlaggedAnswers),

@@ -1,4 +1,5 @@
-﻿using Module.Answers.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Module.Answers.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
@@ -52,14 +53,28 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        // The stored counts (display logic applied); the view function doesn't return them.
+        var counts = await context.FormSubmissions
+                         .Where(x => x.Id == req.SubmissionId && x.ElectionRoundId == req.ElectionRoundId)
+                         .Select(x => new { x.NumberOfQuestionsAnswered, x.NumberOfUnansweredQuestions })
+                         .FirstOrDefaultAsync(ct)
+                     ?? await context.PollingStationInformation
+                         .Where(x => x.Id == req.SubmissionId && x.ElectionRoundId == req.ElectionRoundId)
+                         .Select(x => new { x.NumberOfQuestionsAnswered, x.NumberOfUnansweredQuestions })
+                         .FirstOrDefaultAsync(ct);
+
         var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
             req.SubmissionId, ct);
         submission = submission with
         {
+            NumberOfQuestionsAnswered = counts?.NumberOfQuestionsAnswered ?? submission.NumberOfQuestionsAnswered,
+            NumberOfUnansweredQuestions = counts?.NumberOfUnansweredQuestions ?? 0,
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
+            Review = await context.GetReviewStateAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
+                req.SubmissionId, ct),
             Attachments = await Task.WhenAll(
                 submission.Attachments.Select(async attachment =>
                 {

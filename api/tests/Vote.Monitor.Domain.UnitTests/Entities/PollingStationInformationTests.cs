@@ -44,6 +44,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -73,6 +74,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -102,6 +104,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -131,6 +134,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -160,6 +164,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -189,6 +194,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
@@ -220,6 +226,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -252,6 +259,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
@@ -283,6 +291,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
@@ -312,6 +321,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: null,
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Undefined(),
@@ -342,6 +352,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: [],
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),
@@ -371,6 +382,7 @@ public class PollingStationInformationTests
         // Act
         submission.Update(answers: Answers,
             numberOfQuestionsAnswered: 0,
+            numberOfUnansweredQuestions: 0,
             numberOfFlaggedAnswers: 0,
             arrivalTime: ValueOrUndefined<DateTime?>.Undefined(),
             departureTime: ValueOrUndefined<DateTime?>.Some(_now.AddDays(3)),

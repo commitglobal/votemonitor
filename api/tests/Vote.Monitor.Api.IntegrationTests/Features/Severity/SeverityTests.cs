@@ -15,6 +15,11 @@ public class SeverityTests : BaseApiTestFixture
 
     public record SeverityResponse(string Severity, DateTime? ChangedAt);
 
+    public record ReviewStateResponse(string Severity, DateTime? SeverityChangedAt, string[] Labels);
+
+    /// <summary>A record's own GET, with the caller NGO's review state.</summary>
+    public record RecordWithReviewResponse(ReviewStateResponse? Review);
+
     public record HistoryEntryResponse(string Kind, string ActorName, string? FromSeverity, string? ToSeverity);
 
     public record InboxItemResponse(Guid Id, string Reason, Guid RecordId, HistoryEntryResponse Activity);
@@ -105,6 +110,15 @@ public class SeverityTests : BaseApiTestFixture
         var severity = admin.GetResponse<SeverityResponse>(SeverityUri(er, aliceSubmissionId));
         severity.Severity.Should().Be("Urgent");
         severity.ChangedAt.Should().NotBeNull();
+        // The record's review state carries it too, so a record's page reads stage, reviewers, severity and labels at once.
+        var state = admin.GetResponse<ReviewStateResponse>(ReviewUri(er, aliceSubmissionId));
+        state.Severity.Should().Be("Urgent");
+        state.SeverityChangedAt.Should().Be(severity.ChangedAt);
+        state.Labels.Should().BeEmpty();
+        admin.GetResponse<ReviewStateResponse>(ReviewUri(er, bobSubmissionId)).Severity.Should().Be("Low");
+        // And the submission's own GET carries the same review state, so its page needs no separate call.
+        admin.GetResponse<RecordWithReviewResponse>($"/api/election-rounds/{er}/form-submissions/{aliceSubmissionId}:v2")
+            .Review.Should().BeEquivalentTo(state);
 
         var all = Entries(admin, er, "Coalition");
         all.Single(x => x.SubmissionId == aliceSubmissionId).Severity.Should().Be("Urgent");
@@ -163,6 +177,8 @@ public class SeverityTests : BaseApiTestFixture
             $"/api/election-rounds/{er}/quick-reports:listV2",
             new { dataSource = "Ngo", sortColumnName = "severity", sortOrder = "Desc" });
 
+        admin.GetResponse<RecordWithReviewResponse>($"/api/election-rounds/{er}/quick-reports/{iasi}").Review!.Severity
+            .Should().Be("High");
         v1.Items.Single(x => x.Id == iasi).Severity.Should().Be("High");
         v1.Items.Single(x => x.Id == cluj).Severity.Should().Be("NotAssessed");
         v1High.Items.Select(x => x.Id).Should().Equal(iasi);

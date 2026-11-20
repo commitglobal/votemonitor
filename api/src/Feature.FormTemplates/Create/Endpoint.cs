@@ -1,8 +1,9 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Create;
 
-public class Endpoint(IRepository<FormTemplate> repository) :
+public class Endpoint(IRepository<FormTemplate> repository, IUserDisplayNameProvider userDisplayNames) :
     Endpoint<Request, Ok<FormTemplateFullModel>>
 {
     public override void Configure()
@@ -22,6 +23,6 @@ public class Endpoint(IRepository<FormTemplate> repository) :
 
         await repository.AddAsync(formTemplate, ct);
 
-        return TypedResults.Ok(FormTemplateFullModel.FromEntity(formTemplate));
+        return TypedResults.Ok(await FormTemplateFullModel.FromEntityAsync(formTemplate, userDisplayNames, ct));
     }
 }

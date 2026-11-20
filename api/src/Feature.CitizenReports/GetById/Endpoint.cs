@@ -67,6 +67,8 @@ public class Endpoint(
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
+            Review = await context.GetReviewStateAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.CitizenReport,
+                citizenReport.Id, ct),
             CitizenReportId = citizenReport.Id,
             FormId = form.Id,
             FormCode = form.Code,
@@ -79,6 +81,8 @@ public class Endpoint(
 
             TimeSubmitted = citizenReport.LastModifiedOn ?? citizenReport.CreatedOn,
             FollowUpStatus = citizenReport.FollowUpStatus,
+            NumberOfQuestionsAnswered = citizenReport.NumberOfQuestionsAnswered,
+            NumberOfUnansweredQuestions = citizenReport.NumberOfUnansweredQuestions,
 
             LocationId = citizenReport.Location.Level1,
             LocationLevel1 = citizenReport.Location.Level1,

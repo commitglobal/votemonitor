@@ -74,4 +74,7 @@ public record QuickReportDetailedModel
     public string? FollowUpStatusName { get; init; }
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
+
+    /// <summary>The caller NGO's review state of the record (stage, reviewers, severity, labels), read with it.</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewState? Review { get; init; }
 }

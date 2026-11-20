@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Constants;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Repository;
@@ -26,7 +27,8 @@ public class UpsertEndpointTests
         _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
         _formRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
 
-        _endpoint = Factory.Create<Upsert.Endpoint>(_formRepository, _electionRoundRepository);
+        _endpoint = Factory.Create<Upsert.Endpoint>(_formRepository, _electionRoundRepository,
+            Substitute.For<Vote.Monitor.Domain.IUserDisplayNameProvider>());
     }
 
     [Fact]
@@ -61,7 +63,8 @@ public class UpsertEndpointTests
         await _formRepository.Received(1).UpdateAsync(pollingStationInformationForm);
 
         result
-            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound>>()
+            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound,
+                Conflict<VersionConflict<PollingStationInformationFormModel>>>>()
             .Which
             .Result.Should().BeOfType<Ok<PollingStationInformationFormModel>>()
             .Which.Value.Should().BeEquivalentTo(pollingStationInformationForm, opt => opt.ExcludingMissingMembers());
@@ -91,7 +94,8 @@ public class UpsertEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound>>()
+            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound,
+                Conflict<VersionConflict<PollingStationInformationFormModel>>>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
@@ -136,7 +140,8 @@ public class UpsertEndpointTests
              .AddAsync(Arg.Is<PollingStationInformationForm>(x => x.ElectionRoundId == electionRoundId));
 
         result
-            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound>>()
+            .Should().BeOfType<Results<Ok<PollingStationInformationFormModel>, NotFound,
+                Conflict<VersionConflict<PollingStationInformationFormModel>>>>()
             .Which
             .Result.Should().BeOfType<Ok<PollingStationInformationFormModel>>();
     }

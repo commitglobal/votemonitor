@@ -25,6 +25,12 @@ public class Response
 
     public bool IsCompleted { get; init; }
 
+    /// <summary>The questions the observer was shown (display logic applied) that they answered.</summary>
+    public int NumberOfQuestionsAnswered { get; init; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; init; }
+
     public Guid? PollingStationId { get; init; }
     public string? PollingStationLevel1 { get; init; }
     public string? PollingStationLevel2 { get; init; }
@@ -47,4 +53,7 @@ public class Response
     public string? FollowUpStatusName { get; init; }
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
+
+    /// <summary>The caller NGO's review state of the record (stage, reviewers, severity, labels), read with it.</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewState? Review { get; init; }
 }

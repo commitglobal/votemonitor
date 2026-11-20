@@ -73,7 +73,7 @@ public class PollingStationInformationForm : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.Create(ElectionRound,
@@ -83,7 +83,8 @@ public class PollingStationInformationForm : BaseForm
             arrivalTime,
             departureTime,
             answers,
-            numberOfQuestionsAnswered,
+            answerCounts.Answered,
+            answerCounts.Unanswered,
             numberOfFlaggedAnswers,
             breaks,
             isCompleted,

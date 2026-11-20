@@ -1,3 +1,4 @@
+using Vote.Monitor.Domain.Entities.ReviewAggregate;
 ﻿using Module.Forms.Models;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase;
@@ -33,7 +34,11 @@ public record FormSubmissionViewV2
     public string[] Tags { get; init; } = [];
     public string NgoName { get; init; } = null!;
     public int NumberOfFlaggedAnswers { get; init; }
+    /// <summary>The questions the observer was shown (display logic applied) that they answered.</summary>
     public int NumberOfQuestionsAnswered { get; init; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; init; }
 
     public BaseQuestionModel[] Questions { get; init; }
     public BaseAnswerModel[] Answers { get; init; } = [];
@@ -60,4 +65,7 @@ public record FormSubmissionViewV2
     public string? FollowUpStatusName { get; init; }
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
+
+    /// <summary>The caller NGO's review state of the record (stage, reviewers, severity, labels), read with it.</summary>
+    public RecordReviewState? Review { get; init; }
 }

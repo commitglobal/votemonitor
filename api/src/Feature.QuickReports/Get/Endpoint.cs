@@ -85,7 +85,8 @@ public class Endpoint(
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
-            FollowUpStatusIcon = followUp?.Icon
+            FollowUpStatusIcon = followUp?.Icon,
+            Review = await context.GetReviewStateAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct)
         });
     }
 

@@ -27,6 +27,12 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
     public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; } = new();
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
+    /// <summary>
+    /// The row's version: Postgres's <c>xmin</c>, used as the concurrency token. It changes on every change to the row
+    /// (content, status, translations, display order); clients send it back to save (concurrent edits contract).
+    /// </summary>
+    public uint Version { get; private set; }
+
     protected BaseForm(
         FormType formType,
         string code,
@@ -161,27 +167,27 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
         }
     }
 
-    private (int? numberOfQuestionsAnswered, int? numberOfFlaggedAnswers) CalculateAnswerMetrics(
-        List<BaseAnswer>? answers)
+    private (int? numberOfQuestionsAnswered, int? numberOfUnansweredQuestions, int? numberOfFlaggedAnswers)
+        CalculateAnswerMetrics(List<BaseAnswer>? answers)
     {
         if (answers is null)
         {
-            return (null, null);
+            return (null, null, null);
         }
 
-        var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        return (numberOfQuestionsAnswered, numberOfFlaggedAnswers);
+        return (answerCounts.Answered, answerCounts.Unanswered, numberOfFlaggedAnswers);
     }
 
     public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers, bool? isCompleted,
         DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
-        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+        var (numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        formSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
+        formSubmission.Update(answers, numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
 
         return formSubmission;
     }
@@ -189,9 +195,9 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
     public CitizenReport FillIn(CitizenReport citizenReport, List<BaseAnswer>? answers)
     {
         ValidateAnswers(answers);
-        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+        var (numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        citizenReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
+        citizenReport.Update(answers, numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers);
 
         return citizenReport;
     }
@@ -205,9 +211,9 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
         DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
-        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+        var (numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        psiSubmission.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
+        psiSubmission.Update(answers, numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers, arrivalTime,
             departureTime, breaks, isCompleted, lastUpdatedAt);
 
         return psiSubmission;
@@ -217,9 +223,9 @@ public abstract class BaseForm : AuditableBaseEntity, IAggregateRoot
         DateTime lastUpdatedAt)
     {
         ValidateAnswers(answers);
-        var (numberOfQuestionsAnswered, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
+        var (numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers) = CalculateAnswerMetrics(answers);
 
-        incidentReport.Update(answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
+        incidentReport.Update(answers, numberOfQuestionsAnswered, numberOfUnansweredQuestions, numberOfFlaggedAnswers, isCompleted, lastUpdatedAt);
 
         return incidentReport;
     }

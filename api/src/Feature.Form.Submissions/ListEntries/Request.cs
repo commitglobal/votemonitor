@@ -51,6 +51,9 @@ public class Request : BaseSortPaginatedRequest
     [QueryParam] public bool? HasAttachments { get; set; }
     [QueryParam] public bool? HasComments { get; set; }
     [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
+
+    /// <summary>Whether a question the observer was shown (display logic applied) is left unanswered.</summary>
+    [QueryParam] public bool? HasUnansweredQuestions { get; set; }
     [QueryParam] public DateTime? FromDateFilter { get; set; }
     [QueryParam] public DateTime? ToDateFilter { get; set; }
     [QueryParam] public Guid? CoalitionMemberId { get; set; }

@@ -152,7 +152,7 @@ public class Form : BaseForm
         DateTime lastUpdatedAt)
     {
         answers ??= [];
-        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -167,7 +167,8 @@ public class Form : BaseForm
             monitoringObserver,
             this,
             answers,
-            numberOfQuestionAnswered,
+            answerCounts.Answered,
+            answerCounts.Unanswered,
             numberOfFlaggedAnswers,
             isCompleted,
             createdAt,
@@ -183,7 +184,7 @@ public class Form : BaseForm
         DateTime lastUpdatedAt)
     {
         answers ??= [];
-        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -200,7 +201,8 @@ public class Form : BaseForm
             monitoringObserver,
             this,
             answers,
-            numberOfQuestionAnswered,
+            answerCounts.Answered,
+            answerCounts.Unanswered,
             numberOfFlaggedAnswers,
             isCompleted,
             createdAt,
@@ -211,7 +213,7 @@ public class Form : BaseForm
     {
         answers ??= [];
 
-        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -226,7 +228,8 @@ public class Form : BaseForm
             this,
             location,
             answers,
-            numberOfQuestionAnswered,
+            answerCounts.Answered,
+            answerCounts.Unanswered,
             numberOfFlaggedAnswers);
     }
 
@@ -242,7 +245,7 @@ public class Form : BaseForm
     {
         answers ??= [];
 
-        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var answerCounts = AnswersHelpers.CountAnswers(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -257,7 +260,8 @@ public class Form : BaseForm
             locationDescription,
             formId: Id,
             answers,
-            numberOfQuestionAnswered,
+            answerCounts.Answered,
+            answerCounts.Unanswered,
             numberOfFlaggedAnswers,
             isCompleted,
             lastUpdatedAt);

@@ -42,9 +42,9 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                 : x.NumberOfFlaggedAnswers == 0))
             .Where(x => req.QuestionsAnswered == null
                         || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
-                            x.NumberOfQuestionsAnswered == x.Form.NumberOfQuestions)
+                            x.NumberOfQuestionsAnswered > 0 && x.NumberOfUnansweredQuestions == 0)
                         || (req.QuestionsAnswered == QuestionsAnsweredFilter.Some &&
-                            x.NumberOfQuestionsAnswered < x.Form.NumberOfQuestions)
+                            x.NumberOfQuestionsAnswered > 0 && x.NumberOfUnansweredQuestions > 0)
                         || (req.QuestionsAnswered == QuestionsAnsweredFilter.None && x.NumberOfQuestionsAnswered == 0))
             .Where(x => req.HasNotes == null || (req.HasNotes.Value
                 ? x.Notes.Any()

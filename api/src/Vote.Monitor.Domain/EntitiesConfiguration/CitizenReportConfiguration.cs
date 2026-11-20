@@ -13,6 +13,7 @@ public class CitizenReportConfiguration : IEntityTypeConfiguration<CitizenReport
         
         builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
         builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();
+        builder.Property(x => x.NumberOfUnansweredQuestions).IsRequired();
         builder.Property(x => x.FollowUpStatus)
             .IsRequired()
             .HasDefaultValue(CitizenReportFollowUpStatus.NotApplicable);

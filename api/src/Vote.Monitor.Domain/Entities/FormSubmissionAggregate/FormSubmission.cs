@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
@@ -16,6 +17,9 @@ public class FormSubmission : IAggregateRoot
     public Guid FormId { get; private set; }
     public Form Form { get; private set; }
     public int NumberOfQuestionsAnswered { get; private set; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public bool IsCompleted { get; private set; }
@@ -31,6 +35,7 @@ public class FormSubmission : IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
         DateTime createdAt,
@@ -47,6 +52,7 @@ public class FormSubmission : IAggregateRoot
         FormId = form.Id;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfUnansweredQuestions = numberOfUnansweredQuestions;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
         CreatedAt = createdAt;
@@ -64,6 +70,7 @@ public class FormSubmission : IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
         DateTime createdAt,
@@ -75,6 +82,7 @@ public class FormSubmission : IAggregateRoot
             form,
             answers,
             numberOfQuestionAnswered,
+            numberOfUnansweredQuestions,
             numberOfFlaggedAnswers,
             isCompleted,
             createdAt,
@@ -88,6 +96,7 @@ public class FormSubmission : IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         bool? isCompleted,
         DateTime createdAt,
@@ -100,6 +109,7 @@ public class FormSubmission : IAggregateRoot
             form,
             answers,
             numberOfQuestionAnswered,
+            numberOfUnansweredQuestions,
             numberOfFlaggedAnswers,
             isCompleted,
             createdAt,
@@ -107,6 +117,7 @@ public class FormSubmission : IAggregateRoot
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
+        int? numberOfUnansweredQuestions,
         int? numberOfFlaggedAnswers,
         bool? isCompleted, 
         DateTime lastUpdatedAt)
@@ -126,6 +137,11 @@ public class FormSubmission : IAggregateRoot
             NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
         }
 
+        if (numberOfUnansweredQuestions is not null)
+        {
+            NumberOfUnansweredQuestions = numberOfUnansweredQuestions.Value;
+        }
+
         if (isCompleted.HasValue)
         {
             IsCompleted = isCompleted.Value;
@@ -139,6 +155,7 @@ public class FormSubmission : IAggregateRoot
         Answers = [];
         NumberOfFlaggedAnswers = 0;
         NumberOfQuestionsAnswered = 0;
+        NumberOfUnansweredQuestions = Form is null ? 0 : AnswersHelpers.CountAnswers(Form.Questions, []).Unanswered;
     }
 
     public void UpdateFollowUpStatus(SubmissionFollowUpStatus followUpStatus)

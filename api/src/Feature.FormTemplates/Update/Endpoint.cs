@@ -1,10 +1,13 @@
 ﻿using Feature.FormTemplates.Specifications;
+using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Feature.FormTemplates.Update;
 
-public class Endpoint(IRepository<FormTemplate> repository)
-    : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<FormTemplate> repository, IUserDisplayNameProvider userDisplayNames)
+    : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>, Conflict<VersionConflict<FormTemplateFullModel>>>>
 {
     public override void Configure()
     {
@@ -12,7 +15,7 @@ public class Endpoint(IRepository<FormTemplate> repository)
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req,
+    public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>, Conflict<VersionConflict<FormTemplateFullModel>>>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         var formTemplate = await repository.GetByIdAsync(req.Id, ct);
@@ -20,6 +23,11 @@ public class Endpoint(IRepository<FormTemplate> repository)
         if (formTemplate is null)
         {
             return TypedResults.NotFound();
+        }
+
+        if (RecordVersions.IsStale(req.Version, formTemplate.Version))
+        {
+            return await ConflictAsync(req.Id, ct);
         }
 
         var specification = new GetFormTemplateSpecification(req.Id, req.Code, req.FormType);
@@ -37,7 +45,26 @@ public class Endpoint(IRepository<FormTemplate> repository)
         formTemplate.UpdateDetails(req.Code, req.Name, req.Description, req.FormType, req.DefaultLanguage,
             req.Languages, req.Icon, questions);
 
-        await repository.UpdateAsync(formTemplate, ct);
+        try
+        {
+            await repository.UpdateAsync(formTemplate, ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Saved by someone else between reading and writing it.
+            return await ConflictAsync(req.Id, ct);
+        }
+
         return TypedResults.NoContent();
+    }
+
+    private async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>, Conflict<VersionConflict<FormTemplateFullModel>>>> ConflictAsync(Guid id,
+        CancellationToken ct)
+    {
+        var current = await repository.FirstOrDefaultAsync(new GetFormTemplateReadOnlySpecification(id, false), ct);
+        return current is null
+            ? TypedResults.NotFound()
+            : TypedResults.Conflict(
+                VersionConflict<FormTemplateFullModel>.Of(await FormTemplateFullModel.FromEntityAsync(current, userDisplayNames, ct)));
     }
 }

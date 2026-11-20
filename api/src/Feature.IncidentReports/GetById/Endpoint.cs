@@ -61,7 +61,9 @@ public class Endpoint(
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
                 PollingStation = incidentReport.PollingStation,
-                IsCompleted = incidentReport.IsCompleted
+                IsCompleted = incidentReport.IsCompleted,
+                NumberOfQuestionsAnswered = incidentReport.NumberOfQuestionsAnswered,
+                NumberOfUnansweredQuestions = incidentReport.NumberOfUnansweredQuestions
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
@@ -84,6 +86,8 @@ public class Endpoint(
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
+            Review = await context.GetReviewStateAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.IncidentReport,
+                incidentReport.Id, ct),
             IncidentReportId = incidentReport.Id,
             FormId = incidentReport.FormId,
             FormCode = incidentReport.FormCode,
@@ -107,6 +111,8 @@ public class Endpoint(
             PollingStationLevel5 = incidentReport.PollingStation?.Level5,
             PollingStationNumber = incidentReport.PollingStation?.Number,
             IsCompleted = incidentReport.IsCompleted,
+            NumberOfQuestionsAnswered = incidentReport.NumberOfQuestionsAnswered,
+            NumberOfUnansweredQuestions = incidentReport.NumberOfUnansweredQuestions,
             PollingStationCorrections = pollingStationCorrections
         };
 

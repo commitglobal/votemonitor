@@ -20,6 +20,10 @@ public class LabelRuleTests : BaseApiTestFixture
 
     public record LabelsResponse(string[] Labels);
 
+    public record ReviewStateResponse(string Severity, string[] Labels);
+
+    public record RuleExistsResponse(string Kind, Guid? RuleId, bool RuleExists);
+
     public record HistoryEntryResponse(string Kind, Guid? ActorId, string? ActorName, Guid? RuleId, string? RuleName,
         string? RuleKind, string[]? AddedLabels, string[]? RemovedLabels);
 
@@ -205,6 +209,15 @@ public class LabelRuleTests : BaseApiTestFixture
         });
         // Rules act on future events only.
         Labels(alfa.Admin, er, aliceSubmissionId).Should().BeEmpty();
+
+        // The record's review state carries its labels; history entries say whether their rule still exists.
+        alfa.Admin.GetResponse<ReviewStateResponse>(ReviewUri(er, aliceInIasi)).Labels
+            .Should().Equal("Ballot", "Escalate", "Media");
+        Send(alfa.Admin, HttpMethod.Delete, $"{RulesUri(er)}/{first.Id}").StatusCode.Should().Be(HttpStatusCode.NoContent);
+        alfa.Admin.GetResponse<RuleExistsResponse[]>($"{ReviewUri(er, aliceInIasi)}/history")
+            .Where(x => x.Kind == "LabelsChanged")
+            .Select(x => (x.RuleId, x.RuleExists))
+            .Should().BeEquivalentTo(new (Guid?, bool)[] { (first.Id, false), (second.Id, true) });
     }
 
     [Test]

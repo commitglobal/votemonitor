@@ -1,4 +1,4 @@
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Queries;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Specifications;
@@ -149,6 +149,7 @@ public class Endpoint(
         HasNotes = req.HasNotes,
         HasAttachments = req.HasAttachments,
         QuestionsAnswered = req.QuestionsAnswered?.ToString(),
+        HasUnansweredQuestions = req.HasUnansweredQuestions,
         FromDate = req.FromDateFilter,
         ToDate = req.ToDateFilter
     };
