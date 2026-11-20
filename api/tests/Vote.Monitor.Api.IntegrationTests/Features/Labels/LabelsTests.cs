@@ -280,8 +280,9 @@ public class LabelsTests : BaseApiTestFixture
 
         Put(data.PlatformAdmin, LabelsUri(er, aliceSubmissionId), "Media").StatusCode
             .Should().Be(HttpStatusCode.Forbidden);
-        data.PlatformAdmin.GetAsync(RecordUris.OfPerRecordUri(LabelsUri(er, aliceSubmissionId))).GetAwaiter().GetResult()
-            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        // Platform admins get the record itself, without any NGO's labels.
+        data.PlatformAdmin.GetResponse<LabelsResponse>(RecordUris.OfPerRecordUri(LabelsUri(er, aliceSubmissionId)))
+            .Labels.Should().BeNull();
         data.PlatformAdmin.GetAsync($"/api/election-rounds/{er}/labels").GetAwaiter().GetResult().StatusCode
             .Should().Be(HttpStatusCode.Forbidden);
     }

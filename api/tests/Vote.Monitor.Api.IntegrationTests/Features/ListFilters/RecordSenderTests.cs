@@ -1,3 +1,6 @@
+using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Api.IntegrationTests.Models;
+using System.Net.Http.Json;
 using System.Net;
 using System.Text.Json;
 using Vote.Monitor.Api.IntegrationTests.Consts;
@@ -89,29 +92,65 @@ public class RecordSenderTests : BaseApiTestFixture
     }
 
     [Test]
-    public void CorrectableRecord_ShouldShowObserverNameEmailAndSubmissionNumber()
+    public void PlatformAdmins_GetRecordsFromTheirOwnGets_WithoutWhatWasReported()
     {
-        var submission = _scenarioData.PlatformAdmin.GetResponse<JsonElement>(
-            $"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:admin");
-        submission.GetProperty("observerName").GetString().Should().Be(Alice.DisplayName);
-        submission.GetProperty("observerEmail").GetString().Should().Be(Alice.Email);
-        SubmissionNumber(submission).Should().Be(2);
-
-        var quickReport = _scenarioData.PlatformAdmin.GetResponse<JsonElement>(
-            $"{ElectionRoundUrl}/quick-reports/{_quickReportId}:admin");
-        quickReport.GetProperty("observerEmail").GetString().Should().Be(Alice.Email);
-        SubmissionNumber(quickReport).Should().BeNull();
-
-        // The platform GETs are platform admins' own; the NGO's GETs of the same records still answer the NGO.
+        var platform = _scenarioData.PlatformAdmin;
         var ngoAdmin = _scenarioData.NgoByName(ScenarioNgos.Alfa).Admin;
-        ngoAdmin.GetAsync($"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:admin").GetAwaiter().GetResult()
-            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
-        ngoAdmin.GetAsync($"{ElectionRoundUrl}/quick-reports/{_quickReportId}").GetAwaiter().GetResult()
-            .StatusCode.Should().Be(HttpStatusCode.OK);
-        ngoAdmin.GetAsync($"{ElectionRoundUrl}/incident-reports/{Guid.NewGuid()}:admin").GetAwaiter().GetResult()
-            .StatusCode.Should().Be(HttpStatusCode.Forbidden);
-        _scenarioData.PlatformAdmin.GetAsync($"{ElectionRoundUrl}/incident-reports/{Guid.NewGuid()}:admin")
-            .GetAwaiter().GetResult().StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        // Form submission: who sent it, the NGO, where and which of Alice's submissions it is; nothing reported.
+        var submissionUri = $"{ElectionRoundUrl}/form-submissions/{_iasiSecondId}:v2";
+        var submission = platform.GetResponse<JsonElement>(submissionUri);
+        submission.GetProperty("observerName").GetString().Should().Be(Alice.DisplayName);
+        submission.GetProperty("email").GetString().Should().Be(Alice.Email);
+        submission.GetProperty("ngoName").GetString().Should().NotBeNullOrEmpty();
+        submission.GetProperty("number").GetString().Should().Be("01/001");
+        submission.GetProperty("submissionNumber").GetInt32().Should().Be(2);
+        ShouldLeaveOut(submission, "questions", "answers", "notes", "attachments", "phoneNumber", "tags", "breaks",
+            "numberOfFlaggedAnswers", "numberOfQuestionsAnswered", "followUpStatus", "reviewStage", "severity", "labels");
+        var ngoSubmission = ngoAdmin.GetResponse<JsonElement>(submissionUri);
+        ngoSubmission.TryGetProperty("answers", out _).Should().BeTrue();
+        ngoSubmission.TryGetProperty("reviewStage", out _).Should().BeTrue();
+
+        // Quick report: the NGO is named; title, description, category and media are left out.
+        var quickReportUri = $"{ElectionRoundUrl}/quick-reports/{_quickReportId}";
+        var quickReport = platform.GetResponse<JsonElement>(quickReportUri);
+        quickReport.GetProperty("email").GetString().Should().Be(Alice.Email);
+        quickReport.GetProperty("ngoName").GetString().Should().NotBeNullOrEmpty();
+        ShouldLeaveOut(quickReport, "title", "description", "incidentCategory", "pollingStationDetails", "attachments",
+            "phoneNumber", "tags", "followUpStatus", "reviewStage", "severity", "labels");
+        ngoAdmin.GetResponse<JsonElement>(quickReportUri).TryGetProperty("title", out _).Should().BeTrue();
+
+        // Incident report: answers, notes, media and the location's description are left out.
+        var incidentForm = Dummy.Form("INC");
+        incidentForm.FormType = FormType.IncidentReporting;
+        var form = ngoAdmin.PostWithResponse<CreateFormRequest>($"{ElectionRoundUrl}/forms", incidentForm);
+        ngoAdmin.PostWithoutResponse($"{ElectionRoundUrl}/forms/{form.Id}:publish");
+        var incidentReportId = Guid.NewGuid();
+        Alice.Client.PostAsJsonAsync($"{ElectionRoundUrl}/incident-reports",
+                new
+                {
+                    id = incidentReportId, formId = form.Id, locationType = "NotRelatedToAPollingStation",
+                    locationDescription = "At the town hall"
+                })
+            .GetAwaiter().GetResult().StatusCode.Should().Be(HttpStatusCode.OK);
+        var incidentUri = $"{ElectionRoundUrl}/incident-reports/{incidentReportId}";
+        var incident = platform.GetResponse<JsonElement>(incidentUri);
+        incident.GetProperty("observerName").GetString().Should().Be(Alice.DisplayName);
+        incident.GetProperty("email").GetString().Should().Be(Alice.Email);
+        incident.GetProperty("ngoName").GetString().Should().NotBeNullOrEmpty();
+        ShouldLeaveOut(incident, "questions", "answers", "notes", "attachments", "locationDescription",
+            "numberOfQuestionsAnswered", "followUpStatus", "reviewStage", "severity", "labels");
+        ngoAdmin.GetResponse<JsonElement>(incidentUri).GetProperty("locationDescription").GetString()
+            .Should().Be("At the town hall");
+    }
+
+    private static void ShouldLeaveOut(JsonElement record, params string[] fields)
+    {
+        foreach (var field in fields)
+        {
+            (record.TryGetProperty(field, out var value) && value.ValueKind != JsonValueKind.Null).Should()
+                .BeFalse($"platform admins mustn't get {field}: {record}");
+        }
     }
 
     [Test]

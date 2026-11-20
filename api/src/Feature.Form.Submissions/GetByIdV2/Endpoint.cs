@@ -1,3 +1,4 @@
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
 using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace Feature.Form.Submissions.GetByIdV2;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
+    ICurrentUserRoleProvider userRoleProvider,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService,
     VoteMonitorContext context) : Endpoint<Request, Results<Ok<FormSubmissionViewV2>, NotFound>>
@@ -19,19 +21,42 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:v2");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
-        Summary(s => { s.Summary = "Gets submission by id"; });
+        Summary(s =>
+        {
+            s.Summary = "Gets submission by id";
+            s.Description = "Platform admins get who sent it, from where and its corrections, never what was reported";
+        });
 
-        Policies(PolicyNames.NgoAdminOrStaff);
+        Policies(PolicyNames.NotObservers);
     }
 
     public override async Task<Results<Ok<FormSubmissionViewV2>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
-        var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
-        if (!authorizationResult.Succeeded)
+        var isPlatformAdmin = userRoleProvider.IsPlatformAdmin();
+        Guid ngoId;
+        if (isPlatformAdmin)
         {
-            return TypedResults.NotFound();
+            // Read as the NGO whose observer sent it; ForPlatformAdmin then leaves out what platform admins mustn't see.
+            var owner = await context.GetRecordOwnerAsync(req.ElectionRoundId, ReportRecordType.FormSubmission,
+                req.SubmissionId, ct);
+            if (owner is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            ngoId = owner.NgoId;
+        }
+        else
+        {
+            var authorizationResult =
+                await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrStaffRequirement(req.ElectionRoundId));
+            if (!authorizationResult.Succeeded || req.NgoId is not { } callerNgoId || callerNgoId == Guid.Empty)
+            {
+                return TypedResults.NotFound();
+            }
+
+            ngoId = callerNgoId;
         }
 
         var sql = """
@@ -40,7 +65,7 @@ public class Endpoint(
 
         var queryArgs = new
         {
-            electionRoundId = req.ElectionRoundId, ngoId = req.NgoId, submissionId = req.SubmissionId
+            electionRoundId = req.ElectionRoundId, ngoId, submissionId = req.SubmissionId
         };
 
         FormSubmissionViewV2 submission = null;
@@ -65,14 +90,24 @@ public class Endpoint(
                          .Select(x => new { x.NumberOfQuestionsAnswered, x.NumberOfUnansweredQuestions })
                          .FirstOrDefaultAsync(ct);
 
-        var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
+        var address = await context.PollingStations
+            .Where(x => x.Id == submission.PollingStationId)
+            .Select(x => x.Address)
+            .FirstOrDefaultAsync(ct);
+        if (isPlatformAdmin)
+        {
+            return TypedResults.Ok(submission.ForPlatformAdmin() with { Address = address });
+        }
+
+        var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, ngoId, ReportRecordType.FormSubmission,
             req.SubmissionId, ct);
-        var reviewTarget = await context.GetReviewTargetAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission, req.SubmissionId, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(req.ElectionRoundId, ngoId, ReportRecordType.FormSubmission, req.SubmissionId, ct);
         var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
         var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
         var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         submission = submission with
         {
+            Address = address,
             NumberOfQuestionsAnswered = counts?.NumberOfQuestionsAnswered ?? submission.NumberOfQuestionsAnswered,
             NumberOfUnansweredQuestions = counts?.NumberOfUnansweredQuestions ?? 0,
             FollowUpStatusId = followUp?.Id,
@@ -87,7 +122,7 @@ public class Endpoint(
             SeverityChangedAt = recordSeverity?.ChangedAt,
             Labels = recordLabels,
             Attachments = await Task.WhenAll(
-                submission.Attachments.Select(async attachment =>
+                (submission.Attachments ?? []).Select(async attachment =>
                 {
                     var result =
                         await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);

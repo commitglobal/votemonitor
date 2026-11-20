@@ -35,6 +35,11 @@ public class Endpoint(
     public override async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
+        if (userRoleProvider.IsPlatformAdmin())
+        {
+            return await GetQuickReportAsPlatformAdminAsync(req.ElectionRoundId, req.Id, ct);
+        }
+
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,
                 new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
@@ -102,9 +107,33 @@ public class Endpoint(
         });
     }
 
+    /// <summary>
+    /// Read as the NGO whose observer sent it, then left without what platform admins mustn't see (ForPlatformAdmin).
+    /// </summary>
+    private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsPlatformAdminAsync(
+        Guid electionRoundId, Guid quickReportId, CancellationToken ct)
+    {
+        var owner = await context.GetRecordOwnerAsync(electionRoundId, ReportRecordType.QuickReport, quickReportId, ct);
+        if (owner is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        const string sql = """
+                           SELECT *
+                           FROM "GetNgoQuickReportDetails"(@electionRoundId, @ngoId, @quickReportId)
+                           """;
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        var report = await dbConnection.QueryFirstOrDefaultAsync<QuickReportDetailedModel>(sql,
+            new { electionRoundId, ngoId = owner.NgoId, quickReportId });
+
+        return report is null ? TypedResults.NotFound() : TypedResults.Ok(report.ForPlatformAdmin(owner.NgoName));
+    }
+
     private async Task SetPresignUrls(QuickReportDetailedModel submission)
     {
-        foreach (var attachment in submission.Attachments)
+        foreach (var attachment in submission.Attachments ?? [])
         {
             var result =
                 await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
