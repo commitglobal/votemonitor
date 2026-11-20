@@ -6,6 +6,7 @@ import { RefreshControl } from "react-native";
 import { ScrollView, Spinner, YStack } from "tamagui";
 import Button from "../../../../../../../components/Button";
 import Card from "../../../../../../../components/Card";
+import FormDescription from "../../../../../../../components/FormDescription";
 import FormSubmissionListItem, {
   FormSubmissionDetails,
 } from "../../../../../../../components/FormSubmissionListItem";
@@ -70,8 +71,14 @@ const MultiSubmissionFormDetails = () => {
     return [];
   }, [currentForm, formSubmissions]);
 
-  const onFormSubmissionClick = (submissionId: string) => {
+  const onFormSubmissionClick = (submissionId: string, questionId?: string) => {
     router.push(`/form-submission-details/${submissionId}?formId=${formId}&language=${language}`);
+    // the unanswered warning leads to the question, over the submission's details
+    if (questionId) {
+      router.push(
+        `/form-questionnaire/${questionId}?formId=${formId}&language=${language}&submissionId=${submissionId}`,
+      );
+    }
   };
 
   const { formTitle } = useMemo(() => {
@@ -156,6 +163,7 @@ const MultiSubmissionFormDetails = () => {
           ListHeaderComponent={
             <YStack gap="$xl" paddingBottom="$xxs">
               <Card padding="$md">
+                <FormDescription form={currentForm} language={language} />
                 <Button preset="outlined" marginTop="$md" onPress={onAddFormSubmission}>
                   {t("overview.add_submission")}
                 </Button>
@@ -173,6 +181,9 @@ const MultiSubmissionFormDetails = () => {
                 key={index}
                 {...item}
                 onClick={() => onFormSubmissionClick(item.id)}
+                onUnansweredPress={() =>
+                  onFormSubmissionClick(item.id, item.firstUnansweredQuestionId)
+                }
                 onDeleteSubmission={() =>
                   navigateToReviewBeforeDeleteSubmission(item.id, item.submissionNumber)
                 }

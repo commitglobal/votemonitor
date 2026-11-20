@@ -10,6 +10,7 @@ import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUse
 import { Typography } from "../../../../components/Typography";
 import { BackHandler, Keyboard, ViewStyle } from "react-native";
 import LinearProgress from "../../../../components/LinearProgress";
+import FormDescription from "../../../../components/FormDescription";
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../../../../services/interfaces/question.type";
 import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
@@ -362,6 +363,10 @@ const CitizenForm = () => {
       />
       <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <YStack gap="$xxs" padding="$md">
+          {/* the form description, where the form starts */}
+          {activeQuestion?.indexInDisplayedQuestions === 0 && (
+            <FormDescription form={currentForm} language={language} marginBottom="$md" />
+          )}
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar_label")}</Typography>
             <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>

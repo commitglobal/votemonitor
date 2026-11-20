@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
@@ -20,6 +20,8 @@ import PollingStationInfoDefault from "./PollingStationInfoDefault";
 import { PSITime } from "./PSITime";
 import SelectFormLanguageDialogContent from "./SelectFormLanguageDialogContent";
 import { Typography } from "./Typography";
+import UnansweredWarning from "./UnansweredWarning";
+import { answersByQuestionId, getUnansweredQuestions } from "../services/unanswered-questions";
 
 interface PollingStationGeneralProps {
   psiData: PollingStationInformationAPIResponse | null | undefined;
@@ -33,14 +35,30 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   const { t } = useTranslation("observation");
   const [displayLanguageDialog, setDisplayLanguageDialog] = useState<boolean>(false);
 
+  // a form not started yet is not warned about: only one with answers, or marked as done
+  const unansweredQuestions = useMemo(
+    () =>
+      psi?.answers?.length || psi?.isCompleted
+        ? getUnansweredQuestions(psiFormQuestions?.questions, answersByQuestionId(psi?.answers))
+        : [],
+    [psi, psiFormQuestions],
+  );
+  // the question to scroll to once the form's language is known (the warning leads there)
+  const questionToShowRef = useRef<string | undefined>(undefined);
+
   const onConfirmFormLanguage = (language: string) => {
     setDisplayLanguageDialog(false);
     setFormLanguagePreference({ formId: psiFormQuestions.id, language });
 
-    router.push(`/polling-station-questionnaire?language=${language}`);
+    const questionId = questionToShowRef.current;
+    questionToShowRef.current = undefined;
+    router.push(
+      `/polling-station-questionnaire?language=${language}${questionId ? `&questionId=${questionId}` : ""}`,
+    );
   };
 
-  const openForm = async () => {
+  const openForm = async (questionId?: string) => {
+    questionToShowRef.current = questionId;
     if (!psiFormQuestions?.languages?.length) {
       console.log("No language exists");
     }
@@ -72,14 +90,20 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
 
       {/* only display the PSI card for polling stations that have a configured PSI form */}
       {psiFormQuestions && psiFormQuestions.questions && psiFormQuestions.questions.length > 0 && (
-        <Card gap="$md" onPress={openForm}>
+        <Card gap="$md" onPress={() => openForm()}>
           {!psi?.answers?.length && !psi?.isCompleted ? (
-            <PollingStationInfoDefault onPress={openForm} />
+            <PollingStationInfoDefault onPress={() => openForm()} />
           ) : (
             <PollingStationInfo
               nrOfAnswers={psi?.answers?.length}
               nrOfQuestions={psiFormQuestions?.questions?.length}
               isMarkedAsCompleted={psi?.isCompleted}
+            />
+          )}
+          {unansweredQuestions.length > 0 && (
+            <UnansweredWarning
+              count={unansweredQuestions.length}
+              onPress={() => openForm(unansweredQuestions[0].id)}
             />
           )}
           <CardFooter

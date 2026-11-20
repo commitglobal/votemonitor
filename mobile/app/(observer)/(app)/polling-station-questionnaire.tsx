@@ -14,7 +14,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../../services/interfaces/answer.type";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import FormInput from "../../../components/FormInputs/FormInput";
 import DateFormInput from "../../../components/FormInputs/DateFormInput";
@@ -35,13 +35,17 @@ import Button from "../../../components/Button";
 import { useBottomInset } from "../../../hooks/useBottomInset";
 import { useMutatePollingStationGeneralData } from "../../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
-import { BackHandler, Keyboard, RefreshControl } from "react-native";
+import { BackHandler, Keyboard, RefreshControl, ScrollView } from "react-native";
+import UnansweredWarning from "../../../components/UnansweredWarning";
+import { getUnansweredQuestions } from "../../../services/unanswered-questions";
 import WarningDialog from "../../../components/WarningDialog";
 import { useNetInfoContext } from "../../../contexts/net-info-banner/NetInfoContext";
 import ChangeLanguageDialog from "../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../common/language.preferences";
 type SearchParamsType = {
   language: string;
+  // the question to scroll to (the unanswered warning on the polling station card leads there)
+  questionId?: string;
 };
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
@@ -53,7 +57,9 @@ const PollingStationQuestionnaire = () => {
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const { activeElectionRound, selectedPollingStation } = useUserData();
-  const { language } = useLocalSearchParams<SearchParamsType>();
+  const { language, questionId: questionIdToShow } = useLocalSearchParams<SearchParamsType>();
+  const scrollRef = useRef<ScrollView>(null);
+  const hasScrolledRef = useRef(false);
 
   const {
     data: formStructure,
@@ -195,10 +201,37 @@ const PollingStationQuestionnaire = () => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isDirty },
   } = useForm({
     defaultValues: setFormDefaultValues(),
   });
+
+  // unanswered as filled in on screen, so a warning goes away as soon as its question is answered
+  const formValues = watch();
+  const unansweredQuestionIds = useMemo(() => {
+    const liveAnswers = Object.fromEntries(
+      (formStructure?.questions ?? []).map((question) => [
+        question.id,
+        mapFormSubmissionDataToAPIFormSubmissionAnswer(
+          question.id,
+          question.$questionType,
+          formValues[question.id] as Parameters<
+            typeof mapFormSubmissionDataToAPIFormSubmissionAnswer
+          >[2],
+        ),
+      ]),
+    );
+    return new Set(
+      getUnansweredQuestions(formStructure?.questions, liveAnswers).map((question) => question.id),
+    );
+  }, [formStructure, JSON.stringify(formValues)]);
+
+  const onQuestionLayout = (questionId: string, y: number) => {
+    if (questionId !== questionIdToShow || hasScrolledRef.current) return;
+    hasScrolledRef.current = true;
+    scrollRef.current?.scrollTo({ y, animated: true });
+  };
 
   const onBackPress = () => {
     // if the user changed one of the answers in the meantime -> show condirmation modal
@@ -224,6 +257,234 @@ const PollingStationQuestionnaire = () => {
 
     router.replace(`/polling-station-questionnaire?language=${language}`);
     setIsChangeLanguageModalOpen(false);
+  };
+
+  const renderQuestion = (question: ApiFormQuestion) => {
+    const _label = `${question.code}. ${question.text[currentLanguage]}`;
+    const _helper = question.helptext?.[currentLanguage] || "";
+    if (question.$questionType === "numberQuestion") {
+      return (
+        <Controller
+          key={question.id}
+          name={question.id}
+          control={control}
+          rules={{
+            maxLength: {
+              value: 10,
+              message: t("form.max", { value: 10 }),
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <FormInput
+              title={question.text[currentLanguage]}
+              placeholder={question.helptext?.[currentLanguage] || ""}
+              type="numeric"
+              value={value}
+              onChangeText={onChange}
+              error={errors[question.id]?.message as string}
+            />
+          )}
+        />
+      );
+    }
+
+    if (question.$questionType === "textQuestion") {
+      return (
+        <Controller
+          key={question.id}
+          name={question.id}
+          control={control}
+          rules={{
+            maxLength: { value: 1024, message: t("form.max", { value: 1024 }) },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <YStack>
+              <FormInput
+                type="textarea"
+                title={question.text[currentLanguage]}
+                placeholder={question.helptext?.[currentLanguage] || ""}
+                onChangeText={onChange}
+                value={value}
+                error={errors[question.id]?.message as string}
+              />
+            </YStack>
+          )}
+        />
+      );
+    }
+
+    if (
+      question.$questionType === "dateQuestion" ||
+      question.$questionType === "timeQuestion" ||
+      question.$questionType === "dateTimeQuestion"
+    ) {
+      return (
+        <Controller
+          key={question.id}
+          name={question.id}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <YStack>
+              <DateFormInput
+                mode={
+                  question.$questionType === "dateQuestion"
+                    ? "date"
+                    : question.$questionType === "timeQuestion"
+                      ? "time"
+                      : "datetime"
+                }
+                title={question.text[currentLanguage]}
+                onChange={onChange}
+                value={value}
+                placeholder={question.helptext?.[currentLanguage] || ""}
+              />
+            </YStack>
+          )}
+        />
+      );
+    }
+
+    if (question.$questionType === "singleSelectQuestion") {
+      return (
+        <Controller
+          key={question.id}
+          name={question.id}
+          control={control}
+          render={({ field: { onChange, value = { radioValue: "", textValue: null } } }) => {
+            return (
+              <YStack>
+                <RadioFormInput
+                  options={question.options.map((option) => ({
+                    id: question.id + option.id,
+                    label: option.text[currentLanguage],
+                    value: option.id,
+                  }))}
+                  title={question.text[currentLanguage]}
+                  value={value.radioValue}
+                  onValueChange={(radioValue) =>
+                    onChange({ ...value, radioValue, textValue: null })
+                  }
+                />
+                {/* if the selected option is "other", show textArea */}
+                {question.options.map((option) => {
+                  if (value.radioValue === option.id && option.isFreeText) {
+                    return (
+                      <FormInput
+                        type="textarea"
+                        marginTop="$md"
+                        key={question.id + option.id}
+                        value={value.textValue}
+                        placeholder={t("form.placeholder")}
+                        onChangeText={(textValue) => onChange({ ...value, textValue })}
+                        maxLength={1024}
+                        helper={t("form.max", {
+                          value: 1024,
+                        })}
+                      />
+                    );
+                  }
+                  return undefined;
+                })}
+              </YStack>
+            );
+          }}
+        />
+      );
+    }
+
+    if (question.$questionType === "ratingQuestion") {
+      return (
+        <Controller
+          key={question.id}
+          name={question.id}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <YStack>
+              <RatingFormInput
+                id={question.id}
+                type="single"
+                title={question.text[currentLanguage]}
+                value={value}
+                scale={question.scale}
+                onValueChange={onChange}
+              />
+            </YStack>
+          )}
+        />
+      );
+    }
+
+    if (question.$questionType === "multiSelectQuestion") {
+      return (
+        <FormElement
+          key={question.id}
+          title={`${question.code}. ${question.text[currentLanguage]}`}
+        >
+          <Controller
+            key={question.id}
+            name={question.id}
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              const selections: Record<string, { optionId: string; text: string }> = value || {};
+
+              return (
+                <>
+                  {question.options.map((option) => (
+                    <YStack key={question.id + option.id}>
+                      <CheckboxInput
+                        marginBottom="$md"
+                        id={question.id + option.id}
+                        label={option.text[currentLanguage]}
+                        checked={selections[option.id]?.optionId === option.id}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            return onChange({
+                              ...selections,
+                              [option.id]: { optionId: option.id, text: null },
+                            });
+                          } else {
+                            const { [option.id]: _toRemove, ...rest } = selections;
+                            return onChange(rest);
+                          }
+                        }}
+                      />
+                      {selections[option.id]?.optionId === option.id && option.isFreeText && (
+                        <FormInput
+                          type="textarea"
+                          marginTop="$md"
+                          value={selections[option.id]?.text}
+                          placeholder={t("form.placeholder")}
+                          maxLength={1024}
+                          helper={t("form.max", {
+                            value: 1024,
+                          })}
+                          onChangeText={(textValue) => {
+                            selections[option.id] = {
+                              optionId: option.id,
+                              text: textValue,
+                            };
+                            onChange(selections);
+                          }}
+                        />
+                      )}
+                    </YStack>
+                  ))}
+                </>
+              );
+            }}
+          ></Controller>
+        </FormElement>
+      );
+    }
+
+    // A question type this version doesn't know: say so instead of an empty gap.
+    return (
+      <FormElement key={question.id} title={question.text?.[currentLanguage] ?? ""}>
+        <Typography color="$gray5">
+          {t("form.unsupported_question", { ns: "polling_station_form_wizard" })}
+        </Typography>
+      </FormElement>
+    );
   };
 
   return (
@@ -260,243 +521,25 @@ const PollingStationQuestionnaire = () => {
         />
 
         <ScreenScrollView
+          ref={scrollRef}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           bounces={isOnline}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
         >
           <YStack padding="$md" gap="$lg" flex={1}>
-            {formStructure?.questions.map((question: ApiFormQuestion) => {
-              const _label = `${question.code}. ${question.text[currentLanguage]}`;
-              const _helper = question.helptext?.[currentLanguage] || "";
-              if (question.$questionType === "numberQuestion") {
-                return (
-                  <Controller
-                    key={question.id}
-                    name={question.id}
-                    control={control}
-                    rules={{
-                      maxLength: {
-                        value: 10,
-                        message: t("form.max", { value: 10 }),
-                      },
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                      <FormInput
-                        title={question.text[currentLanguage]}
-                        placeholder={question.helptext?.[currentLanguage] || ""}
-                        type="numeric"
-                        value={value}
-                        onChangeText={onChange}
-                        error={errors[question.id]?.message as string}
-                      />
-                    )}
-                  />
-                );
-              }
-
-              if (question.$questionType === "textQuestion") {
-                return (
-                  <Controller
-                    key={question.id}
-                    name={question.id}
-                    control={control}
-                    rules={{
-                      maxLength: { value: 1024, message: t("form.max", { value: 1024 }) },
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                      <YStack>
-                        <FormInput
-                          type="textarea"
-                          title={question.text[currentLanguage]}
-                          placeholder={question.helptext?.[currentLanguage] || ""}
-                          onChangeText={onChange}
-                          value={value}
-                          error={errors[question.id]?.message as string}
-                        />
-                      </YStack>
-                    )}
-                  />
-                );
-              }
-
-              if (
-                question.$questionType === "dateQuestion" ||
-                question.$questionType === "timeQuestion" ||
-                question.$questionType === "dateTimeQuestion"
-              ) {
-                return (
-                  <Controller
-                    key={question.id}
-                    name={question.id}
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <YStack>
-                        <DateFormInput
-                          mode={
-                            question.$questionType === "dateQuestion"
-                              ? "date"
-                              : question.$questionType === "timeQuestion"
-                                ? "time"
-                                : "datetime"
-                          }
-                          title={question.text[currentLanguage]}
-                          onChange={onChange}
-                          value={value}
-                          placeholder={question.helptext?.[currentLanguage] || ""}
-                        />
-                      </YStack>
-                    )}
-                  />
-                );
-              }
-
-              if (question.$questionType === "singleSelectQuestion") {
-                return (
-                  <Controller
-                    key={question.id}
-                    name={question.id}
-                    control={control}
-                    render={({
-                      field: { onChange, value = { radioValue: "", textValue: null } },
-                    }) => {
-                      return (
-                        <YStack>
-                          <RadioFormInput
-                            options={question.options.map((option) => ({
-                              id: question.id + option.id,
-                              label: option.text[currentLanguage],
-                              value: option.id,
-                            }))}
-                            title={question.text[currentLanguage]}
-                            value={value.radioValue}
-                            onValueChange={(radioValue) =>
-                              onChange({ ...value, radioValue, textValue: null })
-                            }
-                          />
-                          {/* if the selected option is "other", show textArea */}
-                          {question.options.map((option) => {
-                            if (value.radioValue === option.id && option.isFreeText) {
-                              return (
-                                <FormInput
-                                  type="textarea"
-                                  marginTop="$md"
-                                  key={question.id + option.id}
-                                  value={value.textValue}
-                                  placeholder={t("form.placeholder")}
-                                  onChangeText={(textValue) => onChange({ ...value, textValue })}
-                                  maxLength={1024}
-                                  helper={t("form.max", {
-                                    value: 1024,
-                                  })}
-                                />
-                              );
-                            }
-                            return undefined;
-                          })}
-                        </YStack>
-                      );
-                    }}
-                  />
-                );
-              }
-
-              if (question.$questionType === "ratingQuestion") {
-                return (
-                  <Controller
-                    key={question.id}
-                    name={question.id}
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <YStack>
-                        <RatingFormInput
-                          id={question.id}
-                          type="single"
-                          title={question.text[currentLanguage]}
-                          value={value}
-                          scale={question.scale}
-                          onValueChange={onChange}
-                        />
-                      </YStack>
-                    )}
-                  />
-                );
-              }
-
-              if (question.$questionType === "multiSelectQuestion") {
-                return (
-                  <FormElement
-                    key={question.id}
-                    title={`${question.code}. ${question.text[currentLanguage]}`}
-                  >
-                    <Controller
-                      key={question.id}
-                      name={question.id}
-                      control={control}
-                      render={({ field: { onChange, value } }) => {
-                        const selections: Record<string, { optionId: string; text: string }> =
-                          value || {};
-
-                        return (
-                          <>
-                            {question.options.map((option) => (
-                              <YStack key={question.id + option.id}>
-                                <CheckboxInput
-                                  marginBottom="$md"
-                                  id={question.id + option.id}
-                                  label={option.text[currentLanguage]}
-                                  checked={selections[option.id]?.optionId === option.id}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      return onChange({
-                                        ...selections,
-                                        [option.id]: { optionId: option.id, text: null },
-                                      });
-                                    } else {
-                                      const { [option.id]: _toRemove, ...rest } = selections;
-                                      return onChange(rest);
-                                    }
-                                  }}
-                                />
-                                {selections[option.id]?.optionId === option.id &&
-                                  option.isFreeText && (
-                                    <FormInput
-                                      type="textarea"
-                                      marginTop="$md"
-                                      value={selections[option.id]?.text}
-                                      placeholder={t("form.placeholder")}
-                                      maxLength={1024}
-                                      helper={t("form.max", {
-                                        value: 1024,
-                                      })}
-                                      onChangeText={(textValue) => {
-                                        selections[option.id] = {
-                                          optionId: option.id,
-                                          text: textValue,
-                                        };
-                                        onChange(selections);
-                                      }}
-                                    />
-                                  )}
-                              </YStack>
-                            ))}
-                          </>
-                        );
-                      }}
-                    ></Controller>
-                  </FormElement>
-                );
-              }
-
-              // A question type this version doesn't know: say so instead of an empty gap.
-              return (
-                <FormElement key={question.id} title={question.text?.[currentLanguage] ?? ""}>
-                  <Typography color="$gray5">
-                    {t("form.unsupported_question", { ns: "polling_station_form_wizard" })}
-                  </Typography>
-                </FormElement>
-              );
-            })}
+            {formStructure?.questions.map((question: ApiFormQuestion) => (
+              <YStack
+                key={question.id}
+                gap="$xs"
+                onLayout={(event) => onQuestionLayout(question.id, event.nativeEvent.layout.y)}
+              >
+                {unansweredQuestionIds.has(question.id) && (
+                  <UnansweredWarning label={t("questions.not_answered", { ns: "form_overview" })} />
+                )}
+                {renderQuestion(question)}
+              </YStack>
+            ))}
           </YStack>
         </ScreenScrollView>
         {openContextualMenu && (

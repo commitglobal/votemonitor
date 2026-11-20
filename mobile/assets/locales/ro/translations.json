@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "Întrebări fără răspuns: {{count}}"
+    },
+    "form_description": {
+      "title": "Descrierea formularului",
+      "show_more": "Arată mai mult",
+      "show_less": "Arată mai puțin"
+    },
     "skip": "Mai departe",
     "search": "Caută",
     "loading": "Se încarcă...",

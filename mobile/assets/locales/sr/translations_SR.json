@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "Pitanja bez odgovora: {{count}}"
+    },
+    "form_description": {
+      "title": "Opis obrasca",
+      "show_more": "Prikaži više",
+      "show_less": "Prikaži manje"
+    },
     "skip": "Preskoči",
     "search": "Pretraži",
     "loading": "Loading...",

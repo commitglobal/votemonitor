@@ -17,6 +17,13 @@ import FormQuestionListItem, {
   QuestionStatus,
 } from "../../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../../components/FormOverview";
+import FormDescription from "../../../../../../../components/FormDescription";
+import {
+  getFirstUnansweredQuestion,
+  getResumeQuestion,
+  getUnansweredQuestions,
+  isEmptyAnswer,
+} from "../../../../../../../services/unanswered-questions";
 import { useTranslation } from "react-i18next";
 import {
   useDeleteFormSubmissionMutation,
@@ -171,7 +178,9 @@ const FormSubmissionDetails = () => {
         return {
           code: q.code,
           question: q.text[language],
-          status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+          status: isEmptyAnswer(answers?.[q.id])
+            ? QuestionStatus.NOT_ANSWERED
+            : QuestionStatus.ANSWERED,
           answer,
           numberOfNotes: notes?.[q.id]?.length || 0,
           lastNoteText: lastNote && lastNote.text,
@@ -204,14 +213,20 @@ const FormSubmissionDetails = () => {
     );
   };
 
+  const unansweredQuestions = useMemo(
+    () => getUnansweredQuestions(currentForm?.questions, answers),
+    [currentForm, answers],
+  );
+
+  const onUnansweredPress = () => {
+    const firstUnanswered = getFirstUnansweredQuestion(currentForm?.questions, answers);
+    if (firstUnanswered) onQuestionItemClick(firstUnanswered.id);
+  };
+
   const onFormOverviewActionClick = () => {
-    // find first unanswered question
     // do not navigate if the form has no questions or not found
     if (!currentForm || currentForm.questions.length === 0) return;
-    // get the first unanswered question
-    const lastQ = questions?.find((q) => !answers?.[q.id]);
-    // if all questions are answered get the last question
-    const lastQId = lastQ?.id || currentForm?.questions[currentForm.questions.length - 1].id;
+    const lastQId = getResumeQuestion(currentForm.questions, answers)?.id;
     return router.push(
       `/form-questionnaire/${lastQId}?formId=${formId}&language=${language}&submissionId=${submissionId}`,
     );
@@ -334,6 +349,11 @@ const FormSubmissionDetails = () => {
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
                 isCompleted={isCompleted}
+                description={
+                  <FormDescription form={currentForm} language={language} marginTop="$xs" />
+                }
+                unansweredCount={unansweredQuestions.length}
+                onUnansweredPress={onUnansweredPress}
               />
               <Typography preset="body1" fontWeight="700" gap="$xxs">
                 {t("questions.title")}
