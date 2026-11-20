@@ -1,3 +1,5 @@
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
 using Vote.Monitor.Domain.Entities.ReviewAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationCorrectionAggregate;
 
@@ -80,14 +82,23 @@ public class Endpoint(
 
         var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.IncidentReport,
             incidentReport.Id, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.IncidentReport, incidentReport.Id, ct);
+        var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
+        var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
+        var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         var response = new Response
         {
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
-            Review = await context.GetReviewStateAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.IncidentReport,
-                incidentReport.Id, ct),
+            ReviewStage = reviewWorkflow?.Stage,
+            StageChangedAt = reviewWorkflow?.StageChangedAt,
+            ReviewedAt = reviewWorkflow?.ReviewedAt,
+            Reviewers = reviewWorkflow?.Reviewers,
+            Severity = recordSeverity?.Severity,
+            SeverityChangedAt = recordSeverity?.ChangedAt,
+            Labels = recordLabels,
             IncidentReportId = incidentReport.Id,
             FormId = incidentReport.FormId,
             FormCode = incidentReport.FormCode,

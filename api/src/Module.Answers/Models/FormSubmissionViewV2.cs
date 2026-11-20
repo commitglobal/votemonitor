@@ -66,6 +66,20 @@ public record FormSubmissionViewV2
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
 
-    /// <summary>The caller NGO's review state of the record (stage, reviewers, severity, labels), read with it.</summary>
-    public RecordReviewState? Review { get; init; }
+    /// <summary>The caller NGO's review stage of the record; null for callers outside an NGO (platform admins).</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewStage? ReviewStage { get; init; }
+
+    public DateTime? StageChangedAt { get; init; }
+    public DateTime? ReviewedAt { get; init; }
+
+    /// <summary>The caller NGO's members reviewing the record.</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewer[]? Reviewers { get; init; }
+
+    /// <summary>The caller NGO's severity of the record (<c>NotAssessed</c> when it never set one).</summary>
+    public Vote.Monitor.Domain.Entities.RecordSeverityAggregate.SeverityLevel? Severity { get; init; }
+
+    public DateTime? SeverityChangedAt { get; init; }
+
+    /// <summary>The caller NGO's labels on the record, sorted ignoring case.</summary>
+    public string[]? Labels { get; init; }
 }

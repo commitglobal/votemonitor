@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Microsoft.EntityFrameworkCore;
 using Module.Answers.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
@@ -65,6 +67,10 @@ public class Endpoint(
 
         var followUp = await context.GetFollowUpStatusAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
             req.SubmissionId, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission, req.SubmissionId, ct);
+        var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
+        var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
+        var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         submission = submission with
         {
             NumberOfQuestionsAnswered = counts?.NumberOfQuestionsAnswered ?? submission.NumberOfQuestionsAnswered,
@@ -73,8 +79,13 @@ public class Endpoint(
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
-            Review = await context.GetReviewStateAsync(req.ElectionRoundId, req.NgoId, ReportRecordType.FormSubmission,
-                req.SubmissionId, ct),
+            ReviewStage = reviewWorkflow?.Stage,
+            StageChangedAt = reviewWorkflow?.StageChangedAt,
+            ReviewedAt = reviewWorkflow?.ReviewedAt,
+            Reviewers = reviewWorkflow?.Reviewers,
+            Severity = recordSeverity?.Severity,
+            SeverityChangedAt = recordSeverity?.ChangedAt,
+            Labels = recordLabels,
             Attachments = await Task.WhenAll(
                 submission.Attachments.Select(async attachment =>
                 {

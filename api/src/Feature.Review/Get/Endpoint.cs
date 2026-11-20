@@ -6,7 +6,7 @@ namespace Feature.Review.Get;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IReviewService reviewService,
-    VoteMonitorContext context) : Endpoint<Request, Results<Ok<RecordReviewState>, NotFound>>
+    VoteMonitorContext context) : Endpoint<Request, Results<Ok<ReviewWorkflowModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -14,10 +14,10 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("reviews"));
         Policies(PolicyNames.NgoAdminOrStaff);
-        Summary(s => { s.Summary = "Gets a record's review stage, reviewers, severity and labels, as seen by the caller's NGO"; });
+        Summary(s => { s.Summary = "Gets a record's review stage and reviewers, as seen by the caller's NGO"; });
     }
 
-    public override async Task<Results<Ok<RecordReviewState>, NotFound>> ExecuteAsync(Request req,
+    public override async Task<Results<Ok<ReviewWorkflowModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
         if (!await authorizationService.CanWorkOnReportsAsync(User, req.ElectionRoundId, req.RecordType))
@@ -31,12 +31,19 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var state = await context.GetReviewStateAsync(report.Target, ct);
-        if (state is null)
-        {
-            return TypedResults.NotFound();
-        }
+        var reviewerIds = report.Reviewers.Select(x => x.UserId).ToList();
+        var reviewers = await context.Users
+            .Where(x => reviewerIds.Contains(x.Id))
+            .OrderBy(x => x.DisplayName)
+            .Select(x => new ReviewerModel { Id = x.Id, DisplayName = x.DisplayName, Status = x.Status })
+            .ToArrayAsync(ct);
 
-        return TypedResults.Ok(state);
+        return TypedResults.Ok(new ReviewWorkflowModel
+        {
+            Stage = ReviewStageModel.FromEntity(report.Stage),
+            StageChangedAt = report.Workflow?.StageChangedAt,
+            ReviewedAt = report.Workflow?.ReviewedAt,
+            Reviewers = reviewers
+        });
     }
 }

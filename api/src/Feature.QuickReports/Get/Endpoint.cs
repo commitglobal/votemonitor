@@ -1,4 +1,6 @@
-﻿using Authorization.Policies.Requirements;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -80,13 +82,23 @@ public class Endpoint(
         await SetPresignUrls(submission);
 
         var followUp = await context.GetFollowUpStatusAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct);
+        var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
+        var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
+        var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         return TypedResults.Ok(submission with
         {
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
             FollowUpStatusIcon = followUp?.Icon,
-            Review = await context.GetReviewStateAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct)
+            ReviewStage = reviewWorkflow?.Stage,
+            StageChangedAt = reviewWorkflow?.StageChangedAt,
+            ReviewedAt = reviewWorkflow?.ReviewedAt,
+            Reviewers = reviewWorkflow?.Reviewers,
+            Severity = recordSeverity?.Severity,
+            SeverityChangedAt = recordSeverity?.ChangedAt,
+            Labels = recordLabels
         });
     }
 
