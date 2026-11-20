@@ -1,5 +1,13 @@
 {
     "common": {
+        "unanswered": {
+          "count": "Unbeantwortete Fragen: {{count}}"
+        },
+        "form_description": {
+          "title": "Formularbeschreibung",
+          "show_more": "Mehr anzeigen",
+          "show_less": "Weniger anzeigen"
+        },
         "skip": "Weiter",
         "search": "Suchen",
         "loading": "Wird geladen…",

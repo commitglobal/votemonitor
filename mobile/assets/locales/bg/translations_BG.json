@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "Въпроси без отговор: {{count}}"
+    },
+    "form_description": {
+      "title": "Описание на формуляра",
+      "show_more": "Покажи повече",
+      "show_less": "Покажи по-малко"
+    },
     "skip": "Пропуснете",
     "search": "Търсене",
     "loading": "Зареждане...",

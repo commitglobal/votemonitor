@@ -12,72 +12,12 @@ import {
   toTimeOfDay,
 } from "../common/utils/date-answers";
 import { FormAPIModel, FormSubmission, FormSubmissionsApiResponse } from "./definitions.api";
-import {
-  ApiFormAnswer,
-  FormQuestionAnswerTypeMapping,
-  MultiSelectAnswer,
-  NumberAnswer,
-  RatingAnswer,
-  SingleSelectAnswer,
-  TextAnswer,
-} from "./interfaces/answer.type";
-import {
-  ApiFormQuestion,
-  DisplayLogicCondition,
-  FormQuestionType,
-} from "./interfaces/question.type";
+import { ApiFormAnswer, FormQuestionAnswerTypeMapping } from "./interfaces/answer.type";
+import { ApiFormQuestion, FormQuestionType } from "./interfaces/question.type";
+import { shouldDisplayQuestion } from "./display-logic";
+import { getUnansweredQuestions } from "./unanswered-questions";
 
-const mapDisplayConditionToMath = (
-  answer: string | number,
-  target: string,
-  condition: DisplayLogicCondition,
-) => {
-  // numbers and ratings compare as numbers ("10" > "9"); text compares as text
-  const numeric = typeof answer === "number";
-  const operand1 = answer;
-  const operand2 = numeric ? Number(target) : target;
-  if (numeric && Number.isNaN(operand2)) return false;
-  switch (condition) {
-    case "Equals":
-      return operand1 === operand2;
-    case "GreaterEqual":
-      return operand1 >= operand2;
-    case "GreaterThan":
-      return operand1 > operand2;
-    case "LessEqual":
-      return operand1 <= operand2;
-    case "LessThan":
-      return operand1 < operand2;
-    case "NotEquals":
-      return operand1 !== operand2;
-    default:
-      return false;
-  }
-};
-
-// the values date, time and date-time questions send and read back (see date-answers)
-export { fromDayIso, fromTimeOfDay, toDayIso, toTimeOfDay } from "../common/utils/date-answers";
-
-/**
- * Whether a select parent's picked options meet a display rule. The rule lists the options in
- * `optionIds`: "AnyOf" needs one of them picked, "All" every one of them.
- * A condition this version doesn't know shows the question, so its answer is never discarded.
- */
-const matchesSelectCondition = (
-  picked: string[],
-  logic: { condition: DisplayLogicCondition; value?: string | null; optionIds?: string[] | null },
-) => {
-  const targets = logic.optionIds ?? [];
-  switch (logic.condition) {
-    case "AnyOf":
-      return picked.some((id) => targets.includes(id));
-    case "All":
-      return targets.length > 0 && targets.every((id) => picked.includes(id));
-    default:
-      // older rules name a single option in value: shown when that option is picked
-      return !!logic.value && picked.includes(logic.value);
-  }
-};
+export { shouldDisplayQuestion } from "./display-logic";
 
 /** What an answer says, for comparing two answers (ignores stamps and display-only fields). */
 const answerValueKey = (answer: ApiFormAnswer): string => {
@@ -120,70 +60,6 @@ export const withAnswerTimestamps = (
     return { ...next, createdAt: previous.createdAt, lastUpdatedAt: previous.lastUpdatedAt };
   }
   return { ...next, createdAt: previous?.createdAt ?? now, lastUpdatedAt: now };
-};
-
-export const shouldDisplayQuestion = (
-  q: ApiFormQuestion,
-  answers: Record<string, ApiFormAnswer | undefined> | undefined,
-) => {
-  if (q.displayLogic) {
-    if (!answers?.[q.displayLogic?.parentQuestionId]) {
-      return false;
-    }
-    const condition: DisplayLogicCondition = q.displayLogic.condition;
-    const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId]?.$answerType;
-    const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
-    const value = q.displayLogic?.value ?? "";
-    const optionIds = q.displayLogic?.optionIds ?? [];
-
-    let shouldDisplay = false;
-
-    if (!condition || !parentAnswerType || (!value && optionIds.length === 0)) {
-      return shouldDisplay;
-    }
-
-    switch (parentAnswerType) {
-      case "multiSelectAnswer":
-        shouldDisplay = matchesSelectCondition(
-          (parentAnswer as MultiSelectAnswer).selection.map((option) => option.optionId),
-          q.displayLogic,
-        );
-        break;
-      case "singleSelectAnswer":
-        shouldDisplay = matchesSelectCondition(
-          [(parentAnswer as SingleSelectAnswer).selection.optionId],
-          q.displayLogic,
-        );
-        break;
-      case "numberAnswer":
-        shouldDisplay = mapDisplayConditionToMath(
-          (parentAnswer as NumberAnswer).value,
-          value,
-          condition,
-        );
-        break;
-      case "textAnswer":
-        shouldDisplay = mapDisplayConditionToMath(
-          (parentAnswer as TextAnswer).text,
-          value,
-          condition,
-        );
-        break;
-      case "ratingAnswer":
-        shouldDisplay = mapDisplayConditionToMath(
-          (parentAnswer as RatingAnswer).value,
-          value,
-          condition,
-        );
-        break;
-      default:
-        shouldDisplay = false;
-    }
-
-    return shouldDisplay;
-  }
-
-  return true;
 };
 
 /**
@@ -371,10 +247,15 @@ export const mapFormToFormListItem = (
     const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));
 
     const numberOfAnswers = submissions[form.id]?.answers.length || 0;
+    // a form not started yet is not warned about: only a submission with answers, or marked as done
+    const isStarted = numberOfAnswers > 0 || !!submissions[form.id]?.isCompleted;
+    const unanswered = isStarted ? getUnansweredQuestions(form.questions, answers) : [];
 
     return {
       id: form.id,
       submissionId: submissions[form.id]?.id ?? Crypto.randomUUID(),
+      numberOfUnansweredQuestions: unanswered.length,
+      firstUnansweredQuestionId: unanswered[0]?.id,
       name: `${form.code} - ${form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]]}`,
       numberOfCompletedQuestions: numberOfAnswers,
       numberOfQuestions: questions.length,
@@ -425,8 +306,11 @@ export const mapFormToFormSubmissionListItem = (
         const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));
 
         const numberOfAnswers = submission.answers.length || 0;
+        const unanswered = getUnansweredQuestions(form.questions, answers);
         return {
           ...submission,
+          numberOfUnansweredQuestions: unanswered.length,
+          firstUnansweredQuestionId: unanswered[0]?.id,
           numberOfAttachments: submission.numberOfAttachments ?? 0,
           numberOfNotes: submission.numberOfNotes ?? 0,
           numberOfCompletedQuestions: numberOfAnswers,

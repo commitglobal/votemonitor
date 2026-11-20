@@ -27,6 +27,7 @@ import MediaLoading from "../../../components/MediaLoading";
 import NoteForm from "../../../components/NoteForm";
 import OptionsSheet from "../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../components/ChangeLanguageDialog";
+import FormDescription, { getFormDescription } from "../../../components/FormDescription";
 import { setFormLanguagePreference } from "../../../common/language.preferences";
 import QuestionForm from "../../../components/QuestionForm";
 import { Screen } from "../../../components/Screen";
@@ -137,6 +138,8 @@ const IncidentReport = () => {
     language?: string;
     // set when continuing a draft
     incidentReportId?: string;
+    // the question to open the draft at (the unanswered warning on the report list leads there)
+    questionId?: string;
   }>();
   const { formId, language: languageParam } = params;
   const isResuming = !!params.incidentReportId;
@@ -227,6 +230,7 @@ const IncidentReport = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(languageParam);
   const [isChangeLanguageOpen, setIsChangeLanguageOpen] = useState(false);
   const [isFormMenuOpen, setIsFormMenuOpen] = useState(false);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const language = useMemo(
     () =>
       selectedLanguage && currentForm?.languages.includes(selectedLanguage)
@@ -323,7 +327,12 @@ const IncidentReport = () => {
         uri: attachment.presignedUrl,
       })),
     );
-    setQuestionId(findNextQuestion(-1, existingAnswers)?.id);
+    const questionToShow = currentForm.questions.find((q) => q.id === params.questionId);
+    setQuestionId(
+      questionToShow && shouldDisplayQuestion(questionToShow, existingAnswers)
+        ? questionToShow.id
+        : findNextQuestion(-1, existingAnswers)?.id,
+    );
     setIsInitialized(true);
   }, [currentForm, existingReport, isInitialized]);
 
@@ -827,6 +836,7 @@ const IncidentReport = () => {
       <ScreenScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}>
         {step === "location" && (
           <YStack paddingVertical="$lg" paddingHorizontal="$md" gap="$lg">
+            <FormDescription form={currentForm} language={language} />
             <Controller
               name="location"
               control={locationControl}
@@ -1127,6 +1137,29 @@ const IncidentReport = () => {
                 {t("change_language")}
               </Typography>
             )}
+            {!!getFormDescription(currentForm, language) && (
+              <Typography
+                preset="body1"
+                paddingVertical="$xs"
+                onPress={() => {
+                  setIsFormMenuOpen(false);
+                  setIsDescriptionOpen(true);
+                }}
+              >
+                {t("form_description.title", { ns: "common" })}
+              </Typography>
+            )}
+          </YStack>
+        </OptionsSheet>
+      )}
+
+      {isDescriptionOpen && (
+        <OptionsSheet open setOpen={setIsDescriptionOpen}>
+          <YStack paddingVertical="$xxs" paddingHorizontal="$sm" gap="$sm">
+            <Typography preset="subheading">
+              {t("form_description.title", { ns: "common" })}
+            </Typography>
+            <FormDescription form={currentForm} language={language} expanded />
           </YStack>
         </OptionsSheet>
       )}

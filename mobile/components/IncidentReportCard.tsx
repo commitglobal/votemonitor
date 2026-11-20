@@ -7,6 +7,7 @@ import { Icon } from "./Icon";
 import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import CardFooter from "./CardFooter";
 import { Typography } from "./Typography";
+import UnansweredWarning from "./UnansweredWarning";
 
 interface IncidentReportCardProps {
   formName: string;
@@ -17,7 +18,11 @@ interface IncidentReportCardProps {
   isCompleted: boolean;
   // when it was sent (or, for a draft, last saved)
   timestamp?: string;
+  // see unanswered-questions
+  numberOfUnansweredQuestions?: number;
   onPress?: () => void;
+  /** leads to the first unanswered question (read-only once the report is sent) */
+  onUnansweredPress?: () => void;
 }
 
 const IncidentReportCard = ({
@@ -27,7 +32,9 @@ const IncidentReportCard = ({
   numberOfAttachments,
   isCompleted,
   timestamp,
+  numberOfUnansweredQuestions = 0,
   onPress,
+  onUnansweredPress,
 }: IncidentReportCardProps): React.ReactElement => {
   const { t } = useTranslation(["incident_report", "quick_report", "common"]);
   const { formatDate, formatTime } = useDateTimeFormat();
@@ -56,6 +63,9 @@ const IncidentReportCard = ({
         )}
         {location ? <Typography>{location}</Typography> : false}
         <Typography>{t("list.answers", { count: numberOfAnswers })}</Typography>
+        {numberOfUnansweredQuestions > 0 && (
+          <UnansweredWarning count={numberOfUnansweredQuestions} onPress={onUnansweredPress} />
+        )}
         <CardFooter
           text={
             numberOfAttachments === 0

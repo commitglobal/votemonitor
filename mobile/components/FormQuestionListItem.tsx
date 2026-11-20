@@ -2,6 +2,7 @@ import { XStack, YStack } from "tamagui";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import Badge from "./Badge";
+import UnansweredWarning from "./UnansweredWarning";
 import { useTranslation } from "react-i18next";
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import QuestionCardFooter from "./QuestionCardFooter";
@@ -55,7 +56,11 @@ const FormQuestionListItem = ({
       <YStack gap="$xxs">
         <XStack justifyContent="space-between">
           <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
-          <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
+          {status === QuestionStatus.NOT_ANSWERED ? (
+            <UnansweredWarning label={QuestionStatusToTextWrapper[status]} />
+          ) : (
+            <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
+          )}
         </XStack>
         <Typography preset="body2">
           {code} - {question}

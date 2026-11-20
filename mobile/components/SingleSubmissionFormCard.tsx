@@ -1,6 +1,7 @@
 import React from "react";
 import { View, styled } from "tamagui";
 import Badge from "./Badge";
+import UnansweredWarning from "./UnansweredWarning";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
@@ -15,16 +16,19 @@ export interface Form {
   numberOfQuestions?: number;
   numberOfCompletedQuestions?: number;
   status: SubmissionStatus;
+  numberOfUnansweredQuestions?: number;
 }
 
 export interface SingleSubmissionFormCardProps extends CardProps {
   form: Form;
   onPress: () => void;
+  /** leads to the first unanswered question */
+  onUnansweredPress?: () => void;
 }
 
 const SingleSubmissionFormCard = (props: SingleSubmissionFormCardProps): React.ReactElement => {
   const { t } = useTranslation("common");
-  const { form, onPress, ...rest } = props;
+  const { form, onPress, onUnansweredPress, ...rest } = props;
 
   const CardHeader = styled(View, {
     name: "CardHeader",
@@ -50,6 +54,14 @@ const SingleSubmissionFormCard = (props: SingleSubmissionFormCardProps): React.R
         <Typography preset="body1" color="$gray6" marginBottom="$xxs" numberOfLines={1}>
           {form.options}
         </Typography>
+      )}
+
+      {!!form.numberOfUnansweredQuestions && (
+        <UnansweredWarning
+          count={form.numberOfUnansweredQuestions}
+          onPress={onUnansweredPress}
+          marginBottom="$xs"
+        />
       )}
 
       <CardFooter text={form.numberOfCompletedQuestions + "/" + form.numberOfQuestions} />

@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "Cavabsız suallar: {{count}}"
+    },
+    "form_description": {
+      "title": "Formanın təsviri",
+      "show_more": "Daha çox göstər",
+      "show_less": "Daha az göstər"
+    },
     "skip": "Növbəti",
     "search": "Axtar",
     "loading": "Yüklənir",

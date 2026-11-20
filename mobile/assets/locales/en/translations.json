@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "Unanswered questions: {{count}}"
+    },
+    "form_description": {
+      "title": "Form description",
+      "show_more": "Show more",
+      "show_less": "Show less"
+    },
     "skip": "Next",
     "search": "Search",
     "loading": "Loading...",

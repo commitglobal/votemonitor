@@ -5,6 +5,7 @@ import { FormSubmission } from "../services/definitions.api";
 import { SubmissionStatus } from "../services/form.parser";
 import { useDateTimeFormat } from "../contexts/date-time-format/DateTimeFormatContext.provider";
 import Badge from "./Badge";
+import UnansweredWarning from "./UnansweredWarning";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -15,11 +16,16 @@ export type FormSubmissionDetails = FormSubmission & {
   numberOfNotes: number;
   numberOfAttachments: number;
   formStatus: SubmissionStatus;
+  // see unanswered-questions
+  numberOfUnansweredQuestions: number;
+  firstUnansweredQuestionId?: string;
 };
 
 type FormSubmissionListItemProps = FormSubmissionDetails & {
   onClick: () => void;
   onDeleteSubmission: () => void;
+  /** leads to the first unanswered question */
+  onUnansweredPress?: () => void;
 };
 
 const FormSubmissionListItem = ({
@@ -30,8 +36,10 @@ const FormSubmissionListItem = ({
   numberOfAttachments,
   formStatus,
   lastUpdatedAt,
+  numberOfUnansweredQuestions,
   onClick,
   onDeleteSubmission,
+  onUnansweredPress,
 }: FormSubmissionListItemProps) => {
   const { t } = useTranslation(["form_submission_card", "common"]);
   const { formatDate, formatTime } = useDateTimeFormat();
@@ -72,6 +80,9 @@ const FormSubmissionListItem = ({
             {numberOfCompletedQuestions} / {numberOfQuestions}
           </Typography>
         </XStack>
+        {numberOfUnansweredQuestions > 0 && (
+          <UnansweredWarning count={numberOfUnansweredQuestions} onPress={onUnansweredPress} />
+        )}
         {numberOfAttachments ? (
           <XStack justifyContent="space-between">
             <Typography preset="body2">{t("attachments")}</Typography>

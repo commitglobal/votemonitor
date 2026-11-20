@@ -1,5 +1,13 @@
 {
   "common": {
+    "unanswered": {
+      "count": "უპასუხო კითხვები: {{count}}"
+    },
+    "form_description": {
+      "title": "ფორმის აღწერა",
+      "show_more": "მეტის ჩვენება",
+      "show_less": "ნაკლების ჩვენება"
+    },
     "skip": "შემდეგი",
     "search": "ძებნა",
     "loading": "იტვირთება",

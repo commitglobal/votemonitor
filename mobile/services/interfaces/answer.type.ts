@@ -1,4 +1,4 @@
-import { FormQuestionType } from "./question.type";
+import type { FormQuestionType } from "./question.type";
 
 export type ApiFormAnswerType =
   | "textAnswer"

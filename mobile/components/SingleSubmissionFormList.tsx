@@ -1,6 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
+import {
+  ComponentType,
+  JSXElementConstructor,
+  ReactElement,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -38,6 +45,9 @@ export type FormListItem = {
   numberOfCompletedQuestions: number;
   languages: string[];
   status: SubmissionStatus;
+  // see unanswered-questions: 0 for a form not started yet
+  numberOfUnansweredQuestions: number;
+  firstUnansweredQuestionId?: string;
 };
 
 type ListHeaderComponentType =
@@ -105,16 +115,28 @@ const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionForm
     formState: { errors },
   } = useForm({});
 
+  // the question to open once the form's language is known (the unanswered warning leads there)
+  const questionToOpenRef = useRef<string | undefined>(undefined);
+
   const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
     setFormLanguagePreference({ formId: formItem.id, language });
 
     router.push(
       `/form-submission-details/${formItem.submissionId}?language=${language}&formId=${formItem?.id}`,
     ); // TODO @birloiflorian we can pass formTitle
+    const questionId = questionToOpenRef.current;
+    questionToOpenRef.current = undefined;
+    if (questionId) {
+      // over the form's details, so going back from the question lands on them
+      router.push(
+        `/form-questionnaire/${questionId}?formId=${formItem.id}&language=${language}&submissionId=${formItem.submissionId}`,
+      );
+    }
     setSelectedForm(null);
   };
 
-  const openForm = async (formItem: FormListItem) => {
+  const openForm = async (formItem: FormListItem, questionId?: string) => {
+    questionToOpenRef.current = questionId;
     if (!formItem?.languages?.length) {
       // TODO: Display error toast
       console.log("No language exists");
@@ -171,7 +193,8 @@ const SingleSubmissionFormList = ({ ListHeaderComponent }: ISingleSubmissionForm
             <SingleSubmissionFormCard
               key={index}
               form={item}
-              onPress={openForm.bind(null, item)}
+              onPress={() => openForm(item)}
+              onUnansweredPress={() => openForm(item, item.firstUnansweredQuestionId)}
               marginBottom="$xxs"
             />
           );

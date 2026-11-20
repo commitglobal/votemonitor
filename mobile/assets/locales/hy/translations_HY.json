@@ -1,5 +1,13 @@
 {
     "common": {
+        "unanswered": {
+          "count": "Անպատասխան հարցեր՝ {{count}}"
+        },
+        "form_description": {
+          "title": "Ձևի նկարագրություն",
+          "show_more": "Ցույց տալ ավելին",
+          "show_less": "Ցույց տալ ավելի քիչ"
+        },
         "skip": "Հաջորդը",
         "search": "Որոնել",
         "loading": "Բեռնվում է",

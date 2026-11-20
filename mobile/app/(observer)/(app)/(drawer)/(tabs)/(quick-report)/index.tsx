@@ -16,6 +16,10 @@ import { useUserData } from "../../../../../../contexts/user/UserContext.provide
 import { ListView } from "../../../../../../components/ListView";
 import ReportCard from "../../../../../../components/ReportCard";
 import IncidentReportCard from "../../../../../../components/IncidentReportCard";
+import {
+  answersByQuestionId,
+  getUnansweredQuestions,
+} from "../../../../../../services/unanswered-questions";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import { RefreshControl, ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
@@ -205,10 +209,21 @@ const QuickReportContent = ({
   const { data: incidentReports, refetch: refetchIncidentReports } =
     useIncidentReports(electionRoundId);
 
-  // a sent report is locked and only viewed, a draft is continued in the language it was started in
-  const openListedIncidentReport = async (report: IncidentReportAPIResponse) => {
+  const unansweredQuestionsOf = (report: IncidentReportAPIResponse) =>
+    getUnansweredQuestions(
+      incidentReportingForms?.find((form) => form.id === report.formId)?.questions,
+      answersByQuestionId(report.answers),
+    );
+
+  // a sent report is locked and only viewed, a draft is continued in the language it was started in;
+  // questionId (from the unanswered warning) opens it at that question
+  const openListedIncidentReport = async (
+    report: IncidentReportAPIResponse,
+    questionId?: string,
+  ) => {
+    const atQuestion = questionId ? `questionId=${questionId}` : "";
     if (report.isCompleted) {
-      router.push(`/incident-report-details/${report.id}`);
+      router.push(`/incident-report-details/${report.id}${atQuestion ? `?${atQuestion}` : ""}`);
       return;
     }
     const form = incidentReportingForms?.find((f) => f.id === report.formId);
@@ -218,7 +233,7 @@ const QuickReportContent = ({
         ? preferredLanguage
         : getFormLanguage(form);
     router.push(
-      `/incident-report?formId=${report.formId}&incidentReportId=${report.id}&language=${language}`,
+      `/incident-report?formId=${report.formId}&incidentReportId=${report.id}&language=${language}${atQuestion ? `&${atQuestion}` : ""}`,
     );
   };
 
@@ -310,7 +325,11 @@ const QuickReportContent = ({
               numberOfAttachments={item.report.attachments.length}
               isCompleted={item.report.isCompleted}
               timestamp={item.report.timestamp}
+              numberOfUnansweredQuestions={unansweredQuestionsOf(item.report).length}
               onPress={() => openListedIncidentReport(item.report)}
+              onUnansweredPress={() =>
+                openListedIncidentReport(item.report, unansweredQuestionsOf(item.report)[0]?.id)
+              }
             />
           )
         }
