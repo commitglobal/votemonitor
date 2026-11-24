@@ -59,7 +59,7 @@ public class ExportFormSubmissionsJob(
             var publishedForms = await context
                 .Forms
                 .FromSqlInterpolated(
-                    $@"SELECT AF.*, F.xmin FROM ""ExportGetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource.ToString()}) AF INNER JOIN ""Forms"" F ON F.""Id"" = AF.""Id""")
+                    $@"SELECT AF.*, F.xmin FROM ""ExportGetAvailableForms""({electionRoundId}, {ngoId}, {filters.DataSource}) AF INNER JOIN ""Forms"" F ON F.""Id"" = AF.""Id""")
                 .Where(x => x.Status != FormStatus.Drafted)
                 .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
