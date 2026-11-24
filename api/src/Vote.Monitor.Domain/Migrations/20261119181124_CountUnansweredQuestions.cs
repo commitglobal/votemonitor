@@ -185,6 +185,13 @@ namespace Vote.Monitor.Domain.Migrations
             """;
 
         /// <summary>
+        /// Adds the column unless it is there already: a failed run in production left part of this migration applied
+        /// without recording it, so every step of <see cref="Up"/> is safe to run again.
+        /// </summary>
+        private static string AddUnansweredColumn(string table) =>
+            $"""ALTER TABLE "{table}" ADD COLUMN IF NOT EXISTS "NumberOfUnansweredQuestions" integer NOT NULL DEFAULT 0;""";
+
+        /// <summary>
         /// Rewrites a function's definition in place, failing when a fragment isn't there; the function is dropped
         /// first, since its result columns may change.
         /// </summary>
@@ -200,6 +207,9 @@ namespace Vote.Monitor.Domain.Migrations
                       rewritten := replace(rewritten, {{Literal(x.From)}}, {{Literal(x.To)}});
                   """));
 
+            var alreadyRewritten = string.Join(" AND ",
+                replacements.Select(x => $"position({Literal(x.To)} IN rewritten) > 0"));
+
             return $$"""
                      DO $do$
                      DECLARE
@@ -213,6 +223,11 @@ namespace Vote.Monitor.Domain.Migrations
                            AND p.proname = {{Literal(function)}};
 
                          rewritten := pg_get_functiondef(fn);
+
+                         -- Already rewritten (every target fragment is there): a re-run leaves it as it is.
+                         IF {{alreadyRewritten}} THEN
+                             RETURN;
+                         END IF;
                      {{steps}}
                          EXECUTE 'DROP FUNCTION ' || fn::regprocedure::text;
                          EXECUTE rewritten;
@@ -254,37 +269,17 @@ namespace Vote.Monitor.Domain.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "NumberOfUnansweredQuestions",
-                table: "PollingStationInformation",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.Sql(AddUnansweredColumn("PollingStationInformation"));
 
-            migrationBuilder.AddColumn<int>(
-                name: "NumberOfUnansweredQuestions",
-                table: "IncidentReports",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.Sql(AddUnansweredColumn("IncidentReports"));
 
-            migrationBuilder.AddColumn<int>(
-                name: "NumberOfUnansweredQuestions",
-                table: "FormSubmissions",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.Sql(AddUnansweredColumn("FormSubmissions"));
 
-            migrationBuilder.AddColumn<int>(
-                name: "NumberOfUnansweredQuestions",
-                table: "CitizenReports",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.Sql(AddUnansweredColumn("CitizenReports"));
 
             migrationBuilder.Sql(CountFunction);
             migrationBuilder.Sql(Recount);
-            migrationBuilder.Sql("""DROP FUNCTION "__CountShownAnswers"(JSONB, JSONB);""");
+            migrationBuilder.Sql("""DROP FUNCTION IF EXISTS "__CountShownAnswers"(JSONB, JSONB);""");
 
             migrationBuilder.Sql(Rewrite("GetFormSubmissionEntries", FormSubmissionEntries));
             migrationBuilder.Sql(Rewrite("GetIncidentReportEntries", IncidentReportEntries));
