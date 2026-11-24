@@ -92,6 +92,10 @@ public static class DomainInstaller
         // Create a new scope to retrieve scoped services
         using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
+        // Migrations that rewrite every row (e.g. recounting answers on all submissions) take far longer than
+        // Npgsql's 30s default on production data. This scope's context is only used for migrating and seeding,
+        // so requests keep the default timeout.
+        dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
         await dbContext.Database.MigrateAsync(cancellationToken);
         var seeders = scope.ServiceProvider.GetServices<IAmDbSeeder>();
 
