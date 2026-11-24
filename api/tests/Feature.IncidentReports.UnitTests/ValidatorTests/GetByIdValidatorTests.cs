@@ -35,12 +35,16 @@ public class GetByIdValidatorTests
     }
 
     [Theory]
-    [InlineData(null)]
-    [InlineData("00000000-0000-0000-0000-000000000000")]
-    public void Should_Have_Error_When_NgoId_Is_Missing_For_NgoAdmin(string? ngoId)
+    [InlineData(true, false, null)]
+    [InlineData(true, false, "00000000-0000-0000-0000-000000000000")]
+    [InlineData(false, true, null)]
+    [InlineData(false, true, "00000000-0000-0000-0000-000000000000")]
+    public void Should_Have_Error_When_NgoId_Is_Missing_For_NgoAdmin_Or_NgoStaff(bool isNgoAdmin, bool isNgoStaff,
+        string? ngoId)
     {
         // Arrange
-        _roleProvider.IsNgoAdmin().Returns(true);
+        _roleProvider.IsNgoAdmin().Returns(isNgoAdmin);
+        _roleProvider.IsNgoStaff().Returns(isNgoStaff);
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
@@ -90,11 +94,15 @@ public class GetByIdValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.IncidentReportId);
     }
 
-    [Fact]
-    public void Should_Not_Have_Error_When_All_Fields_Are_Valid_For_NgoAdmin()
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public void Should_Not_Have_Error_When_All_Fields_Are_Valid_For_NgoAdmin_Or_NgoStaff(bool isNgoAdmin,
+        bool isNgoStaff)
     {
         // Arrange
-        _roleProvider.IsNgoAdmin().Returns(true);
+        _roleProvider.IsNgoAdmin().Returns(isNgoAdmin);
+        _roleProvider.IsNgoStaff().Returns(isNgoStaff);
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
