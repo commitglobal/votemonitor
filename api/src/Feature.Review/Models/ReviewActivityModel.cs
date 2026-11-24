@@ -28,6 +28,9 @@ public record ReviewActivityModel
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public AutomationRuleKind? RuleKind { get; init; }
 
+    /// <summary>Whether the rule that made the change still exists (the web app links its name only then); false for people's changes.</summary>
+    public bool RuleExists { get; init; }
+
     public required DateTime OccurredAt { get; init; }
     public Guid? FromStageId { get; init; }
     public string? FromStageName { get; init; }

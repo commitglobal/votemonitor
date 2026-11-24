@@ -18,7 +18,8 @@ public class CreateEndpointTests
 
     public CreateEndpointTests()
     {
-        _endpoint = Factory.Create<Create.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
+        _endpoint = Factory.Create<Create.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository,
+            Substitute.For<Vote.Monitor.Domain.IUserDisplayNameProvider>());
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());

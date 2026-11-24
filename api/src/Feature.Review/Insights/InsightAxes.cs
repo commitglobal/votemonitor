@@ -30,6 +30,7 @@ public static class InsightAxes
     public const string IncidentCategory = "incidentCategory";
     public const string LocationType = "locationType";
     public const string HasFlaggedAnswers = "hasFlaggedAnswers";
+    public const string HasUnansweredQuestions = "hasUnansweredQuestions";
     public const string SubmittedDay = "submittedDay";
     public const string SubmittedHour = "submittedHour";
 
@@ -65,6 +66,8 @@ public static class InsightAxes
             var language = recordType == ReportRecordType.FormSubmission ? "s.\"DefaultLanguage\"" : "s.\"FormDefaultLanguage\"";
             axes[Form] = new("s.\"FormId\"::text", $"CONCAT_WS(' – ', s.\"FormCode\", s.\"FormName\" ->> {language})");
             axes[HasFlaggedAnswers] = new("(s.\"NumberOfFlaggedAnswers\" > 0)::text");
+            // The shown questions left unanswered (display logic applied), as stored on the record.
+            axes[HasUnansweredQuestions] = new("(COALESCE(s.\"NumberOfUnansweredQuestions\", 0) > 0)::text");
         }
 
         if (recordType != ReportRecordType.CitizenReport)
@@ -111,6 +114,8 @@ public static class InsightMetrics
     public const string Comments = "comments";
     public const string Observers = "observers";
     public const string PollingStations = "pollingStations";
+    public const string UnansweredQuestions = "unansweredQuestions";
+    public const string Locations = "locations";
 
     public static IReadOnlyDictionary<string, string> For(ReportRecordType recordType)
     {
@@ -127,12 +132,19 @@ public static class InsightMetrics
         {
             metrics[FlaggedAnswers] = "COALESCE(SUM(s.\"NumberOfFlaggedAnswers\"), 0)";
             metrics[Notes] = "COALESCE(SUM(s.\"NotesCount\"), 0)";
+            metrics[UnansweredQuestions] = "COALESCE(SUM(s.\"NumberOfUnansweredQuestions\"), 0)";
         }
 
         if (recordType != ReportRecordType.CitizenReport)
         {
             metrics[Observers] = "COUNT(DISTINCT s.\"MonitoringObserverId\")";
             metrics[PollingStations] = "COUNT(DISTINCT s.\"PollingStationId\")";
+        }
+
+        if (recordType == ReportRecordType.CitizenReport)
+        {
+            // The distinct locations citizens reported from.
+            metrics[Locations] = "COUNT(DISTINCT s.\"LocationId\")";
         }
 
         return metrics;

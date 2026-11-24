@@ -97,7 +97,7 @@ public class ReviewerRuleTests : BaseApiTestFixture
         client.PutWithoutResponse($"{ReviewUri(electionRoundId, submissionId)}:stage", new { stageId });
 
     private static Guid[] Reviewers(HttpClient client, Guid electionRoundId, Guid submissionId) =>
-        client.GetResponse<ReviewResponse>(ReviewUri(electionRoundId, submissionId)).Reviewers.Select(x => x.Id)
+        client.GetResponse<ReviewResponse>($"/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:v2").Reviewers.Select(x => x.Id)
             .ToArray();
 
     private static HistoryEntryResponse[] History(HttpClient client, Guid electionRoundId, Guid submissionId) =>

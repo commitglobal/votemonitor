@@ -37,6 +37,10 @@ public record FormSubmissionEntry
     public string NgoName { get; init; } = null!;
     public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered; null where a list doesn't read it.</summary>
+    public int? NumberOfUnansweredQuestions { get; init; }
+
     public int NumberOfFlaggedAnswers { get; init; }
     public int MediaFilesCount { get; init; }
     public int NotesCount { get; init; }

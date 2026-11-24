@@ -1,10 +1,12 @@
-﻿using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+﻿using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.Forms.Get;
 
 public class Endpoint(
     IReadRepository<PollingStationInfoFormAggregate> repository,
-    IReadRepository<PollingStationInformation> submissionsRepository)
+    IReadRepository<PollingStationInformation> submissionsRepository,
+    IUserDisplayNameProvider userDisplayNames)
     : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {
     public override void Configure()
@@ -26,6 +28,8 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
+
+        form = await form.WithLastModifiedByNameAsync(userDisplayNames, ct);
 
         if (req.NgoId is { } ngoId)
         {

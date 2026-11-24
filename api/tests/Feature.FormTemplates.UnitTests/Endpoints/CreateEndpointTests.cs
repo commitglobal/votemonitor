@@ -18,7 +18,7 @@ public class CreateEndpointTests
             .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Endpoint>(repository);
+        var endpoint = Factory.Create<Endpoint>(repository, Substitute.For<Vote.Monitor.Domain.IUserDisplayNameProvider>());
 
         // Act
         var request = new Request

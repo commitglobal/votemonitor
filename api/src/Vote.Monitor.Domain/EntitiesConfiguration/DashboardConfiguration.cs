@@ -12,6 +12,8 @@ internal class DashboardConfiguration : IEntityTypeConfiguration<Dashboard>
         builder.ToTable(Tables.Dashboards);
 
         builder.HasKey(x => x.Id);
+        // Postgres's xmin system column as the concurrency token (no column of its own).
+        builder.Property(x => x.Version).IsRowVersion();
         builder.Property(x => x.Id).IsRequired();
         builder.Property(x => x.Name).HasMaxLength(Dashboard.MaxNameLength).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(Dashboard.MaxDescriptionLength);

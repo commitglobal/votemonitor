@@ -88,7 +88,7 @@ public class SeverityRuleTests : BaseApiTestFixture
     }
 
     private static string Severity(HttpClient client, Guid electionRoundId, Guid submissionId) =>
-        client.GetResponse<SeverityResponse>(SeverityUri(electionRoundId, submissionId)).Severity;
+        client.GetResponse<SeverityResponse>(RecordUris.Of(electionRoundId, "FormSubmission", submissionId)).Severity;
 
     private static HistoryEntryResponse[] SeverityHistory(HttpClient client, Guid electionRoundId, Guid submissionId) =>
         client.GetResponse<HistoryEntryResponse[]>($"{ReviewUri(electionRoundId, submissionId)}/history")
@@ -289,9 +289,9 @@ public class SeverityRuleTests : BaseApiTestFixture
 
         var iasi = data.ElectionRound.GetQuickReportId(ScenarioObserver.Alice, ScenarioPollingStation.Iasi);
         var cluj = data.ElectionRound.GetQuickReportId(ScenarioObserver.Alice, ScenarioPollingStation.Cluj);
-        alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{iasi}").Severity
+        alfa.Admin.GetResponse<SeverityResponse>(RecordUris.Of(er, "QuickReport", iasi)).Severity
             .Should().Be("High");
-        alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{cluj}").Severity
+        alfa.Admin.GetResponse<SeverityResponse>(RecordUris.Of(er, "QuickReport", cluj)).Severity
             .Should().Be("NotAssessed");
     }
 
@@ -318,7 +318,7 @@ public class SeverityRuleTests : BaseApiTestFixture
 
         data.ElectionRound.WithQuickReport(ScenarioObserver.Alice, ScenarioPollingStation.Iasi);
         var report = data.ElectionRound.GetQuickReportId(ScenarioObserver.Alice, ScenarioPollingStation.Iasi);
-        alfa.Admin.GetResponse<SeverityResponse>($"/api/election-rounds/{er}/severities/QuickReport/{report}").Severity
+        alfa.Admin.GetResponse<SeverityResponse>(RecordUris.Of(er, "QuickReport", report)).Severity
             .Should().Be("High");
     }
 }

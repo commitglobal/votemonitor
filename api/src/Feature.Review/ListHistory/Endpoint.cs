@@ -39,6 +39,22 @@ public class Endpoint(
             .OrderByDescending(x => x.OccurredAt)
             .ToListAsync(ct);
 
-        return TypedResults.Ok(activities.Select(ReviewActivityModel.FromEntity).ToArray());
+        // Which of the rules named in the history still exist, looked up only when a rule changed the record.
+        var ruleIds = activities.Where(x => x.RuleId is not null).Select(x => x.RuleId!.Value).Distinct().ToList();
+        var existingRuleIds = new HashSet<Guid>();
+        if (ruleIds.Count > 0)
+        {
+            existingRuleIds.UnionWith(await context.ReviewerRules.Where(x => ruleIds.Contains(x.Id)).Select(x => x.Id).ToListAsync(ct));
+            existingRuleIds.UnionWith(await context.SeverityRules.Where(x => ruleIds.Contains(x.Id)).Select(x => x.Id).ToListAsync(ct));
+            existingRuleIds.UnionWith(await context.FollowUpRules.Where(x => ruleIds.Contains(x.Id)).Select(x => x.Id).ToListAsync(ct));
+            existingRuleIds.UnionWith(await context.LabelRules.Where(x => ruleIds.Contains(x.Id)).Select(x => x.Id).ToListAsync(ct));
+        }
+
+        return TypedResults.Ok(activities
+            .Select(x => ReviewActivityModel.FromEntity(x) with
+            {
+                RuleExists = x.RuleId is not null && existingRuleIds.Contains(x.RuleId.Value)
+            })
+            .ToArray());
     }
 }

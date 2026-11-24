@@ -58,6 +58,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                                 s."FormName",
                                 s."FormDefaultLanguage",
                                 s."NumberOfQuestionsAnswered",
+                                s."NumberOfUnansweredQuestions",
                                 s."NumberOfFlaggedAnswers",
                                 s."NotesCount",
                                 s."MediaFilesCount",
@@ -124,6 +125,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizati
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"s.""NumberOfQuestionsAnswered"" {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.NumberOfUnansweredQuestions),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $@"s.""NumberOfUnansweredQuestions"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.NumberOfFlaggedAnswers),

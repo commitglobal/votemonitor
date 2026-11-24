@@ -42,6 +42,7 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.Property(x => x.DepartureTime);
         
         builder.Property(x => x.NumberOfQuestionsAnswered);
+        builder.Property(x => x.NumberOfUnansweredQuestions).IsRequired();
         builder.Property(x => x.NumberOfFlaggedAnswers);
         builder.Property(x => x.LastUpdatedAt).IsRequired();
 

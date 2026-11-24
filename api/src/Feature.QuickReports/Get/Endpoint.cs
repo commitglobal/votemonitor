@@ -1,4 +1,6 @@
-﻿using Authorization.Policies.Requirements;
+using Vote.Monitor.Domain.Entities.RecordLabelAggregate;
+using Vote.Monitor.Domain.Entities.RecordSeverityAggregate;
+using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -33,6 +35,11 @@ public class Endpoint(
     public override async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
+        if (userRoleProvider.IsPlatformAdmin())
+        {
+            return await GetQuickReportAsPlatformAdminAsync(req.ElectionRoundId, req.Id, ct);
+        }
+
         var authorizationResult =
             await authorizationService.AuthorizeAsync(User,
                 new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
@@ -80,18 +87,53 @@ public class Endpoint(
         await SetPresignUrls(submission);
 
         var followUp = await context.GetFollowUpStatusAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct);
+        var reviewTarget = await context.GetReviewTargetAsync(electionRoundId, ngoId, ReportRecordType.QuickReport, quickReportId, ct);
+        var reviewWorkflow = reviewTarget is null ? null : await context.GetReviewWorkflowAsync(reviewTarget, ct);
+        var recordSeverity = reviewTarget is null ? null : await context.GetRecordSeverityAsync(reviewTarget, ct);
+        var recordLabels = reviewTarget is null ? null : await context.GetRecordLabelsAsync(reviewTarget, ct);
         return TypedResults.Ok(submission with
         {
             FollowUpStatusId = followUp?.Id,
             FollowUpStatusName = followUp?.Name,
             FollowUpStatusColor = followUp?.Color,
-            FollowUpStatusIcon = followUp?.Icon
+            FollowUpStatusIcon = followUp?.Icon,
+            ReviewStage = reviewWorkflow?.Stage,
+            StageChangedAt = reviewWorkflow?.StageChangedAt,
+            ReviewedAt = reviewWorkflow?.ReviewedAt,
+            Reviewers = reviewWorkflow?.Reviewers,
+            Severity = recordSeverity?.Severity,
+            SeverityChangedAt = recordSeverity?.ChangedAt,
+            Labels = recordLabels
         });
+    }
+
+    /// <summary>
+    /// Read as the NGO whose observer sent it, then left without what platform admins mustn't see (ForPlatformAdmin).
+    /// </summary>
+    private async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> GetQuickReportAsPlatformAdminAsync(
+        Guid electionRoundId, Guid quickReportId, CancellationToken ct)
+    {
+        var owner = await context.GetRecordOwnerAsync(electionRoundId, ReportRecordType.QuickReport, quickReportId, ct);
+        if (owner is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        const string sql = """
+                           SELECT *
+                           FROM "GetNgoQuickReportDetails"(@electionRoundId, @ngoId, @quickReportId)
+                           """;
+
+        using var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct);
+        var report = await dbConnection.QueryFirstOrDefaultAsync<QuickReportDetailedModel>(sql,
+            new { electionRoundId, ngoId = owner.NgoId, quickReportId });
+
+        return report is null ? TypedResults.NotFound() : TypedResults.Ok(report.ForPlatformAdmin(owner.NgoName));
     }
 
     private async Task SetPresignUrls(QuickReportDetailedModel submission)
     {
-        foreach (var attachment in submission.Attachments)
+        foreach (var attachment in submission.Attachments ?? [])
         {
             var result =
                 await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);

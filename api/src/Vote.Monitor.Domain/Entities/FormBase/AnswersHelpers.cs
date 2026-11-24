@@ -59,12 +59,16 @@ public class AnswersHelpers
         return flaggedAnswers;
     }
 
-    public static int CountNumberOfQuestionsAnswered(IEnumerable<BaseQuestion> questions, List<BaseAnswer> answers)
-    {
-        var questionIds = questions.Select(x => x.Id).ToList();
+    /// <summary>The questions the observer was shown (display logic applied) that they answered.</summary>
+    public static int CountNumberOfQuestionsAnswered(IEnumerable<BaseQuestion> questions, List<BaseAnswer> answers) =>
+        CountAnswers(questions, answers).Answered;
 
-        return answers.Count(x => questionIds.Contains(x.QuestionId));
-    }
+    /// <summary>
+    /// The questions the observer was shown (display logic applied) that they answered and left unanswered; hidden
+    /// questions count for neither.
+    /// </summary>
+    public static AnswerCounts CountAnswers(IEnumerable<BaseQuestion> questions, IEnumerable<BaseAnswer>? answers) =>
+        DisplayLogicEvaluator.Count(questions, answers);
 
     /// <summary>
     /// Whether two sets of answers say the same thing: same questions, same values. Answer timestamps and order are

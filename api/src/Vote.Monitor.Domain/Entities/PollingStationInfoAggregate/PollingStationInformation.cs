@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -20,6 +21,9 @@ public class PollingStationInformation : IAggregateRoot
     public DateTime? ArrivalTime { get; internal set; }
     public DateTime? DepartureTime { get; internal set; }
     public int NumberOfQuestionsAnswered { get; internal set; }
+
+    /// <summary>The questions the observer was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; internal set; }
     public int NumberOfFlaggedAnswers { get; internal set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; internal set; }
     public IReadOnlyList<BaseAnswer> Answers { get; internal set; } = new List<BaseAnswer>().AsReadOnly();
@@ -36,6 +40,7 @@ public class PollingStationInformation : IAggregateRoot
         ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
         ValueOrUndefined<bool> isCompleted,
@@ -51,6 +56,7 @@ public class PollingStationInformation : IAggregateRoot
         PollingStationInformationForm = pollingStationInformationForm;
         PollingStationInformationFormId = pollingStationInformationForm.Id;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfUnansweredQuestions = numberOfUnansweredQuestions;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
         Answers = answers.ToList().AsReadOnly();
@@ -73,6 +79,7 @@ public class PollingStationInformation : IAggregateRoot
         ValueOrUndefined<DateTime?> departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
+        int numberOfUnansweredQuestions,
         int numberOfFlaggedAnswers,
         List<ObservationBreak>? breaks,
         ValueOrUndefined<bool> isCompleted,
@@ -86,6 +93,7 @@ public class PollingStationInformation : IAggregateRoot
             departureTime,
             answers,
             numberOfQuestionsAnswered,
+            numberOfUnansweredQuestions,
             numberOfFlaggedAnswers,
             breaks,
             isCompleted,
@@ -93,6 +101,7 @@ public class PollingStationInformation : IAggregateRoot
 
     internal void Update(IEnumerable<BaseAnswer>? answers,
         int? numberOfQuestionsAnswered,
+        int? numberOfUnansweredQuestions,
         int? numberOfFlaggedAnswers,
         ValueOrUndefined<DateTime?> arrivalTime,
         ValueOrUndefined<DateTime?> departureTime,
@@ -113,6 +122,11 @@ public class PollingStationInformation : IAggregateRoot
         if (numberOfQuestionsAnswered is not null)
         {
             NumberOfQuestionsAnswered = numberOfQuestionsAnswered.Value;
+        }
+
+        if (numberOfUnansweredQuestions is not null)
+        {
+            NumberOfUnansweredQuestions = numberOfUnansweredQuestions.Value;
         }
 
         if (!isCompleted.IsUndefined)
@@ -149,6 +163,9 @@ public class PollingStationInformation : IAggregateRoot
     {
         Answers = [];
         NumberOfQuestionsAnswered = 0;
+        NumberOfUnansweredQuestions = PollingStationInformationForm is null
+            ? 0
+            : AnswersHelpers.CountAnswers(PollingStationInformationForm.Questions, []).Unanswered;
         NumberOfFlaggedAnswers = 0;
     }
 

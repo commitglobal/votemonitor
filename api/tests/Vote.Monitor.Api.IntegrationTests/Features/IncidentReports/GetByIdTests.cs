@@ -11,7 +11,10 @@ using static ApiTesting;
 
 public class GetByIdTests : BaseApiTestFixture
 {
-    public record IncidentReportResponse(Guid Id, string ObserverName);
+    public record ReviewStageResponse(string Name, bool IsDefault);
+
+    public record IncidentReportResponse(Guid Id, string ObserverName, ReviewStageResponse? ReviewStage,
+        object[]? Reviewers, string? Severity, string[]? Labels);
 
     [Test]
     public void TheObserverIsNamedByTheirFullName()
@@ -43,5 +46,12 @@ public class GetByIdTests : BaseApiTestFixture
 
         // Assert: first and last name, as every list shows it (it once read "Smith Smith").
         report.ObserverName.Should().Be(alice.DisplayName);
+        // The NGO's review stage, reviewers, severity and labels come with the report: a new one sits in the default
+        // stage, with no reviewers, not assessed, unlabelled.
+        report.ReviewStage.Should().NotBeNull();
+        report.ReviewStage!.IsDefault.Should().BeTrue();
+        report.Reviewers.Should().BeEmpty();
+        report.Severity.Should().Be("NotAssessed");
+        report.Labels.Should().BeEmpty();
     }
 }

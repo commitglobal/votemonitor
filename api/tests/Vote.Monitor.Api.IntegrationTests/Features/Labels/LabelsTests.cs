@@ -31,7 +31,7 @@ public class LabelsTests : BaseApiTestFixture
     private const string Sam = "Sam";
     private const string Tom = "Tom";
 
-    public record LabelsResponse(string[] Labels);
+    public record LabelsResponse(string[]? Labels);
 
     public record HistoryEntryResponse(string Kind, string ActorName, string[]? AddedLabels, string[]? RemovedLabels);
 
@@ -142,7 +142,11 @@ public class LabelsTests : BaseApiTestFixture
     private static HttpResponseMessage Put(HttpClient client, string uri, params string[] labels) =>
         client.PutAsJsonAsync(uri, new { labels }).GetAwaiter().GetResult();
 
-    private static string[] LabelsOf(HttpClient client, string uri) => client.GetResponse<LabelsResponse>(uri).Labels;
+    /// <summary>
+    /// A record's labels from its own GET (for a <see cref="LabelsUri" />), or the NGO's labels (<c>…/labels</c>).
+    /// </summary>
+    private static string[] LabelsOf(HttpClient client, string uri) =>
+        client.GetResponse<LabelsResponse>(uri.EndsWith("/labels") ? uri : RecordUris.OfPerRecordUri(uri)).Labels ?? [];
 
     private static List<EntryResponse> Entries(HttpClient client, Guid electionRoundId, object? filter = null) =>
         client.PostWithResponse<PagedResponse<EntryResponse>>(
@@ -276,8 +280,9 @@ public class LabelsTests : BaseApiTestFixture
 
         Put(data.PlatformAdmin, LabelsUri(er, aliceSubmissionId), "Media").StatusCode
             .Should().Be(HttpStatusCode.Forbidden);
-        data.PlatformAdmin.GetAsync(LabelsUri(er, aliceSubmissionId)).GetAwaiter().GetResult().StatusCode
-            .Should().Be(HttpStatusCode.Forbidden);
+        // Platform admins get the record itself, without any NGO's labels.
+        data.PlatformAdmin.GetResponse<LabelsResponse>(RecordUris.OfPerRecordUri(LabelsUri(er, aliceSubmissionId)))
+            .Labels.Should().BeNull();
         data.PlatformAdmin.GetAsync($"/api/election-rounds/{er}/labels").GetAwaiter().GetResult().StatusCode
             .Should().Be(HttpStatusCode.Forbidden);
     }

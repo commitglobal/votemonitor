@@ -21,7 +21,8 @@ public class GetEndpointTests
     {
         _repository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
         _endpoint = Factory.Create<Get.Endpoint>(_repository,
-            Substitute.For<IReadRepository<PollingStationInformation>>());
+            Substitute.For<IReadRepository<PollingStationInformation>>(),
+            Substitute.For<Vote.Monitor.Domain.IUserDisplayNameProvider>());
     }
 
     [Fact]

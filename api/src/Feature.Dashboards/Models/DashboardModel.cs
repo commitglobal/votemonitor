@@ -20,7 +20,18 @@ public record DashboardModel
     /// <summary>Whether the caller may change and delete it (NGO admins).</summary>
     public required bool CanEdit { get; init; }
 
-    public static DashboardModel FromEntity(Dashboard dashboard, string creatorName, bool canEdit) =>
+    /// <summary>The record's version (opaque); sent back with a save (concurrent edits contract).</summary>
+    public required uint Version { get; init; }
+
+    /// <summary>When this version was saved (the same as <see cref="UpdatedAt"/>).</summary>
+    public required DateTime LastModifiedOn { get; init; }
+
+    /// <summary>The display name of who saved this version; null when unknown.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public required string? LastModifiedByName { get; init; }
+
+    public static DashboardModel FromEntity(Dashboard dashboard, string creatorName, string? lastModifiedByName,
+        bool canEdit) =>
         new()
         {
             Id = dashboard.Id,
@@ -30,7 +41,10 @@ public record DashboardModel
             CreatedBy = new DashboardCreatorModel(dashboard.CreatedBy, creatorName),
             CreatedAt = dashboard.CreatedOn,
             UpdatedAt = dashboard.LastModifiedOn ?? dashboard.CreatedOn,
-            CanEdit = canEdit
+            CanEdit = canEdit,
+            Version = dashboard.Version,
+            LastModifiedOn = dashboard.LastModifiedOn ?? dashboard.CreatedOn,
+            LastModifiedByName = lastModifiedByName
         };
 }
 

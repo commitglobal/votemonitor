@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Feature.Forms.Models;
+using Vote.Monitor.Domain;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -10,7 +11,8 @@ namespace Feature.Forms.FromForm;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<MonitoringNgo> monitoringNgoRepository,
-    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
+    IRepository<FormAggregate> formsRepository,
+    IUserDisplayNameProvider userDisplayNames) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -45,6 +47,8 @@ public class Endpoint(
         monitoringNgo!.UpdateFormVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
-        return TypedResults.Ok(FormFullModel.FromEntity(newForm));
+        var model = FormFullModel.FromEntity(newForm);
+        model.LastModifiedByName = await userDisplayNames.GetDisplayNameAsync(newForm.LastModifiedBy, ct);
+        return TypedResults.Ok(model);
     }
 }

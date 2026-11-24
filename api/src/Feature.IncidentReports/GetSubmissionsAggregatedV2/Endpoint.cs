@@ -47,7 +47,7 @@ public class Endpoint(
             {
                 electionRoundId = req.ElectionRoundId,
                 ngoId = req.NgoId,
-                dataSource = DataSource.Ngo.ToString(),
+                dataSource = req.DataSource.ToString(),
                 formId = req.FormId,
                 filter = filter.Sql,
                 filterParameters = filter.ToJsonParameters()

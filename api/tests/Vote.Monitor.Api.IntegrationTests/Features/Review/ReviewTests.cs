@@ -20,7 +20,8 @@ public class ReviewTests : BaseApiTestFixture
 
     public record ReviewerResponse(Guid Id, string DisplayName, string Status);
 
-    public record ReviewResponse(StageResponse Stage, DateTime? StageChangedAt, DateTime? ReviewedAt,
+    /// <summary>A submission's own GET: the caller NGO's review stage and reviewers of it.</summary>
+    public record ReviewResponse(StageResponse ReviewStage, DateTime? StageChangedAt, DateTime? ReviewedAt,
         ReviewerResponse[] Reviewers);
 
     public record HistoryEntryResponse(string Kind, string ActorName, string? FromStageName, string? ToStageName,
@@ -65,6 +66,9 @@ public class ReviewTests : BaseApiTestFixture
     private static string Review(Guid electionRoundId, Guid submissionId) =>
         $"/api/election-rounds/{electionRoundId}/reviews/FormSubmission/{submissionId}";
 
+    private static string Submission(Guid electionRoundId, Guid submissionId) =>
+        $"/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}:v2";
+
     private static StageResponse[] Stages(HttpClient client, Guid electionRoundId) =>
         client.GetResponse<StageResponse[]>($"/api/election-rounds/{electionRoundId}/review-stages");
 
@@ -107,11 +111,11 @@ public class ReviewTests : BaseApiTestFixture
         var admin = data.NgoByName(ScenarioNgos.Alfa).Admin;
 
         var stages = Stages(admin, data.ElectionRoundId);
-        var review = admin.GetResponse<ReviewResponse>(Review(data.ElectionRoundId, aliceSubmissionId));
+        var review = admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, aliceSubmissionId));
 
         stages.Select(x => (x.Name, x.Status, x.IsDefault)).Should().Equal(
             ("Not reviewed", "NotReviewed", true), ("In review", "InReview", false), ("Reviewed", "Reviewed", false));
-        review.Stage.Name.Should().Be("Not reviewed");
+        review.ReviewStage.Name.Should().Be("Not reviewed");
         review.StageChangedAt.Should().BeNull();
         review.Reviewers.Should().BeEmpty();
     }
@@ -135,8 +139,8 @@ public class ReviewTests : BaseApiTestFixture
         Put(alfa.StaffByName(Tom), $"{uri}:reviewers", new { userIds = new[] { alfa.StaffIdByName(Sam), alfa.AdminId } })
             .Should().Be(HttpStatusCode.NoContent);
 
-        var review = alfa.Admin.GetResponse<ReviewResponse>(uri);
-        review.Stage.Name.Should().Be("Reviewed");
+        var review = alfa.Admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, aliceSubmissionId));
+        review.ReviewStage.Name.Should().Be("Reviewed");
         review.ReviewedAt.Should().NotBeNull();
         review.Reviewers.Select(x => x.Id).Should().BeEquivalentTo([alfa.StaffIdByName(Sam), alfa.AdminId]);
 
@@ -161,11 +165,11 @@ public class ReviewTests : BaseApiTestFixture
             new { stageId = StageNamed(alfa.Admin, data.ElectionRoundId, "Reviewed").Id });
         alfa.Admin.PutWithoutResponse($"{uri}:reviewers", new { userIds = new[] { alfa.StaffIdByName(Sam) } });
 
-        var betaView = beta.Admin.GetResponse<ReviewResponse>(uri);
-        var alfaView = alfa.Admin.GetResponse<ReviewResponse>(uri);
-        betaView.Stage.Name.Should().Be("In review");
+        var betaView = beta.Admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, bobSubmissionId));
+        var alfaView = alfa.Admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, bobSubmissionId));
+        betaView.ReviewStage.Name.Should().Be("In review");
         betaView.Reviewers.Select(x => x.Id).Should().Equal(beta.AdminId);
-        alfaView.Stage.Name.Should().Be("Reviewed");
+        alfaView.ReviewStage.Name.Should().Be("Reviewed");
         alfaView.Reviewers.Select(x => x.Id).Should().Equal(alfa.StaffIdByName(Sam));
 
         var betaHistory = beta.Admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history");
@@ -302,7 +306,7 @@ public class ReviewTests : BaseApiTestFixture
 
         StageNamed(admin, data.ElectionRoundId, "In review").IsDefault.Should().BeTrue();
         StageNamed(admin, data.ElectionRoundId, "Not reviewed").IsDefault.Should().BeFalse();
-        admin.GetResponse<ReviewResponse>(Review(data.ElectionRoundId, aliceSubmissionId)).Stage.Name
+        admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, aliceSubmissionId)).ReviewStage.Name
             .Should().Be("Not reviewed");
     }
 
@@ -325,7 +329,7 @@ public class ReviewTests : BaseApiTestFixture
 
         withoutTarget.StatusCode.Should().Be(HttpStatusCode.Conflict);
         withTarget.StatusCode.Should().Be(HttpStatusCode.NoContent);
-        admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Reviewed");
+        admin.GetResponse<ReviewResponse>(Submission(data.ElectionRoundId, aliceSubmissionId)).ReviewStage.Name.Should().Be("Reviewed");
         admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history")[0].FromStageName.Should().Be("Calling the observer");
     }
 
@@ -345,8 +349,8 @@ public class ReviewTests : BaseApiTestFixture
         var createStage = alfa.Admin.PostAsJsonAsync($"/api/election-rounds/{er}/review-stages",
             new { name = "Calling the observer", status = "InReview" }).GetAwaiter().GetResult();
 
-        var review = alfa.Admin.GetResponse<ReviewResponse>(uri);
-        review.Stage.Name.Should().Be("Reviewed");
+        var review = alfa.Admin.GetResponse<ReviewResponse>(Submission(er, aliceSubmissionId));
+        review.ReviewStage.Name.Should().Be("Reviewed");
         review.Reviewers.Select(x => x.Id).Should().Equal(alfa.StaffIdByName(Sam));
         createStage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -382,16 +386,16 @@ public class ReviewTests : BaseApiTestFixture
 
         Submit(data, ScenarioObserver.Bob, ScenarioPollingStation.Iasi, 5);
 
-        alfa.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Reviewed");
-        beta.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("In review");
+        alfa.Admin.GetResponse<ReviewResponse>(Submission(er, bobSubmissionId)).ReviewStage.Name.Should().Be("Reviewed");
+        beta.Admin.GetResponse<ReviewResponse>(Submission(er, bobSubmissionId)).ReviewStage.Name.Should().Be("In review");
 
         Submit(data, ScenarioObserver.Bob, ScenarioPollingStation.Iasi, 6);
 
-        var alfaReview = alfa.Admin.GetResponse<ReviewResponse>(uri);
-        alfaReview.Stage.Name.Should().Be("Not reviewed");
+        var alfaReview = alfa.Admin.GetResponse<ReviewResponse>(Submission(er, bobSubmissionId));
+        alfaReview.ReviewStage.Name.Should().Be("Not reviewed");
         alfaReview.ReviewedAt.Should().BeNull();
         alfaReview.Reviewers.Select(x => x.Id).Should().Equal(alfa.StaffIdByName(Sam));
-        beta.Admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Not reviewed");
+        beta.Admin.GetResponse<ReviewResponse>(Submission(er, bobSubmissionId)).ReviewStage.Name.Should().Be("Not reviewed");
 
         var history = alfa.Admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history");
         history[0].Should().BeEquivalentTo(new
@@ -424,12 +428,12 @@ public class ReviewTests : BaseApiTestFixture
         admin.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
         data.ObserverByName(ScenarioObserver.Alice).PostWithoutResponse(noteUri, note);
 
-        admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Not reviewed");
+        admin.GetResponse<ReviewResponse>(Submission(er, aliceSubmissionId)).ReviewStage.Name.Should().Be("Not reviewed");
 
         admin.PutWithoutResponse($"{uri}:stage", new { stageId = reviewed.Id });
         data.ObserverByName(ScenarioObserver.Alice).PostWithoutResponse(noteUri, note);
 
-        admin.GetResponse<ReviewResponse>(uri).Stage.Name.Should().Be("Reviewed");
+        admin.GetResponse<ReviewResponse>(Submission(er, aliceSubmissionId)).ReviewStage.Name.Should().Be("Reviewed");
         admin.GetResponse<HistoryEntryResponse[]>($"{uri}/history")
             .Count(x => x.Kind == "ReturnedToDefaultStage").Should().Be(1);
     }

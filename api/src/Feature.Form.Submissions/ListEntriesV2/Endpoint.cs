@@ -73,6 +73,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                                 s."Tags",
                                 s."NgoName",
                                 s."NumberOfQuestionsAnswered",
+                                s."NumberOfUnansweredQuestions",
                                 s."NumberOfFlaggedAnswers",
                                 s."MediaFilesCount",
                                 s."NotesCount",
@@ -203,6 +204,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $@"s.""NumberOfQuestionsAnswered"" {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(FormSubmissionEntry.NumberOfUnansweredQuestions),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $@"s.""NumberOfUnansweredQuestions"" {sortOrder}";
         }
 
         if (string.Equals(sortColumnName, nameof(FormSubmissionEntry.NumberOfFlaggedAnswers),

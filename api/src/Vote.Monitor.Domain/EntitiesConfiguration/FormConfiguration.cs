@@ -10,6 +10,8 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
     public void Configure(EntityTypeBuilder<Form> builder)
     {
         builder.HasKey(e => e.Id);
+        // Postgres's xmin system column as the concurrency token (no column of its own).
+        builder.Property(x => x.Version).IsRowVersion();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Status).IsRequired();
         builder.Property(x => x.FormType).IsRequired();

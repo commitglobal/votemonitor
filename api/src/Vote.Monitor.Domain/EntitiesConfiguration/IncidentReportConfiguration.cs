@@ -28,6 +28,7 @@ public class IncidentReportConfiguration : IEntityTypeConfiguration<IncidentRepo
             .HasForeignKey(x => x.MonitoringObserverId);
 
         builder.Property(x => x.NumberOfQuestionsAnswered);
+        builder.Property(x => x.NumberOfUnansweredQuestions).IsRequired();
         builder.Property(x => x.NumberOfFlaggedAnswers);
 
         builder.Property(e => e.LocationType).IsRequired();

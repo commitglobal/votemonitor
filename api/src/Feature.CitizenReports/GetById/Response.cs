@@ -18,6 +18,12 @@ public class Response
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; }
 
+    /// <summary>The questions the citizen was shown (display logic applied) that they answered.</summary>
+    public int NumberOfQuestionsAnswered { get; init; }
+
+    /// <summary>The questions the citizen was shown (display logic applied) and left unanswered.</summary>
+    public int NumberOfUnansweredQuestions { get; init; }
+
     public string LocationId { get; init; }
     public string LocationLevel1 { get; init; }
     public string LocationLevel2 { get; init; }
@@ -35,4 +41,21 @@ public class Response
     public string? FollowUpStatusName { get; init; }
     public string? FollowUpStatusColor { get; init; }
     public string? FollowUpStatusIcon { get; init; }
+
+    /// <summary>The caller NGO's review stage of the record; null for callers outside an NGO (platform admins).</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewStage? ReviewStage { get; init; }
+
+    public DateTime? StageChangedAt { get; init; }
+    public DateTime? ReviewedAt { get; init; }
+
+    /// <summary>The caller NGO's members reviewing the record.</summary>
+    public Vote.Monitor.Domain.Entities.ReviewAggregate.RecordReviewer[]? Reviewers { get; init; }
+
+    /// <summary>The caller NGO's severity of the record (<c>NotAssessed</c> when it never set one).</summary>
+    public Vote.Monitor.Domain.Entities.RecordSeverityAggregate.SeverityLevel? Severity { get; init; }
+
+    public DateTime? SeverityChangedAt { get; init; }
+
+    /// <summary>The caller NGO's labels on the record, sorted ignoring case.</summary>
+    public string[]? Labels { get; init; }
 }
