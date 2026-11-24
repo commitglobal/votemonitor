@@ -1,12 +1,22 @@
+using FastEndpoints;
 using Feature.IncidentReports.GetById;
 using FluentValidation.TestHelper;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using Vote.Monitor.Core.Services.Security;
 using Xunit;
 
 namespace Feature.IncidentReports.UnitTests.ValidatorTests;
 
 public class GetByIdValidatorTests
 {
-    private readonly Validator _validator = new();
+    private readonly ICurrentUserRoleProvider _roleProvider = Substitute.For<ICurrentUserRoleProvider>();
+    private readonly Validator _validator;
+
+    public GetByIdValidatorTests()
+    {
+        _validator = Factory.CreateValidator<Validator>(x => x.AddScoped(_ => _roleProvider));
+    }
 
     [Fact]
     public void Should_Have_Error_When_ElectionRoundId_Is_Empty()
@@ -24,13 +34,18 @@ public class GetByIdValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
-    [Fact]
-    public void Should_Have_Error_When_NgoId_Is_Empty()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("00000000-0000-0000-0000-000000000000")]
+    public void Should_Have_Error_When_NgoId_Is_Missing_For_NgoAdmin(string? ngoId)
     {
         // Arrange
+        _roleProvider.IsNgoAdmin().Returns(true);
         var request = new Request
         {
-            NgoId = Guid.Empty
+            ElectionRoundId = Guid.NewGuid(),
+            NgoId = ngoId is null ? null : Guid.Parse(ngoId),
+            IncidentReportId = Guid.NewGuid()
         };
 
         // Act
@@ -38,6 +53,25 @@ public class GetByIdValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.NgoId);
+    }
+
+    [Fact]
+    public void Should_Not_Have_Error_When_NgoId_Is_Missing_For_PlatformAdmin()
+    {
+        // Arrange: platform admins have no NGO
+        _roleProvider.IsPlatformAdmin().Returns(true);
+        var request = new Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            NgoId = null,
+            IncidentReportId = Guid.NewGuid()
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
@@ -57,9 +91,10 @@ public class GetByIdValidatorTests
     }
 
     [Fact]
-    public void Should_Not_Have_Error_When_All_Fields_Are_Valid()
+    public void Should_Not_Have_Error_When_All_Fields_Are_Valid_For_NgoAdmin()
     {
         // Arrange
+        _roleProvider.IsNgoAdmin().Returns(true);
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
