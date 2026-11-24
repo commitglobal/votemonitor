@@ -41,7 +41,7 @@ public class Endpoint(
             .Forms
             .FromSqlInterpolated($"""
                                   SELECT AF.*, F.xmin -- the concurrency token the Form entity maps
-                                  FROM "GetFormSubmissionsAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource.ToString()}) AF
+                                  FROM "GetFormSubmissionsAvailableForms"({req.ElectionRoundId}, {req.NgoId}, {req.DataSource}) AF
                                            INNER JOIN "Forms" F ON F."Id" = AF."Id"
                                   """)
             .Where(x => x.Id == req.FormId)
